@@ -31,6 +31,7 @@ oploterror.pro
 readcol.pro
 reverse.pro
 setcommon.pro
+sigma_los1.pro
 sigma_r1.pro
 sigma_r.pro
 strnumber.pro
