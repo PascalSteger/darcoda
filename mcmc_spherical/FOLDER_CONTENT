@@ -11,6 +11,7 @@ spherical_clean.pro:	 MAIN program
 spherical_clean1.batch:  batch job to fit whole range, approximate M(>r_outer) by linear function
 spherical_clean1.pro:    MAIN program
 
+spherical_los.pro:       fit whole range of sigma_los. approximate M_outer and sigma_r_outer by linear function
 
 plot_spherical.batch:	 batch script to compile and start plotting program
 plot_spherical.pro
