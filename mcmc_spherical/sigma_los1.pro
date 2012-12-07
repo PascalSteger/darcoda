@@ -100,7 +100,7 @@ sigma_tot(pnts:2*pnts-2)=sigma_outer
 ;Compute line of sight integral
 sig_los = dblarr(pnts) 
 FOR i=0,pnts-1 DO $
-   sig_los(i) = 2/surfden(i)*int_tabulated(r_tot(i+1:2*pnts-2),(1-beta_tot(i+1:2*pnts-2)*(r_tot(i)/r_tot(i+1:2*pnts-2))^2)*nu_tot(i+1:2*pnts-2)*sigma_tot(i+1:2*pnts-2)^2*r_tot(i+1:2*pnts-2)/sqrt(r_tot(i+1:2*pnts-2)^2-r_tot(i)^2))
+   sig_los(i) = 2/surfden(i)*int_tabulated(r_tot(i+1:2*pnts-2),(1-beta_tot(i+1:2*pnts-2)*(r_tot(i)/r_tot(i+1:2*pnts-2))^2)*nu_tot(i+1:2*pnts-2)*sigma_tot(i+1:2*pnts-2)*r_tot(i+1:2*pnts-2)/sqrt(r_tot(i+1:2*pnts-2)^2-r_tot(i)^2))
 
 ;Interpolate back to input array:
 sig_r = interpol(sig_los,r,r_in)

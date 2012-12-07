@@ -8,8 +8,8 @@ PRO spherical_los
 ;setcommon
 ;COMMON constants
 
-testplot='yes'
-populations=1
+testplot='no'
+populations=2
 whichpop='dm'
 
 ;Set screen output for testing:
@@ -364,7 +364,9 @@ AGAIN:
    ;ENDELSE
 
    IF (abs(Mslopepars) GT 2.) THEN GOTO,AGAIN
- 
+   FOR jj=0L,nt_beta-1 DO IF (betapars1(jj) GT 1.) THEN GOTO, AGAIN
+   IF (populations eq 2) THEN FOR jj=0L,nt_beta-1 DO IF (betapars1(jj) GT 1.) THEN GOTO, AGAIN
+
    FOR jj=0L,nt_M-1 DO $
       IF (abs(Mpars(jj)) GT gpriorconv) THEN GOTO,AGAIN
 
@@ -445,8 +447,8 @@ AGAIN:
          M = Mr(rpl,rp_M,Mpars)
          M_outer=M(rpnts-1)+(dindgen(rpnts-1)+1)*mprioru*M(rpnts-1)/(rplmax-rplmin)*dr
          nu1_outer=nu1(rpnts-1)-(dindgen(rpnts-1)+1)*nu1(rpnts-1)/(rplmax-rplmin)*dr
-         sigr1 = sigma_r1(rpl,rp_nu,rp_M,rp_beta,Mpars,nupars1,betapars1,Mslopepars)
-         sigr1_outer=sigr1(rpnts-1)+(dindgen(rpnts-1)+1)*sigmaslopepars1*sigr1(rpnts-1)/(rplmax-rplmin)*dr
+         ;sigr1 = sigma_r1(rpl,rp_nu,rp_M,rp_beta,Mpars,nupars1,betapars1,Mslopepars)
+         ;sigr1_outer=sigr1(rpnts-1)+(dindgen(rpnts-1)+1)*sigmaslopepars1*sigr1(rpnts-1)/(rplmax-rplmin)*dr
          M_tot=dblarr(2*rpnts-1)
          M_tot(0:rpnts-1)=M
          M_tot(rpnts:2*rpnts-2)=M_outer
@@ -457,9 +459,9 @@ AGAIN:
          nu1_tot=dblarr(2*rpnts-1)
          nu1_tot(0:rpnts-1)=nu1
          nu1_tot(rpnts:2*rpnts-2)=nu1_outer
-         sigr1_tot=dblarr(2*rpnts-1)
-         sigr1_tot(0:rpnts-1)=sigr1
-         sigr1_tot(rpnts:2*rpnts-2)=sigr1_outer
+         ;sigr1_tot=dblarr(2*rpnts-1)
+         ;sigr1_tot(0:rpnts-1)=sigr1
+         ;sigr1_tot(rpnts:2*rpnts-2)=sigr1_outer
 
          ;Do the plots: 
          plot,r_dat,nu_dat1,xrange=[0,rplmax],yrange=[0.000001,1.5],/ylog,$
@@ -474,14 +476,14 @@ AGAIN:
 
          if (populations eq 2) then begin
             sig2 = sigma_los1(rpl,rp_nu,rp_M,rp_beta,Mpars,nupars2,betapars2,Mslopepars,sigmaslopepars2)
-            sigr2 = sigma_r1(rpl,rp_nu,rp_M,rp_beta,Mpars,nupars2,betapars2,Mslopepars)
-            sigr2_outer=sigr2(rpnts-1)+(dindgen(rpnts-1)+1)*sigmaslopepars2*sigr2(rpnts-1)/(rplmax-rplmin)*dr
+            ;sigr2 = sigma_r1(rpl,rp_nu,rp_M,rp_beta,Mpars,nupars2,betapars2,Mslopepars)
+            ;sigr2_outer=sigr2(rpnts-1)+(dindgen(rpnts-1)+1)*sigmaslopepars2*sigr2(rpnts-1)/(rplmax-rplmin)*dr
             nu2 = nu(rpl,rp_nu,nupars2)
             beta2 = betar(rpl,rp_beta,betapars2)
-            sigr2_tot=dblarr(2*rpnts-1)
-            sigr2_tot(0:rpnts-1)=sigr2
+            ;sigr2_tot=dblarr(2*rpnts-1)
+            ;sigr2_tot(0:rpnts-1)=sigr2
             nu2_outer=nu2(rpnts-1)-(dindgen(rpnts-1)+1)*nu2(rpnts-1)/(rplmax-rplmin)*dr
-            sigr2_tot(rpnts:2*rpnts-2)=sigr2_outer
+            ;sigr2_tot(rpnts:2*rpnts-2)=sigr2_outer
             nu2_tot=dblarr(2*rpnts-1)
             nu2_tot(0:rpnts-1)=nu2
             nu2_tot(rpnts:2*rpnts-2)=nu2_outer
@@ -501,16 +503,16 @@ AGAIN:
          oploterror,r_Mdat,M_dat,M_dat_err
          oplot,r_tot,M_tot,color=2
 
-;         plot,rpl,beta1,xrange=[rplmin,rplmax],yrange=[-1.5,1.5],/NODATA,$
-;              title='!6',xtitle='r(Rs)',ytitle='M [Mtot]'
-;         if (populations eq 2) then oplot,rpl,beta2,color=3
-;         oplot,rpl,beta1,color=2
+         plot,rpl,beta1,xrange=[rplmin,rplmax],yrange=[-1.5,1.5],/NODATA,$
+              title='!6',xtitle='r(Rs)',ytitle='beta [unity]'
+         if (populations eq 2) then oplot,rpl,beta2,color=3
+         oplot,rpl,beta1,color=2
 
-         plot,r_sigrdat,sigr_dat,xrange=[0,2*rplmax],yrange=[0.,1.],/NODATA,$
-              title='!6',xtitle='r(Rs)',ytitle='sigma_r []'
-         oploterror,r_sigrdat,sigr_dat,sigr_dat_err
-         oplot,r_tot,sigr1_tot,color=2
-         if (populations eq 2) then oplot,r_tot,sigr2_tot,color=3
+         ;plot,r_sigrdat,sigr_dat,xrange=[0,2*rplmax],yrange=[0.,1.],/NODATA,$
+         ;     title='!6',xtitle='r(Rs)',ytitle='sigma_r []'
+         ;oploterror,r_sigrdat,sigr_dat,sigr_dat_err
+         ;oplot,r_tot,sigr1_tot,color=2
+         ;if (populations eq 2) then oplot,r_tot,sigr2_tot,color=3
 
 
       ENDIF
