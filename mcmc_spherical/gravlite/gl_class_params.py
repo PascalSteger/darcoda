@@ -1,4 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal S.P. Steger
+'''parameters for the MCMC'''
+
 import numpy as np
 import numpy.random as npr
 import random
@@ -9,6 +12,10 @@ if gp.geom == 'sphere':
     import physics_sphere as phys
 elif gp.geom == 'disc':
     import physics_disc as phys
+
+
+
+
 
 class Params:
     'Common base class for all parameter sets'
@@ -73,23 +80,20 @@ class Params:
             self.delta2  = npr.uniform(-1,1,gp.nipol)
             self.sig2sl = npr.uniform(-1,1,1)
 
-        # TODO: check whether this is necessary or already taken care of in gl_funs.get_new_pars
-        if gp.deltaprior:
-            if gp.investigate == 'walker':
-                delta1, delta2 = betawalker()
-                self.delta1 = np.zeros(gp.nipol)+delta1
-                if gp.pops == 2:
-                    self.delta2 = np.zeros(gp.nipol)+delta2
-            else:
-                self.delta1 = gp.delta0
-                if gp.pops==2:
-                    self.delta2 = gp.delta0
         return self
 
-    def wiggle_nu(self):
+    def wiggle_nu1(self):
         self.nu1 = npr.uniform(-1, 1, gp.nipol)
+        return self
+
+    def wiggle_nu2(self):
+        self.nu2 = npr.uniform(-1, 1, gp.nipol)
+        return self
+    
+    def wiggle_nu(self):
+        self.wiggle_nu1()
         if gp.pops==2:
-            self.nu2 = npr.uniform(-1, 1, gp.nipol)
+            self.wiggle_nu2()
         return self
  
     def wiggle_dens(self):
@@ -237,7 +241,7 @@ class Params:
     def has_negative(self):
         if min(self.nu1) < 0.:
             return True
-        if min(phys.dens(self.dens,gp.xipol)<0.):
+        if min(phys.dens(gp.xipol,self.dens)<0.):
             return True
         if min(self.Msl<0):
             self.Msl = -self.Msl

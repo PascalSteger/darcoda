@@ -1,8 +1,10 @@
-#!/usr/bin/python
-# calculate density falloff of circular rings around center of mass
-###################################################################
+#!/usr/bin/python2.7
+# (c) 2013 Pascal S.P. Steger
+'''calculate surface mass density falloff of circular rings around center of mass'''
 
-#start from data centered on COM already:
+
+
+
 import sys
 import pdb
 import numpy as np
@@ -13,14 +15,16 @@ import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 
+
 for i in range(gpr.ncomp):
     print 'i = ',i
     print 'input: ',gpr.get_com_file(i)
+    # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(i),\
                            skiprows=1,usecols=(0,1,2),unpack=True) #[rcore], [rcore], [km/s]
 
 
-    # calculate radius
+    # calculate 2D radius on the skyplane
     r = np.sqrt(x**2+y**2) #[rcore]
 
     # set number and size of (linearly spaced) bins

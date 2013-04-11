@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy
 # calculate approximative stellar masses from V-band magnitude, V-I color, distance to dwarf galaxy

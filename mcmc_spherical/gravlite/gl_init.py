@@ -1,5 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''set up initial parameters'''
+
 import gl_params as gp
 from gl_class_params import *
 from gl_analytic import *
@@ -12,53 +14,74 @@ elif gp.geom == 'disc':
     import physics_disc as phys
 
 
+
+
+
+
+
 def mcmc_init():
     # Default Initial seed guess parameters:
 
     ### nu
     # set all nu to known data plus some offset
-    nupars1  = gp.ipol.nudat1 * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.) + gp.ipol.nudat1[-1]
-    nuparstep1    = gp.ipol.nuerr1/10. # 20 earlier on
+    nupars1 = gp.ipol.nudat1 * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
+    nuparstep1    = nupars1/10.#+gp.ipol.nuerr1    # [munit/pc^3], /20 earlier on, was too high
     if gp.pops == 2:
-        nupars2  = gp.ipol.nudat2 * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.) + gp.ipol.nudat2[-1]
-        nuparstep2 = gp.ipol.nuerr2/10.
+        nupars2  = gp.ipol.nudat2 * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+\
+          gp.ipol.nudat2[-1]            # [munit/pc^3]
+        nuparstep2 = nupars2/10.#+gp.ipol.nuerr2     # [munit/pc^3]
 
     #if gp.geom == 'disc':
         #numin = 1.e-3; numax = 1.
         #nupars1 = np.zeros(gp.nipol) + numin * 2.0
         #nuparstep1 = 0.1*nupars1
 
+
     ### delta
     deltapars1 = np.zeros(gp.nipol)
-    deltaparstep1 = deltapars1+1./100.
+    deltaparstep1 = deltapars1 + 0.01
+    mdelta1 = []; mdelta2 = []
     if gp.model:
+        print 'TODO: disable model for delta!'
         mdelta1, mdelta2 = betawalker(gp.xipol)
-    else:
-        mdelta1 = gp.delta0; mdelta2 = gp.delta0
-    if gp.deltaprior:
         deltapars1 = mdelta1
-        deltaparstep = np.zeros(gp.nipol)
+        deltaparstep1 = deltapars1/100.
+        if gp.deltaprior:
+            deltaparstep1 = np.zeros(gp.nipol)
+
     if gp.pops == 2:
         deltapars2 = np.zeros(gp.nipol)
-        deltaparstep2 = deltapars2+1./100.
-        if gp.deltaprior:
+        deltaparstep2 = deltapars2 + 0.01
+        if gp.model or True:
             deltapars2 = mdelta2
-            deltaparstep2 = np.zeros(gp.nipol)
+            deltaparstep2 = deltapars2/100.
+            if gp.deltaprior:
+                deltaparstep2 = np.zeros(gp.nipol)
+
     if gp.geom == 'disc':
         if not gp.deltaprior: # tparsRin[0] > 0:
             # deltapars1 = np.zeros(gp.nipol) + 50.
             deltapars1 = np.zeros(gp.nipol)
 
+
+
     ### density
     denspars = np.zeros(gp.nipol)
     if gp.poly:
-        denspars[0] = gp.densstart #starting offset
+        denspars[0] = gp.densstart # starting offset, set in gl_params
+        # this is added with (radius)**0 to all other densities
         for i in range(1,gp.nipol):
-            denspars[i] = (gp.scaledens/3.)**i/i**gp.scalepower
-        densparstep = denspars/20. * (np.arange(1,gp.nipol+1))**0.75    # scale high order dens stepsizes s.t. they change remarkably as well
+            denspars[i] = (gp.scaledens)**i/i**gp.scalepower
+        # scale high order dens stepsizes s.t. they change remarkably as well
+        densparstep = denspars/30. * (np.arange(1,gp.nipol+1))**0.75
+        
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
-        densparstep = denspars/10.
+        if gp.model:
+            denspars = rhowalkertot_3D(gp.xipol)   # [munit/pc^3]
+            denspars = denspars * (1.+ npr.uniform(-1.,1.,gp.nipol)/15.)\
+                       +denspars[-1]/2. # [munit/pc^3]
+        densparstep = denspars/30.
 
     if gp.geom == 'disc':
         # Set up kzmin/max arrays:
@@ -81,7 +104,7 @@ def mcmc_init():
             kzpars = get_kzpars()
 
         if gp.poly:
-            denspars = phys.calculate_dens(kzpars,gp.xipol)
+            denspars = phys.calculate_dens(gp.xipol,kzpars)
         else:
             denspars = np.array(kzpars)
             # densparstep = np.zeros(gp.nipol) + 13.
@@ -89,10 +112,11 @@ def mcmc_init():
 
 
     ### Mslope
-    Mslopepars = 0.1     if (gp.mprior<0)    else gp.mprior
-    Mslopeparstep = Mslopepars/20. if gp.mprior<0 else 0.
+    Mslopepars = 0.1     if (gp.mprior<0)    else gp.mprior   # [1]
+    Mslopeparstep = Mslopepars/20. if gp.mprior<0 else 0.     # [1]
 
     ### sigma
+    # TODO: is this used anywhere in the MCMC? ask Dave, why it was introduced
     sigmaslopepars1 = 0. if gp.sigmaprior1<0 else gp.sigmaprior1
     sigmaslopeparstep1 = 0.1
     if gp.pops == 2:

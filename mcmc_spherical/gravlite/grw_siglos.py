@@ -1,5 +1,6 @@
-#!/usr/bin/python
-# calculate velocity dispersion of 2D rings from a Walker dataset
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+'''calculate velocity dispersion of 2D rings from a Walker dataset'''
 
 from pylab import *
 import numpy as np
@@ -77,7 +78,7 @@ for comp in range(gpr.ncomp):
 
     for i in range(gpr.nbins):
         #             [rcore]  [maxvlos]                  [maxvlos]
-        print >> vfil,rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos/np.sqrt(n))
+        print >> vfil,rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos) #/np.sqrt(n))
     vfil.close()
 
     ion(); subplot(111)

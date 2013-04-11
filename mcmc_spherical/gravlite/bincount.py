@@ -1,8 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+
 # ============================ BINCOUNT ============================
 # This routine takes an array, r, and counts the number of elements 
 # in r bins of size bin. 
 # WARNING!! THIS ROUTINE REQUIRES SORTED ACSENDING r ARRAYS.
+
 import numpy as np
 
 #PRO bincount,r,low,high,bin,rout,arrayout,count_bin

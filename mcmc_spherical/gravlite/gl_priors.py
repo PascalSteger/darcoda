@@ -1,6 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+'''check all parameters for prior constraints'''
 import gl_params as gp
 import gl_file as gf
+import pdb
+import gl_plot as gpl
 if gp.geom == 'disc':
     import physics_disc as phys
 else:
@@ -8,11 +12,12 @@ else:
 
 def check_priors():
     gp.LOG.debug(' check rising mass prior:')
-    denscheck = phys.dens(gp.parst.dens,gp.xipol)
+    denscheck = phys.dens(gp.xipol, gp.parst.dens)
     # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
     for i in range(len(denscheck)-1):
-        if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol:
+        if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol and gp.geom == 'sphere':
             print 'rising dens prior, more than 200% up'
+
             gf.get_working_pars()
             # gp.parst.dens[i+1] *= 0.9
             # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
@@ -81,28 +86,35 @@ def check_priors():
     # end TODO
 
     gp.LOG.debug('check for extreme M slopes after rpmax')
-    if (abs(gp.parst.Msl)>2.) :
+    if (abs(gp.parst.Msl)>2. and gp.geom == 'sphere') : # TODO: include boundary for disc
         print 'Mslopepars too high'
         gp.parst.Msl *=0.9
         return True # TODO: keep in mind, change Msl during MCMC
 
     gp.LOG.debug( 'now checking delta <= 1')
     if max(gp.parst.delta1)>1.:
-        print 'delta1 > 1'
-        return True
+        for jj in range(gp.nipol):
+            if gp.parst.delta1[jj] >1.:
+                gp.parst.delta1[jj] = 0.95
+                print 'delta1 too high, corrected entry ',jj,' to 0.95'
+        # return True
     if gp.pops == 2 and max(gp.parst.delta2)>1.:
-        print 'delta2 > 1'
-        return True
+        for jj in range(gp.nipol):
+            if gp.parst.delta2[jj] >1.:
+                gp.parst.delta2[jj] = 0.95
+                print 'delta2 too high, corrected entry ',jj,' to 0.95'
+        # return True
+
 
     gp.LOG.debug( 'now checking delta smoothness')
     for i in range(len(gp.parst.delta1)-1):
-        if abs(gp.parst.delta1[i+1]-gp.parst.delta1[i])>0.5:
+        if abs(gp.parst.delta1[i+1]-gp.parst.delta1[i])>2./gp.nipol:
             print 'delta1 too wild!'
-            gp.parst.delta1 /= 2.
+            gp.parst.delta1 /= 2. # TODO: isn't this overridden anyhow?
             return True
     if gp.pops==2:
         for i in range(len(gp.parst.delta2)-1):
-            if abs(gp.parst.delta2[i+1]-gp.parst.delta2[i])>0.5:
+            if abs(gp.parst.delta2[i+1]-gp.parst.delta2[i])>2./gp.nipol:
                 print 'delta2 too wild!'
                 gp.parst.delta2/=2.
                 return True

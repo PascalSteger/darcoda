@@ -1,9 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''read data from simulation'''
 import gl_params as gp
 import gl_helper as gh
 import numpy as np
-import gl_plot as gplot
+import gl_plot as gpl
 from binsmooth import *
 from bincount import *
 import scipy
@@ -109,7 +110,7 @@ def disc_sim():
         pl.clf(); histvzvRbin,binsvzvRcut,pa = pl.hist(vzcut*vRcut, rwidth=100.0)
 
         sigvz = 20.
-        pl.clf(); gplot.plot(binsvzcut,np.exp(-binsvzcut**2./2./sigvz**2.))
+        pl.clf(); gpl.plot(binsvzcut,np.exp(-binsvzcut**2./2./sigvz**2.))
         
         # Assume "normal product" distribution [e.g. Wolfram Mathworld]: 
         sigRz = 2500. 
@@ -117,7 +118,7 @@ def disc_sim():
         tmin = -20001.;        tmax = 20001. ;        tpnts = 10000 
         test = np.arange(tpnts)*(tmax-tmin)/(1.*tpnts) + tmin
         bfunc = ss.kv(0,(abs(test-meanbfunc))/sigRz)
-        pl.clf(); gplot.plot(test,bfunc/max(bfunc))
+        pl.clf(); gpl.plot(test,bfunc/max(bfunc))
 
         mean = simps(bfunc*test,test) / simps(bfunc,test)
         

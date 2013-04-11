@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # class to generate all filenames, independent of which investigation is being performed
 
 import gl_params as gp
@@ -9,6 +9,9 @@ if gp.geom == 'sphere':
 elif gp.geom == 'disc':
     import physics_disc as phys
 
+
+
+    
 def get_case(cas):
     # Set number of tracers to look at
     # want to set ntracers1 = 1e3              # case 1
@@ -25,9 +28,16 @@ def get_case(cas):
         ntracers2 = 5000
     return ntracers1, ntracers2
 
+
+
+
+    
 class Files:
     'Common base class for all filename sets'
     # massfile, nufile[], sigfile[], outname = Files(investigate)
+
+
+    
     def __init__ (self):
         self.dir = ''
         self.massfile = ''; self.analytic = ''
@@ -48,15 +58,20 @@ class Files:
 
         self.outname = self.get_outname()
 
-        print 'input:'
-        if len(self.massfile) > 0:
-            print self.massfile
-            print self.nufiles
-            print self.sigfiles
-        else:
-            print self.posvelfiles
+        if False:
+            print 'input:'
+            if len(self.massfile) > 0:
+                print self.massfile
+                print self.nufiles
+                print self.sigfiles
+            else:
+                print self.posvelfiles
 
         return
+
+
+
+
     
     def set_dir(self, machine):
         if machine == 'darkside':
@@ -66,10 +81,16 @@ class Files:
         return
 
 
+
+
+        
     def set_ntracers(self,cas):
         ntracers1,ntracers2 = get_case(cas)
         self.nstr1 = str(ntracers1); self.nstr2 = str(ntracers2)
         return self.nstr1, self.nstr2
+
+
+
     
     def get_outname(self):
         import datetime
@@ -96,12 +117,14 @@ class Files:
         if gp.quadratic: bname = bname + '_quad'
         if gp.monotonic: bname = bname + '_mono'
 
-        bname = bname+'/'
         import os; import os.path
-        if not os.path.exists(self.dir+bname):
-            os.makedirs(self.dir+bname)
-        return bname
+        if not os.path.exists(self.dir+bname+"/"):
+            os.makedirs(self.dir+bname+"/")
+        return bname + "/" + bname
 
+
+
+        
     def get_sim_name(self):
         if gp.pops == 1:
             sim = 'unit_hern_1_'
@@ -110,6 +133,9 @@ class Files:
         return sim
 
 
+
+
+        
     def set_hernquist(self):
         self.dir = self.dir + 'data_hernquist/'
         sim = self.get_sim_name()
@@ -136,28 +162,49 @@ class Files:
         return
 
 
+
+
+
+        
+
     def set_walker(self):
         self.dir = self.dir + 'data_walker/'
+        if gp.walkercase == 0:
+            gamma_star1 =   0.1;    gamma_star2 =   1.0 # 1. or 0.1
+            beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
+            r_star1     = 1000.;    r_star2     = 1000. # 500 or 1000
+            r_a1        =   1.0;    r_a2        =   1.0
+            gamma_DM    = 0 # 0 or 1
 
-        gamma_star1 =  1.0;    gamma_star2 =  0.1
-        beta_star1  =  5.0;    beta_star2  =  5.0
-        r_star1     = 10.0;    r_star2     = 10.0
-        r_a1        =  1.0;    r_a2        =  1.0
-        
-        alpha_DM    = 1;    beta_DM     = 3;    gamma_DM    = 0
-        rho0        = 1     # to be determined; read from the corresp. gs*mpc3.dat file
-        r_DM        = 1000  # fixed to 1000pc
+        elif gp.walkercase == 1:
+            gamma_star1 =   1.0;    gamma_star2 =   1.0 # 1. or 0.1
+            beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
+            r_star1     =  500.;    r_star2     = 1000. # 500 or 1000
+            r_a1        =   1.0;    r_a2        =   1.0
+            gamma_DM    = 0 # core
+
+        elif gp.walkercase == 2:
+            gamma_star1 =   1.0;    gamma_star2 =   1.0 # 1. or 0.1
+            beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
+            r_star1     =  500.;    r_star2     = 1000. # 500 or 1000
+            r_a1        =   1.0;    r_a2        =   1.0
+            gamma_DM    = 1 # cusp
+
+            
+        alpha_DM    = 1;    beta_DM     = 3;
+        rho0        = 1 # to be read from the corresp. gs*mpc3.dat file
+        r_DM        = 1000                    # fixed to 1000pc
         
         AAA = gh.myfill(100*gamma_star1)     #100
         BBB = gh.myfill(10*beta_star1)       #050
-        CCC = gh.myfill(10*r_star1)          #100
+        CCC = gh.myfill(r_star1/10)          #100
         DDD = gh.myfill(100*r_a1)            #100
         EEE = {0: "core",
              1: "cusp"
              }[gamma_DM]                 #core
         FFF = gh.myfill(100*gamma_star2)     #010
         GGG = gh.myfill(10*beta_star2)       #050
-        HHH = gh.myfill(10*r_star2)          #100
+        HHH = gh.myfill(r_star2/10)          #100
         III = gh.myfill(100*r_a2)            #100
         JJJ = EEE                         #core
         NNN = gh.myfill(3)                   #003    # realization (1..10)
@@ -168,23 +215,36 @@ class Files:
         self.massfile = self.dir+'enclosedmass/enclosedmass_0.txt'
         self.analytic = self.dir+'samplepars'
         print 'analytic set to ',self.analytic
-        if gp.pops == 1:
-            self.nufiles.append(self.dir+'nu/nunotnorm_0.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
-        elif (gp.pops == 2): # before: _*_[1,2].txt
+        
+        self.nufiles.append(self.dir+'nu/nunotnorm_0.txt')
+        self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
+        if gp.pops == 2:
             self.nufiles.append(self.dir+'nu/nunotnorm_1.txt')
             self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
             self.nufiles.append(self.dir+'nu/nunotnorm_2.txt')
             self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
+        self.outname = self.get_outname()
         return
     
+
+
+
+
     def get_scale_file(self,i):
         # get rcore, dens0, dens0pc, totmass, maxvlos from file par_0.txt
         return self.dir+'scale_'+str(i)+'.txt'
 
+
+
+
+
     def set_fornax(self):
         self.dir = self.dir + 'data_dwarf/data_obs/for/'
         return
+
+
+
+
         
     def set_disc_sim(self):
         self.dir = self.dir + 'data_disc_sim/mwhr/'
@@ -219,6 +279,8 @@ class Files:
 
     def get_outtxt(self):
         return self.dir + self.outname + '.txt'
+
+
 
     def get_outprofs(self):
         profnus = []; profdeltas = []; profsigs = []

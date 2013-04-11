@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
-# calculate density falloff
+# (c) 2013 Pascal S.P. Steger
+'''calculate density falloff'''
 
 import numpy as np
 import multiprocessing as mp

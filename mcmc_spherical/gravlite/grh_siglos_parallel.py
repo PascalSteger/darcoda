@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
-# calculate line of sight velocity dispersion (line of sight parallel to x-axis)
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+'''calculate line of sight velocity dispersion (line of sight parallel to x-axis)'''
 
 import params as ps
 import numpy as np

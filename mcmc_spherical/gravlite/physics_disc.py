@@ -1,13 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''General function to describe the density profile:'''
 import pdb
 import numpy as np
 import scipy
 import scipy.integrate
 from scipy.integrate import simps,trapz
-#import gl_plot as gplot
+#import gl_plot as gpl
 import gl_params as gp
 import gl_helper as gh
+
+
+
+
 
 def get_zarrays(z_in):
     # Set up regularly spaced r0 array for integration:
@@ -16,6 +21,10 @@ def get_zarrays(z_in):
     z_outer     = zmax+z0-zmin
     z_tot       = np.hstack((z0[:-1], z_outer))  # [1:] all but first, [:-1] all but last
     return z0,z_tot,zmin,zmax,dz,z_outer
+
+
+
+
 
 
 def get_M(M_r,mprioru,r_outer,dr):
@@ -28,7 +37,11 @@ def get_M(M_r,mprioru,r_outer,dr):
     #M_outer = gfun.ipol(r0,M_r,r_outer[1:])
     return np.hstack((M_r[:-1],     M_outer))
 
-def calculate_dens(M,z):
+
+
+
+
+def calculate_dens(z,M):                  # [TODO], [TODO]
     z0 = np.hstack([0,z])
     deltaM = [];
     deltaM.append(M[0])
@@ -41,10 +54,20 @@ def calculate_dens(M,z):
         dens.append( deltaM[i]/deltavol[i] )
     return np.array(dens)
 
-def densdefault(denspars):
-    return dens(denspars,gp.xipol)
 
-def dens(denspars, xipol):
+
+
+
+
+    
+def densdefault(denspars):
+    return dens(gp.xipol, denspars)
+
+
+
+
+
+def dens(xipol, denspars):                # [rcore], [TODO]
     if not gp.poly:
         return denspars
     if gp.checksigma:
@@ -53,11 +76,21 @@ def dens(denspars, xipol):
     tmp = np.zeros(len(xipol))
     for i in range(0,len(denspars)):
         tmp += denspars[i]*((gp.scaledens-xipol)/gp.scaledens)**i
-    # gplot.plot(gp.ipol.densr,gp.ipol.densdat); gplot.plot(gp.xipol,10.**tmp); gplot.yscale('log')
+    # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
     return 10.0**tmp
+
+
+
+
+
 
 def nu(pars):
     return pars
+
+
+
+
+
 
 def nu_decrease(z, zpars, pars):
     # Fully non-parametric monotonic *decreasing* function [c.f. Kz function].
@@ -84,9 +117,9 @@ def nu_decrease(z, zpars, pars):
             b = fun[i]; a = fun[i+1]; norm_nu = norm_nu + (a-b)/2./zz*(zr**2.-zl**2.) + b*zr - a*zl
     else:
         if gp.qtest:
-            gplot.plot(zpars, pars)    
+            gpl.plot(zpars, pars)    
             test = gh.ipol(zpars,pars,z)
-            gplot.plot(z,test,psym=3,color=2)
+            gpl.plot(z,test,psym=3,color=2)
         
         # Exact quadratic interpolation:
         norm_nu = 0.
@@ -116,7 +149,7 @@ def nu_decrease(z, zpars, pars):
                 zcut = z[sel]; tcut = testy[sel]
 
         if gp.qtest:
-            gplot.plot(zcut,tcut,psym=3,color=4)
+            gpl.plot(zcut,tcut,psym=3,color=4)
             print 'qtest: will stop'
             print simps(test,z), norm_nu 
             exit(1)
@@ -138,8 +171,14 @@ def nu_decrease(z, zpars, pars):
     return f
 
 
-# General function to calculate the Kz force law:
+
+
+
+
+
+
 def kz(z_in, zpars, kzpars, blow):
+    '''General function to calculate the Kz force law:'''
     # Non-parametric Kz function here. Use cumulative integral to
     # ensure monotinicity in an efficient manner. Note here we
     # use kz_z(0) = kzpars(0) * dz so that it can be zero, or
@@ -209,9 +248,9 @@ def kz(z_in, zpars, kzpars, blow):
         for i in range(1,len(zpars)):
             testsimp[i] = testsimp[i-1] + denarr[i] * delta_z
     
-        gplot.plot(z,kz_th);        gplot.plot(zpars,kz_z)
-        gplot.plot(z,test);         gplot.plot(zpars,testsimp)
-        gplot.show()
+        gpl.plot(z,kz_th);        gpl.plot(zpars,kz_z)
+        gpl.plot(z,test);         gpl.plot(zpars,testsimp)
+        gpl.show()
 
     kz_z = kz_z + blow
     
@@ -231,7 +270,14 @@ def kz(z_in, zpars, kzpars, blow):
         
     return -kz_out
 
+
+
+
+
+
 def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
+    '''return LOS velocity dispersion'''
+
     # Calculate density and Kz force: 
     nu_z = nu(nupars)
     # kz_z = kz(zp,zp,kzpars,blow,quadratic) # TODO: reenable
@@ -312,10 +358,10 @@ def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
         else:
             test = gh.ipol(zp, sigint, z)
 
-        gplot.plot(z,sigint_th)
-        gplot.plot(zp,sigint,color=2)
-        gplot.plot(z,test,color=4)
-        gplot.show()
+        gpl.plot(z,sigint_th)
+        gpl.plot(zp,sigint,color=2)
+        gpl.plot(z,test,color=4)
+        gpl.show()
         
     sig_z_t2 = 1.0/nu_z * (sigint + norm) # TODO: try to fit without..
     
@@ -328,8 +374,13 @@ def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
         
     return  np.sqrt(sig_z2)
 
-# General function to describe the tilt profile:
+
+
+
+
+
 def sigma_rz(z, zpars, tpars):
+    '''General function to describe the tilt profile:'''
     #Mirror prior
     tparsu = abs(tpars)
     
@@ -344,10 +395,18 @@ def sigma_rz(z, zpars, tpars):
     f = gh.ipol(zpars,tparsu,z)
     return f
 
+
+
+
+
 def Sigmaz(denspars, z_in):
     # kk = kz(gp.xipol, gp.xipol, denspars, gp.blow)
     kk = denspars # directly, TODO: check working :)
     return abs(kk)/(2.*np.pi*gp.G1)/1000.**2
+
+
+
+
 
 def Mzdefault(denspars):
     return Sigmaz(denspars, gp.xipol)

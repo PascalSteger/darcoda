@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''generate simple disc data ourselves'''
 import gl_params as gp
 import gl_helper as gh
@@ -30,6 +31,9 @@ z02 = 0.2
 
 
 def disc_simple():
+    '''generate disc data from analytic form, return 3D densities, delta, ...'''
+
+
     # trick to speed up things considerably, after first data generated, if zpnts > 50 (or other low number)
     # gp.dat.load(gp.files.dir+'pp')
     # return gp.dat
@@ -156,7 +160,7 @@ def disc_simple():
         gp.dat.Merr      = gp.dat.Mdat*0.01
         gp.dat.densx     = xip
         # TODO: bad thing to calculate density from mass to get kzparams. directly store K_z params
-        # gp.dat.densdat   = phys.calculate_dens(gp.dat.Mdat,gp.dat.densx)
+        # gp.dat.densdat   = phys.calculate_dens(gp.dat.densx,gp.dat.Mdat)
 
         
         Kz_zstar = -(K*xip/np.sqrt(xip**2.+D**2.) + 2.0 * F * xip)
@@ -165,7 +169,7 @@ def disc_simple():
             KD = 0.15 * 1650.
             Kz_zstar = Kz_zstar - KD*zstar/np.sqrt(xip**2.+DD**2.)
         
-        gp.dat.densdat   = Kz_zstar
+        gp.dat.densdat   = Kz_zstar # TODO: check: high negative numbers: fine?
         gp.dat.denserr   = gp.dat.Merr/gp.dat.Mdat*gp.dat.densdat
 
         gp.dat.nux1 = xip

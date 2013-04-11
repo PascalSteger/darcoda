@@ -1,5 +1,7 @@
 #!/usr/bin/python2.7
-# global params for data analysis step 1 used to generate input for spherical MCMC 
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+'''global params for data analysis step 1 used to generate input for spherical MCMC'''
+
 import numpy as np
 import pdb
 import gl_params as gp
@@ -15,7 +17,7 @@ def binparams():
     rbin[i]   = binmin[i]+0.5*binlength
   return binmin, binmax, rbin
 
-showplots = False
+showplots = True
 
 if gp.investigate == 'hernquist':
   sim = 1                                 # choose simulation
@@ -51,8 +53,8 @@ if gp.investigate == 'hernquist':
   procs = 16                              # number of processes for parallel execution
 
 
-  #dir = '/home/ast/read/dark/dwarf_data/data_hernquist/'
-  dir = '/home/psteger/sci/dwarf_data/data_hernquist/'
+  dir = '/home/ast/read/dark/dwarf_data/data_hernquist/'
+  #dir = '/home/psteger/sci/dwarf_data/data_hernquist/'
   
   if pops == 2:
     prename = 'dual_'
@@ -122,7 +124,7 @@ elif gp.investigate == 'walker':
   fil = dir+'mem2'
   
   nbins = 12
-  ncomp = 4  # 3 means: 0 (both), tracer pop 1, tracer pop 2, 3: foreground contamination
+  ncomp = 4  # 3 possibilities: 0 (both), tracer pop 1, tracer pop 2, 3: foreground contamination
              # a value of 4 means: do analysis for all of them
   
   pmsplit = 0.1 # minimum probability of membership required for consideration for analysis

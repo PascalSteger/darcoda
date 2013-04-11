@@ -1,7 +1,10 @@
-#!/usr/bin/python
-# calculate approximative center of mass, assuming constant stellar mass
+#!/usr/bin/python2.7
+# (c) 2013 Pascal S.P. Steger
+'''calculate approximative center of mass, assuming constant stellar mass'''
+
 import numpy as np
 import sys
+import pdb
 
 from pylab import *
 import gl_params as gp
@@ -24,20 +27,43 @@ x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                                          20:expDtofloat}) # comp0 1,2,3(background)
 
 
+
 # TODO: use component 6-1 instead of 12-1 for z velocity, to include observational errors
 # TODO: correct for common movement, subtract mean LOS velocity
 
-# only use stars which are members of the dwarf
+# only use stars which are members of the dwarf: exclude pop3 by construction
 pm = (PM0 >= gpr.pmsplit); pm1 = pm*(comp0==1); pm2 = pm*(comp0==2); pm3 = pm*(comp0==3)
-x  = x0[pm]; y=y0[pm]; z=z0[pm]
+x  = x0[pm]; y=y0[pm]; z=z0[pm]; vz = vz0[pm]
 
 # center of mass
 com_x = np.sum(x)/(1.*len(x)) # [pc]
 com_y = np.sum(y)/(1.*len(y)) # [pc]
 com_z = np.sum(z)/(1.*len(z)) # [pc]
-print 'COM [pc]: ',com_x,com_y,com_z
+com_vz = np.sum(vz)/(1.*len(vz)) # [km/s]
+print 'COM [pc]: ', com_x, com_y, com_z
+print 'VOM [km/s]', com_vz
 
 x0 -= com_x; y0 -= com_y; z0 -= com_z # [pc]
+
+
+# test scalelength of stars: as given in name, 100/10 pc, or as given in parameter file, 1.pc?
+# x0 = x0[pm1]; y0=y0[pm1]; z0=z0[pm1]
+# r0 = np.sqrt(x0**2+y0**2+z0**2)
+# plt.ion(); plt.subplot(111)
+# from gl_analytic import rhohern
+# rho0 = 100;
+# ma = 2000. #[pc]
+# rplot= np.arange(100)*ma/100.
+# rh = rhohern(rplot, 1000.,rho0, 2., 5., 1.)
+# plt.hist(r0[(r0<ma)],bins=20)
+
+
+
+
+##########################################################################
+# calculate v_{LOS} after subtracting bulk motion of dwarf
+# overall line-of-sight velocity of the whole dwarf galaxy, in [km/s]
+vz0 -= com_vz #[km/s]
 
 r0 = np.sqrt(x0**2+y0**2) # [pc]
 rc = r0[pm] # [pc]
@@ -65,10 +91,6 @@ for pmn in [pm,pm1,pm2,pm3]:
     Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn] # [ang], [1], [1]
     m = np.ones(len(pmn))
     
-    ##########################################################################
-    # calculate v_{LOS} after subtracting bulk motion of dwarf
-    # overall line-of-sight velocity of the whole dwarf galaxy, in [km/s]
-    vlos = vz #[km/s]
     r = np.sqrt(x*x+y*y) #[r_core]
 
     # print "x y z" on first line, to interprete data later on
@@ -81,7 +103,7 @@ for pmn in [pm,pm1,pm2,pm3]:
     c = open(gpr.get_com_file(i),'w')
     print >> c,'x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc'
     for k in range(len(x)):
-        print >> c,x[k],y[k],vlos[k] #[rcore], [rcore], [km/s]
+        print >> c,x[k],y[k],vz[k] #[rcore], [rcore], [km/s]
     c.close()
 
     ion(); subplot(111)

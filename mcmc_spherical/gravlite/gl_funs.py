@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 from types import *
 import pdb
 import numpy.random as npr
 
 import gl_params as gp
-import gl_plot as gplot
+import gl_plot as gpl
 import gl_file as gfile
 from gl_class_params import *
 if gp.geom == 'disc':
@@ -13,29 +14,38 @@ elif gp.geom == 'sphere':
     import physics_sphere as phys
 from gl_analytic import *
 
+
+
+
+
+
 def get_new_parameters():
     'Wiggle the parameters -> new parameters:'
     ranarr = Params(0)
+
+    # change parameters in one of the following ways:
+    # ranarr.setuniformrandom() # if we want to wiggle all parameters as one
+    # ranarr.wiggle_dens() # if we want to wiggle only the density/mass/surfden array
+    # ranarr.wigglebin()       # if we want to wiggle only the first bin at a time
+    # ranarr.wigglepar()       # if we want to wiggle only one parameter at a time
+    # ranarr.wiggle_delta()
+
+
     if gp.chisqt_nu > gp.chisqt_sig:
-        ranarr.wiggle_nu()              # first wiggle nu, has most error on it in beginning
-        ranarr.wiggle_dens()
-        # ranarr.setuniformrandom() # if we want to wiggle all parameters as one
+        ranarr.setuniformrandom() # if we want to wiggle all parameters
     else:
-        ranarr.wiggle_dens() # if we want to wiggle only the density/mass/surfden array
-        # ranarr.setuniformrandom() # if we want to wiggle all parameters as one
-        # ranarr.wigglebin()       # if we want to wiggle only the first bin at a time
-        # ranarr.wigglepar()       # if we want to wiggle only one parameter at a time
-    ranarr.wiggle_delta()
+        ranarr.wiggle_dens()
+        ranarr.wiggle_delta()
+
+    if gp.chisqt_nu1 > gp.chisqt_sig1:
+        ranarr.wiggle_nu1()
+    if gp.pops>1 and gp.chisqt_nu2 > gp.chisqt_sig2:
+        ranarr.wiggle_nu2()
+
 
     if not gp.logprior:
         ranarr.mul(gp.parstep)
         gp.parst = ranarr.add(gp.parst)
-        if gp.deltaprior:
-            if gp.investigate == 'walker':
-                delta1,delta2 = betawalker(gp.xipol)
-                gp.parst.set_delta([delta1, delta2])
-            else:
-                gp.parst.set_delta([gp.delta0,gp.delta0])
 
     else:
         # take one step in logspace:
@@ -45,47 +55,115 @@ def get_new_parameters():
         gp.parst.dens = np.power( 10.0, gp.lparst.dens )
         if gp.cprior<1e29:
             gp.parst.M[0] = cprior
-        if gp.deltaprior:
-            if gp.investigate == 'walker':
-                delta1,delta2 = betawalker(gp.xipol)
-                gp.parst.set_delta([delta1, delta2])
-            else:
-                gp.parst.set_delta([gp.delta0,gp.delta0])
         else:
             # linear sampling for delta (since it can go negative for physical reasons):
             gp.parst.set_delta(gp.lparst.get_delta()) 
 
-
         # linear sampling for Mslope:
         gp.parst.Msl = gp.lparst.Msl
         gp.parst.set_sigsl(gp.lparst.get_sigsl())
+
+
+
+    if gp.deltaprior:
+        if gp.investigate == 'walker':
+            delta1,delta2 = betawalker(gp.xipol)
+            gp.parst.set_delta([delta1, delta2])
+        else:
+            gp.parst.set_delta([gp.delta0,gp.delta0])
+
+
+
     return gp.parst
 
-def calc_nu_sig():
-    gp.LOG.debug( 'Calculate nu / sigma values')
+
+
+
+
+
+
+
+
+
+
+
+
+def calc_M_nu_sig():
+    gp.LOG.debug( 'Calculate M / nu / sigma values')
     if gp.geom == 'sphere':
         import physics_sphere as phys
-        gp.nu1_x = phys.nu(gp.parst.nu1)
-        gp.sig1_x = phys.sig_los(1)
-        if (gp.pops == 2) :
-            gp.nu2_x = phys.nu(gp.parst.nu2)
-            gp.sig2_x = phys.sig_los(2)
-        if gp.checksigma:
-            gp.nu1_x = gp.ipol.nudat1
-            gp.sig1_x = phys.sig_los(1)
+        if not gp.checksigma:
+            gp.nu1_x  = phys.nu(gp.parst.nu1) # [munit/pc^3]
+            gp.dens_x = phys.dens(gp.xipol, gp.parst.dens)         # [munit/pc^3]
+
+            gp.M_x    = phys.Mr3D(gp.xipol, gp.dens_x) # [munit,3D]
+            gp.sig1_x = phys.sig_los(1, gp.xipol, gp.M_x, gp.nu1_x, gp.parst.delta1)
+            
+            if gp.pops == 2:
+                gp.nu2_x  = phys.nu(gp.parst.nu2)
+                gp.sig2_x = phys.sig_los(2, gp.xipol, gp.M_x, gp.nu2_x, gp.parst.delta2)
+
+
+
+
+
+        else:
+            gp.nu1_x  = gp.ipol.nudat1 # [dens0]
+            if gp.investigate == 'hernquist' and gp.analytic:
+                gp.nu1_x = rho_anf(gp.xipol) # [TODO]
+                gp.M_x   = M_anf(gp.xipol)
+
+
+
+            # gp.dens_x = gp.ipol.densdat # for bary only
+            # gp.dens_x = phys.densdefault(gp.parst.dens) # [Munit/pc^2]
+
+            gp.dens_x = rhowalkertot_3D(gp.xipol) # [msun/pc^3]
+
+            # tmp = rhowalker_3D(gp.xipol)
+            # gp.dens_x = tmp[1]+tmp[2]          # theoretical baryonic contribution only
+            gp.M_x    = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [munit,3D]
+            
+            # gp.totmass[0] = max(gp.M_x) # renormalization, if necessary
+
+
+            # gp.M_x    = gp.ipol.Mdat   # [totmass] baryonic only
+            gp.dens_x = phys.calculate_dens(gp.ipol.Mx, gp.M_x) # [munit/lunit^3]
+
+
+            delta_r = walker_delta(1)
+            
+            gp.sig1_x = phys.sig_los(1,gp.ipol.sigx1,\
+                                     gp.M_x,\
+                                     gp.nu1_x,\
+                                     delta_r) # [km/s]
+            # takes [1], [pc], [munit, 3D], [munit/pc^3], [1]
+            # normalization of nu does not matter, is divided out
+
+            
             if gp.pops == 2:
                 gp.nu2_x = gp.ipol.nudat2
-                gp.sig2_x = phys.sig_los(2)
-            gp.M_x   = gp.ipol.Mdat
-            if gp.analytic:
-                gp.nu1_x = rho_anf(gp.xipol)
-                gp.M_x   = M_anf(gp.xipol)
+                delta_r = walker_delta(2)
+                gp.sig2_x = phys.sig_los(2, gp.ipol.sigx2,\
+                                         gp.M_x,\
+                                         gp.nu2_x,\
+                                         delta_r) # [maxvlos]
+
+
             # gp.sig1_x= sig_los_anf(gp.xipol) # cheat to check sig_los plot
+            # sig1  = gp.ipol.sigdat1 # to check: plot is really done as it should
+
+
+
+
+
+
     elif gp.geom == 'disc':
         import physics_disc as phys
         # TODO: generalize for 2 populations
         # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
         gp.nu1_x  = phys.nu(gp.parst.nu1)
+        gp.dens_x = gp.parst.dens # Kzpars
             # TODO: naming
         Rsun = 8.; hr = 3.0; hsig = 3.0
         gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.parst.dens,gp.parst.norm,\
@@ -98,6 +176,10 @@ def calc_nu_sig():
             gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.ipol.densdat,  gp.blow, gp.ipol.nudat1,gp.parst.norm,gp.parst.delta1,[Rsun,hr,hsig])
 
     return
+
+
+
+
 
 def calc_likelihood():
     if gp.uselike:
@@ -122,9 +204,9 @@ def calc_likelihood():
             
             # FOR TESTING! 
             # test = gp.nu1_x
-            # gplot.plot(z_dat,test,psym=3)
-            # gplot.plot(z_dat,prob_z,color=2,psym=3)
-            # gplot.show(); exit(1)
+            # gpl.plot(z_dat,test,psym=3)
+            # gpl.plot(z_dat,prob_z,color=2,psym=3)
+            # gpl.show(); exit(1)
             
             sig_sum = sqrt(sig_z**2. + vz_dat_err**2.)
             aprob_sigz = alog(1.0/(sqrt(2.0*np.pi) * sig_sum)) - (vz_dat-vz_mean)**2./2./sig_sum**2.
@@ -151,9 +233,48 @@ def calc_likelihood():
         fnewoverf = np.exp(prob_t - prob)
     return gp.fnewoverf
 
+
+
+
+
+
+def compare_nu(pop, dat, err):
+    '''return nu required for comparison to data'''
+    # pop \in {1,2} gives population
+    # if dat == True: return data; else: model (possibly projected)
+    # if err == True: return data error instead
+    if not dat and err:
+        print 'wrong use of compare_nu, error only given for data, not model'
+        exit(1)
+    ret = []
+    if dat:
+        if gp.geom == 'disc':
+            ret = gp.dat.nudat1 if pop == 1 else gp.dat.nudat2
+            if err:
+                ret = gp.dat.nuerr1 if pop == 1 else gp.dat.nuerr2
+        elif gp.geom == 'sphere':
+            ret = gp.dat.nudat1_2D if pop == 1 else gp.dat.nudat2_2D
+            if err:
+                ret = gp.dat.nuerr1_2D if pop == 1 else gp.dat.nuerr2_2D
+    else:
+        if gp.geom == 'disc':
+            ret = gp.ipol.nudat1 if pop == 1 else gp.ipol.nudat2
+            if err:
+                ret = gp.ipol.nuerr1 if pop == 1 else gp.ipol.nuerr2
+        elif gp.geom == 'sphere':
+            ret = int_surfden(gp.ipol.nudat1) if pop == 1 else int_surfden(gp.ipol.nudat2)
+            if err:
+                # TODO: does that make sense? what do we want to compare to here?
+                ret = int_surfden(gp.ipol.nuerr1) if pop == 1 else int_surfden(gp.ipol.nuerr2)
+    return ret
+
+
+
+
 def calc_chisqt():
     gp.LOG.info('Calculate chi-squared:')
-    gp.chisqt_nu1      = ((gp.nu1_x - gp.ipol.nudat1)**2./gp.ipol.nuerr1**2.).sum()
+    
+    gp.chisqt_nu1      = ((gp.nu1_x - compare_nu(1,True,False))**2./gp.ipol.nuerr1**2.).sum()
     gp.chisqt_nu       = gp.chisqt_nu1
     if gp.analytic:
         gp.chisqt_sig1     = ((gp.sig1_x- rho_anf(gp.xipol))**2./gp.ipol.sigerr1**2.).sum() #gp.ipol.sigdat1
@@ -168,7 +289,7 @@ def calc_chisqt():
     gp.chisqt1         = gp.chisqt_nu1 + gp.chisqt_sig1
     gp.chisqt          = gp.chisqt1
     if gp.pops == 2:
-        gp.chisqt_nu2  = ((gp.nu2_x - gp.ipol.nudat2)**2./(gp.ipol.nuerr2)**2.).sum()
+        gp.chisqt_nu2  = ((gp.nu2_x - compare_nu(2,True,False))**2./(gp.ipol.nuerr2)**2.).sum()
         gp.chisqt_nu  += gp.chisqt_nu2
         gp.chisqt_sig2 = ((gp.sig2_x- gp.ipol.sigdat2)**2./(gp.ipol.sigerr2)**2.).sum()
         gp.chisqt_sig += gp.chisqt_sig2
@@ -180,6 +301,16 @@ def calc_chisqt():
     gp.fnewoverf = np.exp(gp.chisq/2.0-gp.chisqt/2.0)
     return gp.fnewoverf
 
+
+
+
+
+
+
+
+
+
+
 def accept_reject(n):
     gp.LOG.info( 'Accept the new parameters?')
     ran = npr.rand()
@@ -189,12 +320,14 @@ def accept_reject(n):
         gp.chisq = gp.chisqt
         
         gfile.store_working_pars(n, gp.pars, gp.chisq, gp.parstep)
-        if npr.rand() < 1./gp.nplot:
-            gplot.update_plot()
+        if npr.rand() < gp.fplot:
+            gpl.update_plot()
 
-        gp.LOG.warning([ n,gp.chisq,np.sum(abs(1-phys.Mzdefault(gp.pars.dens)/M_anf(gp.xipol))),\
+            
+        gp.LOG.warning([ n,gh.pretty([gp.chisq]),\
+#                         np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol))),\
                          gp.acccount/(gp.rejcount+1.)])
-        # np.sum( abs(1-Mzdefault( gp.pars.dens )/ M_anf(gp.xipol) ) ) # to check difference from analytic mass profile
+        # to check difference from analytic mass profile
         
         # Decide whether to end initphase:
         if gp.endgame and gp.initphase == 'start':
@@ -207,7 +340,8 @@ def accept_reject(n):
                 gp.pars.dens    = phys.densdefault(gp.pars.dens)
                 # gp.ipol.densdat = phys.densdefault(gp.ipol.densdat)
                 gp.parst.dens   = phys.densdefault(gp.parst.dens)
-                # gp.parst.dens   = np.array(phys.calculate_dens(M_anf(gp.xipol),gp.xipol)) # cheat: start of from near analytic 1 pop result
+                # gp.parst.dens   = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
+                # ^-- cheat: start off, from near analytic 1 pop result
                 gp.parstep.dens = gp.parst.dens/20.
                 gp.parstep.adaptall(1./gp.scaleafterinit)
                 gp.stepafterrunaway = 1.
@@ -221,6 +355,14 @@ def accept_reject(n):
             gp.LOG.warning(' too far off, setting back to last known good point')
             gfile.get_working_pars()
     return
+
+
+
+
+
+
+
+
 
 def adapt_stepsize():
     gp.LOG.info( 'Adapt stepsize during initialisation phase: ')

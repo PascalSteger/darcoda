@@ -1,4 +1,7 @@
 #!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+'''find center of mass of xyz data, subtract, give TODO'''
+
 import numpy as np
 import params as ps
 

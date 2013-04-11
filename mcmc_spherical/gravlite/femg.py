@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+'''search for groups of stellar tracers in Fe/Mg space'''
 
 import numpy
-# search for groups of stellar tracers in Fe/Mg space
-
 import sys
 if(len(sys.argv)<2):
     print "use: femg.py [car,scl,sex,for]"
