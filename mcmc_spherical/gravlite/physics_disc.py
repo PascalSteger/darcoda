@@ -27,7 +27,7 @@ def get_zarrays(z_in):
 
 
 
-def get_M(M_r,mprioru,r_outer,dr):
+def extra_M(M_r,mprioru,r_outer,dr):
     pnts = gp.nipol
     # use slope in last quarter
     # M rises from M[-1] at rmax up to mprioru*M[-1] at 2*rmax)

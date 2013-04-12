@@ -1,5 +1,5 @@
 all:
-	dwarf_los.py
+	gravlite.py
 
 clean:
 	rm *.pyc *~

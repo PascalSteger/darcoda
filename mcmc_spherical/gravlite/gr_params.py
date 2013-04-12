@@ -128,6 +128,7 @@ elif gp.investigate == 'walker':
              # a value of 4 means: do analysis for all of them
   
   pmsplit = 0.1 # minimum probability of membership required for consideration for analysis
+  # use 0 if grw_* should be called from within gravlite, such that all member classes are found
   fileposcartesian = dir+'simulation/pos.txt'
   filevelcartesian = dir+'simulation/vel_my.txt'
 

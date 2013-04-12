@@ -13,6 +13,10 @@ import gl_priors as gprio
 import pdb
 from gl_class_params import Params
 
+if gp.getnewdata:
+    import grw_com
+    import grw_dens
+    import grw_siglos
 
 gpl.prepare_plots()
 gfile.get_data()
@@ -34,9 +38,8 @@ n = 0
 plotfirst = True
 while ( n < gp.niter-1):
     # print('n = ',n)
-    n = n + 1
-    if gp.initphase == 'over':
-        gfile.store_old_params(gp.pars,gp.chisq)
+    if not gp.initphase:
+        gfile.store_old_params(gp.pars,gp.chi2)
 
     if not gp.checksigma:
         gfun.get_new_parameters() # or: gp.parst.set(
@@ -46,7 +49,7 @@ while ( n < gp.niter-1):
     if not gp.checksigma:
         if gprio.check_priors(): continue
 
-    gfun.calc_chisqt()
+    gfun.calc_chi2()
 
     if plotfirst:
         gpl.plot_first_guess()
@@ -58,6 +61,7 @@ while ( n < gp.niter-1):
     if gp.checksigma: break
     # gfun.wait()
     gfile.write_outfile()
+    if not gp.initphase: n = n + 1
 
 gp.LOG.warning( 'Finished!' )
 gpl.show_plots()

@@ -10,6 +10,10 @@ if gp.geom == 'disc':
 else:
     import physics_sphere as phys
 
+
+
+
+
 def check_priors():
     gp.LOG.debug(' check rising mass prior:')
     denscheck = phys.dens(gp.xipol, gp.parst.dens)
@@ -92,31 +96,33 @@ def check_priors():
         return True # TODO: keep in mind, change Msl during MCMC
 
     gp.LOG.debug( 'now checking delta <= 1')
-    if max(gp.parst.delta1)>1.:
+    d1 = phys.delta(gp.parst.delta1)
+    if max(d1)>1.:
         for jj in range(gp.nipol):
-            if gp.parst.delta1[jj] >1.:
-                gp.parst.delta1[jj] = 0.95
-                print 'delta1 too high, corrected entry ',jj,' to 0.95'
-        # return True
-    if gp.pops == 2 and max(gp.parst.delta2)>1.:
-        for jj in range(gp.nipol):
-            if gp.parst.delta2[jj] >1.:
-                gp.parst.delta2[jj] = 0.95
-                print 'delta2 too high, corrected entry ',jj,' to 0.95'
-        # return True
+            if d1[jj] >1.:
+                gp.parst.delta1[jj] /= 2.
+                print 'delta1 too high, corrected entry ',jj,' to half its value'
+        return True
+    if gp.pops == 2:
+        d2 = phys.delta(gp.parst.delta2)
+        if max(d2)>1.:
+            for jj in range(gp.nipol):
+                if d2[jj] >1.:
+                    gp.parst.delta2[jj] /= 2.
+                    print 'delta2 too high, corrected entry ',jj,' to half its value'
+            return True
 
 
     gp.LOG.debug( 'now checking delta smoothness')
-    for i in range(len(gp.parst.delta1)-1):
-        if abs(gp.parst.delta1[i+1]-gp.parst.delta1[i])>2./gp.nipol:
+    for i in range(1,len(gp.parst.delta1)):
+        if abs(gp.parst.delta1[i])>4./gp.nipol:
             print 'delta1 too wild!'
-            gp.parst.delta1 /= 2. # TODO: isn't this overridden anyhow?
+            # correct: smooth out, by assigning mean value of left/right points
             return True
     if gp.pops==2:
-        for i in range(len(gp.parst.delta2)-1):
-            if abs(gp.parst.delta2[i+1]-gp.parst.delta2[i])>2./gp.nipol:
+        for i in range(len(gp.parst.delta2)):
+            if abs(gp.parst.delta2[i])>4./gp.nipol:
                 print 'delta2 too wild!'
-                gp.parst.delta2/=2.
                 return True
 
     gp.LOG.debug( 'now checking dens > gprior')

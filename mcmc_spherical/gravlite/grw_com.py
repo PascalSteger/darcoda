@@ -29,10 +29,12 @@ x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
 
 
 # TODO: use component 6-1 instead of 12-1 for z velocity, to include observational errors
-# TODO: correct for common movement, subtract mean LOS velocity
 
 # only use stars which are members of the dwarf: exclude pop3 by construction
-pm = (PM0 >= gpr.pmsplit); pm1 = pm*(comp0==1); pm2 = pm*(comp0==2); pm3 = pm*(comp0==3)
+pm = (PM0 >= gpr.pmsplit)
+pm1 = pm*(comp0==1)
+pm2 = pm*(comp0==2)
+pm3 = pm*(comp0==3)
 x  = x0[pm]; y=y0[pm]; z=z0[pm]; vz = vz0[pm]
 
 # center of mass
@@ -74,9 +76,9 @@ for i in range(len(rc)-1):
         exit(1)
 rhalf = rc[floor(len(rc)/2)] # [pc]
 rcore = rhalf # or gpr.r_DM # [pc]
-print 'rcore [pc] = ',rcore
-print 'max(r) [pc] = ',max(rc)
-print 'last element of r [pc]: ',rc[-1]
+print 'rcore = ',rcore,' pc'
+print 'max(r) = ',max(rc),' pc'
+print 'last element of r : ',rc[-1],' pc'
 print 'total number of stars: ',len(rc)
 
 x0 = x0/rcore; y0 = y0/rcore # [r_core]
@@ -101,10 +103,13 @@ for pmn in [pm,pm1,pm2,pm3]:
 
     print 'output: ',gpr.get_com_file(i)
     c = open(gpr.get_com_file(i),'w')
-    print >> c,'x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc'
+    print >> c,'# x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc'
     for k in range(len(x)):
         print >> c,x[k],y[k],vz[k] #[rcore], [rcore], [km/s]
     c.close()
+
+
+    if not gp.testplot_dwarfs: continue
 
     ion(); subplot(111)
     res = (abs(x)<3)*(abs(y)<3)

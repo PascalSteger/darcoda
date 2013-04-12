@@ -19,6 +19,8 @@ from gl_analytic import *
 
 
 
+
+
 def get_new_parameters():
     'Wiggle the parameters -> new parameters:'
     ranarr = Params(0)
@@ -31,17 +33,8 @@ def get_new_parameters():
     # ranarr.wiggle_delta()
 
 
-    if gp.chisqt_nu > gp.chisqt_sig:
-        ranarr.setuniformrandom() # if we want to wiggle all parameters
-    else:
-        ranarr.wiggle_dens()
-        ranarr.wiggle_delta()
-
-    if gp.chisqt_nu1 > gp.chisqt_sig1:
-        ranarr.wiggle_nu1()
-    if gp.pops>1 and gp.chisqt_nu2 > gp.chisqt_sig2:
-        ranarr.wiggle_nu2()
-
+    ranarr.setuniformrandom()
+    ranarr.scale_prop_chi2()
 
     if not gp.logprior:
         ranarr.mul(gp.parstep)
@@ -57,20 +50,20 @@ def get_new_parameters():
             gp.parst.M[0] = cprior
         else:
             # linear sampling for delta (since it can go negative for physical reasons):
-            gp.parst.set_delta(gp.lparst.get_delta()) 
+            gp.parst.set_delta(gp.lparst.extra_delta()) 
 
         # linear sampling for Mslope:
-        gp.parst.Msl = gp.lparst.Msl
+        gp.parst.Msl = gp.lparst.Msl    # [Msun/pc]
         gp.parst.set_sigsl(gp.lparst.get_sigsl())
 
 
 
     if gp.deltaprior:
         if gp.investigate == 'walker':
-            delta1,delta2 = betawalker(gp.xipol)
-            gp.parst.set_delta([delta1, delta2])
+            delta1,delta2 = betawalker(gp.xipol) # [1]
+            gp.parst.set_delta([phys.invdelta(delta1), phys.invdelta(delta2)])
         else:
-            gp.parst.set_delta([gp.delta0,gp.delta0])
+            gp.parst.set_delta([phys.invdelta(gp.delta0),phys.invdelta(gp.delta0)])
 
 
 
@@ -93,21 +86,25 @@ def calc_M_nu_sig():
     if gp.geom == 'sphere':
         import physics_sphere as phys
         if not gp.checksigma:
+            '''normal case'''
             gp.nu1_x  = phys.nu(gp.parst.nu1) # [munit/pc^3]
             gp.dens_x = phys.dens(gp.xipol, gp.parst.dens)         # [munit/pc^3]
 
             gp.M_x    = phys.Mr3D(gp.xipol, gp.dens_x) # [munit,3D]
-            gp.sig1_x = phys.sig_los(1, gp.xipol, gp.M_x, gp.nu1_x, gp.parst.delta1)
+            gp.d1_x   = phys.delta(gp.parst.delta1)
+            gp.sig1_x = phys.sig_los(1, gp.xipol, gp.M_x, gp.nu1_x, gp.d1_x)
             
             if gp.pops == 2:
                 gp.nu2_x  = phys.nu(gp.parst.nu2)
-                gp.sig2_x = phys.sig_los(2, gp.xipol, gp.M_x, gp.nu2_x, gp.parst.delta2)
+                gp.d2_x   = phys.delta(gp.parst.delta2)
+                gp.sig2_x = phys.sig_los(2, gp.xipol, gp.M_x, gp.nu2_x, gp.d2_x)
 
 
 
 
 
         else:
+            '''check integration routine'''
             gp.nu1_x  = gp.ipol.nudat1 # [dens0]
             if gp.investigate == 'hernquist' and gp.analytic:
                 gp.nu1_x = rho_anf(gp.xipol) # [TODO]
@@ -131,12 +128,9 @@ def calc_M_nu_sig():
             gp.dens_x = phys.calculate_dens(gp.ipol.Mx, gp.M_x) # [munit/lunit^3]
 
 
-            delta_r = walker_delta(1)
+            delta_r = walker_delta(1)   # [1], actual delta
             
-            gp.sig1_x = phys.sig_los(1,gp.ipol.sigx1,\
-                                     gp.M_x,\
-                                     gp.nu1_x,\
-                                     delta_r) # [km/s]
+            gp.sig1_x = phys.sig_los(1,gp.ipol.sigx1, gp.M_x, gp.nu1_x, delta_r) # [km/s]
             # takes [1], [pc], [munit, 3D], [munit/pc^3], [1]
             # normalization of nu does not matter, is divided out
 
@@ -144,10 +138,7 @@ def calc_M_nu_sig():
             if gp.pops == 2:
                 gp.nu2_x = gp.ipol.nudat2
                 delta_r = walker_delta(2)
-                gp.sig2_x = phys.sig_los(2, gp.ipol.sigx2,\
-                                         gp.M_x,\
-                                         gp.nu2_x,\
-                                         delta_r) # [maxvlos]
+                gp.sig2_x = phys.sig_los(2,gp.ipol.sigx2,gp.M_x,gp.nu2_x,delta_r) # [km/s]
 
 
             # gp.sig1_x= sig_los_anf(gp.xipol) # cheat to check sig_los plot
@@ -271,34 +262,40 @@ def compare_nu(pop, dat, err):
 
 
 
-def calc_chisqt():
-    gp.LOG.info('Calculate chi-squared:')
-    
-    gp.chisqt_nu1      = ((gp.nu1_x - compare_nu(1,True,False))**2./gp.ipol.nuerr1**2.).sum()
-    gp.chisqt_nu       = gp.chisqt_nu1
+def calc_chi2():
+    '''Calculate chi squared:'''
+
+    numodel1 = int_surfden(gp.nipol,gp.xipol,gp.nu1_x) if gp.geom=='sphere' else gp.nu1_x
+    nudata1  = compare_nu(1,True,False)
+    nuerr1   = compare_nu(1,True,True) # gp.ipol.nuerr1 # old, used 3D nu in spherical case
+    gp.chi2t_nu1      = ((numodel1 - nudata1)**2./nuerr1**2.).sum()
+    gp.chi2t_nu       = gp.chi2t_nu1
     if gp.analytic:
-        gp.chisqt_sig1     = ((gp.sig1_x- rho_anf(gp.xipol))**2./gp.ipol.sigerr1**2.).sum() #gp.ipol.sigdat1
+        gp.chi2t_sig1     = ((gp.sig1_x- rho_anf(gp.xipol))**2./gp.ipol.sigerr1**2.).sum() #gp.ipol.sigdat1
     else:
-        gp.chisqt_sig1     = ((gp.sig1_x- gp.ipol.sigdat1)**2./gp.ipol.sigerr1**2.).sum()
-    gp.chisqt_sig      = gp.chisqt_sig1
+        gp.chi2t_sig1     = ((gp.sig1_x- gp.ipol.sigdat1)**2./gp.ipol.sigerr1**2.).sum()
+    gp.chi2t_sig      = gp.chi2t_sig1
 
     if not gp.deltaprior and gp.uselike:
         sig_Rz = phys.sigma_rz(gp.xipol, gp.xipol, gp.parst.delta1)
         prob_t = prob_t + np.sum((sig_Rz - sigRz_dat)**2./sigRz_dat_err**2.)
 
-    gp.chisqt1         = gp.chisqt_nu1 + gp.chisqt_sig1
-    gp.chisqt          = gp.chisqt1
+    gp.chi2t1         = gp.chi2t_nu1 + gp.chi2t_sig1
+    gp.chi2t          = gp.chi2t1
     if gp.pops == 2:
-        gp.chisqt_nu2  = ((gp.nu2_x - compare_nu(2,True,False))**2./(gp.ipol.nuerr2)**2.).sum()
-        gp.chisqt_nu  += gp.chisqt_nu2
-        gp.chisqt_sig2 = ((gp.sig2_x- gp.ipol.sigdat2)**2./(gp.ipol.sigerr2)**2.).sum()
-        gp.chisqt_sig += gp.chisqt_sig2
-        gp.chisqt2     = gp.chisqt_nu2 + gp.chisqt_sig2
-        gp.chisqt     += gp.chisqt2
+        numodel2 = int_surfden(gp.nipol,gp.xipol,gp.nu2_x) if gp.geom=='sphere' else gp.nu2_x
+        nudata2  = compare_nu(2,True,False)
+        nuerr2   = compare_nu(2,True,True)
+        gp.chi2t_nu2  = ((numodel2 - nudata2)**2./nuerr2**2.).sum()
+        gp.chi2t_nu  += gp.chi2t_nu2
+        gp.chi2t_sig2 = ((gp.sig2_x- gp.ipol.sigdat2)**2/gp.ipol.sigerr2**2.).sum()
+        gp.chi2t_sig += gp.chi2t_sig2
+        gp.chi2t2     = gp.chi2t_nu2 + gp.chi2t_sig2
+        gp.chi2t     += gp.chi2t2
 
     # gp.LOG.info('Calculate the f-function')
-    # gp.LOG.warning(['chisq  = ',gp.chisq,'chisqt = ',gp.chisqt])
-    gp.fnewoverf = np.exp(gp.chisq/2.0-gp.chisqt/2.0)
+    # gp.LOG.warning(['chi2  = ',gp.chi2,'chi2t = ',gp.chi2t])
+    gp.fnewoverf = np.exp(gp.chi2/2.0-gp.chi2t/2.0)
     return gp.fnewoverf
 
 
@@ -317,26 +314,26 @@ def accept_reject(n):
     if ran < gp.fnewoverf:
         gp.acccount = gp.acccount + 1.
         gp.pars.set(gp.parst)
-        gp.chisq = gp.chisqt
+        gp.chi2 = gp.chi2t
         
-        gfile.store_working_pars(n, gp.pars, gp.chisq, gp.parstep)
+        gfile.store_working_pars(n, gp.pars, gp.chi2, gp.parstep)
         if npr.rand() < gp.fplot:
             gpl.update_plot()
 
             
-        gp.LOG.warning([ n,gh.pretty([gp.chisq]),\
+        gp.LOG.warning([ n,gh.pretty([gp.chi2]),\
 #                         np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol))),\
-                         gp.acccount/(gp.rejcount+1.)])
+                         gh.pretty([gp.acccount/(gp.rejcount+1.)])])
         # to check difference from analytic mass profile
         
         # Decide whether to end initphase:
-        if gp.endgame and gp.initphase == 'start':
+        if gp.endgame and gp.initphase:
             gp.endcount -= 1
             print 'gp.endcount = ',gp.endcount
-            if (gp.endcount <= 0 or gp.chisq < gp.chisqtol/2.):
+            if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/2.):
                 print( '*** initialization phase over ***')
                 print( '*********************************')
-                gp.initphase = 'over'
+                gp.initphase = False
                 gp.pars.dens    = phys.densdefault(gp.pars.dens)
                 # gp.ipol.densdat = phys.densdefault(gp.ipol.densdat)
                 gp.parst.dens   = phys.densdefault(gp.parst.dens)
@@ -350,8 +347,8 @@ def accept_reject(n):
     else:
         gp.rejcount = gp.rejcount + 1.
         # jump back to last known good point
-        faraway = gp.farinit if gp.initphase == 'init' else gp.farover
-        if gp.chisq/gp.chisqt < faraway:
+        faraway = gp.farinit if gp.initphase else gp.farover
+        if gp.chi2/gp.chi2t < faraway:
             gp.LOG.warning(' too far off, setting back to last known good point')
             gfile.get_working_pars()
     return
@@ -366,8 +363,8 @@ def accept_reject(n):
 
 def adapt_stepsize():
     gp.LOG.info( 'Adapt stepsize during initialisation phase: ')
-    if (gp.initphase == 'start'):
-        if (gp.acccount>0) and (gp.rejcount>0) :
+    if gp.initphase:
+        if gp.acccount>0 and gp.rejcount>0:
             if (gp.acccount/gp.rejcount < gp.accrejtollow\
                 or gp.acccount/gp.rejcount > gp.accrejtolhigh):
                 if gp.logprior:
@@ -376,6 +373,6 @@ def adapt_stepsize():
                     gp.parstep.adaptworst(gp.stepcorr)
             else:
                     gp.parstep.adaptall(1./gp.stepcorr)
-            if (gp.chisq < gp.chisqtol):
+            if gp.chi2 < gp.chi2tol:
                 gp.endgame = True
     return

@@ -140,8 +140,8 @@ def adump():
 
     
 
-def store_old_params(pars,chisq):
-    gp.run_configs.append((pars,chisq))
+def store_old_params(pars,chi2):
+    gp.run_configs.append((pars,chi2))
     return gp.run_configs
 
 
@@ -149,10 +149,10 @@ def store_old_params(pars,chisq):
 
 
 
-def store_working_pars(n,pars,chisq,parstep):
-    gp.init_configs.append([pars,chisq,parstep])
+def store_working_pars(n,pars,chi2,parstep):
+    gp.init_configs.append([pars,chi2,parstep])
     twelve = open( gp.files.get_outtxt(), 'a')
-    print>>twelve, n, chisq
+    print>>twelve, n, chi2
     twelve.close()
     return gp.init_configs
 
@@ -164,9 +164,26 @@ def store_working_pars(n,pars,chisq,parstep):
 def get_working_pars():
     if len(gp.init_configs)<1:
         gp.parst  = gp.pars
-        gp.chisqt = gp.chisq
+        gp.chi2t = gp.chi2
         return
     else:
-        gp.parst,gp.chisqt,gp.parstep = gp.init_configs.pop()
+        gp.parst,gp.chi2t,gp.parstep = gp.init_configs.pop()
         gp.parstep.adaptworst(1./gp.stepafterrunaway)
     return gp.parst
+
+
+
+
+def bufcount(filename):
+    '''count lines of a file'''
+    f = open(filename)
+    lines = 0
+    buf_size = 1024 * 1024
+    read_f = f.read # loop optimization
+    
+    buf = read_f(buf_size)
+    while buf:
+        lines += buf.count('\n')
+        buf = read_f(buf_size)
+        
+    return lines

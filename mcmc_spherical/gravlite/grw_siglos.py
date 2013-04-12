@@ -9,12 +9,14 @@ import math
 from BiWeight import meanbiweight
 import gl_params as gp
 import gr_params as gpr
+import gl_file as gfile
 from gl_class_files import *
 
 for comp in range(gpr.ncomp):
     # get radius, used for all binning
     print 'input:'
     print gpr.get_com_file(comp)
+    if gfile.bufcount(gpr.get_com_file(comp))<2: continue
     x,y,vlos = np.loadtxt(gpr.get_com_file(comp), skiprows=1, unpack=True) #[rcore], [rcore], [km/s]
     totmass = 1.*len(x)  # [munit], [Msun], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rcore]
@@ -80,6 +82,8 @@ for comp in range(gpr.ncomp):
         #             [rcore]  [maxvlos]                  [maxvlos]
         print >> vfil,rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos) #/np.sqrt(n))
     vfil.close()
+
+    if not gp.testplot_dwarfs: continue
 
     ion(); subplot(111)
     print 'rbin = ',rbin,' rcore'

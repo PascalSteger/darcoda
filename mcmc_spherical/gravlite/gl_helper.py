@@ -108,6 +108,10 @@ def smoothlog(xin,yin,smooth=1.e-9):
 
 def ipol(xin,yin,xout,smooth=1.e-9):
     'interpolate function in lin space'
+    if np.isnan(np.sum(yin)):
+        print 'NaN found! Go check where it occured!'
+        import pdb
+        pdb.set_trace()
     rbf = Rbf(xin, yin, smooth=smooth)
     return rbf(xout)
 

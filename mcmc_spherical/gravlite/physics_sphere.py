@@ -76,6 +76,16 @@ def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
 
 
 
+def delta(dpars):
+    '''calculate cumulative sum for representation of delta'''
+    return np.cumsum(dpars)
+
+
+
+def invdelta(delta):
+    '''calculate delta parameters corresponding to a given delta profile'''
+    return np.hstack([delta[0], np.diff(delta)])
+
 
 
 def calculate_dens(r, M):                           # [lunit], [munit]
@@ -232,7 +242,7 @@ def get_zarrays(r_in):
 
 
 
-def get_nu(nu_r, r0, r_outer): # [densunit, lunit, lunit]
+def extra_nu(nu_r, r0, r_outer): # [densunit, lunit, lunit]
     'return extrapolated nu to 2rmax'
     pnts = gp.nipol #[1]
     # nu goes down linearly in log space from nu[-1] at rmax
@@ -277,7 +287,7 @@ def get_mprior(M): # [munit]
 
 
 
-def get_M(M_r,mprioru,r_outer,dr):
+def extra_M(M_r,mprioru,r_outer,dr):
     'get M extrapolated to 2rmax'
     pnts = gp.nipol
     # use slope in last quarter
@@ -291,7 +301,7 @@ def get_M(M_r,mprioru,r_outer,dr):
 
 
 
-def get_delta(delta_r):                 # [1]
+def extra_delta(delta_r):                 # [1]
     'get extrapolated delta out to 2rmax'
     delta_outer = delta_r[-1] * np.ones(gp.nipol-1)
     return np.hstack((delta_r,  delta_outer))
@@ -309,9 +319,9 @@ def sig_los(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D], [1
     # Calculate density and M force:
     mprioru = get_mprior(M_x) #[1], slope
 
-    nu_tot    = get_nu(nu_r,r0,r_outer) #[dens0,3D]
-    M_tot     = get_M(M_x,mprioru,r_outer,dr) #[munit,3D]
-    delta_tot = get_delta(delta_r) #[1]
+    nu_tot    = extra_nu(nu_r,r0,r_outer) #[dens0,3D]
+    M_tot     = extra_M(M_x,mprioru,r_outer,dr) #[munit,3D]
+    delta_tot = extra_delta(delta_r) #[1]
 
     if(gp.analytic):
         sigr2_an  = sig2_anf(r_tot)              #[TODO]

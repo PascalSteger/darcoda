@@ -20,15 +20,16 @@ if not os.path.exists("/home/ast/read"):
 
 
 
-investigate  = 'simple'  # determine which data set to work on:
-                     # 'simple' means set up simple model for disc
-                     # 'sim' means read in disc simulation
-                     # 'checkdwarf' means checksigma for analytic dwarf data, with sig_LOS
-                     # 'hernquist' means check with simple Hernquist profile from simwiki
-                     # 'walker' means check with full obs. cont. data from Walker
-                     # 'fornax' means real data from Fornax dwarf galaxy
+investigate  = 'walker'  # determine which data set to work on
+                                        # 'simple': set up simple model for disc
+                                        # 'sim': read in disc simulation
+                                        # 'checkdwarf': checksigma for analytic dwarf, sig_LOS
+                                        # 'hernquist': check simple Hernquist prof. from simwiki
+                                        # 'walker': check with full obs. cont. data from Walker
+                                        # 'fornax': real data from Fornax dwarf galaxy
 
-walkercase = 2                  # choose different Walker models (0-2 so far)
+walkercase = 1           # choose different Walker models (0-2 so far)
+getnewdata = False       # get new data computed from observations
 
 
 global geom
@@ -61,8 +62,9 @@ else:
 
 ########## plotting options
 testplot   = True          # show plots?
+testplot_dwarfs = False    # show plots for dwarfs as well?
 fplot      = 1./1.    # only plot every 1/Nth plot, in a random fashion
-plotdens   = False          # plot dens instead of M or Sigma_z in lower left plot
+plotdens   = True          # plot dens instead of M or Sigma_z in lower left plot
 lim        = False         
 #log       = False          # yaxis in (M/dens) scaled in log?
 log = True if plotdens and geom == 'sphere' else False
@@ -77,7 +79,7 @@ analytic   = False         # calc sig_los from analytic Hernquist profiles for n
 if investigate != 'hernquist':  # for other investigations: no analytic profiles yet
     analytic = False
 
-model      = False # for Walker mock data: plot model, TODO: work with model mass as well
+model      = True # for Walker mock data: plot model
 if investigate != 'walker': # for other investigations: no models yet
     model = False
     
@@ -85,13 +87,12 @@ if investigate != 'walker': # for other investigations: no models yet
 
 
 ########## density options
-poly       = False      # use polynomial representation of dens
-if model: poly = False # if model is given, cannot have polynomial approach
+poly       = True              # use polynomial representation of dens
+# if model: poly = False # if model is given, cannot have polynomial approach
 
-densstart = -2.3979                        # -2.6 for Hernquist, -2.3979 for Walker
-scaledens = 1.                          # percentage of maximum radius from data, for which
-                                        # the poly is scaled
-scalepower = 1.15                      # 0.95 for Hernquist, 1.5 for Walker
+densstart = -1.7218           # -2.6 for Hernquist, -2.3979 for Walker
+scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
+scalepower = 2.0                  # 0.95 for Hernquist, 1.5 for Walker
 
 
 ########## integration options
@@ -101,8 +102,9 @@ even       = 'avg'        # for simps integration (everywhere): 'avg', 'first', 
 
 
 
-pops      = 1
+pops      = 2
 if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is set
+
 
 # Set number of tracer stars to look at in Hernquist profile
 # take all particles                       # case 0
@@ -110,6 +112,8 @@ if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is se
 #             ntracers1 = 1e4              # case 2
 #             ntracers1 = ntracers2 = 5e3  # case 3
 cas = 0
+
+
 
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
 nipol = 12
@@ -180,7 +184,7 @@ sigerrcorr = 1.  # 1.5  # best done directly in the corresponding grw_dens, grw_
 global pars,  lpars
 global parstep, parst, lparst, lparstep
 global dat, ipol, xipol
-global nu1_x, nu2_x, sig1_x, sig2_x, M_x, dens_x, M_tot, dens_tot
+global nu1_x, nu2_x, d1_x, d2_x, sig1_x, sig2_x, M_x, dens_x, M_tot, dens_tot
 global fnewoverf
 global zmin, zmax    # Low/high-z range = min/max of data [-1 = default]: TODO: convert to xmin, xmax
 xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of data: 
@@ -190,40 +194,37 @@ xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of 
 
 ########## MCMC parameters
 niter = 100000                  # Maximum number of iterations
-# TODO: class for chisq
-chisq   = 1e300                 # initial chisq [large]
-chisqt1 = 1e300;    chisqt2 = 1e300
-chisqt_nu  = 1e300; chisqt_sig  = 1e300
-chisqt_nu1 = 1e300; chisqt_nu2  = 1e300
-chisqt_sig1= 1e300; chisqt_sig2 = 1e300
+# TODO: class for chi2
+chi2   = 1e300                 # initial chi2 [large]
+chi2t1 = 1e300;    chi2t2 = 1e300;    chi2t = 1e300
+chi2t_nu  = 1e300; chi2t_sig  = 1e300
+chi2t_nu1 = 1e300; chi2t_nu2  = 1e300
+chi2t_sig1= 1e300; chi2t_sig2 = 1e300
 
-if uselike :
-    prob = -1e300
-else:
-    prob = 1e300               # Initial log likeli. [small]
+prob = -1e300 if uselike else 1e300     # Initial log likeli. [small in case we need it in disc]
 
 ini     = 0                    # TODO: meaning
-inimax  = 5000                  # 
-counter = 0
-accrej  = np.zeros(1000)
-ratio   = 0.
-account1= 0.
+inimax  = 5000                 # 
+counter = 0                    # 
+accrej  = np.zeros(1000)       # 
+ratio   = 0.                   # 
+account1= 0.                   # 
 
-chisqtol = 50. if (pops == 1) else 100.  # more information in two tracer pops
-endcount = 100                  # 300 accepted models which chisq<chisqtol means initialization phase is over
+chi2tol = 50. if (pops == 1) else 80.  # more information in two tracer pops
+endcount = 60                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
-accrejtollow  = 0.24             # Acceptance/rejection rate
-accrejtolhigh = 0.26             #
-farinit = 1./5.                # 5 times chisq is too high in init phase: start new from last point
-stepafterrunaway = 1.5          # divide stepsize by this amount if too low fnewoverf 2.5
-farover = 1./2.                # 2 times chisq is too high after init phase 1./2.
-scaleafterinit   = 1.           # <= cheat: divide stepsize by this amount if init is over
-stepcorr= 1.01                  # adapt stepsize by this if not 0.24 < acc/rec < 0.26
+accrejtollow  = 0.24            # Acceptance/rejection rate
+accrejtolhigh = 0.26            #
+farinit = 1./5. # 5 times chi2 is too high in init phase: start new from last point
+stepafterrunaway = 1.5 # divide stepsize by this amount if too low fnewoverf 2.5
+farover = 1./2.     # 2 times chi2 is too high after init phase 1./2.
+scaleafterinit   = 1. # <= cheat: divide stepsize by this amount if init is over
+stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
-initphase = 'start'             # initialisation phase flag, first 'start', not: 'over'
+initphase = True             # initialisation phase flag, first True, if over: False
 endgame  = False                # Ending flag
 
 # Units: 

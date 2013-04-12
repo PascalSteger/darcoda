@@ -206,24 +206,26 @@ class Params:
             print '  # sig2sl  = ',gh.pretty(self.sig2sl)
         return
     
+
+
     def adaptworst(self,mult):
         if gp.pops == 1:
-            if gp.chisqt_nu1 > gp.chisqt_sig1:
+            if gp.chi2t_nu1 > gp.chi2t_sig1:
                 self.nu1 *= mult
             else:
                 self.dens *= mult
                 self.Msl *= mult
                 self.norm *= mult
         if gp.pops==2:
-            if gp.chisqt1 > gp.chisqt2:
-                if gp.chisqt_nu1 > gp.chisqt_sig1:
+            if gp.chi2t1 > gp.chi2t2:
+                if gp.chi2t_nu1 > gp.chi2t_sig1:
                     self.nu1 *= mult
                 else:
                     self.dens *= mult
                     self.Msl *= mult
                     self.norm *= mult
             else:
-                if gp.chisqt_nu2 > gp.chisqt_sig2:
+                if gp.chi2t_nu2 > gp.chi2t_sig2:
                     self.nu2 *= mult
                 else:
                     self.dens *= mult
@@ -238,6 +240,35 @@ class Params:
             self.norm *= mult
         return
                 
+
+
+
+    def scale_prop_chi2(self):
+        if gp.pops == 1:
+            # depending on nu parametrization: only
+            self.nu1    *= gp.chi2t_nu1/gp.chiqst
+
+            # depending on siglos, to be changed if mainly siglos contributing
+            self.dens   *= gp.chi2t_sig1/gp.chi2t
+            self.Msl    *= gp.chi2t_sig1/gp.chi2t
+            self.delta1 *= gp.chi2t_sig1/gp.chi2t
+
+            # for disc only
+            self.norm *= 1.
+        elif gp.pops == 2:
+            # depending on nu parametrization:
+            self.nu1    *= gp.chi2t_nu1/gp.chi2t
+            self.nu2    *= gp.chi2t_nu2/gp.chi2t
+
+            # depending on siglos
+            self.dens   *= gp.chi2t_sig/gp.chi2t
+            self.Msl    *= gp.chi2t_sig/gp.chi2t
+            self.delta1 *= gp.chi2t_sig/gp.chi2t
+
+        return self
+
+
+
     def has_negative(self):
         if min(self.nu1) < 0.:
             return True

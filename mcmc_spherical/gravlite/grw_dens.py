@@ -12,6 +12,7 @@ from pylab import *
 import math
 import gl_params as gp
 import gr_params as gpr
+import gl_file as gfile
 from gl_helper import expDtofloat
 from gl_class_files import *
 
@@ -20,6 +21,7 @@ for i in range(gpr.ncomp):
     print 'i = ',i
     print 'input: ',gpr.get_com_file(i)
     # start from data centered on COM already:
+    if gfile.bufcount(gpr.get_com_file(i))<2: continue
     x,y,v = np.loadtxt(gpr.get_com_file(i),\
                            skiprows=1,usecols=(0,1,2),unpack=True) #[rcore], [rcore], [km/s]
 
@@ -115,6 +117,8 @@ for i in range(gpr.ncomp):
     de.close()
     em.close()
 
+
+    if not gp.testplot_dwarfs: continue
     ion(); subplot(111)
     print 'rbin = ',rbin
     print 'p_dens = ',p_dens
