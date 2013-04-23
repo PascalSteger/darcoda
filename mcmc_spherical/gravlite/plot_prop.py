@@ -71,12 +71,15 @@ def show_plots():
 dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
 # ca = 1
 dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
+dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
 
 nampart = '20130327162354_cprior_mslope'
 nampart = '20130327202714_cprior_mslope'
 nampart = '20130403103916_cprior_mslope'
-
 nampart = '20130408092450_cprior_mslope'
+nampart = '20130419154013_cprior_mslope'
+
+
 basename = dir + nampart + '/' + nampart
 
 print 'input'

@@ -25,13 +25,15 @@ def mcmc_init():
     ### nu
     # set all nu to known data plus some offset
     nupars1 = gp.ipol.nudat1
+    if gp.nulog: nupars1 = np.log10(nupars1)
     # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
-    nuparstep1    = nupars1/10.
+    nuparstep1    = nupars1/30.
     # + gp.ipol.nuerr1    # [munit/pc^3], /20 earlier on, was too high
     if gp.pops == 2:
         nupars2  = gp.ipol.nudat2
+        if gp.nulog: nupars2 = np.log10(nupars2)
         # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat2[-1] # [munit/pc^3]
-        nuparstep2 = nupars2/10.#+gp.ipol.nuerr2     # [munit/pc^3]
+        nuparstep2 = nupars2/30. # [munit/pc^3]
 
     #if gp.geom == 'disc':
         #numin = 1.e-3; numax = 1.
@@ -47,7 +49,7 @@ def mcmc_init():
         print 'TODO: disable model for delta!'
         mdelta1, mdelta2 = betawalker(gp.xipol)
         deltapars1 = phys.invdelta(mdelta1)
-        deltaparstep1 = deltapars1/20.
+        deltaparstep1 = deltapars1/30.
         if gp.deltaprior:
             deltaparstep1 = np.zeros(gp.nipol)
 
@@ -56,12 +58,12 @@ def mcmc_init():
         deltaparstep2 = deltapars2 + 0.01
         if gp.model:
             deltapars2 = phys.invdelta(mdelta2)
-            deltaparstep2 = deltapars2/20.
+            deltaparstep2 = deltapars2/30.
             if gp.deltaprior:
                 deltaparstep2 = np.zeros(gp.nipol)
 
     if gp.geom == 'disc':
-        if not gp.deltaprior: # tparsRin[0] > 0:
+        if not gp.deltaprior: # and tparsRin[0] > 0:
             # deltapars1 = np.zeros(gp.nipol) + 50.
             deltapars1 = np.zeros(gp.nipol)
 

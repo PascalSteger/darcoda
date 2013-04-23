@@ -29,6 +29,13 @@ investigate  = 'walker'  # determine which data set to work on
                                         # 'fornax': real data from Fornax dwarf galaxy
 
 walkercase = 1           # choose different Walker models (0-2 so far)
+
+# Set number of tracer stars to look at in Hernquist profile
+# take all particles                       # case 0
+# want to set ntracers1 = 1e3              # case 1
+#             ntracers1 = 1e4              # case 2
+#             ntracers1 = ntracers2 = 5e3  # case 3
+cas = 2
 getnewdata = False       # get new data computed from observations
 
 
@@ -58,11 +65,13 @@ else:
     msun= 1.981e30                          # [kg]
     km  = 1000.                             # [m]
     G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
-
+    Mscale = 1.e6                           # [Msun], scale for dimensionless eqs
+                                            # from Hernquist, Baes&Dejonghe
+    ascale = 1000.                          # [pc]
 
 ########## plotting options
 testplot   = True          # show plots?
-testplot_dwarfs = False    # show plots for dwarfs as well?
+testplot_dwarfs = False    # show plots for dwarfs pos/com/density/siglos as well before init?
 fplot      = 1./1.    # only plot every 1/Nth plot, in a random fashion
 plotdens   = True          # plot dens instead of M or Sigma_z in lower left plot
 lim        = False         
@@ -76,23 +85,19 @@ checksigma = False # check sigma_los integration
 # (set nu, M to interpolated data values, only run for one iteration)
 
 analytic   = False         # calc sig_los from analytic Hernquist profiles for nu, M
-if investigate != 'hernquist':  # for other investigations: no analytic profiles yet
-    analytic = False
+if investigate != 'hernquist': analytic = False
 
 model      = True # for Walker mock data: plot model
-if investigate != 'walker': # for other investigations: no models yet
-    model = False
-    
-# TODO: get done together with 'analytic'
+if investigate != 'walker': model = False
 
 
 ########## density options
-poly       = True              # use polynomial representation of dens
-# if model: poly = False # if model is given, cannot have polynomial approach
+poly       = True              # use polynomial representation of dens during init
+if analytic: poly = False
 
-densstart = -1.7218           # -2.6 for Hernquist, -2.3979 for Walker
+densstart = -1.8              # -2.6 for Hernquist, -2.3979 for Walker
 scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
-scalepower = 2.0                  # 0.95 for Hernquist, 1.5 for Walker
+scalepower = 2.4                  # 0.95 for Hernquist, 1.5 for Walker
 
 
 ########## integration options
@@ -106,12 +111,6 @@ pops      = 2
 if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is set
 
 
-# Set number of tracer stars to look at in Hernquist profile
-# take all particles                       # case 0
-# want to set ntracers1 = 1e3              # case 1
-#             ntracers1 = 1e4              # case 2
-#             ntracers1 = ntracers2 = 5e3  # case 3
-cas = 0
 
 
 
@@ -141,22 +140,24 @@ baryonmodel = 'sim'                    # read in surface density from correspond
 
 mirror   = False                       # Mirror prior: TODO
 logprior = False                       # Logarithmic prior: sample in logarithmic space
+nulog    = False                        # sample nu only in logarithmic space
 mprior = -1                            # Mass prior
-deltaprior  = False                     # Deltaprior: - beta (velocity anisotropy) in spherical
-                                        #             - tilt in disc geometry
+deltaprior  = False # Deltaprior: - beta (velocity anisotropy) in spherical
+                    #             - tilt in disc geometry
 delta0 = np.zeros(nipol)
 # sigmaprior, default: -1
 sigmaprior1 = 0.3; sigmaprior2 = 0.3
 
-sprior  = False                   # Rising sig_z [not rec.]
-constdens = False                 # Constant DM density
-rprior  = False                   # Regularize Nuz 
-nutol   = 0.5     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
+sprior  = False                   # rising sig_z, not recommended
+if geom=='sphere': sprior = False
+constdens = False                 # constant DM density
+rprior  = True                   # regularize Nuz 
+nutol   = 1.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
 norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
-quadratic = False                 # Linear or quad interpol. 
-monotonic = False                 # Mono-prior on nu(z)
-uselike   = False          # Use Likelihood function, or binned data? 
+quadratic = False                 # linear or quad interpol. 
+monotonic = False                 # mono-prior on nu(z)
+uselike   = False          # use Likelihood function, or binned data?
 adderrors = False
 
 # last bin mass prior:
@@ -176,7 +177,7 @@ files = gcf.Files()
 
 nuerrcorr = 1.   # 2.   # scale error from grw_dens by this amount
 sigerrcorr = 1.  # 1.5  # best done directly in the corresponding grw_dens, grw_siglos
-
+                 # thus, both times 1. is best
 
 
 
@@ -210,7 +211,7 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 50. if (pops == 1) else 80.  # more information in two tracer pops
+chi2tol = 50. if (pops == 1) else 90.  # more information in two tracer pops, but more errors as well
 endcount = 60                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 
 rejcount = 1.                   # Rejection count
@@ -235,8 +236,14 @@ rcore=[]; dens0rcore=[]; dens0pc=[]; totmass=[]; maxvlos=[] # unit system
 rcore_2D=[];dens0rcore_2D=[];dens0pc_2D=[]
 if investigate != 'walker':
     # TODO: adapt to physical units
-    rcore.append(1.)
-    dens0rcore.append(1.)
-    dens0pc.append(1.)
+    # each is set for all components and first component by default
+    rcore.append(1.);      rcore_2D.append(1.)
+    rcore.append(1.);      rcore_2D.append(1.)
+    dens0rcore.append(1.); dens0rcore_2D.append(1.)
+    dens0rcore.append(1.); dens0rcore_2D.append(1.)
+    dens0pc.append(1.);    dens0pc_2D.append(1.)
+    dens0pc.append(1.);    dens0pc_2D.append(1.)
     totmass.append(1.)
+    totmass.append(1.)
+    maxvlos.append(1.)
     maxvlos.append(1.)

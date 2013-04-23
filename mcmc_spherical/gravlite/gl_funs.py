@@ -35,7 +35,7 @@ def get_new_parameters():
 
     ranarr.setuniformrandom()
     ranarr.scale_prop_chi2()
-
+    
     if not gp.logprior:
         ranarr.mul(gp.parstep)
         gp.parst = ranarr.add(gp.parst)
@@ -81,8 +81,8 @@ def get_new_parameters():
 
 
 
-def calc_M_nu_sig():
-    gp.LOG.debug( 'Calculate M / nu / sigma values')
+def calc_M_nu_sig_sphere():
+    gp.LOG.debug( 'Calculate M / nu / sigma values for spherical case')
     if gp.geom == 'sphere':
         import physics_sphere as phys
         if not gp.checksigma:
@@ -92,80 +92,97 @@ def calc_M_nu_sig():
 
             gp.M_x    = phys.Mr3D(gp.xipol, gp.dens_x) # [munit,3D]
             gp.d1_x   = phys.delta(gp.parst.delta1)
-            gp.sig1_x = phys.sig_los(1, gp.xipol, gp.M_x, gp.nu1_x, gp.d1_x)
+            gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x)
             
             if gp.pops == 2:
                 gp.nu2_x  = phys.nu(gp.parst.nu2)
                 gp.d2_x   = phys.delta(gp.parst.delta2)
-                gp.sig2_x = phys.sig_los(2, gp.xipol, gp.M_x, gp.nu2_x, gp.d2_x)
+                gp.sig2_x = phys.sig_los(gp.M_x, gp.nu2_x, gp.d2_x)
 
 
 
 
 
         else:
-            '''check integration routine'''
-            gp.nu1_x  = gp.ipol.nudat1 # [dens0]
-            if gp.investigate == 'hernquist' and gp.analytic:
-                gp.nu1_x = rho_anf(gp.xipol) # [TODO]
-                gp.M_x   = M_anf(gp.xipol)
+            '''checksigma: check integration routine'''
+            if gp.investigate == 'hernquist':
+                ### set nu to data, or analytic value
+                gp.nu1_x  = gp.ipol.nudat1 # [Msun/pc^3]
+                if gp.pops == 2:
+                    gp.nu2_x = gp.ipol.nudat2 # [Msun/pc^3]
+                    
+                if gp.analytic:
+                    gp.nu1_x = rho_anf(gp.xipol)  # [Msun/pc^3]
+
+
+                # set dens
+                # gp.dens_x = gp.ipol.densdat # for bary only
+                # gp.dens_x = phys.densdefault(gp.parst.dens) # [Munit/pc^2]
+
+                gp.dens_x = rho_anf(gp.xipol) # [Msun/pc^3]
+                # attention: same as gp.nu1_x in this case! fine if potential comes from 'tracers' only
+                # gp.dens_x = phys.calculate_dens(gp.ipol.Mx, gp.M_x) # [munit/lunit^3]
+
+                # set M
+                # gp.M_x    = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [munit,3D]
+                gp.M_x   = M_anf(gp.xipol)    # [Msun]
+
+
+                # set delta
+                gp.d1_x  = np.zeros(gp.nipol) # [1]
+                if gp.pops == 2:
+                    gp.d2_x = walker_delta(2)
+
+
+            # still checksigma, but for walker now
+            elif gp.investigate == 'walker':
+                rhodm, rhostar1, rhostar2 = rhowalker_3D(gp.xipol)
+                gp.nu1_x = rhostar1
+                if gp.pops == 2:
+                    gp.nu2_x = rhostar2 # gp.ipol.nudat2 # data
+                    
+                gp.dens_x = rhowalkertot_3D(gp.xipol) # [msun/pc^3]
+                gp.M_x = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [msun]
+
+                gp.d1_x = walker_delta(1) # [1], actual delta
+                if gp.pops == 2:
+                    gp.d2_x = walker_delta(2) # [1]
 
 
 
-            # gp.dens_x = gp.ipol.densdat # for bary only
-            # gp.dens_x = phys.densdefault(gp.parst.dens) # [Munit/pc^2]
-
-            gp.dens_x = rhowalkertot_3D(gp.xipol) # [msun/pc^3]
-
-            # tmp = rhowalker_3D(gp.xipol)
-            # gp.dens_x = tmp[1]+tmp[2]          # theoretical baryonic contribution only
-            gp.M_x    = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [munit,3D]
-            
-            # gp.totmass[0] = max(gp.M_x) # renormalization, if necessary
-
-
-            # gp.M_x    = gp.ipol.Mdat   # [totmass] baryonic only
-            gp.dens_x = phys.calculate_dens(gp.ipol.Mx, gp.M_x) # [munit/lunit^3]
-
-
-            delta_r = walker_delta(1)   # [1], actual delta
-            
-            gp.sig1_x = phys.sig_los(1,gp.ipol.sigx1, gp.M_x, gp.nu1_x, delta_r) # [km/s]
-            # takes [1], [pc], [munit, 3D], [munit/pc^3], [1]
+            # set sigma_LOS, by calculating expected values
+            # for both (spherical) cases simultaneously
+            gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x) # [km/s]
+            # takes [munit, 3D], [munit/pc^3], [1]
             # normalization of nu does not matter, is divided out
-
             
-            if gp.pops == 2:
-                gp.nu2_x = gp.ipol.nudat2
-                delta_r = walker_delta(2)
-                gp.sig2_x = phys.sig_los(2,gp.ipol.sigx2,gp.M_x,gp.nu2_x,delta_r) # [km/s]
-
-
             # gp.sig1_x= sig_los_anf(gp.xipol) # cheat to check sig_los plot
-            # sig1  = gp.ipol.sigdat1 # to check: plot is really done as it should
+            if gp.pops == 2:
+                gp.sig2_x = phys.sig_los(gp.M_x,gp.nu2_x,gp.d2_x) # [km/s]
 
 
 
 
 
+def calc_M_nu_sig_disc():
+    gp.LOG.debug( 'Calculate M / nu / sigma values for disc case')
 
-    elif gp.geom == 'disc':
-        import physics_disc as phys
-        # TODO: generalize for 2 populations
-        # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
-        gp.nu1_x  = phys.nu(gp.parst.nu1)
-        gp.dens_x = gp.parst.dens # Kzpars
+    import physics_disc as phys
+    # TODO: generalize for 2 populations
+    # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
+    gp.nu1_x  = phys.nu(gp.parst.nu1)
+    gp.dens_x = gp.parst.dens # Kzpars
             # TODO: naming
-        Rsun = 8.; hr = 3.0; hsig = 3.0
-        gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.parst.dens,gp.parst.norm,\
-                                    gp.blow,gp.parst.nu1,gp.parst.delta1,\
-                                    [Rsun,hr,hsig])
-        if gp.checksigma:
-            gp.nu1_x  = gp.ipol.nudat1
-            Rsun = 8.; hr = 3.0; hsig = 3.0 # irrelevant, as long as gp.deltaprior = True
-            gp.parst.norm = 21.**2
-            gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.ipol.densdat,  gp.blow, gp.ipol.nudat1,gp.parst.norm,gp.parst.delta1,[Rsun,hr,hsig])
-
+    Rsun = 8.; hr = 3.0; hsig = 3.0
+    gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.parst.dens,gp.parst.norm,\
+                                gp.blow,gp.parst.nu1,gp.parst.delta1,\
+                                [Rsun,hr,hsig])
+    if gp.checksigma:
+        gp.nu1_x  = gp.ipol.nudat1
+        Rsun = 8.; hr = 3.0; hsig = 3.0 # irrelevant, as long as gp.deltaprior = True
+        gp.parst.norm = 21.**2
+        gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.ipol.densdat,  gp.blow, gp.ipol.nudat1,gp.parst.norm,gp.parst.delta1,[Rsun,hr,hsig])
+        
     return
 
 
@@ -230,42 +247,44 @@ def calc_likelihood():
 
 
 def compare_nu(pop, dat, err):
-    '''return nu required for comparison to data'''
+    '''return nu required for comparison to interpolated data'''
     # pop \in {1,2} gives population
     # if dat == True: return data; else: model (possibly projected)
     # if err == True: return data error instead
-    if not dat and err:
+    if (not dat) and err:
         print 'wrong use of compare_nu, error only given for data, not model'
         exit(1)
     ret = []
     if dat:
         if gp.geom == 'disc':
-            ret = gp.dat.nudat1 if pop == 1 else gp.dat.nudat2
+            ret = gp.ipol.nudat1 if pop == 1 else gp.dat.nudat2
             if err:
-                ret = gp.dat.nuerr1 if pop == 1 else gp.dat.nuerr2
+                ret = gp.ipol.nuerr1 if pop == 1 else gp.dat.nuerr2
         elif gp.geom == 'sphere':
-            ret = gp.dat.nudat1_2D if pop == 1 else gp.dat.nudat2_2D
+            ret = gp.ipol.nudat1_2D if pop == 1 else gp.dat.nudat2_2D
             if err:
-                ret = gp.dat.nuerr1_2D if pop == 1 else gp.dat.nuerr2_2D
-    else:
+                ret = gp.ipol.nuerr1_2D if pop == 1 else gp.dat.nuerr2_2D
+    else:                               # [model]
         if gp.geom == 'disc':
             ret = gp.ipol.nudat1 if pop == 1 else gp.ipol.nudat2
             if err:
                 ret = gp.ipol.nuerr1 if pop == 1 else gp.ipol.nuerr2
         elif gp.geom == 'sphere':
-            ret = int_surfden(gp.ipol.nudat1) if pop == 1 else int_surfden(gp.ipol.nudat2)
+            ret = int_surfden(gp.xipol,gp.ipol.nudat1) if pop == 1 else int_surfden(gp.ipol.nudat2)
             if err:
                 # TODO: does that make sense? what do we want to compare to here?
-                ret = int_surfden(gp.ipol.nuerr1) if pop == 1 else int_surfden(gp.ipol.nuerr2)
+                ret = int_surfden(gp.xipol,gp.ipol.nuerr1) if pop == 1 else int_surfden(gp.ipol.nuerr2)
     return ret
 
 
 
 
-def calc_chi2():
-    '''Calculate chi squared:'''
 
-    numodel1 = int_surfden(gp.nipol,gp.xipol,gp.nu1_x) if gp.geom=='sphere' else gp.nu1_x
+
+def calc_chi2():
+    '''Calculate \\chi^2:'''
+
+    numodel1 = int_surfden(gp.xipol,gp.nu1_x) if gp.geom=='sphere' else gp.nu1_x
     nudata1  = compare_nu(1,True,False)
     nuerr1   = compare_nu(1,True,True) # gp.ipol.nuerr1 # old, used 3D nu in spherical case
     gp.chi2t_nu1      = ((numodel1 - nudata1)**2./nuerr1**2.).sum()
@@ -283,7 +302,7 @@ def calc_chi2():
     gp.chi2t1         = gp.chi2t_nu1 + gp.chi2t_sig1
     gp.chi2t          = gp.chi2t1
     if gp.pops == 2:
-        numodel2 = int_surfden(gp.nipol,gp.xipol,gp.nu2_x) if gp.geom=='sphere' else gp.nu2_x
+        numodel2 = int_surfden(gp.xipol,gp.nu2_x) if gp.geom=='sphere' else gp.nu2_x
         nudata2  = compare_nu(2,True,False)
         nuerr2   = compare_nu(2,True,True)
         gp.chi2t_nu2  = ((numodel2 - nudata2)**2./nuerr2**2.).sum()
@@ -292,6 +311,16 @@ def calc_chi2():
         gp.chi2t_sig += gp.chi2t_sig2
         gp.chi2t2     = gp.chi2t_nu2 + gp.chi2t_sig2
         gp.chi2t     += gp.chi2t2
+
+
+    print gp.chi2t_nu1, gp.chi2t_nu2, gp.chi2t_nu
+    print gp.chi2t_sig1, gp.chi2t_sig2, gp.chi2t_sig
+    print gp.chi2t1, gp.chi2t2, gp.chi2t
+
+    if np.isnan(gp.chi2t):
+        print 'NaN occured! go search where it happened!'
+        pdb.set_trace()
+
 
     # gp.LOG.info('Calculate the f-function')
     # gp.LOG.warning(['chi2  = ',gp.chi2,'chi2t = ',gp.chi2t])

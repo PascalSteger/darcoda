@@ -12,72 +12,74 @@ asech = lambda x: np.arccosh(1./x)
 asec  = lambda x: np.arccos(1./x)
 
 
-def X(R):
-    'equation XX from Hernquist 1990'
-    Xout = np.zeros(len(R))
-    for i in range(len(R)):
-        r = R[i]
-        if r<=1.0:
-            Xout[i] = (1.0-r**2)**(-0.5)*asech(r)
+def X(s0):                              # [1]
+    '''equation 33, 34 from Hernquist 1990'''
+    Xout = np.zeros(len(s0))
+    for i in range(len(s0)):
+        s = s0[i]                       # [1]
+        
+        if s<=1.:
+            Xout[i] = (1.-s**2)**(-0.5)*asech(s) # [1]
         else:
-            Xout[i] = (r**2-1.0)**(-0.5)*asec(r)
-    return Xout
-
-
-
-def rho_anf(r):
-    'equation XX from Hernquist 1990'
-    return 1./(2.*np.pi*r*(1.+r)**3)
-
-
-
-def surfden_anf(r):
-    'equation XX from Hernquist 1990'
-    return ((2.+r**2)*X(r)-3.)/(2.*np.pi*(1.-r**2)**2)
+            Xout[i] = (s**2-1.)**(-0.5)*asec(s) # [1]
+        
+    return Xout                         # [1]
 
 
 
 
-def sig2_anf(r):
-    'equation XX from Hernquist 1990'
-    return r*(1+r)**3*np.log((1.+r)/r)-\
-           (r*(25.+52.*r+42.*r**2+12.*r**3))/(12.*(1.+r))
+def rho_anf(r0, a=gp.ascale, M=gp.Mscale): # 2*[pc], [Msun]
+    '''equation 2b from Baes&Dejonghe 2002'''
+    '''equation 2 from Hernquist 1990, 3D mass density'''
+    s = r0/a                              # [1]
+    return M/(2.*np.pi*a**3)/(s*(1+s)**3) # [Msun/pc^3]
 
 
 
-def M_anf(r):
-    'equation XX from Hernquist 1990'
-    return r**2/(r+1.)**2
-
-
-
-
-def nusigr2_anf(r):
-    'equation XX from Hernquist 1990'
-    return 1./(12.*np.pi)*(0.5/(1.-r**2)**3*\
-                           (-3.*r**2*X(r)*(8.*r**6-28.*r**4+35.*r**2-20)\
-                            -24.*r**6+68.*r**4-65.*r**2+.6)-6.*np.pi*r)
-
-
-
-def surfden_sig2_anf(r):
-    'equation XX from Hernquist 1990'
-    return 1./(24.*np.pi*(1.-r**2)**3)*\
-           (3.*r**2*(20.-35.*r**2+28.*r**4-8.*r**6)*X(r)+\
-            (6.-65.*r**2+68.*r**4-24.*r**6))-r/2.
+def surfden_anf(r0, a=gp.ascale, M=gp.Mscale): # 2*[pc], [Msun]
+    '''equation 3 from Baes&Dejonghe 2002'''
+    s = r0/a
+    return M/(2.*np.pi*a**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Msun/pc^2]
 
 
 
 
-def sig_los_anf(r):
-    'equation XX from Hernquist 1990'
-    return np.sqrt(surfden_sig2_anf(r)/surfden_anf(r))
+def sig2_anf(r0, a=gp.ascale, M=gp.Mscale): # 2*[pc], [Msun]
+    '''equation 10 of Hernquist 1990, sigma_r^2'''
+    s = r0/a                            # [pc/1000pc]
+    return gp.G1*M/a*s*(1+s)**3*np.log(1.+1./s)-\
+           gp.G1*M/(12.*a)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
+
+
+
+
+def M_anf(r0, a=gp.ascale, M=gp.Mscale): # 2*[pc], [Msun]
+    '''equation 3 from Hernquist 1990'''
+    s = r0/a                            # [1]
+    return M*s**2/(1.+s)**2             # [Msun]
+
+
+
+
+
+
+def surfden_sig2_anf(r0, a=gp.ascale, M=gp.Mscale): # 2*[pc], [Msun]
+    '''equation 21 from Baes&Dejonghe 2002'''
+    s = r0/a                            # [1]
+    return gp.G1*M**2/(12.*np.pi*a**3)*(1./(2.*(1.-s**2)**3)*(-3.*s**2*X(s)*(8.*s**6-28.*s**4+35.*s**2-20.)-24.*s**6+68.*s**4-65.*s**2+6.)-6.*np.pi*s) # [(km/s)^2 * Msun/pc^2]
+
+
+
+
+def sig_los_anf(r0, a=gp.ascale, M=gp.Mscale):   # 2*[pc], [Msun]
+    '''determined from analytic surfden*sig2 and surfden'''
+    return np.sqrt(surfden_sig2_anf(r0,a,M)/surfden_anf(r0,a,M))
 
 
 
 
 def walker_delta(pop):
-    # TODO: check call of walker_delta, if not used in case investigate != walker, delete if
+    # TODO: check call of walker_delta, if not used in case investigate != walker: delete 'if'
     if gp.investigate == 'walker':
         from gl_analytic import betawalker
         x = gp.xipol
@@ -95,7 +97,7 @@ def walker_delta(pop):
 
 
 def rhohern(r0, rscale, rho0, alpha, beta, gamma): # 2*[pc], [munit/pc^3], 3*[1]
-    'determine rho(r) for a generalized Hernquist model'
+    '''determine rho(r) for a generalized Hernquist model'''
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
     tmp = 1.*rho0                       # [munit/pc^3]
@@ -110,7 +112,7 @@ def rhohern(r0, rscale, rho0, alpha, beta, gamma): # 2*[pc], [munit/pc^3], 3*[1]
 
 
 def rhowalker_3D(rad):                                          # [pc]
-    'Walker model: read values from theoretical params file, calculate from eq. 2 generalized Hernquist profiles'
+    '''Walker model: read values from theoretical params file, calculate from eq. 2 generalized Hernquist profiles'''
 
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
@@ -122,7 +124,7 @@ def rhowalker_3D(rad):                                          # [pc]
     gamma_star1 = A[7]
     beta_star1  = A[8]
     alpha_star1 = 2.0
-    r_star1     = 1000.*A[9] #[pc] # both description of filename and file content is wrong
+    r_star1     = 1000*A[9] #[pc] # both description of filename and file content is wrong
     # name is rstar/10 in three digits, file content is given in kpc
     
     gamma_star2 = A[11]
@@ -136,9 +138,11 @@ def rhowalker_3D(rad):                                          # [pc]
     alpha_DM    = A[18]
     rho0        = A[19] # [Msun/pc^3]
 
-    # TODO: set to right values nu0 (given somewhere?)
-    rho0star1   = rho0/1.e6
-    rho0star2   = rho0/1.e6
+    # TODO: set to right values nu0 (given somewhere?) tracer numbers?
+    ntracer1 = np.loadtxt(gp.files.get_ntracer_file(1),unpack=True)
+    ntracer2 = np.loadtxt(gp.files.get_ntracer_file(2),unpack=True)
+    rho0star1   = rho0*ntracer1/1.e6
+    rho0star2   = rho0*ntracer2/1.e6
 
     # rhohern(r, rscale, rho0, alpha, beta, gamma): #  (2*[pc], or 2*[rcore]), [munit/pc^3], 3*[1]
     rhodm    = rhohern(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
@@ -151,7 +155,7 @@ def rhowalker_3D(rad):                                          # [pc]
 
 
 def rhowalkertot_3D(rad):               # [pc]
-    'return total mass density, stars+DM'
+    '''return total mass density, stars+DM'''
     rhodm, rhostar1, rhostar2 = rhowalker_3D(rad)     # 3* [msun/pc^3]
     return rhodm + rhostar1 + rhostar2                # [msun/pc^3]
 
@@ -159,6 +163,7 @@ def rhowalkertot_3D(rad):               # [pc]
 
 
 def Mwalkertot(rad):
+    '''return total mass in Walker model'''
     rhotot = rhowalkertot_3D(rad)
     Mtot = phys.Mr3D(rad, rhotot)
     return Mtot
@@ -168,14 +173,12 @@ def Mwalkertot(rad):
 
 
 def rhowalker_2D(rad):                  # [pc]
-    'calculate 2D surface density from radius'
+    '''calculate 2D surface density from radius'''
     rhodm, rhostar1, rhostar2 = rhowalker_3D(rad)     # 3* [msun/pc^3]
 
-    pnts = len(rad)
-
-    surfdm    = int_surfden(pnts, rad, rhodm)    # [msun/pc^2]
-    surfstar1 = int_surfden(pnts, rad, rhostar1) # [msun/pc^2]
-    surfstar2 = int_surfden(pnts, rad, rhostar2) # [msun/pc^2]
+    surfdm    = int_surfden(rad, rhodm)    # [msun/pc^2]
+    surfstar1 = int_surfden(rad, rhostar1) # [msun/pc^2]
+    surfstar2 = int_surfden(rad, rhostar2) # [msun/pc^2]
 
     return surfdm, surfstar1, surfstar2               # 3* [msun/pc^2]
 
@@ -184,7 +187,7 @@ def rhowalker_2D(rad):                  # [pc]
     
 
 def rhowalkertot_2D(rad):                      # [pc]
-    'return total surface density, stars+DM'
+    '''return total surface density, stars+DM'''
     surfdm, surfstar1, surfstar2 = rhowalker_2D(rad)   # 3*[msun/pc^2]
     return surfdm + surfstar1 + surfstar2              # [msun/pc^2]
 
@@ -204,7 +207,7 @@ def rhowalkertot_2D(rad):                      # [pc]
 
 
 def betawalker(rad):                                            # [pc]
-    'calculate Osipkov-Merritt velocity anisotropy profile'
+    '''calculate Osipkov-Merritt velocity anisotropy profile'''
     A = np.loadtxt(gp.files.analytic,unpack=False)
     # Osipkov-Merritt anisotropy profile with r_a/r_* = 10^4 for isotropic models
     rars1  = A[10]

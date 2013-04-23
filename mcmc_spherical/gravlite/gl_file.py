@@ -17,6 +17,20 @@ elif gp.geom == 'disc':
 
 
 
+def bin_data():
+    if gp.investigate == 'hernquist':
+        import grh_com
+        import grh_pos2D
+        import grh_dens2D
+        import grh_siglos2D
+    elif gp.investigate == 'walker':
+        import grw_com
+        import grw_dens
+        import grw_siglos
+
+
+
+
 
 def get_data():
 
@@ -84,13 +98,13 @@ def write_outfile():
     M = phys.Mzdefault(gp.pars.dens)
     profM, profnus, profdeltas, profsigs = gp.files.get_outprofs()
     arraydump(profM, M)
-    arraydump(profnus[0],   gp.pars.nu1)
-    arraydump(profdeltas[0], gp.pars.delta1)
-    arraydump(profsigs[0],  gp.sig1_x)
+    arraydump(profnus[0],   phys.nu(gp.pars.nu1)) # [Msun/pc^3]
+    arraydump(profdeltas[0], gp.pars.delta1)      # [1]
+    arraydump(profsigs[0],  gp.sig1_x)            # [km/s]
     if gp.pops == 2:
-        arraydump(profnus[1],   gp.pars.nu2)
-        arraydump(profdeltas[1], gp.pars.delta2)
-        arraydump(profsigs[1],  gp.sig2_x)
+        arraydump(profnus[1],   phys.nu(gp.pars.nu2)) # [Msun/pc^3]
+        arraydump(profdeltas[1], gp.pars.delta2)      # [1]
+        arraydump(profsigs[1],  gp.sig2_x)            # [km/s]
     return 0
 
 

@@ -14,7 +14,31 @@ else:
 
 
 
-def check_priors():
+def check_density():
+    gp.LOG.debug(' now check regularisation priors')
+    if gp.rprior:
+        rightnu = phys.nu(gp.parst.nu1[1:])
+        leftnu  = phys.nu(gp.parst.nu1[:-1])
+        if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
+            print 'nutol = ',gp.nutol,abs(rightnu-leftnu)/rightnu
+            gpl.plot(gp.xipol, phys.nu(gp.parst.nu1)); gpl.yscale('log')
+            pdb.set_trace()
+            return True
+            # TODO: 2nd population!
+
+    gp.LOG.debug( 'now checking dens > gprior')
+    if gp.gprior > 0 and max(denscheck) > gp.gpriorconv:
+        print 'gprior'
+        return True
+
+    return False
+
+
+
+
+
+
+def check_mass():
     gp.LOG.debug(' check rising mass prior:')
     denscheck = phys.dens(gp.xipol, gp.parst.dens)
     # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
@@ -41,6 +65,56 @@ def check_priors():
         if lastb / totmlastb > gp.lbtol :
             print 'lbprior'
             return True
+
+    return False
+
+
+
+
+
+def check_delta():
+    gp.LOG.debug( 'now checking delta <= 1')
+    d1 = phys.delta(gp.parst.delta1)
+    if max(d1)>1.:
+        for jj in range(gp.nipol):
+            if d1[jj] >1.:
+                gp.parst.delta1[jj] /= 2.
+                print 'delta1 too high, corrected entry ',jj,' to half its value'
+        return True
+    if gp.pops == 2:
+        d2 = phys.delta(gp.parst.delta2)
+        if max(d2)>1.:
+            for jj in range(gp.nipol):
+                if d2[jj] >1.:
+                    gp.parst.delta2[jj] /= 2.
+                    print 'delta2 too high, corrected entry ',jj,' to half its value'
+            return True
+
+
+    gp.LOG.debug( 'now checking delta smoothness')
+    for i in range(1,len(gp.parst.delta1)):
+        if abs(gp.parst.delta1[i])>4./gp.nipol:
+            print 'delta1 too wild!'
+            # correct: smooth out, by assigning mean value of left/right points
+            return True
+    if gp.pops==2:
+        for i in range(len(gp.parst.delta2)):
+            if abs(gp.parst.delta2[i])>4./gp.nipol:
+                print 'delta2 too wild!'
+                return True
+
+    return False
+
+
+
+
+
+
+
+
+
+
+def check_sigma():
 
     if (not gp.mirror) :
         gp.LOG.debug('now checking: Ensure positivity --> monotonicity constraint:')
@@ -80,8 +154,9 @@ def check_priors():
         # the MCMC gets stuck. So we set sig_z = 0 where it
         # is NaN and assume that this will be penalised by the 
         # data. This assumption appears to be very good, 
-        # but still it's not ideal ): 
-        small = min(gp.sig1_x[(gp.sig1_x > 0)])
+        # but still it's not ideal ):
+        
+        small = 0.0 # min(gp.sig1_x[(gp.sig1_x > 0)])
         for jj in range(gp.nipol):
             # check for NaN
             if math.isnan(gp.sig1_x[jj]):
@@ -95,40 +170,9 @@ def check_priors():
         gp.parst.Msl *=0.9
         return True # TODO: keep in mind, change Msl during MCMC
 
-    gp.LOG.debug( 'now checking delta <= 1')
-    d1 = phys.delta(gp.parst.delta1)
-    if max(d1)>1.:
-        for jj in range(gp.nipol):
-            if d1[jj] >1.:
-                gp.parst.delta1[jj] /= 2.
-                print 'delta1 too high, corrected entry ',jj,' to half its value'
-        return True
-    if gp.pops == 2:
-        d2 = phys.delta(gp.parst.delta2)
-        if max(d2)>1.:
-            for jj in range(gp.nipol):
-                if d2[jj] >1.:
-                    gp.parst.delta2[jj] /= 2.
-                    print 'delta2 too high, corrected entry ',jj,' to half its value'
-            return True
 
 
-    gp.LOG.debug( 'now checking delta smoothness')
-    for i in range(1,len(gp.parst.delta1)):
-        if abs(gp.parst.delta1[i])>4./gp.nipol:
-            print 'delta1 too wild!'
-            # correct: smooth out, by assigning mean value of left/right points
-            return True
-    if gp.pops==2:
-        for i in range(len(gp.parst.delta2)):
-            if abs(gp.parst.delta2[i])>4./gp.nipol:
-                print 'delta2 too wild!'
-                return True
 
-    gp.LOG.debug( 'now checking dens > gprior')
-    if gp.gprior > 0 and max(denscheck) > gp.gpriorconv:
-        print 'gprior'
-        return True
 
     gp.LOG.debug( 'Reject models with NaN sig_z: ')
     if (gp.logprior) :  
@@ -159,16 +203,16 @@ def check_priors():
     #     if nuparsu[jj] < numin: return True
     #     if nuparsu[jj] > numax: return True
    
-    gp.LOG.debug(' now check regularisation priors')
-    if gp.rprior:
-        for jj in range(1,gp.nipol):
-            if abs(gp.parst.nu1[jj] - gp.parst.nu1[jj-1])/gp.parst.nu1[jj] > gp.nutol:
-                return True
-    
     gp.LOG.debug( 'S-prior: ensure sigma_z(z) rises (in disc case only):')
     if gp.sprior:
         for jj in range(1,gp.nipol):
             if gp.sig1_x[jj] < gp.sig1_x[jj-1]:
                 return True
 
+
+
     return False
+
+
+
+

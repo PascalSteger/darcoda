@@ -246,7 +246,7 @@ class Params:
     def scale_prop_chi2(self):
         if gp.pops == 1:
             # depending on nu parametrization: only
-            self.nu1    *= gp.chi2t_nu1/gp.chiqst
+            self.nu1    *= gp.chi2t_nu1/gp.chi2t
 
             # depending on siglos, to be changed if mainly siglos contributing
             self.dens   *= gp.chi2t_sig1/gp.chi2t
@@ -257,28 +257,33 @@ class Params:
             self.norm *= 1.
         elif gp.pops == 2:
             # depending on nu parametrization:
-            self.nu1    *= gp.chi2t_nu1/gp.chi2t
-            self.nu2    *= gp.chi2t_nu2/gp.chi2t
+            self.nu1    *= np.sqrt(gp.chi2t_nu1/gp.chi2t)
+            gh.checknan(self.nu1)
+            self.nu2    *= np.sqrt(gp.chi2t_nu2/gp.chi2t)
+            gh.checknan(self.nu1)
 
             # depending on siglos
-            self.dens   *= gp.chi2t_sig/gp.chi2t
-            self.Msl    *= gp.chi2t_sig/gp.chi2t
-            self.delta1 *= gp.chi2t_sig/gp.chi2t
+            self.dens   *= np.sqrt(gp.chi2t_sig/gp.chi2t)
+            gh.checknan(self.dens)
+            self.Msl    *= np.sqrt(gp.chi2t_sig/gp.chi2t)
+            gh.checknan(self.Msl)
+            self.delta1 *= np.sqrt(gp.chi2t_sig/gp.chi2t)
+            gh.checknan(self.delta1)
 
         return self
 
 
 
     def has_negative(self):
-        if min(self.nu1) < 0.:
+        if min(self.nu1) < 0. and not gp.nulog:
             return True
-        if min(phys.dens(gp.xipol,self.dens)<0.):
+        if gp.geom=='sphere' and min(phys.dens(gp.xipol,self.dens)<0.):
             return True
         if min(self.Msl<0):
             self.Msl = -self.Msl
             print 'flipped Msl'
         if gp.pops==2:
-            if min(self.nu2<0):
+            if min(self.nu2) < 0. and not gp.nulog:
                 return True
         return False
     

@@ -11,6 +11,15 @@ def myfill(x):
 
 
 
+def checknan(arr):
+    if np.isnan(np.sum(arr)):
+        print 'NaN found! Go check where it occured!'
+        import pdb
+        pdb.set_trace()
+    return
+
+
+
 def derivative(f):
     'Computes the numerical derivative of a function.'
     def df(x, h=0.1e-5):

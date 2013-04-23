@@ -23,8 +23,10 @@ def deproject(x, nu2d, err2d): #[pc], [munit/lunit^2], [munit/lunit^2]
     'take 2D density and density error, get back 3D density and error'
     nu3d =  int_2D3D(x, nu2d) #[munit/lunit^3]
     if min(nu3d)<0.:
-        print 'got negative 3D density!'
-        exit(1)
+        print '*** got negative 3D density! ***'
+        for i in range(len(nu3d)):
+            if nu3d[i] < 0.: nu3d[i] = nu3d[i-1]
+        print 'corrected iteratively to last valid value'
 
     # normalization: calc tot mass from 2D and 3D, set equal, get center 3D density rho0 right
     # and convert it into [munit/lunit^3]
@@ -36,6 +38,7 @@ def deproject(x, nu2d, err2d): #[pc], [munit/lunit^2], [munit/lunit^2]
     # fractional error propagation
     err3d = nu3d * err2d/nu2d #[munit/lunit^3]
 
+    gh.checknan(nu3d)
     return x, nu3d, err3d #[pc], [munit/lunit^3], [munit/lunit^3]
 
 
@@ -71,7 +74,10 @@ def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
     for i in range(0,len(denspars)):
         tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
     # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
-    return 10.0**tmp                    # [msun/pc^3]
+    dout = 10.0**tmp            # [Msun/pc^3]
+    gh.checknan(dout)
+
+    return dout                 # [msun/pc^3]
 
 
 
@@ -100,7 +106,7 @@ def calculate_dens(r, M):                           # [lunit], [munit]
 
     deltavol = 4./3.*np.pi*(r0[1:]**3-r0[:-1]**3) # [lunit^3]
     dens     = deltaM / deltavol                  # [munit/lunit^3]
-
+    gh.checknan(dens)
     return dens                                   # [munit/lunit^3]
 
 
@@ -120,6 +126,7 @@ def calculate_surfdens(r, M):                       # [lunit], [munit]
     
     deltavol = np.pi*(r0[1:]**2 - r0[:-1]**2)        # [lunit^2]
     dens = deltaM/deltavol                           # [munit/lunit^2]
+    gh.checknan(dens)
     return dens                                      # [munit/lunit^2]
 
 
@@ -145,6 +152,7 @@ def Mr2D(rdat, dens2D):
     M_r[0] = dens2D[0]*np.pi*rdat[0]**2
     for i in range(1,len(rdat)):
         M_r[i] = M_r[i-1] + dens2D[i]*np.pi*(rdat[i]**2 - rdat[i-1]**2)
+    gh.checknan(M_r)
     return M_r
 
 
@@ -200,6 +208,7 @@ def Mr3D(rdat, denspars):              # [lunit], [munit/lunit^3]
         for i in range(len(M_r)):
             if(M_r[i]<0):
                 M_r[i] == 0.0           # [munit]
+    gh.checknan(M_r)
     return M_r                          # [munit]
 
 
@@ -208,22 +217,19 @@ def Mr3D(rdat, denspars):              # [lunit], [munit/lunit^3]
 
 
 
-def nu(nupars):
+def nu(nupars):                 # [(log10) Msun/pc^3]
     '''General function to describe the density profile.\
-    before: Fully non-parametric decreasing function [c.f. Kz function].\
     now:    just return interpolated nupars directly'''
-    # drdat = rdat[1:]-rdat[:-1]
-    nuout = np.zeros(len(nupars))
 
-    # nuout[0] = nupars[0]
-    # for i in range(1,len(rdat)):
-    #     nuout[i] = nuout[i-1] * np.exp(-nupars[i]) # * drdat[i-1]
+    if gp.nulog:
+        nuout = np.power(10.0, nupars) # [Msun/pc^3]
+    else:
+        nuout = nupars[:]       # [Musn/pc^3]
 
-    for i in range(len(nupars)):
-        nuout[i] = nupars[i]
-    nuout[-1] = 0.9*nuout[-2] # or interpolate via gp.ipol.nudat1[-1]
-    # f = gfun.ipol(rdat,nuout,xipol)
-    return nuout
+    gh.checknan(nuout)
+    return nuout                # [Msun/pc^3]
+
+
 
 
 
@@ -310,8 +316,8 @@ def extra_delta(delta_r):                 # [1]
 
 
 
-def sig_los(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D], [1]
-    'General function to calculate \sigma_{los}:'
+def sig_los_tot(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D], [1]
+    'General function to calculate \sigma_{los}, with extrapolation of each factor'
 
     pnts = gp.nipol
     r0,r_tot,rmin,rmax,dr,r_outer = get_zarrays(x) #6*[pc]
@@ -338,7 +344,7 @@ def sig_los(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D], [1
     siglos2surf = int_siglos2surf(pnts, r_tot, delta_tot, nu_tot, sigr2)
     # takes [1], [pc], [1], [munit/pc^3], [(km/s)^2], gives back # [munit/pc^2 (km/s)^2]
 
-    surfden     = int_surfden( pnts, r_tot, nu_tot)
+    surfden     = int_surfden(r_tot, nu_tot)
     # takes [1], [pc], [munit/pc^3], gives back [munit/pc^2]
     
 
@@ -357,4 +363,45 @@ def sig_los(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D], [1
     # if #bins < 30, use following fix to get first bin approx. right
     # TODO: more investigations needed in int_sigr2,surfden to get rid of the following line
     # siglos[0] = siglos[1]*0.95
+    gh.checknan(siglos)
+    return siglos                       # [km/s]
+
+
+
+
+
+
+
+def sig_los(M_x, nu_r, delta_r): #[munit, 3D], [munis/pc^3], [1]
+    '''General function to calculate \sigma_{los} with analytic integral over fitting polynomial'''
+
+    r0 = gp.xipol[:]
+    
+    # Calculate density and M force:
+    mprioru = get_mprior(M_x) #[1], slope
+
+    if gp.analytic:
+        from gl_analytic import sig2_anf, surfden_sig2_anf, surfden_anf, sig_los_anf
+        sigr2_an  = sig2_anf(r0)              # [TODO]
+        siglos2surf_an = surfden_sig2_anf(r0) # [TODO]
+        surfden_an  = surfden_anf(r0)         # [TODO]
+        siglos_an = sig_los_anf(r0)           # [TODO]
+
+    delta_r_t   = ant_delta_r_t(r0, delta_r) # [1]
+
+    sigr2       = ant_sigr2(r0, delta_r_t, M_x, nu_r)
+    # takes [pc], [1*pc], [munit], [munit/pc^3], gives back [(km/s)^2]
+    siglos2surf = ant_siglos2surf(r0, delta_r, nu_r, sigr2)
+    # takes [pc], [1], [munit/pc^3], [(km/s)^2], gives back # [munit/pc^2 (km/s)^2]
+    surfden     = int_surfden(r0, nu_r)
+    # takes [pc], [munit/pc^3], gives back [munit/pc^2]
+    posi        = siglos2surf/surfden
+    # takes [munit/pc^2 (km/s)^2], gives back [(km/s)^2]
+    
+    for i in range(len(posi)):
+        if posi[i]<0: posi[i] = 1e-20 # correct for too low and possibly negative bogus values
+
+
+    siglos      = np.sqrt(posi)         # [km/s]
+    gh.checknan(siglos)
     return siglos                       # [km/s]

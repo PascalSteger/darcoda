@@ -23,34 +23,23 @@ if gp.investigate == 'hernquist':
   sim = 1                                 # choose simulation
   
   # number of populations/tracers. both set to 0 means: take all particles
-  pops = 2
-  ntracers1 = 0
-  ntracers2 = 5000
+  pops = 1
+  ntracers1 = 10000
+  ntracers2 = 0
   
-  if pops==1:
-    totmass = 1.
-    ntot =1.e6
-  elif pops==2:
-    if ntracers1>0: # look at dm
-      totmass = 1.
-      ntot = 1.e6
-    else: # look at stars
-      totmass = 1.e-5
-      ntot = 1.e6
-      
-  munit = totmass/ntot
+  munit = 1.                            # [Msun]
   
-  rcut=1.e10                              # cutting radius
+  rcut=1.e10                            # cutting radius
   
-  bins = 12                               # set binning
-  rmin = 0.; rmax = 3.
-  
-  
+  bins = 12                             # set binning
+  rmin = 0. * gp.ascale; rmax = 3.*gp.ascale # [pc]
+    
   rerror  = 0.1*(rmax-rmin)/bins         # distance error
   vrerror = 0.                            # 0.01 # velocity error. only raises sig_los!
 
   nit = 1000                                # set number of iterations
   procs = 16                              # number of processes for parallel execution
+
 
 
   dir = '/home/ast/read/dark/dwarf_data/data_hernquist/'
@@ -92,6 +81,7 @@ if gp.investigate == 'hernquist':
 
   if ntracers1 == 0 and ntracers2 == 0:
     import commands
+    print 'input: ',dir+'/simulation/unit_hern_1_pos.txt'
     out = commands.getstatusoutput('wc -l '+dir+'/simulation/unit_hern_1_pos.txt')
     import shlex
     my=shlex.split(out[1])
@@ -147,6 +137,9 @@ elif gp.investigate == 'walker':
 
   def get_params_file(n):
     return dir+'scale_%i.txt' %(n)
+
+  def get_ntracer_file(n):
+    return dir+'ntracer_%i.txt' %(n)
 
   def get_pos_sphere_file(n):
     return dir+'sphericalpos_%i.txt' %(n)

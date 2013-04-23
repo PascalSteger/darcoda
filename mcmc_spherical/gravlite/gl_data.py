@@ -21,6 +21,7 @@ elif gp.geom == 'disc':
 
 
 
+
 class Datafile:
     '''store all data from mock/observation files'''
 
@@ -71,12 +72,12 @@ class Datafile:
         self.densx, self.densdat, self.denserr = phys.deproject(self.densx_2D[:],\
                                                                 self.densdat_2D[:],\
                                                                 self.denserr_2D[:])
-        # takes [pc], 2x [munit/pc**2], gives [pc], 2x [munit/pc**3]
+        # takes [pc], 2x [munit/pc**2], gives [pc], 2*[munit/pc**3]
         
 
 
-        self.Mx   = self.densx[:]                        # [pc,3D]
-        self.Mdat = phys.Mr3D(self.densx, self.densdat)  # [Munit], 3D
+        self.Mx   = self.densx[:]                       # [pc,3D]
+        self.Mdat = phys.Mr3D(self.densx, self.densdat) # [Munit], 3D
         self.Merr = self.Merr_2D * self.Mdat/self.Mdat_2D # [Munit], 3D
 
 
@@ -119,20 +120,23 @@ class Datafile:
     def read_nu(self):
         'read surface density of tracer stars, deproject, renormalize'
 
-        self.nux1_2D, self.nudat1_2D, self.nuerr1_2D = gh.readcol(gp.files.nufiles[1])
+        self.nux1_2D, self.nudat1_2D, self.nuerr1_2D = gh.readcol(gp.files.nufiles[1]) # component 1 in Walker
         # [rcore], [dens0], [dens0]
         self.nuerr1_2D *= gp.nuerrcorr #[dens0]
 
         # switch to Munit (msun) and pc here
-        self.nux1_2D    = self.nux1_2D[:]    * gp.rcore_2D[1]
+        self.nux1_2D    = self.nux1_2D[:]    * gp.rcore_2D[1] # component 1
         self.nudat1_2D  = self.nudat1_2D[:]  * gp.dens0pc_2D[1]
         self.nuerr1_2D  = self.nuerr1_2D[:]  * gp.dens0pc_2D[1]
         
-        # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3], already normalized to same total mass
-        self.nux1, self.nudat1, self.nuerr1 = phys.deproject(self.nux1_2D,\
-                                                             self.nudat1_2D,\
-                                                             self.nuerr1_2D)
-
+        # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3],
+        # already normalized to same total mass
+        if gp.geom=='sphere':
+            self.nux1, self.nudat1, self.nuerr1 = phys.deproject(self.nux1_2D,\
+                                                                 self.nudat1_2D,\
+                                                                 self.nuerr1_2D)
+        else:
+            self.nux1, self.nudat1, self.nuerr1 = self.nux1_2D, self.nudat1_2D, self.nuerr1_2D
         # check mass is the same
         # totmass_2D = phys.Mr2D(self.nux1_2D*gp.rcore_2D[1], self.nudat1_2D*gp.dens0pc_2D[1])
         # totmass_3D = phys.Mr3D(self.nux1, self.nudat1)  #[totmass], 3D
@@ -146,9 +150,9 @@ class Datafile:
         # self.nudat1 /= gp.dens0pc[1]   #[dens0], 3D
         # self.nuerr1 /= gp.dens0pc[1]   #[dens0], 3D
 
-        # TODO: low priority, tweack integration
+        # TODO: low priority, tweak integration
         # from gl_int import *
-        # Sig2D = int_surfden(gp.nipol,self.nux1*gp.rcore[1], self.nudat1*gp.dens0pc[1])
+        # Sig2D = int_surfden(self.nux1*gp.rcore[1], self.nudat1*gp.dens0pc[1])
 
 
         if gp.pops == 2:
@@ -161,11 +165,17 @@ class Datafile:
             self.nudat2_2D  = self.nudat2_2D[:]  * gp.dens0pc_2D[2]
             self.nuerr2_2D  = self.nuerr2_2D[:]  * gp.dens0pc_2D[2]
         
-            # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3], already normalized to same total mass
+            # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3],
+            # already normalized to same total mass
             # TODO: change nux2 from nux2_2D
-            self.nux2, self.nudat2, self.nuerr2 = phys.deproject(self.nux2_2D,\
+            if gp.geom == 'sphere':
+                self.nux2, self.nudat2, self.nuerr2 = phys.deproject(self.nux2_2D,\
                                                                      self.nudat2_2D,\
                                                                      self.nuerr2_2D)
+            else:
+                self.nux2   = self.nux2_2D
+                self.nudat2 = self.nudat2_2D
+                self.nuerr2 = self.nuerr2_2D
 
             # check mass is the same
             # totmass_2D = phys.Mr2D(self.nux2_2D*gp.rcore_2D[2], self.nudat2_2D*gp.dens0pc_2D[2])
@@ -182,7 +192,7 @@ class Datafile:
             
             # # to check right integration. TODO: low priority: tweak
             # # from gl_int import *
-            # # Sig2D = int_surfden(gp.nipol,self.nux2*gp.rcore[2], self.nudat2*gp.dens0pc[2])
+            # # Sig2D = int_surfden(self.nux2*gp.rcore[2], self.nudat2*gp.dens0pc[2])
 
 
 
@@ -230,13 +240,20 @@ class Datafile:
         # i.e. more bins where more tracers
         gp.xipol = np.arange(gp.nipol)*binlength + gp.xmin    # [pc]
 
+
+        self.nux1_2D     = gp.xipol                                # [pc]
+        self.nudat1_2D   = gh.ipollog(dat.nux1_2D, dat.nudat1_2D, self.nux1_2D) # [munit/pc^3]
+        self.nuerr1_2D   = gh.ipollog(dat.nux1_2D, dat.nuerr1_2D, self.nux1_2D) # [munit/pc^3]
+
+
         self.nux1     = gp.xipol                                # [pc]
         self.nudat1   = gh.ipollog(dat.nux1, dat.nudat1, self.nux1) # [munit/pc^3]
         self.nuerr1   = gh.ipollog(dat.nux1, dat.nuerr1, self.nux1) # [munit/pc^3]
 
         self.Mx       = gp.xipol                                # [pc]
+        self.Mx_2D    = gp.xipol
         # do not use ipollog here to avoid slightly wiggling output
-        self.Mdat = gh.ipol(dat.Mx, dat.Mdat, self.Mx)      # [munit]
+        self.Mdat     = gh.ipol(dat.Mx, dat.Mdat, self.Mx)      # [munit]
         self.Merr     = gh.ipol(dat.Mx, dat.Merr, self.Mx)  # [munit]
 
         self.densx     = gp.xipol #[pc]
@@ -251,6 +268,10 @@ class Datafile:
         self.sigerr1  = gh.ipollog(dat.sigx1, dat.sigerr1, self.sigx1) # [km/s]
 
         if gp.pops==2:
+            self.nux2_2D     = gp.xipol                                # [pc]
+            self.nudat2_2D   = gh.ipollog(dat.nux2_2D, dat.nudat2_2D, self.nux2_2D) # [munit/pc^3]
+            self.nuerr2_2D   = gh.ipollog(dat.nux2_2D, dat.nuerr2_2D, self.nux2_2D) # [munit/pc^3]
+
             self.nux2    = gp.xipol # [pc]
             self.nudat2  = gh.ipollog(dat.nux2, dat.nudat2, self.nux2) #[munit/pc^3]
             self.nuerr2  = gh.ipollog(dat.nux2, dat.nuerr2, self.nux2) #[munit/pc^3]

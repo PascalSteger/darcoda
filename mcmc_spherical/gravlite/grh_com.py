@@ -1,12 +1,10 @@
 #!/usr/bin/python2.7
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''find center of mass of xyz data, subtract, give TODO'''
-
 import numpy as np
-import params as ps
+import gl_params as gp
+import gr_params as gpr
 
-print ps.simpos
-x,y,z=np.loadtxt(ps.simpos,skiprows=1,unpack=True)
+print 'input: ', gpr.simpos
+x,y,z=np.loadtxt(gpr.simpos,skiprows=1,unpack=True)
 ndm=len(x)
 
 centreofmassx=np.sum(x)/ndm
@@ -15,12 +13,12 @@ centreofmassz=np.sum(z)/ndm
 
 print centreofmassx,centreofmassy,centreofmassz
 
-xnew=x-centreofmassx
-ynew=y-centreofmassy
-znew=z-centreofmassz
+xnew = (x-centreofmassx)*gp.ascale
+ynew = (y-centreofmassy)*gp.ascale
+znew = (z-centreofmassz)*gp.ascale
 
-print ps.fileposcenter
-filepos=open(ps.fileposcenter,'w')
+print 'output: ', gpr.fileposcenter
+filepos=open(gpr.fileposcenter,'w')
 print>>filepos,'x','y','z'
 for k in range(ndm):
     print>>filepos,xnew[k],ynew[k],ynew[k]

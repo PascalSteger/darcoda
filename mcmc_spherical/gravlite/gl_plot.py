@@ -50,42 +50,43 @@ def plot_data():
     if not gp.testplot: return
 
     ##### plot nu 1
-    if gp.analytic: ax1.plot(gp.dat.nux1, rho_anf(gp.dat.nux1), c='blue', lw=5)
-    x = gp.dat.nux1 # [pc]
-    lbound = compare_nu(1,True,False) - compare_nu(1,True,True) #[munit/pc**2]
-    ubound = compare_nu(1,True,False) + compare_nu(1,True,True) #[munit/pc**2]
+    x = gp.ipol.nux1_2D                                         # [pc]
+    if gp.analytic: ax1.plot(x, surfden_anf(x), c='blue', lw=4)
+
+    lbound = compare_nu(1,True,False) - compare_nu(1,True,True) # [munit/pc**2]
+    # gives gp.ipol.nudat1_2D
+    ubound = compare_nu(1,True,False) + compare_nu(1,True,True) # [munit/pc**2]
     ax1.fill_between(x,lbound,ubound,alpha=0.5,color='g') #[pc], 2*[munit/pc**2]
     ax1.set_yscale('log')
-    setlims(ax1,[0,max(x)],[min(lbound),max(ubound)])
+    setlims(ax1,[0,max(x)],[min(lbound)/1.5,1.5*max(ubound)])
     ax1.set_xlabel('$r\\quad[\\rm{pc}]$')
-    ax1.set_ylabel('$\\nu\\quad[\\rm{M}_\odot/\\rm{pc}^2]$')
-
+    ax1.set_ylabel('$\\nu_1\\quad[\\rm{M}_\odot/\\rm{pc}^2]$')
 
     ##### sigma_LOS 1
-    if gp.analytic: ax2.plot(gp.dat.sigx1, sig_los_anf(gp.dat.sigx1), c='blue', lw=5)
-    x = gp.dat.sigx1 #[pc]
-    lbound = (gp.dat.sigdat1 - gp.dat.sigerr1) # [km/s]
-    ubound = (gp.dat.sigdat1 + gp.dat.sigerr1) # [km/s]
-    ax2.fill_between(x,lbound,ubound,alpha=0.5,color='green') #[pc], 2*[km/s]
-    setlims(ax2,[0,max(x)],[0,max(ubound)])
+    if gp.analytic: ax2.plot(gp.ipol.sigx1, sig_los_anf(gp.ipol.sigx1), c='blue', lw=5)
+    x = gp.ipol.sigx1                                         # [pc]
+    lbound = (gp.ipol.sigdat1 - gp.ipol.sigerr1)                # [km/s]
+    ubound = (gp.ipol.sigdat1 + gp.ipol.sigerr1)                # [km/s]
+    ax2.fill_between(x,lbound,ubound,alpha=0.5,color='green') # [pc], 2*[km/s]
+    setlims(ax2,[0,max(x)],[0,1.5*max(ubound)])
     ax2.set_xlabel('$r\\quad[\\rm{pc}]$')
     ax2.set_ylabel('$\\sigma_{1,\\rm{LOS}}\\quad[\\rm{km/s}]$')
     
     if gp.pops==2:
         #####  nu 2
-        x = gp.dat.nux2_2D #[pc]
-        lbound = compare_nu(2,True,False) - compare_nu(2,True,True)# [munit/pc**2]
+        x = gp.ipol.nux2_2D #[pc]
+        lbound = compare_nu(2,True,False) - compare_nu(2,True,True) # [munit/pc**2]
         ubound = compare_nu(2,True,False) + compare_nu(2,True,True) # [munit/pc**2]
         ax3.fill_between(x, lbound, ubound, alpha=0.5, color='green')
         ax3.set_yscale('log')
-        setlims(ax3,[0,max(x)],[min(lbound),max(ubound)])
+        setlims(ax3,[0,max(x)],[min(lbound)/1.5,max(ubound)*1.5])
         ax3.set_xlabel('$r\\quad[\\rm{pc}]$')
         ax3.set_ylabel('$\\nu_2\\quad[\\rm{M}_\odot/\\rm{pc}^2]$')
         
         ##### sigmalos 2
-        x = gp.dat.sigx2                                      # [pc]
-        lbound = (gp.dat.sigdat2 - gp.dat.sigerr2)            # [km/s]
-        ubound = (gp.dat.sigdat2 + gp.dat.sigerr2)            # [km/s]
+        x = gp.ipol.sigx2                          # [pc]
+        lbound = (gp.ipol.sigdat2 - gp.ipol.sigerr2) # [km/s]
+        ubound = (gp.ipol.sigdat2 + gp.ipol.sigerr2) # [km/s]
         ax4.fill_between(x, lbound, ubound, alpha=0.5, color='green')
         setlims(ax4,[0,max(x)],[0,max(ubound)])
         ax4.set_xlabel('$r\\quad[\\rm{pc}]$')
@@ -93,47 +94,56 @@ def plot_data():
 
     if gp.plotdens:
         # #### density 2D
-        # x = gp.dat.densx_2D * gp.rcore[0]        # [pc]
-        # lbound = (gp.dat.densdat_2D - gp.dat.denserr_2D)*gp.dens0pc_2D[0] #[munit/pc^2]
-        # ubound = (gp.dat.densdat_2D + gp.dat.denserr_2D)*gp.dens0pc_2D[0] #[munit/pc^2]
+        # x = gp.ipol.densx_2D * gp.rcore[0]        # [pc]
+        # lbound = (gp.ipol.densdat_2D - gp.ipol.denserr_2D)*gp.dens0pc_2D[0] #[munit/pc^2]
+        # ubound = (gp.ipol.densdat_2D + gp.ipol.denserr_2D)*gp.dens0pc_2D[0] #[munit/pc^2]
         # ax5.fill_between(x, lbound, ubound, alpha=0.5, color='g')
 
 
         # # if gp.lim:   setlims(ax5,[0,max(x)/2],[1e-4,1.5*max(den)])
         # if gp.model:
-        #     x = gp.dat.Mx_2D * gp.rcore[0]                      # [pc]
+        #     x = gp.ipol.Mx_2D * gp.rcore[0]                      # [pc]
         #     rhodm, rhostar1, rhostar2 = rhowalker_2D(x) # 3*[munit/pc^2]
         #     ax5.plot(x, (rhodm+rhostar1+rhostar2), c='blue', lw=4)
         #     ax5.plot(x, (rhostar1+rhostar2), c='blue', lw=3, ls='-.')
 
 
         #### density 3D
-        x = gp.dat.densx        # [pc]
-        lbound = (gp.dat.densdat - gp.dat.denserr) #[munit/pc**3]
-        ubound = (gp.dat.densdat + gp.dat.denserr) #[munit/pc**3]
+        x = gp.ipol.densx                          # [pc]
+        lbound = (gp.ipol.densdat - gp.ipol.denserr) # [munit/pc**3]
+        ubound = (gp.ipol.densdat + gp.ipol.denserr) # [munit/pc**3]
         ax5.fill_between(x, lbound, ubound, alpha=0.5, color='green')
 
         ax5.set_xlabel('$r\\quad[\\rm{pc}]$')
-        ax5.set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^2]$')
+        if gp.geom == 'sphere':
+            ax5.set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
+        else:
+            ax5.set_ylabel('$\\Sigma\\quad[\\rm{M}_\\odot/\\rm{pc}^2]$')
+            
 
         # if gp.lim: setlims(ax5,[0,max(x)],[min(lbound),max(ubound)])
 
         if gp.model:
-            x = gp.dat.Mx_2D[:]                         # [pc]
+            x = gp.ipol.Mx_2D[:]                        # [pc]
             rhodm, rhostar1, rhostar2 = rhowalker_3D(x) # 3*[munit/pc^3]
             rhotot = rhodm + rhostar1 + rhostar2
             ax5.plot(x, rhotot, c='blue', lw=4)
             setlims(ax5,[0,max(x)],[min(rhotot),max(rhotot)])
             ax5.plot(x, (rhostar1+rhostar2), c='blue', lw=3, ls='-.')
 
+        if gp.analytic:
+            x = gp.xipol[:]                        # [pc]
+            rhotot = rho_anf(x)
+            ax5.plot(x, rhotot, c='blue', lw=4)
+            setlims(ax5,[0,max(x)],[min(rhotot),max(rhotot)])
 
     else:
         #### mass
-        x = gp.dat.Mx_2D #[pc]
-        lbound = (gp.dat.Mdat_2D - gp.dat.Merr_2D) # [munit,2D]
-        ubound = (gp.dat.Mdat_2D + gp.dat.Merr_2D) # [munit,2D]
+        x = gp.ipol.Mx_2D                            # [pc]
+        lbound = (gp.ipol.Mdat_2D - gp.ipol.Merr_2D) # [munit,2D]
+        ubound = (gp.ipol.Mdat_2D + gp.ipol.Merr_2D) # [munit,2D]
         ax5.fill_between(x, lbound, ubound, alpha=0.5, color='green')
-        #ax5.plot(x, M_anf(gp.dat.Mx)*gp.totmass[0], c='blue', lw=4) # only for Hernquist
+        #ax5.plot(x, M_anf(gp.ipol.Mx)*gp.totmass[0], c='blue', lw=4) # only for Hernquist
         ax5.set_xlabel('$r\\quad[\\rm{pc}]$')
         ax5.set_ylabel('$M\\quad[\\rm{M}_\\odot]$')
         if gp.lim: ax5.set_ylim([0.,1.2*max(ubound)])
@@ -159,14 +169,14 @@ def get_plot_data():
 
     if gp.pops==1:
         x1 = gp.ipol.nux1[:]
-        nu1 = int_surfden(gp.nipol, x1, gp.nu1_x)
+        nu1 = int_surfden(x1, gp.nu1_x)
         sig1 = gp.sig1_x
         return x1, r_tot, nu1, sig1, M_tot, gp.d1_x
     elif gp.pops==2:
         x1 = gp.ipol.nux1[:]; x2 = gp.ipol.nux2[:]
 
-        nu1 = int_surfden(gp.nipol, x1, gp.nu1_x)
-        nu2 = int_surfden(gp.nipol, x2, gp.nu2_x)
+        nu1 = int_surfden(x1, gp.nu1_x)
+        nu2 = int_surfden(x2, gp.nu2_x)
 
         sig1 = gp.sig1_x; sig2 = gp.sig2_x
         return x1, r_tot, nu1, sig1, M_tot, gp.d1_x, nu2, sig2, gp.d2_x

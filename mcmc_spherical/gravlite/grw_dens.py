@@ -56,7 +56,12 @@ for i in range(gpr.ncomp):
     rs = r  #[rcore] # if no initial offset is whished
 
     print 'output: '
-    print gpr.get_dens_file(i)
+    print gpr.get_ntracer_file(i)
+    tr = open(gpr.get_ntracer_file(i),'w')
+    print>>tr,totmass
+    tr.close()
+
+    print gpr.get_dens_file(i)    
     de = open(gpr.get_dens_file(i),'w')
     print gpr.get_enc_mass_file(i)
     em = open(gpr.get_enc_mass_file(i),'w')
