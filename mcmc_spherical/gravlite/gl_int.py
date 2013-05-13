@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 '''all integrals from physics_sphere'''
 
@@ -112,7 +112,7 @@ def int_poly_inf(r0,poly):
 def ant_sigr2(r0, intdelta, M, nu): #  [1], [pc], [1], [munit], [munit/pc^3]
     'sigma_r^2'
     if min(nu)<0.:
-        print 'error: negative nu'
+        print >> 'error: negative nu'
         pdb.set_trace()
 
     # get full integrand first
@@ -322,7 +322,7 @@ def int_2D3D(r, nu2d):                   # [munit/lunit^2], [lunit]
 
     # assume linear change in r, linear decay in log space for nu
     r, nu2d = ext4log(r,nu2d)           # [lunit], [munit/lunit^2]
-    dnubydR = gh.derivipol(nu2d,r)      # [munit/lunit^3] # or use derivipol, derivcoarse
+    dnubydR = gh.derivcoarse(nu2d,r)      # [munit/lunit^3] # use deriv, derivipol, or derivcoarse
     # correct last bin (lest it goes positive)
     dnubydR[-1] = dnubydR[-2]
 

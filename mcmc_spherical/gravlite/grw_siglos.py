@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''calculate velocity dispersion of 2D rings from a Walker dataset'''
 
@@ -11,6 +11,7 @@ import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_class_files import *
+from gl_helper import bin_r_linear, bin_r_log
 
 for comp in range(gpr.ncomp):
     # get radius, used for all binning
@@ -24,13 +25,14 @@ for comp in range(gpr.ncomp):
     #set binning
     #gpr.nbins = (max - min)*N^(1/3)/(2*(Q3-Q1)) #(method of wand)
     rmin = 0.; rmax=max(r) # [rcore]
-    binlength = (rmax-rmin)/gpr.nbins #[rcore]
-    binmin = np.zeros(gpr.nbins);  binmax = np.zeros(gpr.nbins) #[rcore]
-    rbin = np.zeros(gpr.nbins) #[rcore]
-    for i in range(gpr.nbins):
-        binmin[i] = rmin+i*binlength        #[rcore]
-        binmax[i] = rmin+(i+1)*binlength    #[rcore]
-        rbin[i]   = binmin[i]+0.5*binlength #[rcore]
+
+
+
+    if gp.lograd:
+        # space logarithmically in radius
+        binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
+    else:
+        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
 
     # offset from the start!
     rs = gpr.rerror*np.random.randn(len(r))+r #[rcore]
@@ -83,7 +85,7 @@ for comp in range(gpr.ncomp):
         print >> vfil,rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos) #/np.sqrt(n))
     vfil.close()
 
-    if not gp.testplot_dwarfs: continue
+    if not gp.testplot_read: continue
 
     ion(); subplot(111)
     print 'rbin = ',rbin,' rcore'
@@ -95,6 +97,8 @@ for comp in range(gpr.ncomp):
     xlabel(r'$r [rcore]$')
     ylabel(r'$\langle\sigma_{LOS}\rangle [km/s]$')
     ylim([-5,30])
+    xscale('log')
+    xlim([np.min(rbin),np.max(rbin)])
     #plt.legend(['\rho','\rho'],'lower left'); #title(dwarf)
     savefig(gpr.get_siglos_png(comp))
     if gpr.showplots:

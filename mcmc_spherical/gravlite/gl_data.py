@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''read in data and store it in appropriate class'''
 
@@ -235,10 +235,10 @@ class Datafile:
     def interpol(self, dat):
         'interpolate 3D quantities to new regularly-spaced radial bins'
         gp.xmin  = min(dat.nux1); gp.xmax = max(dat.nux1) # [pc]
-        binlength = (gp.xmax-gp.xmin)/(gp.nipol-1.)       # [pc]
-        # TODO: change s.t. binning is proportional to tracer density,
-        # i.e. more bins where more tracers
-        gp.xipol = np.arange(gp.nipol)*binlength + gp.xmin    # [pc]
+        if gp.lograd:
+            gp.xipol = np.logspace(np.log10(gp.xmin),np.log10(gp.xmax),gp.nipol) # [pc]
+        else:
+            gp.xipol = np.linspace(gp.xmin,gp.xmax,gp.nipol)    # [pc]
 
 
         self.nux1_2D     = gp.xipol                                # [pc]
@@ -294,23 +294,23 @@ class Datafile:
 
     def output(self):
         'quick output of all 3D quantities'
-        print 'Mx = ',   gh.pretty(self.Mx), ' pc'
-        print 'Mdat  = ',gh.pretty(self.Mdat), ' munit'
-        print 'Merr = ', gh.pretty(self.Merr), ' munit'
+        print >> 'Mx = ',   gh.pretty(self.Mx), ' pc'
+        print >> 'Mdat  = ',gh.pretty(self.Mdat), ' munit'
+        print >> 'Merr = ', gh.pretty(self.Merr), ' munit'
 
-        print 'nux1  = ',gh.pretty(self.nux1), ' pc'
-        print 'nudat1 =',gh.pretty(self.nudat1), ' munit/pc^3'
-        print 'nuerr1=', gh.pretty(self.nuerr1), ' munit/pc^3'
+        print >> 'nux1  = ',gh.pretty(self.nux1), ' pc'
+        print >> 'nudat1 =',gh.pretty(self.nudat1), ' munit/pc^3'
+        print >> 'nuerr1=', gh.pretty(self.nuerr1), ' munit/pc^3'
         
-        print 'sigx1 = ',  gh.pretty(self.sigx1), ' pc'
-        print 'sigdat1 = ',gh.pretty(self.sigdat1), 'km/s'
-        print 'sigerr1 = ',gh.pretty(self.sigerr1), 'km/s'
+        print >> 'sigx1 = ',  gh.pretty(self.sigx1), ' pc'
+        print >> 'sigdat1 = ',gh.pretty(self.sigdat1), 'km/s'
+        print >> 'sigerr1 = ',gh.pretty(self.sigerr1), 'km/s'
         if gp.pops==2:
-            print 'nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3'
-            print 'nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3'
+            print >> 'nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3'
+            print >> 'nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3'
             
-            print 'sigdat2 = ',gh.pretty(self.sigdat2), ' km/s'
-            print 'sigerr2 = ',gh.pretty(self.sigerr2), ' km/s'
+            print >> 'sigdat2 = ',gh.pretty(self.sigdat2), ' km/s'
+            print >> 'sigerr2 = ',gh.pretty(self.sigerr2), ' km/s'
 
 
 

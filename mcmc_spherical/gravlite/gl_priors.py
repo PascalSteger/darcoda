@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''check all parameters for prior constraints'''
 import gl_params as gp
@@ -20,11 +20,17 @@ def check_density():
         rightnu = phys.nu(gp.parst.nu1[1:])
         leftnu  = phys.nu(gp.parst.nu1[:-1])
         if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
-            print 'nutol = ',gp.nutol,abs(rightnu-leftnu)/rightnu
-            gpl.plot(gp.xipol, phys.nu(gp.parst.nu1)); gpl.yscale('log')
-            pdb.set_trace()
+            # pdb.set_trace()
+            print 'nutol = ',gp.nutol,' < nu1: ',max(abs(rightnu-leftnu)/rightnu)
+            gf.get_working_pars()    # change gp.parst to gp.init_configs
             return True
-            # TODO: 2nd population!
+        if gp.pops==2:
+            rightnu = phys.nu(gp.parst.nu2[1:])
+            leftnu  = phys.nu(gp.parst.nu2[:-1])
+            if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
+                print 'nutol = ',gp.nutol,' < nu2: ',max(abs(rightnu-leftnu)/rightnu)
+                gf.get_working_pars() # change gp.parst to gp.init_configs
+                return True
 
     gp.LOG.debug( 'now checking dens > gprior')
     if gp.gprior > 0 and max(denscheck) > gp.gpriorconv:
@@ -45,7 +51,6 @@ def check_mass():
     for i in range(len(denscheck)-1):
         if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol and gp.geom == 'sphere':
             print 'rising dens prior, more than 200% up'
-
             gf.get_working_pars()
             # gp.parst.dens[i+1] *= 0.9
             # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
@@ -76,32 +81,34 @@ def check_delta():
     gp.LOG.debug( 'now checking delta <= 1')
     d1 = phys.delta(gp.parst.delta1)
     if max(d1)>1.:
-        for jj in range(gp.nipol):
-            if d1[jj] >1.:
-                gp.parst.delta1[jj] /= 2.
-                print 'delta1 too high, corrected entry ',jj,' to half its value'
+        # for jj in range(gp.nipol):
+        #     if d1[jj] >1.:
+        #         gp.parst.delta1[jj] /= 2.
+        #         print 'delta1 too high, corrected entry ',jj,' to half its value'
         return True
     if gp.pops == 2:
         d2 = phys.delta(gp.parst.delta2)
         if max(d2)>1.:
-            for jj in range(gp.nipol):
-                if d2[jj] >1.:
-                    gp.parst.delta2[jj] /= 2.
-                    print 'delta2 too high, corrected entry ',jj,' to half its value'
+            # for jj in range(gp.nipol):
+            #     if d2[jj] >1.:
+            #         gp.parst.delta2[jj] /= 2.
+            #         print 'delta2 too high, corrected entry ',jj,' to half its value'
             return True
 
 
     gp.LOG.debug( 'now checking delta smoothness')
-    for i in range(1,len(gp.parst.delta1)):
-        if abs(gp.parst.delta1[i])>4./gp.nipol:
+    if max(abs(gp.parst.delta1[1:]-gp.parst.delta1[:-1]))>gp.deltol:
+        if not gp.d1wild:
             print 'delta1 too wild!'
+            gp.d1wild = True
             # correct: smooth out, by assigning mean value of left/right points
-            return True
+        return True
     if gp.pops==2:
-        for i in range(len(gp.parst.delta2)):
-            if abs(gp.parst.delta2[i])>4./gp.nipol:
+        if max(abs(gp.parst.delta2[1:]-gp.parst.delta2[:-1]))>gp.deltol:
+            if not gp.d2wild:
                 print 'delta2 too wild!'
-                return True
+                gp.d2wild = True
+            return True
 
     return False
 
@@ -140,27 +147,18 @@ def check_sigma():
 
     # Reject models with NaN sig_z:
     import math
-    if gp.logprior:
-        if math.isnan(max(gp.sig1_x)):
-            print 'nan sig_z'
-            return True
-        small = min(sig_z[(gp.sig1_x > 0)])
-        for jj in range(gp.nipol):
-            if math.isnan(gp.sig1_x[jj]):
-                gp.sig1_x[jj] = small
-    else:
-        # Another problem with linear sampling (best avoided). 
-        # If I do the "right" thing here and reject NaN models, 
-        # the MCMC gets stuck. So we set sig_z = 0 where it
-        # is NaN and assume that this will be penalised by the 
-        # data. This assumption appears to be very good, 
-        # but still it's not ideal ):
-        
-        small = 0.0 # min(gp.sig1_x[(gp.sig1_x > 0)])
-        for jj in range(gp.nipol):
-            # check for NaN
-            if math.isnan(gp.sig1_x[jj]):
-                gp.sig1_x[jj] = small
+    # Another problem with linear sampling (best avoided). 
+    # If I do the "right" thing here and reject NaN models, 
+    # the MCMC gets stuck. So we set sig_z = 0 where it
+    # is NaN and assume that this will be penalised by the 
+    # data. This assumption appears to be very good, 
+    # but still it's not ideal ):
+    
+    small = 0.0 # min(gp.sig1_x[(gp.sig1_x > 0)])
+    for jj in range(gp.nipol):
+        # check for NaN
+        if math.isnan(gp.sig1_x[jj]):
+            gp.sig1_x[jj] = small
 
     # end TODO
 
@@ -172,19 +170,6 @@ def check_sigma():
 
 
 
-
-
-    gp.LOG.debug( 'Reject models with NaN sig_z: ')
-    if (gp.logprior) :  
-        gp.LOG.debug('now checking Nan condition')
-        for jj in range(len(gp.sig1_x)):
-            if (math.isnan(gp.sig1_x[jj])) :
-                print 'NaN sig_z prior'
-                return True
-        if (gp.pops == 2) : 
-            for jj in range(len(gp.sig1_x)): gp.sig1_x[jj] = 0.
-            for jj in range(len(gp.sig2_x)):
-                if (math.isnan(gp.sig2_r[jj])) : gp.sig2_x[jj] = 0.
 
     gp.LOG.debug( 'check new disc code priors' )
     # TODO: fix repeated occurencies, scopes,...

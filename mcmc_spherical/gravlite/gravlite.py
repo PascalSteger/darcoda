@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 print ('GravLite: A Non-Parametric Mass Modelling Routine')
 #print ('A non-parametric method to determine the total enclosed mass of a spherical system as e.g. dwarf spheroidal galaxy, implemented for up to two independent tracer populations')
@@ -27,14 +27,10 @@ gfile.adump()
 gp.parst = Params(0)
 gp.parst.set(gp.pars)
 
-if gp.logprior: gp.lparst.set(gp.lpars)
-
-
 
 n = 0
 plotfirst = True
 while ( n < gp.niter-1):
-    # print('n = ',n)
     if not gp.initphase:
         gfile.store_old_params(gp.pars,gp.chi2)
 

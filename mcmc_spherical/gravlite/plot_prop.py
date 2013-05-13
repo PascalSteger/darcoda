@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
@@ -8,6 +8,35 @@ from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
 from gl_analytic import Mwalkertot
 
 global f, ax1
+
+# Walker data sets
+
+# ca = 1:
+dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
+# ca = 2:
+dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
+
+# ca = 0:
+dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
+dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
+
+nampart = '20130327162354_cprior_mslope'
+nampart = '20130327202714_cprior_mslope'
+nampart = '20130403103916_cprior_mslope'
+nampart = '20130408092450_cprior_mslope'
+nampart = '20130419154013_cprior_mslope'
+nampart = '20130425120348_cprior_mslope_rprior' # working fine for 1000 iterations
+nampart = '20130426090433_cprior_mslope_rprior' # too high mass at high radii
+nampart = '20130426120258_cprior_mslope_rprior' # better mass?
+nampart = '20130426161637_cprior_nulog_denslog_mslope_rprior' # new denslog:  too high mass
+nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior' # and up to 100000 its:
+nampart = '20130429110855_cprior_nulog_denslog_mslope_rprior' # 50k steps
+nampart = '20130502080536_cprior_nulog_denslog_mslope_rprior' # London failed 2.5k, too high mass
+basename = dir + nampart + '/' + nampart
+
+
+
+
 
 def M_anf(r):
     return r**2/(r+1.)**2
@@ -53,34 +82,6 @@ def show_plots():
     ioff();show()
     return
 
-# sample data, not used anymore
-# dir = "/home/ast/read/dark/dwarf_data/programs/"
-# basename = dir+"/my.profM"
-
-#dir = '/home/ast/read/dark/dwarf_data/hernquist_justin/'
-#'10000_no_testplot_20000_models_run_1/'
-#basename = dir + "/_pop0_cprior_beta_mslope_10000_0_24.profM"
-#basename = dir + '/_pop0_cprior_beta_mslope_1000_0_12.profM' # working 1000 with beta=0
-#basename = dir +'_pop0_cprior_mslope_1000_0_12.profM' # working 1000 with beta allowed to change slightly
-#basename = dir + '_pop0_cprior_beta_mslope_10000_0_16.profM'
-#basename = dir + '_pop0_cprior_mslope_10000_0_16.profM'
-#basename = dir + '20130221092951_popboth_cprior_mslope_5000_5000_12/'
-#basename = dir + '20130221111051_popboth_cprior_mslope_5000_5000_12/'
-
-# ca = 0
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
-# ca = 1
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
-
-nampart = '20130327162354_cprior_mslope'
-nampart = '20130327202714_cprior_mslope'
-nampart = '20130403103916_cprior_mslope'
-nampart = '20130408092450_cprior_mslope'
-nampart = '20130419154013_cprior_mslope'
-
-
-basename = dir + nampart + '/' + nampart
 
 print 'input'
 print basename
@@ -134,7 +135,8 @@ def readcol(filena):
     a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
     return a,b,c
 
-#datMr,datMdat,datMerr = readcol('/home/ast/read/dark/dwarf_data/hernquist_justin/enclosedmass/unit_hern_1_enclosedmass_1000_0.txt')
+#datMr,datMdat,datMerr = readcol('/home/ast/read/dark/dwarf_data/hernquist_justin/enclosedmass/\
+# unit_hern_1_enclosedmass_1000_0.txt')
 
 #sel = (datMr<max(radii))
 # plot_data(rsc*datMr[sel],Msc*datMdat[sel],'black',lw=3)
@@ -143,7 +145,9 @@ def readcol(filena):
 
 #plot_data(rsc*radii,Msc*M_anf(radii),'black',lw=4)
 #plot_data(rsc*radii,0.*ones(len(radii)),'black',lw=4)
+
 plot_data(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'black',lw=4)
+# yscale('log') # attention: only if large spread encountered
 # setlims(ax1,[0.,3.],[-1.,1.])
 
 fout = open(basename+".profM.conf",'w')

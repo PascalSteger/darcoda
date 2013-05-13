@@ -1,12 +1,17 @@
 #!/usr/bin/python
-import gl_params as gp
-import gr_params as gpr
 import numpy as np
 import pdb
 import multiprocessing as mp
 
+import gl_params as gp
+import gr_params as gpr
+import gl_helper as gh
+
 # calculate density falloff
-binmin,binmax,rbin = gpr.binparams()
+if gp.lograd:
+  binmin,binmax,rbin = gh.bin_r_log(gpr.rmax/gpr.nbins,gpr.rmax,gp.nbins)
+else:
+  binmin,binmax,rbin = gh.bin_r_linear(gpr.rmin,gpr.rmax,gp.nbins)
 
 # volume of a bin with height binlength, 2D
 vol=np.zeros(gpr.bins)

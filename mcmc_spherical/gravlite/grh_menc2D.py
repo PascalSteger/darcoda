@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # calculate density falloff
 import gl_params as gp
 import gr_params as gpr
@@ -6,13 +6,13 @@ import numpy as np
 import multiprocessing as mp
 
 # set binning
-bins = 2*gpr.bins
-rmin =   gpr.rmin
-rmax = 2*gpr.rmax
-binlength = (rmax-rmin)/bins
-rbin = np.zeros(bins+1)
-for i in range(1,bins+1):
-  rbin[i] = rmin+(i-1.)*binlength+0.5*binlength
+print 'TODO: check whether 2*rmax is needed!'
+if gp.lograd:
+  binmin,binmax,rbin = gh.bin_r_log(gpr.rmax/gpr.nbins,gpr.rmax,gp.nbins)
+else:
+  binmin,binmax,rbin = gh.bin_r_linear(gpr.rmin,gpr.rmax,gp.nbins)
+
+
 
 print 'input:'
 print gpr.fileposspherical

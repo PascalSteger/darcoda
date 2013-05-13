@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 '''calculate approximative center of mass, assuming constant stellar mass'''
 
@@ -35,6 +35,18 @@ pm = (PM0 >= gpr.pmsplit)
 pm1 = pm*(comp0==1)
 pm2 = pm*(comp0==2)
 pm3 = pm*(comp0==3)
+# drawing of populations based on metallicity
+
+# 1. determine splitting metallicity
+# 2. for each star: determine metallicity, metallicity uncertainty
+# 3. get random number, compare to probability of 
+
+# TODO: cutting pm_i to a maximum of ntracers particles:
+from random import shuffle
+# pm1 = shuffle(pm1)[:ntracers1]
+# pm2 = shuffle(pm2)[:ntracers2]
+
+
 x  = x0[pm]; y=y0[pm]; z=z0[pm]; vz = vz0[pm]
 
 # center of mass
@@ -109,7 +121,7 @@ for pmn in [pm,pm1,pm2,pm3]:
     c.close()
 
 
-    if not gp.testplot_dwarfs: continue
+    if not gp.testplot_read: continue
 
     ion(); subplot(111)
     res = (abs(x)<3)*(abs(y)<3)

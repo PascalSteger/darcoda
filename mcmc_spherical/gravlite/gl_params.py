@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 '''parameters for the gravlite MCMC'''
 
@@ -32,11 +32,13 @@ walkercase = 1           # choose different Walker models (0-2 so far)
 
 # Set number of tracer stars to look at in Hernquist profile
 # take all particles                       # case 0
-# want to set ntracers1 = 1e3              # case 1
+# want to set ntracers1 = 2e3              # case 1
 #             ntracers1 = 1e4              # case 2
 #             ntracers1 = ntracers2 = 5e3  # case 3
-cas = 2
-getnewdata = False       # get new data computed from observations
+cas = 0
+getnewdata = True       # get new data computed from observations
+testplot_read = False    # show plots for readout of data as well before init?
+lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
 
 
 global geom
@@ -51,7 +53,7 @@ if investigate == 'sim' or investigate == 'simple':
     kzsimpfix   = False    # calculate kz from simple model directly
     nusimpfix   = False    # TODO: meaning?
     qtest = False # plot during physics_disc
-    # Min/max Kz for MCMC search [only affects logprior].
+    # Min/max Kz for MCMC search [only affects denslog prior].
     # If positive assume constant;
     # if negative take fraction of local baryonic value for that bin: 
     # kzmin = 0.0075 * (4.0 * !PI * G1) * 1000.^3. # kzmax = 100.*kzmin
@@ -71,8 +73,7 @@ else:
 
 ########## plotting options
 testplot   = True          # show plots?
-testplot_dwarfs = False    # show plots for dwarfs pos/com/density/siglos as well before init?
-fplot      = 1./1.    # only plot every 1/Nth plot, in a random fashion
+fplot      = 1./5.    # only plot every 1/Nth plot, in a random fashion
 plotdens   = True          # plot dens instead of M or Sigma_z in lower left plot
 lim        = False         
 #log       = False          # yaxis in (M/dens) scaled in log?
@@ -97,7 +98,7 @@ if analytic: poly = False
 
 densstart = -1.8              # -2.6 for Hernquist, -2.3979 for Walker
 scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
-scalepower = 2.4                  # 0.95 for Hernquist, 1.5 for Walker
+scalepower = 2.2                  # 0.95 for Hernquist, 1.5 for Walker
 
 
 ########## integration options
@@ -139,11 +140,12 @@ blow = np.zeros(nipol)
 baryonmodel = 'sim'                    # read in surface density from corresponding surfden file
 
 mirror   = False                       # Mirror prior: TODO
-logprior = False                       # Logarithmic prior: sample in logarithmic space
-nulog    = False                        # sample nu only in logarithmic space
+nulog    = True                        # sample nu (only) in logarithmic space. TODO: check stepsize
+denslog  = True                        # after init: sample dens (only) in logarithmic space
 mprior = -1                            # Mass prior
 deltaprior  = False # Deltaprior: - beta (velocity anisotropy) in spherical
                     #             - tilt in disc geometry
+d1wild = False; d2wild = False          # show message for jumpy delta, helps to suppress repeated msgs
 delta0 = np.zeros(nipol)
 # sigmaprior, default: -1
 sigmaprior1 = 0.3; sigmaprior2 = 0.3
@@ -154,6 +156,7 @@ constdens = False                 # constant DM density
 rprior  = True                   # regularize Nuz 
 nutol   = 1.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
+deltol  = 2./nipol                   # for delta
 norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
 quadratic = False                 # linear or quad interpol. 
 monotonic = False                 # mono-prior on nu(z)
@@ -182,8 +185,7 @@ sigerrcorr = 1.  # 1.5  # best done directly in the corresponding grw_dens, grw_
 
 
 ########## global variables, not set to value here
-global pars,  lpars
-global parstep, parst, lparst, lparstep
+global pars, parst, parstep
 global dat, ipol, xipol
 global nu1_x, nu2_x, d1_x, d2_x, sig1_x, sig2_x, M_x, dens_x, M_tot, dens_tot
 global fnewoverf
@@ -211,22 +213,22 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 50. if (pops == 1) else 90.  # more information in two tracer pops, but more errors as well
-endcount = 60                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+chi2tol = 50. if (pops == 1) else 60.  # more information in two tracer pops, but more errors as well
+endcount = 100                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
 accrejtollow  = 0.24            # Acceptance/rejection rate
 accrejtolhigh = 0.26            #
-farinit = 1./5. # 5 times chi2 is too high in init phase: start new from last point
-stepafterrunaway = 1.5 # divide stepsize by this amount if too low fnewoverf 2.5
-farover = 1./2.     # 2 times chi2 is too high after init phase 1./2.
+farinit = 1./8. # 5 times chi2 is too far off in init phase: start new from last point
+stepafterrunaway = 1.08 # divide stepsize by this amount if too low fnewoverf 2.5
+farover = 1./3.      # 2 times chi2 is too high after init phase 1./2.
 scaleafterinit   = 1. # <= cheat: divide stepsize by this amount if init is over
 stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
-initphase = True             # initialisation phase flag, first True, if over: False
-endgame  = False                # Ending flag
+initphase = True # initialisation phase flag, first True, if over: False
+endgame  = False # Ending flag
 
 # Units: 
 

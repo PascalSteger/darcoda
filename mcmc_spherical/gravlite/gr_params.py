@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''global params for data analysis step 1 used to generate input for spherical MCMC'''
 
@@ -8,14 +8,15 @@ import gl_params as gp
 
 from gl_class_files import *
 
-def binparams():
-  binlength=(rmax-rmin)/bins
-  binmin = np.zeros(bins);  binmax = np.zeros(bins)
-  rbin   = np.zeros(bins)
-  for i in range(bins):
-    binmin[i] = rmin+i*binlength;  binmax[i] = rmin+(i+1)*binlength
-    rbin[i]   = binmin[i]+0.5*binlength
-  return binmin, binmax, rbin
+
+# def binparams():
+#   binlength=(rmax-rmin)/bins
+#   binmin = np.zeros(bins);  binmax = np.zeros(bins)
+#   rbin   = np.zeros(bins)
+#   for i in range(bins):
+#     binmin[i] = rmin+i*binlength;  binmax[i] = rmin+(i+1)*binlength
+#     rbin[i]   = binmin[i]+0.5*binlength
+#   return binmin, binmax, rbin
 
 showplots = True
 
@@ -31,7 +32,7 @@ if gp.investigate == 'hernquist':
   
   rcut=1.e10                            # cutting radius
   
-  bins = 12                             # set binning
+  bins = gp.nipol                             # set binning
   rmin = 0. * gp.ascale; rmax = 3.*gp.ascale # [pc]
     
   rerror  = 0.1*(rmax-rmin)/bins         # distance error
@@ -113,7 +114,7 @@ elif gp.investigate == 'walker':
   dir = fi.dir
   fil = dir+'mem2'
   
-  nbins = 12
+  nbins = gp.nipol
   ncomp = 4  # 3 possibilities: 0 (both), tracer pop 1, tracer pop 2, 3: foreground contamination
              # a value of 4 means: do analysis for all of them
   

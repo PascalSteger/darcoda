@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # class to generate all filenames, independent of which investigation is being performed
 
 import gl_params as gp
@@ -20,7 +20,7 @@ def get_case(cas):
     
     ntracers1 = 0; ntracers2 = 0
     if cas == 1:
-        ntracers1 = 1000
+        ntracers1 = 2000
     elif cas == 2:
         ntracers1 = 10000
     elif cas == 3:
@@ -59,13 +59,13 @@ class Files:
         self.outname = self.get_outname()
 
         if False:
-            print 'input:'
+            print >> 'input:'
             if len(self.massfile) > 0:
-                print self.massfile
-                print self.nufiles
-                print self.sigfiles
+                print >> self.massfile
+                print >> self.nufiles
+                print >> self.sigfiles
             else:
-                print self.posvelfiles
+                print >> self.posvelfiles
 
         return
 
@@ -96,11 +96,16 @@ class Files:
     def get_outname(self):
         import datetime
         bname = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        if gp.investigate == 'walker':
+            bname = bname + '_case_' + str(gp.walkercase)
+            ntr1, ntr2  = get_case(gp.cas)
+            bname = bname + '_' + str(ntr1) + '_' + str(ntr2)
         if (gp.gprior>0) : bname = bname + '_gprior'
         if (gp.cprior>=0) : bname = bname + '_cprior'
         
         if gp.mirror  : bname = bname + '_mirr'
-        if gp.logprior: bname = bname + '_log'
+        if gp.nulog: bname = bname + '_nulog'
+        if gp.denslog: bname = bname + '_denslog'
         if gp.lbprior : bname = bname + '_lb'
         
         if gp.deltaprior: bname = bname + '_delta' 

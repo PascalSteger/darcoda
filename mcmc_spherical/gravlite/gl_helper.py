@@ -1,22 +1,23 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 '''all helper functions from gl_funs'''
 
 import numpy as np
-import gl_helper as gh
+import pdb
+import gl_file as gf
 import gl_plot as gpl
+
 
 def myfill(x):
     return str(int(x)).zfill(3)
 
 
-
 def checknan(arr):
     if np.isnan(np.sum(arr)):
-        print 'NaN found! Go check where it occured!'
-        import pdb
-        pdb.set_trace()
-    return
+        print('NaN found! Go check where it occured!')
+        gf.get_working_pars()
+        # TODO: jump to next main iteration in gravlite.py
+    return True
 
 
 
@@ -50,7 +51,7 @@ def deriv(y,x):
 
 def derivcoarse(y,x): #[y], [x]
     'numerical derivative, with h=const=stepsize of radial bins'
-    y0 = gh.ipol(x[:3],y[:3],x[0]-(x[1]-x[0])) #[y]
+    y0 = ipol(x[:3],y[:3],x[0]-(x[1]-x[0])) #[y]
     y = np.hstack([y0, y]) #[y]
     x = np.hstack([x[0]-(x[1]-x[0]), x]) #[x]
     return (y[1:]-y[:-1])/(x[1:]-x[:-1]) #[y/x]
@@ -118,7 +119,7 @@ def smoothlog(xin,yin,smooth=1.e-9):
 def ipol(xin,yin,xout,smooth=1.e-9):
     'interpolate function in lin space'
     if np.isnan(np.sum(yin)):
-        print 'NaN found! Go check where it occured!'
+        print >> 'NaN found! Go check where it occured!'
         import pdb
         pdb.set_trace()
     rbf = Rbf(xin, yin, smooth=smooth)
@@ -129,7 +130,7 @@ def ipol(xin,yin,xout,smooth=1.e-9):
 def ipollog(xin, yin, xout, smooth=1.e-9):
     'interpolate function in log space'
     if min(yin)<0.:
-        print 'negative value encountered in ipollog, working with ipol now'
+        print >> 'negative value encountered in ipollog, working with ipol now'
         return ipol(xin,yin,xout,smooth)
     
     rbf = Rbf(xin, np.log10(yin), smooth=smooth)
@@ -149,3 +150,29 @@ def wait():
     raw_input("Press Enter to continue...")
     return
 
+
+
+
+def bin_r_linear(rmin, rmax, nbin):
+
+    binlength = (rmax - rmin)/(1.*nbin) #[rcore]
+    # print >> 'binlength [rcore] = ', binlength
+    binmin = np.zeros(nbin);  binmax = np.zeros(nbin)
+    rbin = np.zeros(nbin)
+    for k in range(nbin):
+        binmin[k] = rmin+k*binlength #[rcore]
+        binmax[k] = rmin+(k+1)*binlength #[rcore]
+        rbin[k]   = binmin[k]+0.5*binlength #[rcore]
+    return binmin, binmax, rbin
+
+
+
+
+def bin_r_log(rmin, rmax, nbin):
+
+    bins   = np.logspace(np.log10(rmin), np.log10(rmax), nbin+1, endpoint=True)
+    binmin = bins[:-1]; binmax = bins[1:]
+    rbin = np.zeros(nbin)
+    for k in range(nbin):
+        rbin[k]   = np.logspace(np.log10(binmin[k]),np.log10(binmax[k]),3, endpoint=True)[1]
+    return binmin, binmax, rbin

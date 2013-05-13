@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''all file related functions'''
 
@@ -27,7 +27,11 @@ def bin_data():
         import grw_com
         import grw_dens
         import grw_siglos
-
+    elif gp.investigate == 'sim':
+        import grs_com_align # centering, if not aligned yet
+        import grs_dens
+        import grs_siglos
+        
 
 
 

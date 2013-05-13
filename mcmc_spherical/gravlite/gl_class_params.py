@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 '''parameters for the MCMC'''
 
@@ -194,16 +194,16 @@ class Params:
 
             
     def output(self):
-        print '  # nu1     = ',gh.pretty(self.nu1)
-        print '  # dens     = ',gh.pretty(self.dens)
-        print '  # delta1   = ',gh.pretty(self.delta1)
-        print '  # Msl     = ',gh.pretty(self.Msl)
-        print '  # sig1sl  = ',gh.pretty(self.sig1sl)
-        print '  # norm    = ',gp.pretty(self.norm)
+        print >> '  # nu1     = ',gh.pretty(self.nu1)
+        print >> '  # dens     = ',gh.pretty(self.dens)
+        print >> '  # delta1   = ',gh.pretty(self.delta1)
+        print >> '  # Msl     = ',gh.pretty(self.Msl)
+        print >> '  # sig1sl  = ',gh.pretty(self.sig1sl)
+        print >> '  # norm    = ',gp.pretty(self.norm)
         if gp.pops==2:
-            print '  # nu2     = ',gh.pretty(self.nu2)
-            print '  # delta2   = ',gh.pretty(self.delta2)
-            print '  # sig2sl  = ',gh.pretty(self.sig2sl)
+            print >> '  # nu2     = ',gh.pretty(self.nu2)
+            print >> '  # delta2   = ',gh.pretty(self.delta2)
+            print >> '  # sig2sl  = ',gh.pretty(self.sig2sl)
         return
     
 
@@ -248,28 +248,26 @@ class Params:
             # depending on nu parametrization: only
             self.nu1    *= gp.chi2t_nu1/gp.chi2t
 
+
             # depending on siglos, to be changed if mainly siglos contributing
-            self.dens   *= gp.chi2t_sig1/gp.chi2t
             self.Msl    *= gp.chi2t_sig1/gp.chi2t
             self.delta1 *= gp.chi2t_sig1/gp.chi2t
-
+            self.dens   *= gp.chi2t_sig1/gp.chi2t
+            
             # for disc only
             self.norm *= 1.
         elif gp.pops == 2:
             # depending on nu parametrization:
             self.nu1    *= np.sqrt(gp.chi2t_nu1/gp.chi2t)
-            gh.checknan(self.nu1)
             self.nu2    *= np.sqrt(gp.chi2t_nu2/gp.chi2t)
-            gh.checknan(self.nu1)
+
 
             # depending on siglos
-            self.dens   *= np.sqrt(gp.chi2t_sig/gp.chi2t)
-            gh.checknan(self.dens)
+            self.delta1 *= np.sqrt(gp.chi2t_sig1/gp.chi2t)
+            self.delta2 *= np.sqrt(gp.chi2t_sig2/gp.chi2t)
+                
             self.Msl    *= np.sqrt(gp.chi2t_sig/gp.chi2t)
-            gh.checknan(self.Msl)
-            self.delta1 *= np.sqrt(gp.chi2t_sig/gp.chi2t)
-            gh.checknan(self.delta1)
-
+            self.dens   *= np.sqrt(gp.chi2t_sig/gp.chi2t)
         return self
 
 
@@ -281,7 +279,7 @@ class Params:
             return True
         if min(self.Msl<0):
             self.Msl = -self.Msl
-            print 'flipped Msl'
+            print >> 'flipped Msl'
         if gp.pops==2:
             if min(self.nu2) < 0. and not gp.nulog:
                 return True

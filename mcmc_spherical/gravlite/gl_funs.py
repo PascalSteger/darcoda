@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 from types import *
 import pdb
@@ -26,37 +26,17 @@ def get_new_parameters():
     ranarr = Params(0)
 
     # change parameters in one of the following ways:
-    # ranarr.setuniformrandom() # if we want to wiggle all parameters as one
     # ranarr.wiggle_dens() # if we want to wiggle only the density/mass/surfden array
     # ranarr.wigglebin()       # if we want to wiggle only the first bin at a time
     # ranarr.wigglepar()       # if we want to wiggle only one parameter at a time
     # ranarr.wiggle_delta()
 
 
-    ranarr.setuniformrandom()
-    ranarr.scale_prop_chi2()
+    ranarr.setuniformrandom()           # wiggle all parameters as one
+    ranarr.scale_prop_chi2()            # change proportional to error on chi2
     
-    if not gp.logprior:
-        ranarr.mul(gp.parstep)
-        gp.parst = ranarr.add(gp.parst)
-
-    else:
-        # take one step in logspace:
-        gp.lparst = gp.parst.getlog()
-        gp.lparst.add(  ranarr.mul( gp.lparstep ) )
-        gp.parst.nu1 = np.power( 10.0, gp.lparst.nu1  )
-        gp.parst.dens = np.power( 10.0, gp.lparst.dens )
-        if gp.cprior<1e29:
-            gp.parst.M[0] = cprior
-        else:
-            # linear sampling for delta (since it can go negative for physical reasons):
-            gp.parst.set_delta(gp.lparst.extra_delta()) 
-
-        # linear sampling for Mslope:
-        gp.parst.Msl = gp.lparst.Msl    # [Msun/pc]
-        gp.parst.set_sigsl(gp.lparst.get_sigsl())
-
-
+    ranarr.mul(gp.parstep)
+    gp.parst = ranarr.add(gp.parst)
 
     if gp.deltaprior:
         if gp.investigate == 'walker':
@@ -189,6 +169,8 @@ def calc_M_nu_sig_disc():
 
 
 
+
+
 def calc_likelihood():
     if gp.uselike:
         # Errors:
@@ -205,7 +187,7 @@ def calc_likelihood():
                 p_z = nu_int
                 prob_z[jj] = simps(perr_z * p_z,zint)
                 if prob_z[jj] < 0:
-                    print 'Ooops a negative probability! Something is wrong ... stopping.'
+                    print >> 'Ooops a negative probability! Something is wrong ... stopping.'
                     exit(1)
             nu_pz = phys.nu(abs(z_dat),zp_kz,nupars)
             prob_z = nu_pz
@@ -234,7 +216,7 @@ def calc_likelihood():
 
         prob_t = np.sum(np.log(prob_z) + aprob_sigz + np.log(prob_tilt))
         if math.isnan(prob_t):
-            print 'Ooops prob_t is NaN ... '
+            print >> 'Ooops prob_t is NaN ... '
             exit(1)
 
         # Calculate the likelihood ratio:
@@ -252,7 +234,7 @@ def compare_nu(pop, dat, err):
     # if dat == True: return data; else: model (possibly projected)
     # if err == True: return data error instead
     if (not dat) and err:
-        print 'wrong use of compare_nu, error only given for data, not model'
+        print >> 'wrong use of compare_nu, error only given for data, not model'
         exit(1)
     ret = []
     if dat:
@@ -283,7 +265,6 @@ def compare_nu(pop, dat, err):
 
 def calc_chi2():
     '''Calculate \\chi^2:'''
-
     numodel1 = int_surfden(gp.xipol,gp.nu1_x) if gp.geom=='sphere' else gp.nu1_x
     nudata1  = compare_nu(1,True,False)
     nuerr1   = compare_nu(1,True,True) # gp.ipol.nuerr1 # old, used 3D nu in spherical case
@@ -313,12 +294,12 @@ def calc_chi2():
         gp.chi2t     += gp.chi2t2
 
 
-    print gp.chi2t_nu1, gp.chi2t_nu2, gp.chi2t_nu
-    print gp.chi2t_sig1, gp.chi2t_sig2, gp.chi2t_sig
-    print gp.chi2t1, gp.chi2t2, gp.chi2t
+    # print >> gp.chi2t_nu1, gp.chi2t_nu2, gp.chi2t_nu
+    # print >> gp.chi2t_sig1, gp.chi2t_sig2, gp.chi2t_sig
+    # print >> gp.chi2t1, gp.chi2t2, gp.chi2t
 
     if np.isnan(gp.chi2t):
-        print 'NaN occured! go search where it happened!'
+        print >> 'NaN occured! go search where it happened!'
         pdb.set_trace()
 
 
@@ -344,7 +325,7 @@ def accept_reject(n):
         gp.acccount = gp.acccount + 1.
         gp.pars.set(gp.parst)
         gp.chi2 = gp.chi2t
-        
+        gp.d1wild = False; gp.d2wild = False
         gfile.store_working_pars(n, gp.pars, gp.chi2, gp.parstep)
         if npr.rand() < gp.fplot:
             gpl.update_plot()
@@ -358,20 +339,35 @@ def accept_reject(n):
         # Decide whether to end initphase:
         if gp.endgame and gp.initphase:
             gp.endcount -= 1
-            print 'gp.endcount = ',gp.endcount
+            print >> 'gp.endcount = ',gp.endcount
             if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/2.):
                 print( '*** initialization phase over ***')
                 print( '*********************************')
                 gp.initphase = False
-                gp.pars.dens    = phys.densdefault(gp.pars.dens)
-                # gp.ipol.densdat = phys.densdefault(gp.ipol.densdat)
-                gp.parst.dens   = phys.densdefault(gp.parst.dens)
-                # gp.parst.dens   = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
+
+                # use old parstep at end of init:
+                if gp.denslog:
+                    gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
+                                          np.log10(phys.densdefault(gp.pars.dens)))
+                else:
+                    gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
+                                          phys.densdefault(gp.pars.dens))
+
+                if gp.denslog:
+                    gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
+                    gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
+                else:
+                    gp.pars.dens    = phys.densdefault(gp.pars.dens)
+                    gp.parst.dens   = phys.densdefault(gp.parst.dens)
+                
+
+                # gp.parst.dens = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
                 # ^-- cheat: start off, from near analytic 1 pop result
-                gp.parstep.dens = gp.parst.dens/20.
+                # gp.parstep.dens = gp.parst.dens/20. 
                 gp.parstep.adaptall(1./gp.scaleafterinit)
                 gp.stepafterrunaway = 1.
                 gp.poly = False
+                gp.fplot /= 20.         # plot only every 20th plot now, speed up
 
     else:
         gp.rejcount = gp.rejcount + 1.
@@ -396,12 +392,9 @@ def adapt_stepsize():
         if gp.acccount>0 and gp.rejcount>0:
             if (gp.acccount/gp.rejcount < gp.accrejtollow\
                 or gp.acccount/gp.rejcount > gp.accrejtolhigh):
-                if gp.logprior:
-                    gp.lparstep.adaptworst(gp.stepcorr)
-                else:
-                    gp.parstep.adaptworst(gp.stepcorr)
+                gp.parstep.adaptworst(gp.stepcorr)
             else:
-                    gp.parstep.adaptall(1./gp.stepcorr)
+                gp.parstep.adaptall(1./gp.stepcorr)
             if gp.chi2 < gp.chi2tol:
                 gp.endgame = True
     return

@@ -1,8 +1,6 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 '''calculate surface mass density falloff of circular rings around center of mass'''
-
-
 
 
 import sys
@@ -13,7 +11,7 @@ import math
 import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
-from gl_helper import expDtofloat
+from gl_helper import expDtofloat, bin_r_linear, bin_r_log
 from gl_class_files import *
 
 
@@ -37,17 +35,16 @@ for i in range(gpr.ncomp):
     sel = (r<rmax)
     x = x[sel]; y = y[sel]; v = v[sel] #[rcore]
     totmass = 1.*len(x) #[munit], munit = 1/star
-    
-    binlength = (rmax-rmin)/(1.*gpr.nbins) #[rcore]
-    print 'binlength [rcore] = ', binlength
-    binmin = np.zeros(gpr.nbins);  binmax = np.zeros(gpr.nbins)
-    rbin = np.zeros(gpr.nbins)
-    for k in range(gpr.nbins):
-        binmin[k] = rmin+k*binlength #[rcore]
-        binmax[k] = rmin+(k+1)*binlength #[rcore]
-        rbin[k]   = binmin[k]+0.5*binlength #[rcore]
 
-    #volume of a circular bin with dr=binlength
+    if gp.lograd:
+        # space logarithmically in radius
+        binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
+    else:
+        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
+
+
+    
+    #volume of a circular bin from binmin to binmax
     vol = np.zeros(gpr.nbins)
     for k in range(gpr.nbins):
         vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rcore**2]
@@ -58,7 +55,7 @@ for i in range(gpr.ncomp):
     print 'output: '
     print gpr.get_ntracer_file(i)
     tr = open(gpr.get_ntracer_file(i),'w')
-    print>>tr,totmass
+    print >> tr,totmass
     tr.close()
 
     print gpr.get_dens_file(i)    
@@ -66,8 +63,8 @@ for i in range(gpr.ncomp):
     print gpr.get_enc_mass_file(i)
     em = open(gpr.get_enc_mass_file(i),'w')
 
-    print>>de,'r','nu(r)/nu(0)','error'
-    print>>em,'r','M(<r)','error'
+    print >> de,'r','nu(r)/nu(0)','error'
+    print >> em,'r','M(<r)','error'
 
     #1000 iterations for getting random picked radius values
     n = 1000
@@ -123,7 +120,7 @@ for i in range(gpr.ncomp):
     em.close()
 
 
-    if not gp.testplot_dwarfs: continue
+    if not gp.testplot_read: continue
     ion(); subplot(111)
     print 'rbin = ',rbin
     print 'p_dens = ',p_dens
@@ -133,9 +130,11 @@ for i in range(gpr.ncomp):
     lbound = p_dens-p_edens; lbound[lbound<1e-6] = 1e-6
     ubound = p_dens+p_edens; 
     fill_between(rbin,lbound,ubound,alpha=0.5,color='r')
+    xscale('log')
     yscale('log')
     xlim([np.min(rbin),np.max(rbin)])
-    ylim([1e-3,3.])#ylim([1e-6,2*np.max(p_dens)])
+    ylim([np.min(lbound),np.max(ubound)])
+    # ylim([1e-3,3.])#ylim([1e-6,2*np.max(p_dens)])
     # ylim([0,1])
     xlabel(r'$r [r_c]$')
     ylabel(r'$\nu(r)/\nu(0)$')

@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''set up initial parameters'''
 
@@ -24,16 +24,28 @@ def mcmc_init():
 
     ### nu
     # set all nu to known data plus some offset
+
     nupars1 = gp.ipol.nudat1
-    if gp.nulog: nupars1 = np.log10(nupars1)
+
     # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
     nuparstep1    = nupars1/30.
+
+    # if nu is taken in log, will not want direct proportionality
+    # but rather, what a 1/20. change of nu gives in log space
+    if gp.nulog: 
+        np1 = gp.ipol.nudat1
+        nupars1 = np.log10(np1)
+        nuparstep1 = np.log10(np1*1.05)-np.log10(np1)
     # + gp.ipol.nuerr1    # [munit/pc^3], /20 earlier on, was too high
     if gp.pops == 2:
         nupars2  = gp.ipol.nudat2
-        if gp.nulog: nupars2 = np.log10(nupars2)
+
         # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat2[-1] # [munit/pc^3]
         nuparstep2 = nupars2/30. # [munit/pc^3]
+        if gp.nulog:
+            np2 = gp.ipol.nudat2
+            nupars2 = np.log10(np2)
+            nuparstep2 = np.log10(np2*1.05)-np.log10(np2)
 
     #if gp.geom == 'disc':
         #numin = 1.e-3; numax = 1.
@@ -43,22 +55,22 @@ def mcmc_init():
 
     ### delta
     deltapars1 = np.zeros(gp.nipol)
-    deltaparstep1 = deltapars1 + 0.01
+    deltaparstep1 = deltapars1 + 0.05
     mdelta1 = []; mdelta2 = []
     if gp.model:
         print 'TODO: disable model for delta!'
         mdelta1, mdelta2 = betawalker(gp.xipol)
         deltapars1 = phys.invdelta(mdelta1)
-        deltaparstep1 = deltapars1/30.
+        deltaparstep1 = deltapars1*0. + 0.05
         if gp.deltaprior:
             deltaparstep1 = np.zeros(gp.nipol)
 
     if gp.pops == 2:
         deltapars2 = np.zeros(gp.nipol)
-        deltaparstep2 = deltapars2 + 0.01
+        deltaparstep2 = deltapars2 + 0.05
         if gp.model:
             deltapars2 = phys.invdelta(mdelta2)
-            deltaparstep2 = deltapars2/30.
+            deltaparstep2 = deltapars2*0. + 0.05
             if gp.deltaprior:
                 deltaparstep2 = np.zeros(gp.nipol)
 
@@ -77,7 +89,8 @@ def mcmc_init():
         for i in range(1,gp.nipol):
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
-        densparstep = denspars/30. * (np.arange(1,gp.nipol+1))**0.75
+
+        densparstep = denspars/40. * (np.arange(1,gp.nipol+1))**0.75
         
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
@@ -85,7 +98,7 @@ def mcmc_init():
             denspars = rhowalkertot_3D(gp.xipol)   # [munit/pc^3]
             denspars = denspars * (1.+ npr.uniform(-1.,1.,gp.nipol)/15.)\
                        +denspars[-1]/2. # [munit/pc^3]
-        densparstep = denspars/30.
+        densparstep = denspars/20.
 
     if gp.geom == 'disc':
         # Set up kzmin/max arrays:
@@ -140,30 +153,5 @@ def mcmc_init():
                                 Mslopeparstep,sigmaslopeparstep1,\
                                 nuparstep2,deltaparstep2,sigmaslopeparstep2)
 
-    # Logarithmic prior: 
-    if gp.logprior:
-        gp.lpars = gp.pars.getlog()
-
-        # fill with same float values for two populations
-        if gp.pops==1:
-            # 1 component, nu, dens, delta
-            gp.lparstep = Params(-1, 0.1, 0.1, 0.1, \
-                                 Mslopeparstep, sigmaslopeparstep1)
-        elif gp.pops==2:
-            gp.lparstep = Params(-2, 0.04, 0.2, 0.02, \
-                                 Mslopeparstep, sigmaslopeparstep1,\
-                                 0.04, 0.04, sigmaslopeparstep2)
-
-        if gp.geom == 'disc':
-            lparstep.set_nu([ 0.6]) # 0.013
-            lparstep.set_dens([1.2])
-            if investigate == 'simple':  
-                if gp.kzsimpfix : lparstep.set_dens(0.)
-                if gp.nusimpfix : lparstep.set_nu(0.)
-                
-            if not gp.deltaprior:
-                ltpars  = np.zeros(len(tpars)) + np.log10(200)
-                ltparsw = np.zeros(len(tpars)) + np.log10(200)
-    
     print 'mcmc set up'
     return

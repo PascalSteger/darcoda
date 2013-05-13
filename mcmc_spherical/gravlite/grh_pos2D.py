@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # move centered positions to spherical coordinates
 import numpy as np
 import gl_params as gp

@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''all functions working on spherical coordinates'''
 import pdb
@@ -6,6 +6,7 @@ import numpy as np
 import gl_params as gp
 import gl_funs as gfun
 import gl_plot as gpl
+import gl_helper as gh
 from gl_int import *
 from gl_analytic import *
 
@@ -21,6 +22,7 @@ def rhodm_hernquist(r,rho0,r_DM,alpha_DM,beta_DM,gamma_DM):
 
 def deproject(x, nu2d, err2d): #[pc], [munit/lunit^2], [munit/lunit^2]
     'take 2D density and density error, get back 3D density and error'
+    # pdb.set_trace()
     nu3d =  int_2D3D(x, nu2d) #[munit/lunit^3]
     if min(nu3d)<0.:
         print '*** got negative 3D density! ***'
@@ -64,9 +66,12 @@ def densdefault(denspars):
 def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
     'take denspars for polynomial coefficients, calculate polynomial, give back density'
     if gp.checksigma:
-        return gp.ipol.densdat
-    if not gp.poly:
-        return denspars
+        return gp.ipol.densdat          # [Msun/pc^3]
+    if not gp.poly:                     # for sure after init
+        if gp.denslog:
+            return 10.**denspars        # [Msun/pc^3]
+        else:
+            return denspars             # [Msun/pc^3]
 
     scale = gp.scaledens*max(xipol)     # [pc]
 
@@ -74,7 +79,9 @@ def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
     for i in range(0,len(denspars)):
         tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
     # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
-    dout = 10.0**tmp            # [Msun/pc^3]
+    
+    dout = 10.**tmp if gp.denslog else tmp            # [Msun/pc^3]
+
     gh.checknan(dout)
 
     return dout                 # [msun/pc^3]

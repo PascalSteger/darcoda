@@ -1,7 +1,8 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # calculate line of sight velocity dispersion (line of sight parallel to x-axis)
 import gl_params as gp
 import gr_params as gpr
+import gl_helper as gh
 import numpy as np
 import multiprocessing as mp
 import pdb
@@ -25,7 +26,12 @@ vzs = vz # gpr.vrerror*np.random.randn(len(vx))+vx
 rs   = rs[ind]
 vzs  = vzs[ind]
 
-binmin,binmax,rbin = gpr.binparams()
+if gp.lograd:
+  binmin,binmax,rbin = gh.bin_r_log(gpr.rmax/gpr.nbins,gpr.rmax,gp.nbins)
+else:
+  binmin,binmax,rbin = gh.bin_r_linear(gpr.rmin,gpr.rmax,gp.nbins)
+
+
 
 def foo_pool(k):
   rsi  = gpr.rerror*np.random.randn(len(rs))+rs
