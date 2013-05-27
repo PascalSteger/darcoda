@@ -19,6 +19,7 @@ from gl_class_files import *
 #   return binmin, binmax, rbin
 
 showplots = True
+n = 30
 
 if gp.investigate == 'hernquist':
   sim = 1                                 # choose simulation
@@ -104,8 +105,8 @@ elif gp.investigate == 'walker':
   rprior = 3.
   r_DM  = 1000.
 
-  rerror = 0.01
-  vrerror= 0.001
+  rerror = 0.05                 # hm.. must be absolute error, [rcore]
+  vrerror= 0.05                 # [km/s]
 
   def rhodm(r):
     return rho0*(r/r_DM)**(-gamma_DM)*(1+(r/r_DM)**alpha_DM)**((gamma_DM-beta_DM)/alpha_DM)

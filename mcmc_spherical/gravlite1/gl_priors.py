@@ -19,16 +19,16 @@ def check_density():
     if gp.rprior:
         rightnu = phys.nu(gp.parst.nu1[1:])
         leftnu  = phys.nu(gp.parst.nu1[:-1])
-        if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
+        if sum(rightnu/leftnu > gp.nutol)>0:
             # pdb.set_trace()
-            print 'nutol = ',gp.nutol,' < nu1: ',max(abs(rightnu-leftnu)/rightnu)
+            print 'nutol = ',gp.nutol,' < nu1: ',max(rightnu/leftnu)
             gf.get_working_pars()    # change gp.parst to gp.init_configs
             return True
         if gp.pops==2:
             rightnu = phys.nu(gp.parst.nu2[1:])
             leftnu  = phys.nu(gp.parst.nu2[:-1])
-            if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
-                print 'nutol = ',gp.nutol,' < nu2: ',max(abs(rightnu-leftnu)/rightnu)
+            if sum(rightnu/leftnu > gp.nutol)>0:
+                print 'nutol = ',gp.nutol,' < nu2: ',max(rightnu/leftnu)
                 gf.get_working_pars() # change gp.parst to gp.init_configs
                 return True
 
@@ -45,23 +45,40 @@ def check_density():
 
 
 def check_mass():
-    gp.LOG.debug(' check rising mass prior:')
-    denscheck = phys.dens(gp.xipol, gp.parst.dens)
-    # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
-    for i in range(len(denscheck)-1):
-        if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol and gp.geom == 'sphere':
-            print 'rising dens prior, more than 200% up'
+    if gp.geom == 'sphere':
+        gp.LOG.debug(' check rising mass prior:')
+        denscheck = phys.dens(gp.xipol, gp.parst.dens)
+
+        # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
+        for i in range(len(denscheck)-1):
+            if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol:
+                if not gp.dens2wild:
+                    print 'rising dens prior, more than 200% up'
+                    gp.dens2wild = True
+
+                # gp.parst.dens[i+1] *= 0.9
+                # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
+                return True
+
+    elif gp.geom == 'disc':
+        denscheck = phys.Sigmaz(phys.dens(gp.xipol,gp.parst.dens))
+        # TODO: prior as described in paper
+        if min(denscheck[1:]-denscheck[:-1])<0.0:
+            if not gp.dens2wild:
+                print 'Surface density decrease found'
+                gp.dens2wild = True
             gf.get_working_pars()
-            # gp.parst.dens[i+1] *= 0.9
-            # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
             return True
 
     gp.LOG.debug('check that observed tracer mass is less than total mass')
     if gp.bprior:
         for jj in range(gp.nipol):
-            if MM[jj] < gp.blow[jj]:
-                print 'bprior'
+            if denscheck[jj] < gp.blow[jj]:
+                if not gp.b2wild:
+                    print 'bprior'
+                gp.b2wild = True
                 return True
+            
     
     gp.LOG.debug(' last bin prior:')
     if (gp.lbprior) :  
@@ -162,21 +179,11 @@ def check_sigma():
 
     # end TODO
 
-    gp.LOG.debug('check for extreme M slopes after rpmax')
-    if (abs(gp.parst.Msl)>2. and gp.geom == 'sphere') : # TODO: include boundary for disc
-        print 'Mslopepars too high'
-        gp.parst.Msl *=0.9
-        return True # TODO: keep in mind, change Msl during MCMC
-
-
-
 
     gp.LOG.debug( 'check new disc code priors' )
+    # TODO: check gp.kzmin < kz < gp.kzmax
     # TODO: fix repeated occurencies, scopes,...
     # for jj in range(gp.nipol):
-    #     # if kzparsu[jj] < kzminarr[jj]/100.: return True
-    #     # if denarr[jj] < kzminarr[jj]: return True
-    #     # if denarr[jj] > kzmaxarr[jj]: return True
     #     if gp.monotonic:
     #         nuparsu = np.zeros(gp.nipol)
     #         nuparsu[0] = nupars[0]
@@ -191,7 +198,10 @@ def check_sigma():
     gp.LOG.debug( 'S-prior: ensure sigma_z(z) rises (in disc case only):')
     if gp.sprior:
         for jj in range(1,gp.nipol):
-            if gp.sig1_x[jj] < gp.sig1_x[jj-1]:
+            if gp.sig1_x[jj]/gp.sig1_x[jj-1]<0.5:
+                if not gp.sig2wild:
+                    print 'falling sigma_z'
+                    gp.sig2wild = True
                 return True
 
 

@@ -24,9 +24,13 @@ def bin_data():
         import grh_dens2D
         import grh_siglos2D
     elif gp.investigate == 'walker':
-        import grw_com
+        # TODO: call main again after first iteration, if gp.metalpop set
+        import grw_com                  # inside there, split by metallicity
+        grw_com.run()
         import grw_dens
+        grw_dens.run()
         import grw_siglos
+        grw_siglos.run()
     elif gp.investigate == 'sim':
         import grs_com_align # centering, if not aligned yet
         import grs_dens
@@ -96,10 +100,33 @@ def write_key_data_parameters():
 
 
 
+def adump():
+    write_key_data_parameters()
+    arraydump(gp.files.get_outdat(), gp.xipol, 'w')
+
+    profM, profnus, profdeltas, profsigs = gp.files.get_outprofs()
+    arraydump(profM, gp.xipol, 'w')
+    arraydump(profnus[0], gp.xipol, 'w')
+    arraydump(profdeltas[0], gp.xipol, 'w')
+    arraydump(profsigs[0], gp.xipol, 'w')
+    if gp.pops==2:
+        arraydump(profnus[1], gp.xipol, 'w')
+        arraydump(profdeltas[1], gp.xipol, 'w')
+        arraydump(profsigs[1], gp.xipol, 'w')
+    return 0
+
+
+
+
+
 
 def write_outfile():
     '''write profiles to output files in directory'''
-    M = gp.pars.dens
+    if gp.geom == 'sphere':
+        M = phys.Mzdefault(gp.pars.dens)
+    else:
+        M = gp.M_x  # TODO: check meaning, possible inclusion in physics_disc.Mzdefault
+        
     profM, profnus, profdeltas, profsigs = gp.files.get_outprofs()
     arraydump(profM, M)
     arraydump(profnus[0],   phys.nu(gp.pars.nu1)) # [Msun/pc^3]
@@ -138,20 +165,6 @@ def arraydump(fname,arrays,app='a',narr=1):
 
 
 
-def adump():
-    write_key_data_parameters()
-    arraydump(gp.files.get_outdat(), gp.xipol, 'w')
-
-    profM, profnus, profdeltas, profsigs = gp.files.get_outprofs()
-    arraydump(profM, gp.xipol, 'w')
-    arraydump(profnus[0], gp.xipol, 'w')
-    arraydump(profdeltas[0], gp.xipol, 'w')
-    arraydump(profsigs[0], gp.xipol, 'w')
-    if gp.pops==2:
-        arraydump(profnus[1], gp.xipol, 'w')
-        arraydump(profdeltas[1], gp.xipol, 'w')
-        arraydump(profsigs[1], gp.xipol, 'w')
-    return 0
 
 
 
@@ -186,7 +199,7 @@ def get_working_pars():
         return
     else:
         gp.parst,gp.chi2t,gp.parstep = gp.init_configs.pop()
-        gp.parstep.adaptworst(1./gp.stepafterrunaway)
+        gp.parstep.adaptworst(gp.stepafterrunaway)
     return gp.parst
 
 

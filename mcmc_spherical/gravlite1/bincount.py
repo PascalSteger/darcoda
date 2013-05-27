@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 # ============================ BINCOUNT ============================
@@ -20,10 +20,9 @@ def bincou(r, low, high, nbin):
     error = np.zeros(Pnts)
     j=0
     siz = len(r)
-    r=r[np.argwhere(r>(low-bin/2.))]
 
     for i in range(Pnts):
-        while ((rout[i]+bin/2.) > r[j]):
+        while (rout[i] > r[j]):
             arrayout[i]=arrayout[i]+1.
             if (j < siz-1):
                 j=j+1

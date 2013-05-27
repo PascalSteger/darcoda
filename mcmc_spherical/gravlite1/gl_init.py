@@ -6,6 +6,7 @@ import gl_params as gp
 from gl_class_params import *
 from gl_analytic import *
 import gl_file as gf
+import gl_helper as gh
 import numpy as np
 import numpy.random as npr
 if gp.geom == 'sphere':
@@ -24,28 +25,27 @@ def mcmc_init():
 
     ### nu
     # set all nu to known data plus some offset
-
-    nupars1 = gp.ipol.nudat1
+    nupars1 = gp.ipol.nudat1*1.05
 
     # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
-    nuparstep1    = nupars1/30.
+    nuparstep1    = nupars1/10.
 
     # if nu is taken in log, will not want direct proportionality
     # but rather, what a 1/20. change of nu gives in log space
     if gp.nulog: 
         np1 = gp.ipol.nudat1
         nupars1 = np.log10(np1)
-        nuparstep1 = np.log10(np1*1.05)-np.log10(np1)
+        nuparstep1 = abs(np.log10(np1*1.05)-np.log10(np1))
     # + gp.ipol.nuerr1    # [munit/pc^3], /20 earlier on, was too high
     if gp.pops == 2:
         nupars2  = gp.ipol.nudat2
 
         # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat2[-1] # [munit/pc^3]
-        nuparstep2 = nupars2/30. # [munit/pc^3]
+        nuparstep2 = nupars2/10. # [munit/pc^3]
         if gp.nulog:
             np2 = gp.ipol.nudat2
             nupars2 = np.log10(np2)
-            nuparstep2 = np.log10(np2*1.05)-np.log10(np2)
+            nuparstep2 = abs(np.log10(np2*1.1)-np.log10(np2))
 
     #if gp.geom == 'disc':
         #numin = 1.e-3; numax = 1.
@@ -75,6 +75,7 @@ def mcmc_init():
                 deltaparstep2 = np.zeros(gp.nipol)
 
     if gp.geom == 'disc':
+        # set tilt to zero, first approximation
         if not gp.deltaprior: # and tparsRin[0] > 0:
             # deltapars1 = np.zeros(gp.nipol) + 50.
             deltapars1 = np.zeros(gp.nipol)
@@ -82,7 +83,7 @@ def mcmc_init():
 
 
 
-    ### density
+    ### density (3D density in spherical case, K_z parameters in disc case)
     denspars = np.zeros(gp.nipol)
     if gp.poly:
         denspars[0] = gp.densstart # starting offset, set in gl_params
@@ -91,82 +92,58 @@ def mcmc_init():
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
 
-        densparstep = denspars/40. * (np.arange(1,gp.nipol+1))**0.75
-        
+        densparstep = denspars/20. * (np.arange(1,gp.nipol+1))**0.75
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:
             denspars = rhowalkertot_3D(gp.xipol)   # [munit/pc^3]
             denspars = denspars * (1.+ npr.uniform(-1.,1.,gp.nipol)/15.)\
                        +denspars[-1]/2. # [munit/pc^3]
-        densparstep = denspars/20.
+        densparstep = denspars/100.
 
     if gp.geom == 'disc':
-        # Set up kzmin/max arrays:
-
-        # Min/max Kz for MCMC search
-        # If positive assume constant; if negative take fraction
-        # of local baryonic value for that bin: 
-        # kzmin = 0.0075 * (4.0 * np.pi * np.G1) * 1000.**3.
-        kzminarr = np.zeros(gp.nipol) + gp.kzmin
-        kzmaxarr = np.zeros(gp.nipol) + gp.kzmax
-            
-        # Default Initial seed guess parameters [assume flat]:
-        #kzpars = np.zeros(gp.nipol) + 1.2*(4*np.pi*gp.G1)*1000**3./100.
-        kzpars = (np.arange(gp.nipol)+1)/5.* 0.2*(4*np.pi*gp.G1)*1000**3./100.
-        # kzpars[0] = kzmin
-        #kzpars[0] = (4*np.pi*gp.G1)*1000**3./100
-        # kzpars[0] = 1.2*(4*np.pi*gp.G1)*1000**3.*2.0
-
+        Kz = -gp.dat.Mdat*2.*np.pi*gp.G1 # [(km/s)^2/kpc] = 3.24e-14m/s^2
+        # kzpars = np.abs(gh.deriv(Kz, gp.xipol)) # /sqrt(3) for first offset
+        r0 = gp.xipol
+        kzpars = -np.hstack([Kz[0]/r0[0], (Kz[1:]-Kz[:-1])/(r0[1:]-r0[:-1])])
+        if max(kzpars<0.):
+            print 'negative kappa'
+            pdb.set_trace()
+        # which is the inverse to phys.dens()
+        if gp.denslog: kzpars = np.log10(kzpars)
+        
         if gp.kzsimpfix:
             from gl_disc_simple import get_kzpars
             kzpars = get_kzpars()
 
-       # if gp.poly:
-       #     denspars = phys.calculate_dens(gp.xipol,kzpars)
-       # else:
-        denspars = np.array(-kzpars)
-            # densparstep = np.zeros(gp.nipol) + 13.
-        densparstep = denspars/100.
+        denspars = kzpars[:] # no sign error, as wanted in paper, kappa>=0
+        densparstep = denspars/50.
+
         if gp.poly:
-          denspars[0] = gp.densstart # starting offset, set in gl_params
-          # this is added with (radius)**0 to all other densities
-          for i in range(1,gp.nipol):
-              denspars[i] = (gp.scaledens)**i/i**gp.scalepower
-          # scale high order dens stepsizes s.t. they change remarkably as well
+            denspars[0] = gp.densstart # starting offset, set in gl_params
+            # this is added with (radius)**0 to all other densities
+            for i in range(1,gp.nipol):
+                denspars[i] = (gp.scaledens)**i/i**gp.scalepower
 
-          densparstep = denspars/40. * (np.arange(1,gp.nipol+1))**0.75
+            # scale high order dens stepsizes s.t. they change remarkably as well
+            densparstep = denspars/40. * (np.arange(1,gp.nipol+1))**0.75
 
-
-    ### Mslope
-    Mslopepars = 0.1     if (gp.mprior<0)    else gp.mprior   # [1]
-    Mslopeparstep = Mslopepars/20. if gp.mprior<0 else 0.     # [1]
 
     ### norm
-    normpars = 17**2.
-    normparstep = normpars/16.
+    normpars = 17**2.                   # TODO: meaning? why 17**2?
+    normparstep = normpars/30.          # tunable knob
 
-
-    ### sigma
-    # TODO: is this used anywhere in the MCMC? ask Dave, why it was introduced
-    sigmaslopepars1 = 0. if gp.sigmaprior1<0 else gp.sigmaprior1
-    sigmaslopeparstep1 = 0.1
-    if gp.pops == 2:
-        sigmaslopepars2 = 0. if gp.sigmaprior2<0 else gp.sigmaprior2
-        sigmaslopeparstep2 = 0.1
 
     # generate parameter class instances out of these variables
     if gp.pops==1:
-        gp.pars    = Params(gp.pops,nupars1,denspars,deltapars1,Mslopepars,\
-                                sigmaslopepars1,normpars)
-        gp.parstep = Params(gp.pops,nuparstep1,densparstep,deltaparstep1,\
-                                Mslopeparstep,sigmaslopeparstep1,normparstep)
+        gp.pars    = Params(gp.pops, nupars1,denspars,deltapars1,normpars)
+        gp.parstep = Params(gp.pops, nuparstep1,densparstep,deltaparstep1,normparstep)
     elif gp.pops==2:
-        gp.pars    = Params(gp.pops,nupars1,denspars,deltapars1,Mslopepars,\
-                                sigmaslopepars1,nupars2,deltapars2,sigmaslopepars2)
-        gp.parstep = Params(gp.pops,nuparstep1,densparstep,deltaparstep1,\
-                                Mslopeparstep,sigmaslopeparstep1,\
-                                nuparstep2,deltaparstep2,sigmaslopeparstep2)
-
+        gp.pars    = Params(gp.pops,nupars1, denspars, deltapars1,\
+                                normpars, nupars2, deltapars2)
+        gp.parstep = Params(gp.pops, nuparstep1, densparstep, deltaparstep1,\
+                                normparstep, nuparstep2, deltaparstep2)
+    gp.parst = Params(0)
+    gp.parst.assign(gp.pars)
     print 'mcmc set up'
     return

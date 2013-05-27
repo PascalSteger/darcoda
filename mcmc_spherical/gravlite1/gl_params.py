@@ -13,7 +13,7 @@ logging.basicConfig(stream=sys.stderr, level=loglevel)
 LOG = logging.getLogger(__name__)
 
 
-machine = 'local'
+machine = 'darkside'
 if not os.path.exists("/home/ast/read"):
     machine = 'local'        # machine: 'local' or 'darkside'
 
@@ -36,16 +36,21 @@ walkercase = 1           # choose different Walker models (0-2 so far)
 #             ntracers1 = 1e4              # case 2
 #             ntracers1 = ntracers2 = 5e3  # case 3
 cas = 0
-getnewdata = True       # get new data computed from observations
+getnewdata = False       # get new data computed from observations before burn-in
+metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
 testplot_read = False    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
 
 
+G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
+pc  = 3.08567758e16                     # [m]
+msun= 1.981e30                          # [kg]
+km  = 1000.                             # [m]
+G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
+
 global geom
 if investigate == 'sim' or investigate == 'simple':
     geom = 'disc'
-    G1 = 6.67398e-11 * 1.989e30 / 3.086e19 / 1000.**2. #[kpc (km/s)^2 1/Msun]
-    # means: measure mass in [Msun], distances in [kpc], velocities in [km/s]
     addpoptwo   = False  # add a second population if investigate = 'simple'
     adddarkdisc = False   # add a disk of DM particles in simple model
     slicedata   = False    # slice and dice data for sim case
@@ -64,18 +69,14 @@ if investigate == 'sim' or investigate == 'simple':
     Mscale = 1.e6    
 else:
     geom = 'sphere'
-    G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
-    pc  = 3.08567758e16                     # [m]
-    msun= 1.981e30                          # [kg]
-    km  = 1000.                             # [m]
-    G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
+    pdb.set_trace()
     Mscale = 1.e6                           # [Msun], scale for dimensionless eqs
                                             # from Hernquist, Baes&Dejonghe
     ascale = 1000.                          # [pc]
 
 ########## plotting options
 testplot   = True          # show plots?
-fplot      = 1./10.    # only plot every 1/Nth plot, in a random fashion
+fplot      = 1./5.    # only plot every 1/Nth plot, in a random fashion
 plotdens   = True        # plot dens instead of M or Sigma_z in lower left plot
 if geom == 'disc': plotdens = False
 lim        = False         
@@ -91,12 +92,12 @@ checksigma = False # check sigma_los integration
 analytic   = False         # calc sig_los from analytic Hernquist profiles for nu, M
 if investigate != 'hernquist': analytic = False
 
-model      = True # for Walker mock data: plot model
+model      = False # for Walker mock data: plot model
 if investigate != 'walker': model = False
 
 
 ########## density options
-poly       = True              # use polynomial representation of dens during init
+poly       = False              # use polynomial representation of dens during init
 if analytic: poly = False
 
 densstart = -1.8              # -2.6 for Hernquist, -2.3979 for Walker
@@ -119,7 +120,7 @@ if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is se
 
 
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
-nipol = 12
+nipol = 20
 
 
 
@@ -138,32 +139,35 @@ else: gpriorconv = 1e30
 if cprior >= 0: cpriorconv = cprior * (2.*np.pi*G1) * 1000.**2.
 else: cpriorconv = 1e30
 
-bprior   = False                       # Baryon minimum surfden prior
+bprior   = True                       # Baryon minimum surfden prior
 blow = np.zeros(nipol)
 baryonmodel = 'sim'                    # read in surface density from corresponding surfden file
 
 mirror   = False                       # Mirror prior: TODO
 nulog    = True                        # sample nu (only) in logarithmic space. TODO: check stepsize
-denslog  = True                        # after init: sample dens (only) in logarithmic space
+denslog  = False                        # after init: sample dens (only) in logarithmic space
 mprior = -1                            # Mass prior
 deltaprior  = False # Deltaprior: - beta (velocity anisotropy) in spherical
                     #             - tilt in disc geometry
 d1wild = False; d2wild = False          # show message for jumpy delta, helps to suppress repeated msgs
+dens2wild = False; sig2wild = False
+b2wild = False
+
 delta0 = np.zeros(nipol)
 # sigmaprior, default: -1
 sigmaprior1 = 0.3; sigmaprior2 = 0.3
 
-sprior  = False                   # rising sig_z, not recommended
+sprior  = False                       # rising sig_z neede in disc case
 if geom=='sphere': sprior = False
-constdens = False                 # constant DM density
-rprior  = False                   # regularize Nuz 
-nutol   = 1.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
+constdens = False # constant DM density
+rprior  = True    # regularize Nuz 
+nutol   = 2.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
-deltol  = 2./nipol                   # for delta
+deltol  = 2./nipol                               # for delta
 norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
-quadratic = False                 # linear or quad interpol. 
-monotonic = False                 # mono-prior on nu(z)
-uselike   = False          # use Likelihood function, or binned data?
+quadratic = False           # linear or quad interpol. 
+monotonic = False           # mono-prior on nu(z)
+uselike   = False           # use Likelihood function, or binned data?
 adderrors = False
 
 # last bin mass prior:
@@ -217,17 +221,19 @@ ratio   = 0.                   #
 account1= 0.                   # 
 
 chi2tol = 50. if (pops == 1) else 60.  # more information in two tracer pops, but more errors as well
-endcount = 100                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+if geom == 'disc':
+    chi2tol = 50.
+endcount = 1000                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
 accrejtollow  = 0.24            # Acceptance/rejection rate
 accrejtolhigh = 0.26            #
-farinit = 1./8. # 5 times chi2 is too far off in init phase: start new from last point
-stepafterrunaway = 1.08 # divide stepsize by this amount if too low fnewoverf 2.5
-farover = 1./3.      # 2 times chi2 is too high after init phase 1./2.
-scaleafterinit   = 1. # <= cheat: divide stepsize by this amount if init is over
-stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
+farinit = 10. # 5 times chi2 is too far off in init phase: start new from last point
+stepafterrunaway = 0.98 # mult. stepsize by this amount if too low fnewoverf 2.5
+farover = 10.      # 2 times chi2 is too high after init phase 1./2.
+scaleafterinit   = 5. # <= cheat: divide stepsize by this amount if init is over
+stepcorr= 1.001   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
 initphase = True # initialisation phase flag, first True, if over: False

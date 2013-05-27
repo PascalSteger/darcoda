@@ -279,28 +279,11 @@ def extra_nu(nu_r, r0, r_outer): # [densunit, lunit, lunit]
 
 
 
-def get_mprior(M): # [munit]
-    if len(M)>gp.nipol:
-        print 'too long M in get_mprior!'
-        exit(1)
-
-    # choose one of the following lines
-
-    # mprioru  = (M[-1]-M[3*gp.nipol/4])/(gp.xipol[-1]-gp.xipol[3*gp.nipol/4])
-    mprioru  = (M[-1]-M[3*gp.nipol/4])/(gp.xipol[-1]-gp.xipol[3*gp.nipol/4]) # tuned variant
-    # mprioru = (M[-1]-M[gp.nipol-2])/(gp.xipol[-1]-gp.xipol[gp.nipol-2])
-    # mprioru  = 0.
-
-    if not gp.checksigma:
-        mprioru = abs(gp.parst.Msl)
-
-    return mprioru #[1]
 
 
 
 
-
-def extra_M(M_r,mprioru,r_outer,dr):
+def extra_M(M_r,mprioru,r_outer,dr): # TODO: delete
     'get M extrapolated to 2rmax'
     pnts = gp.nipol
     # use slope in last quarter
@@ -330,7 +313,7 @@ def sig_los_tot(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D]
     r0,r_tot,rmin,rmax,dr,r_outer = get_zarrays(x) #6*[pc]
     
     # Calculate density and M force:
-    mprioru = get_mprior(M_x) #[1], slope
+    mprioru = get_mprior(M_x) #[1], slope TODO: delete
 
     nu_tot    = extra_nu(nu_r,r0,r_outer) #[dens0,3D]
     M_tot     = extra_M(M_x,mprioru,r_outer,dr) #[munit,3D]
@@ -385,7 +368,6 @@ def sig_los(M_x, nu_r, delta_r): #[munit, 3D], [munis/pc^3], [1]
     r0 = gp.xipol[:]
     
     # Calculate density and M force:
-    mprioru = get_mprior(M_x) #[1], slope
 
     if gp.analytic:
         from gl_analytic import sig2_anf, surfden_sig2_anf, surfden_anf, sig_los_anf

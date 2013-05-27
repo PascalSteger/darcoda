@@ -241,9 +241,9 @@ class Datafile:
             gp.xipol = np.linspace(gp.xmin,gp.xmax,gp.nipol)    # [pc]
 
         if gp.geom == 'sphere':
-          self.nux1_2D     = gp.xipol                                # [pc]
-          self.nudat1_2D   = gh.ipollog(dat.nux1_2D, dat.nudat1_2D, self.nux1_2D) # [munit/pc^3]
-          self.nuerr1_2D   = gh.ipollog(dat.nux1_2D, dat.nuerr1_2D, self.nux1_2D) # [munit/pc^3]
+            self.nux1_2D     = gp.xipol                                # [pc]
+            self.nudat1_2D   = gh.ipollog(dat.nux1_2D, dat.nudat1_2D, self.nux1_2D) # [munit/pc^3]
+            self.nuerr1_2D   = gh.ipollog(dat.nux1_2D, dat.nuerr1_2D, self.nux1_2D) # [munit/pc^3]
 
 
         self.nux1     = gp.xipol                                # [pc]
@@ -269,9 +269,9 @@ class Datafile:
 
         if gp.pops==2:
             if gp.geom == 'sphere':
-              self.nux2_2D     = gp.xipol                                # [pc]
-              self.nudat2_2D   = gh.ipollog(dat.nux2_2D, dat.nudat2_2D, self.nux2_2D) # [munit/pc^3]
-              self.nuerr2_2D   = gh.ipollog(dat.nux2_2D, dat.nuerr2_2D, self.nux2_2D) # [munit/pc^3]
+                self.nux2_2D   = gp.xipol                                # [pc]
+                self.nudat2_2D = gh.ipollog(dat.nux2_2D, dat.nudat2_2D, self.nux2_2D) # [munit/pc^3]
+                self.nuerr2_2D = gh.ipollog(dat.nux2_2D, dat.nuerr2_2D, self.nux2_2D) # [munit/pc^3]
 
             self.nux2    = gp.xipol # [pc]
             self.nudat2  = gh.ipollog(dat.nux2, dat.nudat2, self.nux2) #[munit/pc^3]

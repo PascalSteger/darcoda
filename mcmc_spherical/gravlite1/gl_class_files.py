@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # class to generate all filenames, independent of which investigation is being performed
 
 import gl_params as gp
@@ -77,7 +77,7 @@ class Files:
         if machine == 'darkside':
             self.dir = '/home/ast/read/dark/dwarf_data/'
         elif machine == 'local':
-            self.dir = '/home/dave/gravlite/output/'
+            self.dir = '/home/psteger/sci/dwarf_data/'
         return
 
 
