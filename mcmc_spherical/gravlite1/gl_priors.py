@@ -5,6 +5,7 @@ import gl_params as gp
 import gl_file as gf
 import pdb
 import gl_plot as gpl
+import numpy as np
 if gp.geom == 'disc':
     import physics_disc as phys
 else:
@@ -17,19 +18,34 @@ else:
 def check_density():
     gp.LOG.debug(' now check regularisation priors')
     if gp.rprior:
-        rightnu = phys.nu(gp.parst.nu1[1:])
-        leftnu  = phys.nu(gp.parst.nu1[:-1])
+        nu1 = phys.nu(gp.parst.nu1)
+        rightnu = nu1[1:];        leftnu  = nu1[:-1]
         if sum(rightnu/leftnu > gp.nutol)>0:
-            # pdb.set_trace()
             print 'nutol = ',gp.nutol,' < nu1: ',max(rightnu/leftnu)
-            gf.get_working_pars()    # change gp.parst to gp.init_configs
+            if gp.lasterr == 'nu': gp.nu2wild -= 1
+            if gp.nu2wild <= 0:
+                print '*** runaway condition detected, setting parameters back to start values'
+                # gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
+                # gp.chi2 = gp.safechi2;
+                gp.pars.nu1 = gp.safepars.nu1;   gp.parstep.nu1 = gp.safeparstep.nu1
+                gp.pars.dens = gp.safepars.dens; gp.parstep.dens = gp.safeparstep.dens
+                gp.nu2wild = 1000
+            else:
+                gf.get_working_pars() # change gp.parst to gp.init_configs
+            gp.lasterr = 'nu'
             return True
         if gp.pops==2:
-            rightnu = phys.nu(gp.parst.nu2[1:])
-            leftnu  = phys.nu(gp.parst.nu2[:-1])
+            nu2 = phys.nu(gp.parst.nu2)
+            rightnu = nu2[1:];           leftnu  = nu2[:-1]
             if sum(rightnu/leftnu > gp.nutol)>0:
                 print 'nutol = ',gp.nutol,' < nu2: ',max(rightnu/leftnu)
-                gf.get_working_pars() # change gp.parst to gp.init_configs
+                if gp.lasterr == 'nu': gp.nu2wild -= 1
+                if gp.nu2wild <= 0:
+                    gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
+                    gp.chi2 = gp.safechi2;       gp.nu2wild = 1000
+                else:
+                    gf.get_working_pars()    # change gp.parst to gp.init_configs
+                gp.lasterr = 'nu'    
                 return True
 
     gp.LOG.debug( 'now checking dens > gprior')
@@ -38,6 +54,8 @@ def check_density():
         return True
 
     return False
+
+
 
 
 
@@ -67,7 +85,7 @@ def check_mass():
             if not gp.dens2wild:
                 print 'Surface density decrease found'
                 gp.dens2wild = True
-            gf.get_working_pars()
+            gf.get_working_pars(False or gp.initphase)
             return True
 
     gp.LOG.debug('check that observed tracer mass is less than total mass')
@@ -79,7 +97,21 @@ def check_mass():
                 gp.b2wild = True
                 return True
             
+    gp.LOG.debug('check regular kappa')
+    if min(gp.parst.dens < 0.):
+        return True
+    kappa_DM = gp.parst.dens - phys.kappa(gp.xipol, -gp.blow*2.*np.pi*gp.G1)
+    if min(kappa_DM) < 0.:
+        return True
+    if max((kappa_DM-np.mean(kappa_DM))/np.mean(kappa_DM))>0.5:
+        return True
+
     
+    # for i in range(1,gp.nipol-1):
+    #     alphalong = (kappa_DM[i+1]-kappa_DM[i-1])/(gp.xipol[i+1]-gp.xipol[i-1])
+    #     alphashort = (kappa_DM[i]-kappa_DM[i-1])/(gp.xipol[i]-gp.xipol[i-1])
+    #     if alphashort > 0.001 and alphashort > 2.*alphalong:
+            
     gp.LOG.debug(' last bin prior:')
     if (gp.lbprior) :  
         totmlastb = np.sum(denscheck[0:gp.nipol-2]) + np.sum(gp.blow[0:gp.nipol-2])
@@ -139,7 +171,6 @@ def check_delta():
 
 
 def check_sigma():
-
     if (not gp.mirror) :
         gp.LOG.debug('now checking: Ensure positivity --> monotonicity constraint:')
         if gp.parst.has_negative():

@@ -1,7 +1,6 @@
 #!/usr/bin/python2.7
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-print ('GravLite: A Non-Parametric Mass Modelling Routine')
-#print ('A non-parametric method to determine the total enclosed mass of a spherical system as e.g. dwarf spheroidal galaxy, implemented for up to two independent tracer populations')
+print ('GravLite: A Non-Parametric Mass Modelling Routine for discs and spheres')
 
 import numpy as np
 import gl_params as gp

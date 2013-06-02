@@ -28,19 +28,23 @@ def prepare_plots():
     ion()
     # f, axs = plt.subplots(3, 2, sharex=True, sharey=True)
     f = figure()
-    ax1 = f.add_subplot(321)
-    ax2 = f.add_subplot(322, sharex=ax1, sharey=ax1)
-    ax3 = f.add_subplot(323, sharex=ax1)
-    ax4 = f.add_subplot(324, sharex=ax1, sharey=ax3)
-    ax5 = f.add_subplot(325, sharex=ax1)
-    ax6 = f.add_subplot(326, sharex=ax1)
-    axs=[[ax1, ax2],[ax3,ax4],[ax5,ax6]]
+    ax1 = f.add_subplot(421)
+    ax2 = f.add_subplot(422, sharex=ax1, sharey=ax1)
+    ax3 = f.add_subplot(423, sharex=ax1)
+    ax4 = f.add_subplot(424, sharex=ax1, sharey=ax3)
+    ax5 = f.add_subplot(425, sharex=ax1)
+    ax6 = f.add_subplot(426, sharex=ax1)
+    ax7 = f.add_subplot(427, sharex=ax1)
+    ax8 = f.add_subplot(428, sharex=ax1, sharey=ax7)
+    axs=[[ax1, ax2],[ax3,ax4],[ax5,ax6],[ax7,ax8]]
     xticklabels = ax1.get_xticklabels()+ax2.get_xticklabels()
     xticklabels += ax3.get_xticklabels()+ax4.get_xticklabels()
+    xticklabels += ax5.get_xticklabels()+ax6.get_xticklabels()
     setp(xticklabels, visible=False)
     setp(ax2.get_yticklabels(), visible=False)
     setp(ax4.get_yticklabels(), visible=False)
     setp(ax6.get_yticklabels(), visible=False)
+    setp(ax8.get_yticklabels(), visible=False)
     draw()
     return
 
@@ -212,7 +216,10 @@ def get_plot_data():
 
         nu1 = int_surfden(x1, gp.nu1_x)
         nu2 = int_surfden(x2, gp.nu2_x)
-
+        if gp.geom == 'disc':
+            nu1 = gp.nu1_x
+            nu2 = gp.nu2_x
+        
         sig1 = gp.sig1_x; sig2 = gp.sig2_x
         return x1, r_tot, nu1, sig1, M_tot, gp.d1_x, nu2, sig2, gp.d2_x
 
@@ -239,7 +246,7 @@ def plot_first_guess():
     if gp.geom == 'sphere':
         axs[2][0].set_ylim([1e-2,1.])
     if gp.geom == 'disc':
-        f7, = axs[2][0].plot(x_tot, gp.blow,c='blue',ls='dashed')
+        f7, = axs[2][0].plot(x_tot, gp.Mmodel, c='blue',ls='dashed')
     # axs[2][1].set_ylim([-0.5,1.])
     # axs[2][1].xaxis.set_major_locator(MaxNLocator(4))
     if (gp.pops == 2) : axs[2][1].plot(xpl,delta2,color='orange')
@@ -264,6 +271,7 @@ def update_plot():
         f4.set_ydata(sig2)
     f5.set_ydata(M_tot)
 
+    # plot delta
     axs[2][1].cla()
     axs[2][1].plot(xpl,d1,color='r')
     axs[2][1].yaxis.set_major_locator(MaxNLocator(4))
@@ -271,6 +279,16 @@ def update_plot():
     axs[2][1].yaxis.set_label_position("right")
     axs[2][1].set_xlabel('$r\\quad[\\rm{pc}]$')
     axs[2][1].set_ylabel('$\\delta_{1,2}$')
+    
+    # plot kappa
+    axs[3][0].cla()
+    axs[3][0].plot(xpl, gp.parst.dens,'r')    # overall kappa
+    axs[3][0].plot(xpl, gp.parst.dens - phys.kappa(gp.xipol, -gp.blow*2.*np.pi*gp.G1), 'k')
+    # scale to available range
+    axs[3][0].set_ylim([-1.e-3,7.e-3])
+    axs[3][0].yaxis.set_major_locator(MaxNLocator(4))
+    axs[3][0].set_xlabel('$r\\quad[\\rm{pc}]$')
+    axs[3][0].set_ylabel('$\\kappa_{tot,DM}$')
 
     if gp.pops==2: axs[2][1].plot(xpl,d2,color='orange')
     if gp.geom == 'sphere': axs[2][1].set_ylim([-0.5,1.0])

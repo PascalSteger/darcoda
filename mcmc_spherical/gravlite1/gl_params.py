@@ -51,7 +51,6 @@ G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
 global geom
 if investigate == 'sim' or investigate == 'simple':
     geom = 'disc'
-    addpoptwo   = False  # add a second population if investigate = 'simple'
     adddarkdisc = False   # add a disk of DM particles in simple model
     slicedata   = False    # slice and dice data for sim case
     nusimpstart = True   # start from nu near data
@@ -62,7 +61,6 @@ if investigate == 'sim' or investigate == 'simple':
     # If positive assume constant;
     # if negative take fraction of local baryonic value for that bin: 
     # kzmin = 0.0075 * (4.0 * !PI * G1) * 1000.^3. # kzmax = 100.*kzmin
-    kzmin = 0.0;  kzmax = 1e5
     numin = 1e-3; numax = 1.
     patch = '0' # or 180 or ... for disc_sim case
     ascale = 1000.  
@@ -76,7 +74,6 @@ else:
 
 ########## plotting options
 testplot   = True          # show plots?
-fplot      = 1./5.    # only plot every 1/Nth plot, in a random fashion
 plotdens   = True        # plot dens instead of M or Sigma_z in lower left plot
 if geom == 'disc': plotdens = False
 lim        = False         
@@ -118,9 +115,8 @@ if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is se
 
 
 
-
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
-nipol = 20
+nipol = 16
 
 
 
@@ -140,7 +136,7 @@ if cprior >= 0: cpriorconv = cprior * (2.*np.pi*G1) * 1000.**2.
 else: cpriorconv = 1e30
 
 bprior   = True                       # Baryon minimum surfden prior
-blow = np.zeros(nipol)
+blow = np.zeros(nipol);   Mmodel = np.zeros(nipol)
 baryonmodel = 'sim'                    # read in surface density from corresponding surfden file
 
 mirror   = False                       # Mirror prior: TODO
@@ -151,20 +147,22 @@ deltaprior  = False # Deltaprior: - beta (velocity anisotropy) in spherical
                     #             - tilt in disc geometry
 d1wild = False; d2wild = False          # show message for jumpy delta, helps to suppress repeated msgs
 dens2wild = False; sig2wild = False
-b2wild = False
+b2wild = False; nu2wild = 1000    # nu2wild gives Nr of possible nutol prior violations before fallback
+lasterr = 'None'
 
 delta0 = np.zeros(nipol)
 # sigmaprior, default: -1
 sigmaprior1 = 0.3; sigmaprior2 = 0.3
 
-sprior  = False                       # rising sig_z neede in disc case
+sprior  = False                       # rising sig_z needed in disc case
 if geom=='sphere': sprior = False
 constdens = False # constant DM density
 rprior  = True    # regularize Nuz 
 nutol   = 2.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
 deltol  = 2./nipol                               # for delta
-norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
+# norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
+# norm2   = 10.**2 # and for the second component, if there is one
 quadratic = False           # linear or quad interpol. 
 monotonic = False           # mono-prior on nu(z)
 uselike   = False           # use Likelihood function, or binned data?
@@ -184,6 +182,13 @@ init_configs = []
 
 import gl_class_files as gcf
 files = gcf.Files()
+
+
+### safe defaults: first guess for init, end of init for real run, to be called if 100 nutol error occurred
+from gl_class_params import *
+safepars = Params(0)
+safeparstep = Params(0)
+safechi2 = 1e300
 
 nuerrcorr = 1.   # 2.   # scale error from grw_dens by this amount
 sigerrcorr = 1.  # 1.5  # best done directly in the corresponding grw_dens, grw_siglos
@@ -221,19 +226,18 @@ ratio   = 0.                   #
 account1= 0.                   # 
 
 chi2tol = 50. if (pops == 1) else 60.  # more information in two tracer pops, but more errors as well
-if geom == 'disc':
-    chi2tol = 50.
-endcount = 1000                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+# better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
 accrejtollow  = 0.24            # Acceptance/rejection rate
 accrejtolhigh = 0.26            #
-farinit = 10. # 5 times chi2 is too far off in init phase: start new from last point
+farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.98 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.
-scaleafterinit   = 5. # <= cheat: divide stepsize by this amount if init is over
-stepcorr= 1.001   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
+scaleafterinit   = 0.9 # <= cheat: multiply stepsize by this amount if init is over
+stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
 initphase = True # initialisation phase flag, first True, if over: False

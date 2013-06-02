@@ -234,7 +234,7 @@ def nu(nupars):                 # [(log10) Msun/pc^3]
         nuout = nupars[:]       # [Musn/pc^3]
 
     gh.checknan(nuout)
-    return nuout                # [Msun/pc^3]
+    return nuout/max(nuout)                # [Msun/pc^3]
 
 
 

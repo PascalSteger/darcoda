@@ -19,7 +19,7 @@ elif gp.geom == 'disc':
 
 class Params:
     'Common base class for all parameter sets'
-    def __init__ (self, locpop, nu1=None, dens=None, delta1=None, norm=None, nu2=None, delta2=None):
+    def __init__ (self, locpop, nu1=None, dens=None, delta1=None, norm1=None, nu2=None, delta2=None, norm2=None):
 
         if locpop == -2: # set according to values
             self.nu1    = np.zeros(gp.nipol)+nu1
@@ -27,40 +27,45 @@ class Params:
             self.dens    = np.zeros(gp.nipol)+dens
             self.delta1  = np.zeros(gp.nipol)+delta1
             self.delta2  = np.zeros(gp.nipol)+delta2
-            self.norm   = np.zeros(1)
+            self.norm1   = np.zeros(1)+norm1
+            self.norm2   = np.zeros(1)+norm2
         if locpop == -1: # set according to values
             self.nu1    = np.zeros(gp.nipol)+nu1
             self.dens    = np.zeros(gp.nipol)+dens
             self.delta1  = np.zeros(gp.nipol)+delta1
-            self.norm   = np.zeros(1)
+            self.norm1   = np.zeros(1)+norm1
         elif locpop==0: # set all to -1 or 0
             self.nu1    = np.zeros(gp.nipol)
             self.nu2    = np.zeros(gp.nipol)
             self.dens    = np.zeros(gp.nipol)
             self.delta1  = np.zeros(gp.nipol)
             self.delta2  = np.zeros(gp.nipol)
-            self.norm   = np.zeros(1)
+            self.norm1   = np.zeros(1)
+            self.norm2   = np.zeros(1)
         elif locpop == 1: # fill with values for one population only
             self.nu1    = nu1
             self.dens   = dens
             self.delta1 = delta1
-            self.norm   = np.zeros(1)+norm
+            self.norm1   = np.zeros(1)+norm1
+            self.norm2   = np.zeros(1)
         elif locpop==2:   # fill with values for two populations
             self.nu1    = nu1
             self.nu2    = nu2
             self.dens    = dens
             self.delta1  = delta1
             self.delta2  = delta2
-            self.norm   = np.zeros(1)
+            self.norm1   = np.zeros(1)+norm1
+            self.norm2   = np.zeros(1)+norm2
             
     def setuniformrandom(self):
         self.nu1    = npr.uniform(-1,1,gp.nipol)
         self.dens    = npr.uniform(-1,1,gp.nipol)
         self.delta1  = npr.uniform(-1,1,gp.nipol)
-        self.norm   = npr.uniform(-1,1,1)
+        self.norm1   = npr.uniform(-1,1,1)
         if gp.pops==2:
             self.nu2    = npr.uniform(-1,1,gp.nipol)
             self.delta2  = npr.uniform(-1,1,gp.nipol)
+            self.norm2   = npr.uniform(-1,1,1)
 
         return self
 
@@ -109,35 +114,36 @@ class Params:
         return self
 
     def wigglenorm(self):
-        self.norm   = npr.uniform(-1,1)
+        self.norm1   = npr.uniform(-1,1)
+        self.norm2   = npr.uniform(-1,1)
         return self
 
     def dot(self,nr):
         self.nu1    *= nr;        self.dens    *= nr;        self.delta1  *= nr
-        self.norm    *= nr
+        self.norm1    *= nr
         if gp.pops == 2:
-            self.nu2    *= nr;    self.delta2  *= nr
+            self.nu2    *= nr;    self.delta2  *= nr;        self.norm2   *= nr
         return self
 
     def divdot(self,nr):
         self.nu1   /= nr;         self.dens   /= nr;         self.delta1 /= nr
-        self.norm   /= nr
+        self.norm1   /= nr
         if gp.pops == 2:
-            self.nu2   /= nr;     self.delta2 /= nr
+            self.nu2   /= nr;     self.delta2 /= nr;         self.norm2 /= nr
         return self
 
     def mul(self, pars):
         self.nu1   *= pars.nu1;   self.dens   *= pars.dens;   self.delta1 *= pars.delta1
-        self.norm   *= pars.norm
+        self.norm1   *= pars.norm1
         if gp.pops == 2:
-            self.nu2 *= pars.nu2; self.delta2 *= pars.delta2
+            self.nu2 *= pars.nu2; self.delta2 *= pars.delta2; self.norm2 *= pars.norm2
         return self
 
     def add(self, pars):
         self.nu1    += pars.nu1;  self.dens    += pars.dens;  self.delta1  += pars.delta1
-        self.norm    += pars.norm
+        self.norm1    += pars.norm1
         if gp.pops==2:
-            self.nu2 += pars.nu2; self.delta2 += pars.delta2
+            self.nu2 += pars.nu2; self.delta2 += pars.delta2; self.norm2 += pars.norm2
         return self
 
     def getlog(self):
@@ -146,24 +152,26 @@ class Params:
                           np.log10(self.nu1),\
                           np.log10(self.dens),\
                           self.delta1,\
-                          self.norm)
+                          self.norm1)
 
         elif gp.pops==2:
             return Params(gp.pops,\
                           np.log10(self.nu1),\
                           np.log10(self.dens),\
                           self.delta1,\
-                          self.norm,\
+                          self.norm1,\
                           np.log10(self.nu2),\
-                          self.delta2)
+                          self.delta2,\
+                          self.norm2)
     def assign(self,other):
         self.nu1    = other.nu1
         self.dens   = other.dens
         self.delta1 = other.delta1
-        self.norm   = other.norm
+        self.norm1   = other.norm1
         if gp.pops==2:
             self.nu2    = other.nu2
             self.delta2  = other.delta2
+            self.norm2   = other.norm2
         return self
 
             
@@ -171,10 +179,11 @@ class Params:
         print >> '  # nu1     = ',gh.pretty(self.nu1)
         print >> '  # dens     = ',gh.pretty(self.dens)
         print >> '  # delta1   = ',gh.pretty(self.delta1)
-        print >> '  # norm    = ',gp.pretty(self.norm)
+        print >> '  # norm1    = ',gp.pretty(self.norm1)
         if gp.pops==2:
             print >> '  # nu2     = ',gh.pretty(self.nu2)
             print >> '  # delta2   = ',gh.pretty(self.delta2)
+            print >> '  # norm2    = ',gh.pretty(self.norm2)
         return
     
 
@@ -185,32 +194,32 @@ class Params:
                 self.nu1 *= mult
             else:
                 # change one of the possible parameter steps
-                r = npr.rand()
-                if r<1./3:
+                if npr.rand() < 0.5:
                     self.nu1  *= mult
-                elif r>2./3:
-                    self.dens *= mult
                 else:
-                    self.norm *= mult
+                    self.dens *= mult
+                self.norm1 *= mult
         if gp.pops==2:
             if gp.chi2t1 > gp.chi2t2:
                 if gp.chi2t_nu1 > gp.chi2t_sig1:
                     self.nu1 *= mult
                 else:
                     self.dens *= mult
-                    self.norm *= mult
+                    self.norm1 *= mult
             else:
                 if gp.chi2t_nu2 > gp.chi2t_sig2:
                     self.nu2 *= mult
                 else:
                     self.dens *= mult
-                    self.norm *= mult
+                    self.norm2 *= mult
 
     def adaptall(self,mult):
-        if gp.pops==1:
-            self.nu1 *= mult
-            self.dens *= mult
-            self.norm *= mult
+        self.nu1 *= mult
+        self.dens *= mult
+        self.norm1 *= mult
+        if gp.pops == 2:
+            self.nu2 *= mult
+            self.norm2 *= mult
         return
                 
 
@@ -221,13 +230,10 @@ class Params:
             # depending on nu parametrization: only
             self.nu1    *= gp.chi2t_nu1/gp.chi2t
 
-
             # depending on siglos, to be changed if mainly siglos contributing
             self.delta1 *= gp.chi2t_sig1/gp.chi2t
             self.dens   *= gp.chi2t_sig1/gp.chi2t
             
-            # for disc only
-            self.norm *= 1.
         elif gp.pops == 2:
             # depending on nu parametrization:
             self.nu1    *= np.sqrt(gp.chi2t_nu1/gp.chi2t)

@@ -10,9 +10,16 @@ from gl_analytic import Mwalkertot
 global f, ax1
 
 dir = '/home/psteger/sci/dwarf_data/data_disc_simple/'
+#dir = '/home/ast/read/dark/dwarf_data/data_disc_simple/'
 nampart = '20130527113603_cprior_nulog_mslope_bprior_rprior' # first, failed after 56k its
 nampart = '20130527192624_cprior_nulog_mslope_bprior_rprior' # 27k, stuck with Surf
-nampart = '20130527194538_cprior_nulog_mslope_bprior_rprior' # 16k
+nampart = '20130527194538_cprior_nulog_mslope_bprior_rprior' # 16k, sent Justin and Dave
+nampart = '20130528081522_cprior_nulog_mslope_bprior_rprior' # 100k, overestimation?
+nampart = '20130528090813_cprior_nulog_mslope_bprior_rprior_quad' # 50k, quadratic, overestimation?
+nampart = '20130528101433_cprior_nulog_mslope_bprior_rprior'      # some k, linear, scaling sqrt(2) for nu
+nampart = '20130529141312_cprior_nulog_mslope_bprior_rprior'      # 45k, kappa prior, 10k stars
+nampart = '20130531121342_cprior_nulog_mslope_bprior_rprior'      # 15k, kappa prior, 2k stars, overestimate
+nampart = '20130531131908_cprior_nulog_mslope_bprior_rprior'      # 500, kappa, 2k stars
 basename = dir + nampart + '/' + nampart
 
 

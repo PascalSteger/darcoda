@@ -69,6 +69,15 @@ def densdefault(denspars):
 
 
 
+
+def kappa(xipol, Kz):
+    r0 = gp.xipol
+    kzpars = -np.hstack([Kz[0]/r0[0], (Kz[1:]-Kz[:-1])/(r0[1:]-r0[:-1])])
+    return kzpars
+
+
+
+
 def dens(xipol, denspars):              # [pc], [TODO]
     'take denspars (as polynomial?) coefficients, calculate polynomial, give back Kz'
     r0 = np.hstack([0,xipol])
@@ -99,8 +108,7 @@ def dens(xipol, denspars):              # [pc], [TODO]
 
 
 def nu(nupars):                 # [(log10) Msun/pc^3]
-    '''General function to describe the density profile.\
-    now:    just return interpolated nupars directly'''
+    '''General function to describe the density profile.'''
 
     if gp.nulog:
         nuout = np.power(10.0, nupars) # [Msun/pc^3]
@@ -108,7 +116,8 @@ def nu(nupars):                 # [(log10) Msun/pc^3]
         nuout = nupars[:]       # [Musn/pc^3]
 
     gh.checknan(nuout)
-    return nuout                # [Msun/pc^3]
+    #nuout = nuout/max(nuout)                # [Msun/pc^3], normalized to 1 here
+    return nuout/max(nuout)
 
 
 
@@ -302,7 +311,7 @@ def kz(z_in, zpars, kzpars, blow):
 def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
     '''return z velocity dispersion'''
     # calculate density and Kz force:
-    nu_z = nupars
+    nu_z = nupars/np.max(nupars)          # normalized to 1
     # kz_z = kz(zp,zp,kzpars,blow,quadratic) # TODO: reenable
     kz_z = kzpars
     
@@ -351,7 +360,7 @@ def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
                         z5d*c*cd/5.
 
             sigint[i] = sigint[i-1] + intbit
-            if i == n_elements(zp)-2:
+            if i == len(zp)-2:
                 # Deal with very last bin: 
                 z1d = z2-z1; z2d = z2**2.-z1**2.; z3d = z2**3.-z1**3.; z4d = z2**4.-z1**4.; z5d = z2**5.-z1**5.
                 intbit = z1d * (a*ad - z0*(AA-BB*z1) + z0**2.*(b*bd-CC*z1) + \
@@ -414,8 +423,8 @@ def sigma_rz(z, zpars, tpars):
 
 
 
-def Sigmaz(kz):
-    return abs(kz)/(2.*np.pi*gp.G1)
+def Sigmaz(Kz):
+    return abs(Kz)/(2.*np.pi*gp.G1)
 
 
 

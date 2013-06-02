@@ -31,7 +31,6 @@ def get_new_parameters():
     # ranarr.wigglepar()       # if we want to wiggle only one parameter at a time
     # ranarr.wiggle_delta()
 
-
     ranarr.setuniformrandom()           # wiggle all parameters as one
     ranarr.scale_prop_chi2()            # change proportional to error on chi2
     
@@ -145,31 +144,45 @@ def calc_M_nu_sig_sphere():
 
 
 
+
+
 def calc_M_nu_sig_disc():
     gp.LOG.debug( 'Calculate M / nu / sigma values for disc case')
     import physics_disc as phys
-    # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
 
     gp.nu1_x  = phys.nu(gp.parst.nu1)
+    # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
     gp.d1_x   = phys.delta(gp.parst.delta1)
     gp.dens_x = phys.dens(gp.xipol, gp.parst.dens) # means Kz, *not* surface density
+    # gp.dens_x = gp.parst.dens+gp.blow # Kzpars with baryonic lower limit
+
     gp.M_x    = phys.Sigmaz(gp.dens_x)
     # gp.M_x    = phys.kz(gp.xipol, gp.xipol, gp.dens_x, gp.blow) # from kz, added baryons min
-    # gp.dens_x = gp.parst.dens+gp.blow # Kzpars with baryonic lower limit
+    # marginalise over lower bound
+    gp.blow   = npr.normal(gp.dat.Mdat,gp.dat.Merr,gp.nipol)
+    
     # TODO: naming
     Rsun = 8000.; hr = 3.0; hsig = 3.0
-    gp.sig1_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu1_x, gp.parst.norm, gp.parst.delta1, [Rsun,hr,hsig])
-    # TODO: setting gp.dens_x/2 gives better performace in first try
+    gp.sig1_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu1_x, gp.parst.norm1, gp.parst.delta1, [Rsun,hr,hsig])
 
     
-    # TODO: generalize for 2 populations
+    if gp.pops == 2:
+        gp.nu2_x  = phys.nu(gp.parst.nu2)
+        # gp.nu2_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu2)
+        gp.d2_x   = phys.delta(gp.parst.delta2)
+        gp.sig2_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu2_x, gp.parst.norm2, gp.parst.delta2, [Rsun,hr,hsig])
+
+
     if gp.checksigma:
         gp.nu1_x  = gp.ipol.nudat1
         Rsun = 8.; hr = 3.0; hsig = 3.0 # irrelevant, as long as gp.deltaprior = True
-        gp.parst.norm = 21.**2
-        gp.sig1_x = phys.sigmaz(gp.xipol, gp.ipol.densdat, gp.blow, gp.ipol.nudat1,gp.parst.norm,gp.parst.delta1, [Rsun,hr,hsig])
+        gp.parst.norm1 = 17.**2
+        gp.sig1_x = phys.sigmaz(gp.xipol, gp.ipol.densdat, gp.blow, gp.ipol.nudat1,gp.parst.norm1,gp.parst.delta1, [Rsun,hr,hsig])
         
     return
+
+
+
 
 
 
@@ -305,7 +318,7 @@ def calc_chi2():
     # print >> gp.chi2t1, gp.chi2t2, gp.chi2t
 
     if np.isnan(gp.chi2t):
-        print >> 'NaN occured! go search where it happened!'
+        print 'NaN occured! go search where it happened!'
         pdb.set_trace()
 
 
@@ -326,15 +339,16 @@ def calc_chi2():
 
 def accept_reject(n):
     gp.LOG.info( 'Accept the new parameters?')
-    ran = npr.rand()
-    if ran < gp.fnewoverf:
+    if npr.rand() < gp.fnewoverf:
         gp.acccount = gp.acccount + 1.
         gp.pars.assign(gp.parst)
         gp.chi2 = gp.chi2t
+        gp.lasterr = 'None'
         gp.d1wild = False; gp.d2wild = False; gp.dens2wild = False
-        gp.b2wild = False; gp.sig2wild = False
+        gp.b2wild = False; gp.sig2wild = False; gp.nu2wild = 1000
         gfile.store_working_pars(n, gp.pars, gp.chi2, gp.parstep)
-        if npr.rand() < gp.fplot:
+        # fplot
+        if npr.rand() < max(0.005, (1.*gp.chi2-gp.chi2tol)/gp.chi2tol) or gp.initphase:
             gpl.update_plot()
 
             
@@ -343,7 +357,8 @@ def accept_reject(n):
                          gh.pretty([gp.acccount/(gp.rejcount+1.)]),\
                          gh.pretty([np.median(gp.parstep.nu1/gp.parst.nu1)]),\
                          gh.pretty([np.median(gp.parstep.dens/gp.parst.dens)]),\
-                         gh.pretty([gp.parstep.norm/gp.parst.norm])
+                         gh.pretty([gp.parstep.norm1/gp.parst.norm1]),\
+                         gh.pretty([gp.parstep.norm2/gp.parst.norm2])
                          ])
         # to check difference from analytic mass profile
         
@@ -351,41 +366,41 @@ def accept_reject(n):
         if gp.endgame and gp.initphase:
             gp.endcount -= 1
             print 'gp.endcount = ',gp.endcount
-            if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/2.):
+            if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/10.):
                 print( '*** initialization phase over ***')
                 print( '*********************************')
                 gp.initphase = False
 
-                # use old parstep at end of init:
                 if gp.denslog:
+                    gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
+                    gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
+
                     # use parstep if possible
                     gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
                                           np.log10(phys.densdefault(gp.pars.dens)))
 
                     # or get 10% step
-                    gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
-                                          np.log10(phys.densdefault(gp.pars.dens)))
+                    # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
+                    #                       np.log10(phys.densdefault(gp.pars.dens)))
                     
-                else:
-                    gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
-                                          phys.densdefault(gp.pars.dens))
-
-                if gp.denslog:
-                    gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
-                    gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
                 else:
                     gp.pars.dens    = phys.densdefault(gp.pars.dens)
                     gp.parst.dens   = phys.densdefault(gp.parst.dens)
-                
+                    gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
+                                          phys.densdefault(gp.pars.dens))
+
+
 
                 # gp.parst.dens = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
                 # ^-- cheat: start off, from near analytic 1 pop result
                 # gp.parstep.dens = gp.parst.dens/20. 
-                gp.parstep.adaptall(1./gp.scaleafterinit)
+                gp.parstep.adaptall(gp.scaleafterinit)
                 gp.stepafterrunaway = 1.
                 gp.poly = False
-                gp.fplot /= 20.         # plot only every 20th plot now, speed up
-
+                gp.safepars.assign(gp.pars)
+                gp.safeparstep.assign(gp.parstep)
+                gp.safechi2 = gp.chi2
+                
     else:
         gp.rejcount = gp.rejcount + 1.
         # jump back to last known good point

@@ -64,8 +64,9 @@ def get_data():
         gp.dat.read_sigma()
 
 
-    if gp.bprior and gp.investigate != 'simple':
+    if gp.bprior:
         gp.blow = gp.dat.Mdat - gp.dat.Merr
+
 
     # Binning in z:
     if (gp.xpmin<0) : gp.xpmin = min(gp.dat.Mx)
@@ -192,14 +193,15 @@ def store_working_pars(n,pars,chi2,parstep):
 
 
     
-def get_working_pars():
+def get_working_pars(scale=True):
     if len(gp.init_configs)<1:
-        gp.parst  = gp.pars
-        gp.chi2t = gp.chi2
+        gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
+        gp.parst.assign(gp.pars)
+        gp.chi2 = gp.safechi2
         return
     else:
         gp.parst,gp.chi2t,gp.parstep = gp.init_configs.pop()
-        gp.parstep.adaptworst(gp.stepafterrunaway)
+        if scale: gp.parstep.adaptworst(gp.stepafterrunaway)
     return gp.parst
 
 

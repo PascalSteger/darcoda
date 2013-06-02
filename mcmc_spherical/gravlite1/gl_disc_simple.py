@@ -20,14 +20,17 @@ else:
 global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
 
 # Set up simple population here using analytic formulae: 
-zmin = 100. ; zmax = 1300.; zpnts = 60 #00
+zmin = 100. ; zmax = 1300.; zpnts = gp.nipol
 zth = 1.* np.arange(zpnts) * (zmax-zmin)/(zpnts-1.) + zmin 
-z0 = 240.
-K = 1.0 * 1650.
-F = 0.1 * 1.650
-C = 17.**2.*1000.
-D = 250.
+z0  = 240.
 z02 = 200.
+D   = 250.
+
+K   = 1.65
+F   = 1.65e-4
+C   = 17.**2.
+
+
 
 
 def disc_simple():
@@ -37,53 +40,41 @@ def disc_simple():
     # gp.dat.load(gp.files.dir+'pp')
     # return gp.dat
 
-    
-    # Set up simple population here using analytic formulae: 
-    # zmin = 50. ; zmax = 1000.; zpnts = 50 # 2*[pc], 1 (zpnts = 5000 previously, too many bins)
-    # zth = 1.* np.arange(zpnts) * (zmax-zmin)/(zpnts-1.) + zmin 
-    # z0 = 240.                             # [pc], scaleheigth
-    # K = 1.0 * 1650.                       # [TODO]
-    # F = 0.1 * 1.650                       # [TODO]
-    # C = 17.**2.*1000.                     # [TODO]
-    # D = 250.                              # [pc] TODO
-    # z02 = 200.                            # [pc], scaleheight for second population
-    
     # Draw mock data: 
     nu_zth = np.exp(-zth/z0)              # [1]
     Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth)   # [TODO]
 
     if gp.adddarkdisc: # False
         DD = 600       # [pc]
-        KD = 0.15 * 1650.                                # [TODO]
+        KD = 0.15 * 1.650                                # [TODO]
         Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2.+DD**2.) # [TODO]
 
     inti = np.zeros(zpnts) 
     for i in range(1,zpnts):
         inti[i] = simps(Kz_zth[:i]*nu_zth[:i],zth[:i])
-    sigzth = np.sqrt((inti + C) / nu_zth / 1000.)
-    nstars = 7e3                          # [1]
-    ran = npr.uniform(size=int(nstars))   # [1]
-    zstar = -z0 * np.log(1.0 - ran)       # [pc]
+    sigzth = np.sqrt((inti + C) / nu_zth)
+    nstars = 10000.                                # [1]
+    ran = npr.uniform(size=int(nstars))           # [1]
+    zstar = -z0 * np.log(1.0 - ran)               # [pc]
     sigzstar = gh.ipol(zth,sigzth,zstar) # > 0 #selection? no, IDL GT means ">", so perhaps '>' is a shift
     ran2 = npr.normal(size=int(nstars))  # [1]
     vzstar = ran2 * sigzstar             # [TODO]
 
     # Add second population [thick-disc like]: 
     fac2 = 1.
-    if gp.addpoptwo:
-        # nu_zth = np.exp(-zth/z0) + fac2 * np.exp(-zth/z02)
-        nu_zth2 = np.exp(-zth/z02)
+    if gp.pops == 2:
+        nu_zth2 = fac2*np.exp(-zth/z02)
         inti    = np.zeros(zpnts)
         for i in range(1,zpnts):
             inti[i] = simps(Kz_zth[:i]*nu_zth2[:i],zth[:i])
-        sigzth2 = np.sqrt(inti / nu_zth2 + C / nu_zth2)
+        sigzth2 = np.sqrt((inti + C) / nu_zth2)
         nstars2 = nstars*fac2             # [1]
         ran = npr.uniform(-1.,1.,nstars2) # [1]
         zstar2 = -z02 * np.log(1.0 - ran) # [pc]
         # zstar = [zstar,zstar2]
-        sigzstar2 = gh.ipol(zth,sigzth2,zstar2) > 0   # TODO: > 0?
-        ran2 = npr.normal(-1.,1,nstars2)              # [1]
-        vzstar2 = ran2 * sigzstar2                    # [TODO]
+        sigzstar2 = gh.ipol(zth,sigzth2,zstar2)   # TODO: > 0?
+        ran2 = npr.normal(-1.,1,nstars2)          # [1]
+        vzstar2 = ran2 * sigzstar2                # [(km/2)^2]
 
     # Cut on zmax:
     # z_dat = [zstar((zstar < zmax)),zstar2((zstar2 < zmax))] 
@@ -109,13 +100,13 @@ def disc_simple():
     nu_dat_bin = nu_dat_bin / renorm
     nu_dat_err_bin = nu_dat_err_bin / renorm
 
-    if gp.addpoptwo:
-        z_dat2  = zstar2[(zstar2 < zmax)]
-        vz_dat2 = vzstar2[(zstar2 < zmax)]
+    if gp.pops == 2:
+        sel = (zstar2 < zmax)
+        z_dat2  = zstar2[sel];       vz_dat2 = vzstar2[sel]
         
-        # Cut zero velocities: 
-        z_dat2 = z_dat2[(abs(vz_dat2) > 0)]
-        vz_dat2 = vz_dat2[(abs(vz_dat2) > 0)]
+        # Cut zero velocities:
+        sel = (abs(vz_dat2) > 0)
+        z_dat2 = z_dat2[sel];        vz_dat2 = vz_dat2[sel]
         
         # Calulate binned data (for plots/binned anal.): 
         index2 = np.argsort(z_dat2)
@@ -125,7 +116,7 @@ def disc_simple():
         
         z_dat_bin2, nu_dat_bin2, count_bin2 = bincou(z_dat2[index2], zmin, zmax, gp.nipol)
         nu_dat_err_bin2 = nu_dat_bin2 / np.sqrt(count_bin2)
-        renorm2 = max(nu_dat_bin2)
+        renorm2 = max(nu_dat_bin2) # normalize by max density of first bin, rather
         nu_dat_bin2 = nu_dat_bin2 / renorm2
         nu_dat_err_bin2 = nu_dat_err_bin2 / renorm2
 
@@ -133,24 +124,23 @@ def disc_simple():
     if not gp.uselike:
         sel = (z_dat_bin>0)
         xip = z_dat_bin[sel]              # [pc]
+
         gp.dat.Mx = xip                   # [pc]
-        gp.dat.Mdat = (K*xip/np.sqrt(xip**2.+D**2.)+2.*F*xip) / (2.0*np.pi*gp.G1) / 1000.
-        # TODO: xip, also for zstar
-        gp.blow = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gp.G1) / 1000.
-        # gp.blow = K*xip/np.sqrt(xip**2.+D**2.)
-        # TODO: check length
+        gp.dat.Mdat = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gp.G1)
+        gp.dat.Merr      = gp.dat.Mdat*nu_dat_err_bin/nu_dat_bin
 
-        gp.dat.Merr      = gp.dat.Mdat*0.01
-        gp.dat.densx     = xip          # TODO: needed somewhere?
+        gp.Mmodel = (K*xip/np.sqrt(xip**2.+D**2.)+2.*F*xip) / (2.0*np.pi*gp.G1)
 
+        
         Kz_zstar = -(K*xip/np.sqrt(xip**2.+D**2.) + 2.0 * F * xip)
         if gp.adddarkdisc:
             DD = 0.6
-            KD = 0.15 * 1650.
+            KD = 0.15 * 1.650
             Kz_zstar = Kz_zstar - KD*zstar/np.sqrt(xip**2.+DD**2.)   # [TODO]
         
-        gp.dat.densdat   = -Kz_zstar/(2.*np.pi*gp.G1) # TODO: surface density, must be stored somewhere else
-        gp.dat.denserr   = gp.dat.Merr/gp.dat.Mdat*gp.dat.densdat
+        gp.dat.densx     = xip          # TODO: needed somewhere?
+        gp.dat.densdat   = -Kz_zstar/(2.*np.pi*gp.G1) # TODO: stellar surface density, store elsewhere
+        gp.dat.denserr   = gp.dat.densdat * nu_dat_err_bin/nu_dat_bin
 
         gp.dat.nux1 = xip
         gp.dat.nudat1 = nu_dat_bin[sel]
@@ -160,7 +150,7 @@ def disc_simple():
         gp.dat.sigdat1 = sig_dat_bin[sel]
         gp.dat.sigerr1 = sig_dat_err_bin[sel]
 
-        if gp.addpoptwo:
+        if gp.pops == 2:
             gp.dat.nux2 = xip
             gp.dat.nudat2 = nu_dat_bin2[sel]
             gp.dat.nuerr2 = nu_dat_err_bin2[sel]
