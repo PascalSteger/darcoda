@@ -26,20 +26,20 @@ def disc_sim():
     if gp.importdata:
       z_nu1_raw,nu1_dat_raw,nu1_dat_err_raw = gh.readcoln(gp.files.nufiles[0])
       z_sig1_raw,sig1_dat_raw,sig1_dat_err_raw = gh.readcoln(gp.files.sigfiles[0])
-      z_surf_raw,surftot_dat_raw,surftot_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[0])
+      #z_surf_raw,surftot_dat_raw,surftot_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[0])
       z_surf_raw,surfdm_dat_raw,surfdm_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[1])
-      z_surf_raw,surfbar_dat_raw,surfbar_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[2])
+      z_surf_raw,surfbar_dat_raw,surfbar_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[0])
 
       selnu1 = (z_nu1_raw > 0)
-      selsig1 = (z_nu1_raw > 0)
-      selsurf = (z_nu1_raw > 0)
+      selsig1 = (z_sig1_raw > 0)
+      selsurf = (z_surf_raw > 0)
 
       if gp.pops == 2:
         z_nu2_raw,nu2_dat_raw,nu2_dat_err_raw = gh.readcoln(gp.files.nufiles[1])
         z_sig2_raw,sig2_dat_raw,sig2_dat_err_raw = gh.readcoln(gp.files.sigfiles[2])
 
-        selnu2 = (z_nu1_raw > 0)
-        selsig2 = (z_nu1_raw > 0)  
+        selnu2 = (z_nu2_raw > 0)
+        selsig2 = (z_sig2_raw > 0)  
 
       #baryonic surface density
       gp.dat.Mx = z_surf_raw[selsurf]*1000.         # [pc]
@@ -57,20 +57,20 @@ def disc_sim():
       gp.dat.densdat   = phys.kappa(gp.dat.densx, Kz_zstar)   #should be the total kappa, not sure about x array though
       gp.dat.denserr   = gp.dat.densdat  #not necessary for a certainty
 
-      gp.dat.nux1 = z_nu1_raw[selnu1]
+      gp.dat.nux1 = z_nu1_raw[selnu1]*1000.
       gp.dat.nudat1 = nu1_dat_raw[selnu1]
       gp.dat.nuerr1 = nu1_dat_err_raw[selnu1]
         
-      gp.dat.sigx1 = z_sig1_raw[selsig1]
+      gp.dat.sigx1 = z_sig1_raw[selsig1]*1000.
       gp.dat.sigdat1 = sig1_dat_raw[selsig1]
       gp.dat.sigerr1 = sig1_dat_err_raw[selsig1]
 
       if gp.pops == 2:
-        gp.dat.nux2 = z_nu2_raw[selnu2]
+        gp.dat.nux2 = z_nu2_raw[selnu2]*1000.
         gp.dat.nudat2 = nu2_dat_raw[selnu2]
         gp.dat.nuerr2 = nu2_dat_err_raw[selnu2]
 
-        gp.dat.sigx2 = z_sig2_raw[selsig2]
+        gp.dat.sigx2 = z_sig2_raw[selsig2]*1000.
         gp.dat.sigdat2 = z_sig2_raw[selsig2]
         gp.dat.sigerr2 = z_sig2_raw[selsig2]
 
