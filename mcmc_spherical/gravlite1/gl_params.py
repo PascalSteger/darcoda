@@ -20,7 +20,7 @@ if not os.path.exists("/home/ast/read"):
 
 
 
-investigate  = 'simple'  # determine which data set to work on
+investigate  = 'sim'  # determine which data set to work on
                                         # 'simple': set up simple model for disc
                                         # 'sim': read in disc simulation
                                         # 'checkdwarf': checksigma for analytic dwarf, sig_LOS
@@ -56,6 +56,7 @@ if investigate == 'sim' or investigate == 'simple':
     nusimpstart = True   # start from nu near data
     kzsimpfix   = False    # calculate kz from simple model directly
     nusimpfix   = False    # TODO: meaning?
+    importdata = False # For sim: import nu,sig, etc. from files (if False import datapoints from simulation and use routine to calculate nu,sig)
     qtest = False # plot during physics_disc
     # Min/max Kz for MCMC search [only affects denslog prior].
     # If positive assume constant;
@@ -158,7 +159,7 @@ sprior  = False                       # rising sig_z needed in disc case
 if geom=='sphere': sprior = False
 constdens = False # constant DM density
 rprior  = True    # regularize Nuz 
-nutol   = 2.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
+nutol   = 2.0     # nu_(i+1)/nu_i must be < nutol
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
 deltol  = 2./nipol                               # for delta
 # norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
@@ -166,7 +167,7 @@ deltol  = 2./nipol                               # for delta
 quadratic = False           # linear or quad interpol. 
 monotonic = False           # mono-prior on nu(z)
 uselike   = False           # use Likelihood function, or binned data?
-adderrors = False
+adderrors = True
 
 # last bin mass prior:
 # exclude all models with a mass in last bin that exceeds

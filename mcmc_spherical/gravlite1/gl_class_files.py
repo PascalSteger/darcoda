@@ -41,6 +41,7 @@ class Files:
     def __init__ (self):
         self.dir = ''
         self.massfile = ''; self.analytic = ''
+        self.surfdenfiles = []
         self.nufiles  = []
         self.sigfiles = []
         self.posvelfiles = []
@@ -269,18 +270,20 @@ class Files:
         
     def set_disc_sim(self):
         self.dir = self.dir + 'data_disc_sim/mwhr/'
-        self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # all components
         self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
         if gp.pops == 2:
-            self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
+          self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
 
-        self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff.txt') # all comp.
-        self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff.txt') # first comp.
-        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvelbl.txt') # all comp.
-        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvelbl.txt') # first comp.
+        self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
+        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
+
+        if gp. pops ==2:  
+          #files don't exist
+          self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
+          self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_dm.txt') # second comp.
         
-        self.massfile = self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt'
-        # self.massfile.append(self.dir + 'siglos/mwhr_r8500_ang'+gp.patch+'_surfacedenDM.txt')
+        self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density 
+        self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfacedenDM.txt') # DM surface density 
         
         return
     

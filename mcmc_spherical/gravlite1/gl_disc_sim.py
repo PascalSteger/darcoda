@@ -22,22 +22,89 @@ def disc_sim():
     gp.zpmin = -1
     gp.zpmax = -1
 
-    # Read in the data:
-    mass, x_dat,y_dat,z_dat, vx_dat,vy_dat,vz_dat, pot_dat = gh.readcoln(gp.files.posvelfiles[0])
-    if max(mass) != min(mass):
+    #import all data from files
+    if gp.importdata:
+      z_nu1_raw,nu1_dat_raw,nu1_dat_err_raw = gh.readcoln(gp.files.nufiles[0])
+      z_sig1_raw,sig1_dat_raw,sig1_dat_err_raw = gh.readcoln(gp.files.sigfiles[0])
+      z_surf_raw,surftot_dat_raw,surftot_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[0])
+      z_surf_raw,surfdm_dat_raw,surfdm_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[1])
+      z_surf_raw,surfbar_dat_raw,surfbar_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[2])
+
+      selnu1 = (z_nu1_raw > 0)
+      selsig1 = (z_nu1_raw > 0)
+      selsurf = (z_nu1_raw > 0)
+
+      if gp.pops == 2:
+        z_nu2_raw,nu2_dat_raw,nu2_dat_err_raw = gh.readcoln(gp.files.nufiles[1])
+        z_sig2_raw,sig2_dat_raw,sig2_dat_err_raw = gh.readcoln(gp.files.sigfiles[2])
+
+        selnu2 = (z_nu1_raw > 0)
+        selsig2 = (z_nu1_raw > 0)  
+
+      #baryonic surface density
+      gp.dat.Mx = z_surf_raw[selsurf]*1000.         # [pc]
+      gp.dat.Mdat = surfbar_dat_raw[selsurf]          # [Msun/pc^2]
+      gp.dat.Merr = surfbar_dat_err_raw[selsurf]  
+
+    
+      #total surface density
+      gp.Mmodel = surftot_dat_raw[selsusrf]           # [Msun/pc^2]
+  
+      Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1)  
+ 
+      #should be kappa data (not sure whether this is necessary)      
+      gp.dat.densx     = z_surf_raw[selsusrf]*1000.         # [pc]
+      gp.dat.densdat   = phys.kappa(gp.dat.densx, Kz_zstar)   #should be the total kappa, not sure about x array though
+      gp.dat.denserr   = gp.dat.densdat  #not necessary for a certainty
+
+      gp.dat.nux1 = z_nu1_raw[selnu1]
+      gp.dat.nudat1 = nu1_dat_raw[selnu1]
+      gp.dat.nuerr1 = nu1_dat_err_raw[selnu1]
+        
+      gp.dat.sigx1 = z_sig1_raw[selsig1]
+      gp.dat.sigdat1 = sig1_dat_raw[selsig1]
+      gp.dat.sigerr1 = sig1_dat_err_raw[selsig1]
+
+      if gp.pops == 2:
+        gp.dat.nux2 = z_nu2_raw[selnu2]
+        gp.dat.nudat2 = nu2_dat_raw[selnu2]
+        gp.dat.nuerr2 = nu2_dat_err_raw[selnu2]
+
+        gp.dat.sigx2 = z_sig2_raw[selsig2]
+        gp.dat.sigdat2 = z_sig2_raw[selsig2]
+        gp.dat.sigerr2 = z_sig2_raw[selsig2]
+
+      gp.dat.output()
+      gp.dat.save(gp.files.dir+'pp') # pickle
+      return gp.dat  
+  
+
+    #import simulation datapoints and calculate nu,sig
+    else:
+      zmin = 100. ; zmax = 1300.
+
+      # Read in the data:
+      mass, x_dat,y_dat,z_dat, vx_dat,vy_dat,vz_dat, pot_dat = gh.readcoln(gp.files.posvelfiles[0])
+      if max(mass) != min(mass):
         print '**** Multimass data not yet supported ****'
         exit(1)
-    
-    z_mean  = np.sum(z_dat)/(1.*len(z_dat))
-    vz_mean = np.sum(vz_dat)/(1.*len(z_dat))
 
-    # center on coordinate, if also negative z values read in
-    if min(z_dat)<0:
+      #change to [pc]
+      x_dat*=1000.
+      y_dat*=1000.
+      z_dat*=1000.
+      #v is in units [100 km/s]
+
+      z_mean  = np.sum(z_dat)/(1.*len(z_dat))
+      vz_mean = np.sum(vz_dat)/(1.*len(z_dat))
+
+      # center on coordinate, if also negative z values read in
+      if min(z_dat)<0:
         z_dat = z_dat - z_mean
         vz_dat = vz_dat - vz_mean
     
-    # Add errors:
-    if gp.adderrors:
+      # Add errors:
+      if gp.adderrors:
         # Assume normal errors for now: 
         xerrfac  = 10.0;  yerrfac = 10.0;  zerrfac = 10.0
         vxerrfac = 10.0; vyerrfac = 10.0; vzerrfac = 10.0
@@ -51,167 +118,147 @@ def disc_sim():
         vy_dat = vy_dat + npr.normal(-1.,1.,len(z_dat)) * vy_dat_err
         vz_dat = vz_dat + npr.normal(-1.,1.,len(z_dat)) * vz_dat_err
 
-    # Slice and dice the data:
-    if gp.slicedata:
-        # Cut in angle:
-        R_dat = np.sqrt(x_dat**2. + y_dat**2.)
-        theta = np.atan(y_dat,x_dat)
-        theta = theta - np.sum(theta)/(1.*len(theta))
-        angle = max(theta) / 4.0
-        sel = (abs(theta) < angle)
-        x_cut = x_dat[sel];   y_cut = y_dat[sel];   z_cut = z_dat[sel]
-        vx_cut = vx_dat[sel]; vy_cut = vy_dat[sel]; vz_cut = vz_dat[sel]
-        
-        # Cut in z:
-        # zmin = min(z_cut)
-        zmin = 0.
-        sel = (z_cut > zmin)
-        x_cut = x_cut[sel];   y_cut = y_cut[sel];   z_cut = z_cut[sel]
-        vx_cut = vx_cut[sel]; vy_cut = vy_cut[sel]; vz_cut = vz_cut[sel]
-        
-        # Cut in R: 
-        R_cut = np.sqrt(x_cut**2. + y_cut**2.)
-        Rmin = min(R_cut); Rmax = max(R_cut)
-        sel = (R_cut > Rmin and R_cut < Rmax)
-        x_dat = x_cut[sel];   y_dat = y_cut[sel];   z_dat = z_cut[sel]
-        vx_dat = vx_cut[sel]; vy_dat = vy_cut[sel]; vz_dat = vz_cut[sel]
-        
-        # Downsample:
-        nfrac = 1.0
-        step = 1.0/nfrac
-        nn = 0
-        # TODO: random downsampling with npr.sample() possible?
-        for jj in range(0,len(z_dat),step):
-            x_cut[nn] = x_dat[jj];   y_cut[nn] = y_dat[jj];   z_cut[nn] = z_dat[jj]
-            vx_cut[nn] = vx_dat[jj]; vy_cut[nn] = vy_dat[jj]; vz_cut[nn] = vz_dat[jj]
-            nn = nn + 1
-        
-        x_dat = x_cut[:nn-1];   y_dat = y_cut[:nn-1];   z_dat = z_cut[:nn-1]
-        vx_dat = vx_cut[:nn-1]; vy_dat = vy_cut[:nn-1]; vz_dat = vz_cut[:nn-1]
-
-    R_dat = np.sqrt(x_dat**2.+y_dat**2.)
-    vR_dat = (vx_dat*x_dat+vy_dat*y_dat)/R_dat
+      #Cut on zmax
+      sel = (z_dat < zmax)
+      z_dat = zstar[sel];   vz_dat = vzstar[sel]
     
-    if False: #gp.testplot: #TODO: enable if really wanted to see output
-        # Test whether dist. are really Gaussian or not:
-        import pylab as pl
-        # pl.hist(x, bins, normed=1, histtype='bar', rwidth=0.8)
-        pl.clf(); histvz,binsvz,pa = pl.hist(vz_dat,  rwidth=2.5)
-        pl.clf(); histz,binsz,pa   = pl.hist(z_dat,   rwidth=0.05)
-        pl.clf(); histvzvR,binsvzvR,pa = pl.hist(vz_dat*vR_dat,rwidth=25.0)
+      # Cut zero velocities:
+      sel = (abs(vz_dat) > 0)
+      z_dat = z_dat[sel];   vz_dat = vz_dat[sel] 
         
-        # Cut a zbin 
-        zmin = 0.4;  zmax = 0.6
-        sel = (z_dat > zmin) * (z_dat < zmax)
-        zcut = z_dat[sel]; vzcut = vz_dat[sel]; vRcut = vR_dat[sel]
-        
-        pl.clf(); histvzbin,binsvzcut,pa  = pl.hist(vzcut,rwidth=2.5)
-        pl.clf(); histzbin,binszcut,pa    = pl.hist(zcut, rwidth=0.05)
-        pl.clf(); histvzvRbin,binsvzvRcut,pa = pl.hist(vzcut*vRcut, rwidth=100.0)
+      # Calculate and output binned data:
+      zbin = gp.nipol
+      index = np.argsort(z_dat)
 
-        sigvz = 20.
-        pl.clf(); gpl.plot(binsvzcut,np.exp(-binsvzcut**2./2./sigvz**2.))
-        
-        # Assume "normal product" distribution [e.g. Wolfram Mathworld]: 
-        sigRz = 2500. 
-        meanbfunc = 100.
-        tmin = -20001.;        tmax = 20001. ;        tpnts = 10000 
-        test = np.arange(tpnts)*(tmax-tmin)/(1.*tpnts) + tmin
-        bfunc = ss.kv(0,(abs(test-meanbfunc))/sigRz)
-        pl.clf(); gpl.plot(test,bfunc/max(bfunc))
+      # rout, arrayout, count_bin = binsmoo(r, array, low, high, bin, nanflag):
 
-        mean = simps(bfunc*test,test) / simps(bfunc,test)
-        
-    # Calculate and output binned data:
-    zbin = gp.nipol
-    index = np.argsort(z_dat)
+      z_dat_bin,sig_dat_bin,count_bin = binsmoo(z_dat[index],vz_dat[index],zmin,zmax,zbin,0.)
+      sig_dat_bin = np.sqrt(sig_dat_bin)
+      sig_dat_err_bin = sig_dat_bin / np.sqrt(count_bin)
 
-    # rout, arrayout, count_bin = binsmoo(r, array, low, high, bin, nanflag):
+      # rout, arrrayout, count_bin = bincou(r, low, high, bin):
 
-    z_dat_bin,sig_dat_bin,count_bin = binsmoo(z_dat[index],vz_dat[index],-1.2,1.2,zbin,0.)
-    sig_dat_bin = np.sqrt(sig_dat_bin)
-    sig_dat_err_bin = sig_dat_bin / np.sqrt(count_bin)
-    z_dat_bin,sigRz_dat_bin,count_bin = binsmoo(z_dat[index],vz_dat[index]*vR_dat[index],-1.2,1.2,zbin,0.)
-    sigRz_dat_err_bin = sigRz_dat_bin / np.sqrt(count_bin)
+      z_dat_bin, nu_dat_bin, count_bin = bincou(z_dat[index],zmin,zmax,zbin)
+      nu_dat_err_bin = nu_dat_bin / np.sqrt(count_bin)
+      renorm = 1.*max(nu_dat_bin)
+      nu_dat_bin = nu_dat_bin / renorm
+      nu_dat_err_bin = nu_dat_err_bin / renorm
 
-    # rout, arrrayout, count_bin = bincou(r, low, high, bin):
-
-    z_dat_bin, nu_dat_bin, count_bin = bincou(z_dat[index],-1.2,1.2,zbin)
-    nu_dat_err_bin = nu_dat_bin / np.sqrt(count_bin)
-    renorm = 1.*max(nu_dat_bin)
-    nu_dat_bin = nu_dat_bin / renorm
-    nu_dat_err_bin = nu_dat_err_bin / renorm
+      #[TODO]: downsampling if needed 
     
-    # z_dat_bin,nu_dat_bin,nu_dat_err_bin = readcol(nufile)
-    # z_dat_bin,sig_dat_bin,sig_dat_err_bin = readcol(sigfile)
-    sel = (z_dat_bin > 0)
-    z_dat = z_dat_bin[sel]
+      if gp.pops == 2:
+        # Read in the data:
+        mass2, x_dat2,y_dat2,z_dat2, vx_dat2,vy_dat2,vz_dat2, pot_dat2 = gh.readcoln(gp.files.posvelfiles[1])
+        if max(mass2) != min(mass2):
+          print '**** Multimass data not yet supported ****'
+          exit(1)
 
-    if not gp.uselike:
-        gp.dat.nur1 = z_dat_bin[sel]
-        gp.dat.nudat1 = nu_dat_bin[sel]
-        gp.dat.nuerr1 = nu_dat_err_bin[sel]
+        #change to [pc]
+        x_dat2*=1000.
+        y_dat2*=1000.
+        z_dat2*=1000.
+        #v is in units [100 km/s]
+
+        z_mean2  = np.sum(z_dat2)/(1.*len(z_dat2))
+        vz_mean2 = np.sum(vz_dat2)/(1.*len(z_dat2))
+
+        # center on coordinate, if also negative z values read in
+        if min(z_dat2)<0:
+          z_dat2 = z_dat2 - z_mean2
+          vz_dat2 = vz_dat2 - vz_mean2
+
+        # Add errors:
+        if gp.adderrors:
+          # Assume normal errors for now: 
+          xerrfac  = 10.0;  yerrfac = 10.0;  zerrfac = 10.0
+          vxerrfac = 10.0; vyerrfac = 10.0; vzerrfac = 10.0
+          x_dat_err2 = abs(x_dat2/xerrfac);    y_dat_err2 = abs(y_dat2/yerrfac);    z_dat_err2 = abs(z_dat2/zerrfac)
+          vx_dat_err2 = abs(vx_dat2/vxerrfac); vy_dat_err2 = abs(vy_dat2/vyerrfac); vz_dat_err2 = abs(vz_dat2/vzerrfac)
         
-        gp.dat.sigr1 = z_dat_bin[sel]
-        gp.dat.sigdat1 = sig_dat_bin[sel]
-        gp.dat.sigerr1 = sig_dat_err_bin[sel]
+          x_dat2 = x_dat2 + npr.normal(-1.,1.,len(z_dat2)) * x_dat_err2
+          y_dat2 = y_dat2 + npr.normal(-1.,1.,len(z_dat2)) * y_dat_err2
+          z_dat2 = z_dat2 + npr.normal(-1.,1.,len(z_dat2)) * z_dat_err2
+          vx_dat2 = vx_dat2 + npr.normal(-1.,1.,len(z_dat2)) * vx_dat_err2
+          vy_dat2 = vy_dat2 + npr.normal(-1.,1.,len(z_dat2)) * vy_dat_err2
+          vz_dat2 = vz_dat2 + npr.normal(-1.,1.,len(z_dat2)) * vz_dat_err2
 
-        sigRz_dat = sigRz_dat_bin[sel]
-        sigRz_dat_err = sigRz_dat_err_bin[sel]
+        #Cut on zmax
+        sel = (z_dat2 < zmax)
+        z_dat2  = zstar2[sel];       vz_dat2 = vzstar2[sel]
+        
+        # Cut zero velocities:
+        sel = (abs(vz_dat2) > 0)
+        z_dat2 = z_dat2[sel];        vz_dat2 = vz_dat2[sel]
+        
+        # Calulate binned data (for plots/binned anal.): 
+        index2 = np.argsort(z_dat2)
+        z_dat_bin2, sig_dat_bin2, count_bin2 = binsmoo(z_dat2[index2],vz_dat2[index2],zmin,zmax,gp.nipol,0.)
+        sig_dat_bin2 = np.sqrt(sig_dat_bin2)
+        sig_dat_err_bin2 = sig_dat_bin2 / np.sqrt(count_bin2)
+        
+        z_dat_bin2, nu_dat_bin2, count_bin2 = bincou(z_dat2[index2], zmin, zmax, gp.nipol)
+        nu_dat_err_bin2 = nu_dat_bin2 / np.sqrt(count_bin2)
+        renorm2 = max(nu_dat_bin2) # normalize by max density of first bin, rather
+        nu_dat_bin2 = nu_dat_bin2 / renorm2
+        nu_dat_err_bin2 = nu_dat_err_bin2 / renorm2
 
-    # Output binned data (now that basename is fully specified): 
-    # arraydump(basename+'_nu_dat_bin.txt',[[z_dat_bin],[nu_dat_bin],[nu_dat_err_bin]],3)
-    # arraydump(basename+'_sigz_dat_bin.txt',[[z_dat_bin],[sig_dat_bin],[sig_dat_err_bin]],3)
+
     
-    # if gp.bprior:
-    # Load the baryonic model:
-    if gp.baryonmodel == 'silvia':
+      # if gp.bprior:
+      # Load the baryonic model:
+      if gp.baryonmodel == 'silvia':
         zvis,sigexpvis,sigexpviserr,sigsecvis,sigsecviserr = gh.readcoln('/home/ast/user/jread/Data/Local_dm/Vis/Sigma_MM.txt')
         sigusevis = sigsecvis
         siguseviserr = sigsecviserr
-    elif gp.baryonmodel == 'sim':
-        zvis,sigusevis,siguseviserr = gh.readcol(gp.files.massfile)
-        gp.dat.Mx = zvis
-        gp.dat.Mdat = sigusevis
-        gp.dat.Merr = siguseviserr
-    elif gp.baryonmodel == 'simple':
+      elif gp.baryonmodel == 'sim':
+        # read in baryonic surface density
+        zvis,sigusevis,siguseviserr = gh.readcol(gp.files.surfdenfiles[0])
+        # read in DM surface density
+        zdm,sigusedm,sigusedmerr = gh.readcol(gp.files.surfdenfiles[1])
+      elif gp.baryonmodel == 'simple':
         zth = np.arange(zpnts) * (zmax-zmin)/(zpnts-1.) + zmin
         zvis = zth
         D = 0.25
         sigusevis = K*zvis/sqrt(zvis**2.+D**2.) / (2.0*np.pi*G1) / 1000**2.
         siguseviserr = sigusevis*0.01
+
+      sel = (z_dat_bin>0)
+      xip = z_dat_bin[sel]  
+
+      #baryonic surface density
+      gp.dat.Mx = zvis*1000.         # [pc]
+      gp.dat.Mdat = sigusevis          # [Msun/pc^2]
+      gp.dat.Merr = siguseviserr
+
+      #total surface density (same z array as baryonic)
+      gp.Mmodel = sigusevis + sigusedm        # [Msun/pc^2]
+  
+      Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1)  
+ 
+      #should be kappa data (not sure whether this is necessary)      
+      gp.dat.densx     = zvis*1000.         # [pc]
+      gp.dat.densdat   = phys.kappa(gp.dat.densx, Kz_zstar)   #should be the total kappa, not sure about x array though
+      gp.dat.denserr   = gp.dat.densdat  #not necessary for a certainty
+
+      gp.dat.nux1 = xip
+      gp.dat.nudat1 = nu_dat_bin
+      gp.dat.nuerr1 = nu_dat_bin_err
         
-    sigvismin = sigusevis - siguseviserr
+      gp.dat.sigx1 = xip
+      gp.dat.sigdat1 = sig_dat_bin
+      gp.dat.sigerr1 = sig_dat_bin_err
 
-    # Binning in z:
-    if gp.xpmin < 0: gp.xpmin = 1.*min(z_dat)
-    if gp.xpmax < 0: gp.xpmax = 1.*max(z_dat)
-    if gp.nipol > 0:
-        zp_kz = np.arange(gp.nipol) * (gp.xpmax - gp.xpmin) / (gp.nipol-1.) + gp.xpmin
-    else:
-        # Adaptive auto-binning here:
-        zabs = abs(z_dat)
-        index = np.sort(zabs)
-        zsort = zabs(index)
-        numperbin = abs(nbin) 
-        ztmp = np.zeros(len(zsort))
-        jl = 0.
-        jr = 0.
-        nbin = 0
-        while jr < len(zsort)-1:
-            jr = jl + numperbin
-            if jr > len(zsort)-1: jr = len(zsort)-1 
-            ztmp[nbin] = np.sum(zsort[jl:jr-1])/(1.*jr-jl)
-            nbin = nbin + 1
-            jl = jl + numperbin
-            
-        zp_kz = ztmp[:nbin-1]
+      if gp.pops == 2:
+        gp.dat.nux2 = xip
+        gp.dat.nudat2 = nu_dat_bin2
+        gp.dat.nuerr2 = nu_dat_bin_err2
 
+        gp.dat.sigx2 = xip
+        gp.dat.sigdat2 = sig_dat_bin2
+        gp.dat.sigerr2 = sig_dat_bin_err2
 
-    # Set up bprior:
-    if gp.bprior : 
-        blow = gh.ipol(zvis,sigvismin,zp_kz) 
-        gp.blow = bsurf * (2.*np.pi*G1) * 1000.**2.
-    else:
-        gp.blow = np.zeros(len(zp_kz)) + 1e-5
+      gp.dat.output()
+      gp.dat.save(gp.files.dir+'pp') # pickle
+      return gp.dat 
+
 
