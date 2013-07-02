@@ -24,9 +24,13 @@ def bin_data():
         import grh_dens2D
         import grh_siglos2D
     elif gp.investigate == 'walker':
-        import grw_com
+        # TODO: call main again after first iteration, if gp.metalpop set
+        import grw_com                  # inside there, split by metallicity
+        grw_com.run()
         import grw_dens
+        grw_dens.run()
         import grw_siglos
+        grw_siglos.run()
     elif gp.investigate == 'sim':
         import grs_com_align # centering, if not aligned yet
         import grs_dens
@@ -60,8 +64,9 @@ def get_data():
         gp.dat.read_sigma()
 
 
-    if gp.bprior and gp.investigate != 'simple':
+    if gp.bprior:
         gp.blow = gp.dat.Mdat - gp.dat.Merr
+
 
     # Binning in z:
     if (gp.xpmin<0) : gp.xpmin = min(gp.dat.Mx)
@@ -96,15 +101,40 @@ def write_key_data_parameters():
 
 
 
+def adump():
+    write_key_data_parameters()
+    arraydump(gp.files.get_outdat(), gp.xipol, 'w')
+
+    profM, profdens, profnus, profdeltas, profsigs = gp.files.get_outprofs()
+    arraydump(profM, gp.xipol, 'w')
+    arraydump(profdens, gp.xipol, 'w')
+    arraydump(profnus[0], gp.xipol, 'w')
+    arraydump(profdeltas[0], gp.xipol, 'w')
+    arraydump(profsigs[0], gp.xipol, 'w')
+    if gp.pops==2:
+        arraydump(profnus[1], gp.xipol, 'w')
+        arraydump(profdeltas[1], gp.xipol, 'w')
+        arraydump(profsigs[1], gp.xipol, 'w')
+    return 0
+
+
+
+
+
 
 def write_outfile():
     '''write profiles to output files in directory'''
-    M = phys.Mzdefault(gp.pars.dens)
-    profM, profnus, profdeltas, profsigs = gp.files.get_outprofs()
+    if gp.geom == 'sphere':
+        M = phys.Mzdefault(gp.pars.dens)
+    else:
+        M = gp.M_x  # TODO: check meaning, possible inclusion in physics_disc.Mzdefault
+        
+    profM, profdens, profnus, profdeltas, profsigs = gp.files.get_outprofs()
     arraydump(profM, M)
-    arraydump(profnus[0],   phys.nu(gp.pars.nu1)) # [Msun/pc^3]
-    arraydump(profdeltas[0], gp.pars.delta1)      # [1]
-    arraydump(profsigs[0],  gp.sig1_x)            # [km/s]
+    arraydump(profdens, gp.dens_x) # [Msun/pc^3] in spherical case
+    arraydump(profnus[0],   phys.nu(gp.pars.nu1))  # [Msun/pc^3]
+    arraydump(profdeltas[0], gp.pars.delta1)       # [1]
+    arraydump(profsigs[0],  gp.sig1_x)             # [km/s]
     if gp.pops == 2:
         arraydump(profnus[1],   phys.nu(gp.pars.nu2)) # [Msun/pc^3]
         arraydump(profdeltas[1], gp.pars.delta2)      # [1]
@@ -138,20 +168,6 @@ def arraydump(fname,arrays,app='a',narr=1):
 
 
 
-def adump():
-    write_key_data_parameters()
-    arraydump(gp.files.get_outdat(), gp.xipol, 'w')
-
-    profM, profnus, profdeltas, profsigs = gp.files.get_outprofs()
-    arraydump(profM, gp.xipol, 'w')
-    arraydump(profnus[0], gp.xipol, 'w')
-    arraydump(profdeltas[0], gp.xipol, 'w')
-    arraydump(profsigs[0], gp.xipol, 'w')
-    if gp.pops==2:
-        arraydump(profnus[1], gp.xipol, 'w')
-        arraydump(profdeltas[1], gp.xipol, 'w')
-        arraydump(profsigs[1], gp.xipol, 'w')
-    return 0
 
 
 
@@ -179,15 +195,16 @@ def store_working_pars(n,pars,chi2,parstep):
 
 
     
-def get_working_pars():
+def get_working_pars(scale=True):
     if len(gp.init_configs)<1:
-        gp.parst  = gp.pars
-        gp.chi2t = gp.chi2
+        gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
+        gp.chi2 = gp.safechi2
         return
     else:
-        gp.parst,gp.chi2t,gp.parstep = gp.init_configs.pop()
-        gp.parstep.adaptworst(1./gp.stepafterrunaway)
-    return gp.parst
+        gp.pars, gp.chi2, gp.parstep = gp.init_configs.pop()
+        gp.parst.assign(gp.pars)
+        if scale: gp.parstep.adaptworst(gp.stepafterrunaway)
+    return gp.pars
 
 
 

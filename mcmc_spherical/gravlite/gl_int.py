@@ -112,7 +112,7 @@ def int_poly_inf(r0,poly):
 def ant_sigr2(r0, intdelta, M, nu): #  [1], [pc], [1], [munit], [munit/pc^3]
     'sigma_r^2'
     if min(nu)<0.:
-        print >> 'error: negative nu'
+        print 'error: negative nu'
         pdb.set_trace()
 
     # get full integrand first

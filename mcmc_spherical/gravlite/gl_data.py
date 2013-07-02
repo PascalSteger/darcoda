@@ -240,10 +240,10 @@ class Datafile:
         else:
             gp.xipol = np.linspace(gp.xmin,gp.xmax,gp.nipol)    # [pc]
 
-
-        self.nux1_2D     = gp.xipol                                # [pc]
-        self.nudat1_2D   = gh.ipollog(dat.nux1_2D, dat.nudat1_2D, self.nux1_2D) # [munit/pc^3]
-        self.nuerr1_2D   = gh.ipollog(dat.nux1_2D, dat.nuerr1_2D, self.nux1_2D) # [munit/pc^3]
+        if gp.geom == 'sphere':
+            self.nux1_2D     = gp.xipol                                # [pc]
+            self.nudat1_2D   = gh.ipollog(dat.nux1_2D, dat.nudat1_2D, self.nux1_2D) # [munit/pc^3]
+            self.nuerr1_2D   = gh.ipollog(dat.nux1_2D, dat.nuerr1_2D, self.nux1_2D) # [munit/pc^3]
 
 
         self.nux1     = gp.xipol                                # [pc]
@@ -268,9 +268,10 @@ class Datafile:
         self.sigerr1  = gh.ipollog(dat.sigx1, dat.sigerr1, self.sigx1) # [km/s]
 
         if gp.pops==2:
-            self.nux2_2D     = gp.xipol                                # [pc]
-            self.nudat2_2D   = gh.ipollog(dat.nux2_2D, dat.nudat2_2D, self.nux2_2D) # [munit/pc^3]
-            self.nuerr2_2D   = gh.ipollog(dat.nux2_2D, dat.nuerr2_2D, self.nux2_2D) # [munit/pc^3]
+            if gp.geom == 'sphere':
+                self.nux2_2D   = gp.xipol                                # [pc]
+                self.nudat2_2D = gh.ipollog(dat.nux2_2D, dat.nudat2_2D, self.nux2_2D) # [munit/pc^3]
+                self.nuerr2_2D = gh.ipollog(dat.nux2_2D, dat.nuerr2_2D, self.nux2_2D) # [munit/pc^3]
 
             self.nux2    = gp.xipol # [pc]
             self.nudat2  = gh.ipollog(dat.nux2, dat.nudat2, self.nux2) #[munit/pc^3]
@@ -294,23 +295,23 @@ class Datafile:
 
     def output(self):
         'quick output of all 3D quantities'
-        print >> 'Mx = ',   gh.pretty(self.Mx), ' pc'
-        print >> 'Mdat  = ',gh.pretty(self.Mdat), ' munit'
-        print >> 'Merr = ', gh.pretty(self.Merr), ' munit'
+        print 'Mx = ',   gh.pretty(self.Mx), ' pc'
+        print 'Mdat  = ',gh.pretty(self.Mdat), ' munit'
+        print 'Merr = ', gh.pretty(self.Merr), ' munit'
 
-        print >> 'nux1  = ',gh.pretty(self.nux1), ' pc'
-        print >> 'nudat1 =',gh.pretty(self.nudat1), ' munit/pc^3'
-        print >> 'nuerr1=', gh.pretty(self.nuerr1), ' munit/pc^3'
+        print 'nux1  = ',gh.pretty(self.nux1), ' pc'
+        print 'nudat1 =',gh.pretty(self.nudat1), ' munit/pc^3'
+        print 'nuerr1=', gh.pretty(self.nuerr1), ' munit/pc^3'
         
-        print >> 'sigx1 = ',  gh.pretty(self.sigx1), ' pc'
-        print >> 'sigdat1 = ',gh.pretty(self.sigdat1), 'km/s'
-        print >> 'sigerr1 = ',gh.pretty(self.sigerr1), 'km/s'
+        print 'sigx1 = ',  gh.pretty(self.sigx1), ' pc'
+        print 'sigdat1 = ',gh.pretty(self.sigdat1), 'km/s'
+        print 'sigerr1 = ',gh.pretty(self.sigerr1), 'km/s'
         if gp.pops==2:
-            print >> 'nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3'
-            print >> 'nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3'
+            print 'nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3'
+            print 'nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3'
             
-            print >> 'sigdat2 = ',gh.pretty(self.sigdat2), ' km/s'
-            print >> 'sigerr2 = ',gh.pretty(self.sigerr2), ' km/s'
+            print 'sigdat2 = ',gh.pretty(self.sigdat2), ' km/s'
+            print 'sigerr2 = ',gh.pretty(self.sigerr2), ' km/s'
 
 
 

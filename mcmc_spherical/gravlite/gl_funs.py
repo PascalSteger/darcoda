@@ -31,12 +31,12 @@ def get_new_parameters():
     # ranarr.wigglepar()       # if we want to wiggle only one parameter at a time
     # ranarr.wiggle_delta()
 
-
     ranarr.setuniformrandom()           # wiggle all parameters as one
     ranarr.scale_prop_chi2()            # change proportional to error on chi2
     
     ranarr.mul(gp.parstep)
-    gp.parst = ranarr.add(gp.parst)
+    ranarr.add(gp.pars)                   # TODO: check parst is NOT needed here
+    gp.parst.assign(ranarr)
 
     if gp.deltaprior:
         if gp.investigate == 'walker':
@@ -44,8 +44,6 @@ def get_new_parameters():
             gp.parst.set_delta([phys.invdelta(delta1), phys.invdelta(delta2)])
         else:
             gp.parst.set_delta([phys.invdelta(gp.delta0),phys.invdelta(gp.delta0)])
-
-
 
     return gp.parst
 
@@ -63,71 +61,69 @@ def get_new_parameters():
 
 def calc_M_nu_sig_sphere():
     gp.LOG.debug( 'Calculate M / nu / sigma values for spherical case')
-    if gp.geom == 'sphere':
-        import physics_sphere as phys
-        if not gp.checksigma:
-            '''normal case'''
-            gp.nu1_x  = phys.nu(gp.parst.nu1) # [munit/pc^3]
-            gp.dens_x = phys.dens(gp.xipol, gp.parst.dens)         # [munit/pc^3]
+    if gp.geom != 'sphere':
+        print 'wrong branch, use calc_M_nu_sig_disc'
+        pdb.set_trace()
 
-            gp.M_x    = phys.Mr3D(gp.xipol, gp.dens_x) # [munit,3D]
-            gp.d1_x   = phys.delta(gp.parst.delta1)
-            gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x)
+    import physics_sphere as phys
+    if not gp.checksigma:
+        '''normal case'''
+        gp.nu1_x  = phys.nu(gp.parst.nu1) # [munit/pc^3]
+        gp.dens_x = phys.dens(gp.xipol, gp.parst.dens)         # [munit/pc^3]
+        
+        gp.M_x    = phys.Mr3D(gp.xipol, gp.dens_x) # [munit,3D]
+        gp.d1_x   = phys.delta(gp.parst.delta1)
+        gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x)
+
+        if gp.pops == 2:
+            gp.nu2_x  = phys.nu(gp.parst.nu2)
+            gp.d2_x   = phys.delta(gp.parst.delta2)
+            gp.sig2_x = phys.sig_los(gp.M_x, gp.nu2_x, gp.d2_x)
+
             
+    else:
+        '''checksigma: check integration routine'''
+        if gp.investigate == 'hernquist':
+            ### set nu to data, or analytic value
+            gp.nu1_x  = gp.ipol.nudat1 # [Msun/pc^3]
             if gp.pops == 2:
-                gp.nu2_x  = phys.nu(gp.parst.nu2)
-                gp.d2_x   = phys.delta(gp.parst.delta2)
-                gp.sig2_x = phys.sig_los(gp.M_x, gp.nu2_x, gp.d2_x)
-
-
-
-
-
-        else:
-            '''checksigma: check integration routine'''
-            if gp.investigate == 'hernquist':
-                ### set nu to data, or analytic value
-                gp.nu1_x  = gp.ipol.nudat1 # [Msun/pc^3]
-                if gp.pops == 2:
-                    gp.nu2_x = gp.ipol.nudat2 # [Msun/pc^3]
+                gp.nu2_x = gp.ipol.nudat2 # [Msun/pc^3]
                     
-                if gp.analytic:
-                    gp.nu1_x = rho_anf(gp.xipol)  # [Msun/pc^3]
+            if gp.analytic:
+                gp.nu1_x = rho_anf(gp.xipol)  # [Msun/pc^3]
 
 
-                # set dens
-                # gp.dens_x = gp.ipol.densdat # for bary only
-                # gp.dens_x = phys.densdefault(gp.parst.dens) # [Munit/pc^2]
+            # set dens
+            # gp.dens_x = gp.ipol.densdat # for bary only
+            # gp.dens_x = phys.densdefault(gp.parst.dens) # [Munit/pc^2]
+            
+            gp.dens_x = rho_anf(gp.xipol) # [Msun/pc^3]
+            # attention: same as gp.nu1_x in this case! fine if potential comes from 'tracers' only
+            # gp.dens_x = phys.calculate_dens(gp.ipol.Mx, gp.M_x) # [munit/lunit^3]
+            
+            # set M
+            # gp.M_x    = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [munit,3D]
+            gp.M_x   = M_anf(gp.xipol)    # [Msun]
+            
+            # set delta
+            gp.d1_x  = np.zeros(gp.nipol) # [1]
+            if gp.pops == 2:
+                gp.d2_x = walker_delta(2)
 
-                gp.dens_x = rho_anf(gp.xipol) # [Msun/pc^3]
-                # attention: same as gp.nu1_x in this case! fine if potential comes from 'tracers' only
-                # gp.dens_x = phys.calculate_dens(gp.ipol.Mx, gp.M_x) # [munit/lunit^3]
 
-                # set M
-                # gp.M_x    = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [munit,3D]
-                gp.M_x   = M_anf(gp.xipol)    # [Msun]
-
-
-                # set delta
-                gp.d1_x  = np.zeros(gp.nipol) # [1]
-                if gp.pops == 2:
-                    gp.d2_x = walker_delta(2)
-
-
-            # still checksigma, but for walker now
-            elif gp.investigate == 'walker':
-                rhodm, rhostar1, rhostar2 = rhowalker_3D(gp.xipol)
-                gp.nu1_x = rhostar1
-                if gp.pops == 2:
-                    gp.nu2_x = rhostar2 # gp.ipol.nudat2 # data
+        # still checksigma, but for walker now
+        elif gp.investigate == 'walker':
+            rhodm, rhostar1, rhostar2 = rhowalker_3D(gp.xipol)
+            gp.nu1_x = rhostar1
+            if gp.pops == 2:
+                gp.nu2_x = rhostar2 # gp.ipol.nudat2 # data
                     
-                gp.dens_x = rhowalkertot_3D(gp.xipol) # [msun/pc^3]
-                gp.M_x = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [msun]
+            gp.dens_x = rhowalkertot_3D(gp.xipol) # [msun/pc^3]
+            gp.M_x = phys.Mr3D(gp.ipol.Mx, gp.dens_x) # [msun]
 
-                gp.d1_x = walker_delta(1) # [1], actual delta
-                if gp.pops == 2:
-                    gp.d2_x = walker_delta(2) # [1]
-
+            gp.d1_x = walker_delta(1) # [1], actual delta
+            if gp.pops == 2:
+                gp.d2_x = walker_delta(2) # [1]
 
 
             # set sigma_LOS, by calculating expected values
@@ -144,26 +140,46 @@ def calc_M_nu_sig_sphere():
 
 
 
+
+
 def calc_M_nu_sig_disc():
     gp.LOG.debug( 'Calculate M / nu / sigma values for disc case')
-
     import physics_disc as phys
-    # TODO: generalize for 2 populations
-    # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
+
     gp.nu1_x  = phys.nu(gp.parst.nu1)
-    gp.dens_x = gp.parst.dens # Kzpars
-            # TODO: naming
-    Rsun = 8.; hr = 3.0; hsig = 3.0
-    gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.parst.dens,gp.parst.norm,\
-                                gp.blow,gp.parst.nu1,gp.parst.delta1,\
-                                [Rsun,hr,hsig])
+    # gp.nu1_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu1)
+    gp.d1_x   = phys.delta(gp.parst.delta1)
+    gp.dens_x = phys.dens(gp.xipol, gp.parst.dens) # means Kz, *not* surface density
+    # gp.dens_x = gp.parst.dens+gp.blow # Kzpars with baryonic lower limit
+
+    gp.M_x    = phys.Sigmaz(gp.dens_x)
+    # gp.M_x    = phys.kz(gp.xipol, gp.xipol, gp.dens_x, gp.blow) # from kz, added baryons min
+    # marginalise over lower bound
+    gp.blow   = npr.normal(gp.dat.Mdat,gp.dat.Merr,gp.nipol)
+    
+    # TODO: naming
+    Rsun = 8000.; hr = 3.0; hsig = 3.0
+    gp.sig1_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu1_x, gp.parst.norm1, gp.parst.delta1, [Rsun,hr,hsig])
+
+
+    
+    if gp.pops == 2:
+        gp.nu2_x  = phys.nu(gp.parst.nu2)
+        # gp.nu2_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu2)
+        gp.d2_x   = phys.delta(gp.parst.delta2)
+        gp.sig2_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu2_x, gp.parst.norm2, gp.parst.delta2, [Rsun,hr,hsig])
+
+
     if gp.checksigma:
         gp.nu1_x  = gp.ipol.nudat1
         Rsun = 8.; hr = 3.0; hsig = 3.0 # irrelevant, as long as gp.deltaprior = True
-        gp.parst.norm = 21.**2
-        gp.sig1_x = phys.sigmaz(gp.xipol,gp.xipol,gp.ipol.densdat,  gp.blow, gp.ipol.nudat1,gp.parst.norm,gp.parst.delta1,[Rsun,hr,hsig])
-        
+        gp.parst.norm1 = 17.**2
+        gp.sig1_x = phys.sigmaz(gp.xipol, gp.ipol.densdat, gp.blow, gp.ipol.nudat1,gp.parst.norm1,gp.parst.delta1, [Rsun,hr,hsig])
+
     return
+
+
+
 
 
 
@@ -187,7 +203,7 @@ def calc_likelihood():
                 p_z = nu_int
                 prob_z[jj] = simps(perr_z * p_z,zint)
                 if prob_z[jj] < 0:
-                    print >> 'Ooops a negative probability! Something is wrong ... stopping.'
+                    print 'Ooops a negative probability! Something is wrong ... stopping.'
                     exit(1)
             nu_pz = phys.nu(abs(z_dat),zp_kz,nupars)
             prob_z = nu_pz
@@ -216,7 +232,7 @@ def calc_likelihood():
 
         prob_t = np.sum(np.log(prob_z) + aprob_sigz + np.log(prob_tilt))
         if math.isnan(prob_t):
-            print >> 'Ooops prob_t is NaN ... '
+            print 'Ooops prob_t is NaN ... '
             exit(1)
 
         # Calculate the likelihood ratio:
@@ -234,7 +250,7 @@ def compare_nu(pop, dat, err):
     # if dat == True: return data; else: model (possibly projected)
     # if err == True: return data error instead
     if (not dat) and err:
-        print >> 'wrong use of compare_nu, error only given for data, not model'
+        print 'wrong use of compare_nu, error only given for data, not model'
         exit(1)
     ret = []
     if dat:
@@ -264,7 +280,7 @@ def compare_nu(pop, dat, err):
 
 
 def calc_chi2():
-    '''Calculate \\chi^2:'''
+    '''Calculate new \\chi^2, stored in gp.chi2t'''
     numodel1 = int_surfden(gp.xipol,gp.nu1_x) if gp.geom=='sphere' else gp.nu1_x
     nudata1  = compare_nu(1,True,False)
     nuerr1   = compare_nu(1,True,True) # gp.ipol.nuerr1 # old, used 3D nu in spherical case
@@ -294,12 +310,8 @@ def calc_chi2():
         gp.chi2t     += gp.chi2t2
 
 
-    # print >> gp.chi2t_nu1, gp.chi2t_nu2, gp.chi2t_nu
-    # print >> gp.chi2t_sig1, gp.chi2t_sig2, gp.chi2t_sig
-    # print >> gp.chi2t1, gp.chi2t2, gp.chi2t
-
     if np.isnan(gp.chi2t):
-        print >> 'NaN occured! go search where it happened!'
+        print 'NaN occured! go search where it happened!'
         pdb.set_trace()
 
 
@@ -320,62 +332,73 @@ def calc_chi2():
 
 def accept_reject(n):
     gp.LOG.info( 'Accept the new parameters?')
-    ran = npr.rand()
-    if ran < gp.fnewoverf:
+    if npr.rand() < gp.fnewoverf:
         gp.acccount = gp.acccount + 1.
-        gp.pars.set(gp.parst)
+        gp.pars.assign(gp.parst)
         gp.chi2 = gp.chi2t
-        gp.d1wild = False; gp.d2wild = False
+        gp.lasterr = 'None'
+        gp.d1wild = False; gp.d2wild = False; gp.dens2wild = False
+        gp.b2wild = False; gp.sig2wild = False; gp.nu2wild = 1000
         gfile.store_working_pars(n, gp.pars, gp.chi2, gp.parstep)
-        if npr.rand() < gp.fplot:
+        # fplot
+        if npr.rand() < max(0.001, (1.*gp.chi2-gp.chi2tol)/gp.chi2tol/10.) or gp.initphase:
             gpl.update_plot()
 
-            
         gp.LOG.warning([ n,gh.pretty([gp.chi2]),\
 #                         np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol))),\
-                         gh.pretty([gp.acccount/(gp.rejcount+1.)])])
-        # to check difference from analytic mass profile
+                         gh.pretty([gp.acccount/(gp.rejcount+1.)]),\
+                         gh.pretty([np.median(gp.parstep.nu1/gp.parst.nu1)]),\
+                         gh.pretty([np.median(gp.parstep.dens/gp.parst.dens)])\
+                         # gh.pretty([gp.parstep.norm1/gp.parst.norm1]),\
+                         # gh.pretty([gp.parstep.norm2/gp.parst.norm2])
+                         ])
+        adapt_stepsize()
         
         # Decide whether to end initphase:
         if gp.endgame and gp.initphase:
             gp.endcount -= 1
-            print >> 'gp.endcount = ',gp.endcount
-            if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/2.):
+            print 'gp.endcount = ',gp.endcount
+            if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/10.):
                 print( '*** initialization phase over ***')
                 print( '*********************************')
                 gp.initphase = False
 
-                # use old parstep at end of init:
                 if gp.denslog:
+                    # use parstep if possible
                     gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
                                           np.log10(phys.densdefault(gp.pars.dens)))
-                else:
-                    gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
-                                          phys.densdefault(gp.pars.dens))
-
-                if gp.denslog:
                     gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
                     gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
+
+                    # or get 10% step
+                    # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
+                    #                       np.log10(phys.densdefault(gp.pars.dens)))
+                    
                 else:
                     gp.pars.dens    = phys.densdefault(gp.pars.dens)
                     gp.parst.dens   = phys.densdefault(gp.parst.dens)
-                
+                    gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
+                                          phys.densdefault(gp.pars.dens))
+
 
                 # gp.parst.dens = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
                 # ^-- cheat: start off, from near analytic 1 pop result
                 # gp.parstep.dens = gp.parst.dens/20. 
-                gp.parstep.adaptall(1./gp.scaleafterinit)
+                gp.parstep.adaptall(gp.scaleafterinit)
                 gp.stepafterrunaway = 1.
                 gp.poly = False
-                gp.fplot /= 20.         # plot only every 20th plot now, speed up
+                gp.safepars.assign(gp.pars)
+                gp.safeparstep.assign(gp.parstep)
+                gp.safechi2 = gp.chi2
+
 
     else:
         gp.rejcount = gp.rejcount + 1.
         # jump back to last known good point
         faraway = gp.farinit if gp.initphase else gp.farover
-        if gp.chi2/gp.chi2t < faraway:
+        if gp.chi2t > gp.chi2 * faraway:
             gp.LOG.warning(' too far off, setting back to last known good point')
-            gfile.get_working_pars()
+            gfile.get_working_pars(gp.initphase)
     return
 
 

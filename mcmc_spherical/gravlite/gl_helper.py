@@ -94,8 +94,8 @@ def readcoln(filena):
 
 
 
-def pretty(arr):
-    'clip floats after 2 digits'
+def pretty(arr,dig=2):
+    'clip floats after dig=2 digits'
     if(type(arr) is 'float'):
         return "%.2f"%arr
     else:
@@ -119,7 +119,7 @@ def smoothlog(xin,yin,smooth=1.e-9):
 def ipol(xin,yin,xout,smooth=1.e-9):
     'interpolate function in lin space'
     if np.isnan(np.sum(yin)):
-        print >> 'NaN found! Go check where it occured!'
+        print 'NaN found! Go check where it occured!'
         import pdb
         pdb.set_trace()
     rbf = Rbf(xin, yin, smooth=smooth)
@@ -176,3 +176,29 @@ def bin_r_log(rmin, rmax, nbin):
     for k in range(nbin):
         rbin[k]   = np.logspace(np.log10(binmin[k]),np.log10(binmax[k]),3, endpoint=True)[1]
     return binmin, binmax, rbin
+
+
+def bin_r_const_tracers(r0,no): # radii, number of tracers
+    # TODO HALO: specify number of particles, build bins accordingly
+    # procedure: get all particles in bin i
+    #            get minimum, maximum radius. get radius of min/max before/after bin i
+    #            get mean of (half of max bin/min next bin) for bin radius
+    order = np.argsort(r0)
+    r0 = np.array(r0)[order]
+
+    mini = range(1,len(r0),no)
+    maxi = range(no,len(r0),no)
+    maxi.append(len(r0))
+    mini = np.array(mini)-1; maxi = np.array(maxi)-1
+    minri = [];   maxri = []
+    nbin = int(1.*len(r0)/no)
+    for i in range(nbin):
+        minri.append(r0[mini[i]])
+        maxri.append(r0[maxi[i]])
+
+    midri = []
+    midri.append(minri[0]/2.)
+    for i in range(1,nbin):
+        midri.append((minri[i]+maxri[i])/2.)
+    return minri, maxri, midri
+

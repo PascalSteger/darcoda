@@ -57,7 +57,6 @@ fm.close()
 import os
 os.system('GMM/gmm metals.csv 0 0.0 0.4')
 
-#pdb.set_trace()
 # TODO: read gmm output data
 fo = open('peakprob.out')
 

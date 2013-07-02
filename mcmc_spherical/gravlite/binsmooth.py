@@ -3,12 +3,12 @@
 import numpy as np
 
 # ============================ BINSMOOTH ============================
-# This routine takes an array(r) and bins it in r bins of size bin. If
+# This routine takes an array(r) and bins it in r bins of size bin.
+# The return value is <x**2>-<x>**2 averaged over each bin, with dim [array]**2
 # there is no data in a particular bin, it assigns a value of
 # array(r)=nanflag.
 # WARNING!! THIS ROUTINE REQUIRES SORTED ASCENDING r ARRAYS.
 
-#PRO binsmooth,r,array,low,high,bin,rout,arrayout,nanflag,count_bin
 # rout, arrayout, count_bin = 
 def binsmoo(r, array, low, high, nbin, nanflag):
 
@@ -23,20 +23,20 @@ def binsmoo(r, array, low, high, nbin, nanflag):
     siz = len(r)
     
     for i in range(Pnts):
-        count=0
+        count = 0
         while (rout[i] > r[j]):
-            arrayout1[i]=arrayout1[i]+array[j]
-            arrayout2[i]=arrayout2[i]+array[j]**2
+            arrayout1[i] = arrayout1[i]+array[j]
+            arrayout2[i] = arrayout2[i]+array[j]**2
             if (j < siz-1):
-                j=j+1
+                j = j + 1
                 if (array[j] != 0):
-                    count=count+1
+                    count = count + 1
             else:
                 break
 
         if (count > 0):
-            arrayout[i]=arrayout2[i]/count-(arrayout1[i]/count)**2
+            arrayout[i] = arrayout2[i]/count-(arrayout1[i]/count)**2
         else:
-            arrayout[i]=nanflag
+            arrayout[i] = nanflag
         count_bin[i] = count
     return rout, arrayout, count_bin

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
@@ -9,37 +9,18 @@ from gl_analytic import Mwalkertot
 
 global f, ax1
 
-# Walker data sets
-
-# ca = 1:
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
-# ca = 2:
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
-
-# ca = 0:
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
-
-# fornax
-dir = '/home/psteger/sci/dwarf_data/data_obs/for/'
-
-nampart = '20130327162354_cprior_mslope'
-nampart = '20130327202714_cprior_mslope'
-nampart = '20130403103916_cprior_mslope'
-nampart = '20130408092450_cprior_mslope'
-nampart = '20130419154013_cprior_mslope'
-nampart = '20130425120348_cprior_mslope_rprior' # working fine for 1000 iterations
-nampart = '20130426090433_cprior_mslope_rprior' # too high mass at high radii
-nampart = '20130426120258_cprior_mslope_rprior' # better mass?
-nampart = '20130426161637_cprior_nulog_denslog_mslope_rprior' # new denslog:  too high mass
-nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior' # and up to 100000 its:
-nampart = '20130429110855_cprior_nulog_denslog_mslope_rprior' # 50k steps
-nampart = '20130502080536_cprior_nulog_denslog_mslope_rprior' # London failed 2.5k, too high mass
-
-
-nampart = '20130620084320_cprior_nulog_denslog_mslope_rprior' # Fornax 4k it
+dir = '/home/psteger/sci/dwarf_data/data_disc_simple/'
+#dir = '/home/ast/read/dark/dwarf_data/data_disc_simple/'
+nampart = '20130527113603_cprior_nulog_mslope_bprior_rprior' # first, failed after 56k its
+nampart = '20130527192624_cprior_nulog_mslope_bprior_rprior' # 27k, stuck with Surf
+nampart = '20130527194538_cprior_nulog_mslope_bprior_rprior' # 16k, sent Justin and Dave
+nampart = '20130528081522_cprior_nulog_mslope_bprior_rprior' # 100k, overestimation?
+nampart = '20130528090813_cprior_nulog_mslope_bprior_rprior_quad' # 50k, quadratic, overestimation?
+nampart = '20130528101433_cprior_nulog_mslope_bprior_rprior'      # some k, linear, scaling sqrt(2) for nu
+nampart = '20130529141312_cprior_nulog_mslope_bprior_rprior'      # 45k, kappa prior, 10k stars
+nampart = '20130531121342_cprior_nulog_mslope_bprior_rprior'      # 15k, kappa prior, 2k stars, overestimate
+nampart = '20130531131908_cprior_nulog_mslope_bprior_rprior'      # 500, kappa, 2k stars
 basename = dir + nampart + '/' + nampart
-
 
 
 
@@ -70,10 +51,13 @@ def setlims(ax,xlim,ylim):
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
 
-def plot_data(radii,prof,col='blue',lw=2):
-    ax1.plot(radii, prof, c=col, lw=lw)
+def plot_data(radii,prof,col='blue',lw=2,ls='-'):
+    ax1.plot(radii, prof, c=col, lw=lw, ls=ls)
+    setlabels(ax1,'r [pc]','\Sigma_z [M_\odot/pc^2]')#[10^5 M_{\odot}]')
+    ax1.set_yscale('log')
+    ax1.set_xscale('log')
+    ax1.set_xlim([min(radii),max(radii)])
     #ax1.errorbar(dp.dat.Mx, dp.dat.Mdat, yerr=dp.dat.Merr, c='green')
-    setlabels(ax1,'r [pc]','M [M_\odot]')#[10^5 M_{\odot}]')
     #setlabels(ax1,'r [R_s]','beta')
     # ax1.set_xscale('log'); ax1.set_yscale('log')
     
@@ -124,38 +108,37 @@ for i in range(len(radii)):
     M95lo[i] = Mprofbins[i,0.05 * mlen]
     Mmin[i]  = Mprofbins[i,0]
 
-rsc = 1.#0.5
-Msc = 1.#10.
-sel = (radii<1500.)
-radsc = radii[sel]*rsc
-plot_data(radsc,M95hi[sel]*Msc,'g',lw=2)
-plot_data(radsc,M68hi[sel]*Msc,'b',lw=2)
-plot_data(radsc,Mmedi[sel]*Msc,'r',lw=2)
-plot_data(radsc,M68lo[sel]*Msc,'b',lw=2)
-plot_data(radsc,M95lo[sel]*Msc,'g',lw=2)
+ax1.fill_between(radii, M95lo, M95hi, color='k', alpha = 0.5)
+ax1.fill_between(radii, M68lo, M68hi, color='k', alpha = 0.3)
+setlabels(ax1,'r [pc]','\Sigma_z [M_\odot/pc^2]')#[10^5 M_{\odot}]')
+ax1.set_yscale('log')
+ax1.set_xscale('log')
+ax1.set_xlim([min(radii),max(radii)])
+
+    
 
 
-# plot_data(radsc,Mmax,'r',lw=2)
-# plot_data(radsc,Mmin,'r',lw=2)
 
 def readcol(filena):
     a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
     return a,b,c
 
-#datMr,datMdat,datMerr = readcol('/home/ast/read/dark/dwarf_data/hernquist_justin/enclosedmass/\
-# unit_hern_1_enclosedmass_1000_0.txt')
+G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
+pc  = 3.08567758e16                     # [m]
+msun= 1.981e30                          # [kg]
+km  = 1000.                             # [m]
+G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
 
-#sel = (datMr<max(radii))
-# plot_data(rsc*datMr[sel],Msc*datMdat[sel],'black',lw=3)
-# print 'data ',ipollog(datMr,datMdat,radii)
-# plot_data(rsc*radii,Msc*ipollog(datMr,datMdat,radii), lw=3)
+K = 1650.
+D = 250.
+F = 0.1*1.650
 
-#plot_data(rsc*radii,Msc*M_anf(radii),'black',lw=4)
-#plot_data(rsc*radii,0.*ones(len(radii)),'black',lw=4)
+Mdat = (K*radii/np.sqrt(radii**2.+D**2.)+2.*F*radii) / (2.0*np.pi*G1) / 1000.
 
-# plot_data(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'black',lw=4) # TODO: uncomment
-# yscale('log') # attention: only if large spread encountered
-# setlims(ax1,[0.,3.],[-1.,1.])
+ax1.plot(radii,Mdat,'k',lw=2)
+
+ax1.plot(radii,Mmedi,'r',ls='--',lw=2)
+
 
 fout = open(basename+".profM.conf",'w')
 print >> fout,M95lo

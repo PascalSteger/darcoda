@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # class to generate all filenames, independent of which investigation is being performed
 
 import gl_params as gp
 import gl_helper as gh
+import pdb
 
 if gp.geom == 'sphere':
     import physics_sphere as phys
@@ -39,8 +40,10 @@ class Files:
 
     
     def __init__ (self):
+        self.machine = ''
         self.dir = ''
         self.massfile = ''; self.analytic = ''
+        self.surfdenfiles = []
         self.nufiles  = []
         self.sigfiles = []
         self.posvelfiles = []
@@ -51,6 +54,8 @@ class Files:
             self.set_hernquist()
         elif gp.investigate == 'walker':
             self.set_walker()
+        elif gp.investigate == 'fornax':
+            self.set_fornax()
         elif gp.investigate == 'sim':
             self.set_disc_sim()
         elif gp.investigate == 'simple':
@@ -59,13 +64,13 @@ class Files:
         self.outname = self.get_outname()
 
         if False:
-            print >> 'input:'
+            print 'input:'
             if len(self.massfile) > 0:
-                print >> self.massfile
-                print >> self.nufiles
-                print >> self.sigfiles
+                print self.massfile
+                print self.nufiles
+                print self.sigfiles
             else:
-                print >> self.posvelfiles
+                print self.posvelfiles
 
         return
 
@@ -75,9 +80,9 @@ class Files:
     
     def set_dir(self, machine):
         if machine == 'darkside':
-            self.dir = '/home/ast/read/dark/dwarf_data/'
+            self.machine = '/home/ast/read/dark/dwarf_data/'
         elif machine == 'local':
-            self.dir = '/home/psteger/sci/dwarf_data/'
+            self.machine = '/home/psteger/sci/dwarf_data/'
         return
 
 
@@ -144,7 +149,7 @@ class Files:
         
     def set_hernquist(self):
         '''set all filenames for Hernquist case'''
-        self.dir = self.dir + 'data_hernquist/'
+        self.dir = self.machine + 'data_hernquist/'
         sim = self.get_sim_name()
         self.massfile = self.dir+'enclosedmass/'+sim+'enclosedmass.txt'
         if gp.pops == 1:
@@ -184,7 +189,7 @@ class Files:
 
     def set_walker(self):
         '''derive filenames from Walker&Penarrubia parameters'''
-        self.dir = self.dir + 'data_walker/'
+        self.dir = self.machine + 'data_walker/'
         if gp.walkercase == 0:
             gamma_star1 =   0.1;    gamma_star2 =   1.0 # 1. or 0.1
             beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
@@ -246,6 +251,22 @@ class Files:
         return
     
 
+    def set_fornax(self):
+        self.dir = self.machine + '/data_obs/for/'
+
+        self.massfile = self.dir+'enclosedmass.txt'
+        self.nufiles.append(self.dir+'densityfalloff.txt')
+        self.sigfiles.append(self.dir+'velocitydispersionlos.txt')
+        if gp.pops == 1:
+            self.nufiles.append(self.dir+'densityfalloff.txt') # first and only comp.
+            self.sigfiles.append(self.dir+'velocitydispersionlos.txt')
+        if gp.pops == 2:
+            self.nufiles.append(self.dir+'densityfalloff_1.txt') # first comp.
+            self.sigfiles.append(self.dir+'velocitydispersionlos_1.txt')
+            self.nufiles.append(self.dir+'densityfalloff_2.txt') # second comp.
+            self.sigfiles.append(self.dir+'velocitydispersionlos_2.txt')
+        self.outname = self.get_outname()
+        return
 
 
 
@@ -258,34 +279,30 @@ class Files:
         return self.dir+'ntracer_'+str(i)+'.txt'
 
 
-
-    def set_fornax(self):
-        self.dir = self.dir + 'data_dwarf/data_obs/for/'
-        return
-
-
-
-
-        
     def set_disc_sim(self):
-        self.dir = self.dir + 'data_disc_sim/mwhr/'
-        self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # all components
-        self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
-        if gp.pops == 2:
-            self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
+        self.dir = self.machine + 'data_disc_sim/mwhr/'
+        # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # [PS] perhaps we need all components as the first entry in this list, with convention: 0. all 1. pop, 2. pop, 3. pop = background
+        # self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # again all components
+        # self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # all comp.
+        # self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # overall surface density?
 
-        self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff.txt') # all comp.
-        self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff.txt') # first comp.
-        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvelbl.txt') # all comp.
-        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvelbl.txt') # first comp.
+        self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
+        self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
+        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
+        self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density 
         
-        self.massfile = self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt'
-        # self.massfile.append(self.dir + 'siglos/mwhr_r8500_ang'+gp.patch+'_surfacedenDM.txt')
-        
+        if gp. pops ==2:
+            # TODO: stars?
+            self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
+            self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
+            self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_dm.txt') # second comp.
+            self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfacedenDM.txt') # DM surface density
+
         return
+
     
     def set_disc_simple(self):
-        self.dir = self.dir + 'data_disc_simple/'
+        self.dir = self.machine + 'data_disc_simple/'
         return
 
 
@@ -309,6 +326,7 @@ class Files:
     def get_outprofs(self):
         profnus = []; profdeltas = []; profsigs = []
         profM = self.dir + self.outname+'.profM'
+        profdens = self.dir + self.outname + '.profdens'
         profnus.append(self.dir + self.outname+'.profnu1')
         profdeltas.append(self.dir + self.outname+'.profdelta1')
         profsigs.append(self.dir + self.outname+'.profsig1')
@@ -316,4 +334,4 @@ class Files:
             profnus.append(self.dir + self.outname+'.profnu2')
             profdeltas.append(self.dir + self.outname+'.profdelta2')
             profsigs.append(self.dir + self.outname+'.profsig2')
-        return profM, profnus, profdeltas, profsigs
+        return profM, profdens, profnus, profdeltas, profsigs

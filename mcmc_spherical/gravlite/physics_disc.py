@@ -56,7 +56,9 @@ def calculate_dens(z,M):                  # [TODO], [TODO]
 
 
 
-
+def delta(dpars):
+    # 'calculate cumulative sum for representation of delta'
+    return dpars
 
 
     
@@ -67,25 +69,55 @@ def densdefault(denspars):
 
 
 
-def dens(xipol, denspars):                # [rcore], [TODO]
-    if not gp.poly:
-        return denspars
+
+def kappa(xipol, Kz):
+    r0 = xipol
+    kzpars = -np.hstack([Kz[0]/r0[0], (Kz[1:]-Kz[:-1])/(r0[1:]-r0[:-1])])
+    return kzpars
+
+
+
+
+def dens(xipol, denspars):              # [pc], [TODO]
+    'take denspars (as polynomial?) coefficients, calculate polynomial, give back Kz'
+    r0 = np.hstack([0,xipol])
     if gp.checksigma:
-        return gp.ipol.densdat
+        return gp.ipol.densdat          # [TODO] in disc case
+    if not gp.poly:                     # for sure after init
+        if gp.denslog:
+            return -np.cumsum((r0[1:]-r0[:-1])*10.**denspars) # TODO: sign
+        else:
+            return -np.cumsum((r0[1:]-r0[:-1])*denspars) # [TODO]
+
+    print 'TODO: check negativity (Kz<0)'
+    scale = gp.scaledens*max(xipol)     # [pc]
 
     tmp = np.zeros(len(xipol))
     for i in range(0,len(denspars)):
-        tmp += denspars[i]*((gp.scaledens-xipol)/gp.scaledens)**i
+        tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
     # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
-    return 10.0**tmp
+    
+    dout = 10.**tmp if gp.denslog else tmp            # [Msun/pc^3]
+    gh.checknan(dout)
+    return dout                 # [msun/pc^3]
 
 
 
 
 
 
-def nu(pars):
-    return pars
+def nu(nupars):                 # [(log10) Msun/pc^3]
+    '''General function to describe the density profile.'''
+
+    if gp.nulog:
+        nuout = np.power(10.0, nupars) # [Msun/pc^3]
+    else:
+        nuout = nupars[:]       # [Musn/pc^3]
+
+    gh.checknan(nuout)
+    #nuout = nuout/max(nuout)                # [Msun/pc^3], normalized to 1 here
+    return nuout/max(nuout)
+
 
 
 
@@ -187,20 +219,20 @@ def kz(z_in, zpars, kzpars, blow):
     # binning.
     
     # Mirror prior # TODO: baryon minimum prior [blow]:
-    kzparsu = abs(kzpars)
+    #kzparsu = abs(kzpars)
     
     # Assume here interpolation between dens "grid points", 
     # [linear or quadratic]. The grid points are stored 
     # in kzpars and give the *differential* increase in 
     # dens(z) towards small z [monotonic dens-prior]: 
-    denarr = np.zeros(gp.nipol)
-    denarr[0] = kzparsu[0]
-    for i in range(1,len(kzparsu)):
-        denarr[i] = denarr[i-1] + kzparsu[i]
-    denarr = denarr[::-1]
+    #denarr = np.zeros(gp.nipol)
+    #denarr[0] = kzparsu[0]
+    #for i in range(1,len(kzparsu)):
+    #    denarr[i] = denarr[i-1] + kzparsu[i]
+    #denarr = denarr[::-1]
 
     # override previous statements: use dens parameter directly, so denarr is really given by
-    # denarr = kzpars
+    denarr = kzpars
     
     # Solve interpolated integral for Kz: 
     if not gp.quadratic:
@@ -252,13 +284,13 @@ def kz(z_in, zpars, kzpars, blow):
         gpl.plot(z,test);         gpl.plot(zpars,testsimp)
         gpl.show()
 
-    kz_z = kz_z + blow
+    kz_out = kz_z # + blow # let blow alone, take overall Kz
     
     # Then interpolate back to the input array:
-    if not gp.quadratic:
-        kz_out = gh.ipol(zpars,kz_z,z_in) #         # TODO: assure linear interpolation
-    else:
-        kz_out = gh.ipol(zpars,kz_z,z_in) #         # TODO: quadratic!
+    #if not gp.quadratic:
+    #    kz_out = gh.ipol(zpars,kz_z,z_in) #         # TODO: assure linear interpolation
+    #else:
+    #    kz_out = gh.ipol(zpars,kz_z,z_in) #         # TODO: quadratic!
         
     # Error checking. Sometimes when kz_z(0) << kz_z(1), 
     # the interpolant can go negative. This just means that 
@@ -268,50 +300,48 @@ def kz(z_in, zpars, kzpars, blow):
         if (kz_out[jj] < 0):
             kz_out[jj] = 0.
         
-    return -kz_out
+    return kz_out
 
 
 
 
 
 
-def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
-    '''return LOS velocity dispersion'''
-
-    # Calculate density and Kz force: 
-    nu_z = nu(nupars)
+def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
+    '''return z velocity dispersion'''
+    # calculate density and Kz force:
+    nu_z = nupars/np.max(nupars)          # normalized to 1
     # kz_z = kz(zp,zp,kzpars,blow,quadratic) # TODO: reenable
     kz_z = kzpars
     
-    # Add tilt correction [if required]:
-    if not gp.deltaprior:
+    # add tilt correction [if required]:
+    if gp.deltaprior:
         Rsun = tparsR[0];  hr   = tparsR[1];  hsig = tparsR[2]
-        
         tc = sigma_rz(zp,zp,tpars)
         tc = tc * (1.0/Rsun - 1.0/hr - 1.0/hsig)
-        
-        # Flag when the tilt becomes significant:
+        # flag when the tilt becomes significant:
         if abs(np.sum(tc))/abs(np.sum(kz_z)) > 0.1:
             print 'Tilt > 10%!',abs(np.sum(tc)),abs(np.sum(kz_z))
-            
         kz_z = kz_z-tc
     
-    # Do exact integral assuming linear/quad. interpolation: 
+    # do exact integral
     if not gp.quadratic:
-        # Linear interpolation here: 
+        # linear interpolation here: 
         sigint = np.zeros(len(zp))
         for i in range(1,len(zp)):
             zl = zp[i-1];  zr = zp[i];  zz = zr-zl
             b = nu_z[i-1]; a = nu_z[i]; q = kz_z[i-1]; p = kz_z[i]
         
-            intbit = (a-b)*(p-q)/(3.0*zz**2.)*(zr**3.-zl**3.)+((a-b)/(2.0*zz)*(q-(p-q)*zl/zz)+\
-                (p-q)/(2.0*zz)*(b-(a-b)*zl/zz))*(zr**2.-zl**2.)+(b-(a-b)*zl/zz)*(q-(p-q)*zl/zz)*zz
+            intbit = (a-b)*(p-q)/(3.0*zz**2.) * (zr**3.-zl**3.) + \
+                ((a-b)/(2.0*zz) * (q-(p-q)*zl/zz) + (p-q)/(2.0*zz)  * (b-(a-b)*zl/zz)) * (zr**2.-zl**2.)+\
+                (b-(a-b)*zl/zz) * (q-(p-q)*zl/zz) * zz
       
             if i==0:
                 sigint[0] = intbit
             else:
                 sigint[i] = sigint[i-1] + intbit
     else:
+        # quadratic interpolation
         sigint = np.zeros(len(zp))
         for i in range(1,len(zp)-1):
             z0 = zp[i-1];   z1 = zp[i];   z2 = zp[i+1]
@@ -324,12 +354,12 @@ def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
             intbit = z1d * (a*ad - z0*(AA-BB*z1) + z0**2.*(b*bd-CC*z1) + \
                         c*cd*z0**2.*z1**2.) + \
                         z2d * (0.5*(AA-BB*z1)-z0*(b*bd-CC*z1)-z0/2.*BB+z0**2./2.*CC - \
-                               (z0*z1**2.+z0**2.*z1)*c*cd)+z3d*(1.0/3.0*(b*bd-CC*z1)+1.0/3.0*BB-2.0/3.0*z0*CC + \
-                                      1.0/3.0*c*cd*(z1**2.+z0**2.+4.0*z0*z1))+z4d*(1.0/4.0*CC-c*cd/2.0*(z1 + z0)) + \
-                                      z5d*c*cd/5.
+                        (z0*z1**2.+z0**2.*z1)*c*cd)+z3d*(1.0/3.0*(b*bd-CC*z1)+1.0/3.0*BB-2.0/3.0*z0*CC + \
+                        1.0/3.0*c*cd*(z1**2.+z0**2.+4.0*z0*z1))+z4d*(1.0/4.0*CC-c*cd/2.0*(z1 + z0)) + \
+                        z5d*c*cd/5.
 
             sigint[i] = sigint[i-1] + intbit
-            if i == n_elements(zp)-2:
+            if i == len(zp)-2:
                 # Deal with very last bin: 
                 z1d = z2-z1; z2d = z2**2.-z1**2.; z3d = z2**3.-z1**3.; z4d = z2**4.-z1**4.; z5d = z2**5.-z1**5.
                 intbit = z1d * (a*ad - z0*(AA-BB*z1) + z0**2.*(b*bd-CC*z1) + \
@@ -344,10 +374,10 @@ def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
                 sigint[i+1] = sigint[i] + intbit
 
     if gp.qtest:
+        nu_z = nupars
         pnts = 5000; zmin = min(zp); zmax = max(zp)
         z = dindgen(pnts)*(zmax-zmin)/double(pnts-1) + zmin 
-        nu_z = nu(nupars)
-        kz_z = kz(z,zp,kzpars,blow)
+        #kz_z = kz(z,zp,kzpars,blow)
         
         sigint_th = np.zeros(pnts)
         for i in range(1,pnts):
@@ -365,14 +395,7 @@ def sigmaz(z_in, zp, kzpars, blow, nupars, norm, tpars, tparsR):
         
     sig_z_t2 = 1.0/nu_z * (sigint + norm) # TODO: try to fit without..
     
-    # Interpolate back to input array:
-    if not gp.quadratic:
-        # TODO: quadratic
-        sig_z2 = gh.ipol(zp, sig_z_t2, z_in)
-    else:
-        sig_z2 = gh.ipol(zp, sig_z_t2, z_in)
-        
-    return  np.sqrt(sig_z2)
+    return  np.sqrt(sig_z_t2)
 
 
 
@@ -399,14 +422,12 @@ def sigma_rz(z, zpars, tpars):
 
 
 
-def Sigmaz(denspars, z_in):
-    # kk = kz(gp.xipol, gp.xipol, denspars, gp.blow)
-    kk = denspars # directly, TODO: check working :)
-    return abs(kk)/(2.*np.pi*gp.G1)/1000.**2
+def Sigmaz(Kz):
+    return abs(Kz)/(2.*np.pi*gp.G1)
 
 
 
 
 
 def Mzdefault(denspars):
-    return Sigmaz(denspars, gp.xipol)
+    return Sigmaz(denspars)

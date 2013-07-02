@@ -1,7 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-print ('GravLite: A Non-Parametric Mass Modelling Routine')
-#print ('A non-parametric method to determine the total enclosed mass of a spherical system as e.g. dwarf spheroidal galaxy, implemented for up to two independent tracer populations')
+print ('GravLite: A Non-Parametric Mass Modelling Routine for discs and spheres')
 
 import numpy as np
 import gl_params as gp
@@ -15,33 +14,27 @@ from gl_class_params import Params
 
 if gp.getnewdata: gfile.bin_data()
 
-gpl.prepare_plots()
 gfile.get_data()
 gfile.ipol_data()
 
+ginit.mcmc_init()                       # TODO: thread
+
+gpl.prepare_plots()                     # TODO: thread
 gpl.plot_data()
-
-ginit.mcmc_init()
-gfile.adump()
-
-gp.parst = Params(0)
-gp.parst.set(gp.pars)
-
+gfile.adump()                           # TODO: thread
 
 n = 0
 plotfirst = True
 while ( n < gp.niter-1):
     if not gp.initphase:
         gfile.store_old_params(gp.pars,gp.chi2)
-
+        
     if not gp.checksigma:
-        gfun.get_new_parameters() # or: gp.parst.set(
-        # if gprio.check_*(): continue
+        gfun.get_new_parameters() # or: gp.parst.assign(
+        if gprio.check_density():         continue
+        if gprio.check_mass():            continue
+        if gprio.check_delta():           continue
 
-    if not gp.checksigma:
-        if gprio.check_density(): continue
-        if gprio.check_mass(): continue
-        if gprio.check_delta(): continue
 
     # only calculate sigma and other variables if previous test succeeded
     if gp.geom == 'sphere':
@@ -58,10 +51,15 @@ while ( n < gp.niter-1):
         gpl.plot_first_guess()
         plotfirst = False
 
-    gfun.accept_reject(n)
-    gfun.adapt_stepsize()
-
+    gfun.accept_reject(n)       # includes adapt_stepsize
     if gp.checksigma: break
+
+    if gp.metalpop and np.random.rand()<0.001: # get new data for another population split
+        # every 1000th model passing through priors (exclude 100 burn-in)
+        gfile.bin_data();        gfile.get_data();        gfile.ipol_data()
+        gpl.plot_data();         gpl.plot_first_guess()
+        # TODO: increase stepsize again?
+        
     # gfun.wait()
     gfile.write_outfile()
     if not gp.initphase: n = n + 1

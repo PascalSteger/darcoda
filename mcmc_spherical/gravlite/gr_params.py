@@ -5,7 +5,6 @@
 import numpy as np
 import pdb
 import gl_params as gp
-
 from gl_class_files import *
 
 
@@ -19,6 +18,8 @@ from gl_class_files import *
 #   return binmin, binmax, rbin
 
 showplots = True
+n = 30
+
 
 if gp.investigate == 'hernquist':
   sim = 1                                 # choose simulation
@@ -98,19 +99,21 @@ if gp.investigate == 'hernquist':
     filesig          = dir+'velocitydispersionlos/unit_hern_%i_veldisplos.txt' %(sim)
 
 #################### files for Walker's mock data ####################
-elif gp.investigate == 'walker':
+else: #if gp.investigate == 'walker': # or just want to try some other generic pymc stuff:
   # prior:  analysis is done out to rprior*r_core (half-light radius)
   # if < 0: include all particles, r=max(x**2+y**2)
+
   rprior = 3.
   r_DM  = 1000.
 
-  rerror = 0.01
-  vrerror= 0.001
+  rerror = 0.05                 # hm.. must be absolute error, [rcore]
+  vrerror= 0.05                 # [km/s]
 
   def rhodm(r):
     return rho0*(r/r_DM)**(-gamma_DM)*(1+(r/r_DM)**alpha_DM)**((gamma_DM-beta_DM)/alpha_DM)
   
   fi = Files()
+  fi.set_walker()
   dir = fi.dir
   fil = dir+'mem2'
   

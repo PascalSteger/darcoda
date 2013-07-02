@@ -1,8 +1,0 @@
-masses are off by factor 2 if checksigma set
-gp.dat.Mdat * gp.totmass[0] for green
-
-
-densp = gp.ipol.densdat
-M = phys.Mzdefault(densp)
-mprioru = gp.parst.Msl
-M_tot = phys.get_M( M, mprioru, r_outer, dr ) * gp.totmass[0]

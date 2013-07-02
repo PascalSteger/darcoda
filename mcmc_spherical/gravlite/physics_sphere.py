@@ -22,7 +22,6 @@ def rhodm_hernquist(r,rho0,r_DM,alpha_DM,beta_DM,gamma_DM):
 
 def deproject(x, nu2d, err2d): #[pc], [munit/lunit^2], [munit/lunit^2]
     'take 2D density and density error, get back 3D density and error'
-    # pdb.set_trace()
     nu3d =  int_2D3D(x, nu2d) #[munit/lunit^3]
     if min(nu3d)<0.:
         print '*** got negative 3D density! ***'
@@ -52,17 +51,6 @@ def densdefault(denspars):
 
 
 
-
-# def dens(xipol, denspars):
-#     tmp = np.zeros(len(xipol))
-#     # tmp += denspars[0] # (*xipol**0) # TODO: check unnecessary, included below
-#     for i in range(0,len(denspars)):
-#         tmp += denspars[i]*(xipol)**(-i)
-#     # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
-#     return 10.0**tmp
-
-
-
 def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
     'take denspars for polynomial coefficients, calculate polynomial, give back density'
     if gp.checksigma:
@@ -80,12 +68,10 @@ def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
         tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
     # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
     
-    dout = 10.**tmp if gp.denslog else tmp            # [Msun/pc^3]
+    dout = np.power(10.,tmp) # if gp.denslog else tmp            # [Msun/pc^3]
 
     gh.checknan(dout)
-
     return dout                 # [msun/pc^3]
-
 
 
 
@@ -234,6 +220,9 @@ def nu(nupars):                 # [(log10) Msun/pc^3]
         nuout = nupars[:]       # [Musn/pc^3]
 
     gh.checknan(nuout)
+    if gp.geom == 'disc':
+        print 'nu in spherical phys taken! bug!'
+        nuout = nuout/max(nuout)
     return nuout                # [Msun/pc^3]
 
 
@@ -279,28 +268,11 @@ def extra_nu(nu_r, r0, r_outer): # [densunit, lunit, lunit]
 
 
 
-def get_mprior(M): # [munit]
-    if len(M)>gp.nipol:
-        print 'too long M in get_mprior!'
-        exit(1)
-
-    # choose one of the following lines
-
-    # mprioru  = (M[-1]-M[3*gp.nipol/4])/(gp.xipol[-1]-gp.xipol[3*gp.nipol/4])
-    mprioru  = (M[-1]-M[3*gp.nipol/4])/(gp.xipol[-1]-gp.xipol[3*gp.nipol/4]) # tuned variant
-    # mprioru = (M[-1]-M[gp.nipol-2])/(gp.xipol[-1]-gp.xipol[gp.nipol-2])
-    # mprioru  = 0.
-
-    if not gp.checksigma:
-        mprioru = abs(gp.parst.Msl)
-
-    return mprioru #[1]
 
 
 
 
-
-def extra_M(M_r,mprioru,r_outer,dr):
+def extra_M(M_r,mprioru,r_outer,dr): # TODO: delete
     'get M extrapolated to 2rmax'
     pnts = gp.nipol
     # use slope in last quarter
@@ -330,7 +302,7 @@ def sig_los_tot(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D]
     r0,r_tot,rmin,rmax,dr,r_outer = get_zarrays(x) #6*[pc]
     
     # Calculate density and M force:
-    mprioru = get_mprior(M_x) #[1], slope
+    mprioru = get_mprior(M_x) #[1], slope TODO: delete
 
     nu_tot    = extra_nu(nu_r,r0,r_outer) #[dens0,3D]
     M_tot     = extra_M(M_x,mprioru,r_outer,dr) #[munit,3D]
@@ -385,7 +357,6 @@ def sig_los(M_x, nu_r, delta_r): #[munit, 3D], [munis/pc^3], [1]
     r0 = gp.xipol[:]
     
     # Calculate density and M force:
-    mprioru = get_mprior(M_x) #[1], slope
 
     if gp.analytic:
         from gl_analytic import sig2_anf, surfden_sig2_anf, surfden_anf, sig_los_anf

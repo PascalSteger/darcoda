@@ -3,8 +3,10 @@
 '''check all parameters for prior constraints'''
 import gl_params as gp
 import gl_file as gf
+from gl_int import int_surfden
 import pdb
 import gl_plot as gpl
+import numpy as np
 if gp.geom == 'disc':
     import physics_disc as phys
 else:
@@ -17,19 +19,40 @@ else:
 def check_density():
     gp.LOG.debug(' now check regularisation priors')
     if gp.rprior:
-        rightnu = phys.nu(gp.parst.nu1[1:])
-        leftnu  = phys.nu(gp.parst.nu1[:-1])
-        if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
-            # pdb.set_trace()
-            print 'nutol = ',gp.nutol,' < nu1: ',max(abs(rightnu-leftnu)/rightnu)
-            gf.get_working_pars()    # change gp.parst to gp.init_configs
+        if gp.geom == 'sphere':
+            nu1 = int_surfden(gp.xipol,gp.parst.nu1)
+        else:
+            nu1 = phys.nu(gp.parst.nu1)
+        rightnu = nu1[1:];        leftnu  = nu1[:-1]
+        if sum(rightnu/leftnu > gp.nutol)>0:
+            print 'nutol = ',gp.nutol,' < nu1: ',max(rightnu/leftnu)
+            if gp.lasterr == 'nu': gp.nu2wild -= 1
+            if gp.nu2wild <= 0:
+                print '*** runaway condition detected, setting parameters back to start values'
+                # gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
+                # gp.chi2 = gp.safechi2;
+                gp.pars.nu1 = gp.safepars.nu1;   gp.parstep.nu1 = gp.safeparstep.nu1
+                gp.pars.dens = gp.safepars.dens; gp.parstep.dens = gp.safeparstep.dens
+                gp.nu2wild = 1000
+            else:
+                gf.get_working_pars(gp.initphase) # change gp.pars to gp.init_configs
+            gp.lasterr = 'nu'
             return True
         if gp.pops==2:
-            rightnu = phys.nu(gp.parst.nu2[1:])
-            leftnu  = phys.nu(gp.parst.nu2[:-1])
-            if sum(abs(rightnu - leftnu)/leftnu > gp.nutol)>0:
-                print 'nutol = ',gp.nutol,' < nu2: ',max(abs(rightnu-leftnu)/rightnu)
-                gf.get_working_pars() # change gp.parst to gp.init_configs
+            if gp.geom == 'sphere':
+                nu2 = int_surfden(gp.xipol,gp.parst.nu2)
+            else:
+                nu2 = phys.nu(gp.parst.nu2)
+            rightnu = nu2[1:];           leftnu  = nu2[:-1]
+            if sum(rightnu/leftnu > gp.nutol)>0:
+                print 'nutol = ',gp.nutol,' < nu2: ',max(rightnu/leftnu)
+                if gp.lasterr == 'nu': gp.nu2wild -= 1
+                if gp.nu2wild <= 0:
+                    gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
+                    gp.chi2 = gp.safechi2;       gp.nu2wild = 1000
+                else:
+                    gf.get_working_pars(gp.initphase)    # change gp.parst to gp.init_configs
+                gp.lasterr = 'nu'    
                 return True
 
     gp.LOG.debug( 'now checking dens > gprior')
@@ -44,25 +67,64 @@ def check_density():
 
 
 
+
+
 def check_mass():
-    gp.LOG.debug(' check rising mass prior:')
-    denscheck = phys.dens(gp.xipol, gp.parst.dens)
-    # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
-    for i in range(len(denscheck)-1):
-        if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol and gp.geom == 'sphere':
-            print 'rising dens prior, more than 200% up'
-            gf.get_working_pars()
-            # gp.parst.dens[i+1] *= 0.9
-            # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
+    if gp.geom == 'sphere':
+        gp.LOG.debug(' check rising mass prior:')
+        denscheck = phys.dens(gp.xipol, gp.parst.dens)
+
+        # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
+        for i in range(len(denscheck)-1):
+            if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol:
+                if not gp.dens2wild:
+                    print 'rising dens prior, more than 200% up'
+                    # gp.dens2wild = True
+                    gf.get_working_pars(gp.initphase)
+                # gp.parst.dens[i+1] *= 0.9
+                # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
+                return True
+
+    elif gp.geom == 'disc':
+        denscheck = phys.Sigmaz(phys.densdefault(gp.parst.dens))
+        # TODO: prior as described in paper
+        if min(denscheck[1:]-denscheck[:-1])<0.0:
+            if not gp.dens2wild:
+                print 'Surface density decrease found'
+                gp.dens2wild = True
+            gf.get_working_pars(gp.initphase)
             return True
 
     gp.LOG.debug('check that observed tracer mass is less than total mass')
     if gp.bprior:
         for jj in range(gp.nipol):
-            if MM[jj] < gp.blow[jj]:
-                print 'bprior'
+            if denscheck[jj] < gp.blow[jj]:
+                if not gp.b2wild:
+                    print 'bprior'
+                gp.b2wild = True
                 return True
+            
+    if gp.geom == 'disc':
+        if min(gp.parst.dens < 0.):
+            print 'kappa < 0'
+            gf.get_working_pars(gp.initphase)
+            return True
+        kappa_DM = gp.parst.dens - phys.kappa(gp.xipol, -gp.blow*2.*np.pi*gp.G1)
+        if min(kappa_DM) < 0.:
+            print 'kappa_DM < 0'
+            gf.get_working_pars(gp.initphase)
+            return True
+        if max(abs((kappa_DM-np.mean(kappa_DM))/np.mean(kappa_DM)))>1.0:
+            print 'kappa_DM too wild'
+            gf.get_working_pars(gp.initphase)
+            return True
+
     
+    # for i in range(1,gp.nipol-1):
+    #     alphalong = (kappa_DM[i+1]-kappa_DM[i-1])/(gp.xipol[i+1]-gp.xipol[i-1])
+    #     alphashort = (kappa_DM[i]-kappa_DM[i-1])/(gp.xipol[i]-gp.xipol[i-1])
+    #     if alphashort > 0.001 and alphashort > 2.*alphalong:
+            
     gp.LOG.debug(' last bin prior:')
     if (gp.lbprior) :  
         totmlastb = np.sum(denscheck[0:gp.nipol-2]) + np.sum(gp.blow[0:gp.nipol-2])
@@ -97,17 +159,20 @@ def check_delta():
 
 
     gp.LOG.debug( 'now checking delta smoothness')
-    if max(abs(gp.parst.delta1[1:]-gp.parst.delta1[:-1]))>gp.deltol:
+    dcheck = abs(gp.parst.delta1[1:]-gp.parst.delta1[:-1])
+    if max(dcheck)>gp.deltol:
         if not gp.d1wild:
             print 'delta1 too wild!'
-            gp.d1wild = True
-            # correct: smooth out, by assigning mean value of left/right points
+            # gp.d1wild = True
+            gf.get_working_pars(gp.initphase)
+            # TODO: correct: smooth out, by assigning mean value of left/right points
         return True
     if gp.pops==2:
         if max(abs(gp.parst.delta2[1:]-gp.parst.delta2[:-1]))>gp.deltol:
             if not gp.d2wild:
                 print 'delta2 too wild!'
                 gp.d2wild = True
+                gf.get_working_pars(gp.initphase)
             return True
 
     return False
@@ -122,7 +187,6 @@ def check_delta():
 
 
 def check_sigma():
-
     if (not gp.mirror) :
         gp.LOG.debug('now checking: Ensure positivity --> monotonicity constraint:')
         if gp.parst.has_negative():
@@ -162,21 +226,11 @@ def check_sigma():
 
     # end TODO
 
-    gp.LOG.debug('check for extreme M slopes after rpmax')
-    if (abs(gp.parst.Msl)>2. and gp.geom == 'sphere') : # TODO: include boundary for disc
-        print 'Mslopepars too high'
-        gp.parst.Msl *=0.9
-        return True # TODO: keep in mind, change Msl during MCMC
-
-
-
 
     gp.LOG.debug( 'check new disc code priors' )
+    # TODO: check gp.kzmin < kz < gp.kzmax
     # TODO: fix repeated occurencies, scopes,...
     # for jj in range(gp.nipol):
-    #     # if kzparsu[jj] < kzminarr[jj]/100.: return True
-    #     # if denarr[jj] < kzminarr[jj]: return True
-    #     # if denarr[jj] > kzmaxarr[jj]: return True
     #     if gp.monotonic:
     #         nuparsu = np.zeros(gp.nipol)
     #         nuparsu[0] = nupars[0]
@@ -191,7 +245,10 @@ def check_sigma():
     gp.LOG.debug( 'S-prior: ensure sigma_z(z) rises (in disc case only):')
     if gp.sprior:
         for jj in range(1,gp.nipol):
-            if gp.sig1_x[jj] < gp.sig1_x[jj-1]:
+            if gp.sig1_x[jj]/gp.sig1_x[jj-1]<0.5:
+                if not gp.sig2wild:
+                    print 'falling sigma_z'
+                    gp.sig2wild = True
                 return True
 
 
