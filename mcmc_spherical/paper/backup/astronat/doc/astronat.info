@@ -1,0 +1,775 @@
+This is Info file astronat.info, produced by Makeinfo version 1.68 from
+the input file astronat.texi.
+
+   This is a description of the AstroNat software for using BibTeX to
+create LaTeX documents suitable for submission to Astronomy journals
+such as the AAS journals and MNRAS.
+
+   These files are based on Patrick Daly's natbib package, which may not
+be distributed in exchange for money, other than distribution costs.
+They are provided `as is' and are not guaranteed in any way.
+
+   Jonathan E. Baker
+Department of Astronomy
+University of California, Berkeley
+jbaker@astro.berkeley.edu
+INFO-DIR-SECTION AstroNat
+START-INFO-DIR-ENTRY
+* AstroNat: (astronat)          BibTeX/natbib for Astronomy journals
+END-INFO-DIR-ENTRY
+
+
+File: astronat.info,  Node: Top,  Next: Overview,  Prev: (dir),  Up: (dir)
+
+AstroNat
+********
+
+   This document describes a collection of software for using BibTeX and
+Patrick Daly's very general `natbib' style to produce LaTeX documents
+which can be submitted electronically to Astronomy journals.
+Bibliography style files for the AAS journals (ApJ and its cousins) and
+MNRAS are included.  Natbib also supports a variety of other
+bibliographic and citation styles.
+
+   This is Edition 1.6 of the AstroNat documentation, 1999 September 1,
+for version 1.
+
+* Menu:
+
+* Overview::
+* Installation::           How to set things up.
+* Usage::                  How to prepare documents.
+* Problems::               Troubleshooting and bugs.
+* Acknowledgements::
+* Appendix::
+
+ -- The Detailed Node Listing --
+
+Overview
+
+* Features::           Why this is good for you
+
+Installation
+
+Usage
+
+* Bib files::          How to create your bibliographic database.
+* Bib databases::      Bibliography database files.
+* Abbrevs::            Defining journal abbreviations (optional).
+* LaTeX document::     How to compose your LaTeX document.
+* Citations::          Citation commands to use.
+* Processing::         How to process LaTeX/BibTeX files.
+* Submission::         How to generate a copy for e-submission.
+
+Problems
+
+Acknowledgements
+
+Appendix
+
+* MNRAS style::        Problem with \bibhang.
+* Makefiles::          Automating things.
+* Emacs::              Use BibTeX/RefTeX mode!
+
+
+File: astronat.info,  Node: Overview,  Next: Installation,  Prev: Top,  Up: Top
+
+Overview of AstroNat
+********************
+
+   "AstroNat"(1) is a collection of LaTeX, BibTeX and Perl software I
+put together to allow the use of BibTeX to organize bibliographies when
+writing articles for Astronomy journals.  The package not only produces
+LaTeX files which obey the style rules for the journals, but can also
+make files which follow the rules for electronic submission.  This
+eliminates a large fraction of the considerable tedium involved in
+maintaining bibliographies and citations.
+
+   The basic idea is to prepare your document using the natbib citation
+style and a bibliography style file for the journal.  Files for
+electronic submission are then generated using a Perl script which
+inlines citations and removes the natbib dependencies.
+
+   As of AASTeX version 5.0, you no longer need the Perl script to
+submit to ApJ.  But there is still no bibliography style file, so you
+will need to use the one provided here.  Support for PASP conference
+series has also been added.
+
+* Menu:
+
+* Features::              Why this is good for you.
+
+   ---------- Footnotes ----------
+
+   (1) This name is derived from the software's reliance on the natbib
+package by Patrick Daly.
+
+
+File: astronat.info,  Node: Features,  Up: Overview
+
+Features
+========
+
+   Here are some reasons why this is good for you.
+
+   * References are stored in a bibliographic database (`bib') file in
+     BibTeX format.  They can be easily downloaded from the Web (for
+     example the NASA Astrophysics Data System (http://adswww.harvard.edu/ads_abstracts.html)), and never need to be entered into your
+     computer more than once, reducing time spent hunting for
+     typographical errors.
+
+   * All knowledge of the particulars of a given journal's style for
+     bibliographic entries is abstracted into the bibliography style
+     (`bst') files.  This means that correct punctuation and formatting
+     of the bibliography is handled for you.  It also means that
+     changing from one journal's format to another becomes a matter of
+     changing two or three lines of your file.
+
+   * Only the references which are actually cited in your work are
+     included from the database, so all your references can be stored
+     in a single place and you never have to worry about listing
+     references which are not cited.  Large `bib' files are available
+     on the Web for specific subject areas.
+
+   * Natbib has a very general and powerful citation mechanism which
+     can be used to produce a wide variety of author-year citations,
+     again without having to worry about typos or journal style.  It
+     also supports the traditional numbered citation style.  You can
+     get natbib bibliography style files for a variety of styles other
+     than the ones included here.
+
+   * References to the same authors in the same years are automatically
+     labeled with `a', `b', `c', etc. and sorted.
+
+   * RefTeX, AucTeX, and other packages provide excellent Emacs/XEmacs
+     interfaces (*note Emacs::.) to BibTeX files.
+
+   Of course, these advantages bring some additional complexity along
+with them: you have to use the additional style files here, learn the
+natbib cite commands, and use additional passes with latex and bibtex
+when preparing the document (though Makefiles can do this
+automatically; an example is included).  For electronic submissions, an
+additional step is required using a Perl script to convert to `tex' and
+`bbl' files which obey the submission rules.
+
+
+File: astronat.info,  Node: Installation,  Next: Usage,  Prev: Overview,  Up: Top
+
+Installation
+************
+
+   You will need a few things in order to use this software:
+
+   * LaTeX (2e or 2.09)
+
+   * BibTeX (v0.99a or later)
+
+   * Perl
+
+   * Natbib (v5.3 or later; v6.8 style files included here)
+
+   * make (optional)
+
+   If you are not a local user, you will first need to download the
+latest version.  You can get it from
+`http://astro.berkeley.edu/~jbaker/software/bib/' and unpack it using a
+command like
+
+     gunzip -c astronat.tar.gz | tar xvf -
+
+The installation is a simple matter.  You will need the natbib style
+file (`natbib209.sty' is the LaTeX 2.09 version); the ones included
+here have not been edited from their original forms.  You will also need
+one of the `bst' files from the sub-directory with the appropriate
+journal name (`apj' for AAS, `mnras' for Monthly Notices).  These
+sub-directories also contain `bib' files which define journal
+abbreviations for use in your `bib' database, which contains all your
+references.  There are only two steps:
+
+  1. Put the appropriate `sty', `bst', and `bib' files where
+     LaTeX/BibTeX can see them.
+
+  2. Put the Perl script `nat2jour.pl' somwhere in your `PATH', and
+     make sure it is executable (`chmod +x nat2jour.pl').
+
+   There are two options for the first step:
+
+   * Keep all the necessary files in the same directory where you are
+     processing your documents.  (Or make symbolic links to them with
+     the UNIX command `ln -s'.)
+
+   * OR Set the environment variables `TEXINPUTS', `BSTINPUTS', and
+     `BIBINPUTS'.
+
+        * `TEXINPUTS' tells LaTeX where to find `sty' (style) files.
+
+        * `BSTINPUTS' tells BibTeX where to find `bst' (bibliography
+          style) files.
+
+        * `BIBINPUTS' tells BibTeX where to look for `bib'
+          (bibliography database) files.
+
+   Local users at Berkeley should set their environment variables to
+include the directory `~jbaker/tex/inputs/astronat//', and do not need
+to copy any files, except that you will want to put then Perl script
+`nat2jour.pl' in your `PATH'.
+
+   Suppose you have all the files in sub-directories of
+`/somewhere/tex/inputs/'.  Then the environment variables can be set as
+follows.  For C-shell (put these in your `.cshrc' file):
+
+     `setenv TEXINPUTS .:/somewhere/tex/inputs//:$TEXINPUTS'
+
+and for sh, ksh, or bash (put in `.profile'):
+
+     `TEXINPUTS=.:/somewhere/tex/inputs//:$TEXINPUTS'
+     `export TEXINPUTS'
+
+and similarly for the other two variables.  The trailing // means
+recurse through any sub-directories.  Note that the directories in the
+colon-separated list are searched in order, so you'll want to have the
+path to these files ahead of any directories that have any files of the
+same name (otherwise the wrong ones will be used).
+
+   If you can become root you can install the files in a standard
+location where `TEXINPUTS' points.  Even if you are able to do this,
+you may still need to explicitly set the other two variables.
+According to the BibTeX documentation it looks in `TEXINPUTS' by
+default, but in practice it doesn't actually seem to do this.
+
+
+File: astronat.info,  Node: Usage,  Next: Problems,  Prev: Installation,  Up: Top
+
+Usage
+*****
+
+   This section describes how to use the software.  First make sure you
+have the necessary files in the right place, or have environment
+variables set appropriately (*note Installation::.).
+
+* Menu:
+
+* Bib files::       How to create you bibliographic database.
+* LaTeX document::  How to compose your LaTeX document.
+* Citations::       Citation commands to use.
+* Processing::      How to process LaTeX/BibTeX files.
+* Submission::      How to generate a copy for e-submission.
+
+
+File: astronat.info,  Node: Bib files,  Next: LaTeX document,  Up: Usage
+
+Bibliography Files
+==================
+
+   Now we describe how to set up your BibTeX `bib' files.  If you are
+familiar with BibTeX already you can probably skip this section.
+
+* Menu:
+
+* Bib databases::   Bibliography database files.
+* Abbrevs::         Defining journal abbreviations.
+
+
+File: astronat.info,  Node: Bib databases,  Next: Abbrevs,  Up: Bib files
+
+Bibliography database files
+---------------------------
+
+   Using BibTeX, your references are stored in a `bib' file, for
+example `myrefs.bib' (the `.bib' suffix is important).  These need not
+(indeed, should not) be limited to the articles you are citing in the
+document you are preparing; BibTeX picks out the ones you actually cite
+and only includes those in your bibliography.
+
+   A typical entry in a `bib' file looks like this:
+
+     @Book{Peebles:94,
+       author =	 {P.~J.~E.~Peebles},
+       title = 	 "Physical Cosmology",
+       publisher = 	 "Princeton University Press",
+       year = 	 1994,
+       address =	 "Princeton, NJ"
+     }
+
+or like this:
+
+     @Article{1997ApJ...485....1M,
+       author = {Myers, S.~T. and Jonathan E.~Baker and Readhead, A.~C.~S. and
+                 Erik M.~Leitch and Herbig, T.},
+       title = "Measurements of the Sunyaev-Zeldovich Effect...",
+       journal = apj,
+       year = 1997,
+       month = aug,
+       volume = 485,
+       pages = "1--8",
+     }
+
+Other types include `@Booklet', `@InBook', `@InCollection',
+`@InProceedings', `@Manual', `@MastersThesis', `@PhDThesis',
+`@Proceedings', `@TechReport', and `@Unpublished'.  The `@Misc' type is
+a catch-all which allows you to do the formatting yourself if
+necessary.  Most of these types should give correct results for the
+journals using the `bst' files included here for AAS and MNRAS.
+
+   The first thing after the { is the cite key, which you use to cite
+the reference in your document.  Note that author names can have either
+first or last name first, and they are separated with `and'.  Very long
+lists can be truncated with `and others'.  Natbib's automatic lettering
+will get confused if the author last names are not punctuated
+consistently (e.g., if some of them have extra braces as in ADS style
+and others don't).
+
+   Emacs (*note Emacs::.) has a very nice set of commands for
+automatically generating a bibliographic entry in a `bib' file.
+
+
+File: astronat.info,  Node: Abbrevs,  Prev: Bib databases,  Up: Bib files
+
+Using String Abbreviations for Journals (optional)
+--------------------------------------------------
+
+   BibTeX will complain if it does not know the definition of a string
+which is not enclosed in quotes, such as the strings `apj' and `aug' in
+the example above.  References downloaded from ADS will have `"\apj"'
+instead of `apj'; this tells BibTeX to write `\apj' in the
+bibliographic entry.  This is fine for AASTeX macros, where the `\apj'
+command is defined in the style file.  But if you are using a style
+file which does not define this command, you will get errors from LaTeX
+unless you define it yourself.
+
+   One way to handle this is to use the journal abbreviation `bib'
+files such as the ones included here, `apj-jour.bib' or `mn-jour.bib'.
+These contain commands such as
+
+     @STRING{apj = "\apj"}
+
+in `apj-jour.bib' and
+
+     @STRING{apj = "ApJ"}
+
+in `mn-jour.bib' which define the strings if you use a command like
+`\bibliography{apj-jour,myrefs}' or `\bibliography{mn-jour,myrefs}' in
+your document (*note LaTeX document::.) to include the `bib' files.
+This way you don't have to change your `bib' database for different
+journals, and you don't have to define a lot of new journal commands in
+your LaTeX document.  Look at the files to see all the defined
+abbreviations.  The very short abbreviations such as "ApJ" for
+frequently cited journals are included, along with many others
+following the IAU convention.
+
+   The three-letter month abbreviation strings and strings for a few
+mathematics journals are defined in the bibliography style (`bst')
+files.
+
+
+File: astronat.info,  Node: LaTeX document,  Next: Citations,  Prev: Bib files,  Up: Usage
+
+Preparing the LaTeX Document
+============================
+
+   First include the natbib style file.  For LaTeX 2e,
+
+     \documentclass{ ... }
+     \usepackage{ ... ,natbib}
+
+or for LaTeX 2.09 (required by the journals),
+
+     \documentstyle[ ... ,natbib209]{ ... }
+
+Place the natbib package last in your list of packages to make sure it
+doesn't get over-written.  It works with the AASTeX styles as well as
+the `emulateapj' style, and with the `mn' style (mostly, but *note
+MNRAS style::.).
+
+   Second, somewhere in the preamble (before `\begin{document}'), use
+the command
+
+     \citestyle{aa}
+
+This simply insures that natbib gives you citations which look like
+(Bester 1998) and not like (Bester, 1998).  The `aa' stands for
+Astronomy & Astrophysics, but this citation style is appropriate for
+all the journals.  (Actually, the code `nat2jour.pl', which prepares
+files for electronic submission, produces citations like this
+regardless of the `\citestyle' command, so this does not matter for the
+final output.)
+
+   Next, at the point where you want the bibliography to appear, use
+
+     \bibliographystyle{STYLE}
+     \bibliography{REFS}
+
+where `STYLE' is the name of the bibliography style you want to use
+(e.g., `\bibliographystyle{apj}' to use `apj.bst' -- leave off the
+`.bst' suffix).  `REFS' is a list of bibliography files to use (leave
+off the `.bib').  So if you wanted to use the ApJ journal abbreviations
+(*note Abbrevs::.)  and a database called `myrefs.bib',
+
+     \bibliography{apj-jour,myrefs}
+
+   This loads the journal definitions from `apj-jour.bib', so you can
+use things like `journal = apj' in `myrefs.bib'.
+
+
+File: astronat.info,  Node: Citations,  Next: Processing,  Prev: LaTeX document,  Up: Usage
+
+Citation commands
+=================
+
+   The natbib package defines a number of very useful citation commands
+which replace the usual `\cite'.  These are really necessary in any
+author-year citation system, where you don't always cite a reference
+using the same format for the citation.  These commands and their
+output are illustrated below.  The most frequently used are `\citet'
+(textual cite) and `\citep' (parenthetical cite).  `\cite' is
+equivalent to `\citet', but this shouldn't be used because it is often
+defined by other style files.
+
+`\citet{KEY}'
+     Bester et al. (1998)
+
+`\citep{KEY}'
+     (Bester et al. 1998)
+
+Multiple citations work within a single cite, for example
+
+`\citep{KEY1, KEY2, KEY3, KEY4, ...}'
+     (Bester et al. 1998; Garibaldi et al. 1997, 1998a,b; ...)
+
+The lettering of the citations and references is done automatically.
+
+   You can use optional arguments to get text before and after the
+citation(s):
+
+`\citep[hereafter B98]{KEY}'
+     (Bester et al. 1998, hereafter B98)
+
+`\citep[e.g.,][]{KEY}'
+     (e.g., Bester et al. 1998)
+
+`\citep[see][p. 68]{KEY}'
+     (see Bester et al. 1998, p. 68)
+
+   Any of these can have a `*' affixed to make a full author list when
+"et al." would normally be used, e.g.,
+
+`\citet*{KEY}'
+     Bester, Winters, & Alexander (1998)
+
+   Note that the `nat2jour.pl' script takes care of the bizarre
+practice of listing three names on the first citation and using "et
+al." thereafter, so you don't need to worry about that, although the
+intermediate file will come out "wrong".
+
+`\citeauthor{KEY}'
+     Bester et al.
+
+`\citeyear{KEY}'
+     1998
+
+`\citeyearpar{KEY}'
+     (1998)
+
+   `\citealp' and `\citealt' are the sames as `\citep' and `\citet',
+respectively, except that they do not produce any parentheses at all:
+
+`\citealt{KEY}'
+     Bester et al. 1998
+
+   Finally, `\citetext' can be used to place arbitrary text around a
+citation.  Look at the comments in the natbib style files for more
+information.
+
+
+File: astronat.info,  Node: Processing,  Next: Submission,  Prev: Citations,  Up: Usage
+
+Processing LaTeX/BibTeX files
+=============================
+
+   When you process a document for the first time, or when you add
+citations to new references, you have to go through four steps.  For a
+file called `foo.tex' with a bibliography `refs.bib':
+
+1. `latex foo'
+     Stores the citation keys in the `aux' file
+
+2. `bibtex foo'
+     Creates a bibliography (`.bbl') file
+
+3. `latex foo'
+     Incorporates the `bbl' information
+
+4. `latex foo'
+     Gets all the citations and cross-refs right
+
+   The `.bbl' file is a normal-looking LaTeX file containing the
+`\thebibliography' environment; it is inserted into the document at the
+point where the `\bibliography' command is issued.
+
+   If you are producing an article for electronic submission, you can
+stop after step #2, run `nat2jour.pl' (*note Submission::.) and then
+run LaTeX (twice) on the output.
+
+   It's not too difficult to automate this process (*note Makefiles::.)
+and speed things up.
+
+
+File: astronat.info,  Node: Submission,  Prev: Processing,  Up: Usage
+
+Generating a Copy for Electronic Submission
+===========================================
+
+   Your article looks great now, but in the shape it's in as of the
+last section, you'll have to use a decidedly low-tech method of
+submitting it to the journal: print it out and snail-mail it in!  This
+is because you cannot include complex style files like `natbib.sty'
+with your submission, and the journals don't provide bibliographic
+style files.
+
+   (As of AASTeX version 5.0, this is no longer true!  You can stop here
+and simply submit your `tex' and `bbl' files.  But the `minor tweaks'
+mentioned below won't be performed, so you'll have to do them by hand.
+For instance, use the `\cite*' commands rather than `\cite' commands
+the first time you cite a reference with three authors, to get all the
+names.)
+
+   Fortunately, there is a Perl script, `nat2jour.pl', which comes to
+the rescue.  It takes the `tex' and `bbl' files you have made (*note
+Processing::.) and makes new ones which you can actually submit.  This
+is accomplished by
+
+   * inlining all the citation commands properly
+
+   * removing all dependencies on natbib
+
+   * spitting out `\bibitem''s with the right format
+
+A few other minor tweaks are also performed; you may notice some small
+style errors in the document before processing it.  For input files
+`foo.tex' and `foo.bbl', invoke it by typing
+
+     `nat2jour.pl foo'
+
+(make sure it is executable and in your `PATH').  By default it will
+make new output files `foo-aas.tex' and `foo-aas.bbl', but you can name
+them something different by specifying a second argument.
+
+   The new files can be processed completely independently of the
+natbib `sty' files, the `bst' files, and your `bib' files.  The
+bibliography is simply pasted in from the `bbl' file, so all you need
+are the `tex' and `bbl', with the usual one or two passes with `latex'
+to process them.
+
+   The code has two options:
+
+`-inline'
+     Inlines the bibliography so you end up with a single, stand-alone
+     `.tex' file.  The default leaves the bibliography in a separate
+     `.bbl' file.
+
+`-maxauth'
+     Change the maximum number of authors before `et al.' is used;
+     default is 8.  Set to zero for no limit.
+
+`-references'
+     Rather than generating the default `thebibliography' environment
+     with `\bibitem''s, generate a `references' environment.  This also
+     leaves off the `\markcite' or `\nocite' commands.  I found it was
+     necessary for preparing a PASP conference proceeding.
+
+   The `nat2jour.pl' code looks for a `\documentstyle' containing "mn".
+ If it finds it, it adds `\nocite' commands next to the inlined
+references; otherwise it adds the AASTeX `\markcite' command (unless
+the `-references' flag is set).
+
+   The code also ensures that three-author papers are cited as Bester,
+Winters, & Alexander (1998) on the first citation and as Bester et al.
+(1998) thereafter.  This will not be the case in the *input* files
+because natbib does not do this.  In addition, it truncates long author
+lists at the right point (8 authors, natbib doesn't do this).
+
+   Finally, the code may alter the appearance of the typeset
+bibliography, because natbib may redefine the `\thebibliography'
+environment in the input files.  The output files will conform to the
+other style files (such as AASTeX) you are using.
+
+   Note that the script should work on `bbl' files produced with *any*
+`bst' bibliography style, as long as it produces `\bibitem' commands
+which exactly follow this format:
+
+     `\bibitem[{ SHORT-AUTHOR-LIST (YEAR) LONG-AUTHOR-LIST }]'{ `KEY' }
+     `BIBLIOGRAPHIC-ENTRY-TEXT'
+
+The `LONG-AUTHOR-LIST' may be omitted when it is the same as the
+`SHORT-AUTHOR-LIST' (usually, <3 authors).  This is the "extended
+natbib" format used by natbib versions 5.3 and later.  The script will
+become confused in the unlikely event that there are square brackets in
+the author lists.  The `\bibitem' entries must be separated by blank
+lines.
+
+
+File: astronat.info,  Node: Problems,  Next: Acknowledgements,  Prev: Usage,  Up: Top
+
+Problems and Troubleshooting
+****************************
+
+1. *LaTeX can't find some files*
+
+Check you environment variable set up, or make sure the right files are
+in the directory with your document (*note Installation::.).
+
+2. *nat2jour.pl produces strange results*
+
+Look at the diagnostic output from LaTeX or the `log' files.  Make sure
+the `bst' file it is including is coming from the correct directory
+(other packages such as astrobib also have a file called `apj.bst', and
+this may be lurking somewhere on your system; make sure it doesn't get
+found first).  The items in your input `bbl' file should conform
+*exactly* to extended natbib style (*note Submission::.).
+
+3. *Some references or citations look wrong*
+
+This maybe a bug, but I have tested the common ones listed on the
+journal web-pages so you might be doing something exotic.  Anyway, when
+was the last time someone submitted a paper with a perfect
+bibliography?  :)  Check your `bib' file for spurious entries.  Also
+check the instructions for authors
+(ApJ (http://www.journals.uchicago.edu/ApJ/) or
+MNRAS (http://www.blacksci.co.uk/)) to see that it really is wrong.
+Then you can send a bug report to <jbaker@draco.berkeley.edu>; include
+the entry from the `bib' file and the result in the `bbl' file (and
+`tex' file, for a citation problem).  You can do the formatting by hand
+by using a `@Misc' entry.  Note that lettering will not work if some
+the last names in the `bib' file are not punctuated consistently (e.g.,
+some have extra braces as in ADS style and others don't).
+
+4. *BibTeX gives warnings about entries*
+
+It can be somewhat persnickety about what fields are allowed for a
+certain type of entry.  Make sure you're not using spurious ones.
+
+5. *Abbreviations used for a reference (like JEB98) aren't added to the
+\bibitem's*
+
+No, they're not.  :)  You can usually get the effect by using a "note"
+field in your `bib' entry.
+
+6. *LaTeX crashes with mn.sty*
+
+There are two lines which cause trouble; use `mn-nat.sty' (in the `mn'
+subdirectory) instead (*note MNRAS style::.).
+
+
+File: astronat.info,  Node: Acknowledgements,  Next: Appendix,  Prev: Problems,  Up: Top
+
+Acknowledgements
+****************
+
+   The Perl script for inlining citations has its roots in the
+`2apj.pl' code by Eddie Baron (http://www.nhn.ou.edu/~baron/) which was
+designed for ApJ and older versions of natbib.
+
+   The bibliography style files were generated using Patrick Daly's
+makebst program, and then modified with some help from the `astrobib'
+package by Henry Ferguson.  (This package, available from
+`http://marvel.stsci.edu/~ferguson', is not compatible with electronic
+submissions.  The journal abbreviation bib files are are also modified
+versions of the files included in the astrobib distribution.
+
+
+File: astronat.info,  Node: Appendix,  Prev: Acknowledgements,  Up: Top
+
+* Menu:
+
+* MNRAS style::     Problem with \bibhang.
+* Makefiles::       Automating things.
+* Emacs::           Use BibTeX/RefTeX mode!
+
+
+File: astronat.info,  Node: MNRAS style,  Next: Makefiles,  Up: Appendix
+
+MNRAS style
+***********
+
+   The two lines in `mn.sty' (version 1.4) involving the `\bibhang'
+command cause fatal errors when used with natbib.  Use `mn-nat.sty'
+instead, which has them commented them out and works fine.  The
+`nat2jour.pl' program will then change `\documentstyle[...]{mn-nat}' to
+`\documentstyle[...]{mn}' for you, since natbib is no longer needed in
+its output files.
+
+     % Set length of hanging indentation for bibliography entries
+     %
+     %%% \newlength{\bibhang}
+     %%% \setlength{\bibhang}{2em}
+
+
+File: astronat.info,  Node: Makefiles,  Next: Emacs,  Prev: MNRAS style,  Up: Appendix
+
+Makefiles
+*********
+
+   Since the processing commands (`latex'-`bibtex'-`latex'-`latex',
+plus `nat2jour.pl') are numerous, it's nice to do them automatically.
+
+   In the `example' sub-directory there is a sample Makefile which does
+this.  Just put it in a directory where your LaTeX files (for example,
+`foo.tex') are, and you can use commands like `make foo.dvi', or `make
+foo.ps', or `make foo.pr' (print).  They'll work in any order, as all
+of the dependencies are made automatically when they don't exist or are
+out-of-date.
+
+   Use `make foo-apj' to make the `tex' and `bbl' file for submission.
+This also works with the `.dvi' and other extensions to produce
+printable documents.  You can change the `-apj' journal suffix by
+editing the definition of `JSUF' at the top of the Makefile.
+
+   Use `make clean' or `make realclean' when things get out of hand;
+the latter deletes most everything except for the original `tex' and
+`bib' files.
+
+
+File: astronat.info,  Node: Emacs,  Prev: Makefiles,  Up: Appendix
+
+Useful Emacs modes
+******************
+
+   Emacs has a very nice RefTeX mode for editing `bib' files and
+selecting citations.  XEmacs is particularly nice because you can easily
+see most of the available commands in pull-down menus.  They allow you
+to search for patterns in your database and select the reference you
+want, with keystrokes for the different natbib cite commands.  You can
+also automatically generate different types of entry for your `bib'
+file, with all the appropriate fields in place.  Add the following
+lines to your `.emacs':
+
+     (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+     (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+This package is included in recent Emacsen, but the commands will fail
+if you don't have it.
+
+
+
+Tag Table:
+Node: Top725
+Node: Overview2198
+Node: Features3474
+Node: Installation5761
+Node: Usage8898
+Node: Bib files9477
+Node: Bib databases9839
+Node: Abbrevs11876
+Node: LaTeX document13530
+Node: Citations15258
+Node: Processing17325
+Node: Submission18370
+Node: Problems22392
+Node: Acknowledgements24542
+Node: Appendix25252
+Node: MNRAS style25463
+Node: Makefiles26065
+Node: Emacs27100
+
+End Tag Table

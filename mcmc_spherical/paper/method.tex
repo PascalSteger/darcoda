@@ -1,0 +1,225 @@
+\section{Method}\label{sec:method}
+
+
+The collisionless Boltzmann equation for a spherical system with
+gravitational potential $\Phi$,
+
+\begin{equation}
+\frac{\text{d}f}{\text{d}t} = \frac{\partial f}{\partial t} + \nabla_{\vec{x}} f\cdot\vec{v} - \nabla_{\vec{v}} f\cdot\nabla_{\vec{x}}\Phi = 0,
+\end{equation}
+
+describes the motion of tracer stars with distribution function
+$f(\vec{x},\vec{v}\,)$.
+
+
+In spherical coordinates $(r, \theta, \phi)$, the collisionless
+Boltzmann equation then reads as
+
+\begin{equation}
+\frac{\partial f}{\partial t} + \dot{r}\frac{\partial f}{\partial r} + \dot{\theta}\frac{\partial f}{\partial \theta} + \dot{\phi}\frac{\partial f}{\partial \phi} + \dot{v}_r\frac{\partial f}{\partial v_r}+\dot{v}_\theta\frac{\partial f}{\partial v_\theta} +\dot{v}_\phi\frac{\partial f}{\partial v_\phi} = 0
+\end{equation}
+
+with velocities
+
+\begin{eqnarray}
+\dot{r}       &=& v_r,\\
+\dot{\theta}  &=& v_\theta/r\\
+\dot{\phi}    &=& v_\phi / r \sin\theta.
+\end{eqnarray}
+
+The assumption of steady state hydrodynamic equilibrium gives
+$\partial f/\partial t=0$ and $\bar{v}_r=0$, and using spherical
+symmetry $\bar{v}_\theta=0$, $\bar{v}_\phi=0$, with a unique
+tangential velocity dispersion
+$\sigma_\phi^2=\sigma_\theta^2=\sigma_t^2$ yields
+
+\begin{equation}\label{eq:Jeans}
+\frac{1}{\nu}\frac{\partial}{\partial r}(\nu\sigma_{r}^2) + 2\frac{\sigma_{r}^2-\sigma_{t}^2}{r} = -\frac{\partial \Phi}{\partial r} = -\frac{GM(<r)}{r^2}
+\end{equation}
+
+with enclosed mass $M(<r)$, gravitational constant $G =
+6.67398\cdot10^{-11} \text{m}^3/\text{kg}\,\text{s}^2$. The departure
+from spherical hydrostatic equilibrium $\sigma_r^2=\sigma_t^2$ is
+measured by the anisotropy parameter
+
+\begin{equation}
+\beta \equiv 1-\frac{\sigma_t^2}{\sigma_r^2}
+\end{equation}
+
+with values in the range from $-\infty$ (purely circular orbits)
+through $0$ (hydrostatic equilibrium) to $1$ (purely radial orbits).
+
+Integrating both sides of equation \ref{eq:Jeans} gives the main
+equation of this paper,
+
+\begin{equation}\label{eq:main}
+\sigma_r^2(R) = \frac{1}{\nu(R)}\exp\left(-2\int_{r_{min}}^{r}\frac{\beta(s)}{s}\text{d}s\right)\cdot\qquad
+\end{equation}
+\begin{equation*}
+\qquad\int_R^\infty \frac{GM(r)\nu(r)}{r^2} \exp\left(2\int_{r_{min}}^r\frac{\beta(s)}{s}\text{d}s\right)\text{d}r.
+\end{equation*}
+
+For distant spherical systems, only the projected velocity dispersion
+$\siglos$ can be measured, which in our case is given by
+
+\begin{equation}\label{eq:LOS}
+\siglos^2(R) = \frac{2}{\Sigma(R)}\int_R^\infty \left(1-\beta\frac{R^2}{r^2}\right) \frac{\nu(r)\sigma_r^2(r) r}{\sqrt{r^2-R^2}}\text{d}r,
+\end{equation}
+
+where $\Sigma(R)$ denotes the surface mass density at radius $R$.
+
+In the following, we present a fully non-parametric method for the
+solution of equation \ref{eq:LOS} for the total gravitating mass
+density $\rho(r)$, given observed $\nu(r)$ and $\siglos(r)$, where $r$
+denotes the projected two-dimensional radius from the center of mass
+of the spherical system. We get the enclosed mass $M(<r)$ from the
+density via
+
+\begin{equation}
+M(<r) = \int_0^r \rho(r) r^2 dr,
+\end{equation}
+
+which shows up in eq. \ref{eq:main}. In principle, the above-mentioned
+method can be generalized to investigate alternative gravity models,
+if the acceleration $GM(r)/r^2$ is replaced with the respective form
+of $-\partial\Phi/\partial r$.
+
+The degeneracy between mass $M$ and velocity anisotropy $\beta$ is
+accounted for: For any non-isothermal system, we let vary the
+anisotropy $\beta(r)$ as well. We checked that in the case of a simple
+Hernquist profile, $\beta(r)\approx0$ is retrieved correctly.
+
+The main idea is to let an Monte Carlo Markov Chain sample the
+parameter space $[\nu_i, \siglosi, \rho]$ for distinct populations
+$i=1...N$ of stellar or gaseous tracers.
+
+Two different approaches are taken into account for the sampling of
+densities:
+
+Tracer densities $\nu_i$ are expected to fall with increasing
+radii. To ensure this, one can explicitly build a monotonic function
+
+\begin{equation}
+\nu_i(r) = \int_0^r \tilde{\nu}_i(r')dr'
+\end{equation}
+
+with parameters $\tilde{\nu}_i(r')>0$ discretized in bins. The other
+possibility is to let $\tilde{\nu}_i(r')$ vary freely, or just sample
+$\nu_i(r')=\tilde{\nu}_i|_{r'}$ directly. As it turns out, the MCMC
+prefers decreasing densities anyhow, so the $\nu_i$ parameters were
+allowed to vary within the priors described below.
+
+Furthermore, the sampling might be done in a linear or logarithmic
+fashion. Wherever negative components are required, $\beta_i(r)$,
+linear sampling was chosen, s.t.
+
+\begin{equation}
+\beta_i^{(n+1)}(r) = \beta_i^{(n)}(r) + \delta\beta_i(r)
+\end{equation}
+
+with new parameter $\beta_i^{(n+1)}(r)$ in iteration $n+1$ determined
+from its old value $\beta_i^{(n)}(r)$ at iteration $n$ and the
+parameter stepsize $\delta\beta_i(r)$ drawn from a random uniform
+distribution. On the other hand, for any positive definite parameter
+that needs to span a range in logarithmic space, $\nu_i(r)$ and
+$\rho(r)$, we sample logarithmically,
+
+\begin{equation}
+\nu_i^{(n+1)}(r) = 10^{\tilde{\nu}_i^{(n+1)}},\qquad \tilde{\nu}_i^{(n+1)}(r) = \tilde{\nu}_i^{(n)}(r) + \delta\tilde{\nu}_i(r)
+\end{equation}
+
+In a next step, $\siglosi(r)$ is calculated from $\nu_i$, $\rho(r)$, and
+$\beta_i(r)$ according eq. \ref{eq:LOS}. This is done numerically,
+involving three integrations, which are performed with polynomial extrapolations
+of the integrands up to infinity, s.t. contributions from
+$\rho(r>r_{max}$ hinders an artificial falloff of
+$\siglos$. The additional parameter of the slope is calculated from the second 
+half of all bins.
+
+The last step involves comparison of the projected $\nu_i(r)$, $\sigma_i(r)$ and
+$beta_i(r)$, if available, to the data for the tracer populations to
+get an error function
+
+\begin{eqnarray}
+\chi^2 &=& \sum_{i=1}^N \chi_{\nu,i}^2 + \chi_{\sigma,i}^2 + \chi_{\beta,i}^2\\
+\chi_{\nu,i}^2 &=& \sum_{j=1}^{N_{bin}} \left(\frac{\nu_{i,\text{data}}(r_j)-\nu_{i,\text{model}}(r_j)}{\epsilon_\nu(r_j)}\right)^2
+\end{eqnarray}
+
+and accordingly for $\chi_{\sigma,i}^2$ and $\chi_{\beta,i}^2$. In
+absence of a measured $\beta_i(r)$, we set $\chi_{\beta,i}^2=0$.
+
+The model for iteration $n+1$ is accepted if its close or below the previous iteration,
+
+\begin{equation}
+\exp(\chi^2_n - \chi^2_{n+1}) < \varepsilon,\qquad \varepsilon\in [0,1)
+\end{equation}
+
+for a uniform random $\varepsilon$. Otherwise the model is rejected.
+
+The stepsize can vary for each bin, and is changed during an
+initialization phase. If the acceptance rate of models lies between
+0.24 and 0.26, it is decreased by factors of 1.01, else, it is
+increased by the same amount. After a burn-in phase of several 100
+accepted models with $\chi^2<\chi_{end}^2 = 70$, the stepsize is
+frozen and the MCMC starts storing the accepted models for further
+statistical analysis. A default $10^5$ models are taken, where nothing
+else is indicated.
+
+
+
+\subsection{Binning characteristics}
+
+The number of bins for $\nu, \sigma, \beta, \rho$ are free
+parameters. They are set to fulfill
+
+\begin{equation}
+n_\nu = n_\sigma = n_\beta = n_\rho \leq n_{\text{data}}
+\end{equation}
+
+with number of datapoints $n_{\text{data}}$. This choice simplifies
+integration greatly, and prevents invention of information on scales
+smaller than the frequency of datapoints.
+
+\TODO{check that nbin is set s.t. }
+
+\begin{equation}
+\chi^2_{red} = \frac{\chi^2}{n_{\text{data}} - n_\nu - n_\sigma - n_\beta - n_\rho -1}
+\end{equation}
+
+is minimized, and still the whole parameter space is tracked.
+
+The whole parameter space for $\beta_i$ is sampled with $n_\beta=12$
+if $n_{\text{data}}=30$ in the case of 10000 tracers.
+
+The dark matter density is calculated by subtracting the measured
+baryon density from the dynamical mass density.
+
+\subsection{Priors}
+Following priors are included in the MCMC, and can help to reject
+unphysical models from the start:
+
+\begin{enumerate}
+\item[1)] cprior: $M(r=0) = 0$, the central mass is set to 0;
+
+\item[2)] bprior: $\rho(r) \geq \rho_b(r)-\epsilon_{\rho,b}(r) \forall
+  r\geq0$, ensures that no models with overall densities below the
+  measured baryon density (reduced by the measurement error) are
+  considered any further;
+
+\item[3)] lbprior: $M(r>r_{max}) \leq M(<r_{max})/3.$, rejects any
+  model which has more than $33\%$ of the overall mass up to the
+  outermost radius in the extrapolated bins;
+
+\item[4)] rising $\rho$ prior: $(\rho(r+\Delta r)-\rho(r))/\rho(r)\leq
+  0.5$, prevents $\rho$ rising more than $50\%$ for the next
+  bin. There is no reason for the overall mass density to rise
+  outwards in dynamically old systems. It might be favourable for
+  convergence, though, if a dip in $\rho(r)$ does not lead to
+  immediate rejection of all models with correct $\rho(r+\Delta r)$;
+
+\item[5)] $\beta_i(r+\Delta r)-\beta_i(r) < 0.5$: prevent any sudden
+  jumps in $\beta_i$;
+\end{enumerate}
+
+We show in the appendix what effects the disabling of some of these
+priors have.

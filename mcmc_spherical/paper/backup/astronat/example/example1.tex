@@ -1,0 +1,32 @@
+
+%% $Log: example1.tex,v $
+%% Revision 1.2  1998/08/30 20:40:14  jbaker
+%% Bug fix.
+%%
+
+%\documentstyle[natbib209]{mn-nat}            %% MNRAS
+\documentstyle[aas2pp4,natbib209]{article}    %% AASTeX
+
+%nat This prevents commas between authors and years with natbib
+\citestyle{aa}
+
+\begin{document}
+
+\section{Introduction}
+
+Here we cite \citet{smiths1} as a textual citation; one could
+also imagine using a parenthetical citation \citep{baker:95b}.
+Or something more complicated \citep[see e.g.][p.~32]{smiths2}.
+We can have author names only: \citeauthor{baker:99}, years
+only: \citeyear{baker:95}, and some other goodies.  Here's 
+another one for yucks \citep{foo:72}.  One can see the virtue
+of automated lettering \citep[e.g.,][]{smiths1,smiths2}.
+
+%\bibliographystyle{mn}                       %% MNRAS
+\bibliographystyle{apj}                       %% AASTeX
+
+%\bibliography{mn-jour,example1}     %% includes the journal abbrevs
+%\bibliography{apj-jour,example1}    %% includes the journal abbrevs
+\bibliography{example1}
+
+\end{document}

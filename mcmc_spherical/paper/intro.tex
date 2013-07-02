@@ -1,0 +1,151 @@
+
+\section{Introduction}\label{sec:introduction}
+
+% dark matter in CDM
+% cusp-core problem
+
+Cosmological $\Lambda$CDM simulations of representative patches of the
+Universe predict the dark matter to assemble self-similarly.
+
+Assuming that only dark matter might influence the physics on all
+scales down to the stellar regime, \citet{Navarro+1997} found that the
+density profiles of the resulting halos are best described by a
+function diverging as $r^{-1}$ towards the center. Given that only a
+finite amount of dark matter is available in the halo, there exists a
+very small lower bound for a turnover radius, where the density
+approaches a constant value.
+
+Observations of low surface brightness galaxies measure rotation
+curves and deduce from them a constant density below a rather large
+scale radius $r_S$ \bcite{DeBlok+2001}, \bcite{McGaugh+2001}, contrary to
+the theoretical predictions.
+
+This fact became known as the cusp/core problem.
+
+
+% solutions to cusp-core: observations
+
+Many solutions have been proposed to solve it. It was deemed possible
+that difficulties in data modelling prevent observations from
+resolving cusps.
+
+% solutions to cusp-core: 
+
+From a theoretical point, it was proposed that dark matter is not cold
+as assumed, with a warm component smearing out density peaks below a
+certain scale.
+
+Dark matter could also be self-interacting, as e.g. postulated by
+(\citet{SpergelSteinhardt2000}, \citet{Vogelsberger+2012}), and have a
+large scattering cross-section and low annihilation or dissipation
+cross-section, and thus prevent formation of overly-dense cusps.
+
+% solutions to cusp-core: theory: stellar feedback, higher density
+% threshold, individual starforming regions
+
+For the simulations in question, it became clear that baryonic physics
+plays a crucial role for the buildup of the overall density profile on
+small scales, and thus dark matter.
+
+In particular, modelling of stellar feedback, the introduction of a
+higher density threshold for star formation and an increase of
+resolution for treatment of individual starforming regions in a
+cosmological context led simulations to reveal dwarf galaxies with
+shallow central density slopes in dark matter
+\bcite{Governato+2010}. This compares well with what is found in
+THINGS dwarf galaxies \bcite{Oh+2011}.
+
+
+
+% comparison to local dwarf galaxies
+
+Another type of dwarf galaxies, the dwarf spheroidals, lie closer to
+the Sun and can be resolved much better, often allowing us to observe
+individual stars. We need a method to model their mass distribution
+from those observations to investigate, whether they exhibit a cusp or
+a core, and whether simulations are able to reproduce the dark matter
+distribution.
+
+
+% mass modelling in general: schwarzschild and jeans
+
+An early approach for general triaxial systems in dynamical
+equilibrium was proposed by \citet{Schwarzschild1979}: Based on a
+density profile and a corresponding gravitational potential, an
+ensemble of orbits are calculated and superposed to yield the
+underlying density profile.
+
+Another method makes use of the Jeans equations encompassing tracer
+density, velocity dispersion and the gravitational potential to solve
+for the potential, and ultimately get the underlying dark matter
+density \bcite{BinneyTremaine2008}. Mostly, a functional form with
+some free parameter(s) is assumed for the density profile, and fitting
+routines are used to yield the best agreeing form.
+
+% mass beta anisotropy
+
+Another assumption is required for the velocity anisotropy profile to
+get a mass density in the case of lowest-order Jeans equations. Since
+it is not known a priori how much the system is supported by
+rotational motion, this leads to a degeneracy between mass and
+velocity anisotropy.
+
+% break via higher orders
+
+Higher order Jeans equations can help to break this degeneracy
+\bcite{Lokas2002}. Another degeneracy between inner DM slope and
+concentration shows up, though. With better data available for the
+local dSphs, distribution function based methods may be used.
+\citet{Breddels+2012} cannot distinguish between cuspy or cored
+profiles for Sculptor.
+
+
+% motion of globular clusters in dwarfs
+
+Yet another approach is to use the motion of globular clusters inside
+dwarf galaxies \bcite{Goerdt+2006}, \bcite{Cole+2012}. If the density
+distribution follows a cored profile, globular clusters will not fall
+in, or will even get pushed out of the core if they formed inside. In
+Fornax dSph, there is evidence for a core.
+
+
+% Walker/Penarrubia 2011: 2 tracers
+
+\citet{WalkerPenarrubia2011} split the stellar tracers into two
+populations with different metallicities and half-mass radii, and make
+use of the fact that the enclosed mass is found the same at the
+half-mass radius, independent of the underlying velocity anisotropy
+profile, to get two points in the center of the dwarf galaxy, from
+which constraints on the inner DM density slope can be drawn.
+
+
+
+
+% motivation for non-parametric mass-modelling
+We want to get the full density profile, though.
+
+In this paper, we propose a new non-parametric mass-modelling
+technique based on the Jeans approach, with no assumptions on the
+functional form of the dark matter density, nor the velocity
+anisotropy profile.
+
+
+% what about: non-sphericity, ellipticity? later on
+
+We assume spherical symmetry in a first step. Beware that dSph
+galaxies of the local group are known to be slightly non-spherical,
+with an average ellipticity of 0.3 \bcite{Mateo1998}.
+
+
+% positive points: why to use non-parametric methods
+
+Our method has following advantages over other methods presented so far:
+
+\begin{enumerate}
+\item no assumptions on the functional form of the underlying dark
+  matter;
+\item applicable to any gravitational model, since Jeans equation and
+  Poisson equation are solved each on their own;
+\item robust to noise in the data, as no numerical differentiation is
+  used as soon as the three-dimensional model stands.
+\end{enumerate}

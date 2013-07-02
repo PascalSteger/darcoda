@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.52
+     from ../astronat.texi on 31 August 1999 -->
+
+<TITLE>AstroNat  - Problems and Troubleshooting</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="astronat_1.html">first</A>, <A HREF="astronat_3.html">previous</A>, <A HREF="astronat_5.html">next</A>, <A HREF="astronat_8.html">last</A> section, <A HREF="astronat_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC12" HREF="astronat_toc.html#TOC12">Problems and Troubleshooting</A></H1>
+
+<P>
+1. <STRONG>LaTeX can't find some files</STRONG>
+
+</P>
+<P>
+Check you environment variable set up, or make sure the right files
+are in the directory with your document (see section <A HREF="astronat_2.html#SEC3">Installation</A>).
+
+</P>
+<P>
+2. <STRONG>nat2jour.pl produces strange results</STRONG>
+
+</P>
+<P>
+Look at the diagnostic output from LaTeX or the <CODE>log</CODE> files.  
+Make sure the <CODE>bst</CODE> file it
+is including is coming from the correct directory (other packages
+such as astrobib also have a file called <CODE>apj.bst</CODE>, and this
+may be lurking somewhere on your system; make sure it doesn't get
+found first).  The items in your input <CODE>bbl</CODE> file should conform
+<STRONG>exactly</STRONG> to extended natbib style (see section <A HREF="astronat_3.html#SEC11">Generating a Copy for Electronic Submission</A>).
+
+</P>
+<P>
+3. <STRONG>Some references or citations look wrong</STRONG>
+
+</P>
+<P>
+This maybe a bug, but I have tested the common ones listed on the
+journal web-pages so you might
+be doing something exotic.  Anyway, when was the last time someone
+submitted a paper with a perfect bibliography?  :)  Check your
+<CODE>bib</CODE> file for spurious entries.  Also check the instructions 
+for authors 
+(<A HREF="http://www.journals.uchicago.edu/ApJ/">ApJ</A> or
+<A HREF="http://www.blacksci.co.uk/">MNRAS</A>) to see that it really
+is wrong.  Then you can send a bug report to 
+<A HREF="mailto:jbaker@draco.berkeley.edu">jbaker@draco.berkeley.edu</A>; include the entry from the
+<CODE>bib</CODE> file and the result in the <CODE>bbl</CODE> file (and <CODE>tex</CODE>
+file, for a citation problem).  You can do the formatting by hand
+by using a <CODE>@Misc</CODE> entry.  Note that lettering will not work
+if some the last names in the <CODE>bib</CODE> file are not punctuated
+consistently (e.g., some have extra braces as in ADS style and
+others don't).
+
+</P>
+<P>
+4. <STRONG>BibTeX gives warnings about entries</STRONG>
+
+</P>
+<P>
+It can be somewhat persnickety about what fields are allowed for
+a certain type of entry.  Make sure you're not using spurious ones.
+
+</P>
+<P>
+5. <STRONG>Abbreviations used for a reference (like JEB98) aren't added to the \bibitem's</STRONG>
+
+</P>
+<P>
+No, they're not.  :)  You can usually get the effect by using a "note"
+field in your <CODE>bib</CODE> entry.
+
+</P>
+<P>
+6. <STRONG>LaTeX crashes with mn.sty</STRONG>
+
+</P>
+<P>
+There are two lines which cause trouble; use <CODE>mn-nat.sty</CODE>
+(in the <CODE>mn</CODE> subdirectory) instead (see section <A HREF="astronat_6.html#SEC14">MNRAS style</A>).
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="astronat_1.html">first</A>, <A HREF="astronat_3.html">previous</A>, <A HREF="astronat_5.html">next</A>, <A HREF="astronat_8.html">last</A> section, <A HREF="astronat_toc.html">table of contents</A>.
+</BODY>
+</HTML>
