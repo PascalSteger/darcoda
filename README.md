@@ -1,7 +1,7 @@
-darcoda
-=======
+GravLite
+========
 
-Codes for analysis of Dark Matter distribution
+Codes for Mass Modelling of Spherical and Disk-Like Structures
 
 Basic MCMC framework
 --------------------
@@ -13,7 +13,7 @@ Pascal: setup GIT repository
 
 Milky Way
 ---------
-Lead: Justin / Silvia / Dave
+Lead: Justin / Pascal / Dave
 Tests with simulated disk galaxy;
 compilation of stellar tracers in the solar neighborhood;
 determination of actual DM profile;
@@ -21,10 +21,10 @@ determination of actual DM profile;
 
 Spherical systems
 -----------------
-Lead: Dave
+Lead: Pascal
 Replacement of buggy integration scheme;
 extension to include anisotropy parameters;
-application to non-spherical systems.
+application to triaxial systems.
 Test problems should appear online here soon: http://astrowiki.ph.surrey.ac.uk/dokuwiki/doku.php?id=start
 
 Application to observations
@@ -36,4 +36,4 @@ method to break mass-anisotropy degeneracy;
 tests with simulated dwarfs;
 determination of actual DM profiles;
 comparison with non-equilibrium chemistry (NEC) simulations.
-Data for four dwarfs is here: https://www.cfa.harvard.edu/~mwalker/mmfsdata.html. We can get started with those. 
+Data for four dwarfs is here: https://www.cfa.harvard.edu/~mwalker/mmfsdata.html. We can get started with those.
