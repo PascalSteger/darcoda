@@ -37,8 +37,10 @@ dir = base + 'data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d
 #nampart = '20130510090417_case_1_0_0_cprior_nulog_denslog_mslope_rprior' # ca2, core, running
 # nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' #ca2, core
 # nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior'
-nampart = '20130426133539_cprior_mslope_rprior'
-nampart = '20130702113536_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new cusp
+# nampart = '20130426133539_cprior_mslope_rprior'
+# nampart = '20130702113536_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new cusp
+nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey largest
+nampart = '20130621121716_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey 2nd
 
 basename = dir + nampart + '/' + nampart
 
@@ -74,13 +76,12 @@ def show_plots():
 
 print 'input'
 print basename
-M = np.loadtxt(basename+'.profdens',skiprows=0,unpack=False)
-#M = np.loadtxt(basename+'.profbeta1',skiprows=0,unpack=False)
+prof = 'dens' # M, dens, delta1
+M = np.loadtxt(basename+'.prof'+prof,skiprows=0,unpack=False)
 
 radii = M[0]
 radii = radii
 profs = M[1:]                           # all saved profiles
-
 #profs = M[-2000:] # only the last 2000 profiles
 
 Mprofbins = np.transpose(profs)
@@ -115,16 +116,23 @@ def plotGraph():
     fig = plt.figure()
     ### Plotting arrangements ###
     xlabel(r'$r\quad[\mathrm{pc}]$')
-    #ylabel(r'$M\quad[\mathrm{M}_{\odot}]$') #[10^5 M_{\odot}]')
-    ylabel(r'$\rho\quad[\mathrm{M}_{\odot}/\mathrm{pc}^3]$') #[10^5 M_{\odot}]')
+    if prof == 'M':
+        ylabel(r'$M\quad[\mathrm{M}_{\odot}]$') #[10^5 M_{\odot}]')
+    elif prof == 'dens':
+        ylabel(r'$\rho\quad[\mathrm{M}_{\odot}/\mathrm{pc}^3]$') #[10^5 M_{\odot}]')
+    elif prof=='delta':
+        ylabel(r'$\delta$') #[10^5 M_{\odot}]')
     fill_between(radsc, M95lo[sel]*Msc, M95hi[sel]*Msc, color='black',alpha=0.2,lw=1)
     fill_between(radsc, M68lo[sel]*Msc, M68hi[sel]*Msc, color='black',alpha=0.4,lw=1)
     plot(radsc,Mmedi[sel]*Msc,'r',lw=2)
     # theoretical model
-    # plot(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'--',color='black',lw=2)
-    plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=2)
+    if prof == 'M':
+        plot(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'--',color='black',lw=2)
+    elif prof == 'dens':
+        plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=2)
     # xscale('log')
-    yscale('log')
+    if prof != 'delta1':
+        yscale('log')
     xlim([min(radsc),max(radsc)])
     ylim([min(M95lo[sel]*Msc),max(M95hi[sel]*Msc)])
     return fig
@@ -134,7 +142,7 @@ def readcol(filena):
     return a,b,c
 ion()
 plot1 = plotGraph()
-pp = PdfPages(basename + '.profdens.pdf')
+pp = PdfPages(basename + '.prof'+prof+'.pdf')
 pp.savefig(plot1)
 
 # We can also set the file's metadata via the PdfPages object:
@@ -148,7 +156,7 @@ d['ModDate'] = datetime.datetime.today()
 pp.close()
 ioff()
 
-fout = open(basename+".profdens.conf",'w')
+fout = open(basename+'.prof'+prof+'.conf','w')
 print >> fout,M95lo
 print >> fout,M68lo
 print >> fout,Mmedi
