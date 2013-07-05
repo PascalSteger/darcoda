@@ -20,27 +20,27 @@ if not os.path.exists("/home/ast/read"):
 
 
 
-investigate  = 'walker'  # determine which data set to work on
-                                        # 'simple': set up simple model for disc
-                                        # 'sim': read in disc simulation
-                                        # 'checkdwarf': checksigma for analytic dwarf, sig_LOS
-                                        # 'hernquist': check simple Hernquist prof. from simwiki
-                                        # 'walker': check with full obs. cont. data from Walker
-                                        # 'fornax': real data from Fornax dwarf galaxy
+investigate  = 'simple'  # determine which data set to work on
+# 'simple': set up simple model for disc
+# 'sim': read in disc simulation
+# 'checkdwarf': checksigma for analytic dwarf, sig_LOS
+# 'hernquist': check simple Hernquist prof. from simwiki
+# 'walker': check with full obs. cont. data from Walker
+# 'triaxial': Dehnen/Wilkinson triaxial mock data
+# 'fornax': real data from Fornax dwarf galaxy
 
-walkercase = 2           # choose different Walker models (0-2 so far)
+walkercase = 1           # choose different Walker models (0-2 so far)
 
 # Set number of tracer stars to look at in Hernquist profile
 # take all particles                       # case 0
 # want to set ntracers1 = 2e3              # case 1
 #             ntracers1 = 1e4              # case 2
 #             ntracers1 = ntracers2 = 5e3  # case 3
-cas = 2
-getnewdata = True       # get new data computed from observations before burn-in
+cas = 0
+getnewdata = False       # get new data computed from observations before burn-in
 metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
-testplot_read = True    # show plots for readout of data as well before init?
+testplot_read = False    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
-consttr = False           # set radial bin by constant number of tracer particles
 
 
 G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
@@ -52,20 +52,21 @@ G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
 global geom
 if investigate == 'sim' or investigate == 'simple':
     geom = 'disc'
-    adddarkdisc = False   # add a disk of DM particles in simple model
+    adddarkdisc = False    # add a disk of DM particles in simple model
     slicedata   = False    # slice and dice data for sim case
-    nusimpstart = True   # start from nu near data
+    nusimpstart = True     # start from nu near data
     kzsimpfix   = False    # calculate kz from simple model directly
     nusimpfix   = False    # TODO: meaning?
-    qtest = False # plot during physics_disc
+    importdata = True      # For sim: import nu,sig, etc. from files (if False import datapoints from simulation and use routine to calculate nu,sig)
+    qtest = False          # plot during physics_disc
     # Min/max Kz for MCMC search [only affects denslog prior].
     # If positive assume constant;
     # if negative take fraction of local baryonic value for that bin: 
     # kzmin = 0.0075 * (4.0 * !PI * G1) * 1000.^3. # kzmax = 100.*kzmin
     numin = 1e-3; numax = 1.
     patch = '0' # or 180 or ... for disc_sim case
-    ascale = 1000.
-    Mscale = 1.e6
+    ascale = 1000.  
+    Mscale = 1.e6    
 else:
     geom = 'sphere'
     Mscale = 1.e6                           # [Msun], scale for dimensionless eqs
@@ -89,17 +90,17 @@ checksigma = False # check sigma_los integration
 analytic   = False         # calc sig_los from analytic Hernquist profiles for nu, M
 if investigate != 'hernquist': analytic = False
 
-model      = True # for Walker mock data: plot model
+model      = False # for Walker mock data: plot model
 if investigate != 'walker': model = False
 
 
 ########## density options
-poly       = True              # use polynomial representation of dens during init
+poly       = False              # use polynomial representation of dens during init
 if analytic: poly = False
 
-densstart = -2.5              # -2.6 for Hernquist, -2.3979 for Walker
+densstart = -1.8              # -2.6 for Hernquist, -2.3979 for Walker
 scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
-scalepower = 1.1                  # 0.95 for Hernquist, 1.5 for Walker
+scalepower = 2.2                  # 0.95 for Hernquist, 1.5 for Walker
 
 
 ########## integration options
@@ -109,14 +110,14 @@ even       = 'avg'        # for simps integration (everywhere): 'avg', 'first', 
 
 
 
-pops      = 2
+pops      = 1
 if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is set
 
 
 
 
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
-nipol = 12
+nipol = 16
 
 
 
@@ -135,13 +136,13 @@ else: gpriorconv = 1e30
 if cprior >= 0: cpriorconv = cprior * (2.*np.pi*G1) * 1000.**2.
 else: cpriorconv = 1e30
 
-bprior   = False                       # Baryon minimum surfden prior
+bprior   = True                       # Baryon minimum surfden prior
 blow = np.zeros(nipol);   Mmodel = np.zeros(nipol)
 baryonmodel = 'sim'                    # read in surface density from corresponding surfden file
 
 mirror   = False                       # Mirror prior: TODO
 nulog    = True                        # sample nu (only) in logarithmic space. TODO: check stepsize
-denslog  = True                        # after init: sample dens (only) in logarithmic space
+denslog  = False                        # after init: sample dens (only) in logarithmic space
 mprior = -1                            # Mass prior
 deltaprior  = False # Deltaprior: - beta (velocity anisotropy) in spherical
                     #             - tilt in disc geometry
@@ -158,15 +159,15 @@ sprior  = False                       # rising sig_z needed in disc case
 if geom=='sphere': sprior = False
 constdens = False # constant DM density
 rprior  = True    # regularize Nuz 
-nutol   = 5.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
+nutol   = 2.0     # nu_(i+1)/nu_i must be < nutol
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
-deltol  = 4./nipol                               # for delta
+deltol  = 2./nipol                               # for delta
 # norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
 # norm2   = 10.**2 # and for the second component, if there is one
 quadratic = False           # linear or quad interpol. 
 monotonic = False           # mono-prior on nu(z)
 uselike   = False           # use Likelihood function, or binned data?
-adderrors = False
+adderrors = True
 
 # last bin mass prior:
 # exclude all models with a mass in last bin that exceeds
@@ -208,9 +209,8 @@ xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of 
 
 
 ########## MCMC parameters
-niter = 100000                  # Maximum number of iterations
-# TODO: class for chi2
-chi2   = 1e300                 # initial chi2 [large]
+niter = 100000                          # Maximum number of iterations
+chi2   = 1e300                          # initial chi2 [large]
 chi2t1 = 1e300;    chi2t2 = 1e300;    chi2t = 1e300
 chi2t_nu  = 1e300; chi2t_sig  = 1e300
 chi2t_nu1 = 1e300; chi2t_nu2  = 1e300
@@ -225,8 +225,8 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 50. if (pops == 1) else 100.  # more information in two tracer pops, but more errors as well
-endcount = 100                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+chi2tol = 50. if (pops == 1) else 60.  # more information in two tracer pops, but more errors as well
+endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
 rejcount = 1.                   # Rejection count
@@ -234,7 +234,7 @@ acccount = 0.                   # Acceptance count
 accrejtollow  = 0.24            # Acceptance/rejection rate
 accrejtolhigh = 0.26            #
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
-stepafterrunaway = 0.95 # mult. stepsize by this amount if too low fnewoverf 2.5
+stepafterrunaway = 0.98 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.
 scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
 stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
@@ -244,12 +244,11 @@ initphase = True # initialisation phase flag, first True, if over: False
 endgame  = False # Ending flag
 
 # Units: 
-
 # rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]
 
 rcore=[]; dens0rcore=[]; dens0pc=[]; totmass=[]; maxvlos=[] # unit system
 rcore_2D=[];dens0rcore_2D=[];dens0pc_2D=[]
-if investigate != 'walker' and investiage != 'triaxial':
+if investigate != 'walker' and investigate != 'triaxial':
     # TODO: adapt to physical units
     # each is set for all components and first component by default
     rcore.append(1.);      rcore_2D.append(1.)

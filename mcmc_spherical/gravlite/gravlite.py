@@ -21,7 +21,7 @@ ginit.mcmc_init()                       # TODO: thread
 
 gpl.prepare_plots()                     # TODO: thread
 gpl.plot_data()
-gfile.adump()                           # TODO: thread
+
 
 n = 0
 plotfirst = True
@@ -61,8 +61,10 @@ while ( n < gp.niter-1):
         # TODO: increase stepsize again?
         
     # gfun.wait()
-    gfile.write_outfile()
-    if not gp.initphase: n = n + 1
+    if not gp.initphase:
+        gfile.write_outfile()
+        n = n + 1
+
 
 gp.LOG.warning( 'Finished!' )
 gpl.show_plots()

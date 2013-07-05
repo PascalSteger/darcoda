@@ -31,11 +31,11 @@ def get_new_parameters():
     # ranarr.wigglepar()       # if we want to wiggle only one parameter at a time
     # ranarr.wiggle_delta()
 
-    ranarr.setuniformrandom()           # wiggle all parameters as one
-    ranarr.scale_prop_chi2()            # change proportional to error on chi2
+    ranarr.setuniformrandom()   # wiggle all parameters as one
+    ranarr.scale_prop_chi2()    # change proportional to error on chi2
     
     ranarr.mul(gp.parstep)
-    ranarr.add(gp.pars)                   # TODO: check parst is NOT needed here
+    ranarr.add(gp.pars)         # TODO: check parst is NOT needed here
     gp.parst.assign(ranarr)
 
     if gp.deltaprior:
@@ -353,44 +353,7 @@ def accept_reject(n):
                          # gh.pretty([gp.parstep.norm2/gp.parst.norm2])
                          ])
         adapt_stepsize()
-        
-        # Decide whether to end initphase:
-        if gp.endgame and gp.initphase:
-            gp.endcount -= 1
-            print 'gp.endcount = ',gp.endcount
-            if (gp.endcount <= 0 or gp.chi2 < gp.chi2tol/10.):
-                print( '*** initialization phase over ***')
-                print( '*********************************')
-                gp.initphase = False
-
-                if gp.denslog:
-                    # use parstep if possible
-                    gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
-                                          np.log10(phys.densdefault(gp.pars.dens)))
-                    gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
-                    gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
-
-                    # or get 10% step
-                    # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
-                    #                       np.log10(phys.densdefault(gp.pars.dens)))
-                    
-                else:
-                    gp.pars.dens    = phys.densdefault(gp.pars.dens)
-                    gp.parst.dens   = phys.densdefault(gp.parst.dens)
-                    gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
-                                          phys.densdefault(gp.pars.dens))
-
-
-                # gp.parst.dens = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
-                # ^-- cheat: start off, from near analytic 1 pop result
-                # gp.parstep.dens = gp.parst.dens/20. 
-                gp.parstep.adaptall(gp.scaleafterinit)
-                gp.stepafterrunaway = 1.
-                gp.poly = False
-                gp.safepars.assign(gp.pars)
-                gp.safeparstep.assign(gp.parstep)
-                gp.safechi2 = gp.chi2
-
+        end_initphase()
 
     else:
         gp.rejcount = gp.rejcount + 1.
@@ -420,4 +383,61 @@ def adapt_stepsize():
                 gp.parstep.adaptall(1./gp.stepcorr)
             if gp.chi2 < gp.chi2tol:
                 gp.endgame = True
+    return
+
+
+def end_initphase():
+    # Decide whether to end initphase:
+    if not gp.initphase: return
+    if not gp.endgame: return
+
+    if gp.chi2 < gp.chi2tol:
+        gp.endcount -= 1;
+        print 'gp.endcount = ',gp.endcount
+    
+    if gp.chi2 >= gp.chi2tol/10.:
+        if gp.endcount > 0:
+            return
+    
+    print( '*** initialization phase over ***')
+    print( '*********************************')
+    gp.initphase = False
+    
+    if gp.denslog:
+        # use parstep if possible
+        gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
+                              np.log10(phys.densdefault(gp.pars.dens)))
+        gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
+        gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
+        
+        # or get 10% step
+        # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
+        #                       np.log10(phys.densdefault(gp.pars.dens)))
+    else:
+        gp.pars.dens    = phys.densdefault(gp.pars.dens)
+        gp.parst.dens   = phys.densdefault(gp.parst.dens)
+        gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
+                              phys.densdefault(gp.pars.dens))
+        
+    # gp.parst.dens = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
+    # ^-- cheat: start off, from near analytic 1 pop result
+    # gp.parstep.dens = gp.parst.dens/20. 
+    gp.parstep.adaptall(gp.scaleafterinit)
+    gp.stepafterrunaway = 1.
+    gp.poly = False
+    gp.safepars.assign(gp.pars)
+    gp.safeparstep.assign(gp.parstep)
+    gp.safechi2 = gp.chi2
+
+    # create folder to hold all output files
+    import os; import os.path
+    if not os.path.exists(gp.files.outdir):
+        os.makedirs(gp.files.outdir)
+        os.makedirs(gp.files.outdir+'/programs/')
+
+    # copy across all programs to get working copy for easy repetition
+    import os
+    os.system('cp '+ gp.files.progdir+'/*.py '+gp.files.outdir+'/programs/')
+
+    gfile.adump()                       # only do after endinit
     return

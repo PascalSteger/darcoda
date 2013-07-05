@@ -34,7 +34,7 @@ def com_shrinkcircle(x,y,pm):
         nit += 1
         print 'iteration ',nit,' with ',len(x), ' particles has overall COM of: ',bucom_x,bucom_y,' with remaining offset ',dr
 
-        # shrink sphere by 20%:
+        # shrink sphere:
         # 1) calc radius
         r0 = np.sqrt(x**2+y**2)
         # 2) sort remaining particles
@@ -42,7 +42,7 @@ def com_shrinkcircle(x,y,pm):
         r0 = np.array(r0)[order]; x = np.array(x)[order]; y = np.array(y)[order]; pm = np.array(pm)[order]
 
         # 3) cut x,y,z,pm after 1-10%
-        end = len(r0)*0.99
+        end = len(r0)*0.95
         r0 = r0[:end]; x = x[:end]; y = y[:end]; pm = pm[:end]
 
         # calculate new COM

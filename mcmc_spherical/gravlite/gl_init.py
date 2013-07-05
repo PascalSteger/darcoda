@@ -25,10 +25,10 @@ def mcmc_init():
 
     ### nu
     # set all nu to known 3D data plus some offset
-    nupars1 = npr.normal(gp.ipol.nudat1,gp.ipol.nuerr1/2,gp.nipol) # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)
+    nupars1 = npr.normal(gp.ipol.nudat1,gp.ipol.nuerr1,gp.nipol) # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)
 
     # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
-    nuparstep1    = gp.ipol.nuerr1/2. # nupars1/30.
+    nuparstep1    = gp.ipol.nuerr1 # nupars1/20.
     if gp.geom == 'disc': nuparstep1[0] = 0.0 # first point stays 1 :)
 
     # if nu is taken in log, will not want direct proportionality
@@ -40,31 +40,34 @@ def mcmc_init():
     # + gp.ipol.nuerr1    # [munit/pc^3], /20 earlier on, was too high
     if gp.pops == 2:
         nupars2  = npr.normal(gp.ipol.nudat2,gp.ipol.nuerr2/2,gp.nipol)
-        nuparstep2 = gp.ipol.nuerr1/2. # nupars2/30. # [munit/pc^3]
+        nuparstep2 = gp.ipol.nuerr1/2. # nupars2/20. # [munit/pc^3]
         if gp.nulog:
             nupars2 = np.log10(nupars2)
-            nuparstep2 = nupars2/20.
+            nuparstep2 = nupars2*0.+nupars2[0]/20.
 
 
     ### delta
     if gp.geom == 'sphere':
         deltapars1 = np.zeros(gp.nipol)
-        deltaparstep1 = deltapars1 + 0.02
+        deltaparstep1 = deltapars1 + 0.03
         mdelta1 = []; mdelta2 = []
         if gp.model:
             print 'TODO: disable model for delta!'
-            mdelta1, mdelta2 = betawalker(gp.xipol)
+            if gp.investigate == 'walker':
+                mdelta1, mdelta2 = betawalker(gp.xipol)
+            elif gp.investigate == 'triaxial':
+                mdelta1 = betatriax(gp.xipol)
             deltapars1 = phys.invdelta(mdelta1)
-            deltaparstep1 = deltapars1*0. + 0.02
+            deltaparstep1 = deltapars1*0. + 0.03
             if gp.deltaprior:
                 deltaparstep1 = np.zeros(gp.nipol)
 
         if gp.pops == 2:
             deltapars2 = np.zeros(gp.nipol)
-            deltaparstep2 = deltapars2 + 0.02
+            deltaparstep2 = deltapars2 + 0.03
             if gp.model:
                 deltapars2 = phys.invdelta(mdelta2)
-                deltaparstep2 = deltapars2*0. + 0.02
+                deltaparstep2 = deltapars2*0. + 0.03
                 if gp.deltaprior:
                     deltaparstep2 = np.zeros(gp.nipol)
 
@@ -89,7 +92,7 @@ def mcmc_init():
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
 
-        densparstep = denspars/50. * (np.arange(1,gp.nipol+1))**0.5
+        densparstep = denspars/100. * (np.arange(1,gp.nipol+1))**0.5
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:
@@ -97,24 +100,23 @@ def mcmc_init():
             denspars = denspars * (1.+ npr.uniform(-1.,1.,gp.nipol)/15.)+denspars[-1]/2. # [munit/pc^3]
         if gp.denslog:
             denspars = np.log10(denspars)
-        densparstep = denspars/30.
+        densparstep = denspars/20.
         
 
     if gp.geom == 'disc':
-        Kz = -gp.Mmodel*2.*np.pi*gp.G1 # [(km/s)^2/kpc] = 3.24e-14m/s^2 # from data of overall surface density.
+        Kz = -(gp.Mmodel)*2.*np.pi*gp.G1 # [(km/s)^2/kpc] = 3.24e-14m/s^2 # from data of overall surface density.
         # kzpars = np.abs(gh.deriv(Kz, gp.xipol)) # /sqrt(3) for first offset
         kzpars = phys.kappa(gp.xipol, Kz)        # which is the inverse to phys.dens()
         if max(kzpars<0.):
-            print 'negative kappa'
+            print 'negative kappa, go check!'
             pdb.set_trace()
 
-        if gp.denslog: kzpars = np.log10(kzpars)
         if gp.kzsimpfix:
             from gl_disc_simple import get_kzpars
             kzpars = get_kzpars()
 
         denspars = kzpars[:] # no sign error, as wanted in paper, kappa>=0
-        densparstep = denspars/50.
+        densparstep = denspars/30.
         # densparstep[0] = 0.0
 
         if gp.poly:
@@ -128,7 +130,8 @@ def mcmc_init():
 
         if gp.denslog:          # still in disc case
             denspars = np.log10(denspars)
-            densparstep = denspars/30.
+            densparstep = denspars*0.+denspars[0]/30.
+            
 
     ### norm
     normpars1 = 17.**2                   # TODO: meaning? why 17**2? needed for normalized nu=1 max.

@@ -26,6 +26,7 @@ investigate  = 'simple'  # determine which data set to work on
                                         # 'checkdwarf': checksigma for analytic dwarf, sig_LOS
                                         # 'hernquist': check simple Hernquist prof. from simwiki
                                         # 'walker': check with full obs. cont. data from Walker
+                                        # 'triaxial': Dehnen/Wilkinson triaxial mock data
                                         # 'fornax': real data from Fornax dwarf galaxy
 
 walkercase = 1           # choose different Walker models (0-2 so far)
@@ -248,7 +249,7 @@ endgame  = False # Ending flag
 
 rcore=[]; dens0rcore=[]; dens0pc=[]; totmass=[]; maxvlos=[] # unit system
 rcore_2D=[];dens0rcore_2D=[];dens0pc_2D=[]
-if investigate != 'walker':
+if investigate != 'walker' and investiage != 'triaxial':
     # TODO: adapt to physical units
     # each is set for all components and first component by default
     rcore.append(1.);      rcore_2D.append(1.)

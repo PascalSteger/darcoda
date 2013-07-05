@@ -25,7 +25,8 @@ def run():
 
         #set binning
         #gpr.nbins = (max - min)*N^(1/3)/(2*(Q3-Q1)) #(method of wand)
-        rmin = 0.; rmax=max(r) # [rcore]
+        rmin = 0.
+        rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior# [rcore]
 
 
 

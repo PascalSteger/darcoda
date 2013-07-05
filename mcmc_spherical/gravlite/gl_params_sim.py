@@ -26,6 +26,7 @@ investigate  = 'sim'  # determine which data set to work on
 # 'checkdwarf': checksigma for analytic dwarf, sig_LOS
 # 'hernquist': check simple Hernquist prof. from simwiki
 # 'walker': check with full obs. cont. data from Walker
+# 'triaxial': Dehnen/Wilkinson triaxial mock data
 # 'fornax': real data from Fornax dwarf galaxy
 
 walkercase = 1           # choose different Walker models (0-2 so far)

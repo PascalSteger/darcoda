@@ -107,14 +107,17 @@ def check_mass():
     if gp.geom == 'disc':
         if min(gp.parst.dens < 0.):
             print 'kappa < 0'
+            pdb.set_trace()
             gf.get_working_pars(gp.initphase)
             return True
         kappa_DM = gp.parst.dens - phys.kappa(gp.xipol, -gp.blow*2.*np.pi*gp.G1)
         if min(kappa_DM) < 0.:
+            pdb.set_trace()
             print 'kappa_DM < 0'
             gf.get_working_pars(gp.initphase)
             return True
         if max(abs((kappa_DM-np.mean(kappa_DM))/np.mean(kappa_DM)))>1.0:
+            pdb.set_trace()
             print 'kappa_DM too wild'
             gf.get_working_pars(gp.initphase)
             return True

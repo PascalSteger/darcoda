@@ -1,1 +1,1 @@
-gl_params_sim.py
+gl_params_triaxial.py

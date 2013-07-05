@@ -1,44 +1,22 @@
 #!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-
+# plot range of profiles for triaxial dataset
 
 
 import numpy as np
 from pylab import *
 import pdb
 from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
-from gl_analytic import Mwalkertot, rhowalkertot_3D
+from gl_analytic import Mwalkertot, rhowalkertot_3D, rhotriax
 from matplotlib.backends.backend_pdf import PdfPages
 
 # Walker data sets
 base = '/home/psteger/sci/dwarf_data/'
 base = '/home/ast/read/dark/dwarf_data/'
 
-# ca = 0:
-dir = base + 'data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
-dir = base + 'data_walker/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
-
-
-
-# ca = 2:
-dir = base + 'data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
-# ca = 1:
-dir = base + 'data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
-
-# nampart = '20130425120348_cprior_mslope_rprior' # ca2 working fine for 1000 iterations
-# nampart = '20130426090433_cprior_mslope_rprior' # ca2 too high mass at high radii, 50k
-
-# nampart = '20130426120258_cprior_mslope_rprior' # ca2 better mass? no, too low overall
-
-# nampart = '20130426161637_cprior_nulog_denslog_mslope_rprior' # ca2 new denslog:  too high mass, especially around middle radii
-# nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior' # ca2 and up to 100000 its: works
-# nampart = '20130429110855_cprior_nulog_denslog_mslope_rprior' # 50k steps: works
-# nampart = '20130502080536_cprior_nulog_denslog_mslope_rprior' # ca0 10: London failed 2.5k, too high mass
-#nampart = '20130510090417_case_1_0_0_cprior_nulog_denslog_mslope_rprior' # ca2, core, running
-# nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' #ca2, core
-# nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior'
-nampart = '20130426133539_cprior_mslope_rprior'
-nampart = '20130702113536_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new cusp
+# case
+dir = base + 'data_triaxial/StarsInCuspI/'
+nampart = '20130705155757_cprior_nulog_denslog_mslope_rprior'
 
 basename = dir + nampart + '/' + nampart
 
@@ -79,9 +57,9 @@ M = np.loadtxt(basename+'.profdens',skiprows=0,unpack=False)
 
 radii = M[0]
 radii = radii
-profs = M[1:]                           # all saved profiles
+profs = M[1:]
 
-#profs = M[-2000:] # only the last 2000 profiles
+#profs = M[-2000:]
 
 Mprofbins = np.transpose(profs)
 radii = radii[:-1]
@@ -121,8 +99,9 @@ def plotGraph():
     fill_between(radsc, M68lo[sel]*Msc, M68hi[sel]*Msc, color='black',alpha=0.4,lw=1)
     plot(radsc,Mmedi[sel]*Msc,'r',lw=2)
     # theoretical model
-    # plot(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'--',color='black',lw=2)
-    plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=2)
+    #plot(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'--',color='black',lw=2)
+    # plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=2)
+    plot(rsc*radii[sel],Msc*rhotriax(radii)[sel],'--',color='black',lw=2)
     # xscale('log')
     yscale('log')
     xlim([min(radsc),max(radsc)])

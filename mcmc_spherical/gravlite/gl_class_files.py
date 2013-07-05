@@ -42,18 +42,18 @@ class Files:
     def __init__ (self):
         self.machine = ''
         self.dir = ''
-        self.massfile = ''; self.analytic = ''
-        self.surfdenfiles = []
-        self.nufiles  = []
-        self.sigfiles = []
-        self.posvelfiles = []
+        self.progdir = ''
         self.set_dir(gp.machine) # 'darkside' or 'local'
+        self.massfile = ''; self.analytic = '';               self.surfdenfiles = []
+        self.nufiles  = [];        self.sigfiles = [];        self.posvelfiles = []
         self.ntracer1, self.ntracer2,self.nstr1, self.nstr2 = self.set_ntracers(gp.cas)
         
         if gp.investigate == 'hernquist':
             self.set_hernquist()
         elif gp.investigate == 'walker':
             self.set_walker()
+        elif gp.investigate == 'triaxial':
+            self.set_triaxial()
         elif gp.investigate == 'fornax':
             self.set_fornax()
         elif gp.investigate == 'sim':
@@ -61,17 +61,7 @@ class Files:
         elif gp.investigate == 'simple':
             self.set_disc_simple()
 
-        self.outname = self.get_outname()
-
-        if False:
-            print 'input:'
-            if len(self.massfile) > 0:
-                print self.massfile
-                print self.nufiles
-                print self.sigfiles
-            else:
-                print self.posvelfiles
-
+        self.outdir, self.outname = self.get_outname()
         return
 
 
@@ -83,6 +73,7 @@ class Files:
             self.machine = '/home/ast/read/dark/dwarf_data/'
         elif machine == 'local':
             self.machine = '/home/psteger/sci/dwarf_data/'
+        self.progdir = self.machine + 'programs'
         return
 
 
@@ -98,40 +89,6 @@ class Files:
 
 
     
-    def get_outname(self):
-        import datetime
-        bname = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if gp.investigate == 'walker':
-            bname = bname + '_case_' + str(gp.walkercase)
-            ntr1, ntr2  = get_case(gp.cas)
-            bname = bname + '_' + str(ntr1) + '_' + str(ntr2)
-        if (gp.gprior>0) : bname = bname + '_gprior'
-        if (gp.cprior>=0) : bname = bname + '_cprior'
-        
-        if gp.mirror  : bname = bname + '_mirr'
-        if gp.nulog: bname = bname + '_nulog'
-        if gp.denslog: bname = bname + '_denslog'
-        if gp.lbprior : bname = bname + '_lb'
-        
-        if gp.deltaprior: bname = bname + '_delta' 
-        bname = bname + '_mslope' if (gp.mprior<0) else bname + '_mconst'
-        
-        if gp.bprior: bname = bname + '_bprior'
-        if gp.investigate == 'hernquist':
-            bname = bname+'_'+self.nstr1+'_'+self.nstr2+'_'+str(gp.nipol)
-        
-        if gp.sprior:    bname = bname + '_sprior'
-        if gp.uselike:   bname = bname + '_uselike'
-        if gp.constdens: bname = bname + '_constdens'
-        if gp.adderrors: bname = bname + '_errors'
-        if gp.rprior:    bname = bname + '_rprior'
-        if gp.quadratic: bname = bname + '_quad'
-        if gp.monotonic: bname = bname + '_mono'
-
-        import os; import os.path
-        if not os.path.exists(self.dir+bname+"/"):
-            os.makedirs(self.dir+bname+"/")
-        return bname + "/" + bname
 
 
 
@@ -242,14 +199,50 @@ class Files:
         if gp.pops == 1:
             self.nufiles.append(self.dir+'nu/nunotnorm_0.txt') # first and only comp.
             self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
-        if gp.pops == 2:
+        elif gp.pops == 2:
             self.nufiles.append(self.dir+'nu/nunotnorm_1.txt') # first comp.
             self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
             self.nufiles.append(self.dir+'nu/nunotnorm_2.txt') # second comp.
             self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
-        self.outname = self.get_outname()
+        self.outdir, self.outname = self.get_outname()
         return
     
+
+
+
+    def set_triaxial(self):
+        self.dir = self.machine + '/data_triaxial/'
+        if gp.triaxcase == 0:           # core
+            casename = 'StarsInCore'
+        else:
+            casename = 'StarsInCusp'
+        if gp.projcase == 1:            # along X
+            proj = 'X'
+        elif gp.projcase == 2:          # along Y
+            proj = 'Y'
+        elif gp.projcase == 3:          # along Z
+            proj = 'Z'
+        elif gp.projcase == 4:          # along intermediate axis
+            proj = 'I'
+        basename = casename + proj
+        self.dir = self.dir + basename + '/'
+
+        pre = self.dir
+        self.massfile = pre + 'enclosedmass/enclosedmass_0.txt'
+        self.nufiles.append(pre  + 'nu/nunotnorm_0.txt')
+        self.sigfiles.append(pre + 'siglos/siglos_0.txt')
+        self.nufiles.append(pre  + 'nu/nunotnorm_0.txt') # first and only comp.
+        self.sigfiles.append(pre + 'siglos/siglos_0.txt')
+        if gp.pops == 2:
+            print 'TODO: 2 tracer populations for triaxial dataset'
+            pdb.set_trace()
+        self.outdir, self.outname = self.get_outname()
+        return basename
+
+
+
+
+
 
     def set_fornax(self):
         self.dir = self.machine + '/data_obs/for/'
@@ -265,8 +258,42 @@ class Files:
             self.sigfiles.append(self.dir+'velocitydispersionlos_1.txt')
             self.nufiles.append(self.dir+'densityfalloff_2.txt') # second comp.
             self.sigfiles.append(self.dir+'velocitydispersionlos_2.txt')
-        self.outname = self.get_outname()
+        self.outdir, self.outname = self.get_outname()
         return
+
+
+
+    def get_outname(self):
+        import datetime
+        bname = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        if gp.investigate == 'walker':
+            bname = bname + '_case_' + str(gp.walkercase)
+            ntr1, ntr2  = get_case(gp.cas)
+            bname = bname + '_' + str(ntr1) + '_' + str(ntr2)
+        if (gp.gprior>0) : bname = bname + '_gprior'
+        if (gp.cprior>=0) : bname = bname + '_cprior'
+        
+        if gp.mirror  : bname = bname + '_mirr'
+        if gp.nulog: bname = bname + '_nulog'
+        if gp.denslog: bname = bname + '_denslog'
+        if gp.lbprior : bname = bname + '_lb'
+        
+        if gp.deltaprior: bname = bname + '_delta' 
+        bname = bname + '_mslope' if (gp.mprior<0) else bname + '_mconst'
+        
+        if gp.bprior: bname = bname + '_bprior'
+        if gp.investigate == 'hernquist':
+            bname = bname+'_'+self.nstr1+'_'+self.nstr2+'_'+str(gp.nipol)
+        
+        if gp.sprior:    bname = bname + '_sprior'
+        if gp.uselike:   bname = bname + '_uselike'
+        if gp.constdens: bname = bname + '_constdens'
+        if gp.adderrors: bname = bname + '_errors'
+        if gp.rprior:    bname = bname + '_rprior'
+        if gp.quadratic: bname = bname + '_quad'
+        if gp.monotonic: bname = bname + '_mono'
+        return self.dir+bname+'/', bname
+
 
 
 
@@ -307,31 +334,36 @@ class Files:
 
 
     def get_outfiles(self):
-        outplot = self.dir + self.outname + '.png'
-        outdat  = self.dir + self.outname + '.dat'
-        outtxt  = self.dir + self.outname + '.txt'
+        pre = self.outdir + self.outname
+        outplot = pre + '.png'
+        outdat  = pre + '.dat'
+        outtxt  = pre + '.txt'
         return outplot, outdat, outtxt
 
     def get_outpng(self):
-        return self.dir + self.outname + '.png'
+        pre = self.outdir + self.outname
+        return pre + '.png'
 
     def get_outdat(self):
-        return self.dir + self.outname + '.dat'
+        pre = self.outdir + self.outname 
+        return pre + '.dat'
 
     def get_outtxt(self):
-        return self.dir + self.outname + '.txt'
+        pre = self.outdir + self.outname 
+        return pre + '.txt'
 
 
 
     def get_outprofs(self):
+        pre = self.outdir + self.outname
         profnus = []; profdeltas = []; profsigs = []
-        profM = self.dir + self.outname+'.profM'
-        profdens = self.dir + self.outname + '.profdens'
-        profnus.append(self.dir + self.outname+'.profnu1')
-        profdeltas.append(self.dir + self.outname+'.profdelta1')
-        profsigs.append(self.dir + self.outname+'.profsig1')
+        profM = pre +'.profM'
+        profdens = pre + '.profdens'
+        profnus.append( pre + '.profnu1')
+        profdeltas.append( pre + '.profdelta1')
+        profsigs.append( pre + '.profsig1')
         if gp.pops == 2:
-            profnus.append(self.dir + self.outname+'.profnu2')
-            profdeltas.append(self.dir + self.outname+'.profdelta2')
-            profsigs.append(self.dir + self.outname+'.profsig2')
+            profnus.append( pre + '.profnu2')
+            profdeltas.append( pre + '.profdelta2')
+            profsigs.append( pre + '.profsig2')
         return profM, profdens, profnus, profdeltas, profsigs

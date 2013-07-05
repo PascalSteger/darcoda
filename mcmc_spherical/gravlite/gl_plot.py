@@ -152,11 +152,14 @@ def plot_data():
 
         if gp.model:
             x = gp.ipol.Mx_2D[:]                        # [pc]
-            rhodm, rhostar1, rhostar2 = rhowalker_3D(x) # 3*[munit/pc^3]
-            rhotot = rhodm + rhostar1 + rhostar2
-            axs[2][0].plot(x, rhotot, c='blue', lw=4)
+            if gp.investigate == 'walker':
+                rhodm, rhostar1, rhostar2 = rhowalker_3D(x) # 3*[munit/pc^3]
+                rhotot = rhodm + rhostar1 + rhostar2
+                axs[2][0].plot(x, (rhostar1+rhostar2), c='blue', lw=3, ls='-.')
+            elif gp.investigate == 'triaxial':
+                rhotot = rhotriax(x)
+            axs[2][0].plot(x, rhotot, c='blue', lw=4, ls='-.')
             setlims(axs[2][0],[0,max(x)],[min(rhotot),max(rhotot)])
-            axs[2][0].plot(x, (rhostar1+rhostar2), c='blue', lw=3, ls='-.')
 
         if gp.analytic:
             x = gp.xipol[:]                        # [pc]
@@ -255,7 +258,7 @@ def plot_first_guess():
     # axs[2][1].xaxis.set_major_locator(MaxNLocator(4))
     if (gp.pops == 2) : axs[2][1].plot(xpl,delta2,color='orange')
     plt.draw()
-    save_plot()
+    # save_plot() # not saving, as no folder available during initphase
     return
 
 
@@ -302,7 +305,7 @@ def update_plot():
     if gp.lograd: axs[0][0].set_xscale('log')
     plt.draw()
     plt.savefig('first.png')
-    save_plot()
+    if not gp.initphase: save_plot()
     return
 
 

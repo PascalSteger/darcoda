@@ -19,6 +19,7 @@ from gl_class_files import *
 
 showplots = True
 n = 30
+nbins = gp.nipol
 
 
 if gp.investigate == 'hernquist':
@@ -99,7 +100,7 @@ if gp.investigate == 'hernquist':
     filesig          = dir+'velocitydispersionlos/unit_hern_%i_veldisplos.txt' %(sim)
 
 #################### files for Walker's mock data ####################
-else: #if gp.investigate == 'walker': # or just want to try some other generic pymc stuff:
+elif gp.investigate == 'walker': # or just want to try some other generic pymc stuff:
   # prior:  analysis is done out to rprior*r_core (half-light radius)
   # if < 0: include all particles, r=max(x**2+y**2)
 
@@ -117,7 +118,6 @@ else: #if gp.investigate == 'walker': # or just want to try some other generic p
   dir = fi.dir
   fil = dir+'mem2'
   
-  nbins = gp.nipol
   ncomp = 4  # 3 possibilities: 0 (both), tracer pop 1, tracer pop 2, 3: foreground contamination
              # a value of 4 means: do analysis for all of them
   
@@ -126,45 +126,56 @@ else: #if gp.investigate == 'walker': # or just want to try some other generic p
   fileposcartesian = dir+'simulation/pos.txt'
   filevelcartesian = dir+'simulation/vel_my.txt'
 
-  import os; import os.path
+elif gp.investigate == 'triaxial':
+  
+  fi = Files()
+  dir = fi.dir
+  fil = dir + fi.set_triaxial()+'.dat'
+  r_DM = 1500.                          # [pc]
+  rprior = 3.                   # [r_DM?]
+  rerror = 0.05                 # hm.. must be absolute error, [rcore]
+  vrerror= 2.                   # [km/s]
 
-  def newdir(bname):
-    if not os.path.exists(bname):
-      os.makedirs(bname)
-    return
 
-  def get_com_file(n):
-    return dir+'centeredpos_%i.txt' %(n)
+import os; import os.path
 
-  def get_com_png(n):
-    return dir+'centeredpos_%i.png' %(n)
+def newdir(bname):
+  if not os.path.exists(bname):
+    os.makedirs(bname)
+  return
 
-  def get_params_file(n):
-    return dir+'scale_%i.txt' %(n)
+def get_com_file(n):
+  return dir+'centeredpos_%i.txt' %(n)
 
-  def get_ntracer_file(n):
-    return dir+'ntracer_%i.txt' %(n)
+def get_com_png(n):
+  return dir+'centeredpos_%i.png' %(n)
 
-  def get_pos_sphere_file(n):
-    return dir+'sphericalpos_%i.txt' %(n)
+def get_params_file(n):
+  return dir+'scale_%i.txt' %(n)
 
-  def get_vel_sphere_file(n):
-    return dir+'sphericalvel_%i.txt' %(n)
+def get_ntracer_file(n):
+  return dir+'ntracer_%i.txt' %(n)
 
-  def get_enc_mass_file(n):
-    newdir(dir+'enclosedmass/')
-    return dir+'enclosedmass/enclosedmass_%i.txt' %(n)
+def get_pos_sphere_file(n):
+  return dir+'sphericalpos_%i.txt' %(n)
 
-  def get_dens_file(n):
-    newdir(dir+'nu/')
-    return dir+'nu/nunotnorm_%i.txt' %(n)
+def get_vel_sphere_file(n):
+  return dir+'sphericalvel_%i.txt' %(n)
 
-  def get_dens_png(n):
-    return dir+'nu/nunotnorm_%i.png' %(n)
+def get_enc_mass_file(n):
+  newdir(dir+'enclosedmass/')
+  return dir+'enclosedmass/enclosedmass_%i.txt' %(n)
 
-  def get_siglos_file(n):
-    newdir(dir+'siglos/')
-    return dir+'siglos/siglos_%i.txt' %(n)
+def get_dens_file(n):
+  newdir(dir+'nu/')
+  return dir+'nu/nunotnorm_%i.txt' %(n)
 
-  def get_siglos_png(n):
-    return dir+'siglos/siglos_%i.png' %(n)
+def get_dens_png(n):
+  return dir+'nu/nunotnorm_%i.png' %(n)
+
+def get_siglos_file(n):
+  newdir(dir+'siglos/')
+  return dir+'siglos/siglos_%i.txt' %(n)
+
+def get_siglos_png(n):
+  return dir+'siglos/siglos_%i.png' %(n)

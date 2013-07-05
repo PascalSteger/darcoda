@@ -83,21 +83,21 @@ def dens(xipol, denspars):              # [pc], [TODO]
     r0 = np.hstack([0,xipol])
     if gp.checksigma:
         return gp.ipol.densdat          # [TODO] in disc case
-    if not gp.poly:                     # for sure after init
+    if not gp.poly:
         if gp.denslog:
             return -np.cumsum((r0[1:]-r0[:-1])*10.**denspars) # TODO: sign
         else:
             return -np.cumsum((r0[1:]-r0[:-1])*denspars) # [TODO]
 
-    print 'TODO: check negativity (Kz<0)'
-    scale = gp.scaledens*max(xipol)     # [pc]
-
-    tmp = np.zeros(len(xipol))
-    for i in range(0,len(denspars)):
-        tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
-    # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
+    else:
+        scale = gp.scaledens*max(xipol)     # [pc]
+        tmp = np.zeros(len(xipol))
+        for i in range(0,len(denspars)):
+            tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
+            # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
     
-    dout = 10.**tmp if gp.denslog else tmp            # [Msun/pc^3]
+        dout = 10.**tmp if gp.denslog else tmp            # [Msun/pc^3]
+
     gh.checknan(dout)
     return dout                 # [msun/pc^3]
 

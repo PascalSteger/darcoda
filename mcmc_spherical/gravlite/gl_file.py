@@ -41,7 +41,6 @@ def bin_data():
 
 
 def get_data():
-
     gp.dat = Datafile()
     if gp.investigate == 'simple':
         import gl_disc_simple as gs
@@ -50,8 +49,8 @@ def get_data():
         import gl_disc_sim as gs
         gs.disc_sim()
     else: # for all dwarfs, read from files
-        if gp.investigate == 'walker':
-            for i in range(3):
+        if gp.investigate == 'walker' or gp.investigate == 'triaxial':
+            for i in range(gp.pops+1):
                 A = np.loadtxt(gp.files.get_scale_file(i), unpack=False, skiprows=1)
                 gp.rcore_2D.append(A[0])
                 gp.dens0rcore_2D.append(A[1])
@@ -185,9 +184,10 @@ def store_old_params(pars,chi2):
 
 def store_working_pars(n,pars,chi2,parstep):
     gp.init_configs.append([pars,chi2,parstep])
-    twelve = open( gp.files.get_outtxt(), 'a')
-    print>>twelve, n, chi2
-    twelve.close()
+    if not gp.initphase:
+        twelve = open( gp.files.get_outtxt(), 'a')
+        print>>twelve, n, chi2
+        twelve.close()
     return gp.init_configs
 
 

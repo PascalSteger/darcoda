@@ -109,6 +109,24 @@ def rhohern(r0, rscale, rho0, alpha, beta, gamma): # 2*[pc], [munit/pc^3], 3*[1]
 
 
 
+def rhotriax(rad):
+    alpha = 1.
+    beta = 4.
+    rs = 1500.                          # [pc]
+    if gp.triaxcase == 0:               # core
+        gamma = 0.23
+        rhos  = 1.177E-1                # [Msun/pc^3]
+    elif gp.triaxcase == 1:             # cusp
+        gamma = 1.
+        rhos  = 5.522E-2                # [Msun/pc^3]
+
+    rho = rhos
+    rho /= (rad/rs)**gamma
+    rho /= (1+(rad/rs)**(1/alpha))**(alpha*(beta-gamma))
+    return rho
+
+
+
 
 
 def rhowalker_3D(rad):                                          # [pc]
@@ -203,6 +221,16 @@ def rhowalkertot_2D(rad):                      # [pc]
 #     return beta_star1, beta_star2
 
 # this gives velocity anisotropy from model
+
+
+def betatriax(rad):
+    '''calculate velocity anisotropy for Dehnen-Wilkinson triaxial model'''
+    eta = 0.5
+    rsbeta = 810.                       # [pc]
+    beta0 = 0.
+    betainf = 0.5
+    beta = (rsbeta**eta*beta0+rad**eta*betainf)/(rad**eta+rsbeta**eta)
+    return beta
 
 
 

@@ -13,21 +13,24 @@ logging.basicConfig(stream=sys.stderr, level=loglevel)
 LOG = logging.getLogger(__name__)
 
 
-machine = 'darkside'
+machine = 'darkside'                  # machine: 'local' or 'darkside'
 if not os.path.exists("/home/ast/read"):
-    machine = 'local'        # machine: 'local' or 'darkside'
+    machine = 'local'
 
 
 
 
-investigate  = 'walker'  # determine which data set to work on
-                                        # 'simple': set up simple model for disc
-                                        # 'sim': read in disc simulation
-                                        # 'checkdwarf': checksigma for analytic dwarf, sig_LOS
-                                        # 'hernquist': check simple Hernquist prof. from simwiki
-                                        # 'walker': check with full obs. cont. data from Walker
-                                        # 'fornax': real data from Fornax dwarf galaxy
+investigate  = 'triaxial'  # determine which data set to work on
+# 'simple': set up simple model for disc
+# 'sim': read in disc simulation
+# 'checkdwarf': checksigma for analytic dwarf, sig_LOS
+# 'hernquist': check simple Hernquist prof. from simwiki
+# 'walker': check with full obs. cont. data from Walker
+# 'fornax': real data from Fornax dwarf galaxy
+# 'triaxial': mock data from Mark Wilkinson and Walter Dehnen
 
+triaxcase  = 1           # choose different triax  models (0: core, 1: cusp)
+projcase   = 4
 walkercase = 2           # choose different Walker models (0-2 so far)
 
 # Set number of tracer stars to look at in Hernquist profile
@@ -47,7 +50,7 @@ G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
 pc  = 3.08567758e16                     # [m]
 msun= 1.981e30                          # [kg]
 km  = 1000.                             # [m]
-G1  = G1*msun/km**2/pc                  # [pc msun^-1 km^2 s^-2]
+G1  = G1*msun/km**2/pc                  # [pc msun^-1 (km/s)^2]
 
 global geom
 if investigate == 'sim' or investigate == 'simple':
@@ -66,7 +69,7 @@ if investigate == 'sim' or investigate == 'simple':
     patch = '0' # or 180 or ... for disc_sim case
     ascale = 1000.
     Mscale = 1.e6
-else:
+else:                                   # for walker, fornax, triaxial
     geom = 'sphere'
     Mscale = 1.e6                           # [Msun], scale for dimensionless eqs
                                             # from Hernquist, Baes&Dejonghe
@@ -90,7 +93,7 @@ analytic   = False         # calc sig_los from analytic Hernquist profiles for n
 if investigate != 'hernquist': analytic = False
 
 model      = True # for Walker mock data: plot model
-if investigate != 'walker': model = False
+if investigate != 'walker' and investigate!= 'triaxial': model = False
 
 
 ########## density options
@@ -109,7 +112,7 @@ even       = 'avg'        # for simps integration (everywhere): 'avg', 'first', 
 
 
 
-pops      = 2
+pops      = 1
 if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is set
 
 
@@ -225,19 +228,19 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 50. if (pops == 1) else 100.  # more information in two tracer pops, but more errors as well
-endcount = 100                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+chi2tol = 200. if (pops == 1) else 100.  # more information in two tracer pops, but more errors as well
+endcount = 30                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
-accrejtollow  = 0.24            # Acceptance/rejection rate
-accrejtolhigh = 0.26            #
+accrejtollow  = 0.20            # Acceptance/rejection rate
+accrejtolhigh = 0.30            #
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.95 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.
 scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
-stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
+stepcorr= 1.02   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
 initphase = True # initialisation phase flag, first True, if over: False
@@ -249,7 +252,7 @@ endgame  = False # Ending flag
 
 rcore=[]; dens0rcore=[]; dens0pc=[]; totmass=[]; maxvlos=[] # unit system
 rcore_2D=[];dens0rcore_2D=[];dens0pc_2D=[]
-if investigate != 'walker' and investiage != 'triaxial':
+if investigate != 'walker' and investigate != 'triaxial':
     # TODO: adapt to physical units
     # each is set for all components and first component by default
     rcore.append(1.);      rcore_2D.append(1.)
