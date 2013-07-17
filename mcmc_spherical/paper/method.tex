@@ -68,7 +68,7 @@ $\siglos$ can be measured, which in our case is given by
 
 where $\Sigma(R)$ denotes the surface mass density at radius $R$.
 
-In the following, we present a fully non-parametric method for the
+In the following, we present a non-parametric method for the
 solution of equation \ref{eq:LOS} for the total gravitating mass
 density $\rho(r)$, given observed $\nu(r)$ and $\siglos(r)$, where $r$
 denotes the projected two-dimensional radius from the center of mass
@@ -79,19 +79,23 @@ density via
 M(<r) = \int_0^r \rho(r) r^2 dr,
 \end{equation}
 
-which shows up in eq. \ref{eq:main}. In principle, the above-mentioned
-method can be generalized to investigate alternative gravity models,
-if the acceleration $GM(r)/r^2$ is replaced with the respective form
-of $-\partial\Phi/\partial r$.
+which shows up in eq. \ref{eq:main}. In principle, the method can be
+generalized to investigate alternative gravity models, if the
+acceleration $GM(r)/r^2$ is replaced with the respective form of
+$-\partial\Phi/\partial r$.
 
 The degeneracy between mass $M$ and velocity anisotropy $\beta$ is
 accounted for: For any non-isothermal system, we let vary the
 anisotropy $\beta(r)$ as well. We checked that in the case of a simple
 Hernquist profile, $\beta(r)\approx0$ is retrieved correctly.
 
-The main idea is to let an Monte Carlo Markov Chain sample the
-parameter space $[\nu_i, \siglosi, \rho]$ for distinct populations
-$i=1...N$ of stellar or gaseous tracers.
+The main idea is to let an Monte Carlo Markov Chain marginalize over
+the parameter space $[\nu_i, \siglosi, \rho]$ for distinct populations
+$i=1...N$ of stellar or gaseous tracers. There are a large number of
+parameters from the representation of the radial profiles of each of
+those in $N_{bin}$ bins, with only very few constraints from physical
+priors. The functional form of the profiles is not predescribed. This
+is what we call {\it non-parametric}.
 
 Two different approaches are taken into account for the sampling of
 densities:
@@ -128,21 +132,21 @@ $\rho(r)$, we sample logarithmically,
 \nu_i^{(n+1)}(r) = 10^{\tilde{\nu}_i^{(n+1)}},\qquad \tilde{\nu}_i^{(n+1)}(r) = \tilde{\nu}_i^{(n)}(r) + \delta\tilde{\nu}_i(r)
 \end{equation}
 
-In a next step, $\siglosi(r)$ is calculated from $\nu_i$, $\rho(r)$, and
-$\beta_i(r)$ according eq. \ref{eq:LOS}. This is done numerically,
-involving three integrations, which are performed with polynomial extrapolations
-of the integrands up to infinity, s.t. contributions from
-$\rho(r>r_{max}$ hinders an artificial falloff of
-$\siglos$. The additional parameter of the slope is calculated from the second 
-half of all bins.
+In a next step, $\siglosi(r)$ is calculated from $\nu_i$, $\rho(r)$,
+and $\beta_i(r)$ according eq. \ref{eq:LOS}. This is done numerically,
+involving three integrations, which are performed with polynomial
+extrapolations of the integrands up to infinity, s.t. contributions
+from $\rho(r>r_{max})$ hinder an artificial falloff of $\siglos$. The
+additional parameter of the slope is calculated from the second half
+of all bins.
 
-The last step involves comparison of the projected $\nu_i(r)$, $\sigma_i(r)$ and
-$beta_i(r)$, if available, to the data for the tracer populations to
-get an error function
+The last step involves comparison of the projected $\nu_i(r)$,
+$\sigma_i(r)$ and $beta_i(r)$, if available, to the data for the
+tracer populations to get an error function
 
 \begin{eqnarray}
 \chi^2 &=& \sum_{i=1}^N \chi_{\nu,i}^2 + \chi_{\sigma,i}^2 + \chi_{\beta,i}^2\\
-\chi_{\nu,i}^2 &=& \sum_{j=1}^{N_{bin}} \left(\frac{\nu_{i,\text{data}}(r_j)-\nu_{i,\text{model}}(r_j)}{\epsilon_\nu(r_j)}\right)^2
+\chi_{\nu,i}^2 &=& \sum_{j=1}^{N_{bin}} \left(\frac{\nu_{i,\text{data}}(r_j)-\nu_{i,\text{model}}(r_j)}{\epsilon_\nu(r_j)}\right)^2.
 \end{eqnarray}
 
 and accordingly for $\chi_{\sigma,i}^2$ and $\chi_{\beta,i}^2$. In
@@ -156,14 +160,34 @@ The model for iteration $n+1$ is accepted if its close or below the previous ite
 
 for a uniform random $\varepsilon$. Otherwise the model is rejected.
 
+\subsubsection{Initialization phase and step sizes}
+
 The stepsize can vary for each bin, and is changed during an
 initialization phase. If the acceptance rate of models lies between
-0.24 and 0.26, it is decreased by factors of 1.01, else, it is
-increased by the same amount. After a burn-in phase of several 100
-accepted models with $\chi^2<\chi_{end}^2 = 70$, the stepsize is
-frozen and the MCMC starts storing the accepted models for further
-statistical analysis. A default $10^5$ models are taken, where nothing
-else is indicated.
+0.24 and 0.26, it is decreased by factor of 1.01, else, it is
+increased by the same amount. 
+\TODO{reference why 0.25 is best acceptance rate}
+
+To ensure fast convergence in the first few iterations, we employ a
+polynomial representation of the overall density $\rho(r)$,
+
+\begin{eqnarray}
+\rho(r)&=&\sum_{i=0}^{N-1} a_i\cdot\left(\frac{r_s-r}{r_s}\right)^i,\\
+a_i&=&\{a_0,(r_s^i/i^\gamma)_{i=1,N-1}\}
+\end{eqnarray}
+
+with scale radius $r_s=1.\cdot \max(r)$, an offset of $a_o=-2.5$ and a
+suppression of higher order terms by a factor $\gamma=1.1$. This
+specific setup yields a working approximation of the density. Other
+combinations of parameters were tried and shown to yield convergence
+as well. The parameters $a_i$ are changed by the MCMC during the
+burn-in phase, whereby any higher order polynomial is allowed to be
+enhanced if necessary.
+
+After a burn-in phase of several 100 accepted models with
+$\chi^2<\chi_{end}^2 = 70$, the stepsize is frozen and the MCMC starts
+storing the accepted models for further statistical analysis. A
+default $10^5$ models are taken, where nothing else is indicated.
 
 
 
