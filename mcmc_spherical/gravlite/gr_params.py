@@ -38,7 +38,7 @@ if gp.investigate == 'hernquist':
   rmin = 0. * gp.ascale; rmax = 3.*gp.ascale # [pc]
     
   rerror  = 0.1*(rmax-rmin)/bins         # distance error
-  vrerror = 0.                            # 0.01 # velocity error. only raises sig_los!
+  vrerror = 1.0                            # 0.01 # velocity error. only raises sig_los!
 
   nit = 1000                                # set number of iterations
   procs = 16                              # number of processes for parallel execution
@@ -121,7 +121,7 @@ elif gp.investigate == 'walker': # or just want to try some other generic pymc s
   ncomp = 4  # 3 possibilities: 0 (both), tracer pop 1, tracer pop 2, 3: foreground contamination
              # a value of 4 means: do analysis for all of them
   
-  pmsplit = 0.1 # minimum probability of membership required for consideration for analysis
+  pmsplit = 0.9 # minimum probability of membership required for consideration for analysis
   # use 0 if grw_* should be called from within gravlite, such that all member classes are found
   fileposcartesian = dir+'simulation/pos.txt'
   filevelcartesian = dir+'simulation/vel_my.txt'

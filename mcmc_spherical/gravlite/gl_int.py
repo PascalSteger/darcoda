@@ -219,7 +219,7 @@ def int_surfden(r0, nu):           # [lunit], [munit/lunit^3]
         xipol = xint[0]+np.arange(4)*(xint[1]-xint[0])/4.
         nuipol= nu[i]+np.arange(4)*(nu[i+1]-nu[i])/4.
         yipol = xipol * nuipol/np.sqrt(xipol**2-r0[i]**2)
-        yint[0] = gh.ipol(xipol[1:3],yipol[1:3],xint[0])
+        yint[0] = gh.ipol(xipol[1:3],yipol[1:3],xint[0])*0.5
 
         # then fit polynomial on second half of radii
         ml = max(len(xint)/2,2)

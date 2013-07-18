@@ -28,7 +28,7 @@ investigate  = 'walker'  # determine which data set to work on
                                         # 'walker': check with full obs. cont. data from Walker
                                         # 'fornax': real data from Fornax dwarf galaxy
 
-walkercase = 2           # choose different Walker models (0-2 so far)
+walkercase = 1           # choose different Walker models (0-2 so far)
 
 # Set number of tracer stars to look at in Hernquist profile
 # take all particles                       # case 0
@@ -38,7 +38,7 @@ walkercase = 2           # choose different Walker models (0-2 so far)
 cas = 2
 getnewdata = True       # get new data computed from observations before burn-in
 metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
-testplot_read = True    # show plots for readout of data as well before init?
+testplot_read = False    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
 consttr = False           # set radial bin by constant number of tracer particles
 
@@ -94,12 +94,12 @@ if investigate != 'walker': model = False
 
 
 ########## density options
-poly       = True              # use polynomial representation of dens during init
+poly       = True  # use polynomial representation of dens during init
 if analytic: poly = False
 
-densstart = -2.5              # -2.6 for Hernquist, -2.3979 for Walker
+densstart = -2.0              # -2.6 for Hernquist, -2.3 for Walker cusp, -1.8 for core
 scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
-scalepower = 1.1                  # 0.95 for Hernquist, 1.5 for Walker
+scalepower = 2.0                  # 0.95 for Hernquist, 1.3 for Walker cusp, 1.8 for core
 
 
 ########## integration options
@@ -208,7 +208,7 @@ xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of 
 
 
 ########## MCMC parameters
-niter = 100000                  # Maximum number of iterations
+niter = 1000000                  # Maximum number of iterations
 # TODO: class for chi2
 chi2   = 1e300                 # initial chi2 [large]
 chi2t1 = 1e300;    chi2t2 = 1e300;    chi2t = 1e300
@@ -231,13 +231,13 @@ endcount = 100                  # 300 accepted models which chi2<chi2tol means i
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
-accrejtollow  = 0.24            # Acceptance/rejection rate
-accrejtolhigh = 0.26            #
+accrejtollow  = 0.22            # Acceptance/rejection rate
+accrejtolhigh = 0.28            #
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.95 # mult. stepsize by this amount if too low fnewoverf 2.5
-farover = 10.      # 2 times chi2 is too high after init phase 1./2.
+farover = 8.      # 8 times chi2 is too high after init phase 1./2.
 scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
-stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
+stepcorr= 1.02   # factor to adapt stepsize if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
 initphase = True # initialisation phase flag, first True, if over: False

@@ -81,7 +81,6 @@ def sig_los_anf(r0, a=gp.ascale, M=gp.Mscale):   # 2*[pc], [Msun]
 def walker_delta(pop):
     # TODO: check call of walker_delta, if not used in case investigate != walker: delete 'if'
     if gp.investigate == 'walker':
-        from gl_analytic import betawalker
         x = gp.xipol
         delta_r   = betawalker(x)[pop-1]
         # delta_r = gp.delta0

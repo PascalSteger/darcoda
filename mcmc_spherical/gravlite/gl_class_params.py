@@ -226,6 +226,7 @@ class Params:
 
 
     def scale_prop_chi2(self):
+        '''scale self depending on which chi2 is higher'''
         if gp.pops == 1:
             # depending on nu parametrization: only
             self.nu1    *= gp.chi2t_nu1/gp.chi2t

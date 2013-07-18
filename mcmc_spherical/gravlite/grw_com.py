@@ -29,7 +29,7 @@ def com_shrinkcircle(x,y,pm):
     dr = np.sqrt(com_x**2+com_y**2)
     r0 = np.sqrt(x**2+y**2)
 
-    nit = 0; minlen = len(x)*.66666
+    nit = 0; minlen = len(x)*0.666666666
     while nit < 200 and len(x) > minlen:
         nit += 1
         print 'iteration ',nit,' with ',len(x), ' particles has overall COM of: ',bucom_x,bucom_y,' with remaining offset ',dr
@@ -50,7 +50,7 @@ def com_shrinkcircle(x,y,pm):
         dr = np.sqrt(com_x**2+com_y**2)
 
         # add to bucom
-        bucom_x -= com_x; bucom_y -= com_y
+        bucom_x += com_x; bucom_y += com_y
 
         # recenter particles
         x -= com_x; y -= com_y

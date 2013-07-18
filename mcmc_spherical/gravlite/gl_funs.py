@@ -35,11 +35,12 @@ def get_new_parameters():
     ranarr.scale_prop_chi2()    # change proportional to error on chi2
     
     ranarr.mul(gp.parstep)
-    ranarr.add(gp.pars)         # TODO: check parst is NOT needed here
+    ranarr.add(gp.pars)
     gp.parst.assign(ranarr)
 
-    if gp.deltaprior:
-        if gp.investigate == 'walker':
+    # keep deltaprior during init phase, if set:
+    if gp.deltaprior and gp.initphase:  # TODO: rename
+        if gp.investigate == 'walker':           
             delta1,delta2 = betawalker(gp.xipol) # [1]
             gp.parst.set_delta([phys.invdelta(delta1), phys.invdelta(delta2)])
         else:
@@ -391,7 +392,7 @@ def end_initphase():
     if not gp.initphase: return
     if not gp.endgame: return
 
-    if gp.chi2 < gp.chi2tol:
+    if gp.chi2 < gp.chi2tol and gp.chi2t_nu < gp.chi2t_sig:
         gp.endcount -= 1;
         print 'gp.endcount = ',gp.endcount
     
@@ -402,22 +403,26 @@ def end_initphase():
     print( '*** initialization phase over ***')
     print( '*********************************')
     gp.initphase = False
-    
     if gp.denslog:
         # use parstep if possible
-        gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
-                              np.log10(phys.densdefault(gp.pars.dens)))
-        gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
-        gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
-        
+        # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
+        #                       np.log10(phys.densdefault(gp.pars.dens)))
         # or get 10% step
         # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
         #                       np.log10(phys.densdefault(gp.pars.dens)))
+        mul = gp.parstep.dens[0]/gp.pars.dens[0]
+        # gp.parstep.dens = mul*np.log10(phys.densdefault(gp.pars.dens)) # not proportional
+        # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens))*mul) # prop, wrong for arg = 0
+        gp.parstep.dens = np.ones(gp.nipol)*abs(np.log10(phys.densdefault(gp.pars.dens)[-1])*mul) # constant stepsize over all xipol, from highest contrib from last point, same sign everywhere (even if first point is log10>0.)
+        
+        gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
+        gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
+        
     else:
-        gp.pars.dens    = phys.densdefault(gp.pars.dens)
-        gp.parst.dens   = phys.densdefault(gp.parst.dens)
         gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
                               phys.densdefault(gp.pars.dens))
+        gp.pars.dens    = phys.densdefault(gp.pars.dens)
+        gp.parst.dens   = phys.densdefault(gp.parst.dens)
         
     # gp.parst.dens = np.array(phys.calculate_dens(gp.xipol,M_anf(gp.xipol)))
     # ^-- cheat: start off, from near analytic 1 pop result

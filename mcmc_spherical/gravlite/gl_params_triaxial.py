@@ -211,7 +211,7 @@ xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of 
 
 
 ########## MCMC parameters
-niter = 100000                  # Maximum number of iterations
+niter = 1000000                  # Maximum number of iterations
 # TODO: class for chi2
 chi2   = 1e300                 # initial chi2 [large]
 chi2t1 = 1e300;    chi2t2 = 1e300;    chi2t = 1e300
@@ -229,7 +229,7 @@ ratio   = 0.                   #
 account1= 0.                   # 
 
 chi2tol = 200. if (pops == 1) else 100.  # more information in two tracer pops, but more errors as well
-endcount = 30                  # 300 accepted models which chi2<chi2tol means initialization phase is over
+endcount = 1000                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
 rejcount = 1.                   # Rejection count

@@ -57,15 +57,13 @@ def calculate_dens(z,M):                  # [TODO], [TODO]
 
 
 def delta(dpars):
-    # 'calculate cumulative sum for representation of delta'
+    # other possibility: calculate cumulative sum for representation of delta
     return dpars
 
 
     
 def densdefault(denspars):
     return dens(gp.xipol, denspars)
-
-
 
 
 

@@ -65,6 +65,14 @@ def run():
     print gpr.fil
     x0,y0,vlos = np.genfromtxt(gpr.fil, skiprows=0, unpack =  True,
                                usecols = (0,1,5))
+
+    # use only 3000 random particles:
+    pdb.set_trace()
+    ind = np.arange(len(x0))
+    np.random.shuffle(ind)
+    ind = ind[:3000]
+    x0 = x0[ind];    y0 = y0[ind];    vlos = vlos[ind]
+    
     x0 *= 1000.                         # [pc]
     y0 *= 1000.                         # [pc]
     

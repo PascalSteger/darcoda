@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-
-
 import numpy as np
 from pylab import *
 import pdb
@@ -13,17 +11,14 @@ from matplotlib.backends.backend_pdf import PdfPages
 # Walker data sets
 base = '/home/psteger/sci/dwarf_data/'
 base = '/home/ast/read/dark/dwarf_data/'
-
 # ca = 0:
 dir = base + 'data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
 dir = base + 'data_walker/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
-
-
-
 # ca = 2:
-dir = base + 'data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
-# ca = 1:
 dir = base + 'data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
+# ca = 1:
+dir = base + 'data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
+
 
 # nampart = '20130425120348_cprior_mslope_rprior' # ca2 working fine for 1000 iterations
 # nampart = '20130426090433_cprior_mslope_rprior' # ca2 too high mass at high radii, 50k
@@ -39,9 +34,19 @@ dir = base + 'data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d
 # nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior'
 # nampart = '20130426133539_cprior_mslope_rprior'
 # nampart = '20130702113536_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new cusp
-nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey largest
-nampart = '20130621121716_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey 2nd
+#nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey largest
+#nampart = '20130621121716_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey 2nd
+#nampart = '20130717081725_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # first mio cusp
+#nampart = '20130717085139_case_1_10000_0_cprior_nulog_denslog_mslope_rprior'
 
+#nampart = '20130717164820_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # cusp 2nd case
+#nampart = '20130717164748_case_1_10000_0_cprior_nulog_denslog_mslope_rprior' # core 2nd case
+nampart = '20130718090029_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new stepsize, cusp
+nampart = '20130718103257_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # twiddle 1
+nampart = '20130718120843_case_2_10000_0_cprior_nulog_denslog_delta_mslope_rprior' # fast conv
+nampart = '20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # finally fine
+
+nampart = '20130718133920_case_1_10000_0_cprior_nulog_denslog_mslope_rprior' # finally core
 basename = dir + nampart + '/' + nampart
 
 
@@ -76,13 +81,14 @@ def show_plots():
 
 print 'input'
 print basename
-prof = 'dens' # M, dens, delta1
+prof = 'dens' # dens, M, delta1, delta2
 M = np.loadtxt(basename+'.prof'+prof,skiprows=0,unpack=False)
 
 radii = M[0]
 radii = radii
 profs = M[1:]                           # all saved profiles
-#profs = M[-2000:] # only the last 2000 profiles
+#profs = M[-500:]
+#profs = M[-10000::10] # only the last 1e5 profiles, thinned by 10
 
 Mprofbins = np.transpose(profs)
 radii = radii[:-1]
@@ -131,7 +137,7 @@ def plotGraph():
     elif prof == 'dens':
         plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=2)
     # xscale('log')
-    if prof != 'delta1':
+    if prof != 'delta1' and prof != 'delta2':
         yscale('log')
     xlim([min(radsc),max(radsc)])
     ylim([min(M95lo[sel]*Msc),max(M95hi[sel]*Msc)])

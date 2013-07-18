@@ -40,7 +40,7 @@ def mcmc_init():
     # + gp.ipol.nuerr1    # [munit/pc^3], /20 earlier on, was too high
     if gp.pops == 2:
         nupars2  = npr.normal(gp.ipol.nudat2,gp.ipol.nuerr2/2,gp.nipol)
-        nuparstep2 = gp.ipol.nuerr1/2. # nupars2/20. # [munit/pc^3]
+        nuparstep2 = gp.ipol.nuerr1 # nupars2/20. # [munit/pc^3]
         if gp.nulog:
             nupars2 = np.log10(nupars2)
             nuparstep2 = nupars2*0.+nupars2[0]/20.
@@ -49,27 +49,27 @@ def mcmc_init():
     ### delta
     if gp.geom == 'sphere':
         deltapars1 = np.zeros(gp.nipol)
-        deltaparstep1 = deltapars1 + 0.03
+        deltaparstep1 = deltapars1 + 0.02
         mdelta1 = []; mdelta2 = []
         if gp.model:
-            print 'TODO: disable model for delta!'
+            print 'TODO: disable deltaprior for delta!'
             if gp.investigate == 'walker':
                 mdelta1, mdelta2 = betawalker(gp.xipol)
             elif gp.investigate == 'triaxial':
                 mdelta1 = betatriax(gp.xipol)
             deltapars1 = phys.invdelta(mdelta1)
-            deltaparstep1 = deltapars1*0. + 0.03
-            if gp.deltaprior:
-                deltaparstep1 = np.zeros(gp.nipol)
+            deltaparstep1 = deltapars1*0. + 0.02
+            # if gp.deltaprior:   # TODO: rename
+            #     deltaparstep1 = np.zeros(gp.nipol)
 
         if gp.pops == 2:
             deltapars2 = np.zeros(gp.nipol)
-            deltaparstep2 = deltapars2 + 0.03
+            deltaparstep2 = deltapars2 + 0.02
             if gp.model:
                 deltapars2 = phys.invdelta(mdelta2)
-                deltaparstep2 = deltapars2*0. + 0.03
-                if gp.deltaprior:
-                    deltaparstep2 = np.zeros(gp.nipol)
+                deltaparstep2 = deltapars2*0. + 0.02
+                # if gp.deltaprior:
+                #     deltaparstep2 = np.zeros(gp.nipol)
 
     elif gp.geom == 'disc':
         # set tilt to zero, first approximation
@@ -92,7 +92,7 @@ def mcmc_init():
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
 
-        densparstep = denspars/100. * (np.arange(1,gp.nipol+1))**0.5
+        densparstep = denspars/200. * (np.arange(1,gp.nipol+1))**1.5
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:

@@ -132,11 +132,11 @@ def write_outfile():
     arraydump(profM, M)
     arraydump(profdens, gp.dens_x) # [Msun/pc^3] in spherical case
     arraydump(profnus[0],   phys.nu(gp.pars.nu1))  # [Msun/pc^3]
-    arraydump(profdeltas[0], gp.pars.delta1)       # [1]
+    arraydump(profdeltas[0], phys.delta(gp.pars.delta1))       # [1]
     arraydump(profsigs[0],  gp.sig1_x)             # [km/s]
     if gp.pops == 2:
         arraydump(profnus[1],   phys.nu(gp.pars.nu2)) # [Msun/pc^3]
-        arraydump(profdeltas[1], gp.pars.delta2)      # [1]
+        arraydump(profdeltas[1], phys.delta(gp.pars.delta2))      # [1]
         arraydump(profsigs[1],  gp.sig2_x)            # [km/s]
     return 0
 

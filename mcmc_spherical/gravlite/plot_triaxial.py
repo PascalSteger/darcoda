@@ -16,8 +16,9 @@ base = '/home/ast/read/dark/dwarf_data/'
 
 # case
 dir = base + 'data_triaxial/StarsInCuspI/'
-nampart = '20130705155757_cprior_nulog_denslog_mslope_rprior'
-
+nampart = '20130705155757_cprior_nulog_denslog_mslope_rprior' # first
+nampart = '20130717093510_cprior_nulog_denslog_mslope_rprior' # first Mio, with node
+nampart = '20130718123300_cprior_nulog_denslog_mslope_rprior' # 2nd Mio, node?
 basename = dir + nampart + '/' + nampart
 
 
@@ -57,9 +58,9 @@ M = np.loadtxt(basename+'.profdens',skiprows=0,unpack=False)
 
 radii = M[0]
 radii = radii
-profs = M[1:]
+profs = M[1::10]
 
-#profs = M[-2000:]
+#profs = M[-20000:]
 
 Mprofbins = np.transpose(profs)
 radii = radii[:-1]
