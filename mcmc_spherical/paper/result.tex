@@ -27,7 +27,7 @@ The anisotropy follows the functional form of \citet{Osipkov1979} and
 \end{equation}
 
 with scale radius $r_a$, turning over from nearly isotropic at $r\to
-0$ to radially isotropic at $r_*=r_a$.
+0$ to radially biased at $r_*=r_a$.
 
 Of these distributions, finite samplings are taken and converted to
 mock observational data including spectral indices, systemic
@@ -37,35 +37,44 @@ velocities, proper motions, binary motion.
 \subsection{Cusps and Cores}
 
 Applied on a profile with a core in the DM density profile, our method
-converges fast in the beginning, see fig. \ref{fig:cusp}.
+converges fast in the beginning and reproduces the density profile very well after 50000 iterations (fig. \ref{fig:cusp}).
 
 \begin{figure*}
 \begin{center}
 \hspace{-7mm}
-%\includegraphics[width=0.5\textwidth]{fig/1000its.pdf}
-\includegraphics[width=0.5\textwidth]{fig/recent_50k.pdf}
+\includegraphics[width=0.5\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_profdens.pdf}
 \caption{Reconstructed mass of a cusped model (red shows median,
-  shaded areas are 68 and 90 percentiles) for $10^4$ tracer particles,
+  shaded areas are 68 and 90 percentiles) for $(2800,4033)$ tracer particles,
   after 50000 iterations. The black dashed curve shows the underlying
   theoretical model.}
 \label{fig:cusp}
 \end{center}
 \end{figure*}
 
-If run for 50000 iterations, the profile in the right plot emerges,
-with broader errorbars and a slight mismatch above $r_{vir}=1000{\rm
-  pc}$.
+The retrieved models show a distribution with 90 percent certainty
+levels (light gray) that encompass the underlying theoretical model
+over all radii. For all but the most central bin, the underlying
+density profile lies even within $1\sigma$ (dark gray) of all models.
 
-The model is best constrained around $r=500$pc, which corresponds to
-the scale radius of both the stellar tracers.
+\TODO{d ln rho/d ln r, central density step, constant number of particles / bin}
 
-For a cored profile, we have a similar result, see fig. \ref{fig:core}.
+The errorbars around the scale radius of $1000$ pc of the dark matter
+cusp or the scale lengths of $500$ pc or $1000$ pc for the scale radii
+of the stellar components are not decreased, thus indicating that the
+relative values of the enclosed mass are not better constrained than
+at any other radius.
+
+
+
+
+
+\subsection{Cored Model}
+For a cored profile, we have a similar result, see fig. \ref{fig:core}. \TODO{rerun}
 
 \begin{figure*}
 \begin{center}
 \hspace{-7mm}
-%\includegraphics[width=0.5\textwidth]{fig/core_2k.pdf}
-\includegraphics[width=0.5\textwidth]{fig/core_30k.pdf}
+%\includegraphics[width=0.5\textwidth]{fig/.pdf}
 \caption{A cored profile: Reconstructed mass of the MCMC model (red
   shows median, shaded areas are 68 and 90 percentiles) for $10^4$
   tracer particles after 30000 iterations. The black dashed curve
@@ -76,3 +85,24 @@ For a cored profile, we have a similar result, see fig. \ref{fig:core}.
 
 Best restrictions are around $500$pc again, only this time a little
 too low.
+
+
+
+
+
+\subsection{Triaxial mock data}
+\TODO{motivation: triaxiality of observed dwarfs, effects from other mass modelling schemes}
+\TODO{description underlying model}
+
+\begin{figure*}
+\begin{center}
+\hspace{-7mm}
+\includegraphics[width=0.5\textwidth]{fig/20130718123300_cprior_nulog_denslog_mslope_rprior_profdens.pdf}
+\caption{Density profile of a triaxial mock dwarf, for which the line of sight is inclined with 45 degrees with respect to all axes.}
+\label{fig:triax}
+\end{center}
+\end{figure*}
+
+The retrieved density profile (fig. \ref{fig:triax}) is constantly overestimating the density.
+\TODO{reason, projection?}
+
