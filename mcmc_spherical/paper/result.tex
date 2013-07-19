@@ -92,17 +92,46 @@ too low.
 
 \subsection{Triaxial mock data}
 \TODO{motivation: triaxiality of observed dwarfs, effects from other mass modelling schemes}
-\TODO{description underlying model}
+
+The models were generated with a Made 2 Measure algorithm of \cite{Dehnen2009} and are tailored to follow a similar profile to the profiles specified above for the dwarf galaxies. They show a density profile of
+
+\begin{equation}
+\rho(r)=\frac{\rho_S}{\left(\frac{r}{r_S}\right)^\gamma\left(1+\left(\frac{r}{r_S}\right)^{1/\alpha}\right)^{\alpha(\beta-\gamma)}}
+\end{equation}
+
+with radius $r$, scale radius $r_S=1.5\kpc$, $\alpha=1$,
+$\beta=4$. For the cusped profiles we have an inner logarithmic slope
+of $-\gamma=-1$, scale density $\rho_S=5.522\cdot 10^7M_\odot/\kpc^3$,
+and $M_{\tot}=1.171\cdot10^9M_\odot$, while for the cored one we have
+$\gamma=0.23$, $\rho_S=1.177\cdot10^8M_\odot$,
+$M_{\tot}=1.802\cdot10^9M_\odot$. The axis ratios are $b/a=0.8$ and
+$c/a=0.6$. The stars have negligible mass and follow the same
+functional form in the density profile as dark matter, with
+$\alpha=0.34, \beta=5.92, \gamma=0.23, r_S=0.81\kpc$.
+
+The velocity anisotropy of the stellar part is calculated via
+
+\begin{equation}
+\beta(r)=\frac{r_{s,\beta}^\eta \beta_0+r^\eta \beta_\infty}{r^\eta+r_{s,\beta}^\eta},
+\end{equation}
+
+with $r_{s,\beta}=0.81\kpc$, $\beta_0=0$, $\beta_\infty=0.5$ and
+$\eta=0.5$, going from isotropic to radially anisotropic with
+increasing radius.
 
 \begin{figure*}
 \begin{center}
 \hspace{-7mm}
 \includegraphics[width=0.5\textwidth]{fig/20130718123300_cprior_nulog_denslog_mslope_rprior_profdens.pdf}
-\caption{Density profile of a triaxial mock dwarf, for which the line of sight is inclined with 45 degrees with respect to all axes.}
+\caption{Density profile of a triaxial mock dwarf, for which the line
+  of sight is inclined with 45 degrees with respect to all axes.}
 \label{fig:triax}
 \end{center}
 \end{figure*}
 
-The retrieved density profile (fig. \ref{fig:triax}) is constantly overestimating the density.
-\TODO{reason, projection?}
+The retrieved density profile (fig. \ref{fig:triax}) is constantly
+overestimating the density.
+
+\TODO{other projections}
+\TODO{reason: projection}
 
