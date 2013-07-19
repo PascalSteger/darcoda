@@ -13,34 +13,60 @@ import gl_file as gfile
 from gl_class_files import *
 from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
 
+
+
 def run():
+    xall,yall = np.loadtxt(gpr.get_com_file(0),skiprows=1,usecols=(0,1),unpack=True) # 2*[rcore]
+    # calculate 2D radius on the skyplane
+    r = np.sqrt(xall**2+yall**2) #[rcore]
+    # set number and size of (linearly spaced) bins
+    rmin = 0. #[rcore]
+    rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rcore]
+    print 'rmax [rcore] = ', rmax
+    r = r[(r<rmax)]
+
+    # determine radius once and for all
+    if gp.lograd:
+        print gpr.nbins,' bins in log spacings'
+        binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
+    elif gp.consttr:
+        print len(r)/gpr.nbins,' particles per bin'
+        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gpr.nbins)
+    else:
+        print gpr.nbins, ' bins in linear spacings'
+        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
+
+    # volume of a circular ring from binmin to binmax
+    vol = np.zeros(gpr.nbins)
+    for k in range(gpr.nbins):
+        vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rcore^2]
+
+
     for comp in range(gpr.ncomp):
-        # get radius, used for all binning
-        print 'input:'
-        print gpr.get_com_file(comp)
+        print 'comp = ',comp
+        print 'input: ',gpr.get_com_file(comp)
+        # start from data centered on COM already:
         if gfile.bufcount(gpr.get_com_file(comp))<2: continue
-        x,y,vlos = np.loadtxt(gpr.get_com_file(comp), skiprows=1, unpack=True) #[rcore], [rcore], [km/s]
-        totmass = 1.*len(x)  # [munit], [Msun], where each star is weighted with the same mass
-        r = np.sqrt(x*x+y*y) # [rcore]
+        x,y,vlos = np.loadtxt(gpr.get_com_file(comp),\
+                              skiprows=1,usecols=(0,1,2),unpack=True) #[rcore], [rcore], [km/s]
 
-        #set binning
-        #gpr.nbins = (max - min)*N^(1/3)/(2*(Q3-Q1)) #(method of wand)
-        rmin = 0.
-        rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior# [rcore]
+        # calculate 2D radius on the skyplane
+        r = np.sqrt(x**2+y**2) #[rcore]
+        
+        # set maximum radius (if gpr.rprior is set)
+        rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rcore]
+        print 'rmax [rcore] = ', rmax
+        sel = (r<=rmax)
+        x = x[sel]; y = y[sel]; vlos = vlos[sel]; r = r[sel] #[rcore]
+        totmass = 1.*len(x) #[munit], munit = 1/star
+
+        rs = r
+        # no offset from the start!
+        # rs = gpr.rerror*np.random.randn(len(r))+r #[rcore]
+        # vlos = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
 
 
 
-        if gp.lograd:
-            # space logarithmically in radius
-            binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
-        elif gp.consttr:
-            binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gpr.nbins)
-        else:
-            binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
-
-        # offset from the start!
-        rs = gpr.rerror*np.random.randn(len(r))+r #[rcore]
-        vlos = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
         print 'output: ',gpr.get_siglos_file(comp)
         vfil = open(gpr.get_siglos_file(comp),'w')
         print >> vfil,'r','sigma_r(r)','error'
@@ -94,11 +120,11 @@ def run():
         print 'rbin = ',rbin,' rcore'
         print 'p_dvlos = ',p_dvlos,' km/s'
         print 'p_edvlos = ',p_edvlos, 'km/s'
-        plot(rbin,p_dvlos,'b',linewidth=3)
+        plot(rbin,p_dvlos,'b',lw=1)
         fill_between(rbin,p_dvlos-p_edvlos,p_dvlos+p_edvlos,alpha=0.5,color='r') #[rcore],[km/s],[km/s]
 
-        xlabel(r'$r [rcore]$')
-        ylabel(r'$\langle\sigma_{LOS}\rangle [km/s]$')
+        xlabel(r'$r [\mathrm{rcore}]$')
+        ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')
         ylim([-5,30])
         # xscale('log')
         xlim([np.min(rbin),np.max(rbin)])

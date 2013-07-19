@@ -199,6 +199,7 @@ class Params:
                 else:
                     self.dens *= mult
                 self.norm1 *= mult
+                self.delta1 *= mult
         if gp.pops==2:
             if gp.chi2t1 > gp.chi2t2:
                 if gp.chi2t_nu1 > gp.chi2t_sig1:
@@ -206,20 +207,24 @@ class Params:
                 else:
                     self.dens *= mult
                     self.norm1 *= mult
+                    self.delta1 *= mult
             else:
                 if gp.chi2t_nu2 > gp.chi2t_sig2:
                     self.nu2 *= mult
                 else:
                     self.dens *= mult
                     self.norm2 *= mult
+                    self.delta2 *= mult
 
     def adaptall(self,mult):
         self.nu1 *= mult
         self.dens *= mult
         self.norm1 *= mult
+        self.delta1 *= mult
         if gp.pops == 2:
             self.nu2 *= mult
             self.norm2 *= mult
+            self.delta2 *= mult
         return
                 
 

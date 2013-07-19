@@ -18,6 +18,32 @@ from gl_class_files import *
 
 
 def run():
+    xall,yall = np.loadtxt(gpr.get_com_file(0),skiprows=1,usecols=(0,1),unpack=True) # 2*[rcore]
+    # calculate 2D radius on the skyplane
+    r = np.sqrt(xall**2+yall**2) #[rcore]
+    # set number and size of (linearly spaced) bins
+    rmin = 0. #[rcore]
+    rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rcore]
+    print 'rmax [rcore] = ', rmax
+    r = r[(r<rmax)]
+
+    # determine radius once and for all
+    if gp.lograd:
+        print gpr.nbins,' bins in log spacings'
+        binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
+    elif gp.consttr:
+        print len(r)/gpr.nbins,' particles per bin'
+        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gpr.nbins)
+    else:
+        print gpr.nbins, ' bins in linear spacings'
+        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
+
+    # volume of a circular ring from binmin to binmax
+    vol = np.zeros(gpr.nbins)
+    for k in range(gpr.nbins):
+        vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rcore^2]
+
+
     for i in range(gpr.ncomp):
         print 'i = ',i
         print 'input: ',gpr.get_com_file(i)
@@ -26,35 +52,17 @@ def run():
         x,y,v = np.loadtxt(gpr.get_com_file(i),\
                            skiprows=1,usecols=(0,1,2),unpack=True) #[rcore], [rcore], [km/s]
 
-        
         # calculate 2D radius on the skyplane
         r = np.sqrt(x**2+y**2) #[rcore]
         
-        # set number and size of (linearly spaced) bins
-        rmin = 0. #[rcore]
+        # set maximum radius (if gpr.rprior is set)
         rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rcore]
-        
         print 'rmax [rcore] = ', rmax
-        sel = (r<rmax)
-        x = x[sel]; y = y[sel]; v = v[sel] #[rcore]
+        sel = (r<=rmax)
+        x = x[sel]; y = y[sel]; v = v[sel]; r = r[sel] #[rcore]
         totmass = 1.*len(x) #[munit], munit = 1/star
-        
-        if gp.lograd:
-            # space logarithmically in radius
-            binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
-        elif gp.consttr:
-            binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gpr.nbins)
-        else:
-            binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
             
-            
-        #volume of a circular bin from binmin to binmax
-        vol = np.zeros(gpr.nbins)
-        for k in range(gpr.nbins):
-            vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rcore**2]
-            
-        # rs = gpr.rerror*np.random.randn(len(r))+r
-        rs = r  #[rcore] # if no initial offset is whished
+        rs = r  #[rcore] # if no initial offset is wanted
 
         print 'output: '
         print gpr.get_ntracer_file(i)
@@ -62,7 +70,7 @@ def run():
         print >> tr,totmass
         tr.close()
 
-        print gpr.get_dens_file(i)    
+        print gpr.get_dens_file(i)
         de = open(gpr.get_dens_file(i),'w')
         print gpr.get_enc_mass_file(i)
         em = open(gpr.get_enc_mass_file(i),'w')
@@ -129,7 +137,7 @@ def run():
         print 'p_dens = ',p_dens
         print 'p_edens = ',p_edens
 
-        plot(rbin,p_dens,'b',linewidth=3)
+        plot(rbin,p_dens,'b',lw=1)
         lbound = p_dens-p_edens; lbound[lbound<1e-6] = 1e-6
         ubound = p_dens+p_edens; 
         fill_between(rbin,lbound,ubound,alpha=0.5,color='r')

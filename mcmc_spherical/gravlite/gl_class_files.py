@@ -15,19 +15,15 @@ elif gp.geom == 'disc':
     
 def get_case(cas):
     # Set number of tracers to look at
-    # want to set ntracers1 = 1e3              # case 1
-    #             ntracers1 = 1e4              # case 2
-    #             ntracers1 = ntracers2 = 5e3  # case 3
+    # want to set ntracer = 3e3              # case 1
+    #             ntracer = 3e4              # case 2
     
-    ntracers1 = 0; ntracers2 = 0
+    ntracer = 0
     if cas == 1:
-        ntracers1 = 2000
+        ntracer = 3000
     elif cas == 2:
-        ntracers1 = 10000
-    elif cas == 3:
-        ntracers1 = 5000
-        ntracers2 = 5000
-    return ntracers1, ntracers2
+        ntracer = 30000
+    return ntracer
 
 
 
@@ -46,7 +42,7 @@ class Files:
         self.set_dir(gp.machine) # 'darkside' or 'local'
         self.massfile = ''; self.analytic = '';               self.surfdenfiles = []
         self.nufiles  = [];        self.sigfiles = [];        self.posvelfiles = []
-        self.ntracer1, self.ntracer2,self.nstr1, self.nstr2 = self.set_ntracers(gp.cas)
+        self.ntracer, self.nstr1 = self.set_ntracer(gp.cas)
         
         if gp.investigate == 'hernquist':
             self.set_hernquist()
@@ -80,11 +76,11 @@ class Files:
 
 
         
-    def set_ntracers(self,cas):
-        ntracers1,ntracers2 = get_case(cas)
-        self.ntracer1 = ntracers1;   self.ntracer2 = ntracers2
-        self.nstr1 = str(ntracers1); self.nstr2 = str(ntracers2)
-        return self.ntracer1, self.ntracer2, self.nstr1, self.nstr2
+    def set_ntracer(self,cas):
+        ntracer = get_case(cas)
+        self.ntracer = ntracer
+        self.nstr = str(ntracer)
+        return self.ntracer, self.nstr
 
 
 
@@ -268,8 +264,7 @@ class Files:
         bname = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         if gp.investigate == 'walker':
             bname = bname + '_case_' + str(gp.walkercase)
-            ntr1, ntr2  = get_case(gp.cas)
-            bname = bname + '_' + str(ntr1) + '_' + str(ntr2)
+            bname = bname + '_' + str(get_case(gp.cas))
         if (gp.gprior>0) : bname = bname + '_gprior'
         if (gp.cprior>=0) : bname = bname + '_cprior'
         

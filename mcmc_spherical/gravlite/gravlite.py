@@ -15,7 +15,7 @@ from gl_class_params import Params
 if gp.getnewdata: gfile.bin_data()
 
 gfile.get_data()
-gfile.ipol_data()
+gfile.ipol_data() # interpolate to regular (lin or log) array, or keep stuff if gp.consttr
 
 ginit.mcmc_init()                       # TODO: thread
 
@@ -54,8 +54,9 @@ while ( n < gp.niter-1):
     gfun.accept_reject(n)       # includes adapt_stepsize
     if gp.checksigma: break
 
-    if gp.metalpop and np.random.rand()<0.001: # get new data for another population split
-        # every 1000th model passing through priors (exclude 100 burn-in)
+    if gp.initphase=='over' and gp.metalpop and np.random.rand()<0.0001:
+        # get new data for another population split
+        # every 10000th model passing through priors (exclude 100 burn-in)
         gfile.bin_data();        gfile.get_data();        gfile.ipol_data()
         gpl.plot_data();         gpl.plot_first_guess()
         # TODO: increase stepsize again?

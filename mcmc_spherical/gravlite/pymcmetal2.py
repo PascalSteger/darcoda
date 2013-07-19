@@ -12,6 +12,22 @@ from gl_class_files import *
 from scipy.stats import norm
 
 
+def assign_pop(data, p, mu1, sig1, mu2, sig2):
+    '''get possible assignment to populations'''
+    from scipy.stats import norm
+    size = len(data)
+    pm1 = []; pm2 = []
+    for i in range(size):
+        x = 1.*data[i]
+        if np.random.rand() < p*norm.pdf(x, loc=mu1, scale=sig1)/\
+           (p*norm.pdf(x,loc=mu1,scale=sig1)+(1.-p)*norm.pdf(x,loc=mu2,scale=sig2)):
+            pm1.append(True); pm2.append(False)
+        else:
+            pm1.append(False);pm2.append(True)
+    return np.array(pm1), np.array(pm2) # np.array needed to use it as subset indicator
+
+
+
 def plot_traces(mcmc):
     subplot(311)
     center_trace = mcmc.trace("centers")[:]
@@ -55,7 +71,7 @@ def bimodal_gauss(data):
 
     taus = 1.0/mc.Uniform( "stds", 0., 0.5, size=2)**2
     mu1  = mc.Uniform('mu1',-1.0,2.0)
-    dmu  = mc.Uniform('dmu',0.0, 5.0)
+    dmu  = mc.Uniform('dmu',0.2, 5.0)
 
     @mc.deterministic(plot=False)
     def centers(mu1 = mu1, dmu = dmu):

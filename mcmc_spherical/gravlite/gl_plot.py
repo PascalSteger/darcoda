@@ -27,7 +27,7 @@ def prepare_plots():
     if not gp.testplot: return
     ion()
     # f, axs = plt.subplots(3, 2, sharex=True, sharey=True)
-    f = figure()
+    f = figure(figsize=(6,6),dpi=100)
     ax1 = f.add_subplot(421)
     ax2 = f.add_subplot(422, sharex=ax1, sharey=ax1)
     ax3 = f.add_subplot(423, sharex=ax1)
@@ -66,13 +66,12 @@ def setlims(ax,xlim,ylim):
 
 
 def plot_data():
-
     if not gp.testplot: return
     ##### plot nu 1
     axs[0][0].cla()
     x = gp.ipol.nux1_2D                 # [pc]
     if gp.geom == 'disc': x = gp.ipol.nux1
-    if gp.analytic: axs[0][0].plot(x, surfden_anf(x), c='blue', lw=4)
+    if gp.analytic: axs[0][0].plot(x, surfden_anf(x), c='blue', lw=1)
     lbound = gfun.compare_nu(1,True,False) - gfun.compare_nu(1,True,True) # [munit/pc**2]
     # gives gp.ipol.nudat1_2D
     ubound = gfun.compare_nu(1,True,False) + gfun.compare_nu(1,True,True) # [munit/pc**2]
@@ -87,7 +86,7 @@ def plot_data():
 
     ##### sigma_LOS 1
     axs[1][0].cla()
-    if gp.analytic: axs[1][0].plot(gp.ipol.sigx1, sig_los_anf(gp.ipol.sigx1), c='blue', lw=5)
+    if gp.analytic: axs[1][0].plot(gp.ipol.sigx1, sig_los_anf(gp.ipol.sigx1), c='blue', lw=1)
     x = gp.ipol.sigx1                                         # [pc]
     lbound = (gp.ipol.sigdat1 - gp.ipol.sigerr1)                # [km/s]
     ubound = (gp.ipol.sigdat1 + gp.ipol.sigerr1)                # [km/s]
@@ -133,8 +132,8 @@ def plot_data():
         # if gp.model:
         #     x = gp.ipol.Mx_2D * gp.rcore[0]                      # [pc]
         #     rhodm, rhostar1, rhostar2 = rhowalker_2D(x) # 3*[munit/pc^2]
-        #     axs[2][0].plot(x, (rhodm+rhostar1+rhostar2), c='blue', lw=4)
-        #     axs[2][0].plot(x, (rhostar1+rhostar2), c='blue', lw=3, ls='-.')
+        #     axs[2][0].plot(x, (rhodm+rhostar1+rhostar2), c='blue', lw=1)
+        #     axs[2][0].plot(x, (rhostar1+rhostar2), c='blue', lw=1, ls='-.')
 
 
         #### density 3D
@@ -155,17 +154,17 @@ def plot_data():
             if gp.investigate == 'walker':
                 rhodm, rhostar1, rhostar2 = rhowalker_3D(x) # 3*[munit/pc^3]
                 rhotot = rhodm + rhostar1 + rhostar2
-                axs[2][0].plot(x, (rhostar1+rhostar2), c='blue', lw=3, ls='-.')
+                axs[2][0].plot(x, (rhostar1+rhostar2), c='blue', lw=1, ls='-.')
             elif gp.investigate == 'triaxial':
                 rhotot = rhotriax(x)
-            axs[2][0].plot(x, rhotot, c='blue', lw=4, ls='-.')
-            setlims(axs[2][0],[0,max(x)],[min(rhotot),max(rhotot)])
+            axs[2][0].plot(x, rhotot, c='blue', lw=1, ls='-.')
+            setlims(axs[2][0],[0,max(x)],[min(rhotot)/5.,max(rhotot)*5.])
 
         if gp.analytic:
             x = gp.xipol[:]                        # [pc]
             rhotot = rho_anf(x)
-            axs[2][0].plot(x, rhotot, c='blue', lw=4)
-            setlims(axs[2][0],[0,max(x)],[min(rhotot),max(rhotot)])
+            axs[2][0].plot(x, rhotot, c='blue', lw=1)
+            setlims(axs[2][0],[0,max(x)],[min(rhotot)/5.,max(rhotot)*5.])
 
     else:
         #### mass
@@ -178,7 +177,7 @@ def plot_data():
         #lbound = (gp.ipol.Mdat_2D - gp.ipol.Merr_2D) # [munit,2D]
         #ubound = (gp.ipol.Mdat_2D + gp.ipol.Merr_2D) # [munit,2D]
         axs[2][0].fill_between(x, lbound, ubound, alpha=0.5, color='green')
-        #axs[2][0].plot(x, M_anf(gp.ipol.Mx)*gp.totmass[0], c='blue', lw=4) # only for Hernquist
+        #axs[2][0].plot(x, M_anf(gp.ipol.Mx)*gp.totmass[0], c='blue', lw=1) # only for Hernquist
         if gp.geom == 'sphere':
             axs[2][0].set_ylabel('$M\\quad[\\rm{M}_\\odot]$')
         elif gp.geom == 'disc':

@@ -94,12 +94,9 @@ def readcoln(filena):
 
 
 
-def pretty(arr,dig=2):
-    'clip floats after dig=2 digits'
-    if(type(arr) is 'float'):
-        return "%.2f"%arr
-    else:
-        return "%.2f "*len(arr) % tuple(arr)
+def pretty(arr,dig=3):
+    'clip floats after dig=3 digits'
+    return ("%."+str(dig)+"f")%arr
 
 
 

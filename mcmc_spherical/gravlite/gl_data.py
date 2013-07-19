@@ -69,9 +69,7 @@ class Datafile:
         self.denserr_2D = self.densdat_2D * self.Merr_2D/self.Mdat_2D # [munit/pc**2]
 
         # deproject, already normalized to same total mass
-        self.densx, self.densdat, self.denserr = phys.deproject(self.densx_2D[:],\
-                                                                self.densdat_2D[:],\
-                                                                self.denserr_2D[:])
+        self.densx, self.densdat, self.denserr = phys.deproject(self.densx_2D[:],self.densdat_2D[:],self.denserr_2D[:])
         # takes [pc], 2x [munit/pc**2], gives [pc], 2*[munit/pc**3]
         
 
@@ -132,9 +130,7 @@ class Datafile:
         # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3],
         # already normalized to same total mass
         if gp.geom=='sphere':
-            self.nux1, self.nudat1, self.nuerr1 = phys.deproject(self.nux1_2D,\
-                                                                 self.nudat1_2D,\
-                                                                 self.nuerr1_2D)
+            self.nux1, self.nudat1, self.nuerr1 = phys.deproject(self.nux1_2D, self.nudat1_2D, self.nuerr1_2D)
         else:
             self.nux1, self.nudat1, self.nuerr1 = self.nux1_2D, self.nudat1_2D, self.nuerr1_2D
         # check mass is the same
@@ -234,6 +230,10 @@ class Datafile:
 
     def interpol(self, dat):
         'interpolate 3D quantities to new regularly-spaced radial bins'
+        if gp.consttr:
+            print 'really? have const tracer number per bin, so keep same radii!'
+            pdb.set_trace()
+
         gp.xmin  = min(dat.nux1); gp.xmax = max(dat.nux1) # [pc]
         if gp.lograd:
             gp.xipol = np.logspace(np.log10(gp.xmin),np.log10(gp.xmax),gp.nipol) # [pc]
@@ -281,6 +281,7 @@ class Datafile:
             self.sigdat2 = gh.ipollog(dat.sigx2, dat.sigdat2, self.sigx2) # [km/s]
             self.sigerr2 = gh.ipollog(dat.sigx2, dat.sigerr2, self.sigx2) # [km/s]
 
+        return self
         # dens0 = 0.40 #Msun/pc**3
         # dens0 = dens0/self.Mtottracer*self.rhalf**3 # in internal units
         # rDM  = gp.r_DM/self.rhalf #pc to internal units
@@ -337,6 +338,25 @@ class Datafile:
 
         if gp.pops == 2:
             self.nux2 = obj.nux2;     self.nudat2 = obj.nudat2;      self.nuerr2 = obj.nuerr2
+            self.sigx2 = obj.sigx2;   self.sigdat2 = obj.sigdat2;    self.sigerr2 = obj.sigerr2
+
+        return self
+
+    def copyfrom(self,obj):
+        'set to given values, copy constructor'
+        gp.xipol = obj.densx
+        self.Mx = obj.Mx;   self.Mdat = obj.Mdat;    self.Merr = obj.Merr
+        self.Mx_2D = obj.Mx_2D; self.Mdat_2D = obj.Mdat_2D; self.Merr_2D = obj.Merr_2D
+        self.densx = obj.densx;   self.densdat = obj.densdat;     self.denserr = obj.denserr
+        self.densx_2D=obj.densx_2D; self.densdat_2D=obj.densdat_2D; self.denserr_2D=obj.denserr_2D
+        self.nux1 = obj.nux1;     self.nudat1 = obj.nudat1;       self.nuerr1 = obj.nuerr1
+        self.nux1_2D=obj.nux1_2D; self.nudat1_2D=obj.nudat1_2D;   self.nuerr1_2D=obj.nuerr1_2D
+        self.sigx1 = obj.sigx1;   self.sigdat1 = obj.sigdat1;     self.sigerr1 = obj.sigerr1
+
+
+        if gp.pops == 2:
+            self.nux2 = obj.nux2;     self.nudat2 = obj.nudat2;      self.nuerr2 = obj.nuerr2
+            self.nux2_2D=obj.nux2_2D; self.nudat2_2D=obj.nudat2_2D;  self.nuerr2_2D=obj.nuerr2_2D
             self.sigx2 = obj.sigx2;   self.sigdat2 = obj.sigdat2;    self.sigerr2 = obj.sigerr2
 
         return self

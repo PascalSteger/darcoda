@@ -342,17 +342,20 @@ def accept_reject(n):
         gp.b2wild = False; gp.sig2wild = False; gp.nu2wild = 1000
         gfile.store_working_pars(n, gp.pars, gp.chi2, gp.parstep)
         # fplot
-        if npr.rand() < max(0.001, (1.*gp.chi2-gp.chi2tol)/gp.chi2tol/10.) or gp.initphase:
+        if npr.rand() < max(0.01, (1.*gp.chi2-gp.chi2tol)/gp.chi2tol/10.) or gp.initphase:
             gpl.update_plot()
 
-        gp.LOG.warning([ n,gh.pretty([gp.chi2]),\
-#                         np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol))),\
-                         gh.pretty([gp.acccount/(gp.rejcount+1.)]),\
-                         gh.pretty([np.median(gp.parstep.nu1/gp.parst.nu1)]),\
-                         gh.pretty([np.median(gp.parstep.dens/gp.parst.dens)])\
-                         # gh.pretty([gp.parstep.norm1/gp.parst.norm1]),\
-                         # gh.pretty([gp.parstep.norm2/gp.parst.norm2])
-                         ])
+        np.set_printoptions(precision=3)
+        print 'n:',n, 'chi2:',gh.pretty(gp.chi2,1),\
+              'rate:',gh.pretty(gp.acccount/(gp.rejcount+1.),2),\
+              'nu1:',gh.pretty(abs(np.median(gp.parstep.nu1/gp.pars.nu1))),\
+              'nu2:',gh.pretty(abs(np.median(gp.parstep.nu2/gp.pars.nu2))),\
+              'd1:',gh.pretty(abs(np.median(gp.parstep.delta1/gp.pars.delta1))),\
+              'd2:',gh.pretty(abs(np.median(gp.parstep.delta2/gp.pars.delta2))),\
+              'dens:',gh.pretty(abs(np.median(gp.parstep.dens/gp.pars.dens)))
+                                        # gp.parstep.norm1/gp.pars.norm1,\
+                                        # gp.parstep.norm2/gp.pars.norm2
+                                        # np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol),\
         adapt_stepsize()
         end_initphase()
 
@@ -396,9 +399,10 @@ def end_initphase():
         gp.endcount -= 1;
         print 'gp.endcount = ',gp.endcount
     
-    if gp.chi2 >= gp.chi2tol/10.:
-        if gp.endcount > 0:
-            return
+    if gp.chi2 >= gp.chi2tol/10.:       # if gp.chi2 really really small: stop NOW!
+        if gp.endcount > 0 and\
+               abs(np.median(gp.parstep.dens/gp.pars.dens)) > 0.05:  # else: if not converged:
+            return                      # continue init!
     
     print( '*** initialization phase over ***')
     print( '*********************************')

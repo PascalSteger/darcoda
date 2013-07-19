@@ -1,1 +1,1 @@
-gl_params_triaxial.py
+gl_params_sphere.py

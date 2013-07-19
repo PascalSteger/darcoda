@@ -24,7 +24,7 @@ def com_shrinkcircle(x,y,pm):
     print 'shrinking sphere'
     eps = 1e-6
     com_x = 1.*np.sum(x*pm)/np.sum(pm);    com_y = 1.*np.sum(y*pm)/np.sum(pm)
-    bucom_x = com_x; bucom_y = com_y
+    bucom_x = 0.+com_x; bucom_y = 0.+com_y
     x -= com_x; y -= com_y
     dr = np.sqrt(com_x**2+com_y**2)
     r0 = np.sqrt(x**2+y**2)
@@ -76,31 +76,35 @@ def run():
     
     
     # TODO: use component 6-1 instead of 12-1 for z velocity, to include observational errors
-    
-    # only use stars which are members of the dwarf: exclude pop3 by construction
-    pm = (PM0 >= gpr.pmsplit) * (comp0<3) # exclude outliers .  TODO: do that without cheating
-    pm1 = pm*(comp0==1)                   # are updated below if gp.metalpop is set to True
-    pm2 = pm*(comp0==2)                   # same same
-    pm3 = pm*(comp0==3)
 
+    # only use stars which are members of the dwarf: exclude pop3 by construction
+    pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
+    PM0 = PM0[pm]
+    comp0 = comp0[pm]; x0=x0[pm]; y0=y0[pm]; z0=z0[pm]; vz0=vz0[pm]; vb0=vb0[pm]; Mg0=Mg0[pm]
+    pm1 = (comp0 == 1) # will be overwritten below if gp.metalpop
+    pm2 = (comp0 == 2) # same same
+    
     
     if gp.metalpop:
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
-        import pymcmetal as pmc
-        p,mu1,sig1,mu2,sig2 = pmc.bimodal_gauss(Mg0,pm)
-        pm1, pm2 = pmc.assign_pop(Mg0,pm,p,mu1,sig1,mu2,sig2)
+        import pymcmetal2 as pmc
+        p,mu1,sig1,mu2,sig2, M = pmc.bimodal_gauss(Mg0)
+        pm1, pm2 = pmc.assign_pop(Mg0,p,mu1,sig1,mu2,sig2)
         # output: changed pm1, pm2
 
-    # TODO: cutting pm_i to a maximum of ntracers particles:
-    # from random import shuffle
-    # pm1 = shuffle(pm1)[:ntracers1]
-    # pm2 = shuffle(pm2)[:ntracers2]
+    # cutting pm_i to a maximum of ntracers particles:
+    from random import shuffle
+    ind = np.arange(len(x0))
+    np.random.shuffle(ind)
+    ind = ind[:gp.files.ntracer]
+    x0=x0[ind]; y0=y0[ind]; z0=z0[ind]; comp0=comp0[ind]; vz0=vz0[ind]; vb0=vb0[ind]; Mg0=Mg0[ind]
+    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm = pm1+pm2
     
-    # center of mass with means
+    # get center of mass with means
     #com_x, com_y = com_mean(x0,y0,PM0) # [TODO]
     
-    # shrinking sphere method
+    # get COM with shrinking sphere method
     com_x, com_y = com_shrinkcircle(x0,y0,PM0)
     print 'COM [pc]: ', com_x, com_y
 
@@ -114,7 +118,7 @@ def run():
     vz0 -= com_vz #[km/s]
     
     r0 = np.sqrt(x0**2+y0**2) # [pc]
-    rc = r0[pm] # [pc]
+    rc = r0 # [pc]
     rc.sort() # [pc]
     for i in range(len(rc)-1):
         if rc[i]>rc[i+1]: #[pc]
@@ -130,7 +134,7 @@ def run():
     x0 = x0/rcore; y0 = y0/rcore # [r_core]
     
     i = -1
-    for pmn in [pm,pm1,pm2,pm3]:
+    for pmn in [pm,pm1,pm2]:
         pmr = (r0<(gpr.rprior*rcore)) # TODO: read from gl_class_file
         pmn = pmn*pmr # [1]
         print "fraction of members = ",1.0*sum(pmn)/len(pmn)
@@ -165,8 +169,8 @@ def run():
         scatter(x[:en], y[:en], c=pmn[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
         # xscale('log'); yscale('log')
         if i == 0: colorbar()
-        circ_HL=Circle((0,0), radius=rcore/rcore, fc='None', ec='g', lw=3)
-        circ_DM=Circle((0,0), radius=gpr.r_DM/rcore, fc='None', ec='r', lw=3)
+        circ_HL=Circle((0,0), radius=rcore/rcore, fc='None', ec='g', lw=1)
+        circ_DM=Circle((0,0), radius=gpr.r_DM/rcore, fc='None', ec='r', lw=1)
         gca().add_patch(circ_HL); gca().add_patch(circ_DM)
         
         # visible region

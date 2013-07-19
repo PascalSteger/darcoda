@@ -79,7 +79,10 @@ def get_data():
 def ipol_data():
     '''interpolate all data to nipol bins with same range of r (called ripol)'''
     gp.ipol = Datafile()
-    gp.ipol.interpol(gp.dat)
+    if gp.consttr:                      # if set const tracer number, do NOT interpolate
+        gp.ipol.copyfrom(gp.dat)
+    else:
+        gp.ipol.interpol(gp.dat)
     return gp.ipol
 
 

@@ -163,20 +163,25 @@ def check_delta():
 
     gp.LOG.debug( 'now checking delta smoothness')
     dcheck = abs(gp.parst.delta1[1:]-gp.parst.delta1[:-1])
-    if max(dcheck)>gp.deltol:
-        if not gp.d1wild:
-            print 'delta1 too wild!'
-            # gp.d1wild = True
-            gf.get_working_pars(gp.initphase)
-            # TODO: correct: smooth out, by assigning mean value of left/right points
-        return True
-    if gp.pops==2:
-        if max(abs(gp.parst.delta2[1:]-gp.parst.delta2[:-1]))>gp.deltol:
-            if not gp.d2wild:
-                print 'delta2 too wild!'
-                gp.d2wild = True
-                gf.get_working_pars(gp.initphase)
+    for i in range(gp.nipol-1):
+        if dcheck[i]>gp.deltol:
+            if not gp.d1wild:
+                # print 'delta1 too wild!' # TODO: enable print
+                gp.d1wild = True
+            # gf.get_working_pars(gp.initphase)
+            # correct: smooth out, by assigning mean value of left/right points
+            # gp.pars.delta1[i]/=2.
             return True
+    if gp.pops==2:
+        dcheck = abs(gp.parst.delta2[1:]-gp.parst.delta2[:-1])
+        for i in range(gp.nipol-1):
+            if dcheck[i]>gp.deltol:
+                if not gp.d2wild:
+                    # print 'delta2 too wild!' # TODO: enable print
+                    gp.d2wild = True
+                # gf.get_working_pars(gp.initphase)
+                # gp.pars.delta2[i]/=2.
+                return True
 
     return False
 
