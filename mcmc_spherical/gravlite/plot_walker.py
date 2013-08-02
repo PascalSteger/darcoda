@@ -9,47 +9,8 @@ from gl_analytic import Mwalkertot, rhowalkertot_3D
 from matplotlib.backends.backend_pdf import PdfPages
 
 # Walker data sets
-base = '/home/psteger/sci/dwarf_data/'
-base = '/home/ast/read/dark/dwarf_data/'
-# ca = 0:
-dir = base + 'data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
-dir = base + 'data_walker/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
-# ca = 1:
-dir = base + 'data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
-# ca = 2:
-dir = base + 'data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
-
-
-# nampart = '20130425120348_cprior_mslope_rprior' # ca2 working fine for 1000 iterations
-# nampart = '20130426090433_cprior_mslope_rprior' # ca2 too high mass at high radii, 50k
-# nampart = '20130426120258_cprior_mslope_rprior' # ca2 better mass? no, too low overall
-# nampart = '20130426161637_cprior_nulog_denslog_mslope_rprior' # ca2 new denslog:  too high mass, especially around middle radii
-# nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior' # ca2 and up to 100000 its: works
-# nampart = '20130429110855_cprior_nulog_denslog_mslope_rprior' # 50k steps: works
-# nampart = '20130502080536_cprior_nulog_denslog_mslope_rprior' # ca0 10: London failed 2.5k, too high mass
-#nampart = '20130510090417_case_1_0_0_cprior_nulog_denslog_mslope_rprior' # ca2, core, running
-# nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' #ca2, core
-# nampart = '20130426165536_cprior_nulog_denslog_mslope_rprior'
-# nampart = '20130426133539_cprior_mslope_rprior'
-# nampart = '20130702113536_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new cusp
-#nampart = '20130621123935_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey largest
-#nampart = '20130621121716_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # Surrey 2nd
-#nampart = '20130717081725_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # first mio cusp
-#nampart = '20130717085139_case_1_10000_0_cprior_nulog_denslog_mslope_rprior'
-
-#nampart = '20130717164820_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # cusp 2nd case
-
-nampart = '20130718090029_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # new stepsize, cusp
-nampart = '20130718103257_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # twiddle 1
-nampart = '20130718120843_case_2_10000_0_cprior_nulog_denslog_delta_mslope_rprior' # fast conv
-nampart = '20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior' # finally fine
-
-# nampart = '20130717164748_case_1_10000_0_cprior_nulog_denslog_mslope_rprior' # core 2nd case
-# nampart = '20130718133920_case_1_10000_0_cprior_nulog_denslog_mslope_rprior' # finally core
-# nampart = '20130718161434_case_1_10000_0_cprior_nulog_denslog_mslope_rprior' # debugged core
-# nampart = '20130718183721_case_1_10000_0_cprior_nulog_denslog_mslope_rprior' # 2nd try debug
-
-basename = dir + nampart + '/' + nampart
+import select_run
+basename, prof = select_run.run()
 
 def M_anf(r):
     return r**2/(r+1.)**2
@@ -82,8 +43,7 @@ def show_plots():
 
 print 'input'
 print basename
-prof = 'delta1' # dens, M, delta1, delta2
-M = np.loadtxt(basename+'.prof'+prof,skiprows=0,unpack=False)
+M = np.loadtxt(basename+'prof'+prof,skiprows=0,unpack=False)
 
 radii = M[0]
 radii = radii
@@ -128,8 +88,13 @@ def plotGraph():
         ylabel(r'$M\quad[\mathrm{M}_{\odot}]$') #[10^5 M_{\odot}]')
     elif prof == 'dens':
         ylabel(r'$\rho\quad[\mathrm{M}_{\odot}/\mathrm{pc}^3]$') #[10^5 M_{\odot}]')
-    elif prof=='delta':
+    elif prof=='delta1' or prof == 'delta2':
         ylabel(r'$\delta$') #[10^5 M_{\odot}]')
+    elif prof == 'nu1':
+        ylabel(r'$\nu_1$')
+    elif prof == 'sig1':
+        ylabel(r'$\sigma_1$')
+        
     fill_between(radsc, M95lo[sel]*Msc, M95hi[sel]*Msc, color='black',alpha=0.2,lw=1)
     fill_between(radsc, M68lo[sel]*Msc, M68hi[sel]*Msc, color='black',alpha=0.4,lw=1)
     plot(radsc,Mmedi[sel]*Msc,'r',lw=1)
@@ -138,19 +103,27 @@ def plotGraph():
         plot(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'--',color='black',lw=1)
     elif prof == 'dens':
         plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=1)
-    # xscale('log')
-    if prof != 'delta1' and prof != 'delta2':
+    elif prof == 'sig1':
+        # TODO: plot data as background
+        rad, sig1, sigerr1 = gh.readcol(gp.files.sigfiles[1])
+        fill_between(rad, sig1-sigerr1, sig1+sigerr1, color='blue', alpha=0.8,lw=1)
+        plot(rad, sig1, color='blue', lw=1)
+    if prof != 'delta1' and prof != 'delta2' and prof != 'sig1':
+        xscale('log')
         yscale('log')
     xlim([min(radsc),max(radsc)])
     ylim([min(M95lo[sel]*Msc),max(M95hi[sel]*Msc)])
     return fig
     
+
 def readcol(filena):
     a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
     return a,b,c
+
+
 ion()
 plot1 = plotGraph()
-pp = PdfPages(basename + '.prof'+prof+'.pdf')
+pp = PdfPages(basename + 'prof'+prof+'.pdf')
 pp.savefig(plot1)
 
 # We can also set the file's metadata via the PdfPages object:
@@ -164,7 +137,7 @@ d['ModDate'] = datetime.datetime.today()
 pp.close()
 ioff()
 
-fout = open(basename+'.prof'+prof+'.conf','w')
+fout = open(basename+'prof'+prof+'.conf','w')
 print >> fout,M95lo
 print >> fout,M68lo
 print >> fout,Mmedi
@@ -174,9 +147,16 @@ fout.close()
 
 analyt = M_anf(radii)
 
+import gl_helper as gh
 print '# radii  lower 95%    lower 68%   median      upper 68%   upper 95%   analytic'
 for i in range(len(radii)):
-    print radii[i],M95lo[i],M68lo[i],Mmedi[i],M68hi[i],M95hi[i],analyt[i]
+    print gh.pretty(radii[i]),\
+          gh.pretty(M95lo[i]),\
+          gh.pretty(M68lo[i]),\
+          gh.pretty(Mmedi[i]),\
+          gh.pretty(M68hi[i]),\
+          gh.pretty(M95hi[i]),\
+          gh.pretty(analyt[i])
 
 
 show_plots()

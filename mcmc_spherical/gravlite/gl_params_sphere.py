@@ -28,15 +28,15 @@ investigate  = 'walker'  # determine which data set to work on
                                         # 'walker': check with full obs. cont. data from Walker
                                         # 'fornax': real data from Fornax dwarf galaxy
 
-walkercase = 1           # choose different Walker models (0-2 so far)
+walkercase = 2           # choose different Walker models (0-2 so far)
 
 # Set number of tracer stars to look at
 # take all particles                       # case 0
 # want to set ntracer = 3e3              # case 1
 #             ntracer = 3e4              # case 2
 cas = 1
-getnewdata = True       # get new data computed from observations before burn-in
-metalpop   = True        # split metallicities with a separate MCMC, based on pymcgau.py
+getnewdata = False       # get new data computed from observations before burn-in
+metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
 testplot_read = False    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
 consttr = True           # set radial bin by constant number of tracer particles
@@ -98,7 +98,7 @@ if analytic: poly = False
 
 densstart = -2.0              # -2.6 for Hernquist, -2.3 for Walker cusp, -1.8 for core
 scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
-scalepower = 0.95                  # 0.95 for Hernquist, 1.3 for Walker cusp, 2.2 for core
+scalepower = 2.0                  # 0. 9 5 for Hernquist, 1.3 for Walker cusp, 2.2 for core
 
 
 ########## integration options
@@ -227,19 +227,19 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 50. if (pops == 1) else 100.  # more information in two tracer pops, but more errors as well
+chi2tol = 50. if (pops == 1) else 50.  # more information in two tracer pops, but more errors as well # TODO: reduced chi2
 endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
 rejcount = 1.                   # Rejection count
 acccount = 0.                   # Acceptance count
-accrejtollow  = 0.20            # Acceptance/rejection rate
-accrejtolhigh = 0.30            #
-farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
-stepafterrunaway = 0.90 # mult. stepsize by this amount if too low fnewoverf 2.5
-farover = 8.      # 8 times chi2 is too high after init phase 1./2.
+accrejtollow  = 0.23            # Acceptance/rejection rate
+accrejtolhigh = 0.27            #
+stepcorr= 1.1  # factor to adapt stepsize if not 0.24 < acc/rec < 0.26
+farinit = 10. # 5 times chi2 is too far off in init phase: start new from last point
+stepafterrunaway = 0.9 # mult. stepsize by this amount if too low fnewoverf 2.5
+farover = 5.         # 5 times chi2 is too high after init phase 1./2.
 scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
-stepcorr= 1.05   # factor to adapt stepsize if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
 initphase = True # initialisation phase flag, first True, if over: False

@@ -329,36 +329,36 @@ class Files:
 
 
     def get_outfiles(self):
-        pre = self.outdir + self.outname
-        outplot = pre + '.png'
-        outdat  = pre + '.dat'
-        outtxt  = pre + '.txt'
+        pre = self.outdir # + self.outname + '.'
+        outplot = pre + 'png'
+        outdat  = pre + 'dat'
+        outtxt  = pre + 'txt'
         return outplot, outdat, outtxt
 
     def get_outpng(self):
-        pre = self.outdir + self.outname
-        return pre + '.png'
+        pre = self.outdir # + self.outname + '.'
+        return pre + 'png'
 
     def get_outdat(self):
-        pre = self.outdir + self.outname 
-        return pre + '.dat'
+        pre = self.outdir # + self.outname + '.'
+        return pre + 'dat'
 
     def get_outtxt(self):
-        pre = self.outdir + self.outname 
-        return pre + '.txt'
+        pre = self.outdir # + self.outname + '.'
+        return pre + 'txt'
 
 
 
     def get_outprofs(self):
-        pre = self.outdir + self.outname
+        pre = self.outdir # + self.outname + '.'
         profnus = []; profdeltas = []; profsigs = []
-        profM = pre +'.profM'
-        profdens = pre + '.profdens'
-        profnus.append( pre + '.profnu1')
-        profdeltas.append( pre + '.profdelta1')
-        profsigs.append( pre + '.profsig1')
+        profM = pre +'profM'
+        profdens = pre + 'profdens'
+        profnus.append( pre + 'profnu1')
+        profdeltas.append( pre + 'profdelta1')
+        profsigs.append( pre + 'profsig1')
         if gp.pops == 2:
-            profnus.append( pre + '.profnu2')
-            profdeltas.append( pre + '.profdelta2')
-            profsigs.append( pre + '.profsig2')
+            profnus.append( pre + 'profnu2')
+            profdeltas.append( pre + 'profdelta2')
+            profsigs.append( pre + 'profsig2')
         return profM, profdens, profnus, profdeltas, profsigs

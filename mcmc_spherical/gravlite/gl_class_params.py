@@ -192,29 +192,38 @@ class Params:
         if gp.pops == 1:
             if gp.chi2t_nu1 > gp.chi2t_sig1:
                 self.nu1 *= mult
+                self.norm1 *= mult
             else:
                 # change one of the possible parameter steps
                 if npr.rand() < 0.5:
                     self.nu1  *= mult
-                else:
-                    self.dens *= mult
-                self.norm1 *= mult
-                self.delta1 *= mult
-        if gp.pops==2:
-            if gp.chi2t1 > gp.chi2t2:
-                if gp.chi2t_nu1 > gp.chi2t_sig1:
-                    self.nu1 *= mult
-                else:
-                    self.dens *= mult
                     self.norm1 *= mult
+                else:
+                    self.dens *= mult
+                self.delta1 *= mult
+
+        if gp.pops==2:
+            # first adapt worse nu (s.t. not only one of (nu,delta) set are changed)
+            if gp.chi2t_nu1 > gp.chi2t_nu2:
+                self.nu1 *= mult
+                self.norm1 *= mult                
+            else:
+                self.nu2 *= mult
+                self.norm2 *= mult
+                
+            # then adapt worse set
+            if gp.chi2t1 > gp.chi2t2:
+                if gp.chi2t_sig1 > gp.chi2t_nu1:
+                    self.nu1    *= mult
+                    self.dens   *= mult
                     self.delta1 *= mult
             else:
-                if gp.chi2t_nu2 > gp.chi2t_sig2:
-                    self.nu2 *= mult
-                else:
-                    self.dens *= mult
-                    self.norm2 *= mult
+                if gp.chi2t_sig2 > gp.chi2t_nu2:
+                    self.nu2    *= mult
+                    self.dens   *= mult
                     self.delta2 *= mult
+
+            # TODO: attention: has more emphasis on increasing nu now!
 
     def adaptall(self,mult):
         self.nu1 *= mult

@@ -32,7 +32,8 @@ def get_new_parameters():
     # ranarr.wiggle_delta()
 
     ranarr.setuniformrandom()   # wiggle all parameters as one
-    ranarr.scale_prop_chi2()    # change proportional to error on chi2
+    if gp.initphase:
+        ranarr.scale_prop_chi2()    # change proportional to error on chi2
     
     ranarr.mul(gp.parstep)
     ranarr.add(gp.pars)
@@ -347,12 +348,12 @@ def accept_reject(n):
 
         np.set_printoptions(precision=3)
         print 'n:',n, 'chi2:',gh.pretty(gp.chi2,1),\
-              'rate:',gh.pretty(gp.acccount/(gp.rejcount+1.),2),\
-              'nu1:',gh.pretty(abs(np.median(gp.parstep.nu1/gp.pars.nu1))),\
-              'nu2:',gh.pretty(abs(np.median(gp.parstep.nu2/gp.pars.nu2))),\
-              'd1:',gh.pretty(abs(np.median(gp.parstep.delta1/gp.pars.delta1))),\
-              'd2:',gh.pretty(abs(np.median(gp.parstep.delta2/gp.pars.delta2))),\
-              'dens:',gh.pretty(abs(np.median(gp.parstep.dens/gp.pars.dens)))
+              'rate:',gh.pretty(100*gp.acccount/(gp.rejcount+1.),2),\
+              'nu1:',gh.pretty(100*abs(np.median(gp.parstep.nu1/gp.pars.nu1)),4),\
+              'nu2:',gh.pretty(100*abs(np.median(gp.parstep.nu2/gp.pars.nu2)),4),\
+              'd1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),4),\
+              'd2:',gh.pretty(100*abs(np.median(gp.parstep.delta2/gp.pars.delta2)),4),\
+              'dens:',gh.pretty(100*abs(np.median(gp.parstep.dens/gp.pars.dens)),4)
                                         # gp.parstep.norm1/gp.pars.norm1,\
                                         # gp.parstep.norm2/gp.pars.norm2
                                         # np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol),\
@@ -377,7 +378,7 @@ def accept_reject(n):
 
 
 def adapt_stepsize():
-    gp.LOG.info( 'Adapt stepsize during initialisation phase: ')
+    '''Adapt stepsize during initialisation phase: '''
     if gp.initphase:
         if gp.acccount>0 and gp.rejcount>0:
             if (gp.acccount/gp.rejcount < gp.accrejtollow\
@@ -390,20 +391,27 @@ def adapt_stepsize():
     return
 
 
+
 def end_initphase():
-    # Decide whether to end initphase:
+    '''Decide whether to end initphase:'''
     if not gp.initphase: return
     if not gp.endgame: return
 
     if gp.chi2 < gp.chi2tol and gp.chi2t_nu < gp.chi2t_sig:
         gp.endcount -= 1;
         print 'gp.endcount = ',gp.endcount
-    
-    if gp.chi2 >= gp.chi2tol/10.:       # if gp.chi2 really really small: stop NOW!
-        if gp.endcount > 0 and\
-               abs(np.median(gp.parstep.dens/gp.pars.dens)) > 0.05:  # else: if not converged:
-            return                      # continue init!
-    
+
+    if gp.chi2 < gp.chi2tol/10.:
+        print 'really really small chi2! stopping init phase'
+    else:       # if gp.chi2 really really small: stop NOW!
+        # do not accept too high stepsizes (must be < 5% in dens)
+        if abs(np.median(gp.parstep.dens/gp.pars.dens)) > 0.05:
+            return
+        # do not stop unless gp.endcount counted down
+        if gp.endcount > 0:
+            return
+
+    # if none of the above conditions held:
     print( '*** initialization phase over ***')
     print( '*********************************')
     gp.initphase = False
