@@ -1,5 +1,8 @@
-\begin{thebibliography}{15}
+\begin{thebibliography}{18}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{{Baes} \& {Dejonghe}(2002)}]{BaesDejonghe2002}
+{Baes} M., {Dejonghe} H., 2002, \aap, 393, 485
 
 \bibitem[{{Binney} \& {Tremaine}(2008)}]{BinneyTremaine2008}
 {Binney} J., {Tremaine} S., 2008, {Galactic Dynamics: Second Edition}.
@@ -29,6 +32,9 @@
   {Madau}}]{Governato+2010}
 {Governato} F. {et~al.}, 2010, \nat, 463, 203
 
+\bibitem[{{Hernquist}(1990)}]{Hernquist1990}
+{Hernquist} L., 1990, \apj, 356, 359
+
 \bibitem[{{{\L}okas}(2002)}]{Lokas2002}
 {{\L}okas} E.~L., 2002, \mnras, 333, 697
 
@@ -47,6 +53,9 @@
   {Mayer}, {de Blok}, {Brooks}, \& {Walter}}]{Oh+2011}
 {Oh} S.-H., {Brook} C., {Governato} F., {Brinks} E., {Mayer} L., {de Blok}
   W.~J.~G., {Brooks} A., {Walter} F., 2011, \aj, 142, 24
+
+\bibitem[{{Read} {et~al}\mbox{.}(2006){Read}, {Pontzen}, \& {Viel}}]{Read+2006}
+{Read} J.~I., {Pontzen} A.~P., {Viel} M., 2006, \mnras, 371, 885
 
 \bibitem[{{Schwarzschild}(1979)}]{Schwarzschild1979}
 {Schwarzschild} M., 1979, \apj, 232, 236

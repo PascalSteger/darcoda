@@ -46,7 +46,7 @@ converges fast in the beginning and reproduces the density profile very well aft
 \caption{Reconstructed mass of a cusped model (red shows median,
   shaded areas are 68 and 90 percentiles) for $(2800,4033)$ tracer particles,
   after 50000 iterations. The black dashed curve shows the underlying
-  theoretical model.}
+  theoretical model. \TODO{log-log scale}}
 \label{fig:cusp}
 \end{center}
 \end{figure*}
@@ -65,7 +65,40 @@ relative values of the enclosed mass are not better constrained than
 at any other radius.
 
 
+% nu and sigma: fit to data
+Fitted $\nu(r)$ and $\siglos$ are shown in fig. \ref{fig:nusiglos}.
 
+\begin{figure*}
+\begin{center}
+\hspace{-7mm}
+\includegraphics[width=0.5\textwidth]{fig/nufit.pdf}
+\includegraphics[width=0.5\textwidth]{fig/sigfit.pdf}
+\caption{Fitted $\nu_1(r)$ and $\siglos_1(r)$ for the first of two stellar components in the cusped profile of fig. \ref{fig:cusp}.}
+\label{fig:nusiglos}
+\end{center}
+\end{figure*}
+
+\TODO{observations? goodness of fit?}
+\TODO{fixed nu_1, beta_2, tuning other two of them}
+
+% fit to underlying beta
+
+The fitted $\beta_i(r)$ are shown in fig. \ref{fig:betai}.
+
+\begin{figure*}
+\begin{center}
+\hspace{-7mm}
+\includegraphics[width=0.5\textwidth]{fig/beta1fit.pdf}
+\includegraphics[width=0.5\textwidth]{fig/beta2fit.pdf}
+\caption{Fitted $\beta_i(r)$ for the two stellar components in the
+  cusped profile of fig. \ref{fig:cusp}. The dashed line gives the
+  $\beta$ profile of the underlying model.}
+\label{fig:betai}
+\end{center}
+\end{figure*}
+
+\TODO{observations? goodness of fit?}
+\TODO{ref for prior beta>0 after some x*r_s}
 
 
 \subsection{Cored Model}

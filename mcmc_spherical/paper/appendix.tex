@@ -85,13 +85,49 @@ yields the same mass constraint there.
 
 
 \subsection{Convergence in MCMC}
-\TODO{plots of density, delta for cusp after 5k, 50k, 500k iterations}
+We check the convergence of the MCMC twofold: first, the range of
+density profiles swept after 5k, 50k and to the end of our run is
+increased from 5k to 50k, but stays approximately constant for another
+16k runs, thus giving us confidence that we found and fully explored
+the valid regions of phase space in density. See fig. \ref{fig:convergencedens}.
+
+\begin{figure*}
+\begin{center}
+\hspace{-7mm}
+\includegraphics[width=0.3\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_5kits_profdens.pdf}
+\includegraphics[width=0.3\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_50kits_profdens.pdf}
+\includegraphics[width=0.3\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_67kits_profdens.pdf}
+\caption{Convergence of the density profile after (5k,50k,67k) iterations (left to right).}
+\label{fig:convergencedens}
+\end{center}
+\end{figure*}
+
+Second, the range of $\delta_i$, the only other unrestricted
+parameters, show a similar behaviour, as shown in
+\ref{fig:convergencedelta1} for $\delta_1$, with analogous
+$\delta_2$. \TODO{Not all the parameter space is sampled, and this is
+  a major cause of worry: any profile found in the first iterations in
+  the init phase will be stuck there, if $\delta$ cannot sample a big
+  subset of $]-\infty,1]$. We will rerun thge cusp for proper $10^6$
+  iterations, with higher stepsize for delta!}
+
+\begin{figure*}
+\begin{center}
+\hspace{-7mm}
+\includegraphics[width=0.3\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_5kit_profdelta1.pdf}
+\includegraphics[width=0.3\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_50kit_profdelta1.pdf}
+\includegraphics[width=0.3\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_67kit_profdelta1.pdf}
+\caption{Convergence of $\delta_1$ after (5k,50k,67k) iterations (left to right).}
+\label{fig:convergencedelta1}
+\end{center}
+\end{figure*}
+
 
 
 
 
 \subsection{Convergence in Mass Models}
-
+\TODO{constant number of particles per bin}
 
 
 
