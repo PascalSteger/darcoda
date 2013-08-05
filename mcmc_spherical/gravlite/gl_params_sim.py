@@ -229,10 +229,9 @@ chi2tol = 50. if (pops == 1) else 60.  # more information in two tracer pops, bu
 endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
-rejcount = 1.                   # Rejection count
-acccount = 0.                   # Acceptance count
-accrejtollow  = 0.24            # Acceptance/rejection rate
-accrejtolhigh = 0.26            #
+
+from gl_class_rate import Rate
+accrate  = Rate(0.25,0.01)
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.98 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.

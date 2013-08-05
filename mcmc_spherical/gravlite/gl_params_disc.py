@@ -225,14 +225,15 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 50. if (pops == 1) else 60.  # more information in two tracer pops, but more errors as well
+chi2tol = 1.  # more information in two tracer pops, but more errors as well # TODO: reduced chi2
 endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
-rejcount = 1.                   # Rejection count
-acccount = 0.                   # Acceptance count
-accrejtollow  = 0.24            # Acceptance/rejection rate
-accrejtolhigh = 0.26            #
+
+rollsize = 100;
+from gl_class_rate import Rate
+accrate = Rate(0.25, 0.05) # new acceptance/rejection rate object, mean 0.25, acceptable +-5%
+
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.98 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.
@@ -249,7 +250,7 @@ endgame  = False # Ending flag
 
 rcore=[]; dens0rcore=[]; dens0pc=[]; totmass=[]; maxvlos=[] # unit system
 rcore_2D=[];dens0rcore_2D=[];dens0pc_2D=[]
-if investigate != 'walker' and investiage != 'triaxial':
+if investigate != 'walker' and investigate != 'triaxial':
     # TODO: adapt to physical units
     # each is set for all components and first component by default
     rcore.append(1.);      rcore_2D.append(1.)

@@ -203,22 +203,25 @@ class Params:
                 self.delta1 *= mult
 
         if gp.pops==2:
+            # here, we adapt stepsize first for worse nu, then for worse sigma
             # first adapt worse nu (s.t. not only one of (nu,delta) set are changed)
-            if gp.chi2t_nu1 > gp.chi2t_nu2:
-                self.nu1 *= mult
-                self.norm1 *= mult                
+            if gp.chi2t_nu > gp.chi2t_sig:
+                if gp.chi2t_nu1 > gp.chi2t_nu2:
+                    self.nu1 *= mult
+                    self.norm1 *= mult                
+                else:
+                    self.nu2 *= mult
+                    self.norm2 *= mult
             else:
-                self.nu2 *= mult
-                self.norm2 *= mult
-                
-            # then adapt worse set
-            if gp.chi2t1 > gp.chi2t2:
-                if gp.chi2t_sig1 > gp.chi2t_nu1:
+                # then adapt worse set
+                if gp.chi2t1 > gp.chi2t2:
+                    # TODO: do it only if sigma error > nu error
+                    # if gp.chi2t_sig1 > gp.chi2t_nu1:
                     self.nu1    *= mult
                     self.dens   *= mult
                     self.delta1 *= mult
-            else:
-                if gp.chi2t_sig2 > gp.chi2t_nu2:
+                else:
+                    # if gp.chi2t_sig2 > gp.chi2t_nu2:
                     self.nu2    *= mult
                     self.dens   *= mult
                     self.delta2 *= mult

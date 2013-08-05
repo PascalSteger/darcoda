@@ -35,7 +35,7 @@ def check_density():
                 gp.pars.dens = gp.safepars.dens; gp.parstep.dens = gp.safeparstep.dens
                 gp.nu2wild = 1000
             else:
-                gf.get_working_pars(gp.initphase) # change gp.pars to gp.init_configs
+                gf.get_working_pars() # change gp.pars to gp.init_configs
             gp.lasterr = 'nu'
             return True
         if gp.pops==2:
@@ -51,7 +51,7 @@ def check_density():
                     gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
                     gp.chi2 = gp.safechi2;       gp.nu2wild = 1000
                 else:
-                    gf.get_working_pars(gp.initphase)    # change gp.parst to gp.init_configs
+                    gf.get_working_pars()    # change gp.parst to gp.init_configs
                 gp.lasterr = 'nu'    
                 return True
 
@@ -80,7 +80,7 @@ def check_mass():
                 if not gp.dens2wild:
                     print 'rising dens prior, more than 200% up'
                     # gp.dens2wild = True
-                    gf.get_working_pars(gp.initphase)
+                    gf.get_working_pars()
                 # gp.parst.dens[i+1] *= 0.9
                 # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
                 return True
@@ -92,7 +92,7 @@ def check_mass():
             if not gp.dens2wild:
                 print 'Surface density decrease found'
                 gp.dens2wild = True
-            gf.get_working_pars(gp.initphase)
+            gf.get_working_pars()
             return True
 
     gp.LOG.debug('check that observed tracer mass is less than total mass')
@@ -108,18 +108,18 @@ def check_mass():
         if min(gp.parst.dens < 0.):
             print 'kappa < 0'
             pdb.set_trace()
-            gf.get_working_pars(gp.initphase)
+            gf.get_working_pars()
             return True
         kappa_DM = gp.parst.dens - phys.kappa(gp.xipol, -gp.blow*2.*np.pi*gp.G1)
         if min(kappa_DM) < 0.:
             pdb.set_trace()
             print 'kappa_DM < 0'
-            gf.get_working_pars(gp.initphase)
+            gf.get_working_pars()
             return True
         if max(abs((kappa_DM-np.mean(kappa_DM))/np.mean(kappa_DM)))>1.0:
             pdb.set_trace()
             print 'kappa_DM too wild'
-            gf.get_working_pars(gp.initphase)
+            gf.get_working_pars()
             return True
 
     
@@ -168,7 +168,7 @@ def check_delta():
             if not gp.d1wild:
                 # print 'delta1 too wild!' # TODO: enable print
                 gp.d1wild = True
-            # gf.get_working_pars(gp.initphase)
+            # gf.get_working_pars()
             # correct: smooth out, by assigning mean value of left/right points
             # gp.pars.delta1[i]/=2.
             return True
@@ -179,7 +179,7 @@ def check_delta():
                 if not gp.d2wild:
                     # print 'delta2 too wild!' # TODO: enable print
                     gp.d2wild = True
-                # gf.get_working_pars(gp.initphase)
+                # gf.get_working_pars()
                 # gp.pars.delta2[i]/=2.
                 return True
 

@@ -228,14 +228,14 @@ accrej  = np.zeros(1000)       #
 ratio   = 0.                   # 
 account1= 0.                   # 
 
-chi2tol = 200. if (pops == 1) else 100.  # more information in two tracer pops, but more errors as well
+chi2tol = 2.
 endcount = 1000                  # 300 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
-rejcount = 1.                   # Rejection count
-acccount = 0.                   # Acceptance count
-accrejtollow  = 0.20            # Acceptance/rejection rate
-accrejtolhigh = 0.30            #
+rollsize = 100;
+from gl_class_rate import Rate
+accrate  = Rate(0.25,0.01)
+
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.95 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.

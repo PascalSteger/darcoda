@@ -198,7 +198,7 @@ def store_working_pars(n,pars,chi2,parstep):
 
 
     
-def get_working_pars(scale=True):
+def get_working_pars(scale=False):
     if len(gp.init_configs)<1:
         gp.pars.assign(gp.safepars); gp.parstep.assign(gp.safeparstep)
         gp.chi2 = gp.safechi2

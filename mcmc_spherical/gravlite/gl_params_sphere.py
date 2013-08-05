@@ -116,11 +116,13 @@ if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is se
 
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
 nipol = 16
+
 # TODO: better: set scale for central part (first and second bin),
 # then determine number of particles inside: ninside = len(r[r<centralscale])
 # then get nipol = min(ntotal,ntracer)/ninside
 
-
+nconstraints = 4                        # number of constraints
+dof = 1. # 1 for chi2, 4*nipol - nconstraints # for reduced chi2
 
 
 
@@ -222,21 +224,21 @@ prob = -1e300 if uselike else 1e300     # Initial log likeli. [small in case we 
 
 ini     = 0                    # TODO: meaning
 inimax  = 5000                 # 
-counter = 0                    # 
-accrej  = np.zeros(1000)       # 
-ratio   = 0.                   # 
-account1= 0.                   # 
+counter = 0                    #
 
-chi2tol = 50. if (pops == 1) else 50.  # more information in two tracer pops, but more errors as well # TODO: reduced chi2
-endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
-# better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
+rollsize = 30                           # number of stacked acceptance/rejection rates
+                                        # as well as number of steps before next step adaption done
+adaptstepwait = rollsize
+from gl_class_rate import Rate
+accrate = Rate(0.25, 0.05) # new acceptance/rejection rate object, mean 0.25, acceptable +-5%
+chi2tol = 1.*(4*nipol-nconstraints) # tolerance in (chi2) or (without paranteses) reduced chi2
+endcount = 30*rollsize # 900 accepted models which chi2<chi2tol means initialization phase is over
+                                        # better measure: 1./(min stepsize),
+                                        # as this gives the time needed to get convergence
+                                        # on this parameter
 
-rejcount = 1.                   # Rejection count
-acccount = 0.                   # Acceptance count
-accrejtollow  = 0.23            # Acceptance/rejection rate
-accrejtolhigh = 0.27            #
 stepcorr= 1.1  # factor to adapt stepsize if not 0.24 < acc/rec < 0.26
-farinit = 10. # 5 times chi2 is too far off in init phase: start new from last point
+farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
 stepafterrunaway = 0.9 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 5.         # 5 times chi2 is too high after init phase 1./2.
 scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
@@ -251,7 +253,7 @@ endgame  = False # Ending flag
 
 rcore=[]; dens0rcore=[]; dens0pc=[]; totmass=[]; maxvlos=[] # unit system
 rcore_2D=[];dens0rcore_2D=[];dens0pc_2D=[]
-if investigate != 'walker' and investiage != 'triaxial':
+if investigate != 'walker' and investigate != 'triaxial':
     # TODO: adapt to physical units
     # each is set for all components and first component by default
     rcore.append(1.);      rcore_2D.append(1.)

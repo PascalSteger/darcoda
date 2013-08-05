@@ -26,25 +26,24 @@ def mcmc_init():
 
     ### nu
     # set all nu to known 3D data (plus some offset, possibly)
-    # nupars1 = npr.normal(gp.ipol.nudat1,gp.ipol.nuerr1/2.,gp.nipol)
-    nupars1 = gp.ipol.nudat1
-
+    nupars1 = npr.normal(gp.ipol.nudat1,gp.ipol.nuerr1,gp.nipol)
+    # nupars1 = gp.ipol.nudat1
     # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
     nuparstep1    = gp.ipol.nuerr1            # nupars1/20.
     if gp.geom == 'disc': nuparstep1[0] = 0.0 # first point stays 1 :)
 
     if gp.nulog: 
-        nuparstep1 = 1.5*(np.log10(nupars1+nuparstep1)-np.log10(nupars1)) # set first before nupars<0 :)
+        nuparstep1 = (np.log10(nupars1+nuparstep1)-np.log10(nupars1)) # set first before nupars<0 :)
         nupars1 = np.log10(nupars1)
         # nuparstep1 = nupars1*0.+nupars1[0]/20. # abs(np.log10(np1*1.05)-np.log10(np1))
         #                                 # -1 means /10 in linear space # TODO: propto error
         if gp.geom == 'disc': nuparstep1[0] = 0.0
     if gp.pops == 2:
-        # nupars2  = npr.normal(gp.ipol.nudat2,gp.ipol.nuerr2/2.,gp.nipol)
-        nupars2  = gp.ipol.nudat2
+        nupars2  = npr.normal(gp.ipol.nudat2,gp.ipol.nuerr2,gp.nipol)
+        # nupars2  = gp.ipol.nudat2
         nuparstep2 = gp.ipol.nuerr1     # nupars2/20. # [munit/pc^3]
         if gp.nulog:
-            nuparstep2 = 1.5*(np.log10(nupars2+nuparstep2)-np.log10(nupars2))
+            nuparstep2 = (np.log10(nupars2+nuparstep2)-np.log10(nupars2))
             nupars2 = np.log10(nupars2)
             # nuparstep2 = nupars2*0.+nupars2[0]/20.
 
@@ -52,7 +51,7 @@ def mcmc_init():
     ### delta
     if gp.geom == 'sphere':
         deltapars1 = np.zeros(gp.nipol)
-        deltaparstep1 = deltapars1 + 0.05
+        deltaparstep1 = deltapars1 + 0.03
         mdelta1 = []; mdelta2 = []
         if gp.model:
             print 'TODO: disable model for delta for observed dwarfs!'
@@ -61,16 +60,16 @@ def mcmc_init():
             elif gp.investigate == 'triaxial':
                 mdelta1 = betatriax(gp.xipol)
             deltapars1 = phys.invdelta(mdelta1)
-            deltaparstep1 = deltapars1*0. + 0.05
+            deltaparstep1 = deltapars1*0. + 0.03
             # if gp.deltaprior:   # TODO: rename
             #     deltaparstep1 = np.zeros(gp.nipol)
 
         if gp.pops == 2:
             deltapars2 = np.zeros(gp.nipol)
-            deltaparstep2 = deltapars2 + 0.05
+            deltaparstep2 = deltapars2 + 0.03
             if gp.model:
                 deltapars2 = phys.invdelta(mdelta2)
-                deltaparstep2 = deltapars2*0. + 0.05
+                deltaparstep2 = deltapars2*0. + 0.03
                 # if gp.deltaprior:
                 #     deltaparstep2 = np.zeros(gp.nipol)
 
@@ -95,7 +94,7 @@ def mcmc_init():
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
 
-        densparstep = denspars/20. * (np.arange(1,gp.nipol+1))**1.9
+        densparstep = denspars/20. * (np.arange(1,gp.nipol+1))**1.8
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:

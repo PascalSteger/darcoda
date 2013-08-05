@@ -32,8 +32,10 @@ def get_new_parameters():
     # ranarr.wiggle_delta()
 
     ranarr.setuniformrandom()   # wiggle all parameters as one
-    if gp.initphase:
-        ranarr.scale_prop_chi2()    # change proportional to error on chi2
+
+    # TODO: check outcome here. was used when working with adaptstepwait=1
+    # if gp.initphase:
+    #     ranarr.scale_prop_chi2()    # change proportional to error on chi2
     
     ranarr.mul(gp.parstep)
     ranarr.add(gp.pars)
@@ -278,6 +280,8 @@ def compare_nu(pop, dat, err):
 
 
 
+def chi2red(model, data, sig, dof):
+    return sum(((model-data)**2./sig**2)/dof)
 
 
 
@@ -286,12 +290,12 @@ def calc_chi2():
     numodel1 = int_surfden(gp.xipol,gp.nu1_x) if gp.geom=='sphere' else gp.nu1_x
     nudata1  = compare_nu(1,True,False)
     nuerr1   = compare_nu(1,True,True) # gp.ipol.nuerr1 # old, used 3D nu in spherical case
-    gp.chi2t_nu1      = ((numodel1 - nudata1)**2./nuerr1**2.).sum()
+    gp.chi2t_nu1      = chi2red(numodel1, nudata1, nuerr1, gp.dof)
     gp.chi2t_nu       = gp.chi2t_nu1
     if gp.analytic:
-        gp.chi2t_sig1     = ((gp.sig1_x- rho_anf(gp.xipol))**2./gp.ipol.sigerr1**2.).sum() #gp.ipol.sigdat1
+        gp.chi2t_sig1     = chi2red(gp.sig1_x,rho_anf(gp.xipol),gp.ipol.sigerr1,1.,gp.dof) #gp.ipol.sigdat1
     else:
-        gp.chi2t_sig1     = ((gp.sig1_x- gp.ipol.sigdat1)**2./gp.ipol.sigerr1**2.).sum()
+        gp.chi2t_sig1     = chi2red(gp.sig1_x,gp.ipol.sigdat1,gp.ipol.sigerr1,gp.dof)
     gp.chi2t_sig      = gp.chi2t_sig1
 
     if not gp.deltaprior and gp.uselike:
@@ -304,21 +308,17 @@ def calc_chi2():
         numodel2 = int_surfden(gp.xipol,gp.nu2_x) if gp.geom=='sphere' else gp.nu2_x
         nudata2  = compare_nu(2,True,False)
         nuerr2   = compare_nu(2,True,True)
-        gp.chi2t_nu2  = ((numodel2 - nudata2)**2./nuerr2**2.).sum()
+        gp.chi2t_nu2  = chi2red(numodel2, nudata2, nuerr2, gp.dof)
         gp.chi2t_nu  += gp.chi2t_nu2
-        gp.chi2t_sig2 = ((gp.sig2_x- gp.ipol.sigdat2)**2/gp.ipol.sigerr2**2.).sum()
+        gp.chi2t_sig2 = chi2red(gp.sig2_x, gp.ipol.sigdat2, gp.ipol.sigerr2,gp.dof)
         gp.chi2t_sig += gp.chi2t_sig2
         gp.chi2t2     = gp.chi2t_nu2 + gp.chi2t_sig2
         gp.chi2t     += gp.chi2t2
-
 
     if np.isnan(gp.chi2t):
         print 'NaN occured! go search where it happened!'
         pdb.set_trace()
 
-
-    # gp.LOG.info('Calculate the f-function')
-    # gp.LOG.warning(['chi2  = ',gp.chi2,'chi2t = ',gp.chi2t])
     gp.fnewoverf = np.exp(gp.chi2/2.0-gp.chi2t/2.0)
     return gp.fnewoverf
 
@@ -335,7 +335,7 @@ def calc_chi2():
 def accept_reject(n):
     gp.LOG.info( 'Accept the new parameters?')
     if npr.rand() < gp.fnewoverf:
-        gp.acccount = gp.acccount + 1.
+        gp.accrate.update(True)
         gp.pars.assign(gp.parst)
         gp.chi2 = gp.chi2t
         gp.lasterr = 'None'
@@ -343,17 +343,22 @@ def accept_reject(n):
         gp.b2wild = False; gp.sig2wild = False; gp.nu2wild = 1000
         gfile.store_working_pars(n, gp.pars, gp.chi2, gp.parstep)
         # fplot
-        if npr.rand() < max(0.01, (1.*gp.chi2-gp.chi2tol)/gp.chi2tol/10.) or gp.initphase:
+        if npr.rand() < max(0.01, (1.*gp.chi2-gp.chi2tol)/gp.chi2tol/100.)\
+               or (gp.initphase and gp.adaptstepwait == 1):
             gpl.update_plot()
 
         np.set_printoptions(precision=3)
-        print 'n:',n, 'chi2:',gh.pretty(gp.chi2,1),\
-              'rate:',gh.pretty(100*gp.acccount/(gp.rejcount+1.),2),\
-              'nu1:',gh.pretty(100*abs(np.median(gp.parstep.nu1/gp.pars.nu1)),4),\
-              'nu2:',gh.pretty(100*abs(np.median(gp.parstep.nu2/gp.pars.nu2)),4),\
-              'd1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),4),\
-              'd2:',gh.pretty(100*abs(np.median(gp.parstep.delta2/gp.pars.delta2)),4),\
-              'dens:',gh.pretty(100*abs(np.median(gp.parstep.dens/gp.pars.dens)),4)
+        print 'n:',n, ' chi2:',gh.pretty(gp.chi2,1),\
+              ' rate:',gh.pretty(100*gp.accrate.rate(),2),\
+              ' nu1:',gh.pretty(100*abs(np.median((phys.nu(gp.pars.nu1+gp.parstep.nu1)\
+                                                  -phys.nu(gp.pars.nu1))/phys.nu(gp.pars.nu1))),3),\
+              ' nu2:',gh.pretty(100*abs(np.median((phys.nu(gp.parstep.nu2+gp.parstep.nu2)\
+                                                  -phys.nu(gp.pars.nu2))/phys.nu(gp.pars.nu2))),3),\
+              ' d1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3),\
+              ' d2:',gh.pretty(100*abs(np.median(gp.parstep.delta2/gp.pars.delta2)),3),\
+              ' dens:',gh.pretty(100*abs(np.median((phys.densdefault(gp.parstep.dens+gp.pars.dens)\
+                                                   -phys.densdefault(gp.pars.dens))/\
+                                                  phys.densdefault(gp.pars.dens))),3)
                                         # gp.parstep.norm1/gp.pars.norm1,\
                                         # gp.parstep.norm2/gp.pars.norm2
                                         # np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol),\
@@ -361,7 +366,7 @@ def accept_reject(n):
         end_initphase()
 
     else:
-        gp.rejcount = gp.rejcount + 1.
+        gp.accrate.update(False)
         # jump back to last known good point
         faraway = gp.farinit if gp.initphase else gp.farover
         if gp.chi2t > gp.chi2 * faraway:
@@ -380,14 +385,19 @@ def accept_reject(n):
 def adapt_stepsize():
     '''Adapt stepsize during initialisation phase: '''
     if gp.initphase:
-        if gp.acccount>0 and gp.rejcount>0:
-            if (gp.acccount/gp.rejcount < gp.accrejtollow\
-                or gp.acccount/gp.rejcount > gp.accrejtolhigh):
-                gp.parstep.adaptworst(gp.stepcorr)
-            else:
-                gp.parstep.adaptall(1./gp.stepcorr)
-            if gp.chi2 < gp.chi2tol:
-                gp.endgame = True
+        if gp.adaptstepwait > 1:
+            gp.adaptstepwait -= 1
+            return
+        print 'adapt stepsize!'
+        gp.adaptstepwait = gp.rollsize
+        if (not gp.accrate.rightrate()): # and (not gp.accrate.getsbetter()): # too bad, increase even if getting better. TODO: use this second part if adaptstepwait is small
+            print ' >> increase'
+            gp.parstep.adaptworst(gp.stepcorr)
+        else:
+            gp.parstep.adaptall(1./gp.stepcorr)
+            print ' << decrease'
+        if gp.chi2 < gp.chi2tol:
+            gp.endgame = True
     return
 
 
@@ -416,18 +426,25 @@ def end_initphase():
     print( '*********************************')
     gp.initphase = False
     if gp.denslog:
+
         # use parstep if possible
         # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
         #                       np.log10(phys.densdefault(gp.pars.dens)))
         # or get 10% step
         # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
         #                       np.log10(phys.densdefault(gp.pars.dens)))
-        mul = gp.parstep.dens[0]/gp.pars.dens[0]
+
+        #mul = gp.parstep.dens[0]/gp.pars.dens[0]
         # gp.parstep.dens = mul*np.log10(phys.densdefault(gp.pars.dens)) # not proportional
         # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens))*mul) # prop, wrong for arg = 0
-        gp.parstep.dens = np.ones(gp.nipol)*abs(np.log10(phys.densdefault(gp.pars.dens)[-1])*mul) # constant stepsize over all xipol, from highest contrib from last point, same sign everywhere (even if first point is log10>0.)
-        
-        gp.pars.dens  = np.log10(phys.densdefault(gp.pars.dens))
+        #gp.parstep.dens = np.ones(gp.nipol)*abs(np.log10(phys.densdefault(gp.pars.dens)[-1])*mul) # constant stepsize over all xipol, from highest contrib from last point, same sign everywhere (even if first point is log10>0.)
+        den        = phys.densdefault(gp.pars.dens)
+        denerr     = phys.densdefault(gp.pars.dens+gp.parstep.dens)-phys.densdefault(gp.pars.dens)
+
+        gp.parstep.dens = np.log10(den+denerr)-np.log10(den)
+        boundbelow = [max(x, max(gp.parstep.dens)/10) for x in gp.parstep.dens] # give last bins a chance
+        gp.parstep.dens = boundbelow
+        gp.pars.dens    = np.log10(den)
         gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
         
     else:
