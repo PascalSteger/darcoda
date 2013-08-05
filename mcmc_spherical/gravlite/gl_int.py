@@ -3,13 +3,14 @@
 '''all integrals from physics_sphere'''
 
 import numpy as np
-import gl_params as gp
-import gl_funs as gfun
-import gl_helper as gh
 import scipy
 # import scipy.integrate
 from scipy.integrate import simps,trapz
 import pdb
+
+import gl_params as gp
+import gl_funs as gfun
+import gl_helper as gh
 import gl_plot as gpl
 
 
@@ -260,6 +261,9 @@ def int_surfden(r0, nu):           # [lunit], [munit/lunit^3]
 def int_project(r0, rho): #[lunit], [dens0, 3D] TODO
     'take 3D (mass) density, convert it to surface density, and give back enclosed mass in rings'
     surf_tot = int_surfden(r0, rho) #gives [dens0, 2D]
+    if gp.geom == 'disc':
+        print 'attention: using spherical part of code for disc!'
+        pdb.set_trace()
     import physics_sphere as phys
     surfmass = phys.Mr2D(r0, surf_tot)
     return surfmass #[munit, 2D]

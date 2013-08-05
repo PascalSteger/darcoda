@@ -2,10 +2,15 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''all analytic profiles from physics_sphere'''
 import numpy as np
-from gl_int import int_surfden
-#from physics_sphere import get_nu,get_zarrays
-import physics_sphere as phys
+
 import gl_params as gp
+#from physics_sphere import get_nu,get_zarrays
+if gp.geom == 'sphere':
+    import physics_sphere as phys
+else:
+    import physics_disc as phys
+    
+from gl_int import int_surfden
 import pdb
 
 asech = lambda x: np.arccosh(1./x)

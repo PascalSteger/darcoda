@@ -1,20 +1,24 @@
 #!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''all functions to work with plots'''
+
+
+from pylab import *
+import numpy as np
+import pdb
+from matplotlib.ticker import MaxNLocator
+
 import gl_params as gp
+if gp.geom == 'sphere':
+    import physics_sphere as phys
+else:
+    import physics_disc as phys
 import gl_funs as gfun
 from gl_analytic import *
 from gl_int import *
-if gp.geom == 'sphere':
-    import physics_sphere as phys
-elif gp.geom == 'disc':
-    import physics_disc as phys
-from pylab import *
-import numpy as np
 import gl_units as units
-from matplotlib.ticker import MaxNLocator
 
-import pdb
+
 
 global f, axs
 

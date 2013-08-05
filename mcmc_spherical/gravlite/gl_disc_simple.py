@@ -1,21 +1,24 @@
 #!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''generate simple disc data ourselves'''
-import gl_params as gp
-import gl_helper as gh
+
+
 import numpy as np
-import scipy
-import pdb
-import scipy.integrate
-from scipy.integrate import simps,trapz
 import numpy.random as npr
 import random
-from binsmooth import binsmoo
-from bincount import bincou
+import scipy
+import scipy.integrate
+from scipy.integrate import simps,trapz
+import pdb
+
+import gl_params as gp
 if gp.geom == 'disc':
     import physics_disc as phys
 else:
     import physics_sphere as phys
+import gl_helper as gh
+from binsmooth import binsmoo
+from bincount import bincou
 
 global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
 
@@ -159,7 +162,7 @@ def disc_simple():
             gp.dat.sigdat2 = sig_dat_bin2[sel]
             gp.dat.sigerr2 = sig_dat_err_bin2[sel]
 
-        gp.dat.output()
+        # gp.dat.output()
     gp.dat.save(gp.files.dir+'pp') # pickle
     return gp.dat
 

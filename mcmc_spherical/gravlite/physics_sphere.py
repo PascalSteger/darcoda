@@ -222,6 +222,7 @@ def nu(nupars):                 # [(log10) Msun/pc^3]
     gh.checknan(nuout)
     if gp.geom == 'disc':
         print 'nu in spherical phys taken! bug!'
+        pdb.set_trace()
         nuout = nuout/max(nuout)
     return nuout                # [Msun/pc^3]
 

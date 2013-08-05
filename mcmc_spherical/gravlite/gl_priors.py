@@ -1,17 +1,17 @@
 #!/usr/bin/python
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''check all parameters for prior constraints'''
-import gl_params as gp
-import gl_file as gf
-from gl_int import int_surfden
+
 import pdb
-import gl_plot as gpl
 import numpy as np
+import gl_params as gp
 if gp.geom == 'disc':
     import physics_disc as phys
 else:
     import physics_sphere as phys
-
+import gl_plot as gpl
+import gl_file as gf
+from gl_int import int_surfden
 
 
 
@@ -107,18 +107,16 @@ def check_mass():
     if gp.geom == 'disc':
         if min(gp.parst.dens < 0.):
             print 'kappa < 0'
-            pdb.set_trace()
             gf.get_working_pars()
             return True
         kappa_DM = gp.parst.dens - phys.kappa(gp.xipol, -gp.blow*2.*np.pi*gp.G1)
         if min(kappa_DM) < 0.:
-            pdb.set_trace()
             print 'kappa_DM < 0'
             gf.get_working_pars()
             return True
         if max(abs((kappa_DM-np.mean(kappa_DM))/np.mean(kappa_DM)))>1.0:
-            pdb.set_trace()
             print 'kappa_DM too wild'
+            # pdb.set_trace()
             gf.get_working_pars()
             return True
 

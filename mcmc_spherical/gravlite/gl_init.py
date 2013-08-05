@@ -2,17 +2,18 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''set up initial parameters'''
 
+
+import numpy as np
+import numpy.random as npr
 import gl_params as gp
+if gp.geom == 'sphere':
+    import physics_sphere as phys
+else:
+    import physics_disc as phys
 from gl_class_params import *
 from gl_analytic import *
 import gl_file as gf
 import gl_helper as gh
-import numpy as np
-import numpy.random as npr
-if gp.geom == 'sphere':
-    import physics_sphere as phys
-elif gp.geom == 'disc':
-    import physics_disc as phys
 
 
 
@@ -30,7 +31,7 @@ def mcmc_init():
     # nupars1 = gp.ipol.nudat1
     # * (1.+ npr.uniform(-1.,1.,gp.nipol)/10.)+gp.ipol.nudat1[-1] # [munit/pc^3]
     nuparstep1    = gp.ipol.nuerr1            # nupars1/20.
-    if gp.geom == 'disc': nuparstep1[0] = 0.0 # first point stays 1 :)
+    # if gp.geom == 'disc': nuparstep1[0] = 0.0 # TODO: first point stays 1. problem: /0 in chi2 calc
 
     if gp.nulog: 
         nuparstep1 = (np.log10(nupars1+nuparstep1)-np.log10(nupars1)) # set first before nupars<0 :)

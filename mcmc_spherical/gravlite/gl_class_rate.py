@@ -1,16 +1,15 @@
 #!/usr/bin/python2.7
 # class to get a rolling acceptance/rejection rate
 
-import gl_params as gp
-import gl_helper as gh
+
 import collections
 import pdb
-
+import gl_params as gp
 if gp.geom == 'sphere':
     import physics_sphere as phys
 elif gp.geom == 'disc':
     import physics_disc as phys
-
+import gl_helper as gh
 
 
     

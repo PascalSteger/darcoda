@@ -5,13 +5,13 @@ import pdb
 import numpy.random as npr
 
 import gl_params as gp
+if gp.geom == 'disc':
+    import physics_disc as phys
+else:
+    import physics_sphere as phys
 import gl_plot as gpl
 import gl_file as gfile
 from gl_class_params import *
-if gp.geom == 'disc':
-    import physics_disc as phys
-elif gp.geom == 'sphere':
-    import physics_sphere as phys
 from gl_analytic import *
 
 
@@ -158,8 +158,11 @@ def calc_M_nu_sig_disc():
 
     gp.M_x    = phys.Sigmaz(gp.dens_x)
     # gp.M_x    = phys.kz(gp.xipol, gp.xipol, gp.dens_x, gp.blow) # from kz, added baryons min
-    # marginalise over lower bound
-    gp.blow   = npr.normal(gp.dat.Mdat,gp.dat.Merr,gp.nipol)
+
+    # TODO: marginalise over lower bound, see gl_priors, kappa_DM < 0
+    # attention: gives sometime unphysical decreasing surface density like this
+    gp.blow   = gp.dat.Mdat # npr.normal(gp.dat.Mdat,gp.dat.Merr/4.,gp.nipol)
+
     
     # TODO: naming
     Rsun = 8000.; hr = 3.0; hsig = 3.0
@@ -261,11 +264,11 @@ def compare_nu(pop, dat, err):
         if gp.geom == 'disc':
             ret = gp.ipol.nudat1 if pop == 1 else gp.dat.nudat2
             if err:
-                ret = gp.ipol.nuerr1 if pop == 1 else gp.dat.nuerr2
+                ret = gp.ipol.nuerr1 if pop == 1 else gp.ipol.nuerr2
         elif gp.geom == 'sphere':
             ret = gp.ipol.nudat1_2D if pop == 1 else gp.dat.nudat2_2D
             if err:
-                ret = gp.ipol.nuerr1_2D if pop == 1 else gp.dat.nuerr2_2D
+                ret = gp.ipol.nuerr1_2D if pop == 1 else gp.ipol.nuerr2_2D
     else:                               # [model]
         if gp.geom == 'disc':
             ret = gp.ipol.nudat1 if pop == 1 else gp.ipol.nudat2
@@ -348,20 +351,36 @@ def accept_reject(n):
             gpl.update_plot()
 
         np.set_printoptions(precision=3)
-        print 'n:',n, ' chi2:',gh.pretty(gp.chi2,1),\
-              ' rate:',gh.pretty(100*gp.accrate.rate(),2),\
-              ' nu1:',gh.pretty(100*abs(np.median((phys.nu(gp.pars.nu1+gp.parstep.nu1)\
-                                                  -phys.nu(gp.pars.nu1))/phys.nu(gp.pars.nu1))),3),\
-              ' nu2:',gh.pretty(100*abs(np.median((phys.nu(gp.parstep.nu2+gp.parstep.nu2)\
-                                                  -phys.nu(gp.pars.nu2))/phys.nu(gp.pars.nu2))),3),\
-              ' d1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3),\
-              ' d2:',gh.pretty(100*abs(np.median(gp.parstep.delta2/gp.pars.delta2)),3),\
-              ' dens:',gh.pretty(100*abs(np.median((phys.densdefault(gp.parstep.dens+gp.pars.dens)\
-                                                   -phys.densdefault(gp.pars.dens))/\
-                                                  phys.densdefault(gp.pars.dens))),3)
-                                        # gp.parstep.norm1/gp.pars.norm1,\
-                                        # gp.parstep.norm2/gp.pars.norm2
-                                        # np.sum(abs(1-gp.pars.dens/rhowalkertot_3D(gp.xipol),\
+
+        if gp.pops == 1:
+            print 'n:',n, ' chi2:',gh.pretty(gp.chi2,1),\
+                  ' rate:',gh.pretty(100*gp.accrate.rate(),2),\
+                  ' nu1:',gh.pretty(100*abs(np.median((phys.nu(gp.pars.nu1+gp.parstep.nu1)\
+                                                       -phys.nu(gp.pars.nu1))/\
+                                                      phys.nu(gp.pars.nu1))),3),\
+                  ' d1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3),\
+                  ' dens:',gh.pretty(100*abs(np.median((phys.densdefault(gp.parstep.dens+\
+                                                                         gp.pars.dens)\
+                                                        -phys.densdefault(gp.pars.dens))/\
+                                                       phys.densdefault(gp.pars.dens))),3),\
+                  ' norm1:',gh.pretty(100*abs(np.median(gp.parstep.norm1/gp.pars.norm1)),3)
+        else:
+            
+            print 'n:',n, ' chi2:',gh.pretty(gp.chi2,1),\
+                  ' rate:',gh.pretty(100*gp.accrate.rate(),2),\
+                  ' nu1:',gh.pretty(100*abs(np.median((phys.nu(gp.pars.nu1+gp.parstep.nu1)\
+                                                       -phys.nu(gp.pars.nu1))/\
+                                                      phys.nu(gp.pars.nu1))),3),\
+                  ' nu2:',gh.pretty(100*abs(np.median((phys.nu(gp.parstep.nu2+gp.parstep.nu2)\
+                                                       -phys.nu(gp.pars.nu2))/\
+                                                      phys.nu(gp.pars.nu2))),3),\
+                ' d1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3),\
+                ' d2:',gh.pretty(100*abs(np.median(gp.parstep.delta2/gp.pars.delta2)),3),\
+                ' dens:',gh.pretty(100*abs(np.median((phys.densdefault(gp.parstep.dens+gp.pars.dens)\
+                                                      -phys.densdefault(gp.pars.dens))/\
+                                                     phys.densdefault(gp.pars.dens))),3)
+
+
         adapt_stepsize()
         end_initphase()
 

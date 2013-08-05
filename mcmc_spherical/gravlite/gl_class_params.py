@@ -2,16 +2,16 @@
 # (c) 2013 Pascal S.P. Steger
 '''parameters for the MCMC'''
 
+import pdb
 import numpy as np
 import numpy.random as npr
 import random
 import gl_params as gp
-import gl_helper as gh
-import pdb
 if gp.geom == 'sphere':
     import physics_sphere as phys
-elif gp.geom == 'disc':
+else:
     import physics_disc as phys
+import gl_helper as gh
 
 
 

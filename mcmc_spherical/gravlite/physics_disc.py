@@ -412,7 +412,7 @@ def sigma_rz(z, zpars, tpars):
     #   sig_Rz[i] = sig_Rz[i-1] + tparsu[i] * dz
     # f = gp.ipol(zpars,sig_Rz,z)
     
-    # Alternative here --> don't assume monotonic!  
+    # Alternative here --> don't assume monotonic!
     f = gh.ipol(zpars,tparsu,z)
     return f
 

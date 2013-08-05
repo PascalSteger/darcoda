@@ -2,20 +2,21 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''read in data and store it in appropriate class'''
 
+import pdb
 import numpy as np
 import numpy.random as npr
 import random
 import pickle
+
 import gl_params as gp
-import gl_helper as gh
-import gl_plot as gpl
-import pdb
-from gl_analytic import *
 if gp.geom == 'sphere':
     import physics_sphere as phys
-elif gp.geom == 'disc':
+else:
     import physics_disc as phys
 
+import gl_helper as gh
+import gl_plot as gpl
+from gl_analytic import *
 
 
 
@@ -235,6 +236,7 @@ class Datafile:
             pdb.set_trace()
 
         gp.xmin  = min(dat.nux1); gp.xmax = max(dat.nux1) # [pc]
+        # TODO: use radii from constant tracers per bin
         if gp.lograd:
             gp.xipol = np.logspace(np.log10(gp.xmin),np.log10(gp.xmax),gp.nipol) # [pc]
         else:

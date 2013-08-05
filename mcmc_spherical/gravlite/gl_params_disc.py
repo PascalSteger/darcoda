@@ -41,6 +41,7 @@ getnewdata = False       # get new data computed from observations before burn-i
 metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
 testplot_read = False    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
+consttr = False
 
 
 G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
@@ -118,6 +119,8 @@ if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is se
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
 nipol = 16
 
+nconstraints = 4                        # number of constraints
+dof = 1. # 1 for chi2, 4*nipol - nconstraints # for reduced chi2
 
 
 
@@ -201,15 +204,15 @@ global pars, parst, parstep
 global dat, ipol, xipol
 global nu1_x, nu2_x, d1_x, d2_x, sig1_x, sig2_x, M_x, dens_x, M_tot, dens_tot
 global fnewoverf
-global zmin, zmax    # Low/high-z range = min/max of data [-1 = default]: TODO: convert to xmin, xmax
-xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of data: 
+global zmin, zmax # Low/high-z range = min/max of data [-1 = default]: TODO: convert to xmin, xmax
+xpmin = -1;  xpmax = -1 # Default low/high-r range = min/max of data: 
 
 
 
 
 ########## MCMC parameters
-niter = 100000                  # Maximum number of iterations
-# TODO: class for chi2
+niter = 100000                          # Maximum number of iterations
+                                        # TODO: class for chi2
 chi2   = 1e300                 # initial chi2 [large]
 chi2t1 = 1e300;    chi2t2 = 1e300;    chi2t = 1e300
 chi2t_nu  = 1e300; chi2t_sig  = 1e300
@@ -221,24 +224,24 @@ prob = -1e300 if uselike else 1e300     # Initial log likeli. [small in case we 
 ini     = 0                    # TODO: meaning
 inimax  = 5000                 # 
 counter = 0                    # 
-accrej  = np.zeros(1000)       # 
-ratio   = 0.                   # 
-account1= 0.                   # 
-
-chi2tol = 1.  # more information in two tracer pops, but more errors as well # TODO: reduced chi2
-endcount = 300                  # 300 accepted models which chi2<chi2tol means initialization phase is over
-# better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
 
 
-rollsize = 100;
+
+rollsize = 100
+adaptstepwait = 30
 from gl_class_rate import Rate
 accrate = Rate(0.25, 0.05) # new acceptance/rejection rate object, mean 0.25, acceptable +-5%
 
-farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
-stepafterrunaway = 0.98 # mult. stepsize by this amount if too low fnewoverf 2.5
+chi2tol = 1.*(4*nipol-nconstraints)  # from reduced chi2
+endcount = 30*adaptstepwait # 900 accepted models which chi2<chi2tol mean init phase is over
+# better measure: 1./(min stepsize), as this gives the time neeed to get convergence on this parameter
+
+
+farinit = 10. # 5 times chi2 is too far off in init phase: start new from last point
+stepafterrunaway = 1. # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 10.      # 2 times chi2 is too high after init phase 1./2.
-scaleafterinit   = 0.9 # <= cheat: multiply stepsize by this amount if init is over
-stepcorr= 1.01   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
+scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
+stepcorr= 1.05   # adapt stepsize by this if not 0.24 < acc/rec < 0.26
 
 # Parameters to end initphase 
 initphase = True # initialisation phase flag, first True, if over: False

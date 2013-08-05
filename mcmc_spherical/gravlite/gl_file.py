@@ -2,18 +2,18 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''all file related functions'''
 
-import gl_params as gp
+
 import pdb
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 LOG = logging.getLogger(__name__)
-from gl_data import *
+import gl_params as gp
 if gp.geom == 'sphere':
     import physics_sphere as phys
-elif gp.geom == 'disc':
+else:
     import physics_disc as phys
-
+from gl_data import *
 
 
 

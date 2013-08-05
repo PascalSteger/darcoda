@@ -1,14 +1,12 @@
 #!/usr/bin/python2.7
 # class to generate all filenames, independent of which investigation is being performed
-
-import gl_params as gp
-import gl_helper as gh
 import pdb
-
+import gl_params as gp
 if gp.geom == 'sphere':
     import physics_sphere as phys
-elif gp.geom == 'disc':
+else:
     import physics_disc as phys
+import gl_helper as gh
 
 
 
