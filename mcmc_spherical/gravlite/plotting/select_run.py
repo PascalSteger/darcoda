@@ -27,8 +27,10 @@ def list_files():
         files = filter(os.path.isfile, glob.glob(x + "/*"))
         for y in files:
             ending = y.split('.')[-1]
-            if not y == ending: # only once! if no . there, get garbage
-                os.rename(y, x+"/"+ending) 
+            # renaming only if not prof in name!
+            if y == ending or ending == 'pdf' or ending == 'conf': # only once! if no . there, get garbage
+                continue
+            os.rename(y, x+"/"+ending) 
 
     
     from datetime import datetime
@@ -61,18 +63,18 @@ def get_run(default):
     return selection - 1
 
 def get_action():
-    # interactive input for action: p - print, d - delete
+    # interactive input for action: p - print, k - kill and delete
     default = 'p'
     invalid=True
     while(invalid):
         try:
-            user_input = raw_input('Action: (p - print (default), d - delete): ')
+            user_input = raw_input('Action: (p - print (default), k - kill): ')
             if not user_input:
                 user_input = default
             selection = user_input
         except ValueError:
             print "error in input"
-        if selection == 'p' or selection == 'd':
+        if selection == 'p' or selection == 'k':
             invalid = False
     return selection
 
@@ -97,12 +99,12 @@ def get_prof():
 def run():
     '''display possible runs of the current investigation method,
     select one, plot'''
-    action = 'd'
-    while(action=='d'):
+    action = 'k'
+    while(action=='k'):
         fdl = list_files()
         sel = get_run(len(fdl))
         action = get_action()
-        if action == 'd':
+        if action == 'k':
             import shutil
             shutil.rmtree(fdl[sel])
         
