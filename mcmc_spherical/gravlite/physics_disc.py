@@ -27,17 +27,6 @@ def get_zarrays(z_in):
 
 
 
-def extra_M(M_r,mprioru,r_outer,dr):
-    pnts = gp.nipol
-    # use slope in last quarter
-    # M rises from M[-1] at rmax up to mprioru*M[-1] at 2*rmax)
-    M_outer = M_r[-1] + (np.arange(pnts))*mprioru*dr
-    # if gp.analytic: M_outer = M_anf(r_outer) # TODO: adjust analytic from simple disc model
-    # M_outer = M_r[-1] + (np.arange(1,pnts))*mprioru*M_r[-1]/(rmax-rmin)*dr # for use with mprior
-    #M_outer = gfun.ipol(r0,M_r,r_outer[1:])
-    return np.hstack((M_r[:-1],     M_outer))
-
-
 
 
 

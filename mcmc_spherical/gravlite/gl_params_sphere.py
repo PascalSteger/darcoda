@@ -35,9 +35,10 @@ walkercase = 2           # choose different Walker models (0-2 so far)
 # want to set ntracer = 3e3              # case 1
 #             ntracer = 3e4              # case 2
 cas = 1
-getnewdata = False       # get new data computed from observations before burn-in
+
+getnewdata = True       # get new data computed from observations before burn-in
 metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
-testplot_read = False    # show plots for readout of data as well before init?
+showplot_readout = False    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
 consttr = True           # set radial bin by constant number of tracer particles
 
@@ -72,7 +73,7 @@ Mscale = 1.e6                           # [Msun], scale for dimensionless eqs
 ascale = 1000.                          # [pc]
 
 ########## plotting options
-testplot   = True          # show plots?
+showplot   = True          # show plots?
 plotdens   = True        # plot dens instead of M or Sigma_z in lower left plot
 if geom == 'disc': plotdens = False
 lim        = False         
@@ -96,9 +97,9 @@ if investigate != 'walker': model = False
 poly       = True  # use polynomial representation of dens during init
 if analytic: poly = False
 
-densstart = -2.0              # -2.6 for Hernquist, -2.3 for Walker cusp, -1.8 for core
+densstart = -3.              # -2.6 for Hernquist, -2.3 for Walker cusp, -1.8 for core
 scaledens = 1. # percentage of maximum radius from data, for which the poly is scaled
-scalepower = 2.0                  # 0. 9 5 for Hernquist, 1.3 for Walker cusp, 2.2 for core
+scalepower = 1.2                  # 0. 9 5 for Hernquist, 1.3 for Walker cusp, 2.2 for core
 
 
 ########## integration options
@@ -115,14 +116,14 @@ if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is se
 
 
 # Set number of terms for enclosedmass+tracer+anisotropy models:   
-nipol = 16
+nipol = 12
 
 # TODO: better: set scale for central part (first and second bin),
 # then determine number of particles inside: ninside = len(r[r<centralscale])
 # then get nipol = min(ntotal,ntracer)/ninside
 
 nconstraints = 4                        # number of constraints
-dof = 1. # 1 for chi2, 4*nipol - nconstraints # for reduced chi2
+dof = 1. # 1 for prop. chi2, 6*nipol - nconstraints # for reduced chi2
 
 
 
@@ -144,7 +145,7 @@ blow = np.zeros(nipol);   Mmodel = np.zeros(nipol)
 baryonmodel = 'sim'                    # read in surface density from corresponding surfden file
 
 mirror   = False                       # Mirror prior: TODO
-nulog    = True                        # sample nu (only) in logarithmic space. TODO: check stepsize
+nulog    = True                        # sample nu (only) in logarithmic space.
 denslog  = True                        # after init: sample dens (only) in logarithmic space
 mprior = -1                            # Mass prior
 deltaprior  = False # Deltaprior: - beta (velocity anisotropy) in spherical
@@ -164,7 +165,7 @@ constdens = False # constant DM density
 rprior  = True    # regularize Nuz 
 nutol   = 5.0     # (nu_(i+1) - nu_i) must be < nutol * nu_(i+1)
 ktol    = 0.      # same as for nu, but for dens, 50% up is still fine
-deltol  = 4./nipol                               # for delta
+deltol  = 2./nipol                               # for delta
 # norm1   = 17.**2 # offset of sigma[0]/nu[0], from int starting at zmin instead of 0
 # norm2   = 10.**2 # and for the second component, if there is one
 quadratic = False           # linear or quad interpol. 
@@ -197,7 +198,7 @@ safechi2 = 1e300
 nuerrcorr = 1.   # 2.   # scale error from grw_dens by this amount
 sigerrcorr = 1.  # 1.5  # best done directly in the corresponding grw_dens, grw_siglos
                  # thus, both times 1. is best
-
+kaperrcorr = 1.
 
 
 ########## global variables, not set to value here
@@ -215,10 +216,12 @@ xpmin = -1;  xpmax = -1                 # Default low/high-r range = min/max of 
 niter = 1000000                  # Maximum number of iterations
 # TODO: class for chi2
 chi2   = 1e300                 # initial chi2 [large]
-chi2t1 = 1e300;    chi2t2 = 1e300;    chi2t = 1e300
-chi2t_nu  = 1e300; chi2t_sig  = 1e300
+chi2t  = 1e300
+chi2t1 = 1e300;    chi2t2 = 1e300
+chi2t_nu  = 1e300; chi2t_sig  = 1e300; chi2t_kap = 1e300
 chi2t_nu1 = 1e300; chi2t_nu2  = 1e300
 chi2t_sig1= 1e300; chi2t_sig2 = 1e300
+chi2t_kap1= 1e300; chi2t_kap2 = 1e300
 
 prob = -1e300 if uselike else 1e300     # Initial log likeli. [small in case we need it in disc]
 
@@ -231,8 +234,8 @@ rollsize = 30                           # number of stacked acceptance/rejection
 adaptstepwait = rollsize
 from gl_class_rate import Rate
 accrate = Rate(0.25, 0.05) # new acceptance/rejection rate object, mean 0.25, acceptable +-5%
-chi2tol = 1.*(4*nipol-nconstraints) # tolerance in (chi2) or (without paranteses) reduced chi2
-endcount = 30*rollsize # 900 accepted models which chi2<chi2tol means initialization phase is over
+chi2tol = 1.*(6*nipol-nconstraints) # tolerance in (chi2) or (without paranteses) reduced chi2
+endcount = 1*rollsize # 900 accepted models which chi2<chi2tol means initialization phase is over
                                         # better measure: 1./(min stepsize),
                                         # as this gives the time needed to get convergence
                                         # on this parameter

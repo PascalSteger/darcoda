@@ -40,12 +40,14 @@ class Datafile:
         self.densx = np.array([]); self.densdat = np.array([]); self.denserr = np.array([])
         self.densx_2D=np.array([]); self.densdat_2D = np.array([]); self.denserr_2D = np.array([])
         self.sigx1 = np.array([]); self.sigdat1=np.array([]); self.sigerr1=np.array([])
+        self.kapx1 = np.array([]); self.kapdat1=np.array([]); self.kaperr1=np.array([])
         self.tracers1 = np.array([])
 
         if(gp.pops==2):
             self.nux2 = np.array([]); self.nudat2=np.array([]); self.nuerr2=np.array([])
             self.nux2_2D=np.array([]);self.nudat2_2D=np.array([]);self.nuerr2_2D=np.array([])
             self.sigx2 = np.array([]); self.sigdat2=np.array([]); self.sigerr2=np.array([])
+            self.kapx2 = np.array([]); self.kapdat2=np.array([]); self.kaperr2=np.array([])
             self.tracers2 = np.array([])
 
 
@@ -220,7 +222,25 @@ class Datafile:
 
             
             self.sigerr2 /= gp.sigerrcorr #[maxvlos]
+
+
+    def read_kappa(self):
+        'read in line of sight velocity kurtosis'
+        self.kapx1,self.kapdat1,self.kaperr1 = gh.readcol(gp.files.kappafiles[1])
+        #[rcore], [maxvlos], [maxvlos]
+
+        # change to pc, km/s here
+        self.kapx1   = self.kapx1[:]   * gp.rcore_2D[1]     # [pc]
+        self.kaperr1 /= gp.kaperrcorr #[km/s]
             
+        if gp.pops==2:
+            self.kapx2,self.kapdat2,self.kaperr2 = gh.readcol(gp.files.kappafiles[2])
+            # [rcore], [maxvlos], [maxvlos]
+
+            # change to pc, km/s here
+            self.kapx2   = self.kapx2[:]   * gp.rcore_2D[2]     # [pc]
+            self.kaperr2 /= gp.kaperrcorr #[maxvlos]
+
 
     def set_rhalf(self, xhalf):
         self.xhalf = xhalf
@@ -269,6 +289,10 @@ class Datafile:
         self.sigdat1  = gh.ipollog(dat.sigx1, dat.sigdat1, self.sigx1) # [km/s]
         self.sigerr1  = gh.ipollog(dat.sigx1, dat.sigerr1, self.sigx1) # [km/s]
 
+        self.kapx1    = gp.xipol                                # [pc]
+        self.kapdat1  = gh.ipollog(dat.kapx1, dat.kapdat1, self.kapx1) # [km/s]
+        self.kaperr1  = gh.ipollog(dat.kapx1, dat.kaperr1, self.kapx1) # [km/s]
+
         if gp.pops==2:
             if gp.geom == 'sphere':
                 self.nux2_2D   = gp.xipol                                # [pc]
@@ -283,6 +307,10 @@ class Datafile:
             self.sigdat2 = gh.ipollog(dat.sigx2, dat.sigdat2, self.sigx2) # [km/s]
             self.sigerr2 = gh.ipollog(dat.sigx2, dat.sigerr2, self.sigx2) # [km/s]
 
+            self.kapx2   = gp.xipol # [pc]
+            self.kapdat2 = gh.ipollog(dat.kapx2, dat.kapdat2, self.kapx2) # [km/s]
+            self.kaperr2 = gh.ipollog(dat.kapx2, dat.kaperr2, self.kapx2) # [km/s]
+
         return self
         # dens0 = 0.40 #Msun/pc**3
         # dens0 = dens0/self.Mtottracer*self.rhalf**3 # in internal units
@@ -293,6 +321,9 @@ class Datafile:
         # Mshell = vol*denspredict
         # self.DMpredict = np.cumsum(Mshell)
         # radii for samplings of M, nu, beta in nipol bins
+
+
+
 
 
 
@@ -309,12 +340,22 @@ class Datafile:
         print 'sigx1 = ',  gh.pretty(self.sigx1), ' pc'
         print 'sigdat1 = ',gh.pretty(self.sigdat1), 'km/s'
         print 'sigerr1 = ',gh.pretty(self.sigerr1), 'km/s'
+
+        print 'kapx1 = ',  gh.pretty(self.kapx1), ' pc'
+        print 'kapdat1 = ',gh.pretty(self.kapdat1), 'km/s'
+        print 'kaperr1 = ',gh.pretty(self.kaperr1), 'km/s'
+
+
         if gp.pops==2:
             print 'nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3'
             print 'nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3'
             
             print 'sigdat2 = ',gh.pretty(self.sigdat2), ' km/s'
             print 'sigerr2 = ',gh.pretty(self.sigerr2), ' km/s'
+
+            print 'kapdat2 = ',gh.pretty(self.kapdat2), ' km/s'
+            print 'kaperr2 = ',gh.pretty(self.kaperr2), ' km/s'
+
 
 
 
@@ -337,10 +378,12 @@ class Datafile:
         self.densx = obj.densx;   self.densdat = obj.densdat;     self.denserr = obj.denserr
         self.nux1 = obj.nux1;     self.nudat1 = obj.nudat1;       self.nuerr1 = obj.nuerr1
         self.sigx1 = obj.sigx1;   self.sigdat1 = obj.sigdat1;     self.sigerr1 = obj.sigerr1
+        self.kapx1 = obj.kapx1;   self.kapdat1 = obj.kapdat1;     self.kaperr1 = obj.kaperr1
 
         if gp.pops == 2:
             self.nux2 = obj.nux2;     self.nudat2 = obj.nudat2;      self.nuerr2 = obj.nuerr2
             self.sigx2 = obj.sigx2;   self.sigdat2 = obj.sigdat2;    self.sigerr2 = obj.sigerr2
+            self.kapx2 = obj.kapx2;   self.kapdat2 = obj.kapdat2;    self.kaperr2 = obj.kaperr2
 
         return self
 
@@ -354,11 +397,13 @@ class Datafile:
         self.nux1 = obj.nux1;     self.nudat1 = obj.nudat1;       self.nuerr1 = obj.nuerr1
         self.nux1_2D=obj.nux1_2D; self.nudat1_2D=obj.nudat1_2D;   self.nuerr1_2D=obj.nuerr1_2D
         self.sigx1 = obj.sigx1;   self.sigdat1 = obj.sigdat1;     self.sigerr1 = obj.sigerr1
-
+        self.kapx1 = obj.kapx1;   self.kapdat1 = obj.kapdat1;     self.kaperr1 = obj.kaperr1
+        
 
         if gp.pops == 2:
             self.nux2 = obj.nux2;     self.nudat2 = obj.nudat2;      self.nuerr2 = obj.nuerr2
             self.nux2_2D=obj.nux2_2D; self.nudat2_2D=obj.nudat2_2D;  self.nuerr2_2D=obj.nuerr2_2D
             self.sigx2 = obj.sigx2;   self.sigdat2 = obj.sigdat2;    self.sigerr2 = obj.sigerr2
+            self.kapx2 = obj.kapx2;   self.kapdat2 = obj.kapdat2;    self.kaperr2 = obj.kaperr2
 
         return self

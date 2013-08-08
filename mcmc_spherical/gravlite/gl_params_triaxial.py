@@ -41,7 +41,7 @@ walkercase = 2           # choose different Walker models (0-2 so far)
 cas = 2
 getnewdata = True       # get new data computed from observations before burn-in
 metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
-testplot_read = True    # show plots for readout of data as well before init?
+showplot_readout = True    # show plots for readout of data as well before init?
 lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
 consttr = False           # set radial bin by constant number of tracer particles
 
@@ -76,7 +76,7 @@ else:                                   # for walker, fornax, triaxial
     ascale = 1000.                          # [pc]
 
 ########## plotting options
-testplot   = True          # show plots?
+showplot   = True          # show plots?
 plotdens   = True        # plot dens instead of M or Sigma_z in lower left plot
 if geom == 'disc': plotdens = False
 lim        = False         

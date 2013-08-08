@@ -189,6 +189,7 @@ class Params:
 
 
     def adaptworst(self,mult):
+        mult *= mult # go up twice, decrease for all once
         if gp.pops == 1:
             if gp.chi2t_nu1 > gp.chi2t_sig1:
                 self.nu1 *= mult

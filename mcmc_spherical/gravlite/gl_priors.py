@@ -16,8 +16,8 @@ from gl_int import int_surfden
 
 
 
+
 def check_density():
-    gp.LOG.debug(' now check regularisation priors')
     if gp.rprior:
         if gp.geom == 'sphere':
             nu1 = int_surfden(gp.xipol,gp.parst.nu1)
@@ -71,19 +71,26 @@ def check_density():
 
 def check_mass():
     if gp.geom == 'sphere':
-        gp.LOG.debug(' check rising mass prior:')
+        # check rising mass prior
         denscheck = phys.dens(gp.xipol, gp.parst.dens)
 
         # if max((denscheck[1:]-denscheck[:-1])/denscheck[:-1])>0.5:
         for i in range(len(denscheck)-1):
             if (denscheck[i+1]-denscheck[i])/denscheck[i] > gp.ktol:
                 if not gp.dens2wild:
-                    print 'rising dens prior, more than 200% up'
-                    # gp.dens2wild = True
+                    print 'rising dens prior'
+                    gp.dens2wild = True
                     gf.get_working_pars()
                 # gp.parst.dens[i+1] *= 0.9
                 # gp.parst.dens *= 1./np.sqrt(np.arange(1.,gp.nipol+1)[::-1])
                 return True
+
+        # check rho \propto r^(-\alpha), \alpha>0.:
+        # first, wanted to enforce alpha>3, but does not have to be at these small scales
+        lre = np.log(gp.xipol[-1]);      lrm = np.log(gp.xipol[-2])
+        lrhoe = np.log(denscheck[-1]);   lrhom = np.log(denscheck[-2])
+        if (lrhoe-lrhom)/(lre-lrm) > 0:
+            return True
 
     elif gp.geom == 'disc':
         denscheck = phys.Sigmaz(phys.densdefault(gp.parst.dens))
@@ -144,20 +151,26 @@ def check_delta():
     gp.LOG.debug( 'now checking delta <= 1')
     d1 = phys.delta(gp.parst.delta1)
     if max(d1)>1.:
+        # correction on the fly
         # for jj in range(gp.nipol):
         #     if d1[jj] >1.:
         #         gp.parst.delta1[jj] /= 2.
         #         print 'delta1 too high, corrected entry ',jj,' to half its value'
         return True
+    # prior: if last delta >= 0, the stars are not radially biased
+    if d1[-1]<0:
+        return True
     if gp.pops == 2:
         d2 = phys.delta(gp.parst.delta2)
         if max(d2)>1.:
+            # correction on the fly
             # for jj in range(gp.nipol):
             #     if d2[jj] >1.:
             #         gp.parst.delta2[jj] /= 2.
             #         print 'delta2 too high, corrected entry ',jj,' to half its value'
             return True
-
+        if d2[-1]<0:
+            return True
 
     gp.LOG.debug( 'now checking delta smoothness')
     dcheck = abs(gp.parst.delta1[1:]-gp.parst.delta1[:-1])

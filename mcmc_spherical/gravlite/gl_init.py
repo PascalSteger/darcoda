@@ -52,7 +52,7 @@ def mcmc_init():
     ### delta
     if gp.geom == 'sphere':
         deltapars1 = np.zeros(gp.nipol)
-        deltaparstep1 = deltapars1 + 0.03
+        deltaparstep1 = deltapars1 + 0.05
         mdelta1 = []; mdelta2 = []
         if gp.model:
             print 'TODO: disable model for delta for observed dwarfs!'
@@ -61,16 +61,16 @@ def mcmc_init():
             elif gp.investigate == 'triaxial':
                 mdelta1 = betatriax(gp.xipol)
             deltapars1 = phys.invdelta(mdelta1)
-            deltaparstep1 = deltapars1*0. + 0.03
+            deltaparstep1 = deltapars1*0. + 0.05
             # if gp.deltaprior:   # TODO: rename
             #     deltaparstep1 = np.zeros(gp.nipol)
 
         if gp.pops == 2:
             deltapars2 = np.zeros(gp.nipol)
-            deltaparstep2 = deltapars2 + 0.03
+            deltaparstep2 = deltapars2 + 0.05
             if gp.model:
                 deltapars2 = phys.invdelta(mdelta2)
-                deltaparstep2 = deltapars2*0. + 0.03
+                deltaparstep2 = deltapars2*0. + 0.05
                 # if gp.deltaprior:
                 #     deltaparstep2 = np.zeros(gp.nipol)
 
@@ -94,8 +94,7 @@ def mcmc_init():
         for i in range(1,gp.nipol):
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
-
-        densparstep = denspars/20. * (np.arange(1,gp.nipol+1))**1.8
+        densparstep = denspars/50. * (np.arange(1,gp.nipol+1))**0.5
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:
@@ -130,7 +129,7 @@ def mcmc_init():
                 denspars[i] = (gp.scaledens)**i/i**gp.scalepower
 
             # scale high order dens stepsizes s.t. they change remarkably as well
-            densparstep = denspars/30. * (np.arange(1,gp.nipol+1))**0.75
+            densparstep = denspars/50. #* (np.arange(1,gp.nipol+1))**0.5
 
         if gp.denslog:          # still in disc case
             denspars = np.log10(denspars)

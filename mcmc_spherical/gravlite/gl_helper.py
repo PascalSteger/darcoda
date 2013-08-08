@@ -194,8 +194,8 @@ def bin_r_const_tracers(r0,no): # radii, number of tracers
         maxri.append(r0[maxi[i]])
 
     midri = []
-    midri.append(minri[0]/2.)
-    for i in range(1,nbin):
+    # TODO: check fine to take *not* half the first particle radius for midri
+    for i in range(nbin):
         midri.append((minri[i]+maxri[i])/2.)
     return minri, maxri, midri
 

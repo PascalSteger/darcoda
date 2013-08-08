@@ -66,9 +66,10 @@ def dens(xipol, denspars):                # [pc], [1] or [msun/pc^3]
     tmp = np.zeros(len(xipol))
     for i in range(0,len(denspars)):
         tmp += denspars[i]*((scale-xipol)/scale)**i # [log10(msun/pc^3)]
+
     # gpl.plot(gp.ipol.densr,gp.ipol.densdat); gpl.plot(gp.xipol,10.**tmp); gpl.yscale('log')
     
-    dout = np.power(10.,tmp) # if gp.denslog else tmp            # [Msun/pc^3]
+    dout = np.power(10.,tmp) # [Msun/pc^3] # always in denslog case!
 
     gh.checknan(dout)
     return dout                 # [msun/pc^3]
@@ -245,111 +246,6 @@ def get_zarrays(r_in):
 
 
 
-def extra_nu(nu_r, r0, r_outer): # [densunit, lunit, lunit]
-    'return extrapolated nu to 2rmax'
-    pnts = gp.nipol #[1]
-    # nu goes down linearly in log space from nu[-1] at rmax
-    # towards zero at 2*rmax, not reaching it
-    pntsam = gp.nipol/2.05
-    nuipolbase = nu_r[::pntsam] # [densunit]
-    xipolbase  = r0[::pntsam] #[lunit]
-    nu_outer   = gh.ipollog(xipolbase,nuipolbase,r_outer)
-    # nu_outer   = gh.ipollog(xipolbase,nuipolbase,r_outer)
-    # nu_outer   = gh.ipollog(r0,nu_r,r_outer,smooth=1.e-8)
-    # nu_outer   = gh.ipollog(r0,nu_r,r_outer,smooth=10.)
-    # nu_outer   = nu_r[-1]*np.ones(pnts-1)
-    # nu_outer   = nu_r[-1]/((nu_r[-2]/nu_r[-1])**(np.arange(pnts))) #[densunit], extrapolation from last two points
-
-    if gp.analytic: nu_outer   = rho_anf(r_outer)
-
-    nu_tot = np.hstack((nu_r[:-1], nu_outer)) #[densunit]
-    return nu_tot #[densunit]
-
-
-
-
-
-
-
-
-
-def extra_M(M_r,mprioru,r_outer,dr): # TODO: delete
-    'get M extrapolated to 2rmax'
-    pnts = gp.nipol
-    # use slope in last quarter
-    # M rises from M[-1] at rmax up to mprioru*M[-1] at 2*rmax)
-    M_outer = M_r[-1] + (np.arange(pnts))*mprioru*dr
-    if gp.analytic: M_outer = M_anf(r_outer)
-    # M_outer = M_r[-1] + (np.arange(1,pnts))*mprioru*M_r[-1]/(rmax-rmin)*dr # for use with mprior
-    #M_outer = gfun.ipol(r0,M_r,r_outer[1:])
-    return np.hstack((M_r[:-1],     M_outer))
-
-
-
-
-def extra_delta(delta_r):                 # [1]
-    'get extrapolated delta out to 2rmax'
-    delta_outer = delta_r[-1] * np.ones(gp.nipol-1)
-    return np.hstack((delta_r,  delta_outer))
-
-
-
-
-
-def sig_los_tot(pop, x, M_x, nu_r, delta_r): #[1], [pc], [munit, 3D], [dens0,3D], [1]
-    'General function to calculate \sigma_{los}, with extrapolation of each factor'
-
-    pnts = gp.nipol
-    r0,r_tot,rmin,rmax,dr,r_outer = get_zarrays(x) #6*[pc]
-    
-    # Calculate density and M force:
-    mprioru = get_mprior(M_x) #[1], slope TODO: delete
-
-    nu_tot    = extra_nu(nu_r,r0,r_outer) #[dens0,3D]
-    M_tot     = extra_M(M_x,mprioru,r_outer,dr) #[munit,3D]
-    delta_tot = extra_delta(delta_r) #[1]
-
-    if(gp.analytic):
-        sigr2_an  = sig2_anf(r_tot)              #[TODO]
-        siglos2surf_an = surfden_sig2_anf(r_tot) #[TODO]
-        surfden_an  = surfden_anf(r_tot)         #[TODO]
-        siglos_an = sig_los_anf(r_tot)           #[TODO]
-
-
-    delta_r_t   = int_delta_r_t(pnts, r_tot, delta_tot) # [1]
-    
-    sigr2       = int_sigr2( pnts, r_tot, delta_r_t, M_tot, nu_tot)
-    # takes [1], [pc], [1], [munit], [munit/pc^3], gives back [(km/s)^2]
-
-    siglos2surf = int_siglos2surf(pnts, r_tot, delta_tot, nu_tot, sigr2)
-    # takes [1], [pc], [1], [munit/pc^3], [(km/s)^2], gives back # [munit/pc^2 (km/s)^2]
-
-    surfden     = int_surfden(r_tot, nu_tot)
-    # takes [1], [pc], [munit/pc^3], gives back [munit/pc^2]
-    
-
-    posi        = siglos2surf/surfden #/1.05    # TODO: check sigr2, remove 1.05 factor
-    # takes [munit/pc^2 (km/s)^2], gives back [(km/s)^2]
-    
-    for i in range(len(posi)):
-        if posi[i]<0:
-            posi[i] =1e-20              # correct for too low and possibly negative bogus values
-
-    siglos      = np.sqrt(posi)         # [km/s]
-
-    # Interpolate back to input array:
-    #siglos_ipol = gfun.smooth(gp.xipol,siglos)
-
-    # if #bins < 30, use following fix to get first bin approx. right
-    # TODO: more investigations needed in int_sigr2,surfden to get rid of the following line
-    # siglos[0] = siglos[1]*0.95
-    gh.checknan(siglos)
-    return siglos                       # [km/s]
-
-
-
-
-
 
 
 def sig_los(M_x, nu_r, delta_r): #[munit, 3D], [munis/pc^3], [1]
@@ -384,3 +280,56 @@ def sig_los(M_x, nu_r, delta_r): #[munit, 3D], [munis/pc^3], [1]
     siglos      = np.sqrt(posi)         # [km/s]
     gh.checknan(siglos)
     return siglos                       # [km/s]
+
+
+
+
+
+
+
+def kap_los(M_x, nu_r, delta_r): #[munit, 3D], [munis/pc^3], [1]
+    '''General function to calculate \kappa_{los} with analytic integral over fitting polynomial'''
+
+    r0 = gp.xipol[:]
+    
+    # Calculate density and M force:
+
+    if gp.analytic:
+        from gl_analytic import sig2_anf, surfden_sig2_anf, surfden_anf, sig_los_anf
+        sigr2_an  = sig2_anf(r0)              # [TODO]
+        siglos2surf_an = surfden_sig2_anf(r0) # [TODO]
+        surfden_an  = surfden_anf(r0)         # [TODO]
+        siglos_an = sig_los_anf(r0)           # [TODO]
+        # TODO: kap_los_anf(r0)
+
+    surfden     = int_surfden(r0, nu_r)
+    # takes [pc], [munit/pc^3], gives back [munit/pc^2]
+        
+    delta_r_t   = ant_delta_r_t(r0, delta_r) # [1]
+
+    sigr2       = ant_sigr2(r0, delta_r_t, M_x, nu_r)
+    # takes [pc], [1*pc], [munit], [munit/pc^3], gives back [(km/s)^2]
+
+    siglos2surf = ant_siglos2surf(r0, delta_r, nu_r, sigr2)
+    # takes [pc], [1], [munit/pc^3], [(km/s)^2], gives back # [munit/pc^2 (km/s)^2]
+
+    siglos2     = siglos2surf/surfden
+    # takes [munit/pc^2 (km/s)^2], gives back [(km/s)^2]
+
+
+    kapr4       = ant_kapr4(r0, delta_r_t, M_x, nu_r, sigr2)
+    # takes [pc], [1*pc], [munit], [munit/pc^3], [(km/s)^2], gives back [(km/s)^4]
+
+    kaplos4surf = ant_kaplos4surf(r0, delta_r, nu_r, kapr4)
+    # takes [pc], [1], [munit/pc^3], [(km/s)^4], [1], gives back # [munit/pc^2 (km/s)^4]
+
+
+
+
+    kaplos4     = kaplos4surf/surfden
+    # takes [munit/pc^2 (km/s)^2], gives back [(km/s)^2]
+    
+    kaplos = kaplos4/(siglos2**2)# - 3.0 # subtract 3.0 for Gaussian distribution for Fisher version
+
+    gh.checknan(kaplos)
+    return kaplos                       # [km/s]

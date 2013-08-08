@@ -38,7 +38,7 @@ while ( n < gp.niter-1):
 
     # only calculate sigma and other variables if previous test succeeded
     if gp.geom == 'sphere':
-        gfun.calc_M_nu_sig_sphere()
+        gfun.calc_M_nu_sig_kap_sphere()
     elif gp.geom == 'disc':
         gfun.calc_M_nu_sig_disc()
 

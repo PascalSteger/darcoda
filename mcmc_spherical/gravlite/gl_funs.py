@@ -63,8 +63,8 @@ def get_new_parameters():
 
 
 
-def calc_M_nu_sig_sphere():
-    gp.LOG.debug( 'Calculate M / nu / sigma values for spherical case')
+def calc_M_nu_sig_kap_sphere():
+    # Calculate M / nu / sigma values for spherical case
     if gp.geom != 'sphere':
         print 'wrong branch, use calc_M_nu_sig_disc'
         pdb.set_trace()
@@ -78,11 +78,18 @@ def calc_M_nu_sig_sphere():
         gp.M_x    = phys.Mr3D(gp.xipol, gp.dens_x) # [munit,3D]
         gp.d1_x   = phys.delta(gp.parst.delta1)
         gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x)
+        gp.kap1_x = phys.kap_los(gp.M_x, gp.nu1_x, gp.d1_x)
 
         if gp.pops == 2:
             gp.nu2_x  = phys.nu(gp.parst.nu2)
             gp.d2_x   = phys.delta(gp.parst.delta2)
             gp.sig2_x = phys.sig_los(gp.M_x, gp.nu2_x, gp.d2_x)
+            gp.kap2_x = phys.kap_los(gp.M_x, gp.nu2_x, gp.d2_x)
+
+        # to debug almost fitting curves:
+        # if gp.chi2 < 60:
+        #     pdb.set_trace()
+        
 
             
     else:
@@ -114,7 +121,12 @@ def calc_M_nu_sig_sphere():
             if gp.pops == 2:
                 gp.d2_x = walker_delta(2)
 
-
+            gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x)
+            gp.kap1_x = phys.kap_los(gp.M_x, gp.nu1_x, gp.d1_x)
+            if gp.pops == 2:
+                gp.sig2_x = phys.sig_los(gp.M_x, gp.nu2_x, gp.d2_x)
+                gp.kap2_x = phys.kap_los(gp.M_x, gp.nu2_x, gp.d2_x)
+            
         # still checksigma, but for walker now
         elif gp.investigate == 'walker':
             rhodm, rhostar1, rhostar2 = rhowalker_3D(gp.xipol)
@@ -135,10 +147,14 @@ def calc_M_nu_sig_sphere():
             gp.sig1_x = phys.sig_los(gp.M_x, gp.nu1_x, gp.d1_x) # [km/s]
             # takes [munit, 3D], [munit/pc^3], [1]
             # normalization of nu does not matter, is divided out
+            gp.kap1_x = phys.kap_los(gp.M_x, gp.nu1_x, gp.d1_x) # [km/s]
             
             # gp.sig1_x= sig_los_anf(gp.xipol) # cheat to check sig_los plot
             if gp.pops == 2:
                 gp.sig2_x = phys.sig_los(gp.M_x,gp.nu2_x,gp.d2_x) # [km/s]
+                gp.kap2_x = phys.kap_los(gp.M_x,gp.nu2_x,gp.d2_x) # [km/s]
+
+
 
 
 
@@ -167,7 +183,7 @@ def calc_M_nu_sig_disc():
     # TODO: naming
     Rsun = 8000.; hr = 3.0; hsig = 3.0
     gp.sig1_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu1_x, gp.parst.norm1, gp.parst.delta1, [Rsun,hr,hsig])
-
+    gp.kap1_x = gp.xipol*0. # set to 0 consistently
 
     
     if gp.pops == 2:
@@ -175,13 +191,14 @@ def calc_M_nu_sig_disc():
         # gp.nu2_x  = phys.nu_decrease(gp.xipol,gp.xipol,gp.parst.nu2)
         gp.d2_x   = phys.delta(gp.parst.delta2)
         gp.sig2_x = phys.sigmaz(gp.xipol, gp.dens_x, gp.nu2_x, gp.parst.norm2, gp.parst.delta2, [Rsun,hr,hsig])
-
+        gp.kap2_x = gp.xipol*0.
 
     if gp.checksigma:
         gp.nu1_x  = gp.ipol.nudat1
         Rsun = 8.; hr = 3.0; hsig = 3.0 # irrelevant, as long as gp.deltaprior = True
         gp.parst.norm1 = 17.**2
         gp.sig1_x = phys.sigmaz(gp.xipol, gp.ipol.densdat, gp.blow, gp.ipol.nudat1,gp.parst.norm1,gp.parst.delta1, [Rsun,hr,hsig])
+        gp.kap1_x = gp.xipol*0.
 
     return
 
@@ -283,7 +300,12 @@ def compare_nu(pop, dat, err):
 
 
 
+
+
+
 def chi2red(model, data, sig, dof):
+    # reduced chi2
+    # if Degrees Of Freedom = 1, return non-reduced chi2
     return sum(((model-data)**2./sig**2)/dof)
 
 
@@ -297,15 +319,18 @@ def calc_chi2():
     gp.chi2t_nu       = gp.chi2t_nu1
     if gp.analytic:
         gp.chi2t_sig1     = chi2red(gp.sig1_x,rho_anf(gp.xipol),gp.ipol.sigerr1,1.,gp.dof) #gp.ipol.sigdat1
+        # TODO: kap1 chi2 in analytic case
     else:
         gp.chi2t_sig1     = chi2red(gp.sig1_x,gp.ipol.sigdat1,gp.ipol.sigerr1,gp.dof)
+        gp.chi2t_kap1     = chi2red(gp.kap1_x,gp.ipol.kapdat1,gp.ipol.kaperr1,gp.dof)
     gp.chi2t_sig      = gp.chi2t_sig1
+    gp.chi2t_kap      = gp.chi2t_kap1
 
     if not gp.deltaprior and gp.uselike:
         sig_Rz = phys.sigma_rz(gp.xipol, gp.xipol, gp.parst.delta1)
         prob_t = prob_t + np.sum((sig_Rz - sigRz_dat)**2./sigRz_dat_err**2.)
 
-    gp.chi2t1         = gp.chi2t_nu1 + gp.chi2t_sig1
+    gp.chi2t1         = gp.chi2t_nu1 + gp.chi2t_sig1 + gp.chi2t_kap1
     gp.chi2t          = gp.chi2t1
     if gp.pops == 2:
         numodel2 = int_surfden(gp.xipol,gp.nu2_x) if gp.geom=='sphere' else gp.nu2_x
@@ -315,7 +340,9 @@ def calc_chi2():
         gp.chi2t_nu  += gp.chi2t_nu2
         gp.chi2t_sig2 = chi2red(gp.sig2_x, gp.ipol.sigdat2, gp.ipol.sigerr2,gp.dof)
         gp.chi2t_sig += gp.chi2t_sig2
-        gp.chi2t2     = gp.chi2t_nu2 + gp.chi2t_sig2
+        gp.chi2t_kap2 = chi2red(gp.kap2_x, gp.ipol.kapdat2, gp.ipol.kaperr2,gp.dof)
+        gp.chi2t_kap += gp.chi2t_kap2
+        gp.chi2t2     = gp.chi2t_nu2 + gp.chi2t_sig2 + gp.chi2t_kap2
         gp.chi2t     += gp.chi2t2
 
     if np.isnan(gp.chi2t):
@@ -371,7 +398,7 @@ def accept_reject(n):
                   ' nu1:',gh.pretty(100*abs(np.median((phys.nu(gp.pars.nu1+gp.parstep.nu1)\
                                                        -phys.nu(gp.pars.nu1))/\
                                                       phys.nu(gp.pars.nu1))),3),\
-                  ' nu2:',gh.pretty(100*abs(np.median((phys.nu(gp.parstep.nu2+gp.parstep.nu2)\
+                  ' nu2:',gh.pretty(100*abs(np.median((phys.nu(gp.pars.nu2+gp.parstep.nu2)\
                                                        -phys.nu(gp.pars.nu2))/\
                                                       phys.nu(gp.pars.nu2))),3),\
                 ' d1:',gh.pretty(100*abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3),\
@@ -427,6 +454,7 @@ def end_initphase():
     if not gp.endgame: return
 
     if gp.chi2 < gp.chi2tol and gp.chi2t_nu < gp.chi2t_sig:
+        # TODO: include kap condition?
         gp.endcount -= 1;
         print 'gp.endcount = ',gp.endcount
 
@@ -440,12 +468,11 @@ def end_initphase():
         if gp.endcount > 0:
             return
 
-    # if none of the above conditions held:
+    # if none of the above conditions hold:
     print( '*** initialization phase over ***')
     print( '*********************************')
     gp.initphase = False
     if gp.denslog:
-
         # use parstep if possible
         # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens+gp.parstep.dens))-\
         #                       np.log10(phys.densdefault(gp.pars.dens)))
@@ -453,19 +480,28 @@ def end_initphase():
         # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens*1.05))-\
         #                       np.log10(phys.densdefault(gp.pars.dens)))
 
-        #mul = gp.parstep.dens[0]/gp.pars.dens[0]
-        # gp.parstep.dens = mul*np.log10(phys.densdefault(gp.pars.dens)) # not proportional
-        # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens))*mul) # prop, wrong for arg = 0
-        #gp.parstep.dens = np.ones(gp.nipol)*abs(np.log10(phys.densdefault(gp.pars.dens)[-1])*mul) # constant stepsize over all xipol, from highest contrib from last point, same sign everywhere (even if first point is log10>0.)
-        den        = phys.densdefault(gp.pars.dens)
-        denerr     = phys.densdefault(gp.pars.dens+gp.parstep.dens)-phys.densdefault(gp.pars.dens)
-
-        gp.parstep.dens = np.log10(den+denerr)-np.log10(den)
-        boundbelow = [max(x, max(gp.parstep.dens)/10) for x in gp.parstep.dens] # give last bins a chance
-        gp.parstep.dens = boundbelow
-        gp.pars.dens    = np.log10(den)
+        # 2) use constant step, from largest step, factor-wise
+        mul = np.median(gp.parstep.dens[0]/gp.pars.dens[0])
+        # # gp.parstep.dens = mul*np.log10(phys.densdefault(gp.pars.dens)) # not proportional
+        # # gp.parstep.dens = abs(np.log10(phys.densdefault(gp.pars.dens))*mul) # prop, wrong for arg = 0
+        gp.parstep.dens = np.ones(gp.nipol)*abs(np.log10(\
+            phys.densdefault(gp.pars.dens)[-1])*mul)
+        gp.pars.dens = np.log10(phys.densdefault(gp.pars.dens))
         gp.parst.dens = np.log10(phys.densdefault(gp.parst.dens))
-        
+        # constant stepsize over all xipol, from highest contrib from
+        # last point, same sign everywhere (even if first point is log10>0.)
+        # end 2)
+
+
+        # 3) use real space density change
+        # den        = phys.densdefault(gp.pars.dens)
+        # denerr     = phys.densdefault(gp.pars.dens+gp.parstep.dens/2)-phys.densdefault(gp.pars.dens)
+        # gp.parstep.dens = np.array(np.log10(den+denerr)-np.log10(den))
+        # boundbelow = [max(x, max(gp.parstep.dens)/10) for x in gp.parstep.dens] # give last bins a chance
+        # gp.parstep.dens = np.array(boundbelow)
+        # gp.pars.dens    = np.array(np.log10(den))
+        # gp.parst.dens = np.array(np.log10(phys.densdefault(gp.parst.dens)))
+        # end 3)
     else:
         gp.parstep.dens = abs(phys.densdefault(gp.pars.dens+gp.parstep.dens)-\
                               phys.densdefault(gp.pars.dens))

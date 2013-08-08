@@ -40,6 +40,7 @@ class Files:
         self.set_dir(gp.machine) # 'darkside' or 'local'
         self.massfile = ''; self.analytic = '';               self.surfdenfiles = []
         self.nufiles  = [];        self.sigfiles = [];        self.posvelfiles = []
+        self.kappafiles = [];
         self.ntracer, self.nstr1 = self.set_ntracer(gp.cas)
         
         if gp.investigate == 'hernquist':
@@ -109,6 +110,8 @@ class Files:
                 self.nufiles.append(self.dir+'densityfalloff/'+sim+'falloffnotnorm.txt') # first comp.
                 self.sigfiles.append(self.dir+'velocitydispersionlos/'+sim+'veldisplos.txt') # all comp.
                 self.sigfiles.append(self.dir+'velocitydispersionlos/'+sim+'veldisplos.txt') # first comp.
+                self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos.txt') # all comp.
+                self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos.txt') # first comp.
             else:
                 self.nufiles.append(self.dir+'densityfalloff/' +sim+'falloffnotnorm_'+\
                                     self.nstr1+'_'+self.nstr2+'.txt') # all comp.
@@ -118,6 +121,10 @@ class Files:
                                      +self.nstr1+'_'+self.nstr2+'.txt') # all comp.
                 self.sigfiles.append(self.dir+'/velocitydispersionlos/' +sim+'veldisplos_'\
                                      +self.nstr1+'_'+self.nstr2+'.txt') # first comp.
+                self.kappafiles.append(self.dir+'/kappalos/' +sim+'kappalos_'\
+                                     +self.nstr1+'_'+self.nstr2+'.txt') # all comp.
+                self.kappafiles.append(self.dir+'/kappalos/' +sim+'kappalos_'\
+                                     +self.nstr1+'_'+self.nstr2+'.txt') # first comp.
                 
         elif gp.pops == 2: # before: _*_[1,2].txt
             self.nufiles.append(self.dir+'densityfalloff/'+sim+'falloffnotnorm.txt') # all comp.
@@ -126,10 +133,14 @@ class Files:
             self.sigfiles.append(self.dir+'/velocitydispersionlos/' +sim+'veldisplos_'+self.nstr1+'_'+nstr2+'.txt') # all comp.
             self.sigfiles.append(self.dir+'velocitydispersionlos/'\
                                  +sim+'veldisplos_'+self.nstr1+'_0.txt')
+            self.kappafiles.append(self.dir+'kappalos/'\
+                                 +sim+'kappalos_'+self.nstr1+'_0.txt')
             self.nufiles.append(self.dir+'densityfalloff/'\
                                 +sim+'falloffnotnorm_0_'+self.nstr2+'.txt')
             self.sigfiles.append(self.dir+'velocitydispersionlos/'\
                                  +sim+'veldisplos_0_'+self.nstr2+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/'\
+                                 +sim+'kappalos_0_'+self.nstr2+'.txt')
         return
 
 
@@ -190,14 +201,18 @@ class Files:
         
         self.nufiles.append(self.dir+'nu/nunotnorm_0.txt') # all comp.
         self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
+        self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
         if gp.pops == 1:
             self.nufiles.append(self.dir+'nu/nunotnorm_0.txt') # first and only comp.
             self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
         elif gp.pops == 2:
             self.nufiles.append(self.dir+'nu/nunotnorm_1.txt') # first comp.
             self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_1.txt')
             self.nufiles.append(self.dir+'nu/nunotnorm_2.txt') # second comp.
             self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
         self.outdir, self.outname = self.get_outname()
         return
     
@@ -225,8 +240,10 @@ class Files:
         self.massfile = pre + 'enclosedmass/enclosedmass_0.txt'
         self.nufiles.append(pre  + 'nu/nunotnorm_0.txt')
         self.sigfiles.append(pre + 'siglos/siglos_0.txt')
+        self.kappafiles.append(pre + 'kappalos/kappalos_0.txt')
         self.nufiles.append(pre  + 'nu/nunotnorm_0.txt') # first and only comp.
         self.sigfiles.append(pre + 'siglos/siglos_0.txt')
+        self.kappafiles.append(pre + 'kappalos/kappalos_0.txt')
         if gp.pops == 2:
             print 'TODO: 2 tracer populations for triaxial dataset'
             pdb.set_trace()
@@ -244,14 +261,18 @@ class Files:
         self.massfile = self.dir+'enclosedmass.txt'
         self.nufiles.append(self.dir+'densityfalloff.txt')
         self.sigfiles.append(self.dir+'velocitydispersionlos.txt')
+        self.kappafiles.append(self.dir+'kappalos.txt')
         if gp.pops == 1:
             self.nufiles.append(self.dir+'densityfalloff.txt') # first and only comp.
             self.sigfiles.append(self.dir+'velocitydispersionlos.txt')
+            self.kappafiles.append(self.dir+'kappalos.txt')
         if gp.pops == 2:
             self.nufiles.append(self.dir+'densityfalloff_1.txt') # first comp.
             self.sigfiles.append(self.dir+'velocitydispersionlos_1.txt')
+            self.kappafiles.append(self.dir+'kappalos_1.txt')
             self.nufiles.append(self.dir+'densityfalloff_2.txt') # second comp.
             self.sigfiles.append(self.dir+'velocitydispersionlos_2.txt')
+            self.kappafiles.append(self.dir+'kappalos_2.txt')
         self.outdir, self.outname = self.get_outname()
         return
 
@@ -276,7 +297,7 @@ class Files:
         
         if gp.bprior: bname = bname + '_bprior'
         if gp.investigate == 'hernquist':
-            bname = bname+'_'+self.nstr1+'_'+self.nstr2+'_'+str(gp.nipol)
+            bname = bname+'_'+self.nstr1+'_'+str(gp.nipol)
         
         if gp.sprior:    bname = bname + '_sprior'
         if gp.uselike:   bname = bname + '_uselike'
@@ -301,7 +322,7 @@ class Files:
 
     def set_disc_sim(self):
         self.dir = self.machine + 'data_disc_sim/mwhr/'
-        # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # [PS] perhaps we need all components as the first entry in this list, with convention: 0. all 1. pop, 2. pop, 3. pop = background
+        # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # TODO: we need all components as the first entry in this list, with convention: 0. all 1. pop, 2. pop, 3. pop = background
         # self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # again all components
         # self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # all comp.
         # self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # overall surface density?
@@ -309,6 +330,7 @@ class Files:
         self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
         self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
         self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
+        self.kappafiles.append(self.dir +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_stars.txt') # first comp.
         self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density 
         
         if gp. pops ==2:
@@ -316,6 +338,7 @@ class Files:
             self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
             self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
             self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_dm.txt') # second comp.
+            self.kappafiles.append(self.dir +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_dm.txt') # second comp.
             self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfacedenDM.txt') # DM surface density
 
         return
@@ -355,8 +378,10 @@ class Files:
         profnus.append( pre + 'profnu1')
         profdeltas.append( pre + 'profdelta1')
         profsigs.append( pre + 'profsig1')
+        profkaps.append( pre + 'profkap1')
         if gp.pops == 2:
             profnus.append( pre + 'profnu2')
             profdeltas.append( pre + 'profdelta2')
             profsigs.append( pre + 'profsig2')
-        return profM, profdens, profnus, profdeltas, profsigs
+            profkaps.append( pre + 'profkap2')
+        return profM, profdens, profnus, profdeltas, profsigs, profkaps

@@ -27,10 +27,8 @@ def bin_data():
         # TODO: call main again after first iteration, if gp.metalpop set
         import grw_com                  # inside there, split by metallicity
         grw_com.run()
-        import grw_dens
-        grw_dens.run()
-        import grw_siglos
-        grw_siglos.run()
+        import grw_MCMCbin
+        grw_MCMCbin.run()
     elif gp.investigate == 'sim':
         import grs_com_align # centering, if not aligned yet
         import grs_dens
@@ -61,7 +59,7 @@ def get_data():
         gp.dat.read_mass()
         gp.dat.read_nu()
         gp.dat.read_sigma()
-
+        gp.dat.read_kappa()
 
     if gp.bprior:
         gp.blow = gp.dat.Mdat - gp.dat.Merr
@@ -107,16 +105,18 @@ def adump():
     write_key_data_parameters()
     arraydump(gp.files.get_outdat(), gp.xipol, 'w')
 
-    profM, profdens, profnus, profdeltas, profsigs = gp.files.get_outprofs()
+    profM, profdens, profnus, profdeltas, profsigs, profkaps = gp.files.get_outprofs()
     arraydump(profM, gp.xipol, 'w')
     arraydump(profdens, gp.xipol, 'w')
     arraydump(profnus[0], gp.xipol, 'w')
     arraydump(profdeltas[0], gp.xipol, 'w')
     arraydump(profsigs[0], gp.xipol, 'w')
+    arraydump(profkapss[0], gp.xipol, 'w')
     if gp.pops==2:
         arraydump(profnus[1], gp.xipol, 'w')
         arraydump(profdeltas[1], gp.xipol, 'w')
         arraydump(profsigs[1], gp.xipol, 'w')
+        arraydump(profkapss[1], gp.xipol, 'w')
     return 0
 
 
@@ -131,16 +131,18 @@ def write_outfile():
     else:
         M = gp.M_x  # TODO: check meaning, possible inclusion in physics_disc.Mzdefault
         
-    profM, profdens, profnus, profdeltas, profsigs = gp.files.get_outprofs()
+    profM, profdens, profnus, profdeltas, profsigs, profkaps = gp.files.get_outprofs()
     arraydump(profM, M)
     arraydump(profdens, gp.dens_x) # [Msun/pc^3] in spherical case
     arraydump(profnus[0],   phys.nu(gp.pars.nu1))  # [Msun/pc^3]
     arraydump(profdeltas[0], phys.delta(gp.pars.delta1))       # [1]
     arraydump(profsigs[0],  gp.sig1_x)             # [km/s]
+    arraydump(profkaps[0],  gp.kap1_x)             # [km/s]
     if gp.pops == 2:
         arraydump(profnus[1],   phys.nu(gp.pars.nu2)) # [Msun/pc^3]
         arraydump(profdeltas[1], phys.delta(gp.pars.delta2))      # [1]
         arraydump(profsigs[1],  gp.sig2_x)            # [km/s]
+        arraydump(profkaps[1],  gp.kap2_x)            # [km/s]
     return 0
 
 
