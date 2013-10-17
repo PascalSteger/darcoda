@@ -1,6 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''read in data and store it in appropriate class'''
+
+##
+# @file
+# read in data and store it in an appropriate class
 
 import pdb
 import numpy as np
@@ -15,39 +18,102 @@ else:
     import physics_disc as phys
 
 import gl_helper as gh
-import gl_plot as gpl
+# import gl_plot as gpl
 from gl_analytic import *
+from gl_project import rho_INT_Rho, Rho_NORM_rho, rho_SUM_Mr
 
 
-
-
-
-
+## stores all data from mock/observation files
 class Datafile:
-    '''store all data from mock/observation files'''
 
-
-
+    ## constructor: set all initial values
     def __init__(self):
-
-        self.xhalf = 1000.0; self.Mtottracer = 0.0
+        self.xhalf = 1000.0        ##< half-light radius in [pc]
+        ## total mass of tracers in [Msun]
+        self.Mtottracer = 0.0
+        ## TODO: unknown quantity
         self.DMpredict = np.array([])
-        self.Mx = np.array([]);self.Mdat = np.array([]); self.Merr = np.array([])
-        self.Mx_2D=np.array([]);self.Mdat_2D=np.array([]);self.Merr_2D=np.array([])
-        
-        self.nux1 = np.array([]); self.nudat1=np.array([]); self.nuerr1=np.array([])
-        self.nux1_2D=np.array([]);self.nudat1_2D=np.array([]);self.nuerr1_2D=np.array([])
-        self.densx = np.array([]); self.densdat = np.array([]); self.denserr = np.array([])
-        self.densx_2D=np.array([]); self.densdat_2D = np.array([]); self.denserr_2D = np.array([])
-        self.sigx1 = np.array([]); self.sigdat1=np.array([]); self.sigerr1=np.array([])
-        self.kapx1 = np.array([]); self.kapdat1=np.array([]); self.kaperr1=np.array([])
+        ## smallest radius of the data bins, in [pc]
+        self.binmin = np.array([])
+        ## biggest radius of the data bisn, in [pc]
+        self.binmax = np.array([])
+        ## keep center of radial bins, in [pc]
+        self.Mx = np.array([])
+        ## 3D summed overall mass, in [Msun]
+        self.Mdat = np.array([])
+        ## error of 3D summed overall mass, in [Msun]
+        self.Merr = np.array([])
+        ## keep center of radial bins, in [pc]
+        self.Mx_2D=np.array([])
+        ## 2D summed mass, in [Msun]
+        self.Mdat_2D=np.array([])
+        ## error of 2D summed mass, in [Msun]
+        self.Merr_2D=np.array([])
+        ## keep center of radial bins
+        self.nux1 = np.array([])
+        ## keep 3D model of the tracer density falloff, in [Msun/pc^3]
+        self.nudat1=np.array([])
+        ## keep errors of nudat1, in [Msun/pc^3]
+        self.nuerr1=np.array([])
+        ## keep center of radial bins
+        self.nux1_2D=np.array([]);
+        ## keep radial profile of the tracer density, averaged in 2D-rings
+        self.nudat1_2D=np.array([]);
+        ## keep error of nudat1_2D, in [Msun/pc^2]
+        self.nuerr1_2D=np.array([])
+        ## keep center of radial bins
+        self.densx = np.array([]);
+        ## keep overall 3D tracer density, 
+        self.densdat = np.array([])
+        ## keep error of densdat
+        self.denserr = np.array([])
+        ## keep center of radial bins, in [pc]
+        self.densx_2D=np.array([])
+        ## keep 2D density of overall density
+        self.densdat_2D = np.array([]);
+        ## keep error of overall density
+        self.denserr_2D = np.array([])
+        ## keep center of radial bins
+        self.sigx1 = np.array([]);
+        ## keep line of sight velocity dispersion profile, in [km/s]
+        self.sigdat1=np.array([]);
+        ## keep error of sigdat1
+        self.sigerr1=np.array([])
+        ## keep center of radial bins
+        self.kapx1 = np.array([]);
+        ## keep fourth velocity moment of the LOS velocities, pop1
+        self.kapdat1=np.array([]);
+        ## keep errors of kapdat1
+        self.kaperr1=np.array([])
+        ## keep number of tracers in pop 1
         self.tracers1 = np.array([])
 
         if(gp.pops==2):
-            self.nux2 = np.array([]); self.nudat2=np.array([]); self.nuerr2=np.array([])
-            self.nux2_2D=np.array([]);self.nudat2_2D=np.array([]);self.nuerr2_2D=np.array([])
-            self.sigx2 = np.array([]); self.sigdat2=np.array([]); self.sigerr2=np.array([])
-            self.kapx2 = np.array([]); self.kapdat2=np.array([]); self.kaperr2=np.array([])
+            ## keep center of radial bins
+            self.nux2 = np.array([]);
+            ## keep 3D model of the tracer density falloff
+            self.nudat2=np.array([]);
+            ## keep errors of nudat2
+            self.nuerr2=np.array([])
+            ## keep center of radial bins
+            self.nux2_2D=np.array([]);
+            ## keep radial profile of the tracer density, averaged in 2D-rings
+            self.nudat2_2D=np.array([]);
+            ## keep error of nudat2
+            self.nuerr2_2D=np.array([])
+            ## keep center of radial bins
+            self.sigx2 = np.array([]);
+            ## keep second velocity moment, the velocity dispersion, as a function of radius
+            self.sigdat2=np.array([]);
+            ## keep error of sigdata2
+            self.sigerr2=np.array([])
+            ## keep center of radial bins
+            self.kapx2 = np.array([]);
+            ## keep fourth LOS velocity moment as function of radius
+            self.kapdat2=np.array([]);
+            ## keep kappa error as function of radius
+            self.kaperr2=np.array([])
+            ## keep number of tracers in pop 2
             self.tracers2 = np.array([])
 
 
@@ -55,73 +121,44 @@ class Datafile:
         
 
 
-
+    ## read enclosed baryonic 2D mass, convert it to surface density, convert that to 3D mass density
     def read_mass(self):
-        'read encl bary 2D mass, convert it to surf dens, convert that to 3D mass density'
-        self.Mx_2D,self.Mdat_2D,self.Merr_2D = gh.readcol(gp.files.massfile)
+        self.Mx_2D, self.binmin, self.binmax, self.Mdat_2D,self.Merr_2D = gh.readcol5(gp.files.massfile)
         # [rcore], [totmass], [totmass]
 
         # switch to Munit (msun) and pc here
         self.Mx_2D      = self.Mx_2D[:]   * gp.rcore_2D[0]     # [pc]
+        self.binmin     = self.binmin[:]  * gp.rcore_2D[0]
+        self.binmax     = self.binmax[:]  * gp.rcore_2D[0]
         self.Mdat_2D    = self.Mdat_2D[:] * gp.totmass[0]      # [munit/pc**2]
         self.Merr_2D    = self.Merr_2D[:] * gp.totmass[0]      # [munit/pc**2]
         
         # calculate surface density 
         self.densx_2D   = self.Mx_2D       # [pc]
-        self.densdat_2D = phys.calculate_surfdens(self.Mx_2D, self.Mdat_2D) # [munit/pc**2]
+        # use binmax here, as mass is enclosed withing max radius of bin!
+        self.densdat_2D = phys.calculate_surfdens(self.binmax, self.Mdat_2D) # [munit/pc**2]
         self.denserr_2D = self.densdat_2D * self.Merr_2D/self.Mdat_2D # [munit/pc**2]
 
         # deproject, already normalized to same total mass
-        self.densx, self.densdat, self.denserr = phys.deproject(self.densx_2D[:],self.densdat_2D[:],self.denserr_2D[:])
-        # takes [pc], 2x [munit/pc**2], gives [pc], 2*[munit/pc**3]
+        # possibility: read density file, is not possible as this is only 2D density
+        self.densx, self.densdat, self.denserr = Rho_NORM_rho(self.densx_2D[:],self.densdat_2D[:],self.denserr_2D[:])
+        # takes [pc], 2* [munit/pc**2], gives [pc], 2*[munit/pc**3]
         
-
-
+        # needed for baryonic prior
         self.Mx   = self.densx[:]                       # [pc,3D]
-        self.Mdat = phys.Mr3D(self.densx, self.densdat) # [Munit], 3D
+        self.Mdat = rho_SUM_Mr(self.densx, self.densdat) # [Munit], 3D
         self.Merr = self.Merr_2D * self.Mdat/self.Mdat_2D # [Munit], 3D
-
-
-        # normalize is deprecated, try to run MCMC with pc, Msun, km/s instead
-        # assume rcore is the same for 2D and 3D.
-        # TODO: check, how much half-mass radius really is in 3D case
-        # gp.rcore.append(gp.rcore_2D[0])
-        # gp.dens0pc.append(self.densdat[0])
-
-        # self.densx   = self.densx[:]/gp.rcore[0]     # [rcore], 3D
-        # self.densdat = self.densdat[:]/gp.dens0pc[0]   # [dens0], 3D
-        # self.denserr = self.denserr[:]/gp.dens0pc[0]   # [dens0], 3D
-
-        # self.densx_2D   = self.densx_2D[:]/gp.rcore[0]      # [rcore], 2D
-        # self.densdat_2D = self.densdat_2D[:]/gp.dens0pc_2D[0] # [dens0], 2D
-        # self.denserr_2D = self.denserr_2D[:]/gp.dens0pc_2D[0] # [dens0], 2D
-
-        
-
-
-        # gpl.clf(); gpl.yscale('log');
-        # TODO (low priority): check difference between both plots underneath. compare surface densities first
-        # # ultimate check: plot data (green) and calculated surface density (red) from 3D data (as done in gl_plot)
-        # lbound = (self.Mdat_2D - gp.dat.Merr_2D)*gp.totmass[0] #[munit]
-        # ubound = (self.Mdat_2D + gp.dat.Merr_2D)*gp.totmass[0] #[munit]
-        # gpl.fill_between(self.Mx_2D*gp.rcore[0], lbound, ubound, alpha=0.5, color='g')
-        
-        # # densdat => surfden => M2D
-        # from gl_int import *
-        # M2D = int_project(self.densx*gp.rcore[0], self.densdat*gp.dens0pc[0])
-        # gpl.plot(self.densx*gp.rcore[0], M2D)
-        
+        return
 
 
 
 
 
 
-
+    ## read surface density of tracer stars, deproject, renormalize
     def read_nu(self):
-        'read surface density of tracer stars, deproject, renormalize'
-
-        self.nux1_2D, self.nudat1_2D, self.nuerr1_2D = gh.readcol(gp.files.nufiles[1]) # component 1 in Walker
+        self.nux1_2D, dummy, dummy, self.nudat1_2D, self.nuerr1_2D = \
+          gh.readcol5(gp.files.nufiles[1]) # component 1 in Walker
         # [rcore], [dens0], [dens0]
         self.nuerr1_2D *= gp.nuerrcorr #[dens0]
 
@@ -130,32 +167,16 @@ class Datafile:
         self.nudat1_2D  = self.nudat1_2D[:]  * gp.dens0pc_2D[1]
         self.nuerr1_2D  = self.nuerr1_2D[:]  * gp.dens0pc_2D[1]
         
-        # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3],
+        # deproject, # takes [pc], 2* [munit/pc^2], gives [pc], 2* [munit/pc^3],
         # already normalized to same total mass
         if gp.geom=='sphere':
-            self.nux1, self.nudat1, self.nuerr1 = phys.deproject(self.nux1_2D, self.nudat1_2D, self.nuerr1_2D)
+            self.nux1, self.nudat1, self.nuerr1 = Rho_NORM_rho(self.nux1_2D, self.nudat1_2D, self.nuerr1_2D)
         else:
             self.nux1, self.nudat1, self.nuerr1 = self.nux1_2D, self.nudat1_2D, self.nuerr1_2D
-        # check mass is the same
-        # totmass_2D = phys.Mr2D(self.nux1_2D*gp.rcore_2D[1], self.nudat1_2D*gp.dens0pc_2D[1])
-        # totmass_3D = phys.Mr3D(self.nux1, self.nudat1)  #[totmass], 3D
-
-        # normalize, is deprecated, work in Msun, pc, km/s from now on
-        # assume rcore is the same for 2D and 3D.
-        # TODO: check, how much half-mass radius really is in 3D case
-        # gp.rcore.append(gp.rcore_2D[1])
-        # gp.dens0pc.append(self.nudat1[0])
-        # self.nux1   /= gp.rcore[1]     #[rcore], 3D
-        # self.nudat1 /= gp.dens0pc[1]   #[dens0], 3D
-        # self.nuerr1 /= gp.dens0pc[1]   #[dens0], 3D
-
-        # TODO: low priority, tweak integration
-        # from gl_int import *
-        # Sig2D = int_surfden(self.nux1*gp.rcore[1], self.nudat1*gp.dens0pc[1])
 
 
         if gp.pops == 2:
-            self.nux2_2D, self.nudat2_2D, self.nuerr2_2D = gh.readcol(gp.files.nufiles[2])
+            self.nux2_2D,dummy,dummy, self.nudat2_2D, self.nuerr2_2D = gh.readcol5(gp.files.nufiles[2])
             # [rcore], [dens0], [dens0]
             self.nuerr2_2D *= gp.nuerrcorr #[dens0]
             
@@ -164,45 +185,25 @@ class Datafile:
             self.nudat2_2D  = self.nudat2_2D[:]  * gp.dens0pc_2D[2]
             self.nuerr2_2D  = self.nuerr2_2D[:]  * gp.dens0pc_2D[2]
         
-            # deproject, # takes [pc], 2x [munit/pc^2], gives [pc], 2x [munit/pc^3],
+            # deproject, # takes [pc], 2* [munit/pc^2], gives [pc], 2* [munit/pc^3],
             # already normalized to same total mass
             # TODO: change nux2 from nux2_2D
             if gp.geom == 'sphere':
-                self.nux2, self.nudat2, self.nuerr2 = phys.deproject(self.nux2_2D,\
-                                                                     self.nudat2_2D,\
-                                                                     self.nuerr2_2D)
+                self.nux2,self.nudat2,self.nuerr2=Rho_NORM_rho(self.nux2_2D,self.nudat2_2D,self.nuerr2_2D)
             else:
                 self.nux2   = self.nux2_2D
                 self.nudat2 = self.nudat2_2D
                 self.nuerr2 = self.nuerr2_2D
 
-            # check mass is the same
-            # totmass_2D = phys.Mr2D(self.nux2_2D*gp.rcore_2D[2], self.nudat2_2D*gp.dens0pc_2D[2])
-            # totmass_3D = phys.Mr3D(self.nux2, self.nudat2)  #[totmass], 3D
-            
-            # normalization, deprecated
-            # # assume rcore is the same for 2D and 3D.
-            # # TODO: check, how much half-mass radius really is in 3D case
-            # gp.rcore.append(gp.rcore_2D[2])
-            # gp.dens0pc.append(self.nudat2[0])
-            # self.nux2   /= gp.rcore[2]     #[rcore], 3D
-            # self.nudat2 /= gp.dens0pc[2]   #[dens0], 3D
-            # self.nuerr2 /= gp.dens0pc[2]   #[dens0], 3D
-            
-            # # to check right integration. TODO: low priority: tweak
-            # # from gl_int import *
-            # # Sig2D = int_surfden(self.nux2*gp.rcore[2], self.nudat2*gp.dens0pc[2])
+        return
 
 
 
-
-
-
-        
+    ## read in line of sight velocity dispersion        
     def read_sigma(self):
-        'read in line of sight velocity dispersion'
-        self.sigx1,self.sigdat1,self.sigerr1 = gh.readcol(gp.files.sigfiles[1])
-        #[rcore], [maxvlos], [maxvlos]
+        print(gp.files.sigfiles[1])
+        self.sigx1,Dummy,Dummy,self.sigdat1,self.sigerr1 = gh.readcol5(gp.files.sigfiles[1])
+        # 3*[Rcore], [maxvlos], [maxvlos]
 
         # change to pc, km/s here
         self.sigx1   = self.sigx1[:]   * gp.rcore_2D[1]     # [pc]
@@ -212,8 +213,8 @@ class Datafile:
         self.sigerr1 /= gp.sigerrcorr #[km/s]
             
         if gp.pops==2:
-            self.sigx2,self.sigdat2,self.sigerr2 = gh.readcol(gp.files.sigfiles[2])
-            # [rcore], [maxvlos], [maxvlos]
+            self.sigx2,dummy,dummy,self.sigdat2,self.sigerr2 = gh.readcol5(gp.files.sigfiles[2])
+            # 3*[Rcore], [maxvlos], [maxvlos]
 
             # change to pc, km/s here
             self.sigx2   = self.sigx2[:]   * gp.rcore_2D[2]     # [pc]
@@ -223,36 +224,38 @@ class Datafile:
             
             self.sigerr2 /= gp.sigerrcorr #[maxvlos]
 
-
+    ## read in line of sight velocity kurtosis
     def read_kappa(self):
-        'read in line of sight velocity kurtosis'
-        self.kapx1,self.kapdat1,self.kaperr1 = gh.readcol(gp.files.kappafiles[1])
-        #[rcore], [maxvlos], [maxvlos]
+        self.kapx1,Dummy,Dummy,self.kapdat1,self.kaperr1 = gh.readcol5(gp.files.kappafiles[1])
+        # 3*[Rcore], [maxvlos], [maxvlos]
 
         # change to pc, km/s here
         self.kapx1   = self.kapx1[:]   * gp.rcore_2D[1]     # [pc]
-        self.kaperr1 /= gp.kaperrcorr #[km/s]
+        self.kaperr1 /= gp.kaperrcorr # [1]
             
         if gp.pops==2:
-            self.kapx2,self.kapdat2,self.kaperr2 = gh.readcol(gp.files.kappafiles[2])
-            # [rcore], [maxvlos], [maxvlos]
+            self.kapx2,dummy,dummy,self.kapdat2,self.kaperr2 = gh.readcol5(gp.files.kappafiles[2])
+            # 3*[Rcore], [maxvlos], [maxvlos]
 
             # change to pc, km/s here
             self.kapx2   = self.kapx2[:]   * gp.rcore_2D[2]     # [pc]
-            self.kaperr2 /= gp.kaperrcorr #[maxvlos]
+            self.kaperr2 /= gp.kaperrcorr # [1]
+        return
 
-
+    ## set half-light radius
     def set_rhalf(self, xhalf):
         self.xhalf = xhalf
+        return
 
+    ## set total tracer mass
     def set_Mtottracer(self, Mtottracer):
         self.Mtottracer  = Mtottracer
+        return
 
-
+    ## interpolate 3D quantities to new regularly-spaced radial bins
     def interpol(self, dat):
-        'interpolate 3D quantities to new regularly-spaced radial bins'
         if gp.consttr:
-            print 'really? have const tracer number per bin, so keep same radii!'
+            print('really? have const tracer number per bin, so keep same radii!')
             pdb.set_trace()
 
         gp.xmin  = min(dat.nux1); gp.xmax = max(dat.nux1) # [pc]
@@ -272,6 +275,8 @@ class Datafile:
         self.nudat1   = gh.ipollog(dat.nux1, dat.nudat1, self.nux1) # [munit/pc^3]
         self.nuerr1   = gh.ipollog(dat.nux1, dat.nuerr1, self.nux1) # [munit/pc^3]
 
+        self.binmin   = dat.binmin
+        self.binmax   = dat.binmax
         self.Mx       = gp.xipol                                # [pc]
         self.Mx_2D    = gp.xipol
         # do not use ipollog here to avoid slightly wiggling output
@@ -324,52 +329,47 @@ class Datafile:
 
 
 
-
-
-
+    ## quick output of all 3D quantities
     def output(self):
-        'quick output of all 3D quantities'
-        print 'Mx = ',   gh.pretty(self.Mx), ' pc'
-        print 'Mdat  = ',gh.pretty(self.Mdat), ' munit'
-        print 'Merr = ', gh.pretty(self.Merr), ' munit'
+        print('Mx = ',   gh.pretty(self.Mx), ' pc')
+        print('Mdat  = ',gh.pretty(self.Mdat), ' munit')
+        print('Merr = ', gh.pretty(self.Merr), ' munit')
 
-        print 'nux1  = ',gh.pretty(self.nux1), ' pc'
-        print 'nudat1 =',gh.pretty(self.nudat1), ' munit/pc^3'
-        print 'nuerr1=', gh.pretty(self.nuerr1), ' munit/pc^3'
+        print('nux1  = ',gh.pretty(self.nux1), ' pc')
+        print('nudat1 =',gh.pretty(self.nudat1), ' munit/pc^3')
+        print('nuerr1=', gh.pretty(self.nuerr1), ' munit/pc^3')
         
-        print 'sigx1 = ',  gh.pretty(self.sigx1), ' pc'
-        print 'sigdat1 = ',gh.pretty(self.sigdat1), 'km/s'
-        print 'sigerr1 = ',gh.pretty(self.sigerr1), 'km/s'
+        print('sigx1 = ',  gh.pretty(self.sigx1), ' pc')
+        print('sigdat1 = ',gh.pretty(self.sigdat1), 'km/s')
+        print('sigerr1 = ',gh.pretty(self.sigerr1), 'km/s')
 
-        print 'kapx1 = ',  gh.pretty(self.kapx1), ' pc'
-        print 'kapdat1 = ',gh.pretty(self.kapdat1), 'km/s'
-        print 'kaperr1 = ',gh.pretty(self.kaperr1), 'km/s'
+        print('kapx1 = ',  gh.pretty(self.kapx1), ' pc')
+        print('kapdat1 = ',gh.pretty(self.kapdat1), 'km/s')
+        print('kaperr1 = ',gh.pretty(self.kaperr1), 'km/s')
 
 
         if gp.pops==2:
-            print 'nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3'
-            print 'nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3'
+            print('nudat2 =',gh.pretty(self.nudat2), ' munit/pc^3')
+            print('nuerr2=', gh.pretty(self.nuerr2), ' munit/pc^3')
             
-            print 'sigdat2 = ',gh.pretty(self.sigdat2), ' km/s'
-            print 'sigerr2 = ',gh.pretty(self.sigerr2), ' km/s'
+            print('sigdat2 = ',gh.pretty(self.sigdat2), ' km/s')
+            print('sigerr2 = ',gh.pretty(self.sigerr2), ' km/s')
 
-            print 'kapdat2 = ',gh.pretty(self.kapdat2), ' km/s'
-            print 'kaperr2 = ',gh.pretty(self.kaperr2), ' km/s'
-
-
+            print('kapdat2 = ',gh.pretty(self.kapdat2), ' km/s')
+            print('kaperr2 = ',gh.pretty(self.kaperr2), ' km/s')
 
 
 
+
+    ## pickle dump 3D quantities
     def save(self,fn):
-        'pickle dump 3D quantities'
         fil = open(fn,'w')
         pickle.dump(self, fil)
         fil.close()
+        return
 
-
-
+    ## reload previously stored quantities
     def load(self,fn):
-        'reload previously stored quantities'
         fil = open(fn,'r')
         obj = pickle.load(fil)
         fil.close()
@@ -387,10 +387,12 @@ class Datafile:
 
         return self
 
+
+    ## set to given values, copy constructor
     def copyfrom(self,obj):
-        'set to given values, copy constructor'
         gp.xipol = obj.densx
         self.Mx = obj.Mx;   self.Mdat = obj.Mdat;    self.Merr = obj.Merr
+        self.binmin = obj.binmin;  self.binmax = obj.binmax
         self.Mx_2D = obj.Mx_2D; self.Mdat_2D = obj.Mdat_2D; self.Merr_2D = obj.Merr_2D
         self.densx = obj.densx;   self.densdat = obj.densdat;     self.denserr = obj.denserr
         self.densx_2D=obj.densx_2D; self.densdat_2D=obj.densdat_2D; self.denserr_2D=obj.denserr_2D

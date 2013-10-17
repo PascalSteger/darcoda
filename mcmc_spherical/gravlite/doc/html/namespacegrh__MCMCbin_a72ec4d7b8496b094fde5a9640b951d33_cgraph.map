@@ -1,0 +1,11 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__helper.html#ae59808bf8ea3e3c5c7debd826a5d030c" title="split interval into bins, in a logarithmic fashion" alt="" coords="212,5,343,35"/>
+<area shape="rect" id="node5" href="$namespacegl__helper.html#a85e5507bde15cf99b301f966480375ea" title="split interval into bins of constant particle number" alt="" coords="181,59,373,88"/>
+<area shape="rect" id="node7" href="$namespacegl__helper.html#aab4b0242774b64e4d496131526863cba" title="split interval linearly into bins" alt="" coords="205,112,349,141"/>
+<area shape="rect" id="node9" href="$namespaceBiWeight.html#a4ea939e2ec4b13d939fdd56265f9d68f" title="PURPOSE: Estimation of the central location (&#39;mean&#39;) of a distribution, resistant for outliers and ro..." alt="" coords="199,165,356,195"/>
+<area shape="rect" id="node13" href="$namespacegl__analytic.html#af96cb916a1ee6e06a0d6882db6674187" title="surface density of Hernquist profile, equation 3 from Baes&amp;Dejonghe 2002" alt="" coords="453,217,603,247"/>
+<area shape="rect" id="node17" href="$namespacegl__analytic.html#a8023180011bfc270c63d0213c86563ef" title="sig_los determined from analytic surfden*sig2 and surfden" alt="" coords="200,269,355,299"/>
+<area shape="rect" id="node11" href="$namespaceBiWeight.html#a3ec60cce21036602e9f18897b389240b" title="PURPOSE: Estimation of the scale (&#39;dispersion&#39;) of a distribution, resistant for outliers and robust ..." alt="" coords="445,164,611,193"/>
+<area shape="rect" id="node15" href="$namespacegl__analytic.html#ab14e9c56f7aa3a3db5809d7d25b6888f" title="equation 33, 34 from Hernquist 1990" alt="" coords="684,244,780,273"/>
+<area shape="rect" id="node19" href="$namespacegl__analytic.html#a4b46d390993553907c36cba279d94ae0" title="equation 21 from Baes&amp;Dejonghe 2002" alt="" coords="423,271,633,300"/>
+</map>

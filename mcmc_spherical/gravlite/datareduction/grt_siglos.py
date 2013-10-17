@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 '''calculate velocity dispersion of 2D rings from a Walker dataset'''
 # for triaxial systems
@@ -17,8 +17,8 @@ from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
 
 def run():
     # get radius, used for all binning
-    print 'input:'
-    print gpr.get_com_file(0)
+    print('input:')
+    print(gpr.get_com_file(0))
     if gfile.bufcount(gpr.get_com_file(0))<2: return
     x,y,vlos = np.loadtxt(gpr.get_com_file(0), skiprows=1, unpack=True) #[rcore], [rcore], [km/s]
     totmass = 1.*len(x)  # [munit], [Msun], where each star is weighted with the same mass
@@ -40,9 +40,9 @@ def run():
     # offset from the start!
     rs = gpr.rerror*np.random.randn(len(r))+r #[rcore]
     vlos = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
-    print 'output: ',gpr.get_siglos_file(0)
+    print('output: ',gpr.get_siglos_file(0))
     vfil = open(gpr.get_siglos_file(0),'w')
-    print >> vfil,'r','sigma_r(r)','error'
+    print('r','sigma_r(r)','error', file=vfil)
 
     # 30 iterations for drawing a given radius in bin
     dispvelocity = np.zeros((gpr.nbins,gpr.n))
@@ -77,9 +77,9 @@ def run():
         p_edvlos[i]= dispvelerror #[km/s]
 
     maxvlos = max(p_dvlos) #[km/s]
-    print 'maxvlos = ',maxvlos,'[km/s]'
+    print('maxvlos = ',maxvlos,'[km/s]')
     fpars = open(gpr.get_params_file(0),'a')
-    print >> fpars,maxvlos          #[km/s]
+    print(maxvlos, file=fpars)          #[km/s]
     fpars.close()
     import shutil
     shutil.copy2(gpr.get_params_file(0), gpr.get_params_file(1))
@@ -87,15 +87,15 @@ def run():
 
     for i in range(gpr.nbins):
         #             [rcore]  [maxvlos]                  [maxvlos]
-        print >> vfil,rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos) #/np.sqrt(n))
+        print(rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos), file=vfil) #/np.sqrt(n))
     vfil.close()
 
-    if not gp.showplot_readout: return
+    if not gpr.showplots: return
 
     ion(); subplot(111)
-    print 'rbin = ',rbin,' rcore'
-    print 'p_dvlos = ',p_dvlos,' km/s'
-    print 'p_edvlos = ',p_edvlos, 'km/s'
+    print('rbin = ',rbin,' rcore')
+    print('p_dvlos = ',p_dvlos,' km/s')
+    print('p_edvlos = ',p_edvlos, 'km/s')
     plot(rbin,p_dvlos,'b',linewidth=3)
     fill_between(rbin,p_dvlos-p_edvlos,p_dvlos+p_edvlos,alpha=0.5,color='r') #[rcore],[km/s],[km/s]
 
@@ -110,6 +110,6 @@ def run():
         ioff();show();clf()
 
 if __name__ == '__main__':
-    gp.showplot_readout = True
+    gpr.showplots = True
     run()
 

@@ -1,16 +1,16 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # calculate density falloff of circular rings around center of mass
 ###################################################################
 
 #start from data centered on COM already:
 import sys
 if(len(sys.argv)<2):
-    print "use: densityfalloff.py [car,scl,sex,for]"
+    print("use: densityfalloff.py [car,scl,sex,for]")
     exit(1)
 dwarf=sys.argv[1]
 dir="/home/ast/read/dark/dwarf_data/data_obs/"
 dir = '/home/psteger/sci/dwarf_data/data_obs/'
-print dir+dwarf+"/centerpos.txt"
+print(dir+dwarf+"/centerpos.txt")
 import numpy
 x,y,v=numpy.loadtxt(dir+dwarf+'/centerpos.txt',skiprows=1,usecols=(0,1,2),unpack=True)
 
@@ -42,11 +42,11 @@ for i in range(bins):
 
 rs = rerror*numpy.random.randn(len(r))+r
 d = open(dir+dwarf+'/densityfalloff.txt','w')
-print>>d,'r','nu(r)/nu(0)','error'
+print('r','nu(r)/nu(0)','error', file=d)
 d.close()
 
 d = open(dir+dwarf+'/enclosedmass.txt','w')
-print>>d,'r','M(<r)','error'
+print('r','M(<r)','error', file=d)
 d.close()
 
 #1000 iterations for getting random picked radius values
@@ -87,22 +87,22 @@ for i in range(bins):
             p_edens[i] = denserror
 
     d=open(dir+dwarf+'/densityfalloff.txt','a')
-    print>>d,rbin[i],p_dens[i],p_edens[i]
+    print(rbin[i],p_dens[i],p_edens[i], file=d)
     d.close()
     
     indr = (r<binmax[i])
     menclosed = 1.0*numpy.sum(indr)/totmass
     merror = 10.0/totmass
     d=open(dir+dwarf+'/enclosedmass.txt','a')
-    print>>d,rbin[i],menclosed,merror    # TODO: check: take rbinmax for MCMC?
+    print(rbin[i],menclosed,merror, file=d)    # TODO: check: take rbinmax for MCMC?
     d.close()
 
 
 from pylab import *
 ion(); subplot(111)
-print 'rbin = ',rbin
-print 'p_dens = ',p_dens
-print 'p_edens = ',p_edens
+print('rbin = ',rbin)
+print('p_dens = ',p_dens)
+print('p_edens = ',p_edens)
 
 #linear
 plot(rbin,p_dens,'b',linewidth=3)

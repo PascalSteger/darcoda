@@ -1,6 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3.2
+
+##
+# @file
+# read data from simulation
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''read data from simulation'''
+
 import numpy as np
 import numpy.random as npr
 import pdb
@@ -12,9 +16,10 @@ from binsmooth import *
 from bincount import *
 
 
+## read in disc simulation file
 def disc_sim():
     if not gp.investigate == 'sim':
-        print 'wrong file included'
+        print('wrong file included')
         return
     
     gp.zpmin = -1
@@ -89,7 +94,7 @@ def disc_sim():
         # assume units: Msun, 3*kpc, 3*km/s, [pot] <= last one not needed
         # [Dave] v is in units [100 km/s] <= not possible?!
         if max(mass) != min(mass):
-            print '**** Multimass data not yet supported ****'
+            print('**** Multimass data not yet supported ****')
             exit(1)
 
         # change to [pc]
@@ -151,7 +156,7 @@ def disc_sim():
         if gp.pops == 2:
             mass2, x_dat2,y_dat2,z_dat2, vx_dat2,vy_dat2,vz_dat2, pot_dat2 = gh.readcoln(gp.files.posvelfiles[1])
             if max(mass2) > min(mass2):
-                print '**** Multimass data not yet supported ****'
+                print('**** Multimass data not yet supported ****')
                 exit(1)
 
             # change to [pc]
@@ -215,7 +220,7 @@ def disc_sim():
             sigusevis    = sigsecvis      # [Msun/pc^2]
             siguseviserr = sigsecviserr   # [Msun/pc^2]
         elif gp.baryonmodel == 'sim':
-            zvis, sigusevis, siguseviserr = gh.readcol(gp.files.surfdenfiles[0])
+            zvis, sigusevis, siguseviserr = gh.readcol3(gp.files.surfdenfiles[0])
             # [kpc, Msun/pc^2, Msun/pc^2]
             zvis *= 1000.                     # [pc]
             sigusevis    = gh.ipol(zvis, sigusevis, gp.xipol)   # interpolate to xipol radius array
@@ -223,7 +228,7 @@ def disc_sim():
             zvis = gp.xipol                          # [pc]
 
             # read in DM surface density
-            zdm, sigusedm, sigusedmerr = gh.readcol(gp.files.surfdenfiles[1])
+            zdm, sigusedm, sigusedmerr = gh.readcol3(gp.files.surfdenfiles[1])
             # [kpc, Msun/pc^2, Msun/pc^2]
             zdm *= 1000.                                # [pc]
             sigusedm = gh.ipol(zdm, sigusedm, gp.xipol)   # interpolate to xipol radius array

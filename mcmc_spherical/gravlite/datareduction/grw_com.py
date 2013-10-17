@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # (c) 2013 Pascal S.P. Steger
 '''calculate approximative center of mass, assuming constant stellar mass'''
+# 3D version, see grw_COM for 2D
 
 import numpy as np
 import sys
@@ -11,56 +12,11 @@ import gl_params as gp
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
-
-
-def com_mean(x,y,pm):
-    '''mean COM, weighted by probability of membership'''
-    com_x = 1.*np.sum(x*pm)/np.sum(pm) # [pc]
-    com_y = 1.*np.sum(y*pm)/np.sum(pm) # [pc]
-    return com_x, com_y
-
-
-def com_shrinkcircle(x,y,pm):
-    print 'shrinking sphere'
-    eps = 1e-6
-    com_x = 1.*np.sum(x*pm)/np.sum(pm);    com_y = 1.*np.sum(y*pm)/np.sum(pm)
-    bucom_x = 0.+com_x; bucom_y = 0.+com_y
-    x -= com_x; y -= com_y
-    dr = np.sqrt(com_x**2+com_y**2)
-    r0 = np.sqrt(x**2+y**2)
-
-    nit = 0; minlen = len(x)*0.666666666
-    while nit < 200 and len(x) > minlen:
-        nit += 1
-        print 'iteration ',nit,' with ',len(x), ' particles has overall COM of: ',bucom_x,bucom_y,' with remaining offset ',dr
-
-        # shrink sphere:
-        # 1) calc radius
-        r0 = np.sqrt(x**2+y**2)
-        # 2) sort remaining particles
-        order = np.argsort(r0)
-        r0 = np.array(r0)[order]; x = np.array(x)[order]; y = np.array(y)[order]; pm = np.array(pm)[order]
-
-        # 3) cut x,y,z,pm after 1-10%
-        end = len(r0)*0.95
-        r0 = r0[:end]; x = x[:end]; y = y[:end]; pm = pm[:end]
-
-        # calculate new COM
-        com_x = 1.*np.sum(x*pm)/np.sum(pm);    com_y = 1.*np.sum(y*pm)/np.sum(pm)
-        dr = np.sqrt(com_x**2+com_y**2)
-
-        # add to bucom
-        bucom_x += com_x; bucom_y += com_y
-
-        # recenter particles
-        x -= com_x; y -= com_y
-
-    return bucom_x, bucom_y
-
+from gl_centerint import *
 
 def run():
-    print 'input:'
-    print gpr.fil
+    print('input:')
+    print(gpr.fil)
     x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                                  usecols=(0,1,2,11,12,13,19,20),\
                                                  dtype="d17",\
@@ -83,7 +39,8 @@ def run():
     comp0 = comp0[pm]; x0=x0[pm]; y0=y0[pm]; z0=z0[pm]; vz0=vz0[pm]; vb0=vb0[pm]; Mg0=Mg0[pm]
     pm1 = (comp0 == 1) # will be overwritten below if gp.metalpop
     pm2 = (comp0 == 2) # same same
-    
+    pm3 = (comp0 == 3)
+
     
     if gp.metalpop:
         # drawing of populations based on metallicity
@@ -92,6 +49,7 @@ def run():
         p,mu1,sig1,mu2,sig2, M = pmc.bimodal_gauss(Mg0)
         pm1, pm2 = pmc.assign_pop(Mg0,p,mu1,sig1,mu2,sig2)
         # output: changed pm1, pm2
+        # assume no component 3 stars are included
 
     # cutting pm_i to a maximum of ntracers particles:
     from random import shuffle
@@ -99,92 +57,93 @@ def run():
     np.random.shuffle(ind)
     ind = ind[:gp.files.ntracer]
     x0=x0[ind]; y0=y0[ind]; z0=z0[ind]; comp0=comp0[ind]; vz0=vz0[ind]; vb0=vb0[ind]; Mg0=Mg0[ind]
-    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm = pm1+pm2
+    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm3 = pm3[ind]; pm = pm1+pm2+pm3
     
     # get center of mass with means
-    #com_x, com_y = com_mean(x0,y0,PM0) # [TODO]
+    #com_x, com_y,com_z = com_mean(x0,y0,z0,PM0) # [TODO], and TODO: z component included if available
     
     # get COM with shrinking sphere method
-    com_x, com_y = com_shrinkcircle(x0,y0,PM0)
-    print 'COM [pc]: ', com_x, com_y
+    com_x, com_y, com_z = com_shrinkcircle(x0,y0,z0,PM0)
+    print('COM [pc]: ', com_x, com_y, com_z)
 
 
     com_vz = np.sum(vz0*PM0)/np.sum(PM0) # [km/s]
-    print 'VOM [km/s]', com_vz
+    print('VOM [km/s]', com_vz)
 
-
+    # from now on, continue to work with 3D data. store to different files
     
-    x0 -= com_x; y0 -= com_y # [pc]
+    x0 -= com_x; y0 -= com_y; z0 -= com_z # [pc]
     vz0 -= com_vz #[km/s]
-    
-    r0 = np.sqrt(x0**2+y0**2) # [pc]
-    rc = r0 # [pc]
-    rc.sort() # [pc]
-    for i in range(len(rc)-1):
-        if rc[i]>rc[i+1]: #[pc]
-            print 'sorting error!'
+
+    # but still get the same radii as from 2D method, to get comparison of integration routines right
+    R0 = np.sqrt(x0**2+y0**2) # [pc]
+    Rc = R0                   # [pc]
+    Rc.sort()                 # [pc]
+    for i in range(len(Rc)-1):
+        if Rc[i]>Rc[i+1]:               # [pc]
+            print('sorting error!')
             exit(1)
-    rhalf = rc[floor(len(rc)/2)] # [pc]
-    rcore = rhalf # or gpr.r_DM # [pc]
-    print 'rcore = ',rcore,' pc'
-    print 'max(r) = ',max(rc),' pc'
-    print 'last element of r : ',rc[-1],' pc'
-    print 'total number of stars: ',len(rc)
+    Rhalf = Rc[floor(len(Rc)/2)]        # [pc]
+    Rcore = Rhalf                       # or gpr.r_DM # [pc]
+    print('Rcore = ',Rcore,' pc')
+    print('max(R) = ',max(Rc),' pc')
+    print('last element of R : ',Rc[-1],' pc')
+    print('total number of stars: ',len(Rc))
     
-    x0 = x0/rcore; y0 = y0/rcore # [r_core]
+    x0 = x0/Rcore; y0 = y0/Rcore; z0 = z0/Rcore              # [Rcore]
     
     i = -1
-    for pmn in [pm,pm1,pm2]:
-        pmr = (r0<(gpr.rprior*rcore)) # TODO: read from gl_class_file
-        pmn = pmn*pmr # [1]
-        print "fraction of members = ",1.0*sum(pmn)/len(pmn)
+    for pmn in [pm,pm1,pm2,pm3]:
+        pmr = (R0<(gpr.rprior*Rcore))  # TODO: read from gl_class_file
+        pmn = pmn*pmr                  # [1]
+        print("fraction of members = ",1.0*sum(pmn)/len(pmn))
         i = i+1
-        x=x0[pmn]; y=y0[pmn]; vz=vz0[pmn]; vb=vb0[pmn]; #[1], [km/s]
-        Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn] # [ang], [1], [1]
+        x=x0[pmn]; y=y0[pmn]; z=z0[pmn]; vz=vz0[pmn]; vb=vb0[pmn];  # [1], [km/s]
+        Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn]   # [ang], [1], [1]
         m = np.ones(len(pmn))
         
-        r = np.sqrt(x*x+y*y) #[r_core]
+        R = np.sqrt(x*x+y*y)            # [Rcore]
         
-        # print "x y z" on first line, to interprete data later on
-        crcore = open(gpr.get_params_file(i),'w')
-        print >> crcore, '# rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]'
-        print >> crcore, rcore
+        # print("x y z" on first line, to interprete data later on)
+        crcore = open(gpr.get_params_file(i)+'_3D','w')
+        print('# Rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crcore)
+        print(Rcore, file=crcore)
         crcore.close()
 
-        print 'output: ',gpr.get_com_file(i)
-        c = open(gpr.get_com_file(i),'w')
-        print >> c,'# x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc'
+        print('output: ',gpr.get_com_file(i)+'_3D')
+        c = open(gpr.get_com_file(i)+'_3D','w')
+        print('# x [Rcore],','y [Rcore],', 'z [Rcore]','vLOS [km/s],','Rcore = ',Rcore,' pc', file=c)
         for k in range(len(x)):
-            print >> c,x[k],y[k],vz[k] #[rcore], [rcore], [km/s]
+            print(x[k],y[k],z[k],vz[k], file=c)      # 3* [Rcore], [km/s]
         c.close()
         
         
-        if not gp.showplot_readout: continue
-        
+        if not gpr.showplots: continue
+        # plot x-z values
         ion(); subplot(111)
-        res = (abs(x)<3)*(abs(y)<3)
-        x = x[res]; y = y[res] #[rcore]
+        res = (abs(x)<3)*(abs(z)<3)
+        x = x[res]; z = z[res]           # [Rcore]
         en = len(x)
         if en == 0: continue
-        scatter(x[:en], y[:en], c=pmn[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
+        scatter(x[:en], z[:en], c=pmn[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
         # xscale('log'); yscale('log')
         if i == 0: colorbar()
-        circ_HL=Circle((0,0), radius=rcore/rcore, fc='None', ec='g', lw=1)
-        circ_DM=Circle((0,0), radius=gpr.r_DM/rcore, fc='None', ec='r', lw=1)
+        circ_HL=Circle((0,0), radius=Rcore/Rcore, fc='None', ec='g', lw=1)
+        circ_DM=Circle((0,0), radius=gpr.r_DM/Rcore, fc='None', ec='r', lw=1)
         gca().add_patch(circ_HL); gca().add_patch(circ_DM)
         
         # visible region
-        maxr = max(np.abs(x));  mayr = max(np.abs(y)) #[rcore]
+        maxr = max(np.abs(x));  mayr = max(np.abs(z)) #[rcore]
         width2 = max([maxr,mayr]) #[rcore]
         xlim([-width2,width2]); ylim([-width2,width2])
         axes().set_aspect('equal')
     
-        xlabel(r'$x [R_s]$'); ylabel(r'$y [R_s]$')
+        xlabel(r'$x [R_s]$'); ylabel(r'$z [R_s]$')
         # title(gpr.fil)
-        savefig(gpr.get_com_png(i))
+        savefig(gpr.get_com_png(i)+'_3D.png')
         if gpr.showplots:
             ioff();show();clf()
     
 if __name__=='__main__':
-    # gp.showplot_readout = True
+    # gpr.showplots = True
     run()

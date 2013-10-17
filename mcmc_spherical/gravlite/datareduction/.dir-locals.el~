@@ -1,0 +1,4 @@
+;;; Directory Local Variables
+;;; See Info node `(emacs) Directory Variables' for more information.
+
+;;((python-mode . ((py-master-file . "~/sci/dwarf_data/programs/gravlite.py"))))

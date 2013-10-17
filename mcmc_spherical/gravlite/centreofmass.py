@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 import numpy as np
 import pdb
 # calculate approximative center of mass, assuming constant stellar mass
@@ -8,13 +8,13 @@ import pdb
 
 import sys
 if(len(sys.argv)<2):
-    print "use: centreofmass.py [car,scl,sex,for]"
+    print("use: centreofmass.py [car,scl,sex,for]")
     exit(1)
     
 dwarf = sys.argv[1] #TODO: read from first command line parameter
 dir = "/home/ast/read/dark/dwarf_data/data_obs/"
 dir = '/home/psteger/sci/dwarf_data/data_obs/'
-print dir+dwarf+"/table_merged.bin"
+print(dir+dwarf+"/table_merged.bin")
 
 delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
 ID = np.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=(0,1),delimiter=delim,dtype="string")
@@ -22,18 +22,18 @@ RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe,SigMg,e_SigMg,PM=np.ge
 
 # only use stars which are members of the dwarf
 pm = (PM>=0.95)
-print "fraction of members = ",1.*sum(pm)/len(pm)
+print("fraction of members = ",1.*sum(pm)/len(pm))
 ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; RAs=RAs[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm]; Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm]; SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
 
 
 
 sig = abs(RAh[0])/RAh[0]
-print 'RAh: signum = ',sig
+print('RAh: signum = ',sig)
 RAh = RAh/sig
 xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
 
 sig = abs(DEd[0])/DEd[0]
-print 'DEd: signum = ',sig
+print('DEd: signum = ',sig)
 DEd = DEd/sig
 ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
 
@@ -47,7 +47,7 @@ for i in range(len(ms)):
 centreofmassx = np.sum(xs*ms)/sum(ms)   # [arcsec]
 centreofmassy = np.sum(ys*ms)/sum(ms)   # [arcsec]
 
-print '(xc,yc)=',centreofmassx,centreofmassy
+print('(xc,yc)=',centreofmassx,centreofmassy)
 
 xsnew = xs-centreofmassx                # [arcsec]
 ysnew = ys-centreofmassy                # [arcsec]
@@ -63,7 +63,7 @@ vLOS= {
     'sex': lambda x: x * (227), #+/- 3 [km/s]
     'scl': lambda x: x * (108)  #+/- 3 [km/s]
     }[dwarf](kms)
-print 'vLOS = ',vLOS
+print('vLOS = ',vLOS)
 
 vlos = VHel - vLOS                      # [km/s]
 # TODO: error in VHel
@@ -76,7 +76,7 @@ rcore= {
     'sex': lambda x: x * (16.6), #+/- 1.2  [arcsec]
     'scl': lambda x: x * (5.8)  #+/- 1.6   [arcsec]
     }[dwarf](arcsec)
-print 'rcore = ',rcore,' arcsec'
+print('rcore = ',rcore,' arcsec')
 
 xsnew = xsnew/rcore                     # [rcore]
 ysnew = ysnew/rcore                     # [rcore]
@@ -87,7 +87,7 @@ rhalf = {
     'sex': lambda x: x * (294),#+/- 38   [pc]
     'scl': lambda x: x * ( 94) #+/- 26   [pc]
     }[dwarf](1.)
-print 'rhalf = ',rhalf,' pc'
+print('rhalf = ',rhalf,' pc')
 
 # now determine rhalf from our dataset, assuming brightness propto Vmag
 
@@ -105,12 +105,12 @@ ysnew = ysnew / rhalfdata * rhalf       # [pc]
 
 c=open(dir+dwarf+'/centerpos.txt','w')
 # print "x y z" on first line, to interprete data later on
-print>>c,'x','y','z','vLOS'
+print('x','y','z','vLOS', file=c)
 c.close()
 # print x,y coordinate wrt center of all stars
 c=open(dir+dwarf+'/centerpos.txt', 'a')
 for k in range(len(xsnew)):
-    print>>c,xsnew[k],ysnew[k],vlos[k] # [pc, km/s]
+    print(xsnew[k],ysnew[k],vlos[k], file=c) # [pc, km/s]
 c.close()
 
 from pylab import *

@@ -1,6 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3.2
+
+##
+# @ file
+# generate simple disc data ourselves
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''generate simple disc data ourselves'''
 
 
 import numpy as np
@@ -35,10 +38,8 @@ C   = 17.**2.
 
 
 
-
+## generate disc data from analytic form, return 3D densities, delta (=tilt), ...
 def disc_simple():
-    '''generate disc data from analytic form, return 3D densities, delta, ...'''
-
     # trick to speed up things considerably, after first data generated, if zpnts > 50 (or other low number)
     # gp.dat.load(gp.files.dir+'pp')
     # return gp.dat
@@ -97,7 +98,7 @@ def disc_simple():
     sig_dat_err_bin = sig_dat_bin / np.sqrt(count_bin)
 
     z_dat_bin, nu_dat_bin, count_bin = bincou(z_dat[index], zmin, zmax, gp.nipol)
-    print nu_dat_bin
+    print(nu_dat_bin)
     nu_dat_err_bin = nu_dat_bin / np.sqrt(count_bin)
     renorm = max(nu_dat_bin)
     nu_dat_bin = nu_dat_bin / renorm
@@ -167,6 +168,7 @@ def disc_simple():
     return gp.dat
 
 
+## calculate K_z parameters (see Justin Read's paper for definition)
 def get_kzpars():
     Kz_zthd = -2.0 * F * zth              # [with pc]
     Sigz_zth = abs(Kz_zthd) / (2.0*np.pi*gp.G1)

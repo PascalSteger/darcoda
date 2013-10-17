@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env ipython-python3.2
 import os, sys, time, glob
 import gl_params as gp
 import pdb
@@ -15,16 +15,17 @@ def bufcount(filename):
         buf = read_f(buf_size)
     return lines
 
+
 def list_files():
     search_dir = gp.files.dir
     # print 'system: ', search_dir
     
     from stat import S_ISREG, ST_CTIME, ST_MODE
-    dirs = filter(os.path.isdir, glob.glob(search_dir + "20*"))
+    dirs = list(filter(os.path.isdir, glob.glob(search_dir + "20*")))
     
     # move *all* files *.dat to dat in all dirs of this walkercase
     for x in dirs:
-        files = filter(os.path.isfile, glob.glob(x + "/*"))
+        files = list(filter(os.path.isfile, glob.glob(x + "/*")))
         for y in files:
             ending = y.split('.')[-1]
             # renaming only if not prof in name!
@@ -40,9 +41,9 @@ def list_files():
     fdl.sort(key=lambda x: x[1])
 
     for i in range(len(fdl)):
-        print "%2d"%(i+1),': ',\
+        print("%2d"%(i+1),': ',\
               datetime.strftime(fdl[i][1],'%Y-%m-%d %H:%M:%S'),\
-              ' with ', "%7d"%fdl[i][2], ' iterations'
+              ' with ', "%7d"%fdl[i][2], ' iterations')
     import numpy as np
     return np.transpose(np.array(fdl))[:][0]
 
@@ -52,12 +53,12 @@ def get_run(default):
     invalid=True
     while(invalid):
         try:
-            user_input = raw_input('Input: (default '+str(default)+"): ")
+            user_input = input('Input: (default '+str(default)+"): ")
             if not user_input:
                 user_input = str(default)
             selection = int(user_input)
         except ValueError:
-            print "error in input"
+            print("error in input")
         if 0<selection and selection<=default:
             invalid = False
     return selection - 1
@@ -68,12 +69,12 @@ def get_action():
     invalid=True
     while(invalid):
         try:
-            user_input = raw_input('Action: (p - print (default), k - kill): ')
+            user_input = input('Action: (p - print (default), k - kill): ')
             if not user_input:
                 user_input = default
             selection = user_input
         except ValueError:
-            print "error in input"
+            print("error in input")
         if selection == 'p' or selection == 'k':
             invalid = False
     return selection
@@ -85,12 +86,12 @@ def get_prof():
     invalid=True
     while(invalid):
         try:
-            user_input = raw_input('profile: dens (default), M, delta1, delta2, nu1, sig1: ')
+            user_input = input('profile: dens (default), M, delta1, delta2, nu1, sig1: ')
             if not user_input:
                 user_input = default
             selection = user_input
         except ValueError:
-            print "error in input"
+            print("error in input")
         if selection == 'dens' or selection == 'M' or selection == 'delta1' or selection == 'delta2' or selection == 'nu1' or selection == 'sig1':
             invalid = False
     return selection

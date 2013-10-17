@@ -1,11 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython
+
+##
+# @file
+# all functions to work with plots
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''all functions to work with plots'''
 
-
-from pylab import *
 import numpy as np
 import pdb
+from pylab import *
 from matplotlib.ticker import MaxNLocator
 
 import gl_params as gp
@@ -13,35 +15,40 @@ if gp.geom == 'sphere':
     import physics_sphere as phys
 else:
     import physics_disc as phys
+
 import gl_funs as gfun
 from gl_analytic import *
 from gl_int import *
+from gl_project import rho_INT_Rho
 import gl_units as units
-
-
 
 global f, axs
 
+## start new figure. to be used in debug mode
+def start():
+    clf()
+    yscale('log')
+    return
 
-
-
-
+## prepare output plots, defining geometry
 def prepare_plots():
     global f,axs
-    if not gp.showplot: return
+    if not gp.showplot: 
+        return
     ion()
-    # f, axs = plt.subplots(3, 2, sharex=True, sharey=True)
-    f = figure(figsize=(6,6),dpi=100)
+    f = figure(0)
     ax1 = f.add_subplot(421)                         # nu1
     ax2 = f.add_subplot(422, sharex=ax1, sharey=ax1) # nu2
     ax3 = f.add_subplot(423, sharex=ax1)             # sig1
     ax4 = f.add_subplot(424, sharex=ax1, sharey=ax3) # sig2
     ax5 = f.add_subplot(425, sharex=ax1) # kurtosis [sphere] or kappa_i [disc]
-    ax6 = f.add_subplot(426, sharex=ax1, sharey=ax5) # kurtosis [sphere] or empty [disc]
+    ax6 = f.add_subplot(426, sharex=ax1, sharey=ax5) 
+    # ^-- kurtosis [sphere] or empty [disc]
     ax7 = f.add_subplot(427, sharex=ax1) # rho or M
     ax8 = f.add_subplot(428, sharex=ax1) # delta = beta [sphere] or tilt [disc]
     axs=[[ax1, ax2],[ax3,ax4],[ax5,ax6],[ax7,ax8]]
 
+    # define visibility of labels
     setp(ax1.get_xticklabels(), visible=False)
     setp(ax2.get_xticklabels(), visible=False)
     setp(ax3.get_xticklabels(), visible=False)
@@ -56,45 +63,47 @@ def prepare_plots():
     draw()
     return
 
-
-
-
-
+## set limits on axis ax
 def setlims(ax,xlim,ylim):
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
+    return
 
-
-
-
-
-
+## plot first bit of data with green color, including 1sigma error bars
 def plot_data():
     if not gp.showplot: return
-    ##### plot nu 1
+
+    # plot nu
     axs[0][0].cla()
     x = gp.ipol.nux1_2D                 # [pc]
-    if gp.geom == 'disc': x = gp.ipol.nux1
-    if gp.analytic: axs[0][0].plot(x, surfden_anf(x), c='blue', lw=1)
-    lbound = gfun.compare_nu(1,True,False) - gfun.compare_nu(1,True,True) # [munit/pc**2]
+    if gp.geom == 'disc':
+        x = gp.ipol.nux1
+    if gp.analytic: 
+        axs[0][0].plot(x, Sigma_anf(x), c='blue', lw=1)
+    lbound = gfun.compare_nu(1,True,False) - gfun.compare_nu(1,True,True) 
+    # [munit/pc**2]
     # gives gp.ipol.nudat1_2D
-    ubound = gfun.compare_nu(1,True,False) + gfun.compare_nu(1,True,True) # [munit/pc**2]
-    axs[0][0].fill_between(x,lbound,ubound,alpha=0.5,color='g') #[pc], 2*[munit/pc**2]
-    if gp.lograd: axs[0][0].set_xscale('log')
+    ubound = gfun.compare_nu(1,True,False) + gfun.compare_nu(1,True,True) 
+    # [munit/pc**2]
+    axs[0][0].fill_between(x,lbound,ubound,alpha=0.5,color='g') 
+    # [pc], 2*[munit/pc**2]
+    if gp.lograd:
+        axs[0][0].set_xscale('log')
     axs[0][0].set_yscale('log')
     blim1 = [min(lbound)/1.5, 1.5*max(ubound)]
     setlims(axs[0][0],[0,max(x)],blim1)
     setlims(axs[0][1],[0,max(x)],blim1)
     axs[0][0].set_ylabel('$\\nu_i\\quad[\\rm{M}_\odot/\\rm{pc}^2]$')
     axs[0][0].xaxis.set_major_locator(MaxNLocator(4))
-
-    ##### sigma_LOS 1
+    
+    # plot sigma_LOS 1
     axs[1][0].cla()
-    if gp.analytic: axs[1][0].plot(gp.ipol.sigx1, sig_los_anf(gp.ipol.sigx1), c='blue', lw=1)
+    if gp.analytic: axs[1][0].plot(gp.ipol.sigx1, sig_los_anf(gp.ipol.sigx1),\
+                                   c='blue', lw=1)
     x = gp.ipol.sigx1                                         # [pc]
-    lbound = (gp.ipol.sigdat1 - gp.ipol.sigerr1)                # [km/s]
-    ubound = (gp.ipol.sigdat1 + gp.ipol.sigerr1)                # [km/s]
-    axs[1][0].fill_between(x,lbound,ubound,alpha=0.5,color='green') # [pc], 2*[km/s]
+    lbound = (gp.ipol.sigdat1 - gp.ipol.sigerr1)              # [km/s]
+    ubound = (gp.ipol.sigdat1 + gp.ipol.sigerr1)              # [km/s]
+    axs[1][0].fill_between(x,lbound,ubound,alpha=0.5,color='green') # [pc],2*[km/s]
     blimsig1 = [0,1.5*max(ubound)]
     setlims(axs[1][0],[0,max(x)],blimsig1)
     setlims(axs[1][1],[0,max(x)],blimsig1)
@@ -102,23 +111,27 @@ def plot_data():
     axs[1][0].yaxis.set_major_locator(MaxNLocator(4))
     axs[1][0].xaxis.set_major_locator(MaxNLocator(4))
 
-    ##### kurtosis_LOS 1
+    # plot kappa_LOS 1
     axs[2][0].cla()
     x = gp.ipol.kapx1                            # [pc]
     lbound = (gp.ipol.kapdat1 - gp.ipol.kaperr1) # [1]
     ubound = (gp.ipol.kapdat1 + gp.ipol.kaperr1) # [1]
     axs[2][0].fill_between(x,lbound,ubound,alpha=0.5,color='green') # [pc], 2*[1]
     setlims(axs[2][0],[0,max(x)],[0.,5.])
+    if gp.analytic:
+        axs[2][0].plot(x, kappa_anf(x), 'blue')
+
     axs[2][0].set_ylabel('$\\kappa_{i,\\rm{LOS}}\\quad[1]$')
     axs[2][0].yaxis.set_major_locator(MaxNLocator(4))
     axs[2][0].xaxis.set_major_locator(MaxNLocator(4))
 
     
     if gp.pops==2:
-        #####  nu 2
+        # plot nu 2
         axs[0][1].cla()
         x = gp.ipol.nux2_2D #[pc]
-        if gp.geom == 'disc': x = gp.ipol.nux2
+        if gp.geom == 'disc':
+            x = gp.ipol.nux2
         lbound = gfun.compare_nu(2,True,False) - gfun.compare_nu(2,True,True) # [munit/pc**2]
         ubound = gfun.compare_nu(2,True,False) + gfun.compare_nu(2,True,True) # [munit/pc**2]
         axs[0][1].fill_between(x, lbound, ubound, alpha=0.5, color='green')
@@ -127,7 +140,7 @@ def plot_data():
         setlims(axs[0][1],[0,max(x)],blim2)
         setlims(axs[0][0],[0,max(x)],blim2)
         
-        ##### sigmalos 2
+        # plot sigma_los_2
         axs[1][1].cla()
         x = gp.ipol.sigx2                          # [pc]
         lbound = (gp.ipol.sigdat2 - gp.ipol.sigerr2) # [km/s]
@@ -136,17 +149,17 @@ def plot_data():
         blimsig2 = [0, max(blimsig1[1],max(ubound))]
         setlims(axs[1][1],[0,max(x)],blimsig2)
 
-        ##### kurtosis_los 2
+        # plot kurtosis_los_2
         axs[2][1].cla()
         x = gp.ipol.kapx2                            # [pc]
         lbound = (gp.ipol.kapdat2 - gp.ipol.kaperr2) # [1]
         ubound = (gp.ipol.kapdat2 + gp.ipol.kaperr2) # [1]
         axs[2][1].fill_between(x, lbound, ubound, alpha=0.5, color='green')
+
         setlims(axs[2][1],[0,max(x)],[0.,5.])
 
-
     if gp.plotdens:
-        #### density 3D
+        # plot 3D density
         axs[3][0].cla()
         x = gp.ipol.densx                          # [pc]
         if not gp.investigate=='fornax':
@@ -156,91 +169,85 @@ def plot_data():
 
         if gp.geom == 'sphere':
             axs[3][0].set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
-            
-        # if gp.lim: setlims(axs[3][0],[0,max(x)],[min(lbound),max(ubound)])
 
+        # show blue theoretical density line:
         if gp.model:
             x = gp.ipol.Mx_2D[:]                        # [pc]
             if gp.investigate == 'walker':
                 rhodm, rhostar1, rhostar2 = rhowalker_3D(x) # 3*[munit/pc^3]
                 rhotot = rhodm + rhostar1 + rhostar2
-                axs[3][0].plot(x, (rhostar1+rhostar2), c='blue', lw=1, ls='-.')
+                axs[3][0].plot(x, (rhostar1+rhostar2), c='blue', lw=2, ls='-.')
+            elif gp.investigate == 'gaia':
+                rhotot = rhogaiatot_3D(x)
             elif gp.investigate == 'triaxial':
                 rhotot = rhotriax(x)
-            axs[3][0].plot(x, rhotot, c='blue', lw=1, ls='-.')
+            axs[3][0].plot(x, rhotot, c='blue', lw=2, ls='-.')
             setlims(axs[3][0],[0,max(x)],[min(rhotot)/5.,max(rhotot)*5.])
 
         if gp.analytic:
             x = gp.xipol[:]                        # [pc]
             rhotot = rho_anf(x)
-            axs[3][0].plot(x, rhotot, c='blue', lw=1)
+            axs[3][0].plot(x, rhotot, c='blue', lw=2)
             setlims(axs[3][0],[0,max(x)],[min(rhotot)/5.,max(rhotot)*5.])
 
     else:
-        #### mass
+        # plot mass
         axs[3][0].cla()
-        x = gp.dat.Mx                          # [pc] TODO: gp.ipol.Mx_2D same here?
-        lbound = (gp.dat.Mdat - gp.dat.Merr) # [munit,2D]
-        ubound = (gp.dat.Mdat + gp.dat.Merr) # [munit,2D]
-        #### mass
-        #x = gp.ipol.Mx_2D                            # [pc]
-        #lbound = (gp.ipol.Mdat_2D - gp.ipol.Merr_2D) # [munit,2D]
-        #ubound = (gp.ipol.Mdat_2D + gp.ipol.Merr_2D) # [munit,2D]
+        # show blue theoretical mass line
+        if gp.model:
+            x = gp.ipol.Mx_2D[:]                        # [pc]
+            if gp.investigate == 'walker':
+                Mtot=Mwalkertot(x)      # [Msun]
+                axs[3][0].plot(x, Mtot, '-.', color='blue', lw=2)
+                setlims(axs[3][0],[0,max(gp.xipol)],[0.5*min(Mtot),max(Mtot)*1.5])
+                # axs[3][0].set_yscale('log') 
+
+        x = gp.dat.Mx                          # [pc] TODO: gp.ipol.Mx_3D same here?
+        lbound = (gp.dat.Mdat - gp.dat.Merr) # [munit,3D]
+        ubound = (gp.dat.Mdat + gp.dat.Merr) # [munit,3D]
+
+        # x = gp.ipol.Mx_2D                            # [pc]
+        # lbound = (gp.ipol.Mdat_2D - gp.ipol.Merr_2D) # [munit,2D]
+        # ubound = (gp.ipol.Mdat_2D + gp.ipol.Merr_2D) # [munit,2D]
         axs[3][0].fill_between(x, lbound, ubound, alpha=0.5, color='green')
-        #axs[3][0].plot(x, M_anf(gp.ipol.Mx)*gp.totmass[0], c='blue', lw=1) # only for Hernquist
+        #axs[3][0].set_ylim([0.,1.2*max(ubound)])
+        # axs[3][0].plot(x, M_anf(gp.ipol.Mx)*gp.totmass[0], c='blue', lw=1) # only for Hernquist
+
         if gp.geom == 'sphere':
             axs[3][0].set_ylabel('$M\\quad[\\rm{M}_\\odot]$')
         elif gp.geom == 'disc':
             axs[3][0].set_ylabel('$\\Sigma\\quad[\\rm{M}_\\odot/\\rm{pc}^2]$')
 
-        if gp.lim:
-            axs[3][0].set_ylim([0.,1.2*max(ubound)])
-            #setlims(axs[3][0],[0,max(x)],[1e-4,1.5*max(ubound)])
 
     axs[3][0].set_xlabel('$r\\quad[\\rm{pc}]$')
     axs[3][1].set_xlabel('$r\\quad[\\rm{pc}]$')
 
     if gp.log:   axs[3][0].set_yscale('log')
     plt.draw()
-
-
-
-
-
+    return
     
-def get_plot_data_1(): # for 1 population
+## get data for 1 population
+def get_plot_data_1():
     x = gp.xipol[:]
     r_tot = gp.xipol[:]                   # TODO: extension to 2* rmax
-    if gp.plotdens:
-        grav = gp.dens_x
-    else:
-        if gp.geom == 'sphere':
-            grav = int_project(x, gp.dens_x)
-        else:
-            grav = gp.M_x              # [Msun/pc**2] <= /kpc**2? TODO
+    grav = gp.dens_x if gp.plotdens else gp.M_x
 
     x1 = gp.ipol.nux1[:]
-    nu1 = int_surfden(x1, gp.nu1_x)
+    nu1 = rho_INT_Rho(x1, gp.nu1_x)
     if gp.geom == 'disc': nu1 = gp.nu1_x
     sig1 = gp.sig1_x
     kap1 = gp.kap1_x
     return x1, r_tot, nu1, gp.sig1_x, gp.kap1_x, grav, gp.d1_x
 
-def get_plot_data_2(): # for 2 populations
+## get data for 2 populations
+def get_plot_data_2():
     x = gp.xipol[:]
     r_tot = gp.xipol[:]                   # TODO: extension to 2* rmax
 
-    if gp.plotdens:
-        grav = gp.dens_x
-    else:
-        if gp.geom == 'sphere':
-            grav = int_project(x, gp.dens_x)
-        else:
-            grav = gp.M_x              # [Msun/pc**2] <= /kpc**2? TODO
-
+    grav = gp.dens_x if gp.plotdens else gp.M_x
     x1 = gp.ipol.nux1[:]; x2 = gp.ipol.nux2[:]
-    nu1 = int_surfden(x1, gp.nu1_x)
-    nu2 = int_surfden(x2, gp.nu2_x)
+    nu1 = rho_INT_Rho(x1, gp.nu1_x)
+    nu2 = rho_INT_Rho(x2, gp.nu2_x)
     if gp.geom == 'disc':
         nu1 = gp.nu1_x
         nu2 = gp.nu2_x
@@ -249,9 +256,7 @@ def get_plot_data_2(): # for 2 populations
            nu2, gp.sig2_x, gp.kap2_x, gp.d2_x
 
 
-
-
-
+## plot the first red line (values from mcmc_init)
 def plot_first_guess():
     global f1,f2,f3,f4,f5,f6,f7,f8
     if not gp.showplot: return
@@ -274,8 +279,8 @@ def plot_first_guess():
 
     f7, = axs[3][0].plot(x_tot, grav,  c='red')
     f8, = axs[3][1].plot(xpl,   delta1, c='red')
-    if gp.geom == 'sphere':
-        axs[3][0].set_ylim([5e-3,3.])
+    # if gp.geom == 'sphere':
+    #     axs[3][0].set_ylim([5e-3,3.])
     if gp.geom == 'disc':
         f7, = axs[3][0].plot(x_tot, gp.Mmodel, c='blue',ls='dashed')
 
@@ -283,15 +288,13 @@ def plot_first_guess():
     # axs[3][1].xaxis.set_major_locator(MaxNLocator(4))
     if (gp.pops == 2) : axs[3][1].plot(xpl,delta2,color='orange')
     plt.draw()
-    # save_plot() # not saving, as no folder available during initphase
     return
 
 
-
-
-    
+## update plot to new model values
 def update_plot():
-    if not gp.showplot: return
+    if not gp.showplot:
+        return
     if gp.pops==1:
         xpl,x_tot,nu1,sig1,kap1,grav,d1 = get_plot_data_1()
     elif gp.pops==2:
@@ -313,7 +316,8 @@ def update_plot():
     axs[3][1].yaxis.set_label_position("right")
     axs[3][1].set_xlabel('$r\\quad[\\rm{pc}]$')
     axs[3][1].set_ylabel('$\\delta_{1,2}$')
-    
+
+    # plot disc stuff
     if gp.geom == 'disc':
         # plot kappa
         axs[2][0].cla()
@@ -334,31 +338,24 @@ def update_plot():
     # plt.savefig('first.png')
     if not gp.initphase: save_plot()
     return
-
-
-
-
-
     
+## save plot to png file
 def save_plot():
     plt.savefig(gp.files.get_outpng())
     return
 
-
-
-
+## show all plots, stop execution of program. Have to close via (x) in window
 def show_plots():
-    if not gp.showplot: return
+    if not gp.showplot: 
+        return
     ioff();show()
     return
 
 
-
-    
-
+## plot profiles. TODO: seems not to be used anywhere.. delete
 def plot_disc():
-    # plot profiles. TODO: seems not to be used anywhere.. delete
-    if not showplot: return
+    if not showplot: 
+        return
 
     # Calculate profiles:
     nu_z  = phys.nu(gp.xipol,gp.xipol,gp.parst.nu1,gp.quadratic,gp.monotonic)
@@ -413,7 +410,7 @@ def plot_disc():
         plot(zth,abs(Kz_zth) / (2.*np.pi*G1) / 1000^2.)
         if bprior: plot(zvis,sigusevis)
         
-    # Tilt:
+    # plot tilt
     if tparsRin(0) > 0:  
         sig_Rz = sigma_rz(zpl,zp_kz,tpars)
         plot(zpl,sig_Rz,xtitle='z(kpc)',ytitle='Sig_Rz',yrange=[-200,200])

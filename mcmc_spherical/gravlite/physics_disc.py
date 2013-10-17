@@ -68,7 +68,7 @@ def kappa(xipol, Kz):
 def dens(xipol, denspars):              # [pc], [TODO]
     'take denspars (as polynomial?) coefficients, calculate polynomial, give back Kz'
     r0 = np.hstack([0,xipol])
-    if gp.checksigma:
+    if gp.checkint:
         return gp.ipol.densdat          # [TODO] in disc case
     if not gp.poly:
         if gp.denslog:

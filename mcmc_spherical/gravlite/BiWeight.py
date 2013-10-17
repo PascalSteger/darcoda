@@ -94,7 +94,7 @@ def stddevbiweight(vector,zero=None,eps=1e-20):
         ind = np.argwhere(u2<=1.).flatten()
         count = len(ind) #[1]
         if count<3:
-            print 'stddev biweight: distribution is too strange (returning -1)'
+            print('stddev biweight: distribution is too strange (returning -1)')
             scale=-1.
         else:
             term1 = (1.-u2[ind])    #[1]
@@ -220,7 +220,7 @@ def meanbiweight(vector,itmax=10,fracmin=[],eps=1e-24,\
         ci_std = np.zeros(2)
         
     if type(ci_mean)!=np.ndarray or type(ci_std)!=np.ndarray:
-        print 'out=',center,STDDEV,ci_mean,ci_std
+        print('out=',center,STDDEV,ci_mean,ci_std)
         ci_mean = np.zeros(2)
         ci_std  = np.zeros(2)
     #[vecunit],    [vecunit] [vecunit]   [vecunit]   [vecunit]  [vecunit]

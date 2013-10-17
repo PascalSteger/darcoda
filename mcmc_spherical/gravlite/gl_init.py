@@ -1,6 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3.2
+
+##
+# @file
+# set up initial parameters
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''set up initial parameters'''
 
 
 import numpy as np
@@ -15,15 +18,8 @@ from gl_analytic import *
 import gl_file as gf
 import gl_helper as gh
 
-
-
-
-
-
-
+## Default Initial seed guess parameters:
 def mcmc_init():
-    # Default Initial seed guess parameters:
-
 
     ### nu
     # set all nu to known 3D data (plus some offset, possibly)
@@ -48,29 +44,30 @@ def mcmc_init():
             nupars2 = np.log10(nupars2)
             # nuparstep2 = nupars2*0.+nupars2[0]/20.
 
-
     ### delta
     if gp.geom == 'sphere':
         deltapars1 = np.zeros(gp.nipol)
-        deltaparstep1 = deltapars1 + 0.05
+        deltaparstep1 = deltapars1 + 0.01
         mdelta1 = []; mdelta2 = []
         if gp.model:
-            print 'TODO: disable model for delta for observed dwarfs!'
+            print('initialization of beta with Osipkov-Merritt model')
             if gp.investigate == 'walker':
                 mdelta1, mdelta2 = betawalker(gp.xipol)
+            if gp.investigate == 'gaia':
+                mdelta1 = betagaia(gp.xipol)
             elif gp.investigate == 'triaxial':
                 mdelta1 = betatriax(gp.xipol)
             deltapars1 = phys.invdelta(mdelta1)
-            deltaparstep1 = deltapars1*0. + 0.05
+            deltaparstep1 = deltapars1*0. + 0.01
             # if gp.deltaprior:   # TODO: rename
             #     deltaparstep1 = np.zeros(gp.nipol)
 
         if gp.pops == 2:
             deltapars2 = np.zeros(gp.nipol)
-            deltaparstep2 = deltapars2 + 0.05
+            deltaparstep2 = deltapars2 + 0.01
             if gp.model:
                 deltapars2 = phys.invdelta(mdelta2)
-                deltaparstep2 = deltapars2*0. + 0.05
+                deltaparstep2 = deltapars2*0. + 0.01
                 # if gp.deltaprior:
                 #     deltaparstep2 = np.zeros(gp.nipol)
 
@@ -94,24 +91,25 @@ def mcmc_init():
         for i in range(1,gp.nipol):
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
-        densparstep = denspars/50. * (np.arange(1,gp.nipol+1))**0.5
+        densparstep = denspars/50. * (np.arange(1,gp.nipol+1))**0.2
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:
-            print 'TODO: disable model for dens for observed dwarfs'
             denspars = rhowalkertot_3D(gp.xipol)   # [munit/pc^3]
-            denspars = denspars * (1.+ npr.uniform(-1.,1.,gp.nipol)/15.)+denspars[-1]/2. # [munit/pc^3]
+            denspars *=  (1.+ npr.uniform(-1.,1.,gp.nipol)/15.)+denspars[-1]/2. 
+            # [munit/pc^3]
         if gp.denslog:
             denspars = np.log10(denspars)
         densparstep = denspars/20.
         
 
     if gp.geom == 'disc':
-        Kz = -(gp.Mmodel)*2.*np.pi*gp.G1 # [(km/s)^2/kpc] = 3.24e-14m/s^2 # from data of overall surface density.
+        Kz = -(gp.Mmodel)*2.*np.pi*gp.G1 
+        # [(km/s)^2/kpc] = 3.24e-14m/s^2 # from data of overall surface density.
         # kzpars = np.abs(gh.deriv(Kz, gp.xipol)) # /sqrt(3) for first offset
-        kzpars = phys.kappa(gp.xipol, Kz)        # which is the inverse to phys.dens()
+        kzpars = phys.kappa(gp.xipol, Kz) # which is the inverse to phys.dens()
         if max(kzpars<0.):
-            print 'negative kappa, go check!'
+            print('negative kappa, go check!')
             pdb.set_trace()
 
         if gp.kzsimpfix:
@@ -159,5 +157,5 @@ def mcmc_init():
 
     gp.parst = Params(0)
     gp.parst.assign(gp.pars)
-    print 'mcmc set up'
+    print('mcmc set up')
     return

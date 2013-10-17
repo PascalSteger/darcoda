@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__helper.html#ae59808bf8ea3e3c5c7debd826a5d030c" title="split interval into bins, in a logarithmic fashion" alt="" coords="185,5,316,35"/>
+<area shape="rect" id="node5" href="$namespacegl__helper.html#a85e5507bde15cf99b301f966480375ea" title="split interval into bins of constant particle number" alt="" coords="155,59,347,88"/>
+<area shape="rect" id="node7" href="$namespacegl__helper.html#aab4b0242774b64e4d496131526863cba" title="split interval linearly into bins" alt="" coords="179,112,323,141"/>
+<area shape="rect" id="node9" href="$namespaceBiWeight.html#a4ea939e2ec4b13d939fdd56265f9d68f" title="PURPOSE: Estimation of the central location (&#39;mean&#39;) of a distribution, resistant for outliers and ro..." alt="" coords="172,165,329,195"/>
+<area shape="rect" id="node11" href="$namespaceBiWeight.html#a3ec60cce21036602e9f18897b389240b" title="PURPOSE: Estimation of the scale (&#39;dispersion&#39;) of a distribution, resistant for outliers and robust ..." alt="" coords="396,165,561,195"/>
+</map>

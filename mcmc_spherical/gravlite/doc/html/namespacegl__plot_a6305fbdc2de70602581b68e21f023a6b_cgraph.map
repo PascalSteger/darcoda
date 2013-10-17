@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__plot.html#a72271c3822673dac07dfb7b75d37b8d4" title="get data for 1 population" alt="" coords="185,5,340,35"/>
+<area shape="rect" id="node7" href="$namespacegl__plot.html#aebf567b016279aecb3e1cc223fd7d0ae" title="get data for 2 populations" alt="" coords="185,59,340,88"/>
+<area shape="rect" id="node10" href="$namespacegl__plot.html#aa18ca62c504ef47e233b4ec25ddef954" title="save plot to png file" alt="" coords="203,112,323,141"/>
+<area shape="rect" id="node5" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="389,32,549,61"/>
+</map>

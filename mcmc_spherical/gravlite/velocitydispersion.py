@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # calculate velocity dispersion of wedges
 ####################################################
 
@@ -7,12 +7,12 @@ from BiWeight import meanbiweight
 
 import sys
 if(len(sys.argv)<2):
-    print "use: velocitydispersion.py [car,scl,sex,for]"
+    print("use: velocitydispersion.py [car,scl,sex,for]")
     exit(1)
 dwarf = sys.argv[1]
 dir = "/home/ast/read/dark/dwarf_data/data_obs/"
 dir = '/home/psteger/sci/dwarf_data/data_obs/'
-print dir+dwarf+"/table_merged.bin"
+print(dir+dwarf+"/table_merged.bin")
 
 #distance error, set for sim. TODO: change
 rerror  = 0.1
@@ -39,7 +39,7 @@ for i in range(bins):
 rs = rerror*numpy.random.randn(len(r))+r
 vlos = vrerror*numpy.random.randn(len(vlos))+vlos
 d=open(dir+dwarf+'/velocitydispersionlos.txt','w')
-print>>d,'r','sigma_r(r)','error'
+print('r','sigma_r(r)','error', file=d)
 d.close()
 #iterations for drawing a given radius in bin
 n = 1000
@@ -73,14 +73,14 @@ for i in range(bins):
 maxvlos = max(p_dvlos)
 d=open(dir+dwarf+'/velocitydispersionlos.txt','a')
 for i in range(bins):
-    print>>d,rbin[i],p_dvlos[i],p_edvlos[i]
+    print(rbin[i],p_dvlos[i],p_edvlos[i], file=d)
 d.close()
 
 from pylab import *
 ion(); subplot(111)
-print 'rbin = ',rbin
-print 'p_dvlos = ',p_dvlos
-print 'p_edvlos = ',p_edvlos
+print('rbin = ',rbin)
+print('p_dvlos = ',p_dvlos)
+print('p_edvlos = ',p_edvlos)
 plot(rbin,p_dvlos,'b',linewidth=3)
 fill_between(rbin,p_dvlos-p_edvlos,p_dvlos+p_edvlos,alpha=0.5,color='r')
 
@@ -95,7 +95,7 @@ vLOS= {
     'sex': lambda x: x * (227), #+/- 3
     'scl': lambda x: x * (108)  #+/- 3
     }[dwarf](kms)
-print 'vLOS = ',vLOS
+print('vLOS = ',vLOS)
 #axhline(y=vLOS)
 
 xlabel(r'$r [pc]$')

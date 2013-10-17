@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__int.html#a9fec3a7e52cf04af3cd75f7e01f1a61c" title="insert equally spaced points at 1/4, 1/2, and 3/4 of a bin span" alt="" coords="223,5,447,35"/>
+<area shape="rect" id="node5" href="$namespacegl__int.html#af30834374ee39c81997a588f8b193040" title="smooth function y(x)" alt="" coords="272,59,397,88"/>
+<area shape="rect" id="node7" href="$namespacegl__int.html#a0a136f4c075da7b1fa6012c623913974" title="extrapolate to high radii with linear extrapolation" alt="" coords="272,112,397,141"/>
+<area shape="rect" id="node9" href="$namespacegl__int.html#a97ab5547e4500ce9c081c6ea4650986c" title="function from Lokas+2005, eq." alt="" coords="303,165,367,195"/>
+</map>

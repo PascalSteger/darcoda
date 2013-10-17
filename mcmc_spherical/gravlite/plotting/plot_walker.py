@@ -1,16 +1,15 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 from pylab import *
 import pdb
-
-from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
+from scipy.interpolate import splrep, splev
 
 import gl_params as gp
 from gl_analytic import Mwalkertot, rhowalkertot_3D, betawalker
 import gl_helper as gh
-from gl_int import int_surfden
+from gl_project import rho_INT_Rho
 from matplotlib.backends.backend_pdf import PdfPages
 
 # Walker data sets
@@ -28,23 +27,26 @@ def show_plots():
     show()
     return
 
+def readcol(filena):
+    a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
+    return a,b,c
 
 def halflightradii(case):
-    if gp.walkercase == 0:
+    if gp.case == 0:
         gamma_star1 =   0.1;    gamma_star2 =   1.0 # 1. or 0.1
         beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
         r_star1     = 1000.;    r_star2     = 1000. # 500 or 1000
         r_a1        =   1.0;    r_a2        =   1.0
         gamma_DM    = 0 # 0 or 1
         
-    elif gp.walkercase == 1:
+    elif gp.case == 1:
         gamma_star1 =   1.0;    gamma_star2 =   1.0 # 1. or 0.1
         beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
         r_star1     =  500.;    r_star2     = 1000. # 500 or 1000
         r_a1        =   1.0;    r_a2        =   1.0
         gamma_DM    = 0 # core
         
-    elif gp.walkercase == 2:
+    elif gp.case == 2:
         gamma_star1 =   1.0;    gamma_star2 =   1.0 # 1. or 0.1
         beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
         r_star1     =  500.;    r_star2     = 1000. # 500 or 1000
@@ -53,12 +55,10 @@ def halflightradii(case):
 
     return r_star1, r_star2
 
-
-
-print 'input'
+print('input')
 print basename
 M = np.loadtxt(basename+'prof'+prof,skiprows=0,unpack=False)
-print 'len (M) = ',len(M)
+print('len (M) = ',len(M))
 
 radii = M[0]
 profs = M[1:]                           # all saved profiles
@@ -67,7 +67,8 @@ profs = M[1:]                           # all saved profiles
 
 
 Mprofbins = np.transpose(profs)
-# radii = radii[:-1]
+# radii = radii[1:] # TODO: debug: allowin for first bin suddenly makes
+# overall resemblance change!
 # Mprofbins = Mprofbins[:-1]
 
 
@@ -90,14 +91,26 @@ for i in range(len(radii)):
     Mmin[i]  = Mprofbins[i,0]
 
 if prof == 'nu1':
-    Mmax=int_surfden(radii, Mmax)
-    M95hi=int_surfden(radii, M95hi)
-    M68hi=int_surfden(radii, M68hi)
-    Mmedi=int_surfden(radii, Mmedi)
-    M68lo=int_surfden(radii, M68lo)
-    M95lo=int_surfden(radii, M95lo)
-    Mmin=int_surfden(radii, Mmin)
+    Mmax=rho_INT_Rho(radii, Mmax)
+    M95hi=rho_INT_Rho(radii, M95hi)
+    M68hi=rho_INT_Rho(radii, M68hi)
+    Mmedi=rho_INT_Rho(radii, Mmedi)
+    M68lo=rho_INT_Rho(radii, M68lo)
+    M95lo=rho_INT_Rho(radii, M95lo)
+    Mmin=rho_INT_Rho(radii, Mmin)
 
+# def extralast(rad, prof):
+#     tck = splrep(rad[:-1],np.log(prof[:-1]),k=2,s=0.1)
+#     prof = np.hstack([prof[:-1],np.exp(splev(rad[-1],tck))])
+#     return prof
+
+# M95hi = extralast(radii,M95hi)
+# M68hi = extralast(radii,M68hi)
+# Mmedi = extralast(radii,Mmedi)
+# M68lo = extralast(radii,M68lo)
+# M95lo = extralast(radii,M95lo)
+
+    
 rsc = 1.#0.5
 Msc = 1.
 sel = (radii<15000.)             # TODO: selection right?
@@ -115,7 +128,7 @@ def read_scale():
 
 
 def plotGraph():
-    fig = plt.figure(figsize=(5, 3), dpi=300)
+    fig = plt.figure()
     ### Plotting arrangements ###
     xlabel(r'$r\quad[\mathrm{pc}]$')
     if prof == 'M':
@@ -133,7 +146,7 @@ def plotGraph():
     fill_between(radsc, M68lo*Msc, M68hi*Msc, color='black',alpha=0.4,lw=1)
     plot(radsc,Mmedi*Msc,'r',lw=1)
     
-    r1, r2 = halflightradii(gp.walkercase)
+    r1, r2 = halflightradii(gp.case)
     if prof == 'dens' or prof == 'M' or prof=='delta1' or prof=='nu1' or prof=='sig1':
         axvline(x=r1, visible=True)
     if prof == 'dens' or prof == 'M' or prof=='delta2':
@@ -143,15 +156,16 @@ def plotGraph():
     if prof == 'M':
         plot(radsc,Msc*Mwalkertot(radsc),'--',color='black',lw=1)
     elif prof == 'dens':
-        plot(radsc,Msc*rhowalkertot_3D(radsc),'--',color='black',lw=1)
-        plot(radsc,Msc*profs[0],'.',color='orange',lw=1)
+        plot(radsc,Msc*rhowalkertot_3D(radsc),'--',color='black',lw=1) # 7 co
+        # plot lowest profile as well
+        # plot(radsc,Msc*profs[0],'.',color='orange',lw=1)
     elif prof == 'delta1':
         plot(radsc,betawalker(radsc)[0],color='black')
     elif prof == 'delta2':
         plot(radsc,betawalker(radsc)[1],color='black')
 
     elif prof == 'sig1':
-        rad, sig1, sigerr1 = gh.readcol(gp.files.sigfiles[1])
+        rad, dummy, dummy, sig1, sigerr1 = gh.readcol5(gp.files.sigfiles[1])
         rad *= gp.rcore_2D[1]
         sig1*=gp.maxvlos[1]
         sigerr1*=gp.maxvlos[1]
@@ -160,28 +174,27 @@ def plotGraph():
         # plot(rad, sig1+sigerr1, '--', color='b', lw=1)
         fill_between(rad, sig1-sigerr1, sig1+sigerr1, color='blue', alpha=0.3,lw=0)
     elif prof == 'nu1':
-        rad, nu1, nuerr1 = gh.readcol(gp.files.nufiles[1])
+        rad, dummy, dummy, nu1, nuerr1 = gh.readcol5(gp.files.nufiles[1])
         rad *= gp.rcore_2D[1]
         nu1*=gp.dens0pc_2D[1]
         nuerr1*=gp.dens0pc_2D[1]
         fill_between(rad, nu1-nuerr1, nu1+nuerr1, color='blue', alpha=0.3,lw=0)
 
 
-    if prof != 'delta1' and prof != 'delta2' and prof != 'sig1' and prof != 'nu1':
+    if prof!='delta1' and prof != 'delta2' and prof != 'sig1' and prof != 'nu1':
         # xscale('log')
         yscale('log')
     if prof == 'nu1':
         yscale('log')
-    if prof == "M":
+    if prof == "M" or prof == 'dens':
         xscale('log')
-    xlim([min(radsc),max(radsc)])
-    ylim([min(M95lo[sel]*Msc),max(M95hi[sel]*Msc)])
+        xlim([100.,1200.]);  ylim([0.005,1.5])
+    if prof == 'delta1':
+        xlim([100.,1200.]);  ylim([-0.15,0.9])
+
     return fig
     
 
-def readcol(filena):
-    a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
-    return a,b,c
 
 
 ion()

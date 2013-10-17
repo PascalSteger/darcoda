@@ -1,0 +1,9 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__analytic.html#a67b474761d576550cb2572c58ebb8733" title="calculate Osipkov&#45;Merritt velocity anisotropy profile" alt="" coords="191,5,340,35"/>
+<area shape="rect" id="node5" href="$namespacegl__analytic.html#ab351ea550293eee24f931a4ce09a0bf3" title="Osipkov&#45;Merritt velocity anisotropy profile." alt="" coords="197,59,333,88"/>
+<area shape="rect" id="node7" href="$namespacegl__analytic.html#aba103e5fc50a29ae4039a357f0648cf8" title="calculate velocity anisotropy for Dehnen&#45;Wilkinson triaxial model" alt="" coords="196,112,335,141"/>
+<area shape="rect" id="node9" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM" alt="" coords="175,165,356,195"/>
+<area shape="rect" id="node15" href="$namespacegl__disc__simple.html#a9de81ba606aca68355642fd1fe889ffc" title="calculate K_z parameters (see Justin Read&#39;s paper for definition)" alt="" coords="177,219,353,248"/>
+<area shape="rect" id="node11" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq." alt="" coords="405,165,573,195"/>
+<area shape="rect" id="node13" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model" alt="" coords="621,165,752,195"/>
+</map>

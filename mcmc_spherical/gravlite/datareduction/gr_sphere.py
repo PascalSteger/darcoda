@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 # move centered positions to spherical coordinates
 import numpy as np
@@ -29,23 +29,22 @@ x  = [ xall[i]    for i in trace ]
 y  = [ yall[i]    for i in trace ]
 z  = [ zall[i]    for i in trace ]
 
-print 'output:'
-print ps.fileposcartesian
+print('output:',ps.fileposcartesian)
 fileposcartesian=open(ps.fileposcartesian,'w')
-print>>fileposcartesian,'x','y','z'
+print('x','y','z', file=fileposcartesian)
 for k in range(n):
-  print>>fileposcartesian,x[k],y[k],z[k]
+  print(x[k],y[k],z[k], file=fileposcartesian)
 fileposcartesian.close()
 
 vx = [ vxall[i]   for i in trace ]
 vy = [ vyall[i]   for i in trace ]
 vz = [ vzall[i]   for i in trace ]
 
-print ps.filevelcartesian
+print(ps.filevelcartesian)
 filevelcartesian=open(ps.filevelcartesian,'w')
-print>>filevelcartesian,'x','y','z'
+print('vx','vy','vz',file=filevelcartesian)
 for k in range(n):
-  print>>filevelcartesian,vx[k],vy[k],vz[k]
+  print(vx[k],vy[k],vz[k],file=filevelcartesian)
 filevelcartesian.close()
 
 # r
@@ -68,11 +67,11 @@ for k in range(n):
   elif y[k]<0:
     phi[k] = np.arctan(y[k]/x[k])-np.pi
 
-print ps.fileposspherical
+print(ps.fileposspherical)
 fileposspherical=open(ps.fileposspherical,'w')
-print>>fileposspherical,'r','phi (azimuthal)','theta (polar)'
+print('r','phi (azimuthal)','theta (polar)', file=fileposspherical)
 for k in range(n):
-  print>>fileposspherical,r[k],phi[k],theta[k]
+    print(r[k],phi[k],theta[k], file=fileposspherical)
 fileposspherical.close()
 
 
@@ -86,9 +85,9 @@ vtheta   = r*thetadot
 phidot = (x*vy-y*vx)/(x**2+y**2)
 vphi   = r*phidot*np.sin(theta)
 
-print ps.filevelspherical
+print(ps.filevelspherical)
 filevelspherical=open(ps.filevelspherical,'w')
-print>>filevelspherical,'vr','vphi (azimuthal)','vtheta (polar)'
+print('vr','vphi (azimuthal)','vtheta (polar)', file=filevelspherical)
 for k in range(n):
-  print>>filevelspherical,vr[k],vphi[k],vtheta[k]
+    print(vr[k],vphi[k],vtheta[k], file=filevelspherical)
 filevelspherical.close()

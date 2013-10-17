@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # (c) 2013 Pascal S.P. Steger
 '''calculate COM from metallicity selected stars'''
 
@@ -12,8 +12,8 @@ import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 
-print 'input:'
-print gpr.fil
+print('input:')
+print(gpr.fil)
 x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                              usecols=(0,1,2,11,12,13,19,20),\
                                              dtype="d17",\
@@ -59,8 +59,8 @@ com_x = np.sum(x)/(1.*len(x)) # [pc]
 com_y = np.sum(y)/(1.*len(y)) # [pc]
 com_z = np.sum(z)/(1.*len(z)) # [pc]
 com_vz = np.sum(vz)/(1.*len(vz)) # [km/s]
-print 'COM [pc]: ', com_x, com_y, com_z
-print 'VOM [km/s]', com_vz
+print('COM [pc]: ', com_x, com_y, com_z)
+print('VOM [km/s]', com_vz)
 
 x0 -= com_x; y0 -= com_y; z0 -= com_z # [pc]
 
@@ -89,14 +89,14 @@ rc = r0[pm] # [pc]
 rc.sort() # [pc]
 for i in range(len(rc)-1):
     if rc[i]>rc[i+1]: #[pc]
-        print 'sorting error!'
+        print('sorting error!')
         exit(1)
 rhalf = rc[floor(len(rc)/2)] # [pc]
 rcore = rhalf # or gpr.r_DM # [pc]
-print 'rcore = ',rcore,' pc'
-print 'max(r) = ',max(rc),' pc'
-print 'last element of r : ',rc[-1],' pc'
-print 'total number of stars: ',len(rc)
+print('rcore = ',rcore,' pc')
+print('max(r) = ',max(rc),' pc')
+print('last element of r : ',rc[-1],' pc')
+print('total number of stars: ',len(rc))
 
 x0 = x0/rcore; y0 = y0/rcore # [r_core]
 
@@ -104,7 +104,7 @@ i = -1
 for pmn in [pm,pm1,pm2,pm3]:
     pmr = (r0<(gpr.rprior*rcore)) # TODO: read from gl_class_file
     pmn = pmn*pmr # [1]
-    print "fraction of members = ",1.0*sum(pmn)/len(pmn)
+    print("fraction of members = ",1.0*sum(pmn)/len(pmn))
     i = i+1
     x=x0[pmn]; y=y0[pmn]; z=z0[pmn]; vz=vz0[pmn]; vb=vb0[pmn]; #[1], [km/s]
     Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn] # [ang], [1], [1]
@@ -114,19 +114,19 @@ for pmn in [pm,pm1,pm2,pm3]:
 
     # print "x y z" on first line, to interprete data later on
     crcore = open(gpr.get_params_file(i),'w')
-    print >> crcore, '# rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]'
-    print >> crcore, rcore
+    print('# rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crcore)
+    print(rcore, file=crcore)
     crcore.close()
 
-    print 'output: ',gpr.get_com_file(i)
+    print('output: ',gpr.get_com_file(i))
     c = open(gpr.get_com_file(i),'w')
-    print >> c,'# x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc'
+    print('# x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc', file=c)
     for k in range(len(x)):
-        print >> c,x[k],y[k],vz[k] #[rcore], [rcore], [km/s]
+        print(x[k],y[k],vz[k], file=c) #[rcore], [rcore], [km/s]
     c.close()
 
 
-    if not gp.showplot_readout: continue
+    if not gpr.showplots: continue
 
     ion(); subplot(111)
     res = (abs(x)<3)*(abs(y)<3)

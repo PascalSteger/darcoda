@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # calculate density falloff
 import gl_params as gp
 import gr_params as gpr
@@ -6,7 +6,7 @@ import numpy as np
 import multiprocessing as mp
 
 # set binning
-print 'TODO: check whether 2*rmax is needed!'
+print('TODO: check whether 2*rmax is needed!')
 if gp.lograd:
   binmin,binmax,rbin = gh.bin_r_log(gpr.rmax/gpr.nbins,gpr.rmax,gp.nbins)
 else:
@@ -14,8 +14,8 @@ else:
 
 
 
-print 'input:'
-print gpr.fileposspherical
+print('input:')
+print(gpr.fileposspherical)
 r,phi = np.loadtxt(gpr.fileposspherical,unpack=True,skiprows=1)
 ndm = len(r)
 rs  = r       #gpr.rerror*np.random.randn(ndm)+r
@@ -45,17 +45,17 @@ pool.join()
 massarr = np.array(mass)
 aarr = np.array(alog)
 
-print 'output:'
-print gpr.filemass
+print('output:')
+print(gpr.filemass)
 filemass = open(gpr.filemass,'w')
-print >> filemass,'r','M(r)','error'
+print('r','M(r)','error', file=filemass)
 totmass=0
 ac=0
 for i in range(bins):
   totmass  += np.sum(massarr[:,i])/gpr.nit
   ac       += np.sum(aarr[:,i])/gpr.nit
   masserror = totmass/np.sqrt(ac)
-  print >> filemass, rbin[i+1], totmass, masserror
-  print rbin[i+1], totmass, masserror
+  print(rbin[i+1], totmass, masserror, file=filemass)
+  print(rbin[i+1], totmass, masserror)
 
 filemass.close()

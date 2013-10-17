@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3.2
 import numpy as np
 import sys
 import pdb
@@ -147,8 +147,6 @@ if __name__=="__main__":
     print '<p> = ',np.mean(np.array(mp))
     print 'median p = ',np.median(np.array(mp))
 
-    pdb.set_trace()
-    
     clf()
     ion()
     colors = ["#348ABD", "#A60628"]

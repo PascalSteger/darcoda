@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.2
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np

@@ -1,1 +1,1 @@
-params/gl_params_sphere.py
+params/gl_params_gaia.py

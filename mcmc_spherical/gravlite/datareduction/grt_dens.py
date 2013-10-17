@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env ipython-python3.2
 # (c) 2013 Pascal S.P. Steger
 '''calculate surface mass density falloff of circular rings around center of mass'''
 # for triaxial systems
@@ -20,7 +20,7 @@ from gl_class_files import *
 
 
 def run():
-    print 'input: ',gpr.get_com_file(0)
+    print('input: ',gpr.get_com_file(0))
     # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(0),\
                        skiprows=1,usecols=(0,1,2),unpack=True) #[rcore], [rcore], [km/s]
@@ -32,7 +32,7 @@ def run():
     rmin = 0. #[rcore]
     rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rcore]
         
-    print 'rmax [rcore] = ', rmax
+    print('rmax [rcore] = ', rmax)
     sel = (r<rmax)
     x = x[sel]; y = y[sel]; v = v[sel] #[rcore]
     totmass = 1.*len(x) #[munit], munit = 1/star
@@ -53,19 +53,19 @@ def run():
     # rs = gpr.rerror*np.random.randn(len(r))+r
     rs = r  #[rcore] # if no initial offset is whished
     
-    print 'output: '
-    print gpr.get_ntracer_file(0)
+    print('output: ')
+    print(gpr.get_ntracer_file(0))
     tr = open(gpr.get_ntracer_file(0),'w')
-    print >> tr,totmass
+    print(totmass, file=tr)
     tr.close()
 
-    print gpr.get_dens_file(0)
+    print(gpr.get_dens_file(0))
     de = open(gpr.get_dens_file(0),'w')
-    print gpr.get_enc_mass_file(0)
+    print(gpr.get_enc_mass_file(0))
     em = open(gpr.get_enc_mass_file(0),'w')
     
-    print >> de,'r','nu(r)/nu(0)','error'
-    print >> em,'r','M(<r)','error'
+    print('r','nu(r)/nu(0)','error', file=de)
+    print('r','M(<r)','error', file=em)
 
     # 30 iterations for getting random picked radius values
     density = np.zeros((gpr.nbins,gpr.n))
@@ -78,15 +78,15 @@ def run():
             a[j][k] = 1.*len(ind1) #[1]
             
     dens0 = np.sum(density[0])/(1.*gpr.n) # [munit/rcore**2]
-    print 'dens0 = ',dens0,'[munit/rcore**2]'
+    print('dens0 = ',dens0,'[munit/rcore**2]')
     crcore = open(gpr.get_params_file(0),'r')
     rcore = np.loadtxt(crcore, comments='#', skiprows=1, unpack=False)
     crcore.close()
 
     cdens = open(gpr.get_params_file(0),'a')
-    print >> cdens, dens0               # [munit/rcore**2]
-    print >> cdens, dens0/rcore**2      # [munit/pc**2]
-    print >> cdens, totmass             # [munit]
+    print(dens0, file=cdens)               # [munit/rcore**2]
+    print(dens0/rcore**2, file=cdens)      # [munit/pc**2]
+    print(totmass, file=cdens)             # [munit]
     cdens.close()
     
     ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
@@ -110,21 +110,21 @@ def run():
             p_edens[b]= denserror    # [1] #100/rbin would be artificial guess
 
     for b in range(gpr.nbins):
-        print >> de,rbin[b],p_dens[b],p_edens[b] # [rcore], [dens0], [dens0]
+        print(rbin[b],p_dens[b],p_edens[b], file=de) # [rcore], [dens0], [dens0]
         indr = (r<binmax[b])
         menclosed = 1.0*np.sum(indr)/totmass # /totmass for normalization to 1 at last bin #[totmass]
         merror = menclosed/np.sqrt(ab) # artificial menclosed/10 gives good approximation #[totmass]
-        print >> em,rbin[b],menclosed,merror # [rcore], [totmass], [totmass]
+        print(rbin[b],menclosed,merror, file=em) # [rcore], [totmass], [totmass]
         # TODO: check: take rbinmax for MCMC?
     de.close()
     em.close()
 
 
-    if not gp.showplot_readout: return
+    if not gpr.showplots: return
     ion(); subplot(111)
-    print 'rbin = ',rbin
-    print 'p_dens = ',p_dens
-    print 'p_edens = ',p_edens
+    print('rbin = ',rbin)
+    print('p_dens = ',p_dens)
+    print('p_edens = ',p_edens)
 
     plot(rbin,p_dens,'b',linewidth=3)
     lbound = p_dens-p_edens; lbound[lbound<1e-6] = 1e-6
@@ -146,6 +146,6 @@ def run():
         ioff(); show(); clf()
 
 if __name__ == '__main__':
-    # gp.showplot_readout = True
+    # gpr.showplots = True
     run()
 

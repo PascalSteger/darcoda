@@ -18,17 +18,14 @@ if not os.path.exists("/home/ast/read"):
     machine = 'local'        # machine: 'local' or 'darkside'
 
 
-
-
 investigate  = 'fornax'  # determine which data set to work on
 # 'simple': set up simple model for disc
 # 'sim': read in disc simulation
-# 'checkdwarf': checksigma for analytic dwarf, sig_LOS
+# 'checkdwarf': check int for analytic dwarf, sig_LOS
 # 'hernquist': check simple Hernquist prof. from simwiki
 # 'walker': check with full obs. cont. data from Walker
 # 'fornax': real data from Fornax dwarf galaxy
 
-walkercase = 1           # choose different Walker models (0-2 so far)
 
 # Set number of tracer stars to look at in Hernquist profile
 # take all particles                       # case 0
@@ -36,11 +33,10 @@ walkercase = 1           # choose different Walker models (0-2 so far)
 #             ntracers1 = 1e4              # case 2
 #             ntracers1 = ntracers2 = 5e3  # case 3
 cas = 0
-getnewdata = False       # get new data computed from observations before burn-in
-metalpop   = False        # split metallicities with a separate MCMC, based on pymcgau.py
-showplot_readout = False    # show plots for readout of data as well before init?
-lograd = False           # take log steps for radial bin in readout, show x-axis in log scale
-consttr = True           # set radial bin by constant number of tracer particles
+getnewdata = False # get new data computed from observations before burn-in
+metalpop   = False # split metallicities with a separate MCMC, based on pymcgau.py
+lograd = False # take log steps for radial bin in readout, show x-axis in log scale
+consttr = True # set radial bin by constant number of tracer particles
 
 
 G1  = 6.67398e-11                       # [m^3 kg^-1 s^-2]
@@ -83,7 +79,7 @@ log = True if plotdens and geom == 'sphere' else False
 
 
 ########## checking options
-checksigma = False # check sigma_los integration
+checkint = False # check sigma_los integration
 # (set nu, M to interpolated data values, only run for one iteration)
 
 analytic   = False         # calc sig_los from analytic Hernquist profiles for nu, M
