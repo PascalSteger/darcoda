@@ -88,7 +88,6 @@ def rho_INTDIRECT_Rho(r0, rho):
 # @param r0 radii of bins, [pc]
 # @param rho 3D density, [Msun/pc^3]
 def rho_INT_Rho(r0, rho):
-
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     gh.checknan(rho)
@@ -131,9 +130,7 @@ def rho_INT_Rho(r0, rho):
     tcke = splrep(r0nu[:-4],Rho)
     Rhoout = splev(r0,tcke)     # [munit/lunit^2]
 
-    gh.checknan(Rhoout)
-    # [munit/lunit^2]
-
+    gh.checkpositive(Rhoout)
     return Rhoout
 
 

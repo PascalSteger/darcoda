@@ -159,6 +159,7 @@ def readcol5(filena):
 def readcoln(filena):
     return np.loadtxt(filena,skiprows=1,unpack=True)
 
+    
 ## clip floats after dig=3 digits
 # @param arr array of floats
 # @param dig number of digits, default is 3

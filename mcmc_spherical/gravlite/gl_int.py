@@ -252,8 +252,10 @@ def ant_sigkaplos2surf(r0, beta, intbeta, rho, nu):
     tck = splrep(r0nu[:-4],np.log(sigl2s),k=3, s=0.)
     sigl2s_out = np.exp(splev(r0, tck))
     gh.checkpositive(sigl2s_out)
-    # return sigl2s_out, 3.*np.ones(len(sigl2s_out))
-    # enable calculation of kappa
+    if not gp.usekappa:
+        return sigl2s_out, np.ones(len(sigl2s_out))
+
+    # for the following: enabled calculation of kappa
     # TODO: include another set of anisotropy parameters beta_'
 
     # kappa_r^4

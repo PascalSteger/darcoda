@@ -91,7 +91,7 @@ def mcmc_init():
         for i in range(1,gp.nipol):
             denspars[i] = (gp.scaledens)**i/i**gp.scalepower
         # scale high order dens stepsizes s.t. they change remarkably as well
-        densparstep = denspars/50. * (np.arange(1,gp.nipol+1))**0.2
+        densparstep = denspars/30. * (np.arange(1,gp.nipol+1))**0.2
     else:
         denspars = nupars1/max(nupars1) # set to normalized density falloff
         if gp.model:

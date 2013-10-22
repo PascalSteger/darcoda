@@ -351,21 +351,21 @@ def accept_reject(n):
         np.set_printoptions(precision=3)
 
         if gp.pops == 1:
-            print('n:',n, ' chi2:',gh.pretty(gp.chi2,1),\
-                  ' rate:',gh.pretty(100*gp.accrate.rate(),2),\
-                  ' nu1:',gh.pretty(100*\
+            gp.LOG.warning('n: %d, chi2:'+gh.pretty(gp.chi2,1)+\
+                  ' rate:'+gh.pretty(100*gp.accrate.rate(),2)+\
+                  ' nu1:'+gh.pretty(100*\
                     abs(np.median((phys.nu(gp.pars.nu1+gp.parstep.nu1)\
                                    -phys.nu(gp.pars.nu1))/\
-                                   phys.nu(gp.pars.nu1))),3),\
-                  ' d1:',gh.pretty(100*\
-                    abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3),\
-                  ' dens:',gh.pretty(100*\
+                                   phys.nu(gp.pars.nu1))),3)+\
+                  ' d1:'+gh.pretty(100*\
+                        abs(np.median(gp.parstep.delta1/gp.pars.delta1)),3)+\
+                  ' dens:'+gh.pretty(100*\
                     abs(np.median((phys.densdefault(gp.parstep.dens+\
-                    gp.pars.dens)\
-                    -phys.densdefault(gp.pars.dens))/\
-                    phys.densdefault(gp.pars.dens))),3),\
-                  ' norm1:',gh.pretty(100*\
-                    abs(np.median(gp.parstep.norm1/gp.pars.norm1)),3))
+                                                    gp.pars.dens)\
+                                   -phys.densdefault(gp.pars.dens))/\
+                                  phys.densdefault(gp.pars.dens))),3)+\
+                  ' norm1:'+gh.pretty(100*\
+                        abs(np.median(gp.parstep.norm1/gp.pars.norm1)),3), n)
         else:
             
             print('n:',n, ' chi2:',gh.pretty(gp.chi2,1),\
@@ -396,7 +396,8 @@ def accept_reject(n):
         faraway = gp.farinit if gp.initphase else gp.farover
         if gp.chi2t > gp.chi2 * faraway:
             gp.LOG.warning(' too far off, setting back to last known good point')
-            gfile.get_working_pars(gp.initphase)
+            gfile.get_working_pars(scale=False)
+            # TODO: check that scale=gp.iniphase is really not the right thing
     return
 
 
@@ -406,16 +407,16 @@ def adapt_stepsize():
         if gp.adaptstepwait > 1:
             gp.adaptstepwait -= 1
             return
-        print('adapt stepsize!')
+        gp.LOG.warning('adapt stepsize!')
         gp.adaptstepwait = gp.rollsize
         if (not gp.accrate.rightrate()): # and (not gp.accrate.getsbetter()): 
             # too bad, increase even if getting better.
             # TODO: use this second part if adaptstepwait is small
-            print(' >> increase')
+            gp.LOG.warning(' >> increase')
             gp.parstep.adaptworst(gp.stepcorr)
         else:
             gp.parstep.adaptall(1./gp.stepcorr)
-            print(' << decrease')
+            gp.LOG.warning(' << decrease')
         if gp.chi2 < gp.chi2tol:
             gp.endgame = True
     return

@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # (c) 2013 Pascal S.P. Steger
 
 import numpy

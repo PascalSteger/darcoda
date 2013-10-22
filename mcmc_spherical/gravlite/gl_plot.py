@@ -33,7 +33,7 @@ def start():
 ## prepare output plots, defining geometry
 def prepare_plots():
     global f,axs
-    if not gp.showplot: 
+    if not gp.showplot:
         return
     ion()
     f = figure(0)

@@ -12,19 +12,28 @@ from gl_int import *
 from gl_project import rho_INT_Rho
 from gl_analytic import *
 
+## return hernquist DM density from generalized Hernquist profile
+# @param r radius in [pc]
+# @param rho0 central 3D density in [Msun/pc^3]
+# @param r_DM scale radius of dark matter, [pc]
+# @param alpha_DM [1]
+# @param beta_DM [1]
+# @param gamma_DM [1] central density slope
 def rhodm_hernquist(r,rho0,r_DM,alpha_DM,beta_DM,gamma_DM):
-    'return hernquist DM density from generalized Hernquist profile'
+
     return rho0*(r/r_DM)**(-gamma_DM)*\
       (1+(r/r_DM)**alpha_DM)**((gamma_DM-beta_DM)/alpha_DM)
 
+## return density from denspars, assuming default gp.xipol as radius
+# @param denspars [1] parameters from gl_class_params for density
 def densdefault(denspars):
-    'return density from denspars, assuming default gp.xipol as radius'
     return dens(gp.xipol,denspars)        # [TODO]
 
+    
+## take denspars for polynomial coefficients, calculate polynomial, give back density
+# @param xipol radius in [pc]
+# @param denspars [1] density parameters from gl_class_params
 def dens(xipol, denspars):
-    # take denspars for polynomial coefficients, calculate polynomial, 
-    # give back density,
-    # [pc], [1] or [msun/pc^3]'
     if gp.checkint:
         return gp.ipol.densdat          # [Msun/pc^3]
     if not gp.poly:                     # for sure after init
@@ -46,17 +55,23 @@ def dens(xipol, denspars):
     gh.checknan(dout)
     return dout                               # [msun/pc^3]
 
+
+## calculate cumulative sum for representation of delta
+# @param dpars [1] beta parameter from gl_class_params
 def delta(dpars):
-    '''calculate cumulative sum for representation of delta'''
     return np.cumsum(dpars)
 
+
+## calculate delta parameters corresponding to a given delta profile
+# @param delta [1] velocity anisotropy profile
 def invdelta(delta):
-    '''calculate delta parameters corresponding to a given delta profile'''
     return np.hstack([delta[0], np.diff(delta)])
 
-
+    
+## take enclosed mass, radii, and compute 3D density in shells
+# @param r radius in [pc]
+# @param M enclosed mass profile, [Msun]
 def calculate_dens(r, M):
-    'take enclosed mass, radii, and compute 3D density in shells'
     r0 = np.hstack([0,r])                         # [lunit]
     M0 = np.hstack([0,M])
 
@@ -70,8 +85,11 @@ def calculate_dens(r, M):
     gh.checknan(dens)
     return dens                                   # [munit/lunit^3]
 
+
+## take mass(<r) in bins, calc mass in annuli, get surface density
+# @param r radius in [pc]
+# @param M 3D mass profile
 def calculate_surfdens(r, M):
-    'take mass(<r) in bins, calc mass in annuli, get surface density'
     r0 = np.hstack([0,r])                         # [lunit]
     M0 = np.hstack([0,M])                         # [munit]
 
@@ -85,12 +103,14 @@ def calculate_surfdens(r, M):
     gh.checknan(dens)
     return dens                                      # [munit/lunit^2]
 
+
+## General function to describe the density profile., [(log10) Msun/pc^3]
+# @param nupars [1]
 def nu(nupars):
-    'General function to describe the density profile., [(log10) Msun/pc^3]'
     if gp.nulog:
         nuout = np.power(10.0, nupars) # [Msun/pc^3]
     else:
-        nuout = nupars[:]       # [Musn/pc^3]
+        nuout = nupars[:]       # [Msun/pc^3]
 
     gh.checknan(nuout)
     if gp.geom == 'disc':
@@ -100,10 +120,13 @@ def nu(nupars):
     return nuout                # [Msun/pc^3]
 
 
+
+## General function to calculate \sigma_{los} 
+# with analytic integral over fitting polynomial'
+# @param dens_r [munit, 3D]
+# @param nu_r [munit/pc^3]
+# @param beta_r [1] velocity anisotropy
 def sig_kap_los(dens_r, nu_r, beta_r):
-    # General function to calculate \sigma_{los} 
-    # with analytic integral over fitting polynomial'
-    # [munit, 3D], [munis/pc^3], [1]
     r0 = gp.xipol[:]
 
     # TODO: fix spline warnings
@@ -125,11 +148,14 @@ def sig_kap_los(dens_r, nu_r, beta_r):
 
     # gpl.start(); pdb.set_trace()
     # gpl.plot(r0,sig_los_anf(r0),lw=2)
-    
-    kaplos4     = kaplos4surf/surfden
-    # takes [munit/pc^2 (km/s)^2], gives back [(km/s)^2]
-    
-    kaplos = kaplos4/(siglos2**2)
-    # - 3.0 # subtract 3.0 for Gaussian distribution in Fisher version.
+
+    if gp.usekappa:
+        kaplos4     = kaplos4surf/surfden
+        # takes [munit/pc^2 (km/s)^2], gives back [(km/s)^2]
+        
+        kaplos = kaplos4/(siglos2**2)
+        # - 3.0 # subtract 3.0 for Gaussian distribution in Fisher version.
+    else:
+        kaplos = 3.*np.ones(len(siglos))
 
     return siglos,kaplos                                 # [km/s], [1]
