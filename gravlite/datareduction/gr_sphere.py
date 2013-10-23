@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+##
+# @file
 # move centered positions to spherical coordinates
 
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch

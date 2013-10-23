@@ -3,6 +3,7 @@
 ##
 # @file
 # global params for data analysis step 1 used to generate input for spherical MCMC
+
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np

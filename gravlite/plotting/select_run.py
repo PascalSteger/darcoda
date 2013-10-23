@@ -1,10 +1,19 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# select a completed or still running MCMC run for plotting
+
+# (c) 2013 ETHZ, psteger@phys.ethz.ch
+
 import os, sys, time, glob
 import gl_params as gp
 import pdb
 
+
+## determine no. lines optimally
+# @param filename filename
 def bufcount(filename):
-    '''determine no. lines optimally'''
     f = open(filename)
     lines = 0
     buf_size = 1024 * 1024
@@ -16,6 +25,7 @@ def bufcount(filename):
     return lines
 
 
+## return all working or completed MCMC run directories
 def list_files():
     search_dir = gp.files.dir
     # print 'system: ', search_dir
@@ -48,6 +58,8 @@ def list_files():
     return np.transpose(np.array(fdl))[:][0]
 
 
+## ask user for choice on run number
+# @param default default value: last one
 def get_run(default):
     # interactive input
     invalid=True
@@ -63,6 +75,7 @@ def get_run(default):
             invalid = False
     return selection - 1
 
+## ask user for choice on action to take: print or delete
 def get_action():
     # interactive input for action: p - print, k - kill and delete
     default = 'p'
@@ -79,9 +92,8 @@ def get_action():
             invalid = False
     return selection
 
-
+## interactive input for prof: dens, delta1, delta2, M
 def get_prof():
-    # interactive input for prof: dens, delta1, delta2, M
     default = 'dens'
     invalid=True
     while(invalid):
@@ -96,10 +108,8 @@ def get_prof():
             invalid = False
     return selection
 
-
+## display possible runs of the current investigation method, select one, plot
 def run():
-    '''display possible runs of the current investigation method,
-    select one, plot'''
     action = 'k'
     while(action=='k'):
         fdl = list_files()
