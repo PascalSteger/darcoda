@@ -1,5 +1,5 @@
-<map id="gl_plot.plot_first_guess" name="gl_plot.plot_first_guess">
-<area shape="rect" id="node3" href="$namespacegl__plot.html#a72271c3822673dac07dfb7b75d37b8d4" title="get data for 1 population " alt="" coords="169,5,324,35"/>
-<area shape="rect" id="node7" href="$namespacegl__plot.html#aebf567b016279aecb3e1cc223fd7d0ae" title="get data for 2 populations " alt="" coords="169,59,324,88"/>
-<area shape="rect" id="node5" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density " alt="" coords="373,32,533,61"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__plot.html#a72271c3822673dac07dfb7b75d37b8d4" title="get data for 1 population" alt="" coords="212,5,367,35"/>
+<area shape="rect" id="node7" href="$namespacegl__plot.html#aebf567b016279aecb3e1cc223fd7d0ae" title="get data for 2 populations" alt="" coords="212,59,367,88"/>
+<area shape="rect" id="node5" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="416,32,576,61"/>
 </map>

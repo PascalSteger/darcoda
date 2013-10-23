@@ -1,6 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
+##
+# @file
+# calculations for velocity dispersion
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''General function to describe the density profile:'''
+
 import pdb
 import numpy as np
 import scipy
@@ -13,9 +18,9 @@ import gl_helper as gh
 
 
 
-
+## Set up regularly spaced r0 array for integration:
+# @param z_in array of unsorted z values
 def get_zarrays(z_in):
-    # Set up regularly spaced r0 array for integration:
     pnts = gp.nipol; zmin = min(z_in); zmax = max(z_in);
     dz = (zmax-zmin)/(pnts-1.); z0 = np.arange(pnts)*dz+zmin
     z_outer     = zmax+z0-zmin
@@ -24,12 +29,9 @@ def get_zarrays(z_in):
 
 
 
-
-
-
-
-
-
+## General function to describe the density profile
+# @param z array of z values above the plane
+# @param M corresponding enclosed mass
 def calculate_dens(z,M):                  # [TODO], [TODO]
     z0 = np.hstack([0,z])
     deltaM = [];
@@ -44,19 +46,22 @@ def calculate_dens(z,M):                  # [TODO], [TODO]
     return np.array(dens)
 
 
-
+## return delta as delta_i = delta(r_i)
 def delta(dpars):
     # other possibility: calculate cumulative sum for representation of delta
     return dpars
 
 
-    
+## calculate density from parameters
+# @param denspars internal representation of the density profile
 def densdefault(denspars):
     return dens(gp.xipol, denspars)
 
 
 
-
+## calculate vertical force from Kz
+# @param xipol height above midplane
+# @param Kz TODO
 def kappa(xipol, Kz):
     r0 = xipol
     kzpars = -np.hstack([Kz[0]/r0[0], (Kz[1:]-Kz[:-1])/(r0[1:]-r0[:-1])])
@@ -64,9 +69,10 @@ def kappa(xipol, Kz):
 
 
 
-
+## take denspars (as polynomial?) coefficients, calculate polynomial, give back Kz
+# @param xipol array height above midplane
+# @param denspars internal representation of density
 def dens(xipol, denspars):              # [pc], [TODO]
-    'take denspars (as polynomial?) coefficients, calculate polynomial, give back Kz'
     r0 = np.hstack([0,xipol])
     if gp.checkint:
         return gp.ipol.densdat          # [TODO] in disc case
@@ -92,10 +98,9 @@ def dens(xipol, denspars):              # [pc], [TODO]
 
 
 
-
+## General function to describe the density profile.
+# @param nupars array of internal tracer density representation
 def nu(nupars):                 # [(log10) Msun/pc^3]
-    '''General function to describe the density profile.'''
-
     if gp.nulog:
         nuout = np.power(10.0, nupars) # [Msun/pc^3]
     else:
@@ -110,11 +115,13 @@ def nu(nupars):                 # [(log10) Msun/pc^3]
 
 
 
-
+## Fully non-parametric monotonic *decreasing* function [c.f. Kz function].
+# Note, here we explicitly avoid rnuz_z(0) = 0 since this would correspond
+# to a constraint rnu_z(zmax) = 0 which is only true if zmax = infty.
+# @param z array of z values above plane
+# @param zpars
+# @param pars
 def nu_decrease(z, zpars, pars):
-    # Fully non-parametric monotonic *decreasing* function [c.f. Kz function].
-    # Note, here we explicitly avoid rnuz_z(0) = 0 since this would correspond
-    # to a constraint rnu_z(zmax) = 0 which is only true if zmax = infty. 
     parsu = abs(pars)                   #     # Mirror prior
     
     if gp.monotonic:
@@ -195,16 +202,18 @@ def nu_decrease(z, zpars, pars):
 
 
 
-
+## General function to calculate the Kz force law:
+# Non-parametric Kz function here. Use cumulative integral to
+# ensure monotinicity in an efficient manner. Note here we
+# use kz_z(0) = kzpars(0) * dz so that it can be zero, or
+# otherwise just small in the case of large bins. This latter
+# avoids the interpolated kz_out[0] going negative for coarse 
+# binning.
+# @param z_in TODO
+# @param zpars TODO
+# @param kzpars TODO
+# @param blow TODO
 def kz(z_in, zpars, kzpars, blow):
-    '''General function to calculate the Kz force law:'''
-    # Non-parametric Kz function here. Use cumulative integral to
-    # ensure monotinicity in an efficient manner. Note here we
-    # use kz_z(0) = kzpars(0) * dz so that it can be zero, or
-    # otherwise just small in the case of large bins. This latter
-    # avoids the interpolated kz_out[0] going negative for coarse 
-    # binning.
-    
     # Mirror prior # TODO: baryon minimum prior [blow]:
     #kzparsu = abs(kzpars)
     
@@ -293,9 +302,14 @@ def kz(z_in, zpars, kzpars, blow):
 
 
 
-
+## calculate z velocity dispersion
+# @param zp TODO
+# @param kzpars TODO
+# @param nupars TODO
+# @param norm TODO
+# @param tpars TODO
+# @param tparsR TODO
 def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
-    '''return z velocity dispersion'''
     # calculate density and Kz force:
     nu_z = nupars/np.max(nupars)          # normalized to 1
     # kz_z = kz(zp,zp,kzpars,blow,quadratic) # TODO: reenable
@@ -388,9 +402,11 @@ def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
 
 
 
-
+## General function to describe the tilt profile
+# @param z
+# @param zpars
+# @param tpars
 def sigma_rz(z, zpars, tpars):
-    '''General function to describe the tilt profile:'''
     #Mirror prior
     tparsu = abs(tpars)
     
@@ -408,13 +424,14 @@ def sigma_rz(z, zpars, tpars):
 
 
 
-
+## function to calculate surface density from Kz parameter
+# @param Kz force
 def Sigmaz(Kz):
     return abs(Kz)/(2.*np.pi*gp.G1)
 
 
 
-
-
+## calculate enclosed mass from density parameters
+# @param denspars internal representation of the density
 def Mzdefault(denspars):
     return Sigmaz(denspars)

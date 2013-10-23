@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
-
 ##
 # @file
-# functions related to projection and deprojection of density in spherical models
-# (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
-# conventions:
+# Functions related to projection and deprojection of density in spherical models.
+# Conventions:
 # rho, r, Mr     denote 3D density, 3D radius, M(<3D radius)
 # Rho, R, MR     denote 2D density, 2D radius, M(<2D radius)
 # *SUM*          denotes main method = summing
 # *INT*          denotes main method = integrating
 # *NORM*         denotes main method = renormalization
+
+# (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
 
 import numpy as np
 import pdb

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-# or for local snowball usage, from ipython in emacs: !/usr/bin/env ipython-python3.2
-
 ##
 # @file
+# main file
 # @ingroup gravlite
 # @defgroup gravlite all functions called from gravlite
 #
@@ -13,6 +12,7 @@
 # (c) ETHZ 2013, Pascal Steger, psteger@phys.ethz.ch
 #
 
+# or for local snowball usage, from ipython in emacs: !/usr/bin/env ipython-python3.2
 
 print('GravLite: Non-Parametric Mass Modelling Routine for discs and spheres')
 print('(c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch')
@@ -115,11 +115,29 @@ if __name__=="__main__":
 # It then generates a highly-dimensional parameter space for tracer density, overall density distribution, and possibly a velocity anisotropy profile ands traces it with a simple Markov Chain Monte Carlo method.
 #
 # @section install_sec Installation
+# Following packets need to be installed on your system:
+# * python3
+# * matplotlib/pylab
+# * scipy
+#
 # Unzip the file gravlite.zip, and run
+#
 # python3 gravlite.py
 # 
-# @subsection Parameter files: Main configuration
-# @subsection Init values
-#
+# @subsection pars Parameter files: Main configuration
+# Sample parameter files for several possible scenarios are stored in the subfolder ./params.
+# The file gl_params.py is a soft link to one of them.
+# Following mass modelling methods have been implemented so far:
+# * gl_params_walker.py: spherical Walker mock data from the Gaia challenge catalogue, 2 populations
+# * gl_params_gaia.py:   spherical mock data from the Gaia challenge catalogue, 1 population
+# * gl_params_hern.py:   spherical mock data taken from a Hernquist profile
+# * gl_params_simple.py: disk-like mock data, generated on the fly
+# * gl_params_sim.py:    disk-like mock data, from a simulation by S. Garbari
+# 
+# @subsection init Init values
+# Initial values for all profiles and the respective stepsizes are set in gl_init.py. We use following representations:
+# * overall density rho: can either be set as rho_i=rho(r_i), where r_i are the radii of bins, or the coefficients of the Legendre polynomial;
+# * tracer densities nu_i = nu(r_i) in linear space or nu_i = log(nu(r_i)) in logarithmic space;
+# * velocity anisotropy beta_i are incremental changes from beta(r=0) = 0.
+# 
 # Have fun!
-

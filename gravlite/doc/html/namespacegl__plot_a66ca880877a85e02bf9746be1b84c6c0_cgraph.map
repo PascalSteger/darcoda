@@ -1,5 +1,5 @@
-<map id="gl_plot.plot_disc" name="gl_plot.plot_disc">
-<area shape="rect" id="node3" href="$namespacephysics__disc.html#a3453dd9ec00037cdbe7418c9aa172466" title="General function to describe the tilt profile: " alt="" coords="171,5,325,35"/>
-<area shape="rect" id="node5" href="$namespacegl__helper.html#af32050507d853214c667d08bcee71ff8" title="gives numeric differentiation, assumes constant x spacings " alt="" coords="195,59,301,88"/>
-<area shape="rect" id="node7" href="$namespacegl__helper.html#a22870f112617e9d7e545a7b1b49f7cd4" title="interpolate function in lin space, based on radial basis functions " alt="" coords="373,59,472,88"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacephysics__disc.html#a3453dd9ec00037cdbe7418c9aa172466" title="General function to describe the tilt profile." alt="" coords="171,5,325,35"/>
+<area shape="rect" id="node5" href="$namespacegl__helper.html#af32050507d853214c667d08bcee71ff8" title="gives numeric differentiation, assumes constant x spacings" alt="" coords="195,59,301,88"/>
+<area shape="rect" id="node7" href="$namespacegl__helper.html#a22870f112617e9d7e545a7b1b49f7cd4" title="interpolate function in lin space, based on radial basis functions" alt="" coords="373,59,472,88"/>
 </map>

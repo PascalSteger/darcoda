@@ -1,4 +1,9 @@
-#!/usr/bin/python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# plot theoretical surface density, of a 3D system
+
 # (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
 
 import numpy as np

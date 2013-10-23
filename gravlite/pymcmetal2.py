@@ -1,4 +1,12 @@
-#!/usr/bin/python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# MCMC to split stellar tracers into two populations
+# assuming split by age is traced by age and thus metallicity
+
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+
 import numpy as np
 import sys
 import pdb
@@ -12,8 +20,14 @@ from gl_class_files import *
 from scipy.stats import norm
 
 
+## get possible assignment to populations
+# @param data TODO
+# @param p TODO
+# @param mu1 TODO
+# @param sig1 TODO
+# @param mu2 TODO
+# @param sig2 TODO
 def assign_pop(data, p, mu1, sig1, mu2, sig2):
-    '''get possible assignment to populations'''
     from scipy.stats import norm
     size = len(data)
     pm1 = []; pm2 = []
@@ -27,7 +41,8 @@ def assign_pop(data, p, mu1, sig1, mu2, sig2):
     return np.array(pm1), np.array(pm2) # np.array needed to use it as subset indicator
 
 
-
+## plot all traces
+# @param mcmc TODO
 def plot_traces(mcmc):
     subplot(311)
     center_trace = mcmc.trace("centers")[:]
@@ -60,10 +75,10 @@ def plot_traces(mcmc):
     show()
 
 
+## run MCMC to get regression on bimodal normal distribution
+# http://nbviewer.ipython.org/urls/raw.github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter3_MCMC/IntroMCMC.ipynb
+# @param data TODO
 def bimodal_gauss(data):
-    '''run MCMC to get regression on bimodal normal distribution'''
-    # http://nbviewer.ipython.org/urls/raw.github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter3_MCMC/IntroMCMC.ipynb
-
     p = mc.Normal( "p", 0.5, 1./0.1**2)
     assignment = mc.Categorical("assignment", [p, 1-p], size = data.shape[0] ) 
     print "prior assignment, with p = %.2f:"%p.value

@@ -1,4 +1,4 @@
-<map id="gl_file.adump" name="gl_file.adump">
-<area shape="rect" id="node3" href="$namespacegl__file.html#ae0255359957815030226561aeac3eeda" title="write MCMC characteristics to .txt file " alt="" coords="153,5,300,51"/>
-<area shape="rect" id="node5" href="$namespacegl__file.html#a0a3fa908e70f466939c461f83e0c652f" title="This routine takes a number, narr, of equal length arrays: arrays=[[arr1], [arr2]...] and appends/writes them to a specified file (fname) in columnated data format. " alt="" coords="167,75,287,104"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__file.html#ae0255359957815030226561aeac3eeda" title="write MCMC characteristics to .txt file" alt="" coords="153,5,372,35"/>
+<area shape="rect" id="node5" href="$namespacegl__file.html#a0a3fa908e70f466939c461f83e0c652f" title="This routine takes a number, narr, of equal length arrays: arrays=[[arr1], [arr2]...] and appends/writes them to a specified file (fname) in columnated data format." alt="" coords="203,59,323,88"/>
 </map>

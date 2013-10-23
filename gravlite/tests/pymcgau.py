@@ -1,4 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
+##
+# @file
+# sample run for python MC with Gaussian distributions
+
 import numpy as np
 import sys
 import pdb

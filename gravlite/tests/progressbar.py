@@ -1,4 +1,9 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3
+
+##
+# @file
+# plot progress bar
+
 import sys
 import matplotlib.pyplot as plt
 import time

@@ -1,4 +1,4 @@
-<map id="gl_funs.calc_likelihood" name="gl_funs.calc_likelihood">
-<area shape="rect" id="node3" href="$namespacephysics__disc.html#a5f094c93a3da7869dbed76b3fa36f63d" title="General function to describe the density profile. " alt="" coords="228,5,343,35"/>
-<area shape="rect" id="node5" href="$namespacephysics__disc.html#a3453dd9ec00037cdbe7418c9aa172466" title="General function to describe the tilt profile: " alt="" coords="208,59,363,88"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacephysics__disc.html#a5f094c93a3da7869dbed76b3fa36f63d" title="General function to describe the density profile." alt="" coords="228,5,343,35"/>
+<area shape="rect" id="node5" href="$namespacephysics__disc.html#a3453dd9ec00037cdbe7418c9aa172466" title="General function to describe the tilt profile." alt="" coords="208,59,363,88"/>
 </map>

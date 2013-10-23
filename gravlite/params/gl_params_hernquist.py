@@ -1,6 +1,10 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# parameters for the gravlite MCMC, with mock Hernquist profile
+
 # (c) 2013 Pascal S.P. Steger
-'''parameters for the gravlite MCMC'''
 
 import numpy as np
 import sys

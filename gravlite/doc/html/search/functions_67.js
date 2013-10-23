@@ -14,7 +14,7 @@ var searchData=
   ['get_5fkurtosis_5fpng',['get_kurtosis_png',['../namespacegr__params.html#ab93b36dbe8334ac2b3f30887361149eb',1,'gr_params']]],
   ['get_5fkzpars',['get_kzpars',['../namespacegl__disc__simple.html#a9de81ba606aca68355642fd1fe889ffc',1,'gl_disc_simple']]],
   ['get_5fnew_5fparameters',['get_new_parameters',['../namespacegl__funs.html#a207e28d818a74f6f1bbd91e2eb751d96',1,'gl_funs']]],
-  ['get_5fntracer_5ffile',['get_ntracer_file',['../classgl__class__files_1_1Files.html#ab4b5ab93553249c8ae7863191bb669fb',1,'gl_class_files.Files.get_ntracer_file()'],['../namespacegr__params.html#a42873edb43c31f68de65066cf05e1592',1,'gr_params.get_ntracer_file()']]],
+  ['get_5fntracer_5ffile',['get_ntracer_file',['../classgl__class__files_1_1Files.html#ab4b5ab93553249c8ae7863191bb669fb',1,'gl_class_files::Files.get_ntracer_file()'],['../namespacegr__params.html#a42873edb43c31f68de65066cf05e1592',1,'gr_params.get_ntracer_file()']]],
   ['get_5fnu',['get_nu',['../classgl__class__params_1_1Params.html#acc4cac880c2d95f227f5dd0891edbdc4',1,'gl_class_params::Params']]],
   ['get_5foutdat',['get_outdat',['../classgl__class__files_1_1Files.html#a855ce5a2788e511fa1ff56770f1aeacf',1,'gl_class_files::Files']]],
   ['get_5foutfiles',['get_outfiles',['../classgl__class__files_1_1Files.html#a7933aa289d4d1436b148521ceee1dbc5',1,'gl_class_files::Files']]],

@@ -1,8 +1,9 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
 # all parameters for the gravlite MCMC, gaia investigation
+
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
@@ -36,7 +37,7 @@ case = 1           # choose different Walker models (0-2 so far)
 #             ntracer = 1e4              # case 2
 cas = 1
 
-getnewdata = True # get new data computed from observations before burn-in
+getnewdata = False # get new data computed from observations before burn-in
 metalpop   = False # split metallicities with a separate MCMC
 lograd  = False # log steps for radial bin in readout, show x-axis in log scale
 consttr = True # set radial bin by constant number of tracer particles
@@ -56,7 +57,7 @@ Mscale = 1.                      # [Msun], scale for dimensionless eqs
 ascale = 1.                      # [pc]
 
 ########## plotting options
-showplot   = False                       # show plots?
+showplot   = True                       # show plots?
 plotdens   = True # plot dens instead of M or Sigma_z in lower left plot
 lim        = False         
 log = True if plotdens and geom == 'sphere' else False
@@ -80,14 +81,13 @@ if analytic: poly = False
 
 densstart = -0.9 # -2.6 for Hernquist, -2.3 for Walker cusp, -1.8 for core
 scaledens = 1. # fraction of max radius from data, for which the poly is scaled
-scalepower = 1.7 # 0. 9 5 for Hernquist, 1.3 for Walker cusp, 2.2 for core
+scalepower = 1.8 # 0. 9 5 for Hernquist, 1.3 for Walker cusp, 2.2 for core
 
 
 ########## integration options
 densint    = False # use integral of dens to find mass, not binned sum
 even       = 'avg' # for simps integration (everywhere): 'avg', 'first', 'last'
-
-
+usekappa   = False # switch to turn on (True) or off the calculation of kappa
 
 pops      = 1
 if analytic: pops = 1 # only work with 1 pop if analytic in hernquist case is set
@@ -207,22 +207,22 @@ ini     = 0                    # TODO: meaning
 inimax  = 5000                 # 
 counter = 0                    #
 
-rollsize = 30 # number of stacked acceptance/rejection rates
+rollsize = 20 # number of stacked acceptance/rejection rates
               # as well as number of steps before next step adaption done
 adaptstepwait = rollsize
 from gl_class_rate import Rate
 # new acceptance/rejection rate object, mean 0.25, acceptable +-5%
-accrate = Rate(0.25, 0.05)
+accrate = Rate(0.25, 0.10)
 chi2tol = 1.*(6*nipol-nconstraints) 
 # ^--- tolerance in (chi2) or (without paranteses) reduced chi2
-endcount = 10*rollsize # 30*
+endcount = 3*rollsize # 30*
 # ~900 accepted models which chi2<chi2tol means initialization phase is over
 # better measure: 1./(min stepsize),
 # as this gives the time needed to get convergence on this parameter
 
 stepcorr= 1.1  # factor to adapt stepsize if not 0.24 < acc/rec < 0.26
 farinit = 8. # 5 times chi2 is too far off in init phase: start new from last point
-stepafterrunaway = 0.97 # mult. stepsize by this amount if too low fnewoverf 2.5
+stepafterrunaway = 0.9 # mult. stepsize by this amount if too low fnewoverf 2.5
 farover = 5.         # 5 times chi2 is too high after init phase
 scaleafterinit   = 1.0 # <= cheat: multiply stepsize by this amount if init is over
 

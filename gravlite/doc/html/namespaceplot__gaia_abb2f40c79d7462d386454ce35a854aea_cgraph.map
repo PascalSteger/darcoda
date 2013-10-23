@@ -1,11 +1,11 @@
-<map id="plot_gaia.plotGraph" name="plot_gaia.plotGraph">
-<area shape="rect" id="node3" href="$namespaceplot__gaia.html#ad917c24c5ffd05ae27c9994176a5df40" title="get halfmass radius for the 8 spherical cases of Gaia challenge " alt="" coords="191,5,348,35"/>
-<area shape="rect" id="node5" href="$namespacegl__analytic.html#a354dc8e227f41091b0f1bdd2adf9953e" title="return total mass in Walker model " alt="" coords="193,59,345,88"/>
-<area shape="rect" id="node15" href="$namespacegl__analytic.html#aefdc92dfd5af4ecbe1fc0657f66fa4a9" title="give total density for the spherical Gaia challenge dataset " alt="" coords="631,111,799,140"/>
-<area shape="rect" id="node18" href="$namespacegl__analytic.html#ab351ea550293eee24f931a4ce09a0bf3" title="Osipkov&#45;Merritt velocity anisotropy profile. " alt="" coords="201,163,337,192"/>
-<area shape="rect" id="node20" href="$namespaceplot__gaia.html#a7801e4d9d2597aa782bd70603f149eea" title="read scale file " alt="" coords="199,216,340,245"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespaceplot__gaia.html#ad917c24c5ffd05ae27c9994176a5df40" title="get halfmass radius for the 8 spherical cases of Gaia challenge" alt="" coords="191,5,348,35"/>
+<area shape="rect" id="node5" href="$namespacegl__analytic.html#a354dc8e227f41091b0f1bdd2adf9953e" title="return total mass in Walker model" alt="" coords="193,59,345,88"/>
+<area shape="rect" id="node15" href="$namespacegl__analytic.html#aefdc92dfd5af4ecbe1fc0657f66fa4a9" title="give total density for the spherical Gaia challenge dataset" alt="" coords="631,111,799,140"/>
+<area shape="rect" id="node18" href="$namespacegl__analytic.html#ab351ea550293eee24f931a4ce09a0bf3" title="Osipkov&#45;Merritt velocity anisotropy profile." alt="" coords="201,163,337,192"/>
+<area shape="rect" id="node20" href="$namespaceplot__gaia.html#a7801e4d9d2597aa782bd70603f149eea" title="read scale file" alt="" coords="199,216,340,245"/>
 <area shape="rect" id="node7" href="$namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b" title="deproj.igra" alt="" coords="448,5,531,35"/>
-<area shape="rect" id="node9" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM " alt="" coords="399,59,580,88"/>
-<area shape="rect" id="node11" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq. " alt="" coords="631,57,799,87"/>
-<area shape="rect" id="node13" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model " alt="" coords="848,84,979,113"/>
+<area shape="rect" id="node9" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM" alt="" coords="399,59,580,88"/>
+<area shape="rect" id="node11" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq." alt="" coords="631,57,799,87"/>
+<area shape="rect" id="node13" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model" alt="" coords="848,84,979,113"/>
 </map>

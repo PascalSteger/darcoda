@@ -1,5 +1,5 @@
-<map id="check_proj.run" name="check_proj.run">
-<area shape="rect" id="node3" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density " alt="" coords="161,5,321,35"/>
-<area shape="rect" id="node5" href="$namespacegl__project.html#a3e1880eced07010fe9c00b1ee3ceabb1" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39; " alt="" coords="161,59,321,88"/>
-<area shape="rect" id="node7" href="$namespacepymultinest__demo.html#a78b1176f59c2423257d2191160262381" title="open the output (pdf) file for the user " alt="" coords="160,112,323,141"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="161,5,321,35"/>
+<area shape="rect" id="node5" href="$namespacegl__project.html#a3e1880eced07010fe9c00b1ee3ceabb1" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39;" alt="" coords="161,59,321,88"/>
+<area shape="rect" id="node7" href="$namespacepymultinest__demo.html#a78b1176f59c2423257d2191160262381" title="open the output (pdf) file for the user" alt="" coords="160,112,323,141"/>
 </map>

@@ -1,4 +1,9 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# test calculation of velocity dispersion
+
 import numpy as np
 import numpy.random as npr
 import pdb

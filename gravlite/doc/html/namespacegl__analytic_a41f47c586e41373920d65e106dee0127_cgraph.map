@@ -1,7 +1,7 @@
-<map id="gl_analytic.Phi" name="gl_analytic.Phi">
-<area shape="rect" id="node3" href="$namespacegl__analytic.html#a10d71fcbe2858ed25fbef3992fc102fd" title="bpar " alt="" coords="161,5,273,35"/>
-<area shape="rect" id="node10" href="$namespacegl__analytic.html#af66654de15b0a52553686bb37925794c" title="S. " alt="" coords="169,59,265,88"/>
-<area shape="rect" id="node12" href="$namespacegl__analytic.html#a277f03588d39aac8cb8692504e8120f2" title="chi " alt="" coords="165,112,269,141"/>
-<area shape="rect" id="node5" href="$namespacegl__analytic.html#aac32afe31e79c52a84d3aa51cec63210" title="start analytic generalized Hernquist profiles following equation (17) from Zhao 1996 ..." alt="" coords="487,7,580,36"/>
-<area shape="rect" id="node7" href="$namespacegl__analytic.html#ad3e3c0abb6641bba0fc1992dcde730dc" title="apar " alt="" coords="324,32,436,61"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__analytic.html#a10d71fcbe2858ed25fbef3992fc102fd" title="bpar" alt="" coords="161,5,273,35"/>
+<area shape="rect" id="node10" href="$namespacegl__analytic.html#af66654de15b0a52553686bb37925794c" title="S." alt="" coords="169,59,265,88"/>
+<area shape="rect" id="node12" href="$namespacegl__analytic.html#a277f03588d39aac8cb8692504e8120f2" title="chi" alt="" coords="165,112,269,141"/>
+<area shape="rect" id="node5" href="$namespacegl__analytic.html#aac32afe31e79c52a84d3aa51cec63210" title="start analytic generalized Hernquist profiles following equation (17) from Zhao 1996" alt="" coords="487,7,580,36"/>
+<area shape="rect" id="node7" href="$namespacegl__analytic.html#ad3e3c0abb6641bba0fc1992dcde730dc" title="apar" alt="" coords="324,32,436,61"/>
 </map>

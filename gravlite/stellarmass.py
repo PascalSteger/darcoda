@@ -1,17 +1,22 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
+##
+# @file
+# Calculate approximative stellar masses from V-band magnitude, V-I color, distance to dwarf galaxy.
+# Read in [some].bin.[MV,V-I], output ID,Mstar
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy
-# calculate approximative stellar masses from V-band magnitude, V-I color, distance to dwarf galaxy
-# read in [some].bin.[MV,V-I], output ID,Mstar
 
-# choose simulation
+
 
 import sys
 if(len(sys.argv)<2):
     print "use: stellarmass.py [car,scl,sex,for]"
     exit(1)
-    
+
+# choose simulation
 dwarf=sys.argv[1]
 dir="/home/ast/read/dark/dwarf_data/"
 print dir+dwarf+"/table_merged.bin"

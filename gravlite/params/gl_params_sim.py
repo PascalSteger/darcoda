@@ -1,6 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
+##
+# @file
+# parameters for the gravlite MCMC, with mock disk structures
+
 # (c) 2013 Pascal S.P. Steger
-'''parameters for the gravlite MCMC'''
 
 import numpy as np
 import sys

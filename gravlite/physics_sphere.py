@@ -1,6 +1,10 @@
-#!/usr/bin/env ipython-python3.2
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+#!/usr/bin/env python3
+
+##
+# @file
 # all functions working on spherical coordinates
+
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import pdb
 import numpy as np

@@ -1,4 +1,11 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# test rho_INT_Rho projection with mock data
+
+# (c) 2013 psteger@phys.ethz.ch
+
 import numpy as np
 import pdb
 

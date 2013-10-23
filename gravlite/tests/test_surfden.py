@@ -1,4 +1,9 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
+
+##
+# @file
+# test deprojection
+
 import numpy as np
 import pdb
 

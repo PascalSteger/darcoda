@@ -1,4 +1,8 @@
-#!/usr/bin/python3.3
+#!/usr/bin/env python3
+
+##
+# @file
+# test exception handling
 
 def fa():
     raise Exception('negative','found')
@@ -11,9 +15,10 @@ def fb():
 def fc():
     return fb()
 
+print('if no line is printed after this, the program has exited too fast..')
 try:
     fc()
 except Exception as detail:
     print('Handling run-time error:', detail)
 
-print('if this line is printed, execution was resumed after handling')
+print('no! exception handled,  execution has beed resumed')

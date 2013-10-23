@@ -1,6 +1,6 @@
-<map id="gl_funs.calc_chi2" name="gl_funs.calc_chi2">
-<area shape="rect" id="node3" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density " alt="" coords="363,5,523,35"/>
-<area shape="rect" id="node5" href="$namespacegl__funs.html#a8b1cf1481bda54de28bd1ac78eb3bc0f" title="return nu required for comparison to interpolated data " alt="" coords="176,31,315,60"/>
-<area shape="rect" id="node8" href="$namespacegl__funs.html#a62740729d5b00840e98cac33984325cd" title="determined &#39;reduced chi2&#39; " alt="" coords="191,84,300,113"/>
-<area shape="rect" id="node10" href="$namespacegl__analytic.html#afe39d1ebff9e9aa9a1d522c9ea8921d8" title="equation 2 from Hernquist 1990, 3D mass density equation 2b from Baes&amp;Dejonghe 2002 ..." alt="" coords="180,137,311,167"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="363,5,523,35"/>
+<area shape="rect" id="node5" href="$namespacegl__funs.html#a8b1cf1481bda54de28bd1ac78eb3bc0f" title="return nu required for comparison to interpolated data" alt="" coords="176,31,315,60"/>
+<area shape="rect" id="node8" href="$namespacegl__funs.html#a62740729d5b00840e98cac33984325cd" title="determined &#39;reduced chi2&#39;" alt="" coords="191,84,300,113"/>
+<area shape="rect" id="node10" href="$namespacegl__analytic.html#afe39d1ebff9e9aa9a1d522c9ea8921d8" title="equation 2 from Hernquist 1990, 3D mass density equation 2b from Baes&amp;Dejonghe 2002" alt="" coords="180,137,311,167"/>
 </map>

@@ -1,4 +1,4 @@
-<map id="gl_class_params.Params.wiggle_nu" name="gl_class_params.Params.wiggle_nu">
-<area shape="rect" id="node3" href="$classgl__class__params_1_1Params.html#ac4b46677dabb95525d43b01f84a3304c" title="only set tracer density of first component to random values " alt="" coords="287,5,524,35"/>
-<area shape="rect" id="node5" href="$classgl__class__params_1_1Params.html#a0a8fc64ca3269dc416bc8f2b5d9d639e" title="only set tracer density of second component to random values " alt="" coords="287,59,524,88"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classgl__class__params_1_1Params.html#ac4b46677dabb95525d43b01f84a3304c" title="only set tracer density of first component to random values" alt="" coords="287,5,524,35"/>
+<area shape="rect" id="node5" href="$classgl__class__params_1_1Params.html#a0a8fc64ca3269dc416bc8f2b5d9d639e" title="only set tracer density of second component to random values" alt="" coords="287,59,524,88"/>
 </map>

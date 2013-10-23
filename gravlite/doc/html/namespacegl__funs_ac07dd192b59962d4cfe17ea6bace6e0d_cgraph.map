@@ -1,12 +1,12 @@
-<map id="gl_funs.calc_M_nu_sig_kap_sphere" name="gl_funs.calc_M_nu_sig_kap_sphere">
-<area shape="rect" id="node3" href="$namespacegl__project.html#aaa52d9c5da04754e937d646a0523df3e" title="take 3D density, calculate summed 3D mass " alt="" coords="209,5,367,35"/>
-<area shape="rect" id="node5" href="$namespacegl__analytic.html#afe39d1ebff9e9aa9a1d522c9ea8921d8" title="equation 2 from Hernquist 1990, 3D mass density equation 2b from Baes&amp;Dejonghe 2002 ..." alt="" coords="223,59,353,88"/>
-<area shape="rect" id="node7" href="$namespacegl__analytic.html#a44cfff0a7bd0c5b2a6c02b552fbb4253" title="equation 3 from Hernquist 1990 " alt="" coords="227,112,349,141"/>
-<area shape="rect" id="node9" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq. " alt="" coords="648,191,816,220"/>
-<area shape="rect" id="node13" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM " alt="" coords="417,216,599,245"/>
-<area shape="rect" id="node16" href="$namespacegl__analytic.html#a354dc8e227f41091b0f1bdd2adf9953e" title="return total mass in Walker model " alt="" coords="212,267,364,296"/>
-<area shape="rect" id="node21" href="$namespacegl__analytic.html#a396112d137c8f003c4bec540446f38df" title="analytic value for the Osipkov&#45;Merrit velocity anisotropy as defined in the Walker dataset ..." alt="" coords="225,319,351,366"/>
-<area shape="rect" id="node11" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model " alt="" coords="864,191,995,220"/>
-<area shape="rect" id="node18" href="$namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b" title="deproj.igra" alt="" coords="467,269,549,299"/>
-<area shape="rect" id="node23" href="$namespacegl__analytic.html#a67b474761d576550cb2572c58ebb8733" title="calculate Osipkov&#45;Merritt velocity anisotropy profile " alt="" coords="433,328,583,357"/>
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$namespacegl__project.html#aaa52d9c5da04754e937d646a0523df3e" title="take 3D density, calculate summed 3D mass" alt="" coords="285,5,443,35"/>
+<area shape="rect" id="node5" href="$namespacegl__analytic.html#afe39d1ebff9e9aa9a1d522c9ea8921d8" title="equation 2 from Hernquist 1990, 3D mass density equation 2b from Baes&amp;Dejonghe 2002" alt="" coords="299,59,429,88"/>
+<area shape="rect" id="node7" href="$namespacegl__analytic.html#a44cfff0a7bd0c5b2a6c02b552fbb4253" title="equation 3 from Hernquist 1990" alt="" coords="303,112,425,141"/>
+<area shape="rect" id="node9" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq." alt="" coords="725,191,893,220"/>
+<area shape="rect" id="node13" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM" alt="" coords="495,216,676,245"/>
+<area shape="rect" id="node16" href="$namespacegl__analytic.html#a354dc8e227f41091b0f1bdd2adf9953e" title="return total mass in Walker model" alt="" coords="288,267,440,296"/>
+<area shape="rect" id="node21" href="$namespacegl__analytic.html#a396112d137c8f003c4bec540446f38df" title="analytic value for the Osipkov&#45;Merrit velocity anisotropy as defined in the Walker dataset..." alt="" coords="284,321,444,351"/>
+<area shape="rect" id="node11" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model" alt="" coords="941,191,1072,220"/>
+<area shape="rect" id="node18" href="$namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b" title="deproj.igra" alt="" coords="544,269,627,299"/>
+<area shape="rect" id="node23" href="$namespacegl__analytic.html#a67b474761d576550cb2572c58ebb8733" title="calculate Osipkov&#45;Merritt velocity anisotropy profile" alt="" coords="511,323,660,352"/>
 </map>
