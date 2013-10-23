@@ -1,16 +1,16 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__analytic.html#af96cb916a1ee6e06a0d6882db6674187" title="surface density of Hernquist profile, equation 3 from Baes&amp;Dejonghe 2002" alt="" coords="405,42,555,72"/>
-<area shape="rect" id="node7" href="$namespacegl__plot.html#a90c7cc2b1a30186c72dfe8f04e349318" title="set limits on axis ax" alt="" coords="195,42,301,72"/>
-<area shape="rect" id="node9" href="$namespacegl__analytic.html#a8023180011bfc270c63d0213c86563ef" title="sig_los determined from analytic surfden*sig2 and surfden" alt="" coords="171,96,325,125"/>
-<area shape="rect" id="node15" href="$namespacegl__analytic.html#a80ced4d10f9b16f9037b9e0c535cb7d0" title="analyitc value for the fourth order momentum of the LOS velocity" alt="" coords="175,149,321,178"/>
-<area shape="rect" id="node17" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq." alt="" coords="636,253,804,282"/>
-<area shape="rect" id="node21" href="$namespacegl__analytic.html#aefdc92dfd5af4ecbe1fc0657f66fa4a9" title="give total density for the spherical Gaia challenge dataset" alt="" coords="636,358,804,388"/>
-<area shape="rect" id="node24" href="$namespacegl__analytic.html#a0611539d21d90301df76f26ca5bfc2a2" title="density for a triaxial halo in Gaia challenge" alt="" coords="183,306,313,336"/>
-<area shape="rect" id="node26" href="$namespacegl__analytic.html#afe39d1ebff9e9aa9a1d522c9ea8921d8" title="equation 2 from Hernquist 1990, 3D mass density equation 2b from Baes&amp;Dejonghe 2002" alt="" coords="183,360,313,389"/>
-<area shape="rect" id="node28" href="$namespacegl__analytic.html#a354dc8e227f41091b0f1bdd2adf9953e" title="return total mass in Walker model" alt="" coords="172,253,324,282"/>
-<area shape="rect" id="node5" href="$namespacegl__analytic.html#ab14e9c56f7aa3a3db5809d7d25b6888f" title="equation 33, 34 from Hernquist 1990" alt="" coords="672,69,768,98"/>
-<area shape="rect" id="node11" href="$namespacegl__analytic.html#a4b46d390993553907c36cba279d94ae0" title="equation 21 from Baes&amp;Dejonghe 2002" alt="" coords="375,96,585,125"/>
-<area shape="rect" id="node19" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model" alt="" coords="853,306,984,336"/>
-<area shape="rect" id="node30" href="$namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b" title="deproj.igra" alt="" coords="439,306,521,336"/>
-<area shape="rect" id="node32" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM" alt="" coords="389,253,571,282"/>
+<map id="gl_plot.plot_data" name="gl_plot.plot_data">
+<area shape="rect" id="node3" href="$namespacegl__analytic.html#af96cb916a1ee6e06a0d6882db6674187" title="surface density of Hernquist profile, equation 3 from Baes&amp;Dejonghe 2002 " alt="" coords="391,35,540,64"/>
+<area shape="rect" id="node7" href="$namespacegl__plot.html#a90c7cc2b1a30186c72dfe8f04e349318" title="set limits on axis ax " alt="" coords="195,43,301,72"/>
+<area shape="rect" id="node9" href="$namespacegl__analytic.html#a8023180011bfc270c63d0213c86563ef" title="sig_los determined from analytic surfden*sig2 and surfden " alt="" coords="171,96,325,125"/>
+<area shape="rect" id="node15" href="$namespacegl__analytic.html#a80ced4d10f9b16f9037b9e0c535cb7d0" title="analyitc value for the fourth order momentum of the LOS velocity " alt="" coords="175,149,321,179"/>
+<area shape="rect" id="node17" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq. " alt="" coords="607,253,775,283"/>
+<area shape="rect" id="node21" href="$namespacegl__analytic.html#aefdc92dfd5af4ecbe1fc0657f66fa4a9" title="give total density for the spherical Gaia challenge dataset " alt="" coords="607,359,775,388"/>
+<area shape="rect" id="node24" href="$namespacegl__analytic.html#a0611539d21d90301df76f26ca5bfc2a2" title="density for a triaxial halo in Gaia challenge " alt="" coords="183,307,313,336"/>
+<area shape="rect" id="node26" href="$namespacegl__analytic.html#afe39d1ebff9e9aa9a1d522c9ea8921d8" title="equation 2 from Hernquist 1990, 3D mass density equation 2b from Baes&amp;Dejonghe 2002 ..." alt="" coords="183,360,313,389"/>
+<area shape="rect" id="node28" href="$namespacegl__analytic.html#a354dc8e227f41091b0f1bdd2adf9953e" title="return total mass in Walker model " alt="" coords="172,253,324,283"/>
+<area shape="rect" id="node5" href="$namespacegl__analytic.html#ab14e9c56f7aa3a3db5809d7d25b6888f" title="equation 33, 34 from Hernquist 1990 " alt="" coords="643,65,739,95"/>
+<area shape="rect" id="node11" href="$namespacegl__analytic.html#a4b46d390993553907c36cba279d94ae0" title="equation 21 from Baes&amp;Dejonghe 2002 " alt="" coords="391,87,540,134"/>
+<area shape="rect" id="node19" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model " alt="" coords="824,307,955,336"/>
+<area shape="rect" id="node30" href="$namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b" title="deproj.igra" alt="" coords="424,307,507,336"/>
+<area shape="rect" id="node32" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM " alt="" coords="375,253,556,283"/>
 </map>

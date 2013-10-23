@@ -1,9 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 ##
 # @file
 # work in pc, Msun, km/s
-# (c) 2013 Pascal S.P. Steger
+
+# (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
 
 
 import gl_params as gp

@@ -1,5 +1,6 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__helper.html#ae59808bf8ea3e3c5c7debd826a5d030c" title="split interval into bins, in a logarithmic fashion" alt="" coords="180,5,311,35"/>
-<area shape="rect" id="node5" href="$namespacegl__helper.html#a85e5507bde15cf99b301f966480375ea" title="split interval into bins of constant particle number" alt="" coords="149,59,341,88"/>
-<area shape="rect" id="node7" href="$namespacegl__helper.html#aab4b0242774b64e4d496131526863cba" title="split interval linearly into bins" alt="" coords="173,112,317,141"/>
+<map id="grt_dens.run" name="grt_dens.run">
+<area shape="rect" id="node3" href="$namespacegl__helper.html#ae59808bf8ea3e3c5c7debd826a5d030c" title="split interval into bins, in a logarithmic fashion " alt="" coords="165,5,296,35"/>
+<area shape="rect" id="node5" href="$namespacegl__helper.html#a85e5507bde15cf99b301f966480375ea" title="split interval into bins of constant particle number " alt="" coords="159,58,303,105"/>
+<area shape="rect" id="node7" href="$namespacegl__helper.html#aab4b0242774b64e4d496131526863cba" title="split interval linearly into bins " alt="" coords="159,128,303,157"/>
+<area shape="rect" id="node9" href="$namespacepymultinest__demo.html#a78b1176f59c2423257d2191160262381" title="open the output (pdf) file for the user " alt="" coords="149,181,312,211"/>
 </map>

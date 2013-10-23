@@ -1,5 +1,5 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__project.html#a3c944bc7932ea6c374340c7cbb3d361f" title="stop execution if using wrong geometry" alt="" coords="245,5,416,35"/>
-<area shape="rect" id="node5" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="251,59,411,88"/>
-<area shape="rect" id="node7" href="$namespacegl__project.html#a596e6d6e58cb793201afa9e711ab8b18" title="calculate enclosed mass from summing up (density in rings)*(ring surface)" alt="" coords="245,112,416,141"/>
+<map id="gl_project.rho_INT_Sum_MR" name="gl_project.rho_INT_Sum_MR">
+<area shape="rect" id="node3" href="$namespacegl__project.html#a3c944bc7932ea6c374340c7cbb3d361f" title="stop execution if using wrong geometry " alt="" coords="207,5,332,51"/>
+<area shape="rect" id="node5" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density " alt="" coords="189,75,349,104"/>
+<area shape="rect" id="node7" href="$namespacegl__project.html#a596e6d6e58cb793201afa9e711ab8b18" title="calculate enclosed mass from summing up (density in rings)*(ring surface) " alt="" coords="184,128,355,157"/>
 </map>

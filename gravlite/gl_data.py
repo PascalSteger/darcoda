@@ -1,9 +1,10 @@
-#!/usr/bin/env ipython
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+#!/usr/bin/env python3
 
 ##
 # @file
 # read in data and store it in an appropriate class
+
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import pdb
 import numpy as np

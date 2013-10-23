@@ -1,6 +1,6 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__project.html#ae5326901af3a38cfd12e11db5bfd54ee" title="take 2D density and density error, get back 3D density and error&#39;" alt="" coords="216,59,395,88"/>
-<area shape="rect" id="node5" href="$namespacegl__project.html#a3e1880eced07010fe9c00b1ee3ceabb1" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39;" alt="" coords="448,5,608,35"/>
-<area shape="rect" id="node7" href="$namespacegl__project.html#aaa52d9c5da04754e937d646a0523df3e" title="take 3D density, calculate summed 3D mass" alt="" coords="449,59,607,88"/>
-<area shape="rect" id="node9" href="$namespacegl__project.html#a596e6d6e58cb793201afa9e711ab8b18" title="calculate enclosed mass from summing up (density in rings)*(ring surface)" alt="" coords="443,112,613,141"/>
+<map id="gl_data.Datafile.read_nu" name="gl_data.Datafile.read_nu">
+<area shape="rect" id="node3" href="$namespacegl__project.html#ae5326901af3a38cfd12e11db5bfd54ee" title="take 2D density and density error, get back 3D density and error&#39; " alt="" coords="216,59,395,88"/>
+<area shape="rect" id="node5" href="$namespacegl__project.html#a3e1880eced07010fe9c00b1ee3ceabb1" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39; " alt="" coords="448,5,608,35"/>
+<area shape="rect" id="node7" href="$namespacegl__project.html#aaa52d9c5da04754e937d646a0523df3e" title="take 3D density, calculate summed 3D mass " alt="" coords="449,59,607,88"/>
+<area shape="rect" id="node9" href="$namespacegl__project.html#a596e6d6e58cb793201afa9e711ab8b18" title="calculate enclosed mass from summing up (density in rings)*(ring surface) " alt="" coords="443,112,613,141"/>
 </map>

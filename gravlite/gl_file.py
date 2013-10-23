@@ -1,8 +1,9 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
 # all file related functions
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 

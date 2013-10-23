@@ -11,10 +11,13 @@ var searchData=
   ['plot_5fsimple_2epy',['plot_simple.py',['../plot__simple_8py.html',1,'']]],
   ['plot_5ftriaxial_2epy',['plot_triaxial.py',['../plot__triaxial_8py.html',1,'']]],
   ['plot_5fwalker_2epy',['plot_walker.py',['../plot__walker_8py.html',1,'']]],
+  ['plots_5fcommon_2epy',['plots_common.py',['../plots__common_8py.html',1,'']]],
   ['progressbar_2epy',['progressbar.py',['../progressbar_8py.html',1,'']]],
   ['pymcgau_2epy',['pymcgau.py',['../pymcgau_8py.html',1,'']]],
   ['pymcmetal_2epy',['pymcmetal.py',['../pymcmetal_8py.html',1,'']]],
   ['pymcmetal0_2epy',['pymcmetal0.py',['../pymcmetal0_8py.html',1,'']]],
   ['pymcmetal1_2epy',['pymcmetal1.py',['../pymcmetal1_8py.html',1,'']]],
-  ['pymcmetal2_2epy',['pymcmetal2.py',['../pymcmetal2_8py.html',1,'']]]
+  ['pymcmetal2_2epy',['pymcmetal2.py',['../pymcmetal2_8py.html',1,'']]],
+  ['pymultinest_5fdemo_2epy',['pymultinest_demo.py',['../pymultinest__demo_8py.html',1,'']]],
+  ['pymultinest_5fdemo_5fminimal_2epy',['pymultinest_demo_minimal.py',['../pymultinest__demo__minimal_8py.html',1,'']]]
 ];

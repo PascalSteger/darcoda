@@ -44,7 +44,7 @@ var searchData=
   ['grt_5fcom_2epy',['grt_com.py',['../grt__com_8py.html',1,'']]],
   ['grt_5fdens_2epy',['grt_dens.py',['../grt__dens_8py.html',1,'']]],
   ['grt_5fsiglos_2epy',['grt_siglos.py',['../grt__siglos_8py.html',1,'']]],
-  ['grw_5fcom_2epy',['grw_COM.py',['../grw__COM_8py.html',1,'(Global Namespace)'],['../grw__com_8py.html',1,'(Global Namespace)']]],
+  ['grw_5fcom_2epy',['grw_com.py',['../grw__com_8py.html',1,'(Global Namespace)'],['../grw__COM_8py.html',1,'(Global Namespace)']]],
   ['grw_5fmain_2epy',['grw_main.py',['../grw__main_8py.html',1,'']]],
   ['grw_5fmcmcbin_2epy',['grw_MCMCbin.py',['../grw__MCMCbin_8py.html',1,'(Global Namespace)'],['../grw__mcmcbin_8py.html',1,'(Global Namespace)']]],
   ['grw_5fmetals_2epy',['grw_metals.py',['../grw__metals_8py.html',1,'']]]

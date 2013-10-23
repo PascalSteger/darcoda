@@ -1,10 +1,10 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
 # all MCMC functions called directly from gravlite
+
 # (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
-#
 
 from types import *
 import pdb

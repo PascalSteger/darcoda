@@ -44,7 +44,7 @@ var searchData=
   ['grt_5fcom',['grt_com',['../namespacegrt__com.html',1,'']]],
   ['grt_5fdens',['grt_dens',['../namespacegrt__dens.html',1,'']]],
   ['grt_5fsiglos',['grt_siglos',['../namespacegrt__siglos.html',1,'']]],
-  ['grw_5fcom',['grw_COM',['../namespacegrw__COM.html',1,'grw_COM'],['../namespacegrw__com.html',1,'grw_com']]],
+  ['grw_5fcom',['grw_com',['../namespacegrw__com.html',1,'grw_com'],['../namespacegrw__COM.html',1,'grw_COM']]],
   ['grw_5fmain',['grw_main',['../namespacegrw__main.html',1,'']]],
   ['grw_5fmcmcbin',['grw_MCMCbin',['../namespacegrw__MCMCbin.html',1,'grw_MCMCbin'],['../namespacegrw__mcmcbin.html',1,'grw_mcmcbin']]],
   ['grw_5fmetals',['grw_metals',['../namespacegrw__metals.html',1,'']]]

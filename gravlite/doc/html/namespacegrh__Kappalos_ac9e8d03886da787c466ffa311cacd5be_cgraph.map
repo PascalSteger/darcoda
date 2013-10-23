@@ -1,7 +1,7 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__helper.html#ae59808bf8ea3e3c5c7debd826a5d030c" title="split interval into bins, in a logarithmic fashion" alt="" coords="207,5,337,35"/>
-<area shape="rect" id="node5" href="$namespacegl__helper.html#a85e5507bde15cf99b301f966480375ea" title="split interval into bins of constant particle number" alt="" coords="176,59,368,88"/>
-<area shape="rect" id="node7" href="$namespacegl__helper.html#aab4b0242774b64e4d496131526863cba" title="split interval linearly into bins" alt="" coords="200,112,344,141"/>
-<area shape="rect" id="node9" href="$namespacegrh__menc2D.html#a7812b6f74b1d8d38ebdfd04b5eb96ad1" title="grh_menc2D.foo_pool" alt="" coords="197,165,347,195"/>
-<area shape="rect" id="node11" href="$namespacegrh__menc2D.html#a2ad45a2555abf468dce3e59b0a4b0ec5" title="grh_menc2D.log_result" alt="" coords="195,219,349,248"/>
+<map id="grh_Kappalos.run" name="grh_Kappalos.run">
+<area shape="rect" id="node3" href="$namespacegl__helper.html#ae59808bf8ea3e3c5c7debd826a5d030c" title="split interval into bins, in a logarithmic fashion " alt="" coords="189,5,320,35"/>
+<area shape="rect" id="node5" href="$namespacegl__helper.html#a85e5507bde15cf99b301f966480375ea" title="split interval into bins of constant particle number " alt="" coords="183,58,327,105"/>
+<area shape="rect" id="node7" href="$namespacegl__helper.html#aab4b0242774b64e4d496131526863cba" title="split interval linearly into bins " alt="" coords="183,128,327,157"/>
+<area shape="rect" id="node9" href="$namespacegrh__menc2D.html#a7812b6f74b1d8d38ebdfd04b5eb96ad1" title="grh_menc2D.foo_pool" alt="" coords="180,181,329,211"/>
+<area shape="rect" id="node11" href="$namespacegrh__menc2D.html#a2ad45a2555abf468dce3e59b0a4b0ec5" title="grh_menc2D.log_result" alt="" coords="177,235,332,264"/>
 </map>

@@ -1,0 +1,7 @@
+<map id="plot_fornax.run" name="plot_fornax.run">
+<area shape="rect" id="node3" href="$namespaceplot__fornax.html#ad658e2a32ff09c11c3ba2724746da905" title="plot all things in one plot " alt="" coords="180,5,327,35"/>
+<area shape="rect" id="node5" href="$namespaceplots__common.html#a1287baef3693d040881e9fe9361f66fd" title="save profile sigma data to file " alt="" coords="163,59,344,88"/>
+<area shape="rect" id="node7" href="$namespacegl__analytic.html#a44cfff0a7bd0c5b2a6c02b552fbb4253" title="equation 3 from Hernquist 1990 " alt="" coords="192,112,315,141"/>
+<area shape="rect" id="node9" href="$namespacegl__plot.html#a9db43e915ecdec397b3bc3a695311340" title="show all plots, stop execution of program. " alt="" coords="188,165,319,195"/>
+<area shape="rect" id="node11" href="$namespacepymultinest__demo.html#a78b1176f59c2423257d2191160262381" title="open the output (pdf) file for the user " alt="" coords="392,165,555,195"/>
+</map>

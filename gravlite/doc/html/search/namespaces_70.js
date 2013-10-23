@@ -10,10 +10,13 @@ var searchData=
   ['plot_5fsimple',['plot_simple',['../namespaceplot__simple.html',1,'']]],
   ['plot_5ftriaxial',['plot_triaxial',['../namespaceplot__triaxial.html',1,'']]],
   ['plot_5fwalker',['plot_walker',['../namespaceplot__walker.html',1,'']]],
+  ['plots_5fcommon',['plots_common',['../namespaceplots__common.html',1,'']]],
   ['progressbar',['progressbar',['../namespaceprogressbar.html',1,'']]],
   ['pymcgau',['pymcgau',['../namespacepymcgau.html',1,'']]],
   ['pymcmetal',['pymcmetal',['../namespacepymcmetal.html',1,'']]],
   ['pymcmetal0',['pymcmetal0',['../namespacepymcmetal0.html',1,'']]],
   ['pymcmetal1',['pymcmetal1',['../namespacepymcmetal1.html',1,'']]],
-  ['pymcmetal2',['pymcmetal2',['../namespacepymcmetal2.html',1,'']]]
+  ['pymcmetal2',['pymcmetal2',['../namespacepymcmetal2.html',1,'']]],
+  ['pymultinest_5fdemo',['pymultinest_demo',['../namespacepymultinest__demo.html',1,'']]],
+  ['pymultinest_5fdemo_5fminimal',['pymultinest_demo_minimal',['../namespacepymultinest__demo__minimal.html',1,'']]]
 ];

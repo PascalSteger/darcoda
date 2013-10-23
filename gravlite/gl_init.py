@@ -1,10 +1,10 @@
-#!/usr/bin/python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
 # set up initial parameters
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 import numpy.random as npr

@@ -1,7 +1,10 @@
-#!/usr/bin/python3.2
+#!/usr/bin/env python3
+
 ##
 # @file
 # class to get a rolling acceptance/rejection rate
+
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import collections
 import pdb

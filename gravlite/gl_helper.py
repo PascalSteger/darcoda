@@ -1,10 +1,10 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
 # all helper functions from gl_funs
-# (c) 2013 Pascal S.P. Steger
 
+# (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import numpy as np
 import pdb

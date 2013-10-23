@@ -1,8 +1,9 @@
-#!/usr/bin/env ipython
+#!/usr/bin/env python3
 
 ##
 # @file
 # all functions to work with plots
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np

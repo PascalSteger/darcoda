@@ -1,8 +1,9 @@
-#!/usr/bin/python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
 # read data from simulation
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np

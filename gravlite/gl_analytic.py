@@ -1,11 +1,11 @@
-#!/usr/bin/env ipython
+#!/usr/bin/env python3
 
 ##
 # @file
 # @ingroup gravlite
 # all analytic profiles from physics_sphere
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-#
 
 import numpy as np
 import gl_params as gp

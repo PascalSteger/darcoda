@@ -1,10 +1,10 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="244,5,404,35"/>
-<area shape="rect" id="node5" href="$namespacegl__int.html#a3a55db9a716833cb09a91052c33c031c" title="integrate beta over r (integrals in front of and after sigma_r^2 integral)" alt="" coords="264,59,384,88"/>
-<area shape="rect" id="node9" href="$namespacegl__int.html#a14f72e5cb6bc04871d00990c889ea6ac" title="calculate integral for sigma_los^2 * surface density, correspondingly for 4th order kappa..." alt="" coords="241,139,407,168"/>
-<area shape="rect" id="node7" href="$namespacegl__int.html#a4070e8d27b7053897abfc43e7372e565" title="extrapolate back to first bin, with splines" alt="" coords="495,32,644,61"/>
-<area shape="rect" id="node11" href="$namespacegl__int.html#a9fec3a7e52cf04af3cd75f7e01f1a61c" title="insert equally spaced points at 1/4, 1/2, and 3/4 of a bin span" alt="" coords="457,85,681,115"/>
-<area shape="rect" id="node13" href="$namespacegl__int.html#af30834374ee39c81997a588f8b193040" title="smooth function y(x)" alt="" coords="507,139,632,168"/>
-<area shape="rect" id="node15" href="$namespacegl__int.html#a0a136f4c075da7b1fa6012c623913974" title="extrapolate to high radii with linear extrapolation" alt="" coords="507,192,632,221"/>
-<area shape="rect" id="node17" href="$namespacegl__int.html#a97ab5547e4500ce9c081c6ea4650986c" title="function from Lokas+2005, eq." alt="" coords="537,245,601,275"/>
+<map id="physics_sphere.sig_kap_los" name="physics_sphere.sig_kap_los">
+<area shape="rect" id="node3" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density " alt="" coords="193,5,353,35"/>
+<area shape="rect" id="node5" href="$namespacegl__int.html#a3a55db9a716833cb09a91052c33c031c" title="integrate beta over r (integrals in front of and after sigma_r^2 integral) " alt="" coords="213,59,333,88"/>
+<area shape="rect" id="node9" href="$namespacegl__int.html#a14f72e5cb6bc04871d00990c889ea6ac" title="calculate integral for sigma_los^2 * surface density, correspondingly for 4th order kappa ..." alt="" coords="191,147,356,176"/>
+<area shape="rect" id="node7" href="$namespacegl__int.html#a4070e8d27b7053897abfc43e7372e565" title="extrapolate back to first bin, with splines " alt="" coords="407,24,556,53"/>
+<area shape="rect" id="node11" href="$namespacegl__int.html#a9fec3a7e52cf04af3cd75f7e01f1a61c" title="insert equally spaced points at 1/4, 1/2, and 3/4 of a bin span " alt="" coords="405,77,557,123"/>
+<area shape="rect" id="node13" href="$namespacegl__int.html#af30834374ee39c81997a588f8b193040" title="smooth function y(x) " alt="" coords="419,147,544,176"/>
+<area shape="rect" id="node15" href="$namespacegl__int.html#a0a136f4c075da7b1fa6012c623913974" title="extrapolate to high radii with linear extrapolation " alt="" coords="419,200,544,229"/>
+<area shape="rect" id="node17" href="$namespacegl__int.html#a97ab5547e4500ce9c081c6ea4650986c" title="function from Lokas+2005, eq. " alt="" coords="449,253,513,283"/>
 </map>

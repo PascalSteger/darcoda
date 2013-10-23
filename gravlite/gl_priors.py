@@ -1,8 +1,9 @@
-#!/usr/bin/env ipython
+#!/usr/bin/env python3
 
 ##
 # @file
 # check all parameters for prior constraints
+
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import pdb
