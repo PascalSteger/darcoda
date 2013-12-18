@@ -5,7 +5,7 @@
 CC = pdflatex
 
 # source files ( no .tex extension!!!)
-SRC = main
+SRC = Steger+_2014_Gravlite
 BIB = $(SRC).bib
 
 all: pdf
@@ -25,7 +25,7 @@ ps:	tex
 
 # make a pdf file
 pdf:	tex
-	cp main.pdf Steger_2013_MCMC_spherical.pdf
+#	cp main.pdf Steger_2013_MCMC_spherical.pdf
 #	dvips -Ppdf -G0  -o $(SRC).ps $(SRC).dvi
 #	ps2pdf -dPDFsettings=/prepress $(SRC).ps
 

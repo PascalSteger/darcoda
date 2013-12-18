@@ -18,9 +18,7 @@ approaches a constant value.
 Observations of low surface brightness galaxies measure rotation
 curves and deduce from them a constant density below a rather large
 scale radius $r_S$ \bcite{DeBlok+2001}, \bcite{McGaugh+2001}, contrary to
-the theoretical predictions.
-
-This fact became known as the cusp/core problem.
+the theoretical predictions. This fact became known as the cusp/core problem.
 
 
 % solutions to cusp-core: observations
@@ -62,7 +60,7 @@ THINGS dwarf galaxies \bcite{Oh+2011}.
 Another type of dwarf galaxies, the dwarf spheroidals, lie closer to
 the Sun and can be resolved much better, often allowing us to observe
 individual stars. We need a method to model their mass distribution
-from those observations to investigate, whether they exhibit a cusp or
+from the observations to investigate whether they exhibit a cusp or
 a core, and whether simulations are able to reproduce the dark matter
 distribution.
 
@@ -75,20 +73,23 @@ density profile and a corresponding gravitational potential, an
 ensemble of orbits are calculated and superposed to yield the
 underlying density profile.
 
+% \citet{Breddels+2012} cannot distinguish
+% between cuspy or cored profiles for Sculptor.
+
 Another method makes use of the Jeans equations encompassing tracer
 density, velocity dispersion and the gravitational potential to solve
 for the potential, and ultimately get the underlying dark matter
 density \bcite{BinneyTremaine2008}. Mostly, a functional form with
-some free parameter(s) is assumed for the density profile, and fitting
+some free parameters is assumed for the density profile, and fitting
 routines are used to yield the best agreeing form.
 
 % mass beta anisotropy
 
 Another assumption is required for the velocity anisotropy profile to
 get a mass density in the case of lowest-order Jeans equations. Since
-it is not known a priori how much the system is supported by
-rotational motion, this leads to a degeneracy between mass and
-velocity anisotropy.
+it is not known a priori and hard to measure observationally how much
+the system is supported by rotational motion, this leads to a
+degeneracy between mass and velocity anisotropy.
 
 % break via higher orders
 
@@ -96,8 +97,6 @@ Higher order Jeans equations can help to break this degeneracy
 \bcite{Lokas2002}. Another degeneracy between inner DM slope and
 concentration shows up, though. With better data available for the
 local dSphs, distribution function based methods may be used.
-\citet{Breddels+2012} cannot distinguish between cuspy or cored
-profiles for Sculptor.
 
 
 % motion of globular clusters in dwarfs
@@ -106,17 +105,17 @@ Yet another approach is to use the motion of globular clusters inside
 dwarf galaxies \bcite{Goerdt+2006}, \bcite{Cole+2012}. If the density
 distribution follows a cored profile, globular clusters will not fall
 in, or will even get pushed out of the core if they formed inside. In
-Fornax dSph, there is evidence for a core.
+Fornax dSph, there is evidence for a core \bcite{Read+2006}.
 
 
 % Walker/Penarrubia 2011: 2 tracers
 
 \citet{WalkerPenarrubia2011} split the stellar tracers into two
 populations with different metallicities and half-mass radii, and make
-use of the fact that the enclosed mass is found the same at the
-half-mass radius, independent of the underlying velocity anisotropy
-profile, to get two points in the center of the dwarf galaxy, from
-which constraints on the inner DM density slope can be drawn.
+use of the fact that the enclosed mass at the half-mass radius is
+independent of the underlying velocity anisotropy profile, to get two
+points in the center of the dwarf galaxy, from which constraints on
+the inner DM density slope can be drawn.
 
 
 
@@ -147,5 +146,5 @@ Our method has following advantages over other methods presented so far:
 \item applicable to any gravitational model, since Jeans equation and
   Poisson equation are solved each on their own;
 \item robust to noise in the data, as no numerical differentiation is
-  used as soon as the three-dimensional model stands.
+  used as soon as the three-dimensional density model is set up.
 \end{enumerate}

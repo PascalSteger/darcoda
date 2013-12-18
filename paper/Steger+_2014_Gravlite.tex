@@ -36,7 +36,7 @@
 \def\tot{\mathrm{tot}}
 \def\kpc{\mathrm{kpc}}
 
-\title[A non-parametric method for mass modelling spherical systems]{A non-parametric method for mass modelling spherical systems}
+\title[Non-parametric method for mass modelling spherical systems]{Non-parametric method for mass modelling spherical systems}
 
 \author[Steger]{P. Steger$^1$\thanks{E-mail: psteger@phys.ethz.ch}, D. von Rickenbach$^1$, J. I. Read$^{1,2}$\\
 $^1$Institute for Astronomy, Department of Physics, ETH Z\"urich, Wolfgang-Pauli-Strasse 27, CH-8093 Z\"urich, Switzerland\\
@@ -51,7 +51,7 @@ $^2$Department of Physics, University of Surrey, Guildford, GU2 7XH, UK
 We propose a new non-parametric method to determine the mass
 distribution in spherical systems. A high dimensional parameter space
 encoding tracer density, line of sight velocity dispersion and total
-mass density is sampled with an Monte Carlo Markov Chain.
+mass density is sampled with a MultiNest parameter space explorer.
 
 Without assumptions on the functional form of any of these profiles,
 we can reproduce liably the total mass density of mock dwarf galaxies,
@@ -59,7 +59,7 @@ and disentangle the degeneracy between dark matter density and tracer
 velocity anisotropy.
 
 We show early applications to observed dwarf galaxies, and point out
-what data quality is required to yield a sensible estimate.
+what data quality is required to detect cores of radius $r_c$.
 \end{abstract}
 
 \begin{keywords} galaxies: dwarf  -- galaxies: fundamental parameters  -- galaxies: kinematics and dynamics -- cosmology: dark matter
@@ -67,15 +67,14 @@ what data quality is required to yield a sensible estimate.
 
 % input does not clear page, include does. could use newclude package and include*
 \input{intro}
-
 \input{method}
-\input{result}
+\input{results}
 \input{conclusion}
 \input{acks}
 
 \bibliographystyle{mn2e}
-\bibliography{main}
+\bibliography{Steger+_2014_Gravlite}
 
-\input{appendix}
+%\input{appendix}
 
 \end{document}

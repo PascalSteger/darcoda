@@ -1,0 +1,41 @@
+
+**********************************************************************
+*  ASTRONAT  $Name: release-1-4 $
+*
+*  NATBIB package by Patrick Daly, with additions for astronomy
+*  journals by Jonathan Baker <jbaker@astro.berkeley.edu>
+*
+*  $Date: 1998/08/30 22:42:18 $
+**********************************************************************
+
+Contents
+========
+
+README              This file.
+
+README.inc          Comments to put in your latex sources for reference.
+                    nat2jour.pl strips them from submitted versions.
+
+apj/                Files for AASTeX.
+  apj.bst           Bibliographic style for ApJ.
+  apj-jour.bib      Journal abbreviations for ApJ.
+
+doc/                Documentation in a number of formats.
+  astronat.txt      Giant ASCII file format.
+  astronat.info     GNU info format.
+  astronat.texi     TeXinfo source.
+  html/             HTML format.
+
+example/            A simple example.
+
+mnras/              Files for MNRAS.
+  mn.bst            Bibliographic style for MNRAS.
+  mn-jour.bib       Journal abbreviations for MNRAS.
+  mn-nat.sty        Slight modification of "mn.sty" (v1.4).
+
+nat2jour.pl         Convert tex/bbl to versions for submission.
+
+natbib.sty          Natbib style file v6.8 for LaTeX 2e.
+
+natbib209.sty       Natbib style file v6.8 for LaTeX 2.09.
+

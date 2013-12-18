@@ -1,17 +1,9 @@
-\begin{thebibliography}{18}
+\begin{thebibliography}{17}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
-
-\bibitem[{{Baes} \& {Dejonghe}(2002)}]{BaesDejonghe2002}
-{Baes} M., {Dejonghe} H., 2002, \aap, 393, 485
 
 \bibitem[{{Binney} \& {Tremaine}(2008)}]{BinneyTremaine2008}
 {Binney} J., {Tremaine} S., 2008, {Galactic Dynamics: Second Edition}.
   {Princeton University Press}
-
-\bibitem[{{Breddels} {et~al}\mbox{.}(2012){Breddels}, {Helmi}, {van den Bosch},
-  {van de Ven}, \& {Battaglia}}]{Breddels+2012}
-{Breddels} M.~A., {Helmi} A., {van den Bosch} R.~C.~E., {van de Ven} G.,
-  {Battaglia} G., 2012, ArXiv e-prints
 
 \bibitem[{{Cole} {et~al}\mbox{.}(2012){Cole}, {Dehnen}, {Read}, \&
   {Wilkinson}}]{Cole+2012}
@@ -21,6 +13,10 @@
 \bibitem[{{de Blok} {et~al}\mbox{.}(2001){de Blok}, {McGaugh}, \&
   {Rubin}}]{DeBlok+2001}
 {de Blok} W.~J.~G., {McGaugh} S.~S., {Rubin} V.~C., 2001, \aj, 122, 2396
+
+\bibitem[{{Feroz} {et~al}\mbox{.}(2009){Feroz}, {Hobson}, \&
+  {Bridges}}]{Feroz+2009}
+{Feroz} F., {Hobson} M.~P., {Bridges} M., 2009, \mnras, 398, 1601
 
 \bibitem[{{Goerdt} {et~al}\mbox{.}(2006){Goerdt}, {Moore}, {Read}, {Stadel}, \&
   {Zemp}}]{Goerdt+2006}
@@ -32,11 +28,12 @@
   {Madau}}]{Governato+2010}
 {Governato} F. {et~al.}, 2010, \nat, 463, 203
 
-\bibitem[{{Hernquist}(1990)}]{Hernquist1990}
-{Hernquist} L., 1990, \apj, 356, 359
-
 \bibitem[{{{\L}okas}(2002)}]{Lokas2002}
 {{\L}okas} E.~L., 2002, \mnras, 333, 697
+
+\bibitem[{{{\L}okas} {et~al}\mbox{.}(2005){{\L}okas}, {Mamon}, \&
+  {Prada}}]{Lokas+2005}
+{{\L}okas} E.~L., {Mamon} G.~A., {Prada} F., 2005, \mnras, 363, 918
 
 \bibitem[{{Mateo}(1998)}]{Mateo1998}
 {Mateo} M.~L., 1998, \araa, 36, 435

@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.52
+     from ../astronat.texi on 31 August 1999 -->
+
+<TITLE>AstroNat  - MNRAS style</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="astronat_1.html">first</A>, <A HREF="astronat_5.html">previous</A>, <A HREF="astronat_7.html">next</A>, <A HREF="astronat_8.html">last</A> section, <A HREF="astronat_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC14" HREF="astronat_toc.html#TOC14">MNRAS style</A></H1>
+
+<P>
+The two lines in <CODE>mn.sty</CODE> (version 1.4) involving the
+<CODE>\bibhang</CODE> command cause fatal errors when used with
+natbib.  Use <CODE>mn-nat.sty</CODE>
+instead, which has them commented them out and works fine.  
+The <CODE>nat2jour.pl</CODE>
+program will then change <CODE>\documentstyle[...]{mn-nat}</CODE> to 
+<CODE>\documentstyle[...]{mn}</CODE> for you, since natbib is no longer
+needed in its output files.
+
+</P>
+
+<PRE>
+% Set length of hanging indentation for bibliography entries
+%
+%%% \newlength{\bibhang}
+%%% \setlength{\bibhang}{2em}
+</PRE>
+
+<P><HR><P>
+Go to the <A HREF="astronat_1.html">first</A>, <A HREF="astronat_5.html">previous</A>, <A HREF="astronat_7.html">next</A>, <A HREF="astronat_8.html">last</A> section, <A HREF="astronat_toc.html">table of contents</A>.
+</BODY>
+</HTML>

@@ -79,7 +79,6 @@ yields the same mass constraint there.
 
 
 \subsection{Effects of turning off priors}
-\TODO{turning off $\delta dens>0$}
 \TODO{$\beta<0$ prior}
 
 
@@ -105,11 +104,7 @@ the valid regions of phase space in density. See fig. \ref{fig:convergencedens}.
 Second, the range of $\delta_i$, the only other unrestricted
 parameters, show a similar behaviour, as shown in
 \ref{fig:convergencedelta1} for $\delta_1$, with analogous
-$\delta_2$. \TODO{Not all the parameter space is sampled, and this is
-  a major cause of worry: any profile found in the first iterations in
-  the init phase will be stuck there, if $\delta$ cannot sample a big
-  subset of $]-\infty,1]$. We will rerun thge cusp for proper $10^6$
-  iterations, with higher stepsize for delta!}
+$\delta_2$.
 
 \begin{figure*}
 \begin{center}
@@ -127,7 +122,7 @@ $\delta_2$. \TODO{Not all the parameter space is sampled, and this is
 
 
 \subsection{Convergence in Mass Models}
-\TODO{constant number of particles per bin}
+\TODO{sample through 30, 300, 3000 particles per bin?}
 
 
 
@@ -212,7 +207,7 @@ iterations with 40k burn-in. From the accepted models, we compute the
 mean Gaussian distributions and compare the corresponding overall
 bimodal distribution to the actual metallicity distribution from the
 data with a 2 component Kolmogorov-Smirnov test, and take the
-two-tailed statistics $p$ from 30 drawings. If the $p>0.05$, then we
+two-tailed statistics $p_{\text KS}$ from 30 drawings. If $p_{\text KS}>0.05$, then we
 cannot reject the hypothesis that the distributions of the two samples
 are the same.
 
@@ -224,8 +219,9 @@ between $0.0$ and $0.4$ are shown in fig \ref{fig:kit}.
 \hspace{-7mm}
 \includegraphics[width=0.5\textwidth]{fig/10kit.pdf}
 \includegraphics[width=0.5\textwidth]{fig/50kit.pdf}
-\caption{Kolmogorov-Smirnov test for correspondance between models
-  with $\delta\mu>\delta\mu_{\min}$ as described in the text.}
+\caption{Kolmogorov-Smirnov test statistic $p_{\text KS}$ for
+  correspondance between models with $\delta\mu>\delta\mu_{\min}$ as
+  described in the text.}
 \label{fig:kit}
 \end{center}
 \end{figure*}
