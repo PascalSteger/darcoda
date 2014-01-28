@@ -52,29 +52,29 @@ def run():
             print('sorting error!')
             exit(1)
     rhalf = rc[floor(len(rc)/2)] # [pc]
-    rcore = rhalf # or gpr.r_DM # [pc]
-    print('rcore = ',rcore,' pc')
+    rscale = rhalf # or gpr.r_DM # [pc]
+    print('rscale = ',rscale,' pc')
     print('max(r) = ',max(rc),' pc')
     print('last element of r : ',rc[-1],' pc')
     print('total number of stars: ',len(rc))
 
-    r0 = np.sqrt(x0**2+y0**2)/rcore
+    r0 = np.sqrt(x0**2+y0**2)/rscale
     sel = (r0<gpr.rprior)
-    x = x0[sel]/rcore; y = y0[sel]/rcore # [r_core]
+    x = x0[sel]/rscale; y = y0[sel]/rscale # [r_scale]
     vz=vlos[sel]
     m = np.ones(len(x))
-    r = np.sqrt(x*x+y*y) #[r_core]
+    r = np.sqrt(x*x+y*y) #[r_scale]
     # print("x y z") on first line, to interprete data later on
-    crcore = open(gpr.get_params_file(0),'w')
-    print('# rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crcore)
-    print(rcore, file=crcore)
-    crcore.close()
+    crscale = open(gpr.get_params_file(0),'w')
+    print('# rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
+    print(rscale, file=crscale)
+    crscale.close()
 
     print('output: ',gpr.get_com_file(0))
     c = open(gpr.get_com_file(0),'w')
-    print('# x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc', file=c)
+    print('# x [rscale],','y [rscale],','vLOS [km/s],','rscale = ',rscale,' pc', file=c)
     for k in range(len(x)):
-        print(x[k],y[k],vz[k], file=c) #[rcore], [rcore], [km/s]
+        print(x[k],y[k],vz[k], file=c) #[rscale], [rscale], [km/s]
     c.close()
         
         
@@ -82,7 +82,7 @@ def run():
         
     ion(); ax = subplot(111)
     # res = (abs(x)<3)*(abs(y)<3)
-    # x = x[res]; y = y[res] #[rcore]
+    # x = x[res]; y = y[res] #[rscale]
     en = len(x)
 
     H, xedges, yedges = np.histogram2d(x, y,  bins=(30,30),  range=[[-3.,3.], [-3.,3.]])
@@ -101,8 +101,8 @@ def run():
         
     # scatter(x[:en], y[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
     # xscale('log'); yscale('log')
-    circ_HL=Circle((0,0), radius=rcore/rcore, fc='None', ec='g', lw=3)
-    circ_DM=Circle((0,0), radius=gpr.r_DM/rcore, fc='None', ec='r', lw=3)
+    circ_HL=Circle((0,0), radius=rscale/rscale, fc='None', ec='g', lw=3)
+    circ_DM=Circle((0,0), radius=gpr.r_DM/rscale, fc='None', ec='r', lw=3)
     gca().add_patch(circ_HL); gca().add_patch(circ_DM)
     
     # visible region

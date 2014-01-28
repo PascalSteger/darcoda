@@ -20,13 +20,6 @@ from gl_class_files import *
 from scipy.stats import norm
 
 
-## get possible assignment to populations
-# @param data TODO
-# @param p TODO
-# @param mu1 TODO
-# @param sig1 TODO
-# @param mu2 TODO
-# @param sig2 TODO
 def assign_pop(data, p, mu1, sig1, mu2, sig2):
     from scipy.stats import norm
     size = len(data)
@@ -39,10 +32,16 @@ def assign_pop(data, p, mu1, sig1, mu2, sig2):
         else:
             pm1.append(False);pm2.append(True)
     return np.array(pm1), np.array(pm2) # np.array needed to use it as subset indicator
+## \fn assign_pop(data, p, mu1, sig1, mu2, sig2)
+# get possible assignment to populations
+# @param data TODO
+# @param p TODO
+# @param mu1 TODO
+# @param sig1 TODO
+# @param mu2 TODO
+# @param sig2 TODO
 
 
-## plot all traces
-# @param mcmc TODO
 def plot_traces(mcmc):
     subplot(311)
     center_trace = mcmc.trace("centers")[:]
@@ -73,11 +72,11 @@ def plot_traces(mcmc):
     plt.ylim(0,1)
     plt.legend()
     show()
+## \fn plot_traces(mcmc)
+# plot all traces
+# @param mcmc TODO
 
 
-## run MCMC to get regression on bimodal normal distribution
-# http://nbviewer.ipython.org/urls/raw.github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter3_MCMC/IntroMCMC.ipynb
-# @param data TODO
 def bimodal_gauss(data):
     p = mc.Normal( "p", 0.5, 1./0.1**2)
     assignment = mc.Categorical("assignment", [p, 1-p], size = data.shape[0] ) 
@@ -126,6 +125,10 @@ def bimodal_gauss(data):
     sig1, sig2 = M.trace('stds')[:].mean(axis=0)
     p = M.trace("p")[:].mean()
     return p, mu1, sig1, mu2, sig2, M
+## \fn bimodal_gauss(data)
+# run MCMC to get regression on bimodal normal distribution
+# http://nbviewer.ipython.org/urls/raw.github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter3_MCMC/IntroMCMC.ipynb
+# @param data TODO
 
 
 if __name__=="__main__":

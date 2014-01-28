@@ -11,24 +11,21 @@ import pdb
 # from gl_class_files import *
 
 
-## mean COM, weighted by probability of membership
+def com_mean(x, y, z, pm):
+    com_x = 1.*np.sum(x*pm)/np.sum(pm) # [pc]
+    com_y = 1.*np.sum(y*pm)/np.sum(pm) # [pc]
+    com_z = 1.*np.sum(z*pm)/np.sum(pm) # [pc]
+    return com_x, com_y, com_z
+## \fn com_mean(x,y,z,pm)
+# mean COM, weighted by probability of membership
 # @param x array of x values in [pc]
 # @param y array of y values in [pc]
 # @param z array of z values in [pc]
 # @param pm array of probability of membership in [1]
 # @return x,y,z of center of mass
-def com_mean(x,y,z,pm):
-    com_x = 1.*np.sum(x*pm)/np.sum(pm) # [pc]
-    com_y = 1.*np.sum(y*pm)/np.sum(pm) # [pc]
-    com_z = 1.*np.sum(z*pm)/np.sum(pm) # [pc]
-    return com_x, com_y, com_z
 
 
-## shrinking sphere in 2D, with LOS velocity
-# @param x array of x values in [pc]
-# @param y array of y values in [pc]
-# @param vlos array of line of sight velocities in [km/s]
-def com_shrinkcircle_v_2D(x,y,vlos):
+def com_shrinkcircle_v_2D(x, y, vlos):
     eps = 1e-6
     pm = np.ones(len(x))
     com_x = 1.*np.sum(x*pm)/np.sum(pm);    com_y = 1.*np.sum(y*pm)/np.sum(pm);
@@ -67,15 +64,15 @@ def com_shrinkcircle_v_2D(x,y,vlos):
         x -= com_x; y -= com_y; vlos -= com_vlos
 
     return bucom_x, bucom_y
-
-
-
-## 3D shrinking sphere
+## \fn com_shrinkcircle_v_2D(x, y, vlos)
+# shrinking sphere in 2D, with LOS velocity
 # @param x array of x values in [pc]
 # @param y array of y values in [pc]
-# @param z array of z values in [pc]
-# @param pm array of probability of membership values in [1]
-def com_shrinkcircle(x,y,z,pm):
+# @param vlos array of line of sight velocities in [km/s]
+
+
+
+def com_shrinkcircle(x, y, z, pm):
     eps = 1e-6
     com_x = 1.*np.sum(x*pm)/np.sum(pm)
     com_y = 1.*np.sum(y*pm)/np.sum(pm)
@@ -120,17 +117,15 @@ def com_shrinkcircle(x,y,z,pm):
         x -= com_x; y -= com_y; z -= com_z
 
     return bucom_x, bucom_y, bucom_z
-
-
-
-
-## shrinking sphere in 3D, following v_LOS
+## \fn com_shrinkcircle(x, y, z, pm)
+# 3D shrinking sphere
 # @param x array of x values in [pc]
 # @param y array of y values in [pc]
 # @param z array of z values in [pc]
-# @param vz array of LOS velocities (or rather, along z coordinate) in [km/s]
-# @param pm array of probabilities of membership in [1]
-def com_shrinkcircle_v(x,y,z,vz,pm):
+# @param pm array of probability of membership values in [1]
+
+
+def com_shrinkcircle_v(x, y, z, vz, pm):
     eps = 1e-6
     com_x = 1.*np.sum(x*pm)/np.sum(pm)
     com_y = 1.*np.sum(y*pm)/np.sum(pm)
@@ -180,3 +175,10 @@ def com_shrinkcircle_v(x,y,z,vz,pm):
         x -= com_x; y -= com_y; z -= com_z; vz -= com_vz
 
     return bucom_x, bucom_y, bucom_z, com_vz
+## \fn com_shrinkcircle_v(x, y, z, vz, pm)
+# shrinking sphere in 3D, following v_LOS
+# @param x array of x values in [pc]
+# @param y array of y values in [pc]
+# @param z array of z values in [pc]
+# @param vz array of LOS velocities (or rather, along z coordinate) in [km/s]
+# @param pm array of probabilities of membership in [1]

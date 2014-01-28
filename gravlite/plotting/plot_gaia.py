@@ -19,10 +19,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 from plots_common import *
 
 import select_run
-basename, prof = select_run.run()
+basename, prof, pop = select_run.run()
+# TODO: adapt prof = 'rho' and pop == 1
 
-## get halfmass radius for the 8 spherical cases of Gaia challenge
-# @param case which set to work on. see Gaia challenge homepage for documentation
+
 def halflightradius(case):
     beta_star1 = 5; r_DM = 1000
     if gp.case == 1:
@@ -43,6 +43,9 @@ def halflightradius(case):
         gamma_star1=1.0;r_star1=1000;r_a1=np.inf;gamma_DM=0;rho0=0.400
             
     return r_star1
+## \fn halflightradius(case)
+# get halfmass radius for the 8 spherical cases of Gaia challenge
+# @param case which set to work on. see Gaia challenge homepage for documentation
 
 print('input: ',basename)
 M = np.loadtxt(basename+'prof'+prof,skiprows=0,unpack=False)
@@ -59,7 +62,6 @@ Mprofbins = np.transpose(profs)
 # radii = radii[1:] # TODO: debug: allowin for first bin suddenly makes
 # overall resemblance change!
 # Mprofbins = Mprofbins[:-1]
-
 
 for i in range(len(Mprofbins)):
     # sort all mass models bin by bin
@@ -109,9 +111,9 @@ radsc = radii[sel]*rsc
 def read_scale():
     for i in range(gp.pops+1):
         A = np.loadtxt(gp.files.get_scale_file(i), unpack=False, skiprows=1)
-        gp.rcore_2D.append(A[0])
-        gp.dens0rcore_2D.append(A[1])
-        gp.dens0pc_2D.append(A[2])
+        gp.Rscale.append(A[0])
+        gp.Nu0rscale.append(A[1])
+        gp.Nu0pc.append(A[2])
         gp.totmass.append(A[3])
         gp.maxvlos.append(A[4])
 
@@ -122,7 +124,7 @@ def plotGraph():
     xlabel(r'$r\quad[\mathrm{pc}]$')
     if prof == 'M':
         ylabel(r'$M\quad[\mathrm{M}_{\odot}]$') #[10^5 M_{\odot}]')
-    elif prof == 'dens':
+    elif prof == 'rho':
         ylabel(r'$\rho\quad[\mathrm{M}_{\odot}/\mathrm{pc}^3]$') #[10^5 M_{\odot}]')
     elif prof=='delta1' or prof == 'delta2':
         ylabel(r'$\beta$') #[10^5 M_{\odot}]')
@@ -136,21 +138,21 @@ def plotGraph():
     plot(radsc,Mmedi*Msc,'r',lw=1)
     
     r1 = halflightradius(gp.case)
-    if prof == 'dens' or prof == 'M' or prof=='delta1' or prof=='nu1' or prof=='sig1':
+    if prof == 'rho' or prof == 'M' or prof=='beta1' or prof=='nu1' or prof=='sig1':
         axvline(x=r1, visible=True)
     
     # theoretical model
     if prof == 'M':
         plot(radsc,Msc*Mwalkertot(radsc),'--',color='black',lw=1)
-    elif prof == 'dens':
+    elif prof == 'rho':
         plot(radsc,Msc*rhogaiatot_3D(radsc),'--',color='black',lw=1) # 7 co
         # plot lowest profile as well
         # plot(radsc,Msc*profs[0],'.',color='orange',lw=1)
-    elif prof == 'delta1':
+    elif prof == 'beta1':
         plot(radsc, betagaia(radsc), color='black')
     elif prof == 'sig1':
         rad, dummy, dummy, sig1, sigerr1 = gh.readcol5(gp.files.sigfiles[1])
-        rad *= gp.rcore_2D[1]
+        rad *= gp.Rscale[1]
         sig1*=gp.maxvlos[1]
         sigerr1*=gp.maxvlos[1]
         # plot(rad, sig1, '--', color='b', lw=2)
@@ -159,11 +161,10 @@ def plotGraph():
         fill_between(rad, sig1-sigerr1, sig1+sigerr1, color='blue', alpha=0.3,lw=0)
     elif prof == 'nu1':
         rad, dummy, dummy, nu1, nuerr1 = gh.readcol5(gp.files.nufiles[1])
-        rad *= gp.rcore_2D[1]
+        rad *= gp.Rscale[1]
         # TODO: missing factor 10 somewhere..
         pdb.set_trace()
-        nu1 *= gp.dens0pc_2D[1]
-        nuerr1 *= gp.dens0pc_2D[1]
+        nu1 *= gp.Nu0pc[1];   nuerr1 *= gp.Nu0pc[1]
         fill_between(rad, nu1-nuerr1, nu1+nuerr1, color='blue', alpha=0.3,lw=0)
 
     if prof!='delta1' and prof!='delta2' and prof != 'sig1' and prof != 'nu1':
@@ -171,7 +172,7 @@ def plotGraph():
         yscale('log')
     if prof == 'nu1':
         yscale('log')
-    if prof == "M" or prof == 'dens':
+    if prof == "M" or prof == 'rho':
         xscale('log')
         #xlim([100.,1200.]);  ylim([0.005,1.5])
     # if prof == 'delta1':

@@ -27,18 +27,18 @@ def run():
     print('input: ',gpr.get_com_file(0))
     # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(0),\
-                       skiprows=1,usecols=(0,1,2),unpack=True) #[rcore], [rcore], [km/s]
+                       skiprows=1,usecols=(0,1,2),unpack=True) #[rscale], [rscale], [km/s]
     
     # calculate 2D radius on the skyplane
-    r = np.sqrt(x**2+y**2) #[rcore]
+    r = np.sqrt(x**2+y**2) #[rscale]
     
     # set number and size of (linearly spaced) bins
-    rmin = 0. #[rcore]
-    rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rcore]
+    rmin = 0. #[rscale]
+    rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rscale]
         
-    print('rmax [rcore] = ', rmax)
+    print('rmax [rscale] = ', rmax)
     sel = (r<rmax)
-    x = x[sel]; y = y[sel]; v = v[sel] #[rcore]
+    x = x[sel]; y = y[sel]; v = v[sel] #[rscale]
     totmass = 1.*len(x) #[munit], munit = 1/star
     
     if gp.lograd:
@@ -52,10 +52,10 @@ def run():
     #volume of a circular bin from binmin to binmax
     vol = np.zeros(gpr.nbins)
     for k in range(gpr.nbins):
-        vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rcore**2]
+        vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rscale**2]
             
     # rs = gpr.rerror*np.random.randn(len(r))+r
-    rs = r  #[rcore] # if no initial offset is whished
+    rs = r  #[rscale] # if no initial offset is whished
     
     print('output: ')
     print(gpr.get_ntracer_file(0))
@@ -75,33 +75,33 @@ def run():
     density = np.zeros((gpr.nbins,gpr.n))
     a       = np.zeros((gpr.nbins,gpr.n))
     for k in range(gpr.n):
-        rsi = gpr.rerror * np.random.randn(len(rs)) + rs # [rcore]
+        rsi = gpr.rerror * np.random.randn(len(rs)) + rs # [rscale]
         for j in range(gpr.nbins):
             ind1 = np.argwhere(np.logical_and(rsi>=binmin[j],rsi<binmax[j])).flatten() # [1]
-            density[j][k] = (1.*len(ind1))/vol[j]*totmass # [munit/rcore**2]
+            density[j][k] = (1.*len(ind1))/vol[j]*totmass # [munit/rscale**2]
             a[j][k] = 1.*len(ind1) #[1]
             
-    dens0 = np.sum(density[0])/(1.*gpr.n) # [munit/rcore**2]
-    print('dens0 = ',dens0,'[munit/rcore**2]')
-    crcore = open(gpr.get_params_file(0),'r')
-    rcore = np.loadtxt(crcore, comments='#', skiprows=1, unpack=False)
-    crcore.close()
+    dens0 = np.sum(density[0])/(1.*gpr.n) # [munit/rscale**2]
+    print('dens0 = ',dens0,'[munit/rscale**2]')
+    crscale = open(gpr.get_params_file(0),'r')
+    rscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
+    crscale.close()
 
     cdens = open(gpr.get_params_file(0),'a')
-    print(dens0, file=cdens)               # [munit/rcore**2]
-    print(dens0/rcore**2, file=cdens)      # [munit/pc**2]
+    print(dens0, file=cdens)               # [munit/rscale**2]
+    print(dens0/rscale**2, file=cdens)      # [munit/pc**2]
     print(totmass, file=cdens)             # [munit]
     cdens.close()
     
     ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
-    denserr0 = dens0/np.sqrt(ab0)       # [munit/rcore**2]
+    denserr0 = dens0/np.sqrt(ab0)       # [munit/rscale**2]
 
     p_dens  = np.zeros(gpr.nbins);  p_edens = np.zeros(gpr.nbins)
     
     for b in range(gpr.nbins):
-        dens = np.sum(density[b])/(1.*gpr.n) # [munit/rcore**2]
+        dens = np.sum(density[b])/(1.*gpr.n) # [munit/rscale**2]
         ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
-        denserr = dens/np.sqrt(ab)       # [munit/rcore**2]
+        denserr = dens/np.sqrt(ab)       # [munit/rscale**2]
         denserror = np.sqrt((denserr/dens0)**2+(dens*denserr0/(dens0**2))**2) #[1]
         if(math.isnan(denserror)):
             denserror = 0. # [1]
@@ -114,11 +114,11 @@ def run():
             p_edens[b]= denserror    # [1] #100/rbin would be artificial guess
 
     for b in range(gpr.nbins):
-        print(rbin[b],p_dens[b],p_edens[b], file=de) # [rcore], [dens0], [dens0]
+        print(rbin[b],p_dens[b],p_edens[b], file=de) # [rscale], [dens0], [dens0]
         indr = (r<binmax[b])
         menclosed = 1.0*np.sum(indr)/totmass # /totmass for normalization to 1 at last bin #[totmass]
         merror = menclosed/np.sqrt(ab) # artificial menclosed/10 gives good approximation #[totmass]
-        print(rbin[b],menclosed,merror, file=em) # [rcore], [totmass], [totmass]
+        print(rbin[b],menclosed,merror, file=em) # [rscale], [totmass], [totmass]
         # TODO: check: take rbinmax for MCMC?
     de.close()
     em.close()

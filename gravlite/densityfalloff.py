@@ -1,6 +1,9 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
+
+## @file
 # calculate density falloff of circular rings around center of mass
-###################################################################
+
+# (c) 2013 ETHZ Pascal Steger psteger@phys.ethz.ch
 
 #start from data centered on COM already:
 import sys
@@ -8,25 +11,24 @@ if(len(sys.argv)<2):
     print("use: densityfalloff.py [car,scl,sex,for]")
     exit(1)
 dwarf=sys.argv[1]
-dir="/home/ast/read/dark/dwarf_data/data_obs/"
-dir = '/home/psteger/sci/dwarf_data/data_obs/'
+dir = gp.files.machine+"/DTobs"
 print(dir+dwarf+"/centerpos.txt")
-import numpy
-x,y,v=numpy.loadtxt(dir+dwarf+'/centerpos.txt',skiprows=1,usecols=(0,1,2),unpack=True)
+import numpy as np
+x,y,v = np.loadtxt(dir+dwarf+'/centerpos.txt',skiprows=1,usecols=(0,1,2),unpack=True)
 
 totmass=len(x)
 
 # calculate radius
-r = numpy.sqrt(x*x+y*y)
+r = np.sqrt(x*x+y*y)
 
 # set number and size of (linearly spaced) bins
 bins = 12
 rmin = 0
 rmax = max(r)
 binlength=(rmax-rmin)/bins
-binmin=numpy.zeros(bins)
-binmax=numpy.zeros(bins)
-rbin=numpy.zeros(bins)
+binmin=np.zeros(bins)
+binmax=np.zeros(bins)
+rbin=np.zeros(bins)
 for i in range(bins):
   binmin[i]=rmin+i*binlength
   binmax[i]=rmin+(i+1)*binlength
@@ -36,11 +38,11 @@ for i in range(bins):
 rerror=0.1
 
 #volume of a circular bin with dr=binlength
-vol=numpy.zeros(bins)
+vol=np.zeros(bins)
 for i in range(bins):
-    vol[i] = numpy.pi*(binmax[i]**2-binmin[i]**2)
+    vol[i] = np.pi*(binmax[i]**2-binmin[i]**2)
 
-rs = rerror*numpy.random.randn(len(r))+r
+rs = rerror*np.random.randn(len(r))+r
 d = open(dir+dwarf+'/densityfalloff.txt','w')
 print('r','nu(r)/nu(0)','error', file=d)
 d.close()
@@ -51,32 +53,32 @@ d.close()
 
 #1000 iterations for getting random picked radius values
 n = 1000
-density=numpy.zeros((bins,n))
-a=numpy.zeros((bins,n))
+density=np.zeros((bins,n))
+a=np.zeros((bins,n))
 for k in range(n):
-  rsi = rerror*numpy.random.randn(len(rs))+rs
+  rsi = rerror*np.random.randn(len(rs))+rs
   for i in range(bins):
-    ind1 = numpy.argwhere(numpy.logical_and(rsi>binmin[i],rsi<binmax[i])).flatten()
+    ind1 = np.argwhere(np.logical_and(rsi>binmin[i],rsi<binmax[i])).flatten()
     density[i][k] = 1.*totmass*len(ind1)/vol[i]
     a[i][k] = 1.*len(ind1)
     
-dens0 = numpy.sum(density[0])/n
-ab0 = numpy.sum(a[0])/n
-denserr0 = dens0/numpy.sqrt(ab0)
+dens0 = np.sum(density[0])/n
+ab0 = np.sum(a[0])/n
+denserr0 = dens0/np.sqrt(ab0)
 
-p_dens  = numpy.zeros(bins)
-p_edens = numpy.zeros(bins)
+p_dens  = np.zeros(bins)
+p_edens = np.zeros(bins)
 import math
 for i in range(bins):
-    dens = numpy.sum(density[i])/(1.*n)
-    ab = numpy.sum(a[i])/(1.*n)
+    dens = np.sum(density[i])/(1.*n)
+    ab = np.sum(a[i])/(1.*n)
     if i==0:
         denserror = dens/dens0/10.
         p_dens[i] = dens/dens0
         p_edens[i]= denserror
     else:
-        denserr = dens/numpy.sqrt(ab)
-        denserror = numpy.sqrt((denserr/dens0)**2+(dens/(dens0**2)*denserr0)**2)
+        denserr = dens/np.sqrt(ab)
+        denserror = np.sqrt((denserr/dens0)**2+(dens/(dens0**2)*denserr0)**2)
         if(math.isnan(denserror)):
             denserror=0
             p_dens[i]  = p_dens[i-1]
@@ -91,7 +93,7 @@ for i in range(bins):
     d.close()
     
     indr = (r<binmax[i])
-    menclosed = 1.0*numpy.sum(indr)/totmass
+    menclosed = 1.0*np.sum(indr)/totmass
     merror = 10.0/totmass
     d=open(dir+dwarf+'/enclosedmass.txt','a')
     print(rbin[i],menclosed,merror, file=d)    # TODO: check: take rbinmax for MCMC?

@@ -88,9 +88,9 @@ def run():
         # plot siglos
         ion(); subplot(111)
         plot(Rbin,P_Sigma,'b',lw=1)
-        fill_between(Rbin,P_Sigma-P_ESigma,P_Sigma+P_ESigma,alpha=0.5,color='r') #[rcore],2*[km/s]
+        fill_between(Rbin,P_Sigma-P_ESigma,P_Sigma+P_ESigma,alpha=0.5,color='r') #[rscale],2*[km/s]
 
-        xlabel(r'$R [\mathrm{Rcore}]$')
+        xlabel(r'$R [\mathrm{Rscale}]$')
         ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')
         # ylim([-5,30])
         # xlim([0,3])

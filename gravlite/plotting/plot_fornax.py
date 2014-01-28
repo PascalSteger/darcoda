@@ -16,9 +16,8 @@ from plots_common import *
 ## run all plotting commands
 def run():
     # Walker data sets
-    base = '/home/psteger/sci/dwarf_data/'
-    # base = '/home/ast/read/dark/dwarf_data/'
-    dir = base + '/data_obs/for/'
+    base = gp.files.machine
+    dir = base + '/DTobs/for/'
 
     # TODO: replace nampart selection with select_run.run()
     # nampart = '20130425120348_cprior_mslope_rprior' # ca2 working fine for 1000 iterations
@@ -42,7 +41,7 @@ def run():
     radii = M[0]
     radii = radii
     profs = M[1000::10]
-    print '# models: ',len(profs)
+    print('# models: ',len(profs))
     
     Mprofbins = np.transpose(profs)
     
@@ -81,7 +80,7 @@ def run():
     d['Author'] = u'Pascal Steger'
     d['Subject'] = 'dwarf spheroidal dark matter density profile'
     d['Keywords'] = 'PdfPages multipage keywords author title subject'
-    d['CreationDate'] = datetime.datetime(2013,05,06)
+#   d['CreationDate'] = datetime.datetime(2013,05,06)
     d['ModDate'] = datetime.datetime.today()
     pp.close()
     ioff()

@@ -14,12 +14,12 @@ import pdb
 from gl_helper import expDtofloat
 
 Mg,dMg,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
-                               usecols=(13,14,19,20),\
-                                             dtype="d17",\
-                                             converters={13:expDtofloat, # Mg0 in Angstrom\
-                                                         14:expDtofloat, # delta Mg0 in Angstrom\
-                                                         19:expDtofloat, # PM0 [1]\
-                                                         20:expDtofloat}) # comp0 1,2,3(background)
+                                usecols=(13,14,19,20),\
+                                dtype="d17",\
+                                converters={13:expDtofloat, # Mg0 in Angstrom\
+                                14:expDtofloat, # delta Mg0 in Angstrom\
+                                19:expDtofloat, # PM0 [1]\
+                                20:expDtofloat}) # comp0 1,2,3(background)
 
 
 global f, ax1

@@ -10,8 +10,7 @@ if(len(sys.argv)<2):
     print("use: velocitydispersion.py [car,scl,sex,for]")
     exit(1)
 dwarf = sys.argv[1]
-dir = "/home/ast/read/dark/dwarf_data/data_obs/"
-dir = '/home/psteger/sci/dwarf_data/data_obs/'
+dir = gp.files.machine+"/DTobs/"
 print(dir+dwarf+"/table_merged.bin")
 
 #distance error, set for sim. TODO: change

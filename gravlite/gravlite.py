@@ -2,142 +2,195 @@
 
 ##
 # @file
-# main file
-# @ingroup gravlite
-# @defgroup gravlite all functions called from gravlite
-#
+# pymultinest run of gravlite integrals
+# needs pymultinest from http://johannesbuchner.github.io/PyMultiNest/
+# http://johannesbuchner.github.io/PyMultiNest/install.html#install-on-linux
+# needs Multinest from https://github.com/JohannesBuchner/MultiNest
 
-##
-# @package gravlite Non-Parametric Mass Modelling Routine for Discs and Spheres
-# (c) ETHZ 2013, Pascal Steger, psteger@phys.ethz.ch
-#
+# (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
-# or for local snowball usage, from ipython in emacs: !/usr/bin/env ipython-python3.2
-
-print('GravLite: Non-Parametric Mass Modelling Routine for discs and spheres')
-print('(c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch')
-
-
-
+from __future__ import absolute_import, unicode_literals, print_function
 import numpy as np
-import gl_params as gp
-import gl_funs   as gfun
-import gl_file   as gfile
-import gl_plot   as gpl
-import gl_init   as ginit
-import gl_priors as gprio
 import pdb
-from gl_class_params import Params
+import threading, subprocess
+import pymultinest
+import gl_params as gp
+import gl_priors as gprio
+import gl_chi as gc
+import gl_physics as phys
+from gl_class_cube import Cube
+from gl_class_profiles import Profiles
+from gl_project import rho_SUM_Mr
+import gl_helper as gh
 
-
-## run MCMC, called from __init__ after setting up all variables and plotting area
-def run_MCMC():
-    ## counter variable for the MCMC
-    n = 0 
-    ## bool to determine whether the first plot has to be drawn
-    plotfirst = True 
-
-    while ( n < gp.niter-1):
-        if not gp.initphase:
-            gfile.store_old_params(gp.pars,gp.chi2)
-
-        if not gp.checkint:
-            gfun.get_new_parameters() # or: gp.parst.assign() for special wishes
-            if gprio.check_density():   continue
-            if gprio.check_mass():      continue
-            if gprio.check_delta():     continue
-
-        # only calculate sigma and other variables if previous tests succeeded
-        try:
-            if gp.geom == 'sphere':
-                    gfun.calc_M_nu_sig_kap_sphere()
-            elif gp.geom == 'disc':
-                    gfun.calc_M_nu_sig_disc()
-        except Exception as detail:
-            print('handling error in calc_M_nu_sig_kap_sphere:', detail)
-            # gave back old, working values, have to get new parameters now, so jump to end of loop
-            continue
-
-        if not gp.checkint:
-            if gprio.check_sigma(): continue
-
-        try:
-            gfun.calc_chi2() # determine likelihood function (*not* reduced chi2)
-        except Exception as detail:
-            print('handling error in calc_chi2')
-            continue
-
-        if plotfirst:
-            gpl.plot_first_guess()                  # plot the first model
-            plotfirst = False
-
-        gfun.accept_reject(n) # accept/reject new pars, adapt_stepsize handling
-        if gp.checkint: break # only 1 iteration if checkint set
-
-        if gp.initphase=='over' and gp.metalpop and np.random.rand()<0.0001:
-            # get new data for another population split
-            # every 10000th model passing through priors (exclude 100 burn-in)
-            gfile.bin_data();        gfile.get_data();        gfile.ipol_data()
-            gpl.plot_data();         gpl.plot_first_guess()
-            # TODO: increase stepsize again?
-
-        # gfun.wait()
-        if not gp.initphase:
-            gfile.write_outfile()
-            n = n + 1                       # n is increased even if model is rejected!
-
+def show(filepath):
+    subprocess.call(('xdg-open', filepath))
     return
+## \fn show(filepath)
+# open the output (pdf) file for the user
+# @param filepath filename with full path
 
+
+def myprior(cube, ndim, nparams):
+    mycube = Cube(gp.pops)
+    mycube.copy(cube)
+    cube = mycube.convert_to_parameter_space()
+    return
+## \fn myprior(cube, ndim, nparams)
+# priors
+# @param cube [0,1]^ndim cube, array of dimension ndim
+# @param ndim number of dimensions, 2*npop*nipol + nipol
+# @param nparams = ndim + additional parameters stored with actual parameters
+
+
+def myloglike(cube, ndim, nparams):
+    tmp_profs = Profiles(gp.pops, gp.nipol)
+    off = 0
+
+    rho_param = np.array(cube[off:off+gp.nepol])
+    if gprio.check_nr(rho_param[2:-1]):
+        print('dn/dr too big!')
+        return gh.err(0.7)
+
+    tmp_rho = phys.rho(gp.xepol, rho_param)
+    if(gprio.check_rho(tmp_rho)):
+        print('rho slope error')
+        return gh.err(1.)
+    tmp_profs.set_rho(tmp_rho[:gp.nipol])
+    tmp_profs.set_M(rho_SUM_Mr(gp.xepol, tmp_rho)[:gp.nipol]) # [munit,3D]
+    # TODO: mass is set at binmax, not rbin!
+    # implement integration routine working with density function
+    # based on density parametrization
+    # to give mass below rbin
+    # TODO: implement above function as gl_project.rho_INT_Mr()
+    off += gp.nepol
+
+    nuparstore = []
+    for pop in np.arange(gp.pops)+1:
+        nu_param = cube[off:off+gp.nepol]
+        nuparstore.append(nu_param)
+        
+        tmp_nu = phys.rho(gp.xepol, nu_param) #  [1], [pc]
+        # if gprio.check_nu(tmp_nu):
+        #     print('nu error')
+        #     return err/2.
+        if gp.bprior and gprio.check_bprior(tmp_rho, tmp_nu):
+             print('bprior error')
+             return gh.err(1.5)
+        tmp_profs.set_nu(pop, tmp_nu[:gp.nipol]) # [munit/pc^3]
+        off += gp.nepol
+
+        beta_param = np.array(cube[off:off+gp.nbeta])
+        tmp_beta = phys.beta(gp.xipol, beta_param)
+        if gprio.check_beta(tmp_beta):
+            print('beta error')
+            return gh.err(2.)
+        tmp_profs.set_beta(pop, tmp_beta)
+        off += gp.nbeta
+
+        try:
+            # beta_param = np.array([0.,0.])
+            sig, kap = phys.sig_kap_los(gp.xepol, pop, rho_param, nu_param, beta_param)
+            # sig and kap already are on data radii only, so no extension by 3 bins here
+        except Exception as detail:
+            return gh.err(3.)
+
+        tmp_profs.set_sig_kap(pop, sig, kap)
+
+    # determine log likelihood (*not* reduced chi2)
+    chi2 = gc.calc_chi2(tmp_profs, nuparstore)
+    # print('found log likelihood = ', -chi2/2.)
+    return -chi2/2.   # from   likelihood L = exp(-\chi^2/2), want log of that
+
+## \fn myloglike(cube, ndim, nparams)
+# calculate probability function
+# @param cube [0,1]^ndim cube
+# @param ndim number of dimensions, 2*npop*nipol + nipol
+# @param nparams = ndim + additional parameters stored with actual parameters
+
+
+def stringlist(pops, nipol):
+    tmp = []
+    for i in range(nipol):
+        tmp.append('rho_%d' % i)
+    for j in range(pops):
+        for i in range(nipol):
+            tmp.append('nu_%d,%d' % (j,i))
+        for i in range(gp.nbeta):
+            tmp.append('betastar_%d,%d' % (j,i))
+    return tmp
+## \fn stringlist(pops, nipol)
+# show parameter names in array
+# @param pops int, number of populations
+# @param nipol int, number of radial bins
+
+
+def run():
+    import gl_file   as gfile
+    if gp.getnewdata:
+        gfile.bin_data()
+    gfile.get_data()
+    
+    ## number of dimensions
+    n_dims = gp.nepol + gp.pops*gp.nepol + gp.pops*gp.nbeta #rho, (nu, beta)_i
+    parameters = stringlist(gp.pops, gp.nepol)
+    
+    # show live progress
+    # progress = pymultinest.ProgressPlotter(n_params = n_dims)
+    # progress.start()
+    # threading.Timer(2, show, [gp.files.outdir+'/phys_live.points.pdf']).start() 
+
+    # print(str(len(gp.files.outdir))+': len of gp.files.outdir')
+    pymultinest.run(myloglike,   myprior,
+                    n_dims,      n_params = n_dims, # None beforehands
+                    n_clustering_params = gp.nepol, # separate modes on the rho parameters only
+                    wrapped_params = None,          # do not wrap-around parameters
+                    importance_nested_sampling = True, # INS enabled
+                    multimodal = True,  # separate modes
+                    const_efficiency_mode = True, # use const sampling efficiency
+                    n_live_points = gp.nlive,
+                    evidence_tolerance = 0.0, # set to 0 to keep algorithm working indefinitely
+                    sampling_efficiency = 0.80,
+                    n_iter_before_update = gp.nlive, # output after this many iterations
+                    null_log_evidence = -1, # separate modes if logevidence > this param.
+                    max_modes = gp.nlive,   # preallocation of modes: maximum = number of live points
+                    mode_tolerance = -1.,
+                    outputfiles_basename = gp.files.outdir,
+                    seed = -1,
+                    verbose = True,
+                    resume = False,
+                    context = 0,
+                    write_output = True,
+                    log_zero = -1e6,
+                    max_iter = 10000000,
+                    init_MPI = True,
+                    dump_callback = None)
+    # progress.stop()    # ok, done. Stop our progress watcher
+
+    # exit(0)
+
+    # # store names of parameters, always useful
+    # f = open('%sparams.json' % a.outputfiles_basename, 'w')
+    # import json
+    # json.dump(parameters, f, indent=2)
+    # f.close()
+
+    # # lets analyse the results
+    # a = pymultinest.Analyzer(n_params = n_dims)
+    # s = a.get_stats()
+    
+    # # store derived stats
+    # f = open('%sstats.json' % a.outputfiles_basename, 'w')
+    # json.dump(s, f, indent=2)
+    # f.close()
+    
+    # print();     print('-' * 30, 'ANALYSIS', '-' * 30)
+    # print('Global Evidence:\n\t%.15e +- %.15e'\
+    #       % ( s['nested sampling global log-evidence'],\
+    #           s['nested sampling global log-evidence error'] ))
 
 
 if __name__=="__main__":
-    if gp.getnewdata:    gfile.bin_data()
-    gpl.prepare_plots()                     # TODO: thread
-    gfile.get_data()
-    gfile.ipol_data() 
-    # interpolate to regular (lin or log) array, or keep stuff if gp.consttr
-    
-    ginit.mcmc_init()                       # TODO: thread
-    gpl.plot_data()
-    
-    run_MCMC()
+    gp.files.makedir()
+    run()
 
-    print('Finished!')
-    gpl.show_plots()
-
-
-## @mainpage Gravlite - Non-Parametric Mass Modelling Routine for Discs and Spheres
-#
-# @section intro_sec Introduction
-#
-# Gravlite is a tool to determine the mass distribution in disc-like and spherical systems.
-# It takes as input a tracer density distribution, a line-of-sight velocity dispersion, and the velocity's fourth moment as a function of radius.
-# It then generates a highly-dimensional parameter space for tracer density, overall density distribution, and possibly a velocity anisotropy profile ands traces it with a simple Markov Chain Monte Carlo method.
-#
-# @section install_sec Installation
-# Following packets need to be installed on your system:
-# * python3
-# * matplotlib/pylab
-# * scipy
-#
-# Unzip the file gravlite.zip, and run
-#
-# python3 gravlite.py
-# 
-# @subsection pars Parameter files: Main configuration
-# Sample parameter files for several possible scenarios are stored in the subfolder ./params.
-# The file gl_params.py is a soft link to one of them.
-# Following mass modelling methods have been implemented so far:
-# * gl_params_walker.py: spherical Walker mock data from the Gaia challenge catalogue, 2 populations
-# * gl_params_gaia.py:   spherical mock data from the Gaia challenge catalogue, 1 population
-# * gl_params_hern.py:   spherical mock data taken from a Hernquist profile
-# * gl_params_simple.py: disk-like mock data, generated on the fly
-# * gl_params_sim.py:    disk-like mock data, from a simulation by S. Garbari
-# 
-# @subsection init Init values
-# Initial values for all profiles and the respective stepsizes are set in gl_init.py. We use following representations:
-# * overall density rho: can either be set as rho_i=rho(r_i), where r_i are the radii of bins, or the coefficients of the Legendre polynomial;
-# * tracer densities nu_i = nu(r_i) in linear space or nu_i = log(nu(r_i)) in logarithmic space;
-# * velocity anisotropy beta_i are incremental changes from beta(r=0) = 0.
-# 
-# Have fun!

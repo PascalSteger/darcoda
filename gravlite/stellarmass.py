@@ -17,15 +17,15 @@ if(len(sys.argv)<2):
     exit(1)
 
 # choose simulation
-dwarf=sys.argv[1]
-dir="/home/ast/read/dark/dwarf_data/"
-print dir+dwarf+"/table_merged.bin"
+dwarf = sys.argv[1]
+dir = gp.files.machine
+print(dir+dwarf+"/table_merged.bin")
 
 delim=[0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
 ID=numpy.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=(0,1),delimiter=delim,dtype="string")
 RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe,SigMg,e_SigMg,PM=numpy.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=tuple(range(2,17)),delimiter=delim,filling_values=-1)
 
-print 'Vmag = ',Vmag[0:10]
+print('Vmag = ',Vmag[0:10])
 
 MCMD,MvCMD,VICMD=numpy.genfromtxt(dir+dwarf+"/../SCMD/SCMD.dat",skiprows=1,unpack=True,usecols=(0,4,8),filling_values=-1)
 
@@ -38,7 +38,7 @@ DL= {
     'scl': lambda x: x * (79)  #+/- 4
     }[dwarf](kpc)
 
-# print "DL = ",DL
+# print("DL = ",DL)
 
 from pylab import *
 ion();subplot(111)
@@ -52,15 +52,17 @@ ioff();clf()
 
 # only use stars which are members of the dwarf
 pm = (PM>0.95)*(VI<70)
-print pm
-print "fraction of members = ",1.0*sum(pm)/len(pm)
-ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm]; Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm]; SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
-
+print(pm)
+print("fraction of members = ",1.0*sum(pm)/len(pm))
+ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm]
+Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm]
+SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm]
+PM=PM[pm]
 
 VMag = Vmag-5.0*(numpy.log10(DL)-1.0)
 minVMag,maxVMag=numpy.min(VMag),numpy.max(VMag)
 minVI,maxVI    =numpy.min(VI),numpy.max(VI)
-print "min, max of VMag= ",minVMag,maxVMag
+print("min, max of VMag= ",minVMag,maxVMag)
 
 windowCMD = (minVMag<=MvCMD)*(MvCMD<=maxVMag)*(minVI<=VICMD)*(VICMD<=maxVI)
 MCMD = MCMD[windowCMD]
@@ -75,10 +77,9 @@ plot(VI,VMag,'b.',linewidth=1)
 # errorbar(rmean,rho,xerr=rspan,yerr=err,linewidth=3)
 plot(VICMD,MvCMD,'r+',linewidth=3)
 xyset = [[str(MCMD[i]),VICMD[i],MvCMD[i]] for i in range(len(VICMD))]
-print xyset[0:3]
+print(xyset[0:3])
 for label, x, y in xyset:
     annotate(label,xy = (x, y))
-
 
 # visible region
 # plt.xlim([10**0,3*10**1])

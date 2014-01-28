@@ -162,9 +162,9 @@ ytick.direction      : in    # direction: in or out
  
  
 ### GRIDS
-grid.color       :   white    # grid color
-grid.linestyle   :   :	      # dotted
-grid.linewidth   :   0.	      # in points, 0.5 is default
+grid.color       :   gray    # grid color
+grid.linestyle   :   :       # dotted
+grid.linewidth   :   0.5     # in points
  
 ### Legend
 legend.isaxes        : True
@@ -180,7 +180,7 @@ legend.handletextpad : 0.1   # the space between the legend line and legend text
                              # (gauche/droite)
 legend.borderaxespad : 0.1   # the border between the axes and legend edge
 legend.shadow        : True
-
+ 
 ### FIGURE
 # See http://matplotlib.sourceforge.net/matplotlib.figure.html#Figure
 figure.figsize   : 6, 6    # figure size in inches
@@ -190,13 +190,13 @@ figure.edgecolor : white   # figure edgecolor
  
 # The figure subplot parameters.  All dimensions are fraction of the
 # figure width or height
-figure.subplot.left  : 0.15 # the left side of the subplots of the figure
-figure.subplot.right : 0.90 # the right side of the subplots of the figure
-figure.subplot.bottom : 0.15 # the bottom of the subplots of the figure
-figure.subplot.top : 0.90    # the top of the subplots of the figure
-figure.subplot.wspace : 0.05 # the amount of width reserved for blank space 
+figure.subplot.left  : 0.10   # the left side of the subplots of the figure
+figure.subplot.right : 0.90   # the right side of the subplots of the figure
+figure.subplot.bottom : 0.15  # the bottom of the subplots of the figure
+figure.subplot.top : 0.95     # the top of the subplots of the figure
+figure.subplot.wspace : 0.0   # the amount of width reserved for blank space 
                               # between subplots
-figure.subplot.hspace : 0.05   # the amount of height reserved for white space
+figure.subplot.hspace : 0.0   # the amount of height reserved for white space
                               # between subplots
  
  

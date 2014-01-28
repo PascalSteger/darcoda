@@ -15,20 +15,20 @@ import gr_params as gpr
 # TODO: run() function
 
 print('grh_com: input: ', gpr.simpos)
-xall, yall, zall = np.loadtxt(gpr.simpos,skiprows=1,unpack=True) # 3*[ascale]
-vxall,vyall,vzall= np.loadtxt(gpr.simvel,skiprows=1,unpack=True) # 3*[ascale]
+xall, yall, zall = np.loadtxt(gpr.simpos, skiprows=1, unpack=True) # 3*[ascale]
+vxall,vyall,vzall= np.loadtxt(gpr.simvel, skiprows=1, unpack=True) # 3*[ascale]
 nall = len(xall)                                                 # [1]
 
 # shuffle and restrict to ntracer random points
-if gpr.ntracers1>0:
-  ndm = min(gpr.ntracers1,nall-1)
-  trace = random.sample(range(nall), nall)
+if(gpr.ntracers1>0):
+    ndm = min(gpr.ntracers1,nall-1)
+    trace = random.sample(range(nall), nall)
 else:
-  ndm = min(gpr.ntracers2,nall-1)
-  trace = random.sample(range(nall), nall)
-if gpr.ntracers1+gpr.ntracers2 == 0:
-  ndm = nall
-  trace = np.arange(nall)
+    ndm = min(gpr.ntracers2,nall-1)
+    trace = random.sample(range(nall), nall)
+if(gpr.ntracers1+gpr.ntracers2 == 0):
+    ndm = nall
+    trace = np.arange(nall)
 
 PM = [1. for i in trace]           # [1], constant, no probability of membership information from dataset
 x  = [ xall[i]    for i in trace ] # [ascale]
@@ -52,23 +52,26 @@ vznew = (vz-com_vz)*np.sqrt(gp.G1*gp.Mscale/gp.ascale) # [km/s], from conversion
 R0 = np.sqrt(xnew**2+ynew**2)   # [pc]
 R0.sort()                       # [pc]
 Rhalf = R0[len(R0)/2]           # [pc]
-Rcore = Rhalf                   # or gpr.r_DM # [pc]
+Rscale = Rhalf                   # or gpr.r_DM # [pc]
 
-xnew /= Rcore; ynew /= Rcore    # [rcore]
+print('Rscale = ', Rscale)
+
+# TODO: save Rscale in scale file
+
+xnew /= Rscale; ynew /= Rscale    # [rscale]
 
 # only for 0 (all) and 1 (first and only population)
 for comp in range(gpr.ncomp):
-    crcore = open(gpr.get_params_file(comp),'w')
-    print('# Rcore in [pc],',' surfdens_central (=dens0) in [munit/rcore**2],',\
+    crscale = open(gpr.get_params_file(comp),'w')
+    print('# Rscale in [pc],',' surfdens_central (=dens0) in [munit/rscale**2],',\
           ' and in [munit/pc**2],',' and totmass [munit],',\
-          ' and max(v_LOS) in [km/s]',file=crcore)
-    print(Rcore,file=crcore)
-    crcore.close()
-
+          ' and max(v_LOS) in [km/s]', file=crscale)
+    print(Rscale, file=crscale)
+    crscale.close()
 
     print('grh_com: output: ', gpr.fileposcenter[comp])
     filepos = open(gpr.fileposcenter[comp],'w')
-    print('# x [Rcore]','y [Rcore]','vLOS [km/s]', file=filepos)
+    print('# x [Rscale]','y [Rscale]','vLOS [km/s]', file=filepos)
     for k in range(ndm):
         print(xnew[k], ynew[k], vznew[k], file=filepos)
     filepos.close()

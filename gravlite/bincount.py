@@ -1,14 +1,13 @@
-#!/usr/bin/python
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+#!/usr/bin/env python3
 
-# ============================ BINCOUNT ============================
-# This routine takes an array, r, and counts the number of elements 
+## @file
+# bincount takes an array, r, and counts the number of elements 
 # in r bins of size bin. 
-# WARNING!! THIS ROUTINE REQUIRES SORTED ACSENDING r ARRAYS.
+
+# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 
-# return rout, arrrayout, count_bin
 def bincou(r, low, high, nbin):
     bin = (high-low)/(1.*nbin) # TODO: check off by one error
     Pnts = int(np.round((1.*high-low)/(1.*bin)))
@@ -30,3 +29,11 @@ def bincou(r, low, high, nbin):
         count_bin[i] = arrayout[i]
     
     return rout, arrayout, count_bin
+## \fn bincou(r, low, high, nbin)
+# take an array, r, and count the number of elements in r bins of size bin
+# WARNING!! THIS ROUTINE REQUIRES SORTED ACSENDING r ARRAYS.
+# @param r array of floats
+# @param low lower limit
+# @param high upper limit
+# @param nbin number of bins
+# @return rout, arrrayout, count_bin

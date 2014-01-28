@@ -19,16 +19,17 @@ global f, ax1
 # Walker data sets
 
 # ca = 1:
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
+base = gp.files.machine
+dir = base+'/DTwalk/c1_100_050_050_100_cusp_c2_100_050_100_100_cusp_003_6d/'
 # ca = 2:
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
+dir = base+'/DTwalk/c1_100_050_050_100_core_c2_100_050_100_100_core_003_6d/'
 
 # ca = 0:
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
-dir = '/home/ast/read/dark/dwarf_data/data_walker/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
+dir = base+'/DTwalk/c1_100_050_100_100_core_c2_010_050_100_100_core_003_6d/'
+dir = base+'/DTwalk/c1_010_050_100_100_core_c2_100_050_100_100_core_003_6d/'
 
 # fornax
-dir = '/home/psteger/sci/dwarf_data/data_obs/for/'
+dir = base+'/DTobs/for/'
 
 # TODO: use select_runs.run() in order to choose run
 nampart = '20130327162354_cprior_mslope'
@@ -111,7 +112,7 @@ def readcol(filena):
     a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
     return a,b,c
 
-#datMr,datMdat,datMerr = readcol('/home/ast/read/dark/dwarf_data/hernquist_justin/enclosedmass/\
+#datMr,datMdat,datMerr = readcol(gp.files.machine+'/hernquist_justin/enclosedmass/\
 # unit_hern_1_enclosedmass_1000_0.txt')
 
 #sel = (datMr<max(radii))

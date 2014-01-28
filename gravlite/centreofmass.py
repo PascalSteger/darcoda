@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython-python3.2
+#!/usr/bin/env python3
 import numpy as np
 import pdb
 # calculate approximative center of mass, assuming constant stellar mass
@@ -12,8 +12,9 @@ if(len(sys.argv)<2):
     exit(1)
     
 dwarf = sys.argv[1] #TODO: read from first command line parameter
-dir = "/home/ast/read/dark/dwarf_data/data_obs/"
-dir = '/home/psteger/sci/dwarf_data/data_obs/'
+
+import gl_params as gp
+dir = gp.files.machine+"/DTobs/"
 print(dir+dwarf+"/table_merged.bin")
 
 delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]

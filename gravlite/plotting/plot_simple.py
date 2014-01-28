@@ -16,8 +16,7 @@ from plots_common import *
 global f, ax1
 
 # TODO: use select_runs.run()
-dir = '/home/psteger/sci/dwarf_data/data_disc_simple/'
-#dir = '/home/ast/read/dark/dwarf_data/data_disc_simple/'
+dir = gp.files.machine+'DTdiscmock/'
 nampart = '20130527113603_cprior_nulog_mslope_bprior_rprior' # first, failed after 56k its
 nampart = '20130527192624_cprior_nulog_mslope_bprior_rprior' # 27k, stuck with Surf
 nampart = '20130527194538_cprior_nulog_mslope_bprior_rprior' # 16k, sent Justin and Dave

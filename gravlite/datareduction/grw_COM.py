@@ -19,21 +19,18 @@ from gl_class_files import *
 from gl_centering import *
 
 def run():
-    print('input:')
-    print(gpr.fil)
-    x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
-                                                 usecols=(0,1,2,11,12,13,19,20),\
-                                                 dtype="d17",\
-                                                 converters={0:expDtofloat,  # x0  in pc \
-                                                             1:expDtofloat,  # y0  in pc \
-                                                             2:expDtofloat,  # z0  in pc \
-                                                             11:expDtofloat, # vz0 in km/s\
-                                                             12:expDtofloat, # vb0(LOS due binary), km/s\
-                                                             13:expDtofloat, # Mg0 in Angstrom\
-                                                             19:expDtofloat, # PM0 [1]\
-                                                             20:expDtofloat}) # comp0 1,2,3(background)
-    
-    
+    print('input: ', gpr.fil)
+    x0,y0,z0,vz0,vb0,Mg0,PM0,comp0 = np.genfromtxt(gpr.fil, skiprows = 0, unpack = True,\
+                                                   usecols=(0,1,2,11,12,13,19,20),\
+                                                   dtype="d17",\
+                                                   converters={0:expDtofloat,  # x0  in pc \
+                                                               1:expDtofloat,  # y0  in pc \
+                                                               2:expDtofloat,  # z0  in pc \
+                                                               11:expDtofloat, # vz0 in km/s\
+                                                               12:expDtofloat, # vb0(LOS due binary), km/s\
+                                                               13:expDtofloat, # Mg0 in Angstrom\
+                                                               19:expDtofloat, # PM0 [1]\
+                                                               20:expDtofloat}) # comp0 1,2,3(background)
     # TODO: use component 6-1 instead of 12-1 for z velocity, to include observational errors
 
     # only use stars which are members of the dwarf: exclude pop3 by construction
@@ -47,7 +44,7 @@ def run():
     if gp.metalpop:
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
-        import pymcmetal2 as pmc
+        import pymcmetal as pmc
         p,mu1,sig1,mu2,sig2, M = pmc.bimodal_gauss(Mg0)
         pm1, pm2 = pmc.assign_pop(Mg0,p,mu1,sig1,mu2,sig2)
         # output: changed pm1, pm2
@@ -64,12 +61,11 @@ def run():
     #com_x, com_y,com_z = com_mean(x0,y0,z0,PM0) # [TODO], and TODO: z component included if available
     
     # get COM with shrinking sphere method
-    com_x, com_y, com_z, com_vz = com_shrinkcircle(x0,y0,z0,vz0,PM0)
+    com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x0, y0, z0, vz0, PM0)
     print('COM [pc]: ', com_x, com_y, com_z)
     print('VOM [km/s]', com_vz)
 
     # from now on, work with 2D data only; z0 was only used to get center in (x,y) better
-    
     x0 -= com_x; y0 -= com_y # [pc]
     vz0 -= com_vz #[km/s]
     
@@ -81,18 +77,18 @@ def run():
             print('sorting error!')
             exit(1)
     Rhalf = Rc[floor(len(Rc)/2)]        # [pc]
-    # Rcore = Rhalf                       # or gpr.r_DM # [pc]
-    Rcore = gpr.r_DM                    # TODO: delete, only work with data
-    print('Rcore = ',Rcore,' pc')
+    Rscale = Rhalf                       # or gpr.r_DM # [pc]
+    # Rscale = gpr.r_DM                    # deleted, we only work with data
+    print('Rscale = ',Rscale,' pc')
     print('max(R) = ',max(Rc),' pc')
     print('last element of R : ',Rc[-1],' pc')
     print('total number of stars: ',len(Rc))
     
-    x0 = x0/Rcore; y0 = y0/Rcore           # [Rcore]
+    x0 = x0/Rscale; y0 = y0/Rscale           # [Rscale]
     
     i = -1
     for pmn in [pm,pm1,pm2]:
-        pmr = (R0<(gpr.rprior*Rcore))  # TODO: read from gl_class_file
+        pmr = (R0<(gpr.rprior*Rscale))  # TODO: read from gl_class_file
         pmn = pmn*pmr                  # [1]
         print("fraction of members = ",1.0*sum(pmn)/len(pmn))
         i = i+1
@@ -100,19 +96,19 @@ def run():
         Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn]   # [ang], [1], [1]
         m = np.ones(len(pmn))
         
-        R = np.sqrt(x*x+y*y)            # [Rcore]
+        R = np.sqrt(x*x+y*y)            # [Rscale]
         
         # print("x y z" on first line, to interprete data later on)
-        crcore = open(gpr.get_params_file(i),'w')
-        print('# Rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crcore)
-        print(Rcore, file=crcore)
-        crcore.close()
+        crscale = open(gpr.get_params_file(i),'w')
+        print('# Rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
+        print(Rscale, file=crscale)
+        crscale.close()
 
         print('output: ',gpr.get_com_file(i))
         c = open(gpr.get_com_file(i),'w')
-        print('# x [Rcore],','y [Rcore],','vLOS [km/s],','Rcore = ',Rcore,' pc', file=c)
+        print('# x [Rscale],','y [Rscale],','vLOS [km/s],','Rscale = ',Rscale,' pc', file=c)
         for k in range(len(x)):
-            print(x[k],y[k],vz[k], file=c)      # [Rcore], [Rcore], [km/s]
+            print(x[k],y[k],vz[k], file=c)      # [Rscale], [Rscale], [km/s]
         c.close()
         
         
@@ -120,19 +116,19 @@ def run():
         
         ion(); subplot(111)
         res = (abs(x)<3)*(abs(y)<3)
-        x = x[res]; y = y[res]           # [Rcore]
+        x = x[res]; y = y[res]           # [Rscale]
         en = len(x)
         if en == 0: continue
         scatter(x[:en], y[:en], c=pmn[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
         # xscale('log'); yscale('log')
         if i == 0: colorbar()
-        circ_HL=Circle((0,0), radius=Rcore/Rcore, fc='None', ec='g', lw=1)
-        circ_DM=Circle((0,0), radius=gpr.r_DM/Rcore, fc='None', ec='r', lw=1)
+        circ_HL=Circle((0,0), radius=Rscale/Rscale, fc='None', ec='g', lw=1)
+        circ_DM=Circle((0,0), radius=gpr.r_DM/Rscale, fc='None', ec='r', lw=1)
         gca().add_patch(circ_HL); gca().add_patch(circ_DM)
         
         # visible region
-        maxr = max(np.abs(x));  mayr = max(np.abs(y)) #[rcore]
-        width2 = max([maxr,mayr]) #[rcore]
+        maxr = max(np.abs(x));  mayr = max(np.abs(y)) #[rscale]
+        width2 = max([maxr,mayr]) #[rscale]
         xlim([-width2,width2]); ylim([-width2,width2])
         axes().set_aspect('equal')
     
@@ -143,5 +139,5 @@ def run():
             ioff();show();clf()
     
 if __name__=='__main__':
-    # gpr.showplots = True
+    gpr.showplots = True
     run()

@@ -27,14 +27,14 @@ from BiWeight import meanbiweight
 
 def run():
     xall,yall=np.loadtxt(gpr.get_com_file(0),skiprows=1,usecols=(0,1),unpack=True) 
-    # 2*[Rcore]
+    # 2*[Rscale]
     # calculate 2D radius on the skyplane
-    R = np.sqrt(xall**2+yall**2) # [Rcore]
+    R = np.sqrt(xall**2+yall**2) # [Rscale]
     # set number and size of (linearly spaced) bins
-    Rmin = 0. #[rcore]
-    Rmax = max(R) if gpr.rprior<0 else 1.0*gpr.rprior # [Rcore]
-    print('Rmax [Rcore] = ', Rmax)
-    R = R[(R<Rmax)]
+    Rmin = 0. #[rscale]
+    Rmax = max(R) if gpr.rprior<0 else 1.0*gpr.rprior # [Rscale]
+    print('Rmax [Rscale] = ', Rmax)
+    R = R[(R<Rmax)]             # exclude any NaNs
 
     # determine radius once and for all
     # this must not be changed between readout and gravlite run
@@ -53,7 +53,7 @@ def run():
     # volume of a circular ring from binmin to binmax
     Vol = np.zeros(gpr.nbins)
     for k in range(gpr.nbins):
-        Vol[k] = np.pi*(Binmax[k]**2-Binmin[k]**2) # [Rcore^2]
+        Vol[k] = np.pi*(Binmax[k]**2-Binmin[k]**2) # [Rscale^2]
 
 
     for comp in range(gpr.ncomp):
@@ -63,19 +63,19 @@ def run():
         if gfile.bufcount(gpr.get_com_file(comp))<2: continue
         x,y,v = np.loadtxt(gpr.get_com_file(comp),\
                            skiprows=1,usecols=(0,1,2),unpack=True) 
-                           # [rcore], [rcore], [km/s]
+                           # [rscale], [rscale], [km/s]
 
         # calculate 2D radius on the skyplane
-        R = np.sqrt(x**2+y**2) #[rcore]
+        R = np.sqrt(x**2+y**2) #[rscale]
         
         # set maximum radius (if gpr.rprior is set)
-        Rmax = max(R) if gpr.rprior<0 else 1.0*gpr.rprior # [Rcore]
-        print('Rmax [Rcore] = ', Rmax)
+        Rmax = max(R) if gpr.rprior<0 else 1.0*gpr.rprior # [Rscale]
+        print('Rmax [Rscale] = ', Rmax)
         sel = (R<=Rmax)
-        x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rcore]
+        x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscale]
         totmass = 1.*len(x) # [munit], munit = 1/star
             
-        Rs = R                   # + possible starting offset, [Rcore]
+        Rs = R                   # + possible starting offset, [Rscale]
         vlos = v                 # + possible starting offset, [km/s]
         
         print('output density: ')
@@ -84,24 +84,27 @@ def run():
         print(totmass, file=tr)
         tr.close()
 
-        print(gpr.get_dens_file(comp))
+        print('output tracer density: ', gpr.get_dens_file(comp))
         de = open(gpr.get_dens_file(comp),'w')
-        print('Rbin [Rcore]','Binmin [Rcore]','Binmax [Rcore]','Nu(R)/Nu(0) [1]','error [1]', file=de)
+        print('Rbin [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+              'Nu(R)/Nu(0) [1]','error [1]', file=de)
 
-        print(gpr.get_enc_mass_file(comp))
+        print('output enclosed mass: ', gpr.get_enc_mass_file(comp))
         em = open(gpr.get_enc_mass_file(comp),'w')
-        print('R [Rcore]','Binmin [Rcore]','Binmax [Rcore]','M(<Binmax) [Msun]','error [Msun]', file=em)
+        print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+              'M(<Binmax) [Msun]','error [Msun]', file=em)
 
 
-        print('output siglos: ',gpr.get_siglos_file(comp))
+        print('output siglos: ', gpr.get_siglos_file(comp))
         sigfil = open(gpr.get_siglos_file(comp),'w')
-        print('R [Rcore]','Binmin [Rcore]','Binmax [Rcore]','sigma_r(R) [km/s]','error [km/s]', file=sigfil)
+        print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+              'sigma_r(R) [km/s]','error [km/s]', file=sigfil)
 
 
-        print('output kurtosis: ',gpr.get_kurtosis_file(comp))
+        print('output kurtosis: ', gpr.get_kurtosis_file(comp))
         kappafil = open(gpr.get_kurtosis_file(comp),'w')
-        print('R [Rcore]','Binmin [Rcore]','Binmax [Rcore]','kappa_los(R) [1]','error [1]', file=kappafil)
-
+        print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+              'kappa_los(R) [1]','error [1]', file=kappafil)
 
         # gpr.n=30 iterations for getting random picked radius values
         Density = np.zeros((gpr.nbins,gpr.n))
@@ -109,11 +112,12 @@ def run():
         mom4         = np.zeros((gpr.nbins,gpr.n))
         a            = np.zeros((gpr.nbins,gpr.n)) # shared by density, siglos, kappa calcs
         for k in range(gpr.n):
-            Rsi = gpr.Rerror * np.random.randn(len(Rs)) + Rs # [Rcore]
+            Rsi = gpr.Rerror * np.random.randn(len(Rs)) + Rs # [Rscale]
             vlosi = gpr.vrerror * np.random.randn(len(vlos)) + vlos # [km/s]
             for i in range(gpr.nbins):
-                ind1 = np.argwhere(np.logical_and(Rsi >= Binmin[i],Rsi<Binmax[i])).flatten() # [1]
-                Density[i][k] = (1.*len(ind1))/Vol[i]*totmass # [munit/rcore**2]
+                ind1 = np.argwhere(np.logical_and(Rsi >= Binmin[i],\
+                                                  Rsi<Binmax[i])).flatten() # [1]
+                Density[i][k] = (1.*len(ind1))/Vol[i]*totmass # [munit/Rscale**2]
                 vlos1 = vlosi[ind1] # [km/s]
 
                 if(len(ind1)<=1):
@@ -121,32 +125,33 @@ def run():
                     mom4[i][k] = mom4[i-1][k]
                     # attention! should be 0, uses last value
                 else:
-                    dispvelocity[i][k] = meanbiweight(vlos1,ci_perc=68.4,ci_mean=True,ci_std=True)[1]
+                    dispvelocity[i][k] = meanbiweight(vlos1,ci_perc=68.4,\
+                                                      ci_mean=True,ci_std=True)[1]
                                         # [km/s], see BiWeight.py
                     mom4[i][k] = kurtosis(vlos1, axis=0, fisher=False, bias=False) # [1]
 
                 a[i][k] = 1.*len(ind1) #[1]
 
         # output density
-        Dens0 = np.sum(Density[0])/(1.*gpr.n) # [munit/Rcore^2]
-        print('Dens0 = ',Dens0,'[munit/Rcore^2]')
-        crcore = open(gpr.get_params_file(comp),'r')
-        Rcore = np.loadtxt(crcore, comments='#', skiprows=1, unpack=False)
-        crcore.close()
+        Dens0 = np.sum(Density[0])/(1.*gpr.n) # [munit/Rscale^2]
+        print('Dens0 = ', Dens0, '[munit/Rscale^2]')
+        crscale = open(gpr.get_params_file(comp),'r')
+        Rscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
+        crscale.close()
 
-        cdens = open(gpr.get_params_file(comp),'a')
-        print(Dens0, file=cdens)               # [munit/Rcore^2]
-        print(Dens0/Rcore**2, file=cdens)      # [munit/pc^2]
+        cdens = open(gpr.get_params_file(comp), 'a')
+        print(Dens0, file=cdens)               # [munit/Rscale^2]
+        print(Dens0/Rscale**2, file=cdens)     # [munit/pc^2]
         print(totmass, file=cdens)             # [munit]
         cdens.close()
 
         ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
-        Denserr0 = Dens0/np.sqrt(ab0)       # [munit/Rcore^2]
+        Denserr0 = Dens0/np.sqrt(ab0)       # [munit/Rscale^2]
         P_dens  = np.zeros(gpr.nbins);  P_edens = np.zeros(gpr.nbins)
         for b in range(gpr.nbins):
-            Dens = np.sum(Density[b])/(1.*gpr.n) # [munit/Rcore^2]
+            Dens = np.sum(Density[b])/(1.*gpr.n) # [munit/Rscale^2]
             ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
-            Denserr = Dens/np.sqrt(ab)       # [munit/Rcore^2]
+            Denserr = Dens/np.sqrt(ab)       # [munit/Rscale^2]
             Denserror = np.sqrt((Denserr/Dens0)**2+(Dens*Denserr0/(Dens0**2))**2) # [1]
             if(math.isnan(Denserror)):
                 Denserror = 0. # [1]
@@ -156,11 +161,11 @@ def run():
                 P_dens[b] = Dens/Dens0   # [1]
                 P_edens[b]= Denserror    # [1] #100/rbin would be artificial guess
 
-            print(Rbin[b],Binmin[b],Binmax[b],P_dens[b],P_edens[b], file=de) # [rcore], [dens0], [dens0]
+            print(Rbin[b],Binmin[b],Binmax[b],P_dens[b],P_edens[b], file=de) # [rscale], [dens0], [dens0]
             indr = (R<Binmax[b])
             Menclosed = 1.0*np.sum(indr)/totmass # for normalization to 1  #[totmass]
             Merror = Menclosed/np.sqrt(ab) # or artificial Menclosed/10 #[totmass]
-            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merror, file=em) # [Rcore], 2* [totmass]
+            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merror, file=em) # [Rscale], 2* [totmass]
             # TODO: check: take rbinmax for MCMC?
         de.close()
         em.close()
@@ -186,7 +191,7 @@ def run():
         fpars.close()
         
         for b in range(gpr.nbins):
-            #             [rcore]  [maxvlos]                  [maxvlos]
+            #             [rscale]  [maxvlos]                  [maxvlos]
             print(Rbin[b],Binmin[b],Binmax[b], np.abs(p_dvlos[b]/maxvlos),np.abs(p_edvlos[b]/maxvlos), file=sigfil)
             # TODO: check uncommented /np.sqrt(n))
         sigfil.close()
@@ -207,7 +212,7 @@ def run():
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerror
             
-            print(Rbin[b],Binmin[b],Binmax[b], kappavel, kappavelerror, file=kappafil) # [rcore], 2*[1]
+            print(Rbin[b],Binmin[b],Binmax[b], kappavel, kappavelerror, file=kappafil) # [rscale], 2*[1]
             # TODO: /np.sqrt(n))
         kappafil.close()
 
@@ -223,13 +228,13 @@ def run():
         print('P_dens = ',P_dens)
         print('P_edens = ',P_edens)
 
-        plot(Rbin,P_dens,'b',lw=1)
-        lbound = P_dens-P_edens; lbound[lbound<1e-6] = 1e-6
-        ubound = P_dens+P_edens; 
-        fill_between(Rbin,lbound,ubound,alpha=0.5,color='r')
+        plot(Rbin, Dens0*P_dens, 'b', lw=1)
+        lbound = Dens0*(P_dens-P_edens); lbound[lbound<1e-6] = 1e-6
+        ubound = Dens0*(P_dens+P_edens)
+        fill_between(Rbin, lbound, ubound, alpha=0.5, color='r')
         yscale('log')
-        xlim([0,gpr.rprior])
-        ylim([np.min(lbound),np.max(ubound)])
+        xlim([0, gpr.rprior])
+        ylim([np.min(lbound), np.max(ubound)])
         xlabel(r'$R [R_c]$')
         ylabel(r'$\nu_{2D}(R)/\nu_{2D}(0)$')
         savefig(gpr.get_dens_png(i))
@@ -237,13 +242,13 @@ def run():
 
         # plot siglos
         subplot(111)
-        print('Rbin = ',Rbin,' Rcore')
-        print('p_dvlos = ',p_dvlos,' km/s')
-        print('p_edvlos = ',p_edvlos, 'km/s')
+        print('Rbin = ', Rbin, ' Rscale')
+        print('p_dvlos = ', p_dvlos, ' km/s')
+        print('p_edvlos = ', p_edvlos, 'km/s')
         plot(Rbin,p_dvlos,'b',lw=1)
-        fill_between(Rbin,p_dvlos-p_edvlos,p_dvlos+p_edvlos,alpha=0.5,color='r') #[rcore],2*[km/s]
+        fill_between(Rbin, p_dvlos-p_edvlos, p_dvlos+p_edvlos, alpha=0.5, color='r') #[rscale],2*[km/s]
 
-        xlabel(r'$R [\mathrm{Rcore}]$')
+        xlabel(r'$R [\mathrm{Rscale}]$')
         ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')
         ylim([-5,30])
         xlim([0,gpr.rprior])
@@ -252,12 +257,12 @@ def run():
 
         # plot kappa
         subplot(111)
-        print('Rbin = ',Rbin,' Rcore')
+        print('Rbin = ',Rbin,' Rscale')
         print('p_kappa = ',p_kappa)
         print('p_ekappa = ',p_ekappa)
-        plot(Rbin,p_kappa,'b',lw=1)
-        fill_between(Rbin,p_kappa-p_ekappa,p_kappa+p_ekappa,alpha=0.5,color='r') #[rcore],2*[1]
-        xlabel(r'$R [\mathrm{Rcore}]$')
+        plot(Rbin, p_kappa, 'b', lw=1)
+        fill_between(Rbin, p_kappa-p_ekappa, p_kappa+p_ekappa, alpha=0.5, color='r') #[rscale],2*[1]
+        xlabel(r'$R [\mathrm{Rscale}]$')
         ylabel(r'$\langle\kappa_{\mathrm{LOS}}\rangle [1]$')
         ylim([0,5])
         xlim([0,gpr.rprior])

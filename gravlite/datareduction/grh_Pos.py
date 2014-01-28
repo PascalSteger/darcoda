@@ -17,13 +17,18 @@ for comp in range(gpr.ncomp):
     print(gpr.fileposcenter[comp])
     xall,yall,vlosall = np.loadtxt(gpr.fileposcenter[comp],
                                    comments='#', unpack=True)
+    # 2*[Rscale], [km/s]
 
-    Rall = np.sqrt(xall**2+yall**2)
-    rest = ( Rall <= gpr.Rmax )
-    xall = xall[rest];  yall = yall[rest]; vlosall= vlosall[rest]
+    Rall = np.sqrt(xall**2+yall**2) # [Rscale]
+    rest = ( Rall <= gpr.Rmax ) # [Rscale]
+    xall = xall[rest]           # [Rscale]
+    yall = yall[rest]           # [Rscale]
+    vlosall= vlosall[rest]      # [km/s]
 
     n = len(xall)
-    x=xall; y=yall; vlos=vlosall
+    x=xall                      # [Rscale]
+    y=yall                      # [Rscale]
+    vlos=vlosall                # [km/s]
 
     # old output to cartesian variables: needed anywhere?
     # print('grh_Pos: output:')
@@ -41,8 +46,8 @@ for comp in range(gpr.ncomp):
     #     print(vlos[k],file=filevelcartesian)
     # filevelcartesian.close()
 
-    x = np.array(x);  y = np.array(y)
-    R = np.sqrt(x**2+y**2)
+    x = np.array(x);  y = np.array(y)   # 2*[Rscale]
+    R = np.sqrt(x**2+y**2)              # [Rscale]
 
     frac = np.sum((R <= gpr.Rmax))*1./len(R)
     print('fraction of particles nearer than rmax: ',frac*100,'%')
@@ -50,26 +55,18 @@ for comp in range(gpr.ncomp):
     # phi (azimuthal angle [-pi,pi])
     Phi   = np.zeros(n)
     for k in range(n):
-        if x[k]>0:
+        if x[k]>0:                      # [Rscale]
             Phi[k] = np.arctan(y[k]/x[k])
-        elif x[k]==0:
+        elif x[k]==0:                   # [Rscale]
             Phi[k] = np.sign(y[k])*np.pi/2
-        elif y[k]>=0:
+        elif y[k]>=0:                   # [Rscale]
             Phi[k] = np.arctan(y[k]/x[k])+np.pi
-        elif y[k]<0:
+        elif y[k]<0:                    # [Rscale]
             Phi[k] = np.arctan(y[k]/x[k])-np.pi
 
     print(gpr.fileposspherical[comp])
     fileposspherical = open(gpr.fileposspherical[comp], 'w')
-    print('# R [pc]', 'Phi [rad]', 'vlos [km/s]', file=fileposspherical)
+    print('# R [Rscale]', 'Phi [rad]', 'vlos [km/s]', file=fileposspherical)
     for k in range(n):
         print(R[k], Phi[k], vlos[k], file=fileposspherical)
     fileposspherical.close()
-
-    Rcore = R[len(R)/2]
-    crcore = open(gpr.get_params_file(comp),'w')
-    print('# Rcore in [pc],', 'surfdens_central (=dens0) in [munit/rcore**2]',\
-          ', and in [munit/pc**2], and totmass [munit],',\
-          ' and max(v_LOS) in [km/s]', file=crcore)
-    print(Rcore, file=crcore)
-    crcore.close()

@@ -13,13 +13,13 @@ from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
 from gl_analytic import Mwalkertot
 from matplotlib.backends.backend_pdf import PdfPages
 from plots_common import *
+import gl_params as gp
 
-dir = '/home/psteger/sci/dwarf_data/backup/'
+dir = gp.files.machine+'/backup/'
 
 nampart = 'working_10000_16_nobetaprior/'
 nampart = 'working_2x5000_12_nobetaprior/'
 nampart = 'working_1000_12_nobetaprior/'
-
 
 basename = dir + nampart
 

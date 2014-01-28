@@ -23,20 +23,19 @@ from gl_project import *
 
 ## run all commands inside check_proj
 def run():
-
-    Rcore = []; Dens0Rcore = []; Dens0pc = []; Totmass = []; Maxvlos = []
-    rcore = []; dens0Rcore = []; dens0pc = []; totmass = []; maxvlos = []
+    Rscale = []; Dens0Rscale = []; Dens0pc = []; Totmass = []; Maxvlos = []
+    rscale = []; dens0Rscale = []; dens0pc = []; totmass = []; maxvlos = []
 
     for comp in range(3):
         A = np.loadtxt(gp.files.get_scale_file(comp), unpack=False, skiprows=1)
-        Rcore.append(A[0])
-        Dens0Rcore.append(A[1])
+        Rscale.append(A[0])
+        Dens0Rscale.append(A[1])
         Dens0pc.append(A[2])
         Totmass.append(A[3])
         
         B = np.loadtxt(gp.files.get_scale_file(comp)+'_3D', unpack=False, skiprows=1)
-        rcore.append(B[0])
-        dens0Rcore.append(B[1])
+        rscale.append(B[0])
+        dens0Rscale.append(B[1])
         dens0pc.append(B[2])
         totmass.append(B[3])
         
@@ -49,15 +48,15 @@ def run():
         
         Rbin,Binmin,Binmax,Dens,Denserr = np.loadtxt(gpr.get_dens_file(comp),\
                                                      skiprows=1,usecols=(0,1,2,3,4),\
-                                                     unpack=True) # 3*[Rcore], [km/s]
-        Rbin*=Rcore[comp]; Binmin*=Rcore[comp]; Binmax*=Rcore[comp]; Dens*=Dens0pc[comp]; Denserr*=Dens0pc[comp]
+                                                     unpack=True) # 3*[Rscale], [km/s]
+        Rbin*=Rscale[comp]; Binmin*=Rscale[comp]; Binmax*=Rscale[comp]; Dens*=Dens0pc[comp]; Denserr*=Dens0pc[comp]
         
         
         
         rbin,binmin,binmax,dens,denserr = np.loadtxt(gpr.get_dens_file(comp)+'_3D',\
                                                      skiprows=1,usecols=(0,1,2,3,4),\
-                                                     unpack=True) # 3*[Rcore], [km/s]
-        rbin*=rcore[comp]; binmin*=rcore[comp]; binmax*=rcore[comp]; dens*=dens0pc[comp]; denserr*=dens0pc[comp]
+                                                     unpack=True) # 3*[Rscale], [km/s]
+        rbin*=rscale[comp]; binmin*=rscale[comp]; binmax*=rscale[comp]; dens*=dens0pc[comp]; denserr*=dens0pc[comp]
         
         
         ion()

@@ -11,17 +11,16 @@ import numpy as np
 from pylab import *
 import pdb
 from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
-from gl_analytic import Mwalkertot, rhowalkertot_3D, rhotriax, betatriax
+from gl_analytic import Mwalkertot, rhowalktot_3D, rhotriax, betatriax
 from matplotlib.backends.backend_pdf import PdfPages
 from plots_common import *
 
 # TODO: use select_run
 # Walker data sets
-base = '/home/psteger/sci/dwarf_data/'
-# base = '/home/ast/read/dark/dwarf_data/'
+base = gp.files.machine
 
 # case
-dir = base + 'data_triaxial/StarsInCuspI/'
+dir = base + 'DT_triax/StarsInCuspI/'
 # first
 nampart = '20130705155757_cprior_nulog_denslog_mslope_rprior' 
 # first Mio, with node
@@ -32,7 +31,7 @@ nampart = '20130718123300_cprior_nulog_denslog_mslope_rprior'
 basename = dir + nampart + '/' + nampart
 
 print('input: ', basename)
-# M = np.loadtxt(basename+'.profdens',skiprows=0,unpack=False)
+# M = np.loadtxt(basename+'.profrho',skiprows=0,unpack=False)
 M = np.loadtxt(basename+'.profdelta1',skiprows=0,unpack=False)
 
 radii = M[0]
@@ -82,7 +81,7 @@ def plotGraph():
     plot(radsc,Mmedi[sel]*Msc,'r',lw=2)
     # theoretical model
     #plot(rsc*radii[sel],Msc*Mwalkertot(radii)[sel],'--',color='black',lw=2)
-    #plot(rsc*radii[sel],Msc*rhowalkertot_3D(radii)[sel],'--',color='black',lw=2)
+    #plot(rsc*radii[sel],Msc*rhowalktot_3D(radii)[sel],'--',color='black',lw=2)
     #plot(rsc*radii[sel],Msc*rhotriax(radii)[sel],'--',color='black',lw=2)
     plot(rsc*radii[sel],Msc*betatriax(radii)[sel],'--',color='black',lw=2)
 

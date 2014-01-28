@@ -96,17 +96,17 @@ for i in range(len(rc)-1):
         print('sorting error!')
         exit(1)
 rhalf = rc[floor(len(rc)/2)] # [pc]
-rcore = rhalf # or gpr.r_DM # [pc]
-print('rcore = ',rcore,' pc')
+rscale = rhalf # or gpr.r_DM # [pc]
+print('rscale = ',rscale,' pc')
 print('max(r) = ',max(rc),' pc')
 print('last element of r : ',rc[-1],' pc')
 print('total number of stars: ',len(rc))
 
-x0 = x0/rcore; y0 = y0/rcore # [r_core]
+x0 = x0/rscale; y0 = y0/rscale # [r_scale]
 
 i = -1
 for pmn in [pm,pm1,pm2,pm3]:
-    pmr = (r0<(gpr.rprior*rcore)) # TODO: read from gl_class_file
+    pmr = (r0<(gpr.rprior*rscale)) # TODO: read from gl_class_file
     pmn = pmn*pmr # [1]
     print("fraction of members = ",1.0*sum(pmn)/len(pmn))
     i = i+1
@@ -114,19 +114,19 @@ for pmn in [pm,pm1,pm2,pm3]:
     Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn] # [ang], [1], [1]
     m = np.ones(len(pmn))
     
-    r = np.sqrt(x*x+y*y) #[r_core]
+    r = np.sqrt(x*x+y*y) #[r_scale]
 
     # print "x y z" on first line, to interprete data later on
-    crcore = open(gpr.get_params_file(i),'w')
-    print('# rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crcore)
-    print(rcore, file=crcore)
-    crcore.close()
+    crscale = open(gpr.get_params_file(i),'w')
+    print('# rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
+    print(rscale, file=crscale)
+    crscale.close()
 
     print('output: ',gpr.get_com_file(i))
     c = open(gpr.get_com_file(i),'w')
-    print('# x [rcore],','y [rcore],','vLOS [km/s],','rcore = ',rcore,' pc', file=c)
+    print('# x [rscale],','y [rscale],','vLOS [km/s],','rscale = ',rscale,' pc', file=c)
     for k in range(len(x)):
-        print(x[k],y[k],vz[k], file=c) #[rcore], [rcore], [km/s]
+        print(x[k],y[k],vz[k], file=c) #[rscale], [rscale], [km/s]
     c.close()
 
 
@@ -134,20 +134,20 @@ for pmn in [pm,pm1,pm2,pm3]:
 
     ion(); subplot(111)
     res = (abs(x)<3)*(abs(y)<3)
-    x = x[res]; y = y[res] #[rcore]
+    x = x[res]; y = y[res] #[rscale]
     en = len(x)
     if en == 0:
         continue
     scatter(x[:en], y[:en], c=pmn[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.5)
     # xscale('log'); yscale('log')
     if i == 0: colorbar()
-    circ_HL=Circle((0,0), radius=rcore/rcore, fc='None', ec='g', lw=3)
-    circ_DM=Circle((0,0), radius=gpr.r_DM/rcore, fc='None', ec='r', lw=3)
+    circ_HL=Circle((0,0), radius=rscale/rscale, fc='None', ec='g', lw=3)
+    circ_DM=Circle((0,0), radius=gpr.r_DM/rscale, fc='None', ec='r', lw=3)
     gca().add_patch(circ_HL); gca().add_patch(circ_DM)
 
     # visible region
-    maxr = max(np.abs(x));  mayr = max(np.abs(y)) #[rcore]
-    width2 = max([maxr,mayr]) #[rcore]
+    maxr = max(np.abs(x));  mayr = max(np.abs(y)) #[rscale]
+    width2 = max([maxr,mayr]) #[rscale]
     xlim([-width2,width2]); ylim([-width2,width2])
     axes().set_aspect('equal')
     

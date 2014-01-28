@@ -49,21 +49,21 @@ vznew = vz-comvz
 R0 = np.sqrt(xnew**2+ynew**2)   # [pc]
 R0.sort()                       # [pc]
 Rhalf = R0[len(R0)/2]           # [pc]
-Rcore = Rhalf                   # or gpr.r_DM # [pc]
+Rscale = Rhalf                   # or gpr.r_DM # [pc]
 
-xnew /= Rcore; ynew /= Rcore
+xnew /= Rscale; ynew /= Rscale
 
 # only for 0 (all) and 1 (first and only population)
 for comp in range(gpr.ncomp):
-    crcore = open(gpr.get_params_file(i),'w')
-    print('# Rcore in [pc], surfdens_central (=dens0) in [munit/rcore**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crcore)
-    print(Rcore, file=crcore)
-    crcore.close()
+    crscale = open(gpr.get_params_file(i),'w')
+    print('# Rhalf in [pc], surfdens_central (=dens0) in [munit/rhalf**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
+    print(Rscale, file=crscale)
+    crscale.close()
 
 
     print('output: ', gpr.fileposcenter[comp])
     filepos = open(gpr.fileposcenter[comp],'w')
-    print('x [Rcore]','y [Rcore]','z [Rcore]','vz [km/s]', file=filepos)
+    print('x [Rscale]','y [Rscale]','z [Rscale]','vz [km/s]', file=filepos)
     for k in range(ndm):
         print(xnew[k], ynew[k], znew[k], vznew[k], file=filepos)
     filepos.close()

@@ -1,47 +1,45 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
+## @file
+# search for groups of stellar tracers in Fe/Mg space
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
-'''search for groups of stellar tracers in Fe/Mg space'''
+
 
 import numpy
 import sys
 if(len(sys.argv)<2):
-    print "use: femg.py [car,scl,sex,for]"
+    print("use: femg.py [car,scl,sex,for]")
     exit(1)
     
-dwarf=sys.argv[1]
-dir="/home/ast/read/dark/dwarf_data/"
-print dir+dwarf+"/table_merged.bin"
+dwarf = sys.argv[1]
+dir = gp.files.machine
+print(dir+dwarf+"/table_merged.bin")
 
 delim=[0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-ID=numpy.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=(0,1),delimiter=delim,dtype="string")
-RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe,SigMg,e_SigMg,PM=numpy.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=tuple(range(2,17)),delimiter=delim,filling_values=-1)
+ID = numpy.genfromtxt(dir+dwarf+"/table_merged.bin",\
+                      skiprows=29,unpack=True,usecols=(0,1),\
+                      delimiter=delim,dtype="string")
+RAh,RAm,RAs,DEd,DEm,DEs,\
+  Vmag,VI,VHel,e_VHel,\
+  SigFe,e_SigFe,SigMg,e_SigMg,PM = numpy.genfromtxt(dir+dwarf+"/table_merged.bin",\
+                                                    skiprows=29,unpack=True,\
+                                                    usecols=tuple(range(2,17)),\
+                                                    delimiter=delim,\
+                                                    filling_values=-1)
 
 # only use stars which are members of the dwarf
 pm = (PM>0.95)*(VI<70)*(SigFe>-1)*(SigMg>-1)
-print "fraction of members = ",1.0*sum(pm)/len(pm)
-ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm]; Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm]; SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
+print("fraction of members = ",1.0*sum(pm)/len(pm))
+ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm]
+Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm]
+SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
 
 from pylab import *
-# from matplotlib.patches import Ellipse
-# ion(); a = subplot(111, aspect='equal')
-
-# for i in range(len(e_SigFe)):
-#     e=Ellipse((SigFe[i],SigMg[i]), e_SigFe[i], e_SigMg[i], 0.)
-#     e.set_clip_box(a.bbox)
-#     e.set_alpha(0.01)
-#     a.add_artist(e)
-
-# xlabel(r'Fe')
-# ylabel(r'Mg')
-# #xlim([0,1])
-
 import numpy as np
-#import matplotlib.pyplot as plt
 from matplotlib.ticker import NullFormatter
 
 # the random data
-x = SigFe
-y = SigMg
+x = SigFe;   y = SigMg
 
 nullfmt   = NullFormatter()         # no labels
 
@@ -92,6 +90,6 @@ axHistx.set_xlim( axScatter.get_xlim() )
 axHisty.set_ylim( axScatter.get_ylim() )
 
 savefig(dir+dwarf+"/femg.png")
-ioff();show()
+show();ioff()
 
 exit(0)
