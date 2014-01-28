@@ -1,17 +1,18 @@
 \section{Results}\label{sec:results}
 
+% describe data
 We apply our method to a set of mock data, the spherical models
 for the Gaia challenge by Walker and Penarrubia. They consist of
 dynamical tracer populations with density distribution
 
 \begin{equation}
-\nu_*(r) = \nu_0\left(\frac{r}{r_*}\right)^{-\gamma_*} \left[1+\left(\frac{r}{r_*}\right)^{\alpha_*}\right]^{(\gamma_*-\beta_*)/\alpha_*}
+    \nu_*(r) = \nu_0\left(\frac{r}{r_*}\right)^{-\gamma_*} \left[1+\left(\frac{r}{r_*}\right)^{\alpha_*}\right]^{(\gamma_*-\beta_*)/\alpha_*}
 \end{equation}
 
 inside dark matter halos of the form
 
 \begin{equation}
-\rho_{\text{DM}} = \rho_0\left(\frac{r}{r_{\text{DM}}}\right)^{-\gamma_{\text{DM}}}\left[1+\left(\frac{r}{r_{\text{DM}}}\right)^{\alpha_{\text{DM}}}\right]^{(\gamma_{\text{DM}}-\beta_{\text{DM}})/\alpha_{\text{DM}}}
+    \rho_{\text{DM}} = \rho_0\left(\frac{r}{r_{\text{DM}}}\right)^{-\gamma_{\text{DM}}}\left[1+\left(\frac{r}{r_{\text{DM}}}\right)^{\alpha_{\text{DM}}}\right]^{(\gamma_{\text{DM}}-\beta_{\text{DM}})/\alpha_{\text{DM}}}
 \end{equation}
 
 with scale radii $r_*, r_\text{DM}$, inner and outer logarithmic
@@ -23,7 +24,7 @@ The anisotropy follows the functional form of \citet{Osipkov1979} and
 \citet{Merritt1985},
 
 \begin{equation}
-\beta_{\text{anisotropy}}(r)=1-\frac{\sigma_\theta^2}{\sigma_r^2} = \frac{r^2}{r^2+r_a^2}.
+    \beta_{\text{anisotropy}}(r)=1-\frac{\sigma_\theta^2}{\sigma_r^2} = \frac{r^2}{r^2+r_a^2}.
 \end{equation}
 
 with scale radius $r_a$, turning over from nearly isotropic at $r\to
@@ -34,97 +35,52 @@ mock observational data including observational parameters like
 spectral indices, systemic velocities, proper motions, and binary
 motion.
 
+\TODO{mention Gaia challenge}
+
 
 \subsection{Cusps and Cores}
 
-Applied on a profile with a core in the DM density profile, our method
-reproduces the density profile \TODO{(fig. \ref{fig:cusp})}.
+Applied on a profile with a cusp in the DM density profile, our method
+reproduces the density profile (fig. \ref{fig:cusp}).
 
 \begin{figure*}
-\begin{center}
-\hspace{-7mm}
-%\includegraphics[width=0.5\textwidth]{fig/20130718132442_case_2_10000_0_cprior_nulog_denslog_mslope_rprior_profdens.pdf}
-%\includegraphics[width=0.5\textwidth]{fig/profdens.pdf}
-%\includegraphics[width=0.5\textwidth]{fig/profM.pdf}
-\includegraphics[width=0.3\textwidth]{fig/prof_dens.png}
-\includegraphics[width=0.3\textwidth]{fig/prof_nr.png}
-%\includegraphics[width=0.3\textwidth]{fig/prof_betastar1.png}\TODO{generate fine plot again}
-
-\caption{Reconstructed density and mass of a cusped model (red shows median,
-  shaded areas are 68 and 90 percentiles) for $(2800,4033)$ tracer particles,
-  after 50000 iterations. The black dashed curve shows the underlying
-  theoretical model.}
-\label{fig:cusp}
-\end{center}
+    \begin{center}
+        \hspace{-7mm}
+        \includegraphics[width=0.3\textwidth]{fig/prof_dens.png}
+        \includegraphics[width=0.3\textwidth]{fig/prof_nr.png}
+        \includegraphics[width=0.3\textwidth]{fig/prof_betastar1.png}
+        \caption{Reconstructed density, density slope, and velocity
+          anisotropy of a cusped model (red shows median, shaded areas
+          are 68 and 95 percentiles) for $10^4$ tracer particles, for
+          $3\cdot10^5$ models. The blue curve shows the underlying
+          theoretical model. The half-light radius of all stellar
+          tracer particles is depicted as gray vertical line.}
+        \label{fig:cusp}
+    \end{center}
 \end{figure*}
-
-\TODO{d ln rho/d ln r, central density step}
-
-% The errorbars around the scale radius of $1000$ pc of the dark matter
-% cusp or the scale lengths of $500$ pc or $1000$ pc for the scale radii
-% of the stellar components are not decreased, thus indicating that the
-% relative values of the enclosed mass are not better constrained than
-% at any other radius.
 
 
 % nu and sigma: fit to data
 Fitted $\nu(r)$ and $\siglos$ are shown in fig. \ref{fig:nusiglos}.
 
 \begin{figure*}
-\begin{center}
-    \hspace{-7mm}
-    \TODO{updated nu and sigma profiles with data in background}
-    % \includegraphics[width=0.5\textwidth]{fig/profnu1.pdf}
-    % \includegraphics[width=0.5\textwidth]{fig/profsig1.pdf}
-    \caption{\label{fig:nusiglos} Fitted $\nu(r)$ and $\siglos(r)$ for the
-      first of two stellar components in the cusped profile of
-      fig. \ref{fig:cusp}.}
-
-\end{center}
+    \begin{center}
+        \hspace{-7mm}
+        \includegraphics[width=0.5\textwidth]{fig/prof_nu.png}
+%        \includegraphics[width=0.5\textwidth]{fig/prof_sig.png}
+        \caption{\label{fig:nusiglos} Fitted $\nu(r)$ and $\siglos(r)$ for
+          the stellar components in the cusped profile of
+          fig. \ref{fig:cusp}.}
+    \end{center}
 \end{figure*}
 
 
 % fit to underlying beta
-
-The fitted $\beta_i(r)$ are shown in fig. \ref{fig:betai}.
-
-\begin{figure*}
-    \begin{center}
-        \hspace{-7mm}
-        \TODO{beta and betastar profile}
-        %\includegraphics[width=0.5\textwidth]{fig/profdelta1.pdf}
-        %\includegraphics[width=0.5\textwidth]{fig/profdelta2.pdf}
-        \caption{Fitted $\beta_i(r)$ for the two stellar components in the
-          cusped profile of fig. \ref{fig:cusp}. The black line gives the
-          $\beta$ profile of the underlying model. The horizontal lines are
-          the 3D scale radii of the two stellar components.}
-        \label{fig:betai}
-    \end{center}
-\end{figure*}
-
-
-
-\begin{figure*}
-    \begin{center}
-        \hspace{-7mm}
-        % TODO: generate kap1, kap2 files
-        % \includegraphics[width=0.5\textwidth]{fig/profkap1.pdf}
-        % \includegraphics[width=0.5\textwidth]{fig/profkap2.pdf}
-        \caption{\label{fig:betai} Fitted $\kappa_i(r)$ for the two stellar
-          components in the cusped profile of fig. \ref{fig:cusp}. The black
-          line gives the $\kappa$ profile of the underlying model. The
-          horizontal lines are the 3D scale radii of the two stellar
-          components.}
-    \end{center}
-\end{figure*}
+Introducing $\kappa_i$ in the $\chi^2$ did \TODO{not?} result in a
+change of behavior for the velocity anisotropy parameter.
 
 \TODO{observations for kurtosis}
 \TODO{better/worse fitting of density}
-
-Introducing $\kappa_i$ in the $\chi^2$ did \TODO{not?} result in a change of
-behavior for the velocity anisotropy parameter. The mass was still
-found too high, probably due to an error in projection of $\nu$ from
-the modeled 3D density to a 2D surface density compared with data.
 
 
 \subsection{Cored Model}
@@ -134,10 +90,11 @@ For a cored profile, we have a similar result, see fig. \ref{fig:core}. \TODO{re
     \begin{center}
         \hspace{-7mm}
         % \includegraphics[width=0.5\textwidth]{fig/.pdf}
-        \caption{A cored profile: Reconstructed mass of the MCMC model (red
-          shows median, shaded areas are 68 and 90 percentiles) for $10^4$
-          tracer particles after 30000 iterations. The black dashed curve
-          shows the underlying theoretical model.}
+        \caption{A cored profile: Reconstructed mass of the MCMC model
+          (red shows median, shaded areas are 68 and 90 percentiles)
+          for $10^4$ tracer particles based on $3\cdot10^5$ sampled
+          models. The blue curve shows the underlying theoretical
+          model.}
         \label{fig:core}
     \end{center}
 \end{figure*}

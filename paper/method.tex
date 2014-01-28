@@ -90,12 +90,26 @@ As in \cite{Lokas+2005}, we will compare the kurtosis
 
 between data and our model.
 
-In the following, we present a non-parametric method for the
-solution of equation \ref{eq:LOS} for the total gravitating mass
-density $\rho(r)$, given observed $\nu(r)$ and $\siglos(r)$, where $r$
-denotes the projected two-dimensional radius from the center of mass
-of the spherical system. We get the enclosed mass $M(<r)$ from the
-density via
+In the following, we present a non-parametric method for the solution
+of equation \ref{eq:LOS} for the total gravitating mass density
+$\rho(r)$, given observed tracer density profiles $\nu(r)$ and
+$\siglos(r)$, where $r$ denotes the projected two-dimensional radius
+from the center of mass of the spherical system. Following
+\cite{Jardel+2012} we write the overall density profile $\rho(r)$ as
+
+\begin{equation}
+    \rho(r) = \frac{M_*}{L}\cdot \nu(r)+\rho_{\rm{DM}}(r)
+\end{equation}
+
+and assume constant mass-to-light ratios $M_*/L$ for the tracer
+populations in our mock datasets. We are ultimately interested in
+$\rho_{\rm{DM}}$, which is $\rho_{\rm{DM}}(r)\approx\rho(r)$ when
+neglecting the mass of the tracer populations. This assumption is
+valid for our mock data and any observed system with high dark matter
+content in the center, where the tracer populations reside. We will
+drop said assumption when working on real data.
+
+We get the enclosed mass $M(<r)$ from the density via
 
 \begin{equation}
 M(<r) = \int_0^r \rho(r) r^2 \text{d}r,
@@ -138,11 +152,11 @@ which needs to be translated into physical prior distributions for
 each of the parameter profiles:
 
 The overall density $\rho$ is represented in terms of the logarithmic
-density slopes $n(r_i)=\kappa_{\rho_i} = (\kappa_{\rho_i})$, $1\leq
+density slopes $n(r_i)=\kappa_{\rho_i} = (\kappa_{\rho_i})^2$, $1\leq
 i\leq N_\rho+3$ and calculated as
 
 \begin{equation*}
-    \rho(r) = \rho(r_{1/2})\cdot\exp\left[\int_{r_{1/2}}^rn(s)\text{d}\right]s,
+    \rho(r) = \rho(r_{1/2})\cdot\exp\left[\int_{r_{1/2}}^rn(s)\text{d}s\right],
 \end{equation*}
 
 with the density at half-light radius $\rho(r_{1/2})=$, and $n(r)$
@@ -151,7 +165,9 @@ prescribe two additional slopes $n_0 < -3, n_\infty>-3$ for the
 asymptotic density slopes towards $r=0$ and $r=\infty$, which are
 reached at half the smallest and twice the largest bin radius.
 
-The velocity anisotropy $\beta$ is allowed to vary freely in the interval $[0, \infty[$ by sampling the modified, symmetric $\beta_*$ (\TODO{cite Read}),
+The velocity anisotropy $\beta$ is allowed to vary freely in the
+interval $[0, \infty[$ by sampling the modified, symmetric $\beta_*$
+(\TODO{cite Read}),
 
 \begin{equation*}
     \beta_* = \frac{\sigma_r^2-\sigma_t^2}{\sigma_r^2+\sigma_t^2} = \frac{\beta}{2-\beta} \in [-1,1]

@@ -4,7 +4,6 @@
      "sec:results"
      "fig:cusp"
      "fig:nusiglos"
-     "fig:betai"
      "fig:core"
      "fig:triax")))
 
