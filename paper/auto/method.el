@@ -5,5 +5,6 @@
      "eq:Jeans"
      "eq:main"
      "eq:LOS"
-     "eq:kappa")))
+     "eq:kappa"
+     "eq:binning")))
 

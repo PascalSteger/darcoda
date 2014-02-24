@@ -2,8 +2,10 @@
  (lambda ()
     (LaTeX-add-labels
      "sec:results"
-     "fig:cusp"
-     "fig:nusiglos"
+     "fig:cusp1pop"
+     "fig:Sigsiglos1pop"
+     "fig:cusp2pop"
+     "fig:pymcmetal"
      "fig:core"
      "fig:triax")))
 

@@ -5,16 +5,13 @@
      '("TODO" 1)
      '("changefont" 3)
      '("bcite" 1)
+     "widebar"
      "ltsima"
      "simlt"
      "gtsima"
      "simgt"
      "siglos"
      "siglosi"
-     "gprior"
-     "cprior"
-     "bprior"
-     "lbprior"
      "vztwo"
      "vztwoi"
      "rhodisc"
@@ -23,7 +20,12 @@
      "rhoeff"
      "nuobs"
      "tot"
-     "kpc")
+     "pc"
+     "kpc"
+     "gprior"
+     "cprior"
+     "bprior"
+     "lbprior")
     (TeX-run-style-hooks
      "amsmath"
      "color"

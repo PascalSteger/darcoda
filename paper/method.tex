@@ -1,5 +1,4 @@
 \section{Method}\label{sec:method}
-
 The collisionless Boltzmann equation for a spherical system with
 gravitational potential $\Phi$,
 
@@ -7,15 +6,15 @@ gravitational potential $\Phi$,
 \frac{\text{d}f}{\text{d}t} = \frac{\partial f}{\partial t} + \nabla_{\vec{x}} f\cdot\vec{v} - \nabla_{\vec{v}} f\cdot\nabla_{\vec{x}}\Phi = 0,
 \end{equation}
 
-describes the motion of tracer stars with distribution function
+describes the motion of tracer stars at positions $\vec{x}$, with
+velocity $\vec{v}$, and with distribution function
 $f(\vec{x},\vec{v}\,)$.
-
 
 In spherical coordinates $(r, \theta, \phi)$, the collisionless
 Boltzmann equation then reads as
 
 \begin{equation}
-\frac{\partial f}{\partial t} + \dot{r}\frac{\partial f}{\partial r} + \dot{\theta}\frac{\partial f}{\partial \theta} + \dot{\phi}\frac{\partial f}{\partial \phi} + \dot{v}_r\frac{\partial f}{\partial v_r}+\dot{v}_\theta\frac{\partial f}{\partial v_\theta} +\dot{v}_\phi\frac{\partial f}{\partial v_\phi} = 0
+    \frac{\partial f}{\partial t} + \dot{r}\frac{\partial f}{\partial r} + \dot{\theta}\frac{\partial f}{\partial \theta} + \dot{\phi}\frac{\partial f}{\partial \phi} + \dot{v}_r\frac{\partial f}{\partial v_r}+\dot{v}_\theta\frac{\partial f}{\partial v_\theta} +\dot{v}_\phi\frac{\partial f}{\partial v_\phi} = 0
 \end{equation}
 
 with velocities
@@ -27,20 +26,22 @@ with velocities
 \end{eqnarray}
 
 The assumption of steady state hydrodynamic equilibrium gives
-$\partial f/\partial t=0$ and $\bar{v}_r=0$, and using spherical
-symmetry $\bar{v}_\theta=0$, $\bar{v}_\phi=0$, with a unique
-tangential velocity dispersion
-$\sigma_\phi^2=\sigma_\theta^2=\sigma_t^2$ and a fourth order moment $\bar{v_r^4}$ we get
+$\partial f/\partial t=0$ and $\widebar{v}_r=0$, and using spherical
+symmetry $\bar{v}_\theta=0$, $\bar{v}_\phi=0$ with a unique tangential
+velocity dispersion $\sigma_\phi^2=\sigma_\theta^2=\sigma_t^2$ and a
+fourth order moment $\widebar{v_r^4}$ we get
 
 \begin{eqnarray}\label{eq:Jeans}
-\frac{1}{\nu}\frac{\partial}{\partial r}(\nu\sigma_{r}^2) + 2\frac{\sigma_{r}^2-\sigma_{t}^2}{r} &=& -\frac{\partial \Phi}{\partial r} = -\frac{GM(<r)}{r^2},\\
-\frac{\partial}{\partial r}(\nu\bar{v_r^4})+\frac{2\beta}{r}\nu\bar{v_r^4}+3\nu\sigma_r^2\frac{\partial\Phi}{\partial r}&=&0,
+    \frac{1}{\nu}\frac{\partial}{\partial r}(\nu\sigma_{r}^2) + 2\frac{\sigma_{r}^2-\sigma_{t}^2}{r} = -\frac{\partial \Phi}{\partial r} &=& -\frac{GM(<r)}{r^2},\\
+    \frac{\partial}{\partial r}(\nu\bar{v_r^4})+\frac{2\beta}{r}\nu\bar{v_r^4}+3\nu\sigma_r^2\frac{\partial\Phi}{\partial r}&=&0,
 \end{eqnarray}
 
-with enclosed mass $M(<r)$, gravitational constant $G =
-6.67398\cdot10^{-11} \text{m}^3/\text{kg}\,\text{s}^2$. The departure
-from spherical hydrostatic equilibrium $\sigma_r^2=\sigma_t^2$ is
-measured by the anisotropy parameter
+with enclosed total mass $M(<r)$ inside radius $r$, density $\nu$ of
+any collection of tracer particles in the potential $\Phi$, and
+gravitational constant $G = 6.67398\cdot10^{-11}
+\text{m}^3/\text{kg}\,\text{s}^2$. The departure from spherical
+hydrostatic equilibrium $\sigma_r^2=\sigma_t^2$ is measured by the
+anisotropy parameter
 
 \begin{equation}
 \beta \equiv 1-\frac{\sigma_t^2}{\sigma_r^2}
@@ -49,20 +50,21 @@ measured by the anisotropy parameter
 with values in the range from $-\infty$ (purely circular orbits)
 through $0$ (hydrostatic equilibrium) to $1$ (purely radial orbits).
 
-Integrating both sides of equation \ref{eq:Jeans} gives the main
-equation of this paper,
+Integrating both sides of equation \ref{eq:Jeans} gives the radial
+velocity dispersion as function of the projected radius $R$, and
+correspondingly the fourth order moment,
 
 \begin{equation}\label{eq:main}
-\sigma_r^2(R) = \frac{1}{\nu(R)}\exp\left(-2\int_{r_{min}}^{R}\frac{\beta(s)}{s}\text{d}s\right)\cdot\qquad
+    \sigma_r^2(R) = \frac{1}{\nu(R)}\exp\left(-2\int_{r_{min}}^{R}\frac{\beta(s)}{s}\text{d}s\right)\cdot\qquad
 \end{equation}
 \begin{equation*}
-\qquad\int_R^\infty \frac{GM(r)\nu(r)}{r^2} \exp\left(2\int_{r_{min}}^r\frac{\beta(s)}{s}\text{d}s\right)\text{d}r.
+    \qquad\int_R^\infty \frac{GM(r)\nu(r)}{r^2} \exp\left(2\int_{r_{min}}^r\frac{\beta(s)}{s}\text{d}s\right)\text{d}r.
 \end{equation*}
 \begin{equation*}
-\bar{v_r^4}(R) = \frac{3}{\nu(R)}\exp\left(-2\int_{r_{min}}^{R}\frac{\beta(s)}{s}\text{d}s\right)\cdot\qquad
+    \bar{v_r^4}(R) = \frac{3}{\nu(R)}\exp\left(-2\int_{r_{min}}^{R}\frac{\beta(s)}{s}\text{d}s\right)\cdot\qquad
 \end{equation*}
 \begin{equation*}
-\qquad\int_R^\infty \frac{GM(r)\nu\sigma_r^2}{r^2} \exp\left(2\int_{r_{min}}^r\frac{\beta(s)}{s}\text{d}s\right)\text{d}r.
+    \qquad\int_R^\infty \frac{GM(r)\nu\sigma_r^2}{r^2} \exp\left(2\int_{r_{min}}^r\frac{\beta(s)}{s}\text{d}s\right)\text{d}r.
 \end{equation*}
 
 For distant spherical systems, only the projected velocity dispersion
@@ -70,67 +72,154 @@ $\siglos$ and the fourth order moment $\bar{v_{\rm los}^4}$ can be
 measured, which in our case is given by
 
 \begin{equation}\label{eq:LOS}
-\siglos^2(R) = \frac{2}{\Sigma(R)}\int_R^\infty \left(1-\beta\frac{R^2}{r^2}\right) \frac{\nu(r)\sigma_r^2(r) r}{\sqrt{r^2-R^2}}\text{d}r,
+    \siglos^2(R) = \frac{2}{\Sigma(R)}\int_R^\infty \left(1-\beta\frac{R^2}{r^2}\right) \frac{\nu(r)\sigma_r^2(r) r}{\sqrt{r^2-R^2}}\text{d}r,
 \end{equation}
 \begin{equation}\label{eq:kappa}
-\bar{v_{\rm LOS}^4} = \frac{2}{\Sigma(R)}\int_R^\infty\frac{\nu \bar{v_r^4}r}{\sqrt{r^2-R^2}}g(r,R,\beta)\text{d}r
+    \bar{v_{\rm LOS}^4} = \frac{2}{\Sigma(R)}\int_R^\infty\frac{\nu \bar{v_r^4}r}{\sqrt{r^2-R^2}}g(r,R,\beta)\text{d}r
 \end{equation}
 \begin{equation*}
-g(r,R,\beta) = 1-2\beta\frac{R^2}{r^2}+\frac{\beta(1+\beta)}{2}\frac{R^4}{r^4}
+    g(r,R,\beta) = 1-2\beta\frac{R^2}{r^2}+\frac{\beta(1+\beta)}{2}\frac{R^4}{r^4},
 \end{equation*}
 
-
-where $\Sigma(R)$ denotes the surface mass density at radius $R$. 
-
-As in \cite{Lokas+2005}, we will compare the kurtosis
+where $\Sigma(R)$ denotes the surface mass density at radius $R$. As
+done in \cite{Lokas+2005}, we will compare the kurtosis
 
 \begin{equation*}
-\kappa_{\rm LOS}=\frac{\bar{v_{\rm LOS}^4}}{\sigma_{\rm LOS}^4}
+    \kappa_{\rm LOS}=\frac{\bar{v_{\rm LOS}^4}}{\sigma_{\rm LOS}^4}
 \end{equation*}
 
 between data and our model.
 
 In the following, we present a non-parametric method for the solution
 of equation \ref{eq:LOS} for the total gravitating mass density
-$\rho(r)$, given observed tracer density profiles $\nu(r)$ and
-$\siglos(r)$, where $r$ denotes the projected two-dimensional radius
-from the center of mass of the spherical system. Following
-\cite{Jardel+2012} we write the overall density profile $\rho(r)$ as
+$\rho(r)$, given tracer density profiles $\nu(r)$ and line-of-sight
+velocity dispersion $\siglos(R)$. Following \cite{Jardel+2012} we
+write the overall density profile $\rho(r)$ as
 
 \begin{equation}
-    \rho(r) = \frac{M_*}{L}\cdot \nu(r)+\rho_{\rm{DM}}(r)
+    \rho(r) = \rho_{\rm{DM}}(r)+\sum_{i=1}^{N_{\rm pop}}\left(\frac{M_*}{L}\right)_{i}\cdot \nu_i(r)
 \end{equation}
 
-and assume constant mass-to-light ratios $M_*/L$ for the tracer
-populations in our mock datasets. We are ultimately interested in
-$\rho_{\rm{DM}}$, which is $\rho_{\rm{DM}}(r)\approx\rho(r)$ when
-neglecting the mass of the tracer populations. This assumption is
-valid for our mock data and any observed system with high dark matter
-content in the center, where the tracer populations reside. We will
-drop said assumption when working on real data.
+and assume mass-to-light ratios $(M_*/L)_i$ to be constant with radius
+for the tracer population $i$ in our mock datasets. We are ultimately
+interested in $\rho_{\rm{DM}}$, which is
+$\rho_{\rm{DM}}(r)\approx\rho(r)$ when neglecting the mass of the
+tracer populations. This assumption is valid for our mock data and any
+observed system with high dark matter content in the center, where the
+tracer populations reside. We will drop said assumption when working
+on real data.
 
 We get the enclosed mass $M(<r)$ from the density via
 
 \begin{equation}
-M(<r) = \int_0^r \rho(r) r^2 \text{d}r,
+    M(<r) = \int_0^r \rho(r) r^2 \text{d}r,
 \end{equation}
 
 which shows up in eq. \ref{eq:main}. In principle, the method can be
 generalized to investigate alternative gravity models, if the
 acceleration $GM(r)/r^2$ is replaced with the respective form of
-$-\partial\Phi/\partial r$.
+$-\partial\Phi/\partial r$ in equation \ref{eq:Jeans}.
 
 The degeneracy between mass $M$ and velocity anisotropy $\beta$ is
-accounted for: For any non-isothermal system, we let vary the
-anisotropy $\beta(r)$ as well. We checked that in the case of a simple
+accounted for: For any non-isothermal system, we let the anisotropy
+$\beta(r)$ vary as well. We checked that in the case of a simple
 Hernquist profile, $\beta(r)\approx0$ is retrieved correctly.
 
-We sample the parameter space $[\nu_i, \siglosi, \rho]$ for distinct
-populations $i=1...N$ of stellar or gaseous tracers with a Monte Carlo Markov Chain method.
+\subsection{Representation in Radial Bins}
+We describe now how we sample the space $[\rho, \nu_i, \beta_i]$
+for distinct populations $i=1...N_{\rm pop}$ of stellar or gaseous
+tracers. The main idea is to use a representation of the radial
+profiles of each of those in $N_{\rm bin}$ independent bins,
 
-Early approaches were performed with a custom MCMC method. It proved
-unfeasible to sample the whole parameter space on human timescales due
-to its high dimensionality.
+\begin{equation}\label{eq:binning}
+    \rho(r_j < r < r_{j+1}) = \rho_j, \qquad \forall j\in[1, N_{\rm bin}],
+\end{equation}
+
+and analogous for $\nu_i$.
+
+The densities $\rho$ and $\nu_i$ are represented in terms of the
+logarithmic density slopes $n(r_j)=-{\rm d}\log\rho(r)/{\rm d}\log
+r|{r=r_j}$, $1\leq j\leq N_{bin}+3$, via
+
+\begin{equation*}
+    \rho(r) = \rho(r_{1/2})\cdot\exp\left[\int_{\log r_{1/2}}^{\log r}n(s)\text{d}s\right],
+\end{equation*}
+
+with the density at half-light radius $\rho(r_{1/2})=\rho_{1/2}$, and
+$n(r)$ interpolated linearly in between bin radii
+$r_{j-1}<r<r_{j}$. We prescribe three fudge $n(r_j)$ for $j\in\{N_{\rm
+  bin}+1, N_{\rm bin}+2, N_{\rm bin}+3\}$ outside of the range where
+data is given to enable sensible extrapolations towards high radii,
+and two additional slopes $n_0 < 3, n_\infty>3$ for the asymptotic
+density slopes towards $r=0$ and $r=\infty$, which are reached at half
+the smallest and $r_\infty=10$ the largest bin radius.
+
+The velocity anisotropy $\beta$ is allowed to vary freely in the
+interval $[0, \infty[$ by sampling the modified, symmetric $\beta_*$
+(\TODO{cite Read}),
+
+\begin{equation*}
+    \beta_* = \frac{\sigma_r^2-\sigma_t^2}{\sigma_r^2+\sigma_t^2} = \frac{\beta}{2-\beta} \in [-1,1]
+\end{equation*}
+
+with a polynomial
+
+\begin{equation*}
+    \beta_*(r) = \sum_{j=0}^{N_\beta} \beta_j\cdot\left(\frac{r_j}{r_{\text{max}}}\right)^j,
+\end{equation*}
+
+where $\beta_j\in [0,\beta_{\rm max}]$. With this method, unphysical
+$\beta>1$ must be prevented with the correction
+
+\begin{equation*}
+    \beta_*(r_j) := \min(\max(\beta_*(r_j), -1),1).
+\end{equation*}
+
+This approach allows us to change the number of parameters $N_\beta$
+easily, and to sample many qualitatively different models --
+isotropic, radially biased, tangentially biased, and any gentle
+transitions between those -- with very few parameters.
+
+In a next step, $\siglosi(r)$ is calculated from $\rho(r)$,
+$\nu_i(r)$, and $\beta_i(r)$ according eq. \ref{eq:LOS}. This is done
+numerically, involving three integrations, which are performed with
+polynomial extrapolations of the integrands up to infinity,
+s.t. missing contributions from $r>r_{max}$ do not lead to an
+artificial falloff of $\siglos$.
+
+The last step involves comparison of the projected surface density
+$\Sigma_i(r)$ -- calculated from the 3D tracer density $\nu_i(r)$ --
+as well as the LOS velocity dispersion $\sigma_i(r)$, and the fourth
+order moment of the velocity, if wished, to the respective 2D data
+profiles for the tracer populations to get a likelihood based on the
+overall goodness of fit
+
+\begin{eqnarray}
+    \chi^2 &=& \sum_{i=1}^N \chi_{\Sigma,i}^2 + \chi_{\sigma,i}^2 + \chi_{\kappa,i}^2,\\
+    \chi_{\Sigma,i}^2 &=& \sum_{j=1}^{N_{\rm bin}} \left(\frac{\Sigma_{\text{data},i}(r_j)-\Sigma_{\text{model},i}(r_j)}{\varepsilon_\Sigma(r_j)}\right)^2,
+\end{eqnarray}
+
+with error $\varepsilon_\Sigma(r_j)$ on the data
+$\Sigma_{\text{data},i}(r_j)$. Analogous expressions hold for
+$\chi_{\sigma,i}^2$, and $\chi_{\kappa,i}^2$ if used. In absence of a
+measured $\beta_i(r)$, we set $\chi_{\beta,i}^2=0$.
+
+\subsection{Non-Parametric Representation}
+
+There are a large number of parameters from the representation of the profiles,
+
+\begin{equation}
+    N_{\rm dim} = N_{\rm bin} + N_{\rm pop}\cdot(N_{\rm bin}+N_{\rm beta})
+\end{equation}
+
+with only very few constraints from physical priors. The functional
+form of the profiles is not predescribed. These conditions is what we
+call {\it non-parametric representation}.
+
+\subsection{Parameter Space Sampling}
+Early approaches to sampling the parameter space were performed with a
+custom-built MCMC method. It proved unfeasible to sample the whole
+parameter space on human timescales due to its high dimensionality.
 
 To circumvent many likelihood evaluations around a local minimum, we
 changed the underlying sampling method to use several MCMC walkers,
@@ -142,120 +231,40 @@ A useful framework was found in MultiNest (\cite{Feroz+2009}), which
 is a Bayesian nested sampling algorithm to generate posterior samples
 from non-trivial distributions in high dimensions.
 
-There are a large number of parameters from the representation of the
-radial profiles of each of those in $N_{bin}$ bins, with only very few
-constraints from physical priors. The functional form of the profiles
-is not predescribed. This is what we call {\it non-parametric}.
-
-MultiNest samples the $n$-dimensional hypercube $\kappa=[0,1]^n$,
-which needs to be translated into physical prior distributions for
-each of the parameter profiles:
-
-The overall density $\rho$ is represented in terms of the logarithmic
-density slopes $n(r_i)=\kappa_{\rho_i} = (\kappa_{\rho_i})^2$, $1\leq
-i\leq N_\rho+3$ and calculated as
-
-\begin{equation*}
-    \rho(r) = \rho(r_{1/2})\cdot\exp\left[\int_{r_{1/2}}^rn(s)\text{d}s\right],
-\end{equation*}
-
-with the density at half-light radius $\rho(r_{1/2})=$, and $n(r)$
-interpolated linearly in between bin radii $r_{i-1}<r<r_{i}$. We
-prescribe two additional slopes $n_0 < -3, n_\infty>-3$ for the
-asymptotic density slopes towards $r=0$ and $r=\infty$, which are
-reached at half the smallest and twice the largest bin radius.
-
-The velocity anisotropy $\beta$ is allowed to vary freely in the
-interval $[0, \infty[$ by sampling the modified, symmetric $\beta_*$
-(\TODO{cite Read}),
-
-\begin{equation*}
-    \beta_* = \frac{\sigma_r^2-\sigma_t^2}{\sigma_r^2+\sigma_t^2} = \frac{\beta}{2-\beta} \in [-1,1]
-\end{equation*}
-
-with a polynomial s.t.
-
-\begin{equation*}
-    \beta_*(r) = \sum_i=0^{N_\beta} \kappa_{\beta_i}\cdot\left(\frac{r_i}{r_{\text{max}}}\right)^i,
-\end{equation*}
-
-where $\kappa_{\beta_i}\in [0,1]$. With this method, unphysical
-$\beta>1$ are possible, which we prevent with a correction
-
-\begin{equation*}
-    \beta_*(r_i) := \min(\max(\beta_*(r_i), -1),1).
-\end{equation*}
-
-This approach allows us to change the number of parameters $N_\beta$
-easily, and to sample many qualitatively different models --
-isotropic, radially biased, tangentially biased, and any gentle
-transitions between those -- with very few parameters.
-
-In a next step, $\siglosi(r)$ is calculated from $\nu(r)$, $\rho(r)$,
-and $\beta(r)$ according eq. \ref{eq:LOS}. This is done numerically,
-involving three integrations, which are performed with polynomial
-extrapolations of the integrands up to infinity, s.t. missing
-contributions from $r>r_{max}$ do not lead to an artificial falloff of
-$\siglos$. The additional parameters of the slopes are calculated from
-the values at lower radii, thus preventing the introduction of any
-further parameters.
-
-The last step involves comparison of the projected $\nu_i(r)$,
-$\sigma_i(r)$ and $\beta_i(r)$, if available, to the data for the
-tracer populations to get a likelihood based on the overall
-goodness of fit
-
-\begin{eqnarray}
-\chi^2 &=& \sum_{i=1}^N \chi_{\nu,i}^2 + \chi_{\sigma,i}^2 + \chi_{\beta,i}^2\\
-\chi_{\nu,i}^2 &=& \sum_{j=1}^{N_{bin}} \left(\frac{\nu_{i,\text{data}}(r_j)-\nu_{i,\text{model}}(r_j)}{\epsilon_\nu(r_j)}\right)^2.
-\end{eqnarray}
-
-and accordingly for $\chi_{\sigma,i}^2$ and $\chi_{\beta,i}^2$. In
-absence of a measured $\beta_i(r)$, we set $\chi_{\beta,i}^2=0$.
-
-\subsection{Binning characteristics}
-
-The number of bins for $\rho, \nu_i, \beta_i$, and $\sigma_i$ are free
-parameters. They are set to fulfill
-
-\begin{equation}
-n_\nu = n_\sigma = n_\beta = n_\rho \leq n_{\text{data}}
-\end{equation}
-
-with number of datapoints $n_{\text{data}}$. This choice simplifies
-integration greatly, and prevents invention of information on scales
-smaller than the frequency of datapoints.
-
-\TODO{check that nbin is set s.t.}
-
-\begin{equation}
-\chi^2_{red} = \frac{\chi^2}{n_{\text{data}} - n_\nu - n_\sigma - n_\beta - n_\rho -1}
-\end{equation}
-
-is minimized, and still the whole parameter space is tracked.
-
-The whole parameter space for $\beta_i$ is sampled with $n_\beta=12$
-if $n_{\text{data}}=30$ in the case of 10000 tracers.
-
-The dark matter density is calculated by subtracting the measured
-baryon density from the dynamical mass density.
+MultiNest samples the $n$-dimensional hypercube $\kappa=[0,1]^{N_{\rm  dim}}$, which needs to be translated into physical prior
+distributions for each of the parameter profiles.
 
 \subsection{Priors}
-Following priors are included in the model, and help to reject
-unphysical samplings from the start:
+Following priors are included in the model, and help to constrain the parameter space to the physically possible range from the start:
 
 \begin{enumerate}
-    \item[1)] baryon prior: $\rho(r) \geq
-    \rho_b(r)-\epsilon_{\rho,b}(r) \forall r\geq0$, ensures that no
-    models with overall densities below the measured baryon density
-    are considered any further;
-
-\item[2)] mass restriction: $M(r>r_{max}) \leq M(<r_{max})/3.$, rejects any
-  model which has more than $M_\infty/3$ in the extrapolated bins;
-
-\item[3)] $\beta_i(r+\Delta r)-\beta_i(r) < 0.5$: prevent any sudden
-  jumps in $\beta_i$;
+    \item[1)] $0\leq \rho_j \leq 6$
+    \item[2)] $0\leq \nu_j  \leq 6$
+    \item[3)] $0\leq \beta^*_j\leq 3$
 \end{enumerate}
 
-We show in the appendix what effects the disabling of these priors
-have.
+Additional priors were first included, but then removed later for the
+following reasons:
+
+\begin{enumerate}
+    \item[1)] A baryon prior $\rho(r) \geq
+    \rho_b(r)-\epsilon_{\rho,b}(r) \forall r\geq0$, to ensure that no
+    models with overall densities below the measured baryon density
+    are considered any further, can only be used with mock data, where
+    the baryonic density is known to be the sum of the individual
+    tracer densities with known and constant mass to light
+    ratios. This is not the case with real data, where biases towards
+    higher luminosity stars or unaccounted-for populations and gas are
+    missing from the analysis.
+
+    \item[2)] A mass restriction $M(r>r_{max}) \leq M(<r_{max})/3.$,
+    to reject any model which has more than $M_\infty/3$ in the
+    extrapolated bins was introduced to keep the high radius density
+    low, and exclude diverging mass integrals. A more concise approach
+    of requesting $n(r>r_\infty)>n_{\rm thresh} \geq 3$ was chosen,
+    which ensures finite mass toward $r\to\infty$.
+
+    \item[3)] $\beta_i(r+\Delta r)-\beta_i(r) < 0.5$ to prevent any
+    sudden jumps in $\beta_i$ is implicitly inherent in the functional
+    setup of $\beta$ now, when higher order terms are excluded.
+\end{enumerate}
