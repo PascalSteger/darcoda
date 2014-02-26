@@ -16,7 +16,6 @@ import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
 
-import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
@@ -25,7 +24,7 @@ from BiWeight import meanbiweight
 
 
 
-def run():
+def run(gp):
     xall,yall=np.loadtxt(gpr.get_com_file(0),skiprows=1,usecols=(0,1),unpack=True) 
     # 2*[Rscale]
     # calculate 2D radius on the skyplane
@@ -166,10 +165,8 @@ def run():
             Menclosed = 1.0*np.sum(indr)/totmass # for normalization to 1  #[totmass]
             Merror = Menclosed/np.sqrt(ab) # or artificial Menclosed/10 #[totmass]
             print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merror, file=em) # [Rscale], 2* [totmass]
-            # TODO: check: take rbinmax for MCMC?
         de.close()
         em.close()
-
 
         # output siglos
         p_dvlos = np.zeros(gpr.nbins);        p_edvlos = np.zeros(gpr.nbins)
@@ -182,7 +179,7 @@ def run():
             else:
                 dispvelerror = dispvel/np.sqrt(ab) #[km/s]
             p_dvlos[b] = dispvel      #[km/s]
-            p_edvlos[b]= dispvelerror #[km/s]
+            p_edvlos[b]= dispvelerror #[km/s] TODO: /np.sqrt(n))
 
         maxvlos = max(p_dvlos) #[km/s]
         print('maxvlos = ',maxvlos,'[km/s]')
@@ -192,10 +189,8 @@ def run():
         
         for b in range(gpr.nbins):
             #             [rscale]  [maxvlos]                  [maxvlos]
-            print(Rbin[b],Binmin[b],Binmax[b], np.abs(p_dvlos[b]/maxvlos),np.abs(p_edvlos[b]/maxvlos), file=sigfil)
-            # TODO: check uncommented /np.sqrt(n))
+            print(Rbin[b], Binmin[b], Binmax[b], np.abs(p_dvlos[b]/maxvlos), np.abs(p_edvlos[b]/maxvlos), file=sigfil)
         sigfil.close()
-
 
 
         # output kurtosis kappa
@@ -205,19 +200,14 @@ def run():
             kappavel = np.sum(mom4[b])/gpr.n #[1]
             ab = np.sum(a[b])/(1.*gpr.n) #[1]
             if ab == 0:
-                kappavelerror = p_edvlos[b-1] #[1]
+                kappavelerror = p_edvlos[b-1] #[1]  # TODO: /np.sqrt(n))
                 # attention! uses last error
             else:
                 kappavelerror = np.abs(kappavel/np.sqrt(ab)) #[1]
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerror
-            
-            print(Rbin[b],Binmin[b],Binmax[b], kappavel, kappavelerror, file=kappafil) # [rscale], 2*[1]
-            # TODO: /np.sqrt(n))
+            print(Rbin[b], Binmin[b], Binmax[b], kappavel, kappavelerror, file=kappafil) # [rscale], 2*[1]
         kappafil.close()
-
-
-    
 
 
         if not gpr.showplots: continue
@@ -272,5 +262,4 @@ def run():
 
 if __name__ == '__main__':
     gpr.showplots = True
-    run()
-
+    run(gp)

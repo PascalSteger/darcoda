@@ -29,15 +29,17 @@ investigate  = 'walk'  # determine which data set to work on
                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia challenge, 1 pop only
                        # 'fornax': real data from Fornax dwarf galaxy
 
-case = 4 # choose gaia models (1..8) or Walker (0..2,4,5) models
+case = 4 # choose gaia models (1..8) or Walker (0..2,4,5) models, or triax models (0:core, 1:cusp)
+projcase = 4 # (1:X, 2:Y, 3:Z, 4:intermediate)
 
 # Set number of tracer stars to look at
 # take all particles                       # case 0
 # want to set ntracer = 3e3              # case 1
 #             ntracer = 1e4              # case 2
-cas = 2
+#             ntracer = 2*1e2            # case 3
+cas = 3
 
-getnewdata = False # get new data computed from observations before burn-in
+getnewdata = True # get new data computed from observations before burn-in
 metalpop   = False # split metallicities with a separate MCMC
 lograd  = False # log steps for radial bin in readout, show x-axis in log scale
 consttr = True # set radial bin by constant number of tracer particles
@@ -68,7 +70,7 @@ even       = 'avg' # for simps integration (everywhere): 'avg', 'first', 'last'
 usekappa   = False # switch to turn on (True) or off the calculation of kappa
 
 sim       = 2 # use hernquist model with 1 or 2 particle types. do not use second type (DM) as population
-pops      = 1
+pops      = 2
 
 global rstarhalf
     
@@ -79,7 +81,7 @@ nepol = nipol + nexp + 3 # +3 means 1 more parameter for the density at half lig
                          #          1 more parameter for the asymptote to 0
                          #          1 more parameter for the asymptote to \infty
 rinfty = 10. # interpolate from last slope to slope at 10*max(xipol), where asymptote to \infty is reached
-nbeta = 2   # number of parameters for beta, in sum of polynomials
+nbeta = 2    # number of parameters for beta, in sum of polynomials
 
 # next: # live points, > ndim, < 2^ndim, about number of ellipsoids in phase space to be found
 nlive = 2*(nepol + pops*nepol + pops*nbeta)

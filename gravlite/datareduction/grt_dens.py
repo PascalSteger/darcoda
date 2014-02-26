@@ -14,16 +14,12 @@ import pdb
 import numpy as np
 from pylab import *
 import math
-import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from gl_class_files import *
 
-
-
-
-def run():
+def run(gp):
     print('input: ',gpr.get_com_file(0))
     # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(0),\
@@ -54,11 +50,10 @@ def run():
     for k in range(gpr.nbins):
         vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rscale**2]
             
-    # rs = gpr.rerror*np.random.randn(len(r))+r
+    # rs = gpr.Rerror*np.random.randn(len(r))+r
     rs = r  #[rscale] # if no initial offset is whished
     
-    print('output: ')
-    print(gpr.get_ntracer_file(0))
+    print('output: ', gpr.get_ntracer_file(0))
     tr = open(gpr.get_ntracer_file(0),'w')
     print(totmass, file=tr)
     tr.close()
@@ -75,7 +70,7 @@ def run():
     density = np.zeros((gpr.nbins,gpr.n))
     a       = np.zeros((gpr.nbins,gpr.n))
     for k in range(gpr.n):
-        rsi = gpr.rerror * np.random.randn(len(rs)) + rs # [rscale]
+        rsi = gpr.Rerror * np.random.randn(len(rs)) + rs # [rscale]
         for j in range(gpr.nbins):
             ind1 = np.argwhere(np.logical_and(rsi>=binmin[j],rsi<binmax[j])).flatten() # [1]
             density[j][k] = (1.*len(ind1))/vol[j]*totmass # [munit/rscale**2]
@@ -105,8 +100,6 @@ def run():
         denserror = np.sqrt((denserr/dens0)**2+(dens*denserr0/(dens0**2))**2) #[1]
         if(math.isnan(denserror)):
             denserror = 0. # [1]
-            ## [PS]: TODO: change bin sizes to include same number of
-            ##             stars in each bin, not assigning wrong density as below
             p_dens[b] = p_dens[b-1]  # [1]
             p_edens[b]= p_edens[b-1] # [1]
         else:
@@ -114,23 +107,22 @@ def run():
             p_edens[b]= denserror    # [1] #100/rbin would be artificial guess
 
     for b in range(gpr.nbins):
-        print(rbin[b],p_dens[b],p_edens[b], file=de) # [rscale], [dens0], [dens0]
+        print(rbin[b], binmin[b], binmax[b], p_dens[b], p_edens[b], file=de) # [rscale], [dens0], [dens0]
         indr = (r<binmax[b])
         menclosed = 1.0*np.sum(indr)/totmass # /totmass for normalization to 1 at last bin #[totmass]
         merror = menclosed/np.sqrt(ab) # artificial menclosed/10 gives good approximation #[totmass]
-        print(rbin[b],menclosed,merror, file=em) # [rscale], [totmass], [totmass]
-        # TODO: check: take rbinmax for MCMC?
+        print(rbin[b], binmin[b], binmax[b], menclosed, merror, file=em) # [rscale], [totmass], [totmass]
     de.close()
     em.close()
 
 
     if not gpr.showplots: return
     ion(); subplot(111)
-    print('rbin = ',rbin)
-    print('p_dens = ',p_dens)
-    print('p_edens = ',p_edens)
+    print('rbin = ', rbin)
+    print('p_dens = ', p_dens)
+    print('p_edens = ', p_edens)
 
-    plot(rbin,p_dens,'b',linewidth=3)
+    plot(rbin, p_dens, 'b', linewidth=3)
     lbound = p_dens-p_edens; lbound[lbound<1e-6] = 1e-6
     ubound = p_dens+p_edens; 
     fill_between(rbin,lbound,ubound,alpha=0.5,color='r')
@@ -151,5 +143,6 @@ def run():
 
 if __name__ == '__main__':
     # gpr.showplots = True
-    run()
-
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)

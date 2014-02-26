@@ -6,10 +6,8 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
-import os, sys, time, glob
-import gl_params as gp
+import os, sys, time, glob, shutil
 import pdb
-
 
 def bufcount(filename):
     f = open(filename)
@@ -26,30 +24,46 @@ def bufcount(filename):
 # @param filename filename
 
 
-def list_files():
+def removeDir(path):
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+# \fn removeDir(path)
+# delete directory recursively, if it exists
+# @param path path to directory
+
+
+def remove_empty_folders(fdl):
+    for x in fdl:
+        try:
+            with open(x[0]+"/ev.dat"):
+                # delete any folder that has empty ev.dat
+                if bufcount(x[0]+'/ev.dat')<=0:
+                    print('empty '+x[0]+'/ev.dat, deleted top dir')
+                    removeDir(x[0])
+                continue
+        except IOError:
+            print(x[0]+'/ev.dat does not exist, deleted top dir')
+            removeDir(x[0])
+    return
+# \fn remove_empty_folders(fdl)
+# remove all folders in list fdl without any ev.dat file in it = where no iterations of the MultiNest algorithm were stored
+# @param fdl [(name, datestamp)] of all dirs in current mode
+
+
+def list_files(basedir, gp):
     search_dir = gp.files.dir
-    # print('system: ', search_dir)
-    
     from stat import S_ISREG, ST_CTIME, ST_MODE
     dirs = list(filter(os.path.isdir, glob.glob(search_dir + "201*")))
     
-    # move *all* files *.dat to dat in all dirs of this walkercase
-    if gp.investigate == 'walker':
-        for x in dirs:
-            files = list(filter(os.path.isfile, glob.glob(x + "/*")))
-            for y in files:
-                ending = y.split('.')[-1]
-                # renaming only if not prof in name!
-                if y == ending or ending == 'pdf' or ending == 'conf':
-                    # only once! if no . there, get garbage
-                    continue
-                os.rename(y, x+"/"+ending) 
- 
-    
     from datetime import datetime
+    # delete all folders without or with empty ev.dat inside!
+    fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')) for x in dirs]
+    remove_empty_folders(fdl)
+    dirs = list(filter(os.path.isdir, glob.glob(search_dir + "201*")))
     fdl = [(x,\
             datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M'),\
             bufcount(x+'/ev.dat')) for x in dirs]
+
     fdl.sort(key=lambda x: x[1])
 
     for i in range(len(fdl)):
@@ -58,8 +72,51 @@ def list_files():
               ' with ', "%7d"%fdl[i][2], ' iterations')
     import numpy as np
     return np.transpose(np.array(fdl))[:][0]
-## \fn list_files
+## \fn list_files(basedir, gp)
 # return all working or completed MCMC run directories
+# @param basedir string of directory
+# @param gp
+
+
+def get_investigate():
+    default = 'walk'
+    invalid=True
+    while(invalid):
+        try:
+            user_input = input('Investigate: (default: '+str(default)+", gaia, triax, hern, fornax, discsim, discmock): ")
+            if not user_input:
+                user_input = str(default)
+            sel = user_input
+        except ValueError:
+            print("error in input")
+        invalid = True
+        if sel == 'walk' or sel == 'gaia' or sel == 'triax' or sel == 'hern'\
+          or sel == 'fornax' or sel == 'discsim' or sel == 'discmock':
+            invalid = False
+    return sel
+## \fn get_investigate(default)
+# ask user for choice on investigation (walk, gaia, triax, fornax, hern, discsim, discmock)
+# @return string
+
+
+def get_case(investigate):
+    default = 4
+    invalid = True
+    while(invalid):
+        try:
+            user_input = input('Case: (default '+str(default)+"): ")
+            if not user_input:
+                user_input = str(default)
+            sel = int(user_input)
+        except ValueError:
+            print("error in input")
+        if 0<sel and ((sel <= 5 and investigate == 'walk') or \
+                      (sel <= 8 and investigate == 'gaia')):
+            invalid = False
+    return sel
+## \fn get_case()
+# ask user for choice on case number (see gl_params and gl_class_files for definitions)
+# @return sel integer for case number
 
 
 def get_run(default):
@@ -106,7 +163,7 @@ def get_pop():
     invalid = True
     while(invalid):
         try:
-            user_input = input('population: 1 (default), 2 (if available)')
+            user_input = input('population: 1 (default), 2 (if available): ')
             if not user_input:
                 user_input = default
             sel = user_input
@@ -124,13 +181,13 @@ def get_prof():
     invalid=True
     while(invalid):
         try:
-            user_input = input('profile: rho (default), nr, M, beta, betastar, nu, sig: ')
+            user_input = input('profile: rho (default), nr, M, beta, betastar, Sig, sig: ')
             if not user_input:
                 user_input = default
             sel = user_input
         except ValueError:
             print("error in input")
-        if sel=='rho' or sel=='M' or sel=='beta' or sel=='betastar' or sel=='nu' or sel=='sig' or sel=='nr':
+        if sel=='rho' or sel=='M' or sel=='beta' or sel=='betastar' or sel=='Sig' or sel=='sig' or sel=='nr':
             invalid = False
     return sel
 ## \fn get_prof
@@ -138,10 +195,33 @@ def get_prof():
 # @return string
 
 
+
+
+def get_pops(basename):
+    pops = 1
+    with open(basename+'/gl_params.py', 'r') as f:
+        for line in f:
+            if 'pops      = ' in line:
+                import re
+                pops = int(re.split('[=\n]', line)[-2])
+    return pops
+## \fn get_pops(basename)
+# return number of populations from gl_params stored in output directory
+# @param basename string of output dir
+# @return integer number of populations
+
+
 def run():
     action = 'k'
-    while(action=='k'):
-        fdl = list_files()
+    investigate = get_investigate()
+    case = get_case(investigate)
+    basedir = '../DT'+investigate+'/'+str(case)+'/' # TODO: for triax, need links
+    import import_path as ip
+    ip.import_path(basedir+'/gl_params.py')
+    pdb.set_trace()
+    
+    while(action == 'k'):
+        fdl = list_files(basedir, gl_params)
         sel = get_run(len(fdl))
         action = get_action()
         if action == 'k':
@@ -158,4 +238,5 @@ def run():
 # @return basename, prof (string)
 
 if __name__ == '__main__':
+    # default: take overall gl_params for parameters
     run()

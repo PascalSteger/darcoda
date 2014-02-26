@@ -13,7 +13,8 @@ if(len(sys.argv)<2):
     
 dwarf = sys.argv[1] #TODO: read from first command line parameter
 
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 dir = gp.files.machine+"/DTobs/"
 print(dir+dwarf+"/table_merged.bin")
 

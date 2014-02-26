@@ -9,30 +9,24 @@
 import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev
-import gl_helper as gh
-
-import gl_params as gp
-import gl_physics as phys
-import gl_file as gf
-from gl_project import rho_INT_Rho
 from gl_int import g
+import gl_plot as gpl
 
-
-def check_nr(nr):
+def check_nr(nr, gp):
     r0 = gp.xepol/gp.rstarhalf
     if max(np.abs((nr[:-1]-nr[1:])/(r0[:-1]-r0[1:]))) > 20:
         return True
     return False
-## \fn check_nr(nr)
+## \fn check_nr(nr, gp)
 # check that n(r) is not jumping wildly
 # @param nr -d ln(\rho)/d ln(r)
 
 
-def check_rho(rho):
-    if gp.rprior:
+def check_rho(rho, rprior, rhotol):
+    if rprior:
         rightrho = rho[1:]
         leftrho  = rho[:-1]
-        if sum(rightrho/leftrho > gp.rhotol) > 0:
+        if sum(rightrho/leftrho > rhotol) > 0:
             return True
     return False
 ## \fn check_rho(rho)
@@ -46,7 +40,7 @@ def check_nu(nu):
 # check that tracer density is not jumping wildly
 
 
-def check_beta(beta):
+def check_beta(beta, gp):
     # now checking beta <= 1
     if max(beta)>1.:
         print('max beta!')              # TODO: remove, should be done by my_prior already
@@ -77,43 +71,22 @@ def check_beta(beta):
                 return True
 
     return False
-## \fn check_beta(beta)
+## \fn check_beta(beta, gp)
 # check that beta is bound and not jumping
 # @param beta physical beta, to be in the range ]-infty,1]
 
 def check_bprior(rhocheck, nucheck):
     for jj in range(len(rhocheck)):
         if rhocheck[jj] < nucheck[jj]:
+            # gpl.clf(); gpl.yscale('log'); gpl.xscale('log')
+            # gpl.plot(gp.xepol, rhocheck, 'k')
+            # gpl.plot(gp.xepol, nucheck, 'b')
+            # gpl.axvline(gp.rstarhalf)
+            # pdb.set_trace()
             return True
-            
-    # last bin prior
-    # if (gp.lbprior) :  
-    #     totmlastb = np.sum(rhocheck[0:gp.nipol-2]) + np.sum(gp.blow[0:gp.nipol-2])
-    #     lastb = Mpars[gp.nipol-1] + gp.blow[gp.nipol-1]
-    #     if lastb / totmlastb > gp.lbtol :
-    #         print('lbprior')
-    #         return True
+    #print('NO bprior!')
     return False
 ## \fn check_bprior(rhocheck, nucheck)
 # check that observed tracer mass is less than total mass
 # @param rhocheck density profile in [Msun/pc^3]
 # @param nucheck density profile in [Msun/pc^3]
-
-
-def check_sigma(sigma):
-    if min(sigma) < 0.:
-        return True
-    import math
-
-    small = 0.0 # min(gp.sig1_x[(gp.sig1_x > 0)])
-    # TODO: check exception handling
-    if gh.checknan(sigma):
-        return True
-    
-    # TODO: disc: S-prior: ensure sigma_z(z) rises (in disc case only):
-    return False
-## \fn check_sigma(sigma)
-# check that sigma is positive and not NaN
-# TODO: outdated?
-# @param sigma velocity dispersion profile, [km^2]
-

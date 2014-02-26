@@ -7,7 +7,8 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 import pdb
 import random

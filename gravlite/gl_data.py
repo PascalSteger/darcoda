@@ -12,7 +12,6 @@ import numpy.random as npr
 import random
 import pickle
 
-import gl_params as gp
 import gl_physics as phys
 import gl_helper as gh
 from gl_analytic import *
@@ -45,19 +44,20 @@ class Datafile:
     ## \fn __init__(self)
     # constructor: set all initial values
 
-    def read_nu(self):
+    def read_nu(self, gp):
         for pop in np.arange(gp.pops+1):
             Nux, binmin, binmax, Nudat, Nuerr = \
                     gh.readcol5(gp.files.nufiles[pop]) # component 1
             # 3*[rscale], [Nu0], [Nu0]
             Nuerr *= gp.nuerrcorr # [rho0]
             # switch to Munit (msun) and pc here
-            Nux    = Nux[:]    * gp.Rscale[pop]  # [pc]
-            Nudat  = Nudat[:]  * gp.Nu0pc[pop] # [Msun/pc^2]
-            Nuerr  = Nuerr[:]  * gp.Nu0pc[pop] # [Msun/pc^2]
-            self.rbin = Nux                            # [pc]
-            self.binmin = binmin; self.binmax = binmax    # 2*[pc]
-            gp.xipol = self.rbin                          # [pc]
+            Nux    = Nux[:]    * gp.Rscale[pop]         # [pc]
+            Nudat  = Nudat[:]  * gp.Nu0pc[pop]          # [Msun/pc^2]
+            Nuerr  = Nuerr[:]  * gp.Nu0pc[pop]          # [Msun/pc^2]
+            self.rbin = Nux                             # [pc]
+            self.binmin = binmin * gp.Rscale[pop]       # [pc]
+            self.binmax = binmax * gp.Rscale[pop]       # [pc]
+            gp.xipol = self.rbin                        # [pc]
             maxr = max(self.rbin)
             gp.xepol = np.hstack([self.rbin, 2*maxr, 4*maxr, 8*maxr])
             
@@ -66,7 +66,7 @@ class Datafile:
             if gp.geom=='sphere':
                 dummy, nudat, nuerr = Rho_NORM_rho(self.rbin, Nudat, Nuerr)
             else:
-                Nudat, Nuerr = Nudat, Nuerr
+                nudat, nuerr = Nudat, Nuerr
 
             self.Nudat.append(Nudat) # [Msun/pc^2]
             self.Nuerr.append(Nuerr) # [Msun/pc^2]
@@ -77,7 +77,7 @@ class Datafile:
     # read surface density of tracer stars, deproject, renormalize
 
 
-    def read_sigma(self):
+    def read_sigma(self, gp):
         for pop in np.arange(gp.pops+1):
             # print(gp.files.sigfiles[pop])
             Dummy, Dummy, Dummy, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
@@ -91,7 +91,7 @@ class Datafile:
     # read in line of sight velocity dispersion
 
 
-    def read_kappa(self):
+    def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):
             Dummy, Dummy, Dummy, kapdat, kaperr = gh.readcol5(gp.files.kappafiles[pop])
             # 3*[Rscale], [1], [1]

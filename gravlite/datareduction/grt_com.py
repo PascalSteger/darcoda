@@ -12,20 +12,17 @@ import sys
 import pdb
 
 from pylab import *
-import gl_params as gp
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 from gl_centering import *
 
-def run():
-    print('input:')
-    print(gpr.fil)
+def run(gp):
+    print('input: ', gpr.fil)
     x0,y0,vlos = np.genfromtxt(gpr.fil, skiprows=0, unpack =  True,
                                usecols = (0,1,5))
 
     # use only 3000 random particles:
-    pdb.set_trace()
     ind = np.arange(len(x0))
     np.random.shuffle(ind)
     ind = ind[:3000]
@@ -61,7 +58,7 @@ def run():
     r0 = np.sqrt(x0**2+y0**2)/rscale
     sel = (r0<gpr.rprior)
     x = x0[sel]/rscale; y = y0[sel]/rscale # [r_scale]
-    vz=vlos[sel]
+    vz = vlos[sel]
     m = np.ones(len(x))
     r = np.sqrt(x*x+y*y) #[r_scale]
     # print("x y z") on first line, to interprete data later on
@@ -116,4 +113,6 @@ def run():
     
 if __name__=='__main__':
     # gpr.showplots = True
-    run()
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)

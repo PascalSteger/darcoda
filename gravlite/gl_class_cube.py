@@ -3,7 +3,7 @@
 ##
 # @file
 # parameters for MultiNest.
-# cube = [0,1]^ndim,  ndim = nipol + 2*pops*nipol, 
+# cube = [0,1]^ndim,  ndim = nepol + 2*pops*(nepol+nbeta), 
 # Holds representations for overall density,
 # [tracer density, anisotropy]_{for each population}
 # Gives access to density, population profiles,
@@ -17,23 +17,21 @@ import pdb
 import numpy as np
 import numpy.random as npr
 import random
-import gl_params as gp
-import gl_physics as phys
+import gl_params
 import gl_helper as gh
 
 def nu_offset(pop):
-    return gp.nipol + pop*gp.nipol + pop*gp.nbeta
+    return gp.nepol + pop*gp.nepol + pop*gp.nbeta
 ## \fn nu_offset(pop)
 # determine offset for tracer density profiles in data cube
 # @param pop which population (0=first, 1=first additional, ...)
 
     
 def beta_offset(pop):
-    return gp.nipol + pop*gp.nipol + pop*gp.nbeta + gp.nipol
+    return gp.nepol + pop*gp.nepol + pop*gp.nbeta + gp.nepol
 ## \fn beta_offset(pop)
 # determine offset for anisotropy profiles in data cube
 # @param pop which population (0=first, 1=first additional, ...)
-# @param nipol number of radial bins
 
 
 def mapping(arr, minrange, maxrange):
@@ -77,10 +75,10 @@ def mapping_beta_log(arr):
 
 
 class Cube:
-    def __init__ (self, pops):
-        self.pops = pops
+    def __init__ (self, gp):
+        self.pops = gp.pops
         # for density and (nu, beta)_i
-        self.ndim = gp.nipol + pops*gp.nipol + pops*gp.nbeta
+        self.ndim = gp.nepol + gp.pops*gp.nepol + gp.pops*gp.nbeta
         self.cube = np.zeros(self.ndim)
         return
     ## \fn __init__ (self, pops)
@@ -94,13 +92,13 @@ class Cube:
 
     def get_nu(self, pop):
         off = nu_offset(pop)
-        return phys.rho(gp.xipol, self.cube[off:off+gp.nipol])
+        return phys.rho(gp.xipol, self.cube[off:off+gp.nepol], gp)
     ## \fn get_nu(self,pop)
     # return tracer densities
     
     def set_nu(self, pop, newnu):
         off = nu_offset(pop)
-        for i in range(nipol):
+        for i in range(nepol):
             self.cube[off+i] = newnu[i]
         return self.cube
     ## \fn set_nu(self, pop, newnu)
@@ -109,7 +107,7 @@ class Cube:
 
     def get_beta(self, pop):
         off = beta_offset(pop)
-        return phys.beta(gp.xipol, self.cube[off:off+gp.nbeta])
+        return phys.beta(gp.xipol, self.cube[off:off+gp.nbeta], gp)
     ## \fn get_beta(self, pop)
     # return back all tracer densities
 
@@ -122,58 +120,53 @@ class Cube:
     ## \fn set_beta(self,pop,newbeta)
     # set all tracer densities
 
-    def convert_to_parameter_space(self):
+    def convert_to_parameter_space(self, gp):
         # if we want any priors, here they have to enter:
         pc = self.cube
         # rho: density parameters -> adjust halflight density
         # use [0,1]**3 to increase probability of sampling close to 0
         pc[0] = 1./(1-pc[0]**3)-1. # [0,1[ => [0, infty[
 
+
         # rho slope for approaching r=0 asymptotically should be smaller than -3
         # to exclude infinite enclosed mass
-        pc[1] = (pc[1]**3)*2.999
+        pc[1] = (pc[1]**4)*2.999
         for i in range(2, gp.nepol-1):
             # all   -dlog(rho)/dlog(r) at data points and 2,4,8rmax can lie in between 0 and gp.maxrhoslope
-            pc[i] *= gp.maxrhoslope
+            pc[i] = (pc[i]**4) * gp.maxrhoslope
         # rho slope for asymptotically reaching r = \infty must lie below -3
-        # to ensure we have a finite mass at all radii 0<r<\infty
+        # to ensure we have a finite mass at all radii 0<r<=\infty
         pc[gp.nepol-1] = pc[gp.nepol-1] * gp.maxrhoslope + 3.
         off = gp.nepol
         for pop in range(gp.pops):
             # nu parameters -> adjust density at halflight radius
             # nu(r_half)
-            pc[off] = 1.-pc[off]**10           # [0,1[, skewed towards 1
-            pc[off] = 1./pc[off]-1.          # [0,1[ => [0, infty[
-            # nu inner asymptote
-            pc[off+1] = (pc[off+1]**3)*2.999 # see above
+            pc[off] = 1./(1.-pc[off]**5)-1.   # [0,1[ => [0, infty[
+
+            pc[off+1] = (pc[off+1]**4) * 2.999 # nu inner asymptote
             for i in range(2, gp.nepol-1):
-                pc[off+i] *= gp.maxnuslope # see above
-            # pc[off+gp.nepol-1] = (pc[off+gp.nepol-1]**3) * 3. + 3. # see above
+                pc[off+i] = (pc[off+i]**4) * gp.maxnuslope   # see above
             pc[off+gp.nepol-1] = pc[off+gp.nepol-1] * gp.maxnuslope + 3.
             off += gp.nepol
 
             # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
             # starting offset in range [-1,1]
-            # pc[off] = 2.*np.array(pc[off])-1.
-            # betatmp = np.array(pc[off:off+gp.nbeta]) # 1:1, only take [0, 1] (<=> rising beta prior)
-
+            # cluster around 0, go symmetrically in both directions,
             tmp = 2*(pc[off]-0.5)
-            # cluster around 0, go symmetrically into both directions,
             # out to maxbetaslope
             # here we allow |beta_star,0| > 1, so that any models with
             # beta(<r_i) = 1, beta(>r_i) < 1
             # are searched as well
             pc[off] = np.sign(tmp)*tmp**2 # between -1 and 1 for first parameter
             off += 1
-
-            tmp = pc[off] # [-1,1]
-            pc[off] = tmp*gp.maxbetaslope # rising beta prior
-            off += 1
+            for i in range(gp.nbeta-1):
+                pc[off] = pc[off]*gp.maxbetaslope # rising beta prior
+                off += 1
             
         return pc
     ## \fn convert_to_parameter_space(self)
-    # convert [0,1] to parameter space
-    # such that values in cube are the parameters we need for phys.nu/rho/beta
+    # convert [0,1]^ndim to parameter space
+    # such that values in cube are the parameters we need for rho, nu_i, beta_i
     
 ## \class Cube
 # Common base class for all parameter sets

@@ -16,7 +16,6 @@ import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
 
-import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
@@ -25,7 +24,7 @@ from BiWeight import meanbiweight
 
 
 
-def run():
+def run(gp):
     # determine radius once and for all from all tracers
     R, Phi, vzall = np.loadtxt(gpr.fileposspherical[0],
                                comments='#',unpack=True) # 2*[Rscale], [km/s]
@@ -187,8 +186,7 @@ def run():
         
         for b in range(gpr.nbins):
             #     [Rscale] [Rscale]  [Rscale]   [maxvlos]                  [maxvlos]
-            print(Rbin[b],Binmin[b],Binmax[b], np.abs(p_dvlos[b]/maxvlos),np.abs(p_edvlos[b]/maxvlos), file=sigfil)
-            # TODO: check uncommented /np.sqrt(n))
+            print(Rbin[b], Binmin[b], Binmax[b], np.abs(p_dvlos[b]/maxvlos), np.abs(p_edvlos[b]/maxvlos), file=sigfil)
         sigfil.close()
 
 
@@ -203,28 +201,24 @@ def run():
                 kappavelerror = p_edvlos[b-1] # [1]
                 # attention! uses last error
             else:
-                kappavelerror = np.abs(kappavel/np.sqrt(ab)) # [1]
+                kappavelerror = np.abs(kappavel/np.sqrt(ab)) # [1]            # TODO: /np.sqrt(n))?
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerror
             
-            print(Rbin[b],Binmin[b],Binmax[b],\
+            print(Rbin[b], Binmin[b], Binmax[b],\
                   kappavel, kappavelerror, file=kappafil) # 3*[Rscale], 2*[1]
-            # TODO: /np.sqrt(n))
         kappafil.close()
-
-
     
 
 
         if not gpr.showplots: continue
         # plot density
         ion(); subplot(111)
-        print('Rbin = ',Rbin)
-        print('P_dens = ',P_dens)
-        print('P_edens = ',P_edens)
+        print('Rbin = ', Rbin)
+        print('P_dens = ', P_dens)
+        print('P_edens = ', P_edens)
 
-
-        plot(Rbin,P_dens,'b',lw=1)
+        plot(Rbin, P_dens, 'b', lw=1)
         lbound = P_dens-P_edens; lbound[lbound<1e-6] = 1e-6
         ubound = P_dens+P_edens; 
         fill_between(Rbin, lbound, ubound, alpha=0.5, color='r')
@@ -274,5 +268,5 @@ def run():
 
 if __name__ == '__main__':
     gpr.showplots = True
-    run()
+    run(gp)
 

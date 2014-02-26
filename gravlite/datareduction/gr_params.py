@@ -8,7 +8,8 @@
 
 import numpy as np
 import pdb
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 from gl_class_files import *
 
 showplots = False
@@ -20,8 +21,6 @@ if gp.investigate == 'hern':
     repr  = 1     # choose simulation representation
     ncomp = gp.pops+1     # number of populations + 1 (for all comps together)
     # numbers of tracers. both 0: take all particles
-    ntracers1 = 10000  # stars
-    ntracers2 = 0      # DM      (in dual_unit_hern_*)
     
     munit = 1.                                 # [Msun]
     Rcut = 1.e10                               # [Rvir]
@@ -73,8 +72,8 @@ elif gp.investigate == 'walk': # or just want to try some other generic pymc stu
         rho = rho0*(r/r_DM)**(-gamma_DM)*(1.+(r/r_DM)**alpha_DM)**exp
         return rho
     
-    fi = Files()
-    fi.set_walk()
+    fi = Files(gp)
+    fi.set_walk(gp)
     dir = fi.dir
     fil = dir+'mem2'
     
@@ -89,15 +88,16 @@ elif gp.investigate == 'gaia':
     fi  = Files()
     fi.set_gaia()
     dir = fi.dir
-    fil = dir+'dat'
+    fil = dir + 'dat'
     r_DM = 1000.
     rprior = 3.                 # take data out to rprior*R_s
     ncomp  = 2                  # TODO: search Gaia data for two-components, or find out how to split them
 
 elif gp.investigate == 'triax':
     fi  = Files()
+    fi.set_triax(gp)
     dir = fi.dir
-    fil = dir + fi.set_triax()+'.dat'
+    fil = dir + 'dat'
     r_DM = 1500.                  # [pc] TODO check
     rprior = 3.                   # [r_DM?]
     

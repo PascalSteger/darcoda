@@ -183,17 +183,17 @@ legend.shadow        : True
  
 ### FIGURE
 # See http://matplotlib.sourceforge.net/matplotlib.figure.html#Figure
-figure.figsize   : 6, 6    # figure size in inches
+figure.figsize   : 2, 2    # figure size in inches
 figure.dpi       : 120     # figure dots per inch
 figure.facecolor : 0.98    # figure facecolor; 0.75 is scalar gray
 figure.edgecolor : white   # figure edgecolor
  
 # The figure subplot parameters.  All dimensions are fraction of the
 # figure width or height
-figure.subplot.left  : 0.10   # the left side of the subplots of the figure
-figure.subplot.right : 0.90   # the right side of the subplots of the figure
-figure.subplot.bottom : 0.15  # the bottom of the subplots of the figure
-figure.subplot.top : 0.95     # the top of the subplots of the figure
+figure.subplot.left  : 0.30   # the left side of the subplots of the figure
+figure.subplot.right : 0.95   # the right side of the subplots of the figure
+figure.subplot.bottom : 0.25  # the bottom of the subplots of the figure
+figure.subplot.top : 0.90     # the top of the subplots of the figure
 figure.subplot.wspace : 0.0   # the amount of width reserved for blank space 
                               # between subplots
 figure.subplot.hspace : 0.0   # the amount of height reserved for white space

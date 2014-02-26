@@ -6,12 +6,11 @@
 
 # (c) 2013 ETHZ psteger@phys.ethz.ch
 
-import numpy as np
-
 class Profiles:
     def __init__(self, pops, nipol):
         self.pops = pops
         self.nipol= nipol
+        import numpy as np
         self.rho  = np.zeros(nipol)
         self.M    = np.zeros(nipol)
         self.beta = np.zeros((pops+1)*nipol) # (pops+1) for overall, 1, 2, ...

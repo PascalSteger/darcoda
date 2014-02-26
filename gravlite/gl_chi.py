@@ -10,15 +10,12 @@ from types import *
 import pdb
 import numpy.random as npr
 
-import gl_params as gp
 import gl_file as gfile
 from gl_analytic import *
 from gl_project import rho_INT_Rho, rho_param_INT_Rho
 from gl_class_profiles import Profiles
 
-def compare_nu(pop, dat, err):
-    # if dat == True: return data; else: model (possibly projected)
-    # if err == True: return data error instead
+def compare_nu(pop, dat, err, gp):
     if (not dat) and err:
         print('wrong use of compare_nu, error only given for data, not model')
         exit(1)
@@ -55,16 +52,17 @@ def chi2red(model, data, sig, dof):
 # @param dof Degrees Of Freedom
 
 
-def calc_chi2(profs, nuparstore):
+def calc_chi2(profs, nuparstore, gp):
     chi2 = 0.
     off = 0
+    # TODO: check 0 for pop is used when looking at gp.pops=1
+    # TODO: and 1, 2 are used (*not* 0) when looking at gp.pops=2
     for pop in np.arange(gp.pops)+1:
-        # nu with normalization to 1 in first bin
         nuparams = nuparstore[pop-1]
-        Numodel  = rho_param_INT_Rho(gp.xepol, nuparams) # [Msun/pc^2], on nipol bins
+        Numodel  = rho_param_INT_Rho(gp.xepol, nuparams, gp) # [Msun/pc^2], on nipol bins
         # Numodel = rho_INT_Rho(gp.xipol, profs.get_nu(pop)) # [Msun/pc^2]
-        Nudata  = compare_nu(pop,True,False)               # [Msun/pc^2]
-        Nuerr   = compare_nu(pop,True,True)                # [Msun/pc^2]
+        Nudata  = compare_nu(pop, True, False, gp)           # [Msun/pc^2]
+        Nuerr   = compare_nu(pop, True, True, gp)            # [Msun/pc^2]
         
         chi2_nu  = chi2red(Numodel, Nudata, Nuerr, gp.dof) # [1]
         chi2 += chi2_nu                 # [1]
@@ -73,9 +71,8 @@ def calc_chi2(profs, nuparstore):
         sigerr  = gp.dat.sigerr[pop]    # [km/s]
         chi2_sig = chi2red(profs.get_sig(pop), sigdat, sigerr, gp.dof) # [1]
         chi2 += chi2_sig                # [1]
-        print('profs: ', profs.get_nu(pop)[0],', data: ', Nudata[0])
+        # print('profs: ', profs.get_nu(pop)[0],', data: ', Nudata[0])
         print('chi2_nu, chi2_sig = ',chi2_nu,' ',chi2_sig)
-        # TODO: check huge offset of Numodel (1000s Msun/pc^2) and Nudata (0.3 Msun/pc^2)
         if gp.usekappa:
             kapdat  = gp.dat.kapdat[pop] # [1]
             kaperr  = gp.dat.kaperr[pop] # [1]

@@ -13,7 +13,8 @@ import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
 
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 import gl_file as gfile
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
@@ -96,7 +97,7 @@ def run():
         ax2.yaxis.set_label_position("right")
         draw()
         
-        # projNu = rho_INT_Rho(rbin, dens) # TODO: do not forget try
+        # projNu = rho_INT_Rho(rbin, dens)
         # projNu = test(rbin, binmin, binmax, dens)
         # ax1.plot(rbin, projNu)
         

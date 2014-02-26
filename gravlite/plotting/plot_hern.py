@@ -13,7 +13,8 @@ from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
 from gl_analytic import Mwalkertot
 from matplotlib.backends.backend_pdf import PdfPages
 from plots_common import *
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 
 dir = gp.files.machine+'/backup/'
 

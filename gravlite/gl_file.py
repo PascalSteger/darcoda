@@ -9,12 +9,10 @@
 import pdb
 import sys
 import numpy as np
-import gl_params as gp
 import gl_physics as phys
-
 from gl_data import Datafile
 
-def bin_data():
+def bin_data(gp):
     if gp.investigate == 'hern':
         import grh_com
         import grh_Pos
@@ -27,23 +25,30 @@ def bin_data():
     elif gp.investigate == 'walk':
         # TODO: call main again after first iteration, if gp.metalpop set
         import grw_COM, grw_MCMCbin # inside there, split by metallicity
-        grw_COM.run()
-        grw_MCMCbin.run()
+        grw_COM.run(gp)
+        grw_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhowalktot)
         if gp.model:
             import grw_com, grw_mcmcbin
             grw_com.run()
             grw_mcmcbin.run()
+    elif gp.investigate == 'triax':
+        import grt_com
+        grt_com.run()
+        import grt_dens
+        grt_dens.run()
+        import grt_siglos
+        grt_siglos.run()
     elif gp.investigate == 'discsim':
         import grs_com_align # centering, if not aligned yet
         import grs_rho
         import grs_siglos
     return
-## \fn bin_data()
+## \fn bin_data(gp)
 # get data, bin it anew (e.g. if gp.nbin changed)
 
 
-def get_data():
+def get_data(gp):
     gp.dat = Datafile()
     if gp.investigate == 'discmock':
         import gl_discmock as gs
@@ -61,15 +66,16 @@ def get_data():
             gp.maxvlos.append(A[4])
 
         gp.rstarhalf = gp.Rscale[0]
-        gp.dat.read_nu()    # set gp.xipol in here
-        gp.dat.read_sigma()
-        gp.dat.read_kappa()
+        gp.dat.read_nu(gp)    # set gp.xipol in here
+        gp.dat.read_sigma(gp)
+        if gp.usekappa:
+            gp.dat.read_kappa(gp)
     return gp.dat
 ## \fn get_data()
 # read in data, store in a gl_data class
 
 
-def arraydump(fname,arrays,app='a',narr=1):
+def arraydump(fname, arrays, app='a', narr=1):
     fn=open(fname,app)
     if narr == 1:
         print(" ".join(map(str,arrays)), file=fn)

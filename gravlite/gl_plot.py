@@ -11,26 +11,34 @@ import pdb
 from pylab import *
 from matplotlib.ticker import MaxNLocator
 
-import gl_params as gp
 import gl_physics as phys
 import gl_chi as gc
 from gl_analytic import *
 from gl_int import *
-import gl_units as units
 
 global f, axs
 
-# TODO: needs function to plot any profile in semilogarithmic plot,
+# TODO: function to plot any profile in semilogarithmic plot,
 #       with custom labels
 
-
 # TODO: function for plotting median, 1sigma, 2sigma profiles in semilog plot
+
 def startlog():
+    fig = figure(figsize=(1,1))
+    fig.clf()
+    fig.yscale('log')
+    return fig
+## \fn startlog
+# start new figure in semilog. to be used in debug mode
+
+
+def startloglog():
     clf()
+    xscale('log')
     yscale('log')
     return
-## \fn start_log
-# start new figure in semilog. to be used in debug mode
+## \fn startloglog
+# start new figure in loglog. to be used in debug mode
 
 
 def start():

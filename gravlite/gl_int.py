@@ -11,8 +11,6 @@ import scipy
 from scipy.integrate import simps,trapz,quad
 from scipy.interpolate import splrep, splev, splint
 import pdb
-
-import gl_params as gp
 import gl_chi as gc
 import gl_helper as gh
 import gl_plot as gpl
@@ -50,12 +48,12 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 # @param log bool for working in log space
 
 
-def ant_intbeta(r0, betaparam):
+def ant_intbeta(r0, betaparam, gp):
     # extend beta by interpolating
-    r0ext = [r0[0]/5.,r0[0]/4., r0[0]/3., r0[0]/2.]
+    r0ext = [r0[0]/5., r0[0]/4., r0[0]/3., r0[0]/2.]
     r0nu = np.hstack([r0ext, r0, r0[:-1]+(r0[1:]-r0[:-1])/2.])
     r0nu.sort()
-    betanu = phys.beta(r0nu, betaparam)
+    betanu = phys.beta(r0nu, betaparam, gp)
     # TODO: include beta parameter directly in integral!
     # TODO: or use more Stuetzpunkte
     
@@ -137,18 +135,9 @@ def smooth_ext(x0, y0, xext, k=1, s=0.1, log=True, slope=-3., minval=0.):
 
 
 def introduce_points_in_between(r0):
-    r0ext = np.array([r0[0]*0.25,r0[0]*0.50,r0[0]*0.75])
-    dR = r0[1:]-r0[:-1]
-    r0nu = np.hstack([r0ext,r0,dR/2.+r0[:-1]])
-
-
-    # extend to higher radii
-    # if gp.nipol == gp.nepol:
-    #     dr0 = (r0[-1]-r0[-2])/8.
-    # # r0ext = np.hstack([r0[-1]+dr0, r0[-1]+2*dr0, r0[-1]+3*dr0, r0[-1]+4*dr0])
-    #     r0ext = np.hstack([1.125*r0[-1], 1.25*r0[-1], 1.5*r0[-1], 2*r0[-1]])
-    #     r0nu = np.hstack([r0nu, r0ext])
-    
+    r0ext = np.array([r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
+    dR = r0[1:] - r0[:-1]
+    r0nu = np.hstack([r0ext, r0, dR/2.+r0[:-1]])
     r0nu.sort()
     return r0nu
 ## \fn introduce_points_in_between(r0)
@@ -156,17 +145,17 @@ def introduce_points_in_between(r0):
 # @param r0 original bin centers
 
 
-def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param):
+def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
     # TODO: check all values in ()^2 and ()^4 are >=0
     minval = 1.e-30
     r0nu   = introduce_points_in_between(r0)
 
-    rhonu  = phys.rho(r0nu,  rho_param)
-    nunu   = phys.rho(r0nu,  nu_param)
-    betanu = phys.beta(r0nu, beta_param)
+    rhonu  = phys.rho(r0nu,  rho_param, gp)
+    nunu   = phys.rho(r0nu,  nu_param, gp)
+    betanu = phys.beta(r0nu, beta_param, gp)
 
     # calculate intbeta from beta approx directly
-    idnu   = ant_intbeta(r0nu, beta_param)
+    idnu   = ant_intbeta(r0nu, beta_param, gp)
 
     # integrate enclosed 3D mass from 3D density
     r0tmp = np.hstack([0.,r0nu])
@@ -189,7 +178,7 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param):
     # use quadinflog or quadinfloglog here
     sigr2nu = np.zeros(len(r0nu))
     for i in range(len(r0nu)):
-        sigr2nu[i] = np.exp(-idnu[i])/nunu[i]*gh.quadinflog(xint, yint, r0nu[i], np.inf)
+        sigr2nu[i] = np.exp(-idnu[i])/nunu[i]*gh.quadinflog(xint, yint, r0nu[i], np.inf, False)
 
     # project back to LOS values
     # sigl2sold = np.zeros(len(r0nu)-gp.nexp)
@@ -200,22 +189,11 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param):
         ynew = 2.*(1-betanu[i]*(r0nu[i]**2)/(r0nu[i:]**2))
         ynew *= nunu[i:] * sigr2nu[i:]
         gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
-        # yscale = 10.**(1.-min(np.log10(ynew[1:])))
-        # ynew *= yscale
-        # gh.checkpositive(ynew, 'ynew sigl2s')
-
+        # TODO: check sigr2nu: has too many entries of inf!
         tcknu = splrep(xnew, ynew, k=1)
         # interpolation in real space for int
 
-        # power-law approximation from last three bins to infinity
-        # tckex = splrep(xnew[-3:], np.log(ynew[-3:]),k=1,s=1.0) # fine
-        # invexp = lambda x: np.exp(splev(x,tckex,der=0))
-        # C = quad(invexp,xnew[-1],np.inf)[0]
-        
-        # C = max(0.,gh.quadinflog(xnew[-2:],ynew[-2:],xnew[-1],np.inf))
-        # sigl2sold[i] = splint(xnew[0], xnew[-1], tcknu) + C
-        sigl2s[i] = gh.quadinflog(xnew[1:], ynew[1:], xnew[0], np.inf)
-        # sigl2s[i] /= yscale
+        sigl2s[i] = gh.quadinflog(xnew[1:], ynew[1:], xnew[0], np.inf, False)
     # TODO: for last 3 bins, up to factor 2 off
     
     # if min(sigl2s)<0.:
@@ -244,10 +222,7 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param):
     yscale = 10.**(1.-min(np.log10(yint[1:])))
     yint *= yscale
     # power-law extrapolation to infinity
-    C = max(0., gh.quadinflog(xint[-3:], yint[-3:], r0nu[-1], np.inf))
-    # tckexp = splrep(xint[-3:],np.log(yint[-3:]),k=1,s=0.) # fine, exact interpolation
-    # invexp = lambda x: np.exp(splev(x,tckexp,der=0))
-    # C = quad(invexp,r0nu[-1],np.inf)[0]
+    C = max(0., gh.quadinflog(xint[-3:], yint[-3:], r0nu[-1], 1000*r0nu[-1]))
     
     tcknu = splrep(xint, yint, k=3) # interpolation in real space # TODO:
     for i in range(len(r0nu)-gp.nexp):
@@ -280,7 +255,7 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param):
         #yscale = 10.**(1.-min(np.log10(ynew[1:])))
         #ynew *= yscale
         # gpl.plot(xnew,ynew)
-        C = max(0., gh.quadinflog(xnew[-3:], ynew[-3:], xnew[-1], np.inf))
+        C = max(0., gh.quadinflog(xnew[-3:], ynew[-3:], xnew[-1], 1000*xnew[-1]))
         tcknu = splrep(xnew,ynew) # not s=0.1, this sometimes gives negative entries after int
         kapl4s[i] = 2. * (splint(0., xnew[-1], tcknu) + C)
         #kapl4s[i] /= yscale
@@ -329,97 +304,6 @@ def int_sigr2_old(pnts, r_tot, beta_tot, M_tot, nu_tot):
 # @param beta_tot in [1]
 # @param M_tot in [Msun]
 # @param nu_tot in [Msun/pc^3]
-
-
-def ant_sigr2_old(r0, intbeta, M, nu):
-    if min(nu)<0.:
-        print('error: negative nu')
-        pdb.set_trace()
-
-    # get full integrand first
-    igra = np.log(gp.G1 * M * nu/r0**2 * np.exp(intbeta))
-
-    # then fit polynomial
-    x = r0[-gp.nipol/2:]
-    y = igra[-gp.nipol/2:]
-    # TODO: check that the following is not wiggling too much for (not checkint)
-    # x = r0[-2:]
-    # y = r0[-2:]
-    polyhilo = np.polyfit(x,y, 1)#, rcond=None, full=False, w=None,cov=False) # 3 is degree, w is weights
-
-    # integrate polynomial from r0 (up to max(r_data)) to infinity
-    intpoly = int_poly_inf(r0[-1],polyhilo)
-
-    # the integrand is assumed to be zero above 2*rmax
-    tmp = np.zeros(gp.nipol)
-    for i in range(gp.nipol):
-        xint  = r0[i:]               # [pc]
-        yint  = gp.G1 * M[i:]/r0[i:]**2 # [1/pc munit/msun km^2/s^2] = [1/pc (km/s)^2]
-        yint *= nu[i:]                     # [munit/pc^4 (km/s)^2]
-        yint *= np.exp(intbeta[i:])          # [munit/pc^4 (km/s)^2]
-
-        # case a: add integrated polynomial above 3r_S only
-        tmp[i] = (np.exp(-intbeta[i])/nu[i]) * \
-                 (simps(yint, xint, even=gp.even)  +  intpoly) # [(km/s)^2]
-
-        # case b: return integrated polynomial directly.
-        # forget case b, only valid if polynomial fit over whole of gp.xipol fine
-        # but: we have exponential decay in semilog igra, so only take 2nd half for approx.
-        # and have to forget all the inner values from extrapolation
-    return tmp                  # [(km/s)^2]
-## \fn ant_sigr2_old(r0, intbeta, M, nu)
-# sigma_r^2
-# not used anymore
-# @param r0 radial bins in [pc]
-# @param intbeta in [1]
-# @param M mass profile, in [Msun]
-# @param nu tracer density profile in [Msun/pc^3]
-
-
-def ant_kapr4_old(r0, intbeta, M, nu, sigr2):
-    # get full integrand first
-    igra = np.log(gp.G1 * M * nu * sigr2/r0**2 * np.exp(intbeta)) # [G]*[msun^2/pc^5]*[(km/s)^4]
-
-    # then fit polynomial
-    x = r0[-gp.nipol/2:]
-    y = igra[-gp.nipol/2:]
-    # TODO: check that the following is not wiggling too much for (not checkint)
-    # x = r0[-2:]
-    # y = r0[-2:]
-    polyhilo = np.polyfit(x,y, 1)#, rcond=None, full=False, w=None,cov=False) # 3 is degree, w is weights
-
-    # integrate polynomial from r0 (up to max(r_data)) to infinity
-    intpoly = int_poly_inf(r0[-1],polyhilo)
-
-    # the integrand is assumed to be zero above 2*rmax
-    tmp = np.zeros(gp.nipol)
-    for i in range(gp.nipol):
-        xint  = r0[i:]                  # [pc]
-
-        yint  = gp.G1 * M[i:]/r0[i:]**2 # [1/pc munit/msun km^2/s^2] = [1/pc (km/s)^2]
-        yint *= nu[i:]                  # [munit/pc^4 (km/s)^2]
-        yint *= sigr2[i:]               # [munit/pc^4 (km/s)^4
-        yint *= np.exp(intbeta[i:])    # [munit/pc^4 (km/s)^4]
-
-        # case a: add integrated polynomial above 3r_S only
-        tmp[i] = 3.*(np.exp(-intbeta[i])/nu[i]) * \
-                 (simps(yint, xint, even=gp.even)  +  intpoly) # [(km/s)^4]
-
-        # case b: return integrated polynomial directly.
-        # forget case b, only valid if polynomial fit over whole of gp.xipol fine
-        # but: we have exponential decay in semilog igra, so only take 2nd half for approx.
-        # and have to forget all the inner values from extrapolation
-
-    return tmp                          # [(km/s)^4]
-## \fn ant_kapr4_old(r0, intbeta, M, nu, sigr2)
-# kappa^4_r
-# not used anymore
-# @param r0 radial bins in [pc]
-# @param intbeta integrated velocity anisotropy, in [1]
-# @param M 3D mass profile, in [Msun]
-# @param nu 3D tracer density in [Msun/pc^3]
-# @param sigr2 radial sigma^2 in [(km/s)^2]
-
 
 def ant_kaplos4surf(r0, beta, nu, kapr4):
     pnts = len(r0)-1

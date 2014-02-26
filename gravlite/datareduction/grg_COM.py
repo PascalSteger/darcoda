@@ -12,13 +12,12 @@ import sys
 import pdb
 
 from pylab import *
-import gl_params as gp
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 from gl_centering import *
 
-def run():
+def run(gp):
     print('input:',gpr.fil)
     x0, y0, z0, vx, vy, vz = np.transpose(np.loadtxt(gpr.fil))
     
@@ -111,4 +110,4 @@ def run():
     
 if __name__=='__main__':
     # gpr.showplots = True
-    run()
+    run(gp)

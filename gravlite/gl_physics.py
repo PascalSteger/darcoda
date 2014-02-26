@@ -8,12 +8,13 @@
 
 import pdb
 import numpy as np
-import gl_params as gp
 import gl_chi as gc
 import gl_helper as gh
-from gl_int import *
+
+from scipy.interpolate import splrep, splint
 from gl_project import rho_INT_Rho, rho_param_INT_Rho
 from gl_analytic import *
+import gl_int as gi
 
 def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
     return rho0*(r/r_DM)**(-gamma_DM)*\
@@ -28,30 +29,83 @@ def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
 # @param gamma_DM [1] central density slope
 
       
-def nr(r0, dlogrhodlogr):
+def nr(dlr, gp):
     # extend asymptotes to 0, and high radius
-    r0 = np.hstack([r0[0]/1e4, r0[0]/2., r0, gp.rinfty*max(r0)])
+    r0 = gp.xepol
+    r0 = np.hstack([r0[0]/1e4, r0[0]/2., r0, gp.rinfty*r0[-4]])
     logr0 = np.log(r0/gp.rstarhalf)
-    dlogrhodlogr = np.hstack([dlogrhodlogr[0], dlogrhodlogr]) # dlogrhodlogr[-1]])
-    dlogrhodlogr *= -1.
+    dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
+    dlr *= -1.
     
     # use linear spline interpolation in r
-    spline_n = splrep(logr0, dlogrhodlogr, k=1)
+    spline_n = splrep(logr0, dlr, k=1)
     
     # evaluate spline at any points in between
     return spline_n #, splev(r0, spline_n)
-## \fn nr(r0, dlogrhodlogr, defrext)
+## \fn nr(r0, dlogrhodlogr, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
 # @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
-# @parma defr0  corresponding radii
-# @param r0     new radii to interpolate to
+# @param r0 bin centers in [pc]
+
+def nr_medium(dlr, gp):
+    binmin = np.hstack([gp.dat.binmin[0]/1e4, \
+                        gp.dat.binmin[0]/2., \
+                        gp.dat.binmin, \
+                        gp.dat.binmax[-1], \
+                        3.*gp.xepol[-4], \
+                        # gp.xepol[-4] is last data bin radius
+                        5.*gp.xepol[-4], \
+                        11.*gp.xepol[-4]])
+                        
+    binmax = np.hstack([gp.dat.binmin[0]/2., \
+                        gp.dat.binmin[0], \
+                        gp.dat.binmax, \
+                        3*gp.xepol[-4], \
+                        5.*gp.xepol[-4], \
+                        11.*gp.xepol[-4], \
+                        (2*gp.rinfty-11.)*gp.xepol[-4]])
+
+    # gpl.plot(gp.xepol, 1*np.ones(len(gp.xepol)), 'b.')
+    # gpl.plot(gp.rinfty*gp.xepol[-4], 1, 'b.')
+    # gpl.plot(binmin, np.zeros(len(binmin)), '.')
+    # gpl.plot(binmax, 2*np.ones(len(binmax)), '.')
+    # gpl.ylim([-4, 4])
+    # gpl.xscale('log')
+
+    
+    # extend asymptotes to 0, and high radius
+    r0 = np.hstack([binmin, binmax[-1]])
+    # 1+(Nbin+1)+1 entries
+    logr0 = np.log(r0/gp.rstarhalf)
+    dlr = np.hstack([dlr[0], dlr, dlr[-1]]) # 1+Nbin+2 entries
+    dlr *= -1.
+    
+    # use linear spline interpolation in r
+    spline_n = splrep(logr0, dlr, k=1)
+    # evaluate spline at any points in between
+    return spline_n #, splev(r0, spline_n)
+## \fn nr_medium(binmin, binmax, dlogrhodlogr, gp)
+# calculate n(r) at any given radius, as linear interpolation with two asymptotes
+# @param dlogrhodlogr : asymptote at 0, n(r) for all bins at outsides of bin, asymptote at infinity
+#                       1+Nbin+1 entries in [log Msun/pc^3/(log pc)]
+# @param binmin minimum of bins, Nbin entries in [pc]
+# @param binmax minimum of bins, Nbin entries in [pc]
 
 
-def rho(r0, arr):
+def rho(r0, arr, gp):
     rhoathalf = arr[0]
     arr = arr[1:]
-    spline_n = nr(gp.xepol, arr) # fix on gp.xepol, as this is where definition is on
 
+    spline_n = nr_medium(arr, gp) # extrapolate on gp.xepol, as this is where definition is on
+    # spline_n_direct = nr(arr, gp) # fix on gp.xepol, as this is where definition is on
+
+    # import gl_plot as gpl
+    # from scipy.interpolate import splev
+    # gpl.plot(gp.xepol, -splev(np.log(gp.xepol/gp.rstarhalf), spline_n_direct),'b.')
+    # gpl.plot(gp.xepol, -splev(np.log(gp.xepol/gp.rstarhalf), spline_n),'r')
+    # gpl.plot(gp.xepol, -splev(np.log(gp.xepol/gp.rstarhalf), spline_n),'r.')
+    # pdb.set_trace()
+    
     rs =  np.log(r0/gp.rstarhalf) # have to integrate in d log(r)
 
     # check assumption r_min < rstarhalf < r_max
@@ -62,10 +116,15 @@ def rho(r0, arr):
     logrleft  = rs[(rs<0.)]
     logrleft  = logrleft[::-1]
     logrhoright = []
+    # if rhoathalf < 1e-200:
+    #     pdb.set_trace() # TODO: skewing of nu[0] in gl_class_cube
+    # 1/(1-x^n)-1
+    # not too small n, as then bprior is hit
+    # not too high n, as this gives higher percentage of rhoathalf ~= 0.
     for i in np.arange(0, len(logrright)):
         logrhoright.append(np.log(rhoathalf) + \
                            splint(0., logrright[i], spline_n))
-                           # TODO: integration along dlog(r) instead of dr?!
+                           # integration along dlog(r) instead of dr
 
     logrholeft = []
     for i in np.arange(0, len(logrleft)):
@@ -75,7 +134,7 @@ def rho(r0, arr):
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)
     gh.checkpositive(tmp, 'rho()')
     return tmp
-## \fn rho(r0, arr)
+## \fn rho(r0, arr, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
 # @param arr: rho(rstarhalf), asymptote_0, nr(gp.xipol), asymptote_infty
@@ -85,7 +144,7 @@ def rho(r0, arr):
 # def rho_plug_formula(r0, arr, rarr, rstarhalf):
 #     rhohalf = arr[0]
 #     narr    = arr[1:]
-#     return rhohalf * (r0/rstarhalf)**(-nr(r0, narr, rarr))
+#     return rhohalf * (r0/rstarhalf)**(-nr(r0, narr, gp))
 ## \fn rho_plug_formula(r0, arr, rarr, rstarhalf)
 # scale [0,1] to [0, maxrange], monotonically decreasing for all radii
 # thus setting n = - arr = - d ln(rho)/ d ln(r)
@@ -112,7 +171,7 @@ def beta_star_to_beta(betastar):
 # map beta* to beta
 
 
-def mapping_beta_star_poly(r0, arr):
+def mapping_beta_star_poly(r0, arr, gp):
     betatmp = 0.
     for i in range(gp.nbeta):
         betatmp += arr[i] * (r0/max(gp.xipol))**i
@@ -125,16 +184,16 @@ def mapping_beta_star_poly(r0, arr):
         if betatmp[i] <= -1.:
             betatmp[i] = -0.99999999999 # excluding -inf values in beta
     return betatmp
-## \fn mapping_beta_star_poly(r0, arr)
+## \fn mapping_beta_star_poly(r0, arr, gp)
 # map [0,1] to [-1,1] with a polynomial
 # @param arr normalized a_i, s.t. abs(sum(a_i)) = 1
 
 
-def beta(r0, arr):
-    betastar = mapping_beta_star_poly(r0, arr)
+def beta(r0, arr, gp):
+    betastar = mapping_beta_star_poly(r0, arr, gp)
     betatmp  = beta_star_to_beta(betastar)
     return betatmp
-## \fn beta(r0, arr)
+## \fn beta(r0, arr, gp)
 # return beta calculated from parameters a_i of polynomial representation
 # @param arr parameters a_i
 
@@ -180,10 +239,33 @@ def calculate_surfdens(r, M):
 # @param M 3D mass profile
 
 
-def sig_kap_los(r0, pop, rho_param, nu_param, beta_param):
-    surfden = rho_param_INT_Rho(r0, rho_param) # total surface density
-    siglos2surf,kaplos4surf = ant_sigkaplos2surf(r0, beta_param,\
-                                                 rho_param, nu_param)
+def sig_kap_los(r0, pop, rho_param, nu_param, beta_param, gp):
+    # TODO: check rho_params, then projection, then delete
+    # M = 1
+    # a = gp.rstarhalf
+    # rho_a = 3.*M/(4.*np.pi)*a/(r0+a)**4
+    # nr = -gh.derivipol(np.log(rho_a), np.log(r0))
+    # for i in range(len(nr)):
+    #     if nr[i]<0.:
+    #         nr[i] = 0.0
+    # rho_param = np.hstack([7.e-11, nr[0], nr, nr[-1]])
+    # rho_p = phys.rho(r0, rho_param, gp)
+    # gpl.clf(); gpl.xscale('log'); gpl.yscale('log')
+    # gpl.plot(r0, rho_a, 'b')
+    # gpl.plot(r0, rho_p, 'r')
+
+    # # TODO: determine rho_param for Hernquist and Walker profile!
+    # s = r0/a
+    # surfden_a = M/(4.*np.pi*a**2)/(s**2-1)**3 *(-2-13*s**2+3*s**2*(4.+s**2)*ga.X(s))
+    # gpl.plot(r0, surfden_a, 'b')
+    
+    # surfden_p = rho_param_INT_Rho(r0, rho_param) # total surface density
+    # gpl.plot(gp.xipol, surfden_p, 'r')
+    # pdb.set_trace()
+    
+    surfden = rho_param_INT_Rho(r0, rho_param, gp)
+    siglos2surf, kaplos4surf = gi.ant_sigkaplos2surf(r0, beta_param,\
+                                                     rho_param, nu_param, gp)
     # takes [pc], [1*pc], [munit], [munit/pc^3], returns [(km/s)^2], [1]
 
     siglos2 = siglos2surf[:-3]/surfden   # [(km/s)^2]
@@ -199,7 +281,7 @@ def sig_kap_los(r0, pop, rho_param, nu_param, beta_param):
         kaplos = 3.*np.ones(len(siglos))
 
     return siglos, kaplos                                 # [km/s], [1]
-## \fn sig_kap_los(r0, pop, rho_param, nu_param, beta_param)
+## \fn sig_kap_los(r0, pop, rho_param, nu_param, beta_param, gp)
 # General function to calculate \sigma_{los} 
 # with analytic integral over fitting polynomial'
 # @param r0 radius [pc]

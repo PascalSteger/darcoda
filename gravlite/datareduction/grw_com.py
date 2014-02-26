@@ -12,30 +12,25 @@ import sys
 import pdb
 
 from pylab import *
-import gl_params as gp
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 from gl_centering import *
 
-def run():
-    print('input:')
-    print(gpr.fil)
+def run(gp):
+    print('input: ', gpr.fil)
     x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
-                                                 usecols=(0,1,2,11,12,13,19,20),\
+                                                 usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
                                                  dtype="d17",\
                                                  converters={0:expDtofloat,  # x0  in pc \
                                                              1:expDtofloat,  # y0  in pc \
                                                              2:expDtofloat,  # z0  in pc \
-                                                             11:expDtofloat, # vz0 in km/s\
+                                                             5:expDtofloat, # vz0 in km/s\
                                                              12:expDtofloat, # vb0(LOS due binary), km/s\
                                                              13:expDtofloat, # Mg0 in Angstrom\
                                                              19:expDtofloat, # PM0 [1]\
                                                              20:expDtofloat}) # comp0 1,2,3(background)
-    
-    
-    
-    # TODO: use component 6-1 instead of 12-1 for z velocity, to include observational errors
+    # use component 12-1 instead of 6-1 for z velocity, to exclude observational errors
 
     # only use stars which are members of the dwarf: exclude pop3 by construction
     pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
@@ -50,10 +45,10 @@ def run():
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
         import pymcmetal as pmc
-        p,mu1,sig1,mu2,sig2, M = pmc.bimodal_gauss(Mg0)
-        pm1, pm2 = pmc.assign_pop(Mg0,p,mu1,sig1,mu2,sig2)
+        p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)   # [TODO]
+        pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)   # [1]
         # output: changed pm1, pm2
-        # assume no component 3 stars are included
+        # assumption: no component 3 stars are included
 
     # cutting pm_i to a maximum of ntracers particles:
     from random import shuffle
@@ -150,4 +145,4 @@ def run():
     
 if __name__=='__main__':
     # gpr.showplots = True
-    run()
+    run(gp)

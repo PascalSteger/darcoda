@@ -13,7 +13,8 @@ import multiprocessing as mp
 from pylab import *
 
 
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 
@@ -62,9 +63,9 @@ def run():
         crscale.close()
 
         cdens = open(gpr.get_params_file(comp),'a')
-        print(Dens0,file=cdens)               # [munit/Rscale^2]
-        print(Dens0/Rscale**2,file=cdens)      # [munit/pc^2]
-        print(Totmass,file=cdens)             # [munit]
+        print(Dens0, file=cdens)               # [munit/Rscale^2]
+        print(Dens0/Rscale**2, file=cdens)      # [munit/pc^2]
+        print(Totmass, file=cdens)             # [munit]
         cdens.close()
 
         print(gpr.get_dens_file(comp))
@@ -76,7 +77,6 @@ def run():
         em = open(gpr.get_enc_mass_file(comp),'w')
         print('# R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
               'M(<Binmax) [Msun]','error [Msun]', file=em)
-
     
         AB0   = np.sum(A[0])/(1.*gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(AB0)       # [munit/Rscale^3]
@@ -103,8 +103,7 @@ def run():
             
             merror = menclosed/np.sqrt(AB) # artificial menclosed/10 # [Totmass]
             print(Rbin[b], Binmin[b], Binmax[b], menclosed, merror, file=em)
-            # [rscale], 2*[Totmass]
-            # TODO: check: take rbinmax for MCMC?
+            # [Rscale], 2*[Totmass]
         de.close()
         em.close()
         

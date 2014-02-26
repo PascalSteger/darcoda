@@ -6,7 +6,8 @@
 
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 from pylab import *
 import numpy as np

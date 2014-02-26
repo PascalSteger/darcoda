@@ -11,7 +11,8 @@ from pylab import *
 import pdb
 from scipy.interpolate import splrep, splev
 
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 from gl_analytic import Mwalkertot, rhogaiatot_3D, betagaia
 import gl_helper as gh
 from gl_project import rho_INT_Rho

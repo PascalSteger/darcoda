@@ -17,10 +17,7 @@ import pdb
 from scipy.integrate import simps
 from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
 from scipy.interpolate import splrep, splev, splint
-
-import gl_params as gp
 import gl_helper as gh
-from gl_int import int_poly_inf
 import gl_plot as gpl
 import gl_physics as phys
 
@@ -70,6 +67,7 @@ def rho_INTDIRECT_Rho(r0, rho):
         # power-law extension to infinity
         tck = splrep(xint[-4:],np.log(yint[-4:]),k=1,s=1.)
         invexp = lambda x: np.exp(splev(x,tck,der=0))
+        pdb.set_trace()
         dropoffint = quad(invexp,r0nu[-1],np.inf)
         tcknu = splrep(xnew,ynew,s=0) # interpolation in real space
         Rho[i] = 2. * (splint(r0nu[i], r0nu[-1], tcknu) + dropoffint[0])
@@ -139,24 +137,22 @@ def rho_INT_Rho(r0, rho):
 # @param rho 3D density, [Msun/pc^3]
 
 
-def rho_param_INT_Rho(r0, rhoparam):
+def rho_param_INT_Rho(r0, rhoparam, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     # gh.checknan(rhoparam, 'rho_param_INT_Rho')
-
-    xmin = r0[0]/1e4
-    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
+    xmin = r0[0]/30. # tweaked. 1e4 gives error in quad()
+    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75]) # TODO: len -1! ok?
     r0nu = np.hstack([r0left, r0])
 
-    rhonu = phys.rho(r0nu, rhoparam)
-    
+    rhonu = phys.rho(r0nu, rhoparam, gp)
     Rho = np.zeros(len(r0nu)-gp.nexp)
     for i in range(len(r0nu)-gp.nexp):
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)         # [lunit]
         ynew = 2.*rhonu[i:]
 
-        # power-law extension to infinity. TODO: include in Rho[i] below
-        C = gh.quadinflog(xnew[-gp.nexp:], ynew[-gp.nexp:], xnew[-1], np.inf)
+        # power-law extension to infinity
+        C = gh.quadinflog(xnew[-gp.nexp:], ynew[-gp.nexp:], xnew[-1], 1e6*max(xnew)) #np.inf)
         # tcknu  = splrep(xnew, ynew, k=3)
         # interpolation in real space, not log space
         # problem: splint below could give negative values
@@ -164,11 +160,11 @@ def rho_param_INT_Rho(r0, rhoparam):
         # workaround: multiply by const/add const to keep spline positive @ all times
         #             or set to log (but then integral is not straightforward
         # Rho[i] = splint(0., xnew[-1], tcknu) + C
-        Rho[i] = gh.quadinfloglog(xnew[1:], ynew[1:], xmin, xnew[-1]) + C
+        Rho[i] = gh.quadinflog(xnew[1:], ynew[1:], xmin, xnew[-1]) + C # np.inf)
 
     gh.checkpositive(Rho, 'Rho in rho_param_INT_Rho')
-    return Rho[4:] # @r0 (r0nu without r0left)
-## \fn rho_param_INT_Rho(r0, rhoparam)
+    return Rho[4:] # @r0 (r0nu without r0left, and without 3 extension bins)
+## \fn rho_param_INT_Rho(r0, rhoparam, gp)
 # take 3D density parameters, calculate projected surface density
 # @param r0 radii of bins, [pc]
 # @param rho 3D density, [Msun/pc^3]
@@ -203,6 +199,7 @@ def rho_INTIPOL_Rho(r0, rho):
         polyhilo = np.polyfit(x,y,1)
 
         # integrate polynomial from r0 (up to max(r_data)) to infinity
+        from gl_int import int_poly_inf
         intpoly = int_poly_inf(r0[-1],polyhilo)
 
         # attention: can be that intpoly is negative, if rho[i+1] > rho[i]
@@ -291,7 +288,7 @@ def Rho_INT_rho(R0, Rho):
     pnts = len(Rho)                    # [1]
 
     # use splines, spline derivative to go beyond first radial point
-    tck0 = splrep(R0,np.log(Rho),s=0.01)
+    tck0 = splrep(R0, np.log(Rho), s=0.01)
     R0ext = np.array([R0[0]/6.,R0[0]/5.,R0[0]/4.,R0[0]/3.,R0[0]/2.,R0[0]/1.5])
     
     # introduce new points in between

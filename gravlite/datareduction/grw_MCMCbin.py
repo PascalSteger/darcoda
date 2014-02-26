@@ -16,7 +16,6 @@ import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
 
-import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
@@ -25,7 +24,7 @@ from BiWeight import meanbiweight
 
 
 
-def run():
+def run(gp):
     xall,yall = np.loadtxt(gpr.get_com_file(0), skiprows=1, usecols=(0,1), unpack=True) # 2*[Rscale]
     # calculate 2D radius on the skyplane
     R = np.sqrt(xall**2+yall**2) # [Rscale]
@@ -147,6 +146,7 @@ def run():
             ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
             Denserr = Dens/np.sqrt(ab)       # [munit/Rscale^2]
             # TODO: too small? offset in nu?
+            # compare data and analytic profile <=> get stellar density or mass ratio from Matt Walker
             Denserror = np.sqrt((Denserr/Dens0)**2+(Dens*Denserr0/(Dens0**2))**2) # [1]
             if(math.isnan(Denserror)):
                 Denserror = 0. # [1]

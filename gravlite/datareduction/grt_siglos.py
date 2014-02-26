@@ -4,7 +4,7 @@
 # @file
 # calculate velocity dispersion of 2D rings from a Walker dataset'''
 # for triaxial systems
-# TODO: allow elliptical bins
+# TODO: extend method to work with elliptical bins // introduce tensors (cf Agnello)
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
@@ -13,17 +13,16 @@ import numpy as np
 import sys
 import math
 from BiWeight import meanbiweight
-import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_class_files import *
 from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
 
-def run():
+def run(gp):
     # get radius, used for all binning
-    print('input:')
-    print(gpr.get_com_file(0))
-    if gfile.bufcount(gpr.get_com_file(0))<2: return
+    print('input: ', gpr.get_com_file(0))
+    if gfile.bufcount(gpr.get_com_file(0))<2:
+        return
     x,y,vlos = np.loadtxt(gpr.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
     totmass = 1.*len(x)  # [munit], [Msun], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rscale]
@@ -42,7 +41,7 @@ def run():
         binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
         
     # offset from the start!
-    rs = gpr.rerror*np.random.randn(len(r))+r #[rscale]
+    rs = gpr.Rerror*np.random.randn(len(r))+r #[rscale]
     vlos = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
     print('output: ',gpr.get_siglos_file(0))
     vfil = open(gpr.get_siglos_file(0),'w')
@@ -55,7 +54,7 @@ def run():
     p_edvlos = np.zeros(gpr.nbins)
     
     for k in range(gpr.n):
-        rsi = gpr.rerror*np.random.randn(len(rs))+rs #[rscale]
+        rsi = gpr.Rerror*np.random.randn(len(rs))+rs #[rscale]
         vlosi = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
         for i in range(gpr.nbins):
             ind1 = np.argwhere(np.logical_and(rsi>binmin[i],rsi<binmax[i])).flatten()
@@ -91,17 +90,17 @@ def run():
 
     for i in range(gpr.nbins):
         #             [rscale]  [maxvlos]                  [maxvlos]
-        print(rbin[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos), file=vfil) #/np.sqrt(n))
+        print(rbin[i], binmin[i], binmax[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos), file=vfil) #/np.sqrt(n))
     vfil.close()
 
     if not gpr.showplots: return
 
     ion(); subplot(111)
-    print('rbin = ',rbin,' rscale')
-    print('p_dvlos = ',p_dvlos,' km/s')
-    print('p_edvlos = ',p_edvlos, 'km/s')
-    plot(rbin,p_dvlos,'b',linewidth=3)
-    fill_between(rbin,p_dvlos-p_edvlos,p_dvlos+p_edvlos,alpha=0.5,color='r') #[rscale],[km/s],[km/s]
+    print('rbin = ', rbin,' rscale')
+    print('p_dvlos = ', p_dvlos,' km/s')
+    print('p_edvlos = ', p_edvlos, 'km/s')
+    plot(rbin, p_dvlos, 'b', linewidth=3)
+    fill_between(rbin, p_dvlos-p_edvlos, p_dvlos+p_edvlos, alpha=0.5, color='r') #[rscale],[km/s],[km/s]
 
     xlabel(r'$r [rscale]$')
     ylabel(r'$\langle\sigma_{LOS}\rangle [km/s]$')
@@ -115,5 +114,7 @@ def run():
 
 if __name__ == '__main__':
     gpr.showplots = True
-    run()
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)
 

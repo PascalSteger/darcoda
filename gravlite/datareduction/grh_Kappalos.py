@@ -10,7 +10,8 @@ import numpy as np
 import multiprocessing as mp
 import pdb
 
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from scipy.stats import kurtosis

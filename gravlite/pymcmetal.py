@@ -13,7 +13,8 @@ import pdb
 import pymc as mc
 
 from pylab import *
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
@@ -34,8 +35,8 @@ def assign_pop(data, p, mu1, sig1, mu2, sig2):
     return np.array(pm1), np.array(pm2) # np.array needed to use it as subset indicator
 ## \fn assign_pop(data, p, mu1, sig1, mu2, sig2)
 # get possible assignment to populations
-# @param data TODO
-# @param p TODO
+# @param data Magnesium linewidth, used for splitting populations [1]
+# @param p 
 # @param mu1 TODO
 # @param sig1 TODO
 # @param mu2 TODO
@@ -104,7 +105,7 @@ def bimodal_gauss(data):
         return taus[ assignment] 
 
     print "Random assignments: ", assignment.value[ :10 ], "..."
-    print "Assigned center: ", center_i.value[ :10], "..."
+    print "Assigned center: ",    center_i.value[ :10], "..."
     print "Assigned precision: ", tau_i.value[ :10], "..."
 
 
@@ -114,11 +115,11 @@ def bimodal_gauss(data):
     # below we create a model class
     model = mc.Model( [p, assignment, taus, centers, observations] )
 
-    M = mc.MCMC( model )#, db='pickle', dbname='metals.pickle')
+    M = mc.MCMC( model ) #, db='pickle', dbname='metals.pickle')
     iter = 50000; burn = 40000; thin = 10
     M.sample( iter=iter, burn = burn, thin = thin)
 
-    print 'log_10(p) = ',M.logp
+    print 'log_10(p) = ', M.logp
     # M.db.commit()
     plot_traces(M)
     mu1, mu2 = M.trace('centers')[:].mean(axis=0)
@@ -128,17 +129,23 @@ def bimodal_gauss(data):
 ## \fn bimodal_gauss(data)
 # run MCMC to get regression on bimodal normal distribution
 # http://nbviewer.ipython.org/urls/raw.github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/master/Chapter3_MCMC/IntroMCMC.ipynb
-# @param data TODO
+# @param data observed Mg metallicity [A]
+# @return p probability of assignments [1]
+# @return mu1 centers pop 1 [A]
+# @return sig1 standard deviations pop 1 [A]
+# @return mu2 centers pop 2 [A]
+# @return sig2 standard deviations pop 2 [A]
+# @return M MCMC object
 
 
 if __name__=="__main__":
     x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
-                                    usecols=(0,1,2,11,12,13,19,20),\
+                                    usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
                                     dtype="d17",\
                                     converters={0:expDtofloat,  # x0  in pc \
                                     1:expDtofloat,  # y0  in pc \
                                     2:expDtofloat,  # z0  in pc \
-                                    11:expDtofloat, # vz0 in km/s\
+                                    5:expDtofloat, # vz0_obs in km/s\
                                     12:expDtofloat, # vb0(LOS due binary), km/s\
                                     13:expDtofloat, # Mg0 in Angstrom\
                                     19:expDtofloat, # PM0 [1]\

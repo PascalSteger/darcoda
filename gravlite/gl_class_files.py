@@ -6,12 +6,10 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
-import pdb
-import os
+import os, pdb
 import numpy as np
-import gl_params as gp
 import gl_helper as gh
-
+        
 def get_case(cas):
     ntracer = 0
     if cas == 1:
@@ -31,7 +29,7 @@ class Files:
     # pop==0 for all tracer populations together
     # pop==1 for first tracer population
     # pop==2 for second tracer population, and so on
-    def __init__ (self):
+    def __init__ (self, gp):
         ## set which computer we are working on
         self.machine = ''
         ## set base directory, link version for short filenames
@@ -41,7 +39,7 @@ class Files:
         ## relative path to the 'programs' directory
         self.progdir = ''
         self.modedir = ''
-        self.set_dir(gp.machine) # 'darkside' or 'local'
+        self.set_dir(gp.machine, gp.case, gp.investigate) # 'darkside' or 'local'
         ## file with 2D summed masses
         self.massfile = ''
         ## file with analytic values for Walker models
@@ -56,19 +54,17 @@ class Files:
         self.posvelfiles = []
         ## files for the fourth order moment of the LOS velocity
         self.kappafiles = [];
-        ## number of tracers
-        self.ntracer, self.nstr1 = self.set_ntracer(gp.cas)
         ## [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
         self.params = []
-        
+
         if gp.investigate == 'hern':
             self.set_hern()
         elif gp.investigate == 'walk':
-            self.set_walk()
+            self.set_walk(gp)
         elif gp.investigate == 'gaia':
             self.set_gaia()
         elif gp.investigate == 'triax':
-            self.set_triax()
+            self.set_triax(gp)
         elif gp.investigate == 'dwarf':
             self.set_dwarf()
         elif gp.investigate == 'discsim':
@@ -83,14 +79,14 @@ class Files:
     # constructor
 
 
-    def set_dir(self, machine):
+    def set_dir(self, machine, case, inv):
         if machine == 'darkside':
             self.machine = '/home/ast/read/dark/gravlite/'
         elif machine == 'local':
             self.machine = '/home/psteger/sci/gravlite/'
         self.progdir = self.machine + 'programs/'
-        self.modedir = self.machine + 'DT' + gp.investigate + '/'
-        self.shortdir = self.modedir + str(gp.case) + '/'
+        self.modedir = self.machine + 'DT' + inv + '/'
+        self.shortdir = self.modedir + str(case) + '/'
         return
     ## \fn set_dir(self, machine)
     # set local directory
@@ -174,7 +170,8 @@ class Files:
             gamma_star1=1.0; r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
 
         self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
-            
+
+
         AAA = gh.myfill(100*gamma_star1)  # 100
         BBB = gh.myfill(10*beta_star1)    # 050
         CCC = gh.myfill(100*r_star1/r_DM) # 100
@@ -200,7 +197,7 @@ class Files:
     # derive filenames from gaia case
         
 
-    def set_walk(self):
+    def set_walk(self, gp):
         self.dir = self.machine + 'DTwalk/'
         if gp.case == 0:
             gamma_star1 =   0.1;    gamma_star2 =   1.0 # 1. or 0.1
@@ -241,7 +238,7 @@ class Files:
         alpha_DM    = 1;    beta_DM     = 3;
         r_DM        = 1000                    # fixed to 1000pc
 
-        
+        import gl_helper as gh
         AAA = gh.myfill(100*gamma_star1)     # 100
         BBB = gh.myfill(10*beta_star1)       # 050
         CCC = gh.myfill(r_star1/10)          # 100
@@ -257,7 +254,7 @@ class Files:
         NNN = gh.myfill(3)                   # 003    # realization (1..10)
 
         self.longdir = "c1_"+AAA+"_"+BBB+"_"+CCC+"_"+DDD+"_"+EEE+"_c2_"+FFF+"_"+GGG+"_"+HHH+"_"+III+"_"+JJJ+"_"+NNN+"_6d/"
-        self.dir = self.dir + self.longdir
+        self.dir = self.modedir + self.longdir
 
         self.massfile = self.dir + 'enclosedmass/enclosedmass_0.txt'
         self.analytic = self.dir + 'samplepars'
@@ -272,12 +269,11 @@ class Files:
             self.sigfiles.append(self.dir+'siglos/siglos_'+str(i)+'.txt')
             self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(i)+'.txt')
         return
-    ## \fn set_walk(self)
+    ## \fn set_walk(self, gp)
     # derive filenames from Walker&Penarrubia parameters
 
 
-    def set_triax(self):
-        self.dir = self.machine + '/DTtriax/'
+    def set_triax(self, gp):
         if gp.case == 0:           # core
             casename = 'StarsInCore'
         elif gp.case == 1:
@@ -290,30 +286,28 @@ class Files:
             proj = 'Z'
         elif gp.projcase == 4:          # along intermediate axis
             proj = 'I'
-        basename = casename + proj
-        self.dir = self.dir + basename + '/'
+        self.longdir = casename + proj + '/'
+        self.dir = self.modedir + self.longdir
 
-        pre = self.dir
-        self.massfile = pre + 'enclosedmass/enclosedmass_0.txt'
+        self.massfile = self.dir + 'enclosedmass/enclosedmass_0.txt'
 
-        self.nufiles.append(pre  + 'nu/nunotnorm_0.txt')
-        self.sigfiles.append(pre + 'siglos/siglos_0.txt')
-        self.kappafiles.append(pre + 'kappalos/kappalos_0.txt')
+        self.nufiles.append(self.dir    + 'nu/nunotnorm_0.txt')
+        self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
+        self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
 
-        self.nufiles.append(pre  + 'nu/nunotnorm_0.txt') # first and only comp.
-        self.sigfiles.append(pre + 'siglos/siglos_0.txt')
-        self.kappafiles.append(pre + 'kappalos/kappalos_0.txt')
+        self.nufiles.append(self.dir    + 'nu/nunotnorm_0.txt') # first and only comp.
+        self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
+        self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
         if gp.pops == 2:
             print('TODO: 2 tracer populations for triaxial dataset')
             pdb.set_trace()
-        return basename
-    ## \fn set_triaxial(self)
+        return
+    ## \fn set_triaxial(self, gp)
     # set all parameters for working on the triaxial data
 
     
     def set_dwarf(self):
         self.dir = self.machine + '/DTobs/for/'
-
         self.massfile = self.dir+'enclosedmass.txt'
         self.nufiles.append(self.dir+'densityfalloff.txt')
         self.sigfiles.append(self.dir+'velocitydispersionlos.txt')
@@ -343,17 +337,18 @@ class Files:
     # @return ouput directory, base of filenames
 
 
-    def makedir(self):
+    def makedir(self, gp):
         # shorter dir names in Multinest (bound to <= 100 total)
         os.system('ln -sf '+ self.longdir+' '+self.modedir + str(gp.case))
         os.system('mkdir -p '+self.outdir)
-        os.system('cp -r '+self.progdir+' '+self.outdir)
+        os.system('rsync -rl --exclude ".git" --exclude "__pycache__" '+self.progdir+' '+self.outdir)
+        # rsync -r --exclude '.git' source target to exclude .git dir from copy
 
         # old variant:
         # import hashlib
         # lname = hashlib.md5(self.dir.encode()).hexdigest()[:4]
         return
-    ## \fn makedir(self)
+    ## \fn makedir(self, gp)
     # create output directory and copy the current program files into it
 
 
@@ -370,12 +365,13 @@ class Files:
         
 
     def set_discsim(self):
+        # TODO: generalize for N components
+        # entry for "all components" as the first entry. Convention: 0. all 1. pop, 2. pop, 3. pop = background
         self.dir = self.machine + 'DTdiscsim/mwhr/'
-        # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # TODO: we need all components as the first entry in this list, with convention: 0. all 1. pop, 2. pop, 3. pop = background
+        # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt')
         # self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # again all components
         # self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # all comp.
         # self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # overall surface density?
-
         self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
         self.nufiles.append(self.dir + 'nu/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
         self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.

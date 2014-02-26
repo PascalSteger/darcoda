@@ -8,7 +8,8 @@
 
 import numpy as np
 import random
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 
 print('input: ', gpr.simpos)

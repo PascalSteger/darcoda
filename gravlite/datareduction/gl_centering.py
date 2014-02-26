@@ -63,7 +63,7 @@ def com_shrinkcircle_v_2D(x, y, vlos):
         # recenter particles
         x -= com_x; y -= com_y; vlos -= com_vlos
 
-    return bucom_x, bucom_y
+    return bucom_x, bucom_y, bucom_vlos
 ## \fn com_shrinkcircle_v_2D(x, y, vlos)
 # shrinking sphere in 2D, with LOS velocity
 # @param x array of x values in [pc]

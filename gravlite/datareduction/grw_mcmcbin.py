@@ -17,16 +17,13 @@ import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
 
-import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from gl_class_files import *
 from BiWeight import meanbiweight
 
-
-
-def run():
+def run(gp):
     xall,yall = np.loadtxt(gpr.get_com_file(0),skiprows=1,usecols=(0,1),unpack=True) # 2*[Rscale]
     # calculate 2D radius on the skyplane
     R = np.sqrt(xall**2+yall**2) #[Rscale]
@@ -133,12 +130,11 @@ def run():
                 p_dens[b] = dens/dens0   # [1]
                 p_edens[b]= denserror    # [1] #100/rbin would be artificial guess
 
-            print(Rbin[b],Binmin[b],Binmax[b],p_dens[b],p_edens[b], file=de) # [Rscale], 2*[dens0]
+            print(Rbin[b], Binmin[b], Binmax[b], p_dens[b], p_edens[b], file=de) # [Rscale], 2*[dens0]
             indr = (r<Binmax[b])
             menclosed = 1.0*np.sum(indr)/totmass # for normalization to 1  # [totmass]
             merror = menclosed/np.sqrt(ab) # artificial menclosed/10 # [totmass]
-            print(Rbin[b],Binmin[b],Binmax[b],menclosed,merror, file=em) # [rscale], 2*[totmass]
-            # TODO: check: take rbinmax for MCMC?
+            print(Rbin[b], Binmin[b], Binmax[b], menclosed, merror, file=em) # [rscale], 2*[totmass]
         de.close()
         em.close()
 
@@ -163,5 +159,7 @@ def run():
 
 if __name__ == '__main__':
     gpr.showplots = True
-    run()
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)
 

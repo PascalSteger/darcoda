@@ -6,6 +6,18 @@
 
 # (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
 
+
+def myfill(x, N=3):
+    if x==np.inf or x==-np.inf:
+        return "inf"
+    return str(int(x)).zfill(N)
+## \fn myfill(x, N=3)
+#  print integer with leading zeros
+# @param x integer
+# @param N number of paddings
+# @return 00x
+
+
 import numpy as np
 import numpy.random as npr
 import sys
@@ -13,21 +25,9 @@ import traceback
 import pdb
 from scipy.interpolate import splrep, splev
 from scipy.integrate import quad
-import gl_params as gp
 import gl_plot as gpl
 
-def myfill(x,N=3):
-    if x==np.inf or x==-np.inf:
-        return "inf"
-    return str(int(x)).zfill(N)
-## \fn myfill(x,N=3)
-#  print integer with leading zeros
-# @param x integer
-# @param N number of paddings
-# @return 00x
-
-
-def quadinflog(x, y, A, B):
+def quadinflog(x, y, A, B, stop = True):
     # work in log(y) space to enable smoother interpolating functions
     # scale to avoid any values <= 1
     minlog = min(np.log(y))
@@ -35,8 +35,13 @@ def quadinflog(x, y, A, B):
     # otherwise we get divergent integrals for high radii (low length of x and y)
     tcknulog = splrep(x, np.log(y*shiftlog), k=1, s=0.1)
     maxy = max(y)
-    invexp = lambda x: min(maxy, np.exp(splev(x,tcknulog,der=0))/shiftlog)
-    dropoffint = quad(invexp, A, B)
+    # invexp = lambda x: min(maxy, np.exp(splev(x,tcknulog,der=0))/shiftlog)
+    invexp = lambda x: np.exp(splev(x,tcknulog,der=0))/shiftlog
+    #invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x,tcknulog,der=0))/shiftlog)
+    dropoffint = quad(invexp, A, B, epsrel=1e-4, limit=100, full_output=1)
+    if stop and len(dropoffint)>3:
+        print('warning in quad in quadinflog')
+        # pdb.set_trace()
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x, using splines
@@ -45,15 +50,18 @@ def quadinflog(x, y, A, B):
 # @param A left boundary
 # @param B right boundary
 
-def quadinfloglog(x, y, A, B):
+
+def quadinfloglog(x, y, A, B, stop=True):
     # work in log(x), log(y) space to enable smoother interpolating functions
     # scale to avoid any values <= 1
-    #minlog = min(np.log(y))
-    #shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible,
     # otherwise we get divergent integrals for high radii (low length of x and y)
     tcknulog = splrep(np.log(x), np.log(y), k=1, s=0.1) # tunable k=2; s=0, ..
-    invexp = lambda x: min(y[0], np.exp(splev(np.log(x), tcknulog, der=0)))#/shiftlog)
-    dropoffint = quad(invexp, A, B)
+    invexp = lambda x: np.exp(splev(np.log(x), tcknulog, der=0))
+    # invexp = lambda x: min(y[0], np.exp(splev(np.log(x), tcknulog, der=0)))
+    dropoffint = quad(invexp, A, B, epsrel=1e-3, limi=100, full_output=1)
+    if stop and len(dropoffint)>3:
+        print('warning in quad in quadinfloglog')
+        # pdb.set_trace()
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x, using splines
@@ -71,11 +79,12 @@ def quadinflog2(x, y, A, B):
     # otherwise we get divergent integrals for high radii (low length of x and y)
     
     tcknulog = splrep(x,np.log(np.log(y*shiftlog)), k=1, s=0.1)
-    invexp = lambda x: min(y[0],np.exp(np.exp(splev(x,tcknulog,der=0)))/shiftlog)
+    invexp = lambda x: min(y[0], np.exp(np.exp(splev(x, tcknulog, der=0)))/shiftlog)
     dropoffint = quad(invexp, A, B)
     return dropoffint[0]
 ## \fn quadinflog2(x, y, A, B)
 # integrate y over x, using splines in log(log(y)) space
+# not used..
 # @param x free variable
 # @param integrand
 # @param A left boundary
@@ -85,7 +94,9 @@ def quadinflog2(x, y, A, B):
 def checknan(arr, place=''):
     if np.isnan(np.sum(arr)):
         print('NaN found! '+place)
+        # pdb.set_trace()
         raise Exception('NaN', 'found')
+        # not executed anymore :)
         traceback.print_tb(sys.exc_info()[2])
         return True
     else:
@@ -168,7 +179,7 @@ def derivipol(y,x):
 # @param x free variable, array of same size N
 
 
-def err(a):
+def err(a, gp):
     return gp.err/a*(1.+npr.rand()/1000.)
 ## \fn err(a)
 # penalize prior violations with almost constant low likelihood

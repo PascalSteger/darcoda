@@ -7,7 +7,8 @@
 # (c) 2013 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
 
 # TODO: run()
-import gl_params as gp
+import gl_params
+gp = gl_params.Params()
 import gr_params as gpr
 import numpy as np
 import multiprocessing as mp
@@ -25,10 +26,10 @@ print('input:')
 print(gpr.fileposspherical)
 r,phi = np.loadtxt(gpr.fileposspherical,unpack=True,skiprows=1)
 ndm = len(r)
-rs  = r       #gpr.rerror*np.random.randn(ndm)+r
+rs  = r       #gpr.Rerror*np.random.randn(ndm)+r
 
 def foo_pool(k):
-  rsi = gpr.rerror*np.random.randn(len(rs))+rs
+  rsi = gpr.Rerror*np.random.randn(len(rs))+rs
   locmass = []; loca = []
   for i in range(bins):
     ind1=np.argwhere(np.logical_and( rsi > rbin[i], rsi < rbin[i+1])).flatten()

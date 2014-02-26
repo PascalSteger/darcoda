@@ -8,7 +8,6 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import gl_params as gp
 from gl_project import rho_INT_Rho, rho_SUM_Mr
 import pdb
 
@@ -31,7 +30,7 @@ def X(s0):
 # @param s0: radius, [1]
 
 
-def rho_anf(r0, a=gp.ascale, M=gp.Mscale):
+def rho_anf(r0, a, M):
     s = r0/a                              # [1]
     return M/(2.*np.pi*a**3)/(s*(1+s)**3) # [Msun/pc^3]
 ## \fn rho_anf(r0, a=gp.ascale, M=gp.Mscale)
@@ -55,7 +54,7 @@ def rho_2_anf(r0, a, M):
 # @param a  scale radius of the overall mass distribution in pc
 # @param M  M_\infty of all stars+DM
 
-def Sigma_anf(r0, a=gp.ascale, M=gp.Mscale):
+def Sigma_anf(r0, a, M):
     s = np.array(r0)/a                                          # [1]
     return M/(2.*np.pi*a**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Msun/pc^2]
 ## \fn Sigma_anf(r0, a=gp.ascale, M=gp.Mscale)
@@ -66,7 +65,7 @@ def Sigma_anf(r0, a=gp.ascale, M=gp.Mscale):
 # @return 2D surface density in [Msun/pc^2]
 
 
-def sigr2_anf(r0, a=gp.ascale, M=gp.Mscale): 
+def sigr2_anf(r0, a, M):
     s = np.array(r0)/a          # [pc/1000pc]
     return gp.G1*M/a*s*(1+s)**3*np.log(1.+1./s)-\
            gp.G1*M/(12.*a)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
@@ -85,7 +84,7 @@ def kappa_anf(r0):
 # @param r0 radius in [pc]
 # @return 3 for Gaussian velocity distribution
 
-def M_anf(r0, a=gp.ascale, M=gp.Mscale): 
+def M_anf(r0, a, M):
     s = r0/a                            # [1]
     return M*s**2/(1.+s)**2             # [Msun]
 ## \fn M_anf(r0, a=gp.ascale, M=gp.Mscale)
@@ -97,7 +96,7 @@ def M_anf(r0, a=gp.ascale, M=gp.Mscale):
 
 
     
-def Sigma_sig_los_2_anf(r0, a=gp.ascale, M=gp.Mscale):
+def Sigma_sig_los_2_anf(r0, a, M):
     # \sigma_p = \sigma_projected = \sigma_{LOS}
     s = r0/a                            # [1]
     return gp.G1*M**2/(12.*np.pi*a**3)*(1./(2.*(1.-s**2)**3)\
@@ -113,7 +112,7 @@ def Sigma_sig_los_2_anf(r0, a=gp.ascale, M=gp.Mscale):
 # @return surface density * sigma_LOS^2 in [(km/s)^2 * Msun/pc^2]
 
 
-def sig_los_anf(r0, a=gp.ascale, M=gp.Mscale):
+def sig_los_anf(r0, a, M):
     return np.sqrt(Sigma_sig_los_2_anf(r0,a,M)/Sigma_anf(r0,a,M))
 ## \fn sig_los_anf(r0, a=gp.ascale, M=gp.Mscale)
 # sig_los determined from analytic surfden*sig2 and surfden
@@ -123,13 +122,13 @@ def sig_los_anf(r0, a=gp.ascale, M=gp.Mscale):
 # @return sigma_LOS in [km/s]
 
 
-def walker_delta(pop, r0):
+def walker_delta(pop, r0, gp):
     r0
-    delta_r   = betawalker(r0)[pop-1]
+    delta_r   = betawalker(r0, gp)[pop-1]
     # delta_r = gp.delta0
     # delta_r = gh.ipol(gp.dat.nur1,   gp.delta0, r0) # extrapolate to r_tot?
     return delta_r
-## \fn walker_delta(pop)
+## \fn walker_delta(pop, r0, gp)
 # analytic value for the Osipkov-Merrit velocity anisotropy as defined in the Walker dataset
 # @param pop which population?
 # @param r0 radii for evaluation
@@ -175,7 +174,7 @@ def rhotriax(rad):
 # @return density in [Msun/pc^3]
 
 
-def rhowalk_3D(rad):
+def rhowalk_3D(rad, gp):
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
     # need values for rho0, r_DM, alpha_DM, beta_DM, gamma_DM
@@ -256,8 +255,8 @@ def nugaiatot_3D(rad):
 # @return 3D overall density (DM+stellar population) in [Msun/pc^3]
 
 
-def nrwalktot_3D_deriv(rad):
-    lrho = np.log(rhowalktot_3D(rad))
+def nrwalktot_3D_deriv(rad, gp):
+    lrho = np.log(rhowalktot_3D(rad, gp))
     lr   = np.log(rad)
     import gl_helper as gh
     return -gh.derivcoarse(lrho, lr)
@@ -265,6 +264,16 @@ def nrwalktot_3D_deriv(rad):
 # plot d log rho/d log r
 # @param rad radius in pc, not in log
     
+
+def nrtriaxtot_3D_deriv(rad):
+    lrho = np.log(rhotriax(rad))
+    lr   = np.log(rad)
+    import gl_helper as gh
+    return -gh.derivcoarse(lrho, lr)
+## \fn nrwalktot_3D(rad)
+# plot d log rho/d log r
+# @param rad radius in pc, not in log
+
 
 def nrgaiatot_3D_deriv(rad):
     lrho = np.log(rhogaiatot_3D(rad))
@@ -307,10 +316,10 @@ def nrgaiatot_3D(rad):
 # @param rad radius in pc, not log.
 
 
-def rhowalktot_3D(rad):
-    rhodm, rhostar1, rhostar2 = rhowalk_3D(rad)     # 3* [msun/pc^3]
+def rhowalktot_3D(rad, gp):
+    rhodm, rhostar1, rhostar2 = rhowalk_3D(rad, gp)     # 3* [msun/pc^3]
     return rhodm + rhostar1 + rhostar2                # [msun/pc^3]
-## \fn rhowalktot_3D(rad)
+## \fn rhowalktot_3D(rad, gp)
 # return total mass density, stars+DM
 # @param rad radius in [pc]
 # @return total 3D density in [Msun/pc^3]
@@ -328,7 +337,8 @@ def Mwalkertot(rbin):
 
     Mtot = np.zeros(gp.nipol); meps = np.zeros(gp.nipol)
     for i in range(gp.nipol):
-        out=quad(igra,0,rbin[i],limit=100,full_output=0) # or np.inf
+        pdb.set_trace()
+        out = quad(igra, 0, rbin[i], limit=100, full_output=0) #or np.inf
         Mtot[i] = out[0]
         meps[i] = out[1]
     # print('errors: ',meps)
@@ -512,8 +522,8 @@ def betatriax(rad):
 # @param rad in [pc]
 
 
-def betawalker(rad):
-    A = np.loadtxt(gp.files.analytic,unpack=False)
+def betawalker(rad, gp):
+    A = np.loadtxt(gp.files.analytic, unpack=False)
     # Osipkov-Merritt anisotropy profile with r_a/r_* = 10^4 for isotropic models
     rars1  = A[10]
     rs1    = A[9] * 1000. # [pc]
@@ -526,7 +536,7 @@ def betawalker(rad):
     beta2  = rbyrs2**2 / (rars2**2+rbyrs2**2)
 
     return beta1, beta2
-## \fn betawalker(rad)
+## \fn betawalker(rad, gp)
 # calculate Osipkov-Merritt velocity anisotropy profile
 # @param rad radius in [pc]
 
