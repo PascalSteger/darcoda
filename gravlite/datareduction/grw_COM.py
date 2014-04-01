@@ -3,13 +3,12 @@
 ##
 # @file
 # calculate approximative center of mass, assuming constant stellar mass
-# 3D version, see grw_COM for 2D
+# 2D version, see grw_com for 3D
 
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys
-import pdb
+import sys, pdb
 
 from pylab import *
 import gr_params as gpr
@@ -38,8 +37,12 @@ def run(gp):
     comp0 = comp0[pm]; x0=x0[pm]; y0=y0[pm]; z0=z0[pm]; vz0=vz0[pm]; vb0=vb0[pm]; Mg0=Mg0[pm]
 
     # assign population
-    pm1 = (comp0 == 1) # will be overwritten below if gp.metalpop is set
-    pm2 = (comp0 == 2) # same same
+    if gp.pops==2:
+        pm1 = (comp0 == 1) # will be overwritten below if gp.metalpop is set
+        pm2 = (comp0 == 2) # same same
+    elif gp.pops==1:
+        pm1 = (comp0 < 3)
+        pm2 = (comp0 == -1) # assign none, but of same length as comp0
 
     if gp.metalpop:
         # drawing of populations based on metallicity
@@ -70,12 +73,11 @@ def run(gp):
     y0 = np.hstack([y1, y2])
     z0 = np.hstack([z1, z2])
     vz0 = np.hstack([vz1, vz2])
-    pm1 = np.hstack([np.ones(gp.ntracer[1-1], dtype=bool), np.zeros(gp.ntracer[2-1],dtype=bool)])
-    pm2 = np.hstack([np.ones(gp.ntracer[1-1],dtype=bool), np.ones(gp.ntracer[2-1],dtype=bool)])
+    N1  = min(len(x1), gp.ntracer[1-1])
+    N2  = min(len(x2), gp.ntracer[2-1])
+    pm1 = np.hstack([np.ones(N1, dtype=bool), np.zeros(N2, dtype=bool)])
+    pm2 = np.hstack([np.zeros(N1, dtype=bool), np.ones(N2,  dtype=bool)])
     pm = pm1 + pm2
-    
-    # optimum: get 3D center of mass with means
-    # com_x, com_y, com_z = com_mean(x0,y0,z0,PM0) # 3*[pc],  z component included if available
     
     # get COM with shrinking sphere method
     com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x0, y0, z0, vz0, pm) # [pc]
@@ -89,13 +91,9 @@ def run(gp):
     R0 = np.sqrt(x0**2+y0**2) # [pc]
     Rc = R0                   # [pc]
     Rc.sort()                 # [pc]
-    for i in range(len(Rc)-1):
-        if Rc[i]>Rc[i+1]:               # [pc]
-            print('sorting error!')
-            exit(1)
     Rhalf = Rc[floor(len(Rc)/2)]        # [pc]
     Rscale = Rhalf                      # or gpr.r_DM # [pc]
-    # Rscale = gpr.r_DM                 # deleted, we only work with data
+    # Rscale = gpr.r_DM                 # we only work with data here, so gpr.r_DM is not known
     print('Rscale = ', Rscale, ' pc')
     print('max(R) = ', max(Rc), ' pc')
     print('last element of R : ', Rc[-1], ' pc')
@@ -104,8 +102,8 @@ def run(gp):
     x0 = x0/Rscale; y0 = y0/Rscale           # [Rscale]
     
     i = -1
-    for pmn in [pm,pm1,pm2]:
-        pmr = (R0<(gpr.rprior*Rscale))  # read max extension for data (rprior*Rscale) from gr_params
+    for pmn in [pm, pm1, pm2]:
+        pmr = ( R0 < (gp.maxR*Rscale) )  # read max extension for data (rprior*Rscale) from gl_params
         pmn = pmn*pmr                   # [1]
         print("fraction of members = ", 1.0*sum(pmn)/len(pmn))
         i = i+1
@@ -114,11 +112,11 @@ def run(gp):
         m = np.ones(len(pmn))
         
         R = np.sqrt(x*x+y*y)            # [Rscale]
-        
-        # print("x y z" on first line, to interprete data later on)
-        crscale = open(gpr.get_params_file(i),'w')
+
+        # store central values in scale_ file
+        crscale = open(gp.files.get_scale_file(i),'w')
         print('# Rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
-        print(Rscale, file=crscale)
+        print(np.median(R)*Rscale, file=crscale)
         crscale.close()
 
         print('output: ',gpr.get_com_file(i))
@@ -157,4 +155,6 @@ def run(gp):
     
 if __name__=='__main__':
     gpr.showplots = True
-    run()
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)

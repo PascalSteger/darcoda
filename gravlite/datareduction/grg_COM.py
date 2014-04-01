@@ -29,10 +29,6 @@ def run(gp):
     x0 = x0[ind]; y0 = y0[ind]; z0 = z0[ind]
     vx = vx[ind]; vy = vy[ind]; vz = vz[ind]
     
-    # get center of mass with means
-    # com_x, com_y,com_z = com_mean(x0,y0,z0,PM0) 
-    # [TODO], and TODO: z component included if available
-    
     # get COM with shrinking sphere method
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
     com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x0,y0,z0,vz,PM)
@@ -63,14 +59,14 @@ def run(gp):
     
     i = -1
     for comp in range(gp.pops+1):      # gp.pops +1 for all components together
-        pmr = (R0<(gpr.rprior*Rscale)) # TODO: read from gl_class_file
+        pmr = (R0<(gp.maxR*Rscale))
         i = i+1
         m = np.ones(len(R0))
         x = x0; y = y0
         R = np.sqrt(x*x+y*y)            # [Rscale]
         
         # print("x y z" on first line, to interprete data later on)
-        crscale = open(gpr.get_params_file(i),'w')
+        crscale = open(gp.files.get_scale_file(i),'w')
         print('# Rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
         print(Rscale, file=crscale)
         crscale.close()

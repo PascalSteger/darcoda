@@ -7,10 +7,10 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
+import pdb
 import scipy
 from scipy.integrate import simps,trapz,quad
 from scipy.interpolate import splrep, splev, splint
-import pdb
 import gl_chi as gc
 import gl_helper as gh
 import gl_plot as gpl
@@ -33,9 +33,8 @@ def int_poly_inf(r0,poly):
 def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
     if log:
         yint[1:] = np.log(yint[1:])
-    tck = splrep(xint[1:],yint[1:],k=k,s=s)
-    # TODO: s=0.01 => 0. possible? weights?
-    tmp = splev(xint[0],tck,der=0)
+    tck = splrep(xint[1:], yint[1:], k=k, s=s)
+    tmp = splev(xint[0], tck, der=0)
     if log:
         tmp = np.exp(tmp)
     return tmp
@@ -49,13 +48,30 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 
 
 def ant_intbeta(r0, betaparam, gp):
+    # define function
+    yint = lambda x: phys.beta(x, betaparam, gp)/x
+
+    intbet = np.zeros(len(r0))
+    for i in range(len(r0)):
+        intbet[i] = quad(yint, r0[0]/1.e5, r0[i])[0]
+
+    gh.checknan(intbet, 'intbet in ant_intbeta')
+    return intbet                                                # [1]
+## \fn ant_intbeta(r0, betaparam, gp)
+# integrate beta over r
+# (integrals in front of and after sigma_r^2 integral)
+# TODO: gives -9, where _old gives -1, serious speed impact
+# @param r0 free variable, array, in [lunit]
+# @param betaparam integrand, array, in [1]
+# @param gp
+
+
+def ant_intbeta_old(r0, betaparam, gp):
     # extend beta by interpolating
     r0ext = [r0[0]/5., r0[0]/4., r0[0]/3., r0[0]/2.]
     r0nu = np.hstack([r0ext, r0, r0[:-1]+(r0[1:]-r0[:-1])/2.])
     r0nu.sort()
     betanu = phys.beta(r0nu, betaparam, gp)
-    # TODO: include beta parameter directly in integral!
-    # TODO: or use more Stuetzpunkte
     
     tmp = np.zeros(len(betanu))
     for i in range(5,len(betanu)):
@@ -63,15 +79,16 @@ def ant_intbeta(r0, betaparam, gp):
         yint = betanu[:i]/r0nu[:i]                         # [1/lunit]
         yint[0] = correct_first_bin(xint, yint, k=3, s=0, log=False)
         tmp[i] = 2.*simps(yint, xint, even=gp.even)              # [1]
-    tckout = splrep(r0nu[5:], tmp[5:], k=2) # TODO: safe?
+    tckout = splrep(r0nu[5:], tmp[5:], k=2)
     intbet = splev(r0, tckout)
     gh.checknan(intbet, 'intbet in ant_intbeta')
     return intbet                                                # [1]
-## \fn ant_intbeta(r0, betaparam)
+## \fn ant_intbeta_old(r0, betaparam, gp)
 # integrate beta over r
 # (integrals in front of and after sigma_r^2 integral)
 # @param r0 free variable, array, in [lunit]
-# @param beta integrand, array, in [1]
+# @param betaparam integrand, array, in [1]
+# @param gp
 
 
 def g(rvar, rfix, beta, dbetadr):
@@ -89,49 +106,8 @@ def g(rvar, rfix, beta, dbetadr):
 # @param dbetadr d beta/dr, in [1]
 
 
-def smooth_fun(x0, y0, xnew, k=3, s=0.01, log=True):
-    if log:
-        y0 = np.log(y0)
-    tck = splrep(x0,y0,k=k,s=s) # TODO: check s=0. possible?
-    tmp = splev(xnew,tck,der=0)
-    if log:
-        tmp = np.exp(tmp)
-    return tmp
-## \fn smooth_fun(x0, y0, xnew, k=3, s=0.01, log=True)
-# smooth function y(x)
-# @param x0 array, free variable
-# @param y0 array, dependent variable
-# @param xnew array, new positions (or the same as x0)
-# @param k order of the spline
-# @param s smoothing. 0.01 is *small*
-# @param log bool for working in logarithmic space
 
 
-def smooth_ext(x0, y0, xext, k=1, s=0.1, log=True, slope=-3., minval=0.):
-    if log:
-        y0 = np.log(y0)
-    tck = splrep(x0,y0,k=k,s=s) # TODO: check where it's called from
-    tmp = splev(xext,tck,der=0)
-
-    # must impose maximum value: bounded by slope=slope and min
-    if log:
-        tmp = np.exp(tmp)
-    if min(tmp) < minval:
-        # print('extrapolation falling below ',minval,'!')
-        for i in range(len(tmp)):
-            if tmp[i]<0:
-                tmp[i] = 1.e-30
-    return tmp
-## \fn smooth_ext(x0, y0, xext, k=1, s=0.1, log=True, slope=-3., minval=0.)
-# extrapolate to high radii with linear extrapolation
-# @param x0 array, free variable
-# @param y0 array, dependent variable
-# @param xext array, points to evaluate function on
-# @param k order of the spline, 1 as a default
-# @param s smoothing. 0.01 is small
-# @param log bool for working in logarithmic space
-# @param slope TODO: implement upper limit
-# @param minval minimal value allowed
 
 
 def introduce_points_in_between(r0):
@@ -146,7 +122,6 @@ def introduce_points_in_between(r0):
 
 
 def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
-    # TODO: check all values in ()^2 and ()^4 are >=0
     minval = 1.e-30
     r0nu   = introduce_points_in_between(r0)
 
@@ -155,7 +130,7 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
     betanu = phys.beta(r0nu, beta_param, gp)
 
     # calculate intbeta from beta approx directly
-    idnu   = ant_intbeta(r0nu, beta_param, gp)
+    idnu   = ant_intbeta_old(r0nu, beta_param, gp)
 
     # integrate enclosed 3D mass from 3D density
     r0tmp = np.hstack([0.,r0nu])
@@ -189,15 +164,13 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
         ynew = 2.*(1-betanu[i]*(r0nu[i]**2)/(r0nu[i:]**2))
         ynew *= nunu[i:] * sigr2nu[i:]
         gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
-        # TODO: check sigr2nu: has too many entries of inf!
+        # check sigr2nu: has too many entries of inf!
         tcknu = splrep(xnew, ynew, k=1)
         # interpolation in real space for int
 
         sigl2s[i] = gh.quadinflog(xnew[1:], ynew[1:], xnew[0], np.inf, False)
-    # TODO: for last 3 bins, up to factor 2 off
-    
-    # if min(sigl2s)<0.:
-    #     pdb.set_trace()
+    # for last 3 bins, we are up to a factor 2 off
+
     gh.checkpositive(sigl2s, 'sigl2s')
     
     # derefine on radii of the input vector
@@ -205,11 +178,11 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
     sigl2s_out = np.exp(splev(r0, tck))
     gh.checkpositive(sigl2s_out, 'sigl2s_out')
     if not gp.usekappa:
-        # print('not using kappa')
         return sigl2s_out, np.ones(len(sigl2s_out))
 
     # for the following: enabled calculation of kappa
     # TODO: include another set of anisotropy parameters beta_'
+    # TODO: replace kappa^4 and beta with version using virial parameters
 
     # kappa_r^4
     kapr4nu = np.ones(len(r0nu)-gp.nexp)
@@ -224,7 +197,7 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
     # power-law extrapolation to infinity
     C = max(0., gh.quadinflog(xint[-3:], yint[-3:], r0nu[-1], 1000*r0nu[-1]))
     
-    tcknu = splrep(xint, yint, k=3) # interpolation in real space # TODO:
+    tcknu = splrep(xint, yint, k=3) # interpolation in real space
     for i in range(len(r0nu)-gp.nexp):
         # integrate from minimal radius to infinity
         kapr4nu[i] = 3.*(np.exp(-idnu[i])/nunu[i]) * \
@@ -248,13 +221,7 @@ def ant_sigkaplos2surf(r0, beta_param, rho_param, nu_param, gp):
     for i in range(len(r0nu)-gp.nexp):
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)      # [pc]
         ynew = g(r0nu[i:], r0nu[i], betanu[i:], dbetanudr[i:]) # [1]
-        ynew *= nunu[i:] * kapr4nu[i:] # [TODO]
-        # TODO: ynew could go negative here.. fine?
-        #gpl.plot(xnew, ynew)
-        #gh.checkpositive(ynew, 'ynew in kapl4s')
-        #yscale = 10.**(1.-min(np.log10(ynew[1:])))
-        #ynew *= yscale
-        # gpl.plot(xnew,ynew)
+        ynew *= nunu[i:] * kapr4nu[i:]
         C = max(0., gh.quadinflog(xnew[-3:], ynew[-3:], xnew[-1], 1000*xnew[-1]))
         tcknu = splrep(xnew,ynew) # not s=0.1, this sometimes gives negative entries after int
         kapl4s[i] = 2. * (splint(0., xnew[-1], tcknu) + C)
@@ -433,3 +400,50 @@ def int_siglos2surf_old(pnts, r0, beta, nu, sigr2):
 # @param beta velocity anisotropy
 # @param nu 3D tracer density falloff, [Msun/pc^3]
 # @param sigr2 sigma^2 in radial direction, [(km/s)^2]
+
+
+def smooth_ext(x0, y0, xext, k=1, s=0.1, log=True, slope=-3., minval=0.):
+    if log:
+        y0 = np.log(y0)
+    tck = splrep(x0, y0, k=k, s=s)
+    tmp = splev(xext,tck,der=0)
+
+    # must impose maximum value: bounded by slope=slope and min
+    if log:
+        tmp = np.exp(tmp)
+    if min(tmp) < minval:
+        # print('extrapolation falling below ',minval,'!')
+        for i in range(len(tmp)):
+            if tmp[i]<0:
+                tmp[i] = 1.e-30
+    return tmp
+## \fn smooth_ext(x0, y0, xext, k=1, s=0.1, log=True, slope=-3., minval=0.)
+# extrapolate to high radii with linear extrapolation
+# NOT USED ANYMORE
+# @param x0 array, free variable
+# @param y0 array, dependent variable
+# @param xext array, points to evaluate function on
+# @param k order of the spline, 1 as a default
+# @param s smoothing. 0.01 is small
+# @param log bool for working in logarithmic space
+# @param slope without upper limit
+# @param minval minimal value allowed
+
+
+def smooth_fun(x0, y0, xnew, k=3, s=0.01, log=True):
+    if log:
+        y0 = np.log(y0)
+    tck = splrep(x0, y0, k=k, s=s)
+    tmp = splev(xnew,tck,der=0)
+    if log:
+        tmp = np.exp(tmp)
+    return tmp
+## \fn smooth_fun(x0, y0, xnew, k=3, s=0.01, log=True)
+# smooth function y(x)
+# NOT USED ANYMORE
+# @param x0 array, free variable
+# @param y0 array, dependent variable
+# @param xnew array, new positions (or the same as x0)
+# @param k order of the spline
+# @param s smoothing. 0.01 is *small*
+# @param log bool for working in logarithmic space

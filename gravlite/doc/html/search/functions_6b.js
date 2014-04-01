@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['kappa',['kappa',['../namespacephysics__disc.html#a55e45e7edb41d606c2640e91bf49b85d',1,'physics_disc']]],
-  ['kappa_5fanf',['kappa_anf',['../namespacegl__analytic.html#a80ced4d10f9b16f9037b9e0c535cb7d0',1,'gl_analytic']]],
-  ['kz',['kz',['../namespacephysics__disc.html#ac5dee6d50258fbbfbe209098f1509624',1,'physics_disc']]]
+  ['kappa',['kappa',['../a00092.html#ae93db3269fb26bb168bff5d6b1a96816',1,'gl_physics']]],
+  ['kappa_5fanf',['kappa_anf',['../a00073.html#a53e6ed2a4dba5e934ee8a0ab683bb987',1,'gl_analytic']]],
+  ['kz',['kz',['../a00092.html#aeeec93d31a57ce6d5d2403a4ba3fbbd3',1,'gl_physics']]]
 ];

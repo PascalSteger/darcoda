@@ -18,10 +18,6 @@ from gl_int import *
 
 global f, axs
 
-# TODO: function to plot any profile in semilogarithmic plot,
-#       with custom labels
-
-# TODO: function for plotting median, 1sigma, 2sigma profiles in semilog plot
 
 def startlog():
     fig = figure(figsize=(1,1))
@@ -42,12 +38,13 @@ def startloglog():
 
 
 def start():
-    clf()
-    yscale('linear')
-    return
+    fig = figure(figsize=(2,2))
+    fig.clf()
+    # fig.set_yscale('linear')
+    return fig
 ## \fn start()
 # start new figure. to be used in debug mode
-    
+
 
 def setlims(ax,xlim,ylim):
     ax.set_xlim(xlim)
@@ -55,6 +52,7 @@ def setlims(ax,xlim,ylim):
     return
 ## \fn setlims(ax, xlim, ylim)
 # set limits on axis ax
+# @param ax axis object
 # @param xlim [xmin, xmax]
 # @param ylim [ymin, ymax]
 

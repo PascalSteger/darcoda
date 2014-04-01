@@ -1,0 +1,25 @@
+<map id="gl_file.bin_data" name="gl_file.bin_data">
+<area shape="rect" id="node3" href="$a00111.html#aa4d7d5480b30722e2f902cf71d8758bb" title="grh_com.run" alt="" coords="181,5,275,35"/>
+<area shape="rect" id="node7" href="$a00116.html#abf59d65520fd0c72e472d20bdd47bf8b" title="grh_Pos.run" alt="" coords="183,699,273,728"/>
+<area shape="rect" id="node9" href="$a00114.html#a72ec4d7b8496b094fde5a9640b951d33" title="grh_MCMCbin.run" alt="" coords="164,432,292,461"/>
+<area shape="rect" id="node24" href="$a00109.html#a451289e4fce12fd8d92f656ff6b0f558" title="grg_COM.run" alt="" coords="179,59,277,88"/>
+<area shape="rect" id="node28" href="$a00110.html#a04e18c7f2a551f7c1c4a5e96f0a5a6e9" title="grg_MCMCbin.run" alt="" coords="164,485,292,515"/>
+<area shape="rect" id="node35" href="$a00122.html#a65c36ead1fcfecb51f693b309d406fb0" title="grw_COM.run" alt="" coords="177,112,279,141"/>
+<area shape="rect" id="node39" href="$a00124.html#aa1d21cd3715ed8e73f1333df3ce7efe4" title="grw_MCMCbin.run" alt="" coords="163,272,293,301"/>
+<area shape="rect" id="node46" href="$a00121.html#a4d7154e805cd614ae92a158ead664ebf" title="grw_com.run" alt="" coords="180,539,276,568"/>
+<area shape="rect" id="node51" href="$a00125.html#a78fc8f1dbce944fc435b2efe0f25a776" title="grw_mcmcbin.run" alt="" coords="165,165,291,195"/>
+<area shape="rect" id="node57" href="$a00118.html#a77ebee8188702bbd1400881b75fc35ee" title="grt_com.run" alt="" coords="183,592,273,621"/>
+<area shape="rect" id="node62" href="$a00119.html#a1a6507c244019445429c454fc4279938" title="grt_dens.run" alt="" coords="181,219,275,248"/>
+<area shape="rect" id="node68" href="$a00120.html#a1ce8e382296d58f979c6cf977c62f5b6" title="grt_siglos.run" alt="" coords="179,325,277,355"/>
+<area shape="rect" id="node75" href="$a00107.html#aac8cb8977bddc3e3f1720c3aa98c6dcf" title="grd_COM.run" alt="" coords="179,645,277,675"/>
+<area shape="rect" id="node79" href="$a00108.html#a007300ea06e60e9e245c22861fd16059" title="grd_MCMCbin.run" alt="" coords="164,379,292,408"/>
+<area shape="rect" id="node5" href="$a00081.html#a8df7b826b95abad434194e21163a1fc4" title="shrinking sphere in 3D, following v_LOS " alt="" coords="353,59,561,88"/>
+<area shape="rect" id="node11" href="$a00090.html#a77f4841997d8a7b7e8f731c7208285f2" title="split interval into bins, in a logarithmic fashion " alt="" coords="392,215,523,244"/>
+<area shape="rect" id="node13" href="$a00090.html#af20d87d0aac4453276d762c7e42a7dd5" title="split interval into bins of constant particle number " alt="" coords="385,267,529,314"/>
+<area shape="rect" id="node15" href="$a00090.html#a40fb01b0ec34e3e41223f4c9d57b79ff" title="split interval linearly into bins " alt="" coords="385,337,529,367"/>
+<area shape="rect" id="node17" href="$a00077.html#a4ea939e2ec4b13d939fdd56265f9d68f" title="PURPOSE: Estimation of the central location (&#39;mean&#39;) of a distribution, resistant for outliers and ro..." alt="" coords="379,444,536,473"/>
+<area shape="rect" id="node22" href="$a00106.html#a4aad5f9b1df9f4dffeccc07576bbfa40" title="open the output (pdf) file for the user " alt="" coords="408,391,507,420"/>
+<area shape="rect" id="node19" href="$a00077.html#a3ec60cce21036602e9f18897b389240b" title="PURPOSE: Estimation of the scale (&#39;dispersion&#39;) of a distribution, resistant for outliers and robust ..." alt="" coords="623,444,788,473"/>
+<area shape="rect" id="node48" href="$a00081.html#a327107f7b58a6d15d3fe9276ebf6bcff" title="3D shrinking sphere " alt="" coords="360,539,555,568"/>
+<area shape="rect" id="node59" href="$a00081.html#aca07c06117d47b2168ab7efc57c2724f" title="gl_centering.com_shrinkcircle_v_2D" alt="" coords="341,619,573,648"/>
+</map>

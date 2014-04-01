@@ -21,14 +21,6 @@ import gl_helper as gh
 import gl_plot as gpl
 import gl_physics as phys
 
-def enforce_sphere():
-    if gp.geom == 'disc':
-        print('attention: using spherical part of code for disc!')
-        pdb.set_trace()
-    return
-## \fn enforce_sphere()
-# stop execution if using wrong geometry
-
 
 def rho_INTDIRECT_Rho(r0, rho):
     # use splines, spline derivative to go beyond first radial point
@@ -62,21 +54,17 @@ def rho_INTDIRECT_Rho(r0, rho):
         tck = splrep(xint[1:],np.log(yint[1:]),k=3,s=0.)
         xnew = xint
         ynew = np.hstack([np.exp(splev(xnew[0],tck,der=0)),yint[1:]])
-        # gpl.start(); pdb.set_trace()
-
         # power-law extension to infinity
-        tck = splrep(xint[-4:],np.log(yint[-4:]),k=1,s=1.)
-        invexp = lambda x: np.exp(splev(x,tck,der=0))
-        pdb.set_trace()
-        dropoffint = quad(invexp,r0nu[-1],np.inf)
-        tcknu = splrep(xnew,ynew,s=0) # interpolation in real space
+        tck = splrep(xint[-4:], np.log(yint[-4:]), k=1, s=1.)
+        invexp = lambda x: np.exp(splev(x, tck, der=0))
+        dropoffint = quad(invexp, r0nu[-1], np.inf)
+        tcknu = splrep(xnew, ynew, s=0) # interpolation in real space
         Rho[i] = 2. * (splint(r0nu[i], r0nu[-1], tcknu) + dropoffint[0])
 
         # gpl.plot(r0nu[:-4], Rho, '.', color='green')
     tcke = splrep(r0nu[:-4],Rho)
     Rhoout = splev(r0,tcke)     # [munit/lunit^2]
 
-    # TODO: debug: raise Rho overall with factor 1.05?!
     gh.checkpositive(Rhoout, 'Rhoout in rho_INTDIRECT_Rho')
     # [munit/lunit^2]
     return Rhoout
@@ -167,7 +155,8 @@ def rho_param_INT_Rho(r0, rhoparam, gp):
 ## \fn rho_param_INT_Rho(r0, rhoparam, gp)
 # take 3D density parameters, calculate projected surface density
 # @param r0 radii of bins, [pc]
-# @param rho 3D density, [Msun/pc^3]
+# @param rhoparam 3D density, [Msun/pc^3]
+# @param gp
 
 
 def rho_INTIPOL_Rho(r0, rho):
@@ -234,11 +223,10 @@ def Rho_SUM_MR(r0, Rho):
 ## \fn Rho_SUM_MR(r0, Rho)
 # calculate enclosed mass from summing up (density in rings)*(ring surface)
 # @param r0 radii, [pc]
-# @param Rho, 2D density, [Msun/pc^2]
+# @param Rho 2D density, [Msun/pc^2]
 
 
 def rho_INT_Sum_MR(r0, rho):
-    enforce_sphere()
     surf_tot = rho_INT_Rho(r0, rho)                # gives [rho0, 2D]
     surfmass = Rho_SUM_MR(r0, surf_tot)            # [munit,2D]
     # [munit, 2D]
@@ -284,7 +272,6 @@ def Rho_NORM_rho(R0, Rho, Rhoerr):
 
 def Rho_INT_rho(R0, Rho):
     # TODO: deproject with variable transformed, x = sqrt(r^2-R^2)
-    # TODO: any good? have 1/x in transformation, for x=0 to infty
     pnts = len(Rho)                    # [1]
 
     # use splines, spline derivative to go beyond first radial point
@@ -305,11 +292,9 @@ def Rho_INT_rho(R0, Rho):
     R0nu = np.hstack([R0nu, R0ext])
     Rhonu = np.hstack([Rhonu, Rhoext])
     gh.checkpositive(Rhonu, 'Rhonu in Rho_INT_rho')
-    # gpl.start(); pdb.set_trace()
-    tck1 = splrep(R0nu,Rhonu,k=3,        s=0.)
-    # TODO: adapt s for problem at hand ==^
-    dnubydR = splev(R0nu,tck1,der=1)
-    # Rhofit = np.exp(splev(R0nu,tck1))   # debug for outer part
+
+    tck1 = splrep(R0nu, Rhonu, k=3, s=0.)
+    dnubydR = splev(R0nu, tck1, der=1)
 
     rho = np.zeros(len(R0nu)-4)
     for i in range(len(R0nu)-4):
@@ -342,6 +327,6 @@ def rho_SUM_Mr(r0max, rho):
     return Mr                                       # [munit]
 ## \fn rho_SUM_Mr(r0max, rho)
 # take 3D density, calculate summed 3D mass
-# @param r0 radii in [pc]
+# @param r0max radii in [pc]
 # @param rho 3D density in [Msun/pc^3]
 

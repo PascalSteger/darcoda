@@ -29,14 +29,14 @@ def run():
         # yes, we scatter radii in foo_pool
         Rs = R;    Rmin = min(Rs);     Rmax = max(Rs)
         if gp.lograd:
-            print(gpr.nbins,' bins in log spacings')
-            Binmin, Binmax, Rbin = bin_r_log(Rmax/gpr.nbins, Rmax, gpr.nbins)
+            print(gp.nipol,' bins in log spacings')
+            Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
         elif gp.consttr:
-            Binmin, Binmax, Rbin = bin_r_const_tracers(Rs, len(Rs)/gpr.nbins)
-            print(len(R)/gpr.nbins,' particles per bin')
+            Binmin, Binmax, Rbin = bin_r_const_tracers(Rs, len(Rs)/gp.nipol)
+            print(len(R)/gp.nipol,' particles per bin')
         else:
-            print(gpr.nbins, ' bins in linear spacings')
-            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gpr.nbins)
+            print(gp.nipol, ' bins in linear spacings')
+            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol)
 
         # volume of a bin with height binlength, 2D
         Vol = np.zeros(gpr.bins)
@@ -44,12 +44,12 @@ def run():
             Vol[i] = np.pi*(Binmax[i]**2-Binmin[i]**2)
 
         # gpr.n=30 iterations for getting random picked radius values
-        Density = np.zeros((gpr.nbins,gpr.n))
-        A       = np.zeros((gpr.nbins,gpr.n)) # shared by density, siglos, kappa calcs
+        Density = np.zeros((gp.nipol,gpr.n))
+        A       = np.zeros((gp.nipol,gpr.n)) # shared by density, siglos, kappa calcs
         for k in range(gpr.n):
             Rsi = gpr.Rerror * np.random.randn(len(Rs)) + Rs # [Rscale]
             vlosi = gpr.vrerror * np.random.randn(len(vlos)) + vlos
-            for i in range(gpr.nbins):
+            for i in range(gp.nipol):
                 ind1 = np.argwhere(np.logical_and(Rsi>=Binmin[i], Rsi<Binmax[i])).flatten() # [1]
                 Density[i][k] = (1.*len(ind1))/Vol[i]*Totmass # [munit/Rscale^2]
                 vlos1 = vlosi[ind1]                           # [km/s]
@@ -58,30 +58,28 @@ def run():
         # output density
         Dens0 = np.sum(Density[0])/(1.*gpr.n) # [munit/Rscale^3]
         print('Dens0 = ',Dens0,' [munit/Rscale^2]')
-        crscale = open(gpr.get_params_file(comp),'r')
+        crscale = open(gp.files.get_scale_file(comp),'r')
         Rscale = np.loadtxt(cscale, comments='#', unpack=False)
         crscale.close()
 
-        cdens = open(gpr.get_params_file(comp),'a')
+        cdens = open(gp.files.get_scale_file(comp),'a')
         print(Dens0, file=cdens)               # [munit/Rscale^2]
         print(Dens0/Rscale**2, file=cdens)      # [munit/pc^2]
         print(Totmass, file=cdens)             # [munit]
         cdens.close()
 
-        print(gpr.get_dens_file(comp))
-        de = open(gpr.get_dens_file(comp),'w')
+        de = open(gp.files.nufiles[comp], 'w')
         print('# Rbin [Rscale]','Binmin [Rscale]','Binmax [Rscale]',
               'Nu(R)/Nu(0) [1]','error [1]', file=de)
     
-        print(gpr.get_enc_mass_file(comp))
-        em = open(gpr.get_enc_mass_file(comp),'w')
+        em = open(gp.files.massfiles[comp], 'w')
         print('# R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
               'M(<Binmax) [Msun]','error [Msun]', file=em)
     
         AB0   = np.sum(A[0])/(1.*gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(AB0)       # [munit/Rscale^3]
-        P_dens  = np.zeros(gpr.nbins);  P_edens = np.zeros(gpr.nbins)
-        for b in range(gpr.nbins):
+        P_dens  = np.zeros(gp.nipol);  P_edens = np.zeros(gp.nipol)
+        for b in range(gp.nipol):
             Dens = np.sum(Density[b])/(1.*gpr.n) # [munit/Rscale^3]
             AB   = np.sum(A[b])/(1.*gpr.n)       # [1]
             Denserr = Dens/np.sqrt(AB)       # [munit/Rscale^3]

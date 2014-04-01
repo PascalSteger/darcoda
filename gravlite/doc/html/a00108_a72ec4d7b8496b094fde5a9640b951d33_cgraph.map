@@ -1,0 +1,8 @@
+<map id="grh_MCMCbin.run" name="grh_MCMCbin.run">
+<area shape="rect" id="node3" href="$a00086.html#a77f4841997d8a7b7e8f731c7208285f2" title="split interval into bins, in a logarithmic fashion " alt="" coords="196,5,327,35"/>
+<area shape="rect" id="node5" href="$a00086.html#af20d87d0aac4453276d762c7e42a7dd5" title="split interval into bins of constant particle number " alt="" coords="189,58,333,105"/>
+<area shape="rect" id="node7" href="$a00086.html#a40fb01b0ec34e3e41223f4c9d57b79ff" title="split interval linearly into bins " alt="" coords="189,128,333,157"/>
+<area shape="rect" id="node9" href="$a00073.html#a29a73d62880e90ca27cbef0a7f197fd8" title="Estimation of the central location (&#39;mean&#39;) of a distribution, resistant for outliers and robust for ..." alt="" coords="183,181,340,211"/>
+<area shape="rect" id="node14" href="$a00100.html#a4aad5f9b1df9f4dffeccc07576bbfa40" title="open the output (pdf) file for the user " alt="" coords="212,235,311,264"/>
+<area shape="rect" id="node11" href="$a00073.html#a0e5ef102bbbcf0c3e0c2697ca572b83c" title="PURPOSE: Estimation of the scale (&#39;dispersion&#39;) of a distribution, resistant for outliers and robust ..." alt="" coords="391,181,556,211"/>
+</map>

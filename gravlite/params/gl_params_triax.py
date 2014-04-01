@@ -50,10 +50,6 @@ class Params():
         self.G1  = self.G1*self.msun/self.km**2/self.pc # [pc msun^-1 km^2 s^-2]
 
         self.geom = 'sphere'
-        # TODO remove following scales for Gaia. set to 1 for no scaling anywhere..
-        self.Mscale = 1.         # [Msun], scale for dimensionless eqs
-                                 # from Hernquist, Baes&Dejonghe
-        self.ascale = 1.         # [pc]
         self.err = -1e30
         self.model = False # for walker mock data: plot model. set beta to Osipkov-Merrit profile
         if self.investigate != 'walk':
@@ -117,13 +113,6 @@ class Params():
         ########## global variables, not set to value here
         from gl_data import Datafile
         self.dat = Datafile()
-        # global nu1_x, nu2_x, d1_x, d2_x, sig1_x, sig2_x, M_x, rho_x, M_tot, rho_tot
-        # global fnewoverf
-        self.zmin = -1
-        self.zmax = -1 # Low/high-z range = min/max of data [-1 = default]: TODO: convert to xmin, xmax
-        self.xpmin = -1
-        self.xpmax = -1     # Default low/high-r range = min/max of data: 
-
         self.dof = 1
 
         # Units: 
@@ -139,7 +128,6 @@ class Params():
         self.Nu0rscale=[]
         self.Nu0pc=[]
         if self.investigate != 'walk' and self.investigate != 'triax' and self.investigate != 'gaia':
-            # TODO: adapt to physical units
             # each is set for all components and first component by default
             self.rscale.append(1.)
             self.Rscale.append(1.)

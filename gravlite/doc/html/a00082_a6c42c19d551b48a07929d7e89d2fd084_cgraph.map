@@ -1,0 +1,6 @@
+<map id="gl_chi.compare_nu" name="gl_chi.compare_nu">
+<area shape="rect" id="node3" href="$a00103.html#a3cc02350ead70199a88819d9796a8c28" title="take 3D density, calculate projected surface density " alt="" coords="184,5,344,35"/>
+<area shape="rect" id="node5" href="$a00082.html#ae6a32c68aca56b6ef5bb36ba8645a8b8" title="determine &#39;reduced chi2&#39; " alt="" coords="413,68,515,97"/>
+<area shape="rect" id="node7" href="$a00082.html#af9d3a58e9630b067a384aabc6481be60" title="gl_chi.calc_chi2" alt="" coords="207,109,321,139"/>
+<area shape="rect" id="node9" href="$a00103.html#a850c3838f05cd2c6bad20844589e2f59" title="take 3D density parameters, calculate projected surface density " alt="" coords="393,131,535,178"/>
+</map>

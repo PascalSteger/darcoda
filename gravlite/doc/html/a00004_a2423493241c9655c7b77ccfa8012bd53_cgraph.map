@@ -1,0 +1,5 @@
+<map id="massedit.MassEdit.edit_file" name="massedit.MassEdit.edit_file">
+<area shape="rect" id="node3" href="$a00004.html#aadcc10379d41e838e04bf0512859cdb1" title="Process a file contents. " alt="" coords="239,5,396,51"/>
+<area shape="rect" id="node5" href="$a00004.html#a80735f176afe4bea7dfc05ac5a9bd35b" title="Edit a single line using the code expression. " alt="" coords="445,13,632,43"/>
+<area shape="rect" id="node7" href="$a00004.html#a07a2386fe8987eb7c05358f58537967b" title="Edit a line with one code object built in the ctor. " alt="" coords="680,5,819,51"/>
+</map>

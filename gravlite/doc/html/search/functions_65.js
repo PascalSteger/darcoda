@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['end_5finitphase',['end_initphase',['../namespacegl__funs.html#a58cf13237cd427a25bee1c16e0e26613',1,'gl_funs']]],
-  ['enforce_5fsphere',['enforce_sphere',['../namespacegl__project.html#a3c944bc7932ea6c374340c7cbb3d361f',1,'gl_project']]],
-  ['expdtofloat',['expDtofloat',['../namespacegl__helper.html#ab3bbdedaa442d4b946e3ef282d40c97f',1,'gl_helper']]],
-  ['expol',['expol',['../namespacegl__helper.html#a89e0873f3b6420ef7711f00e84c540aa',1,'gl_helper']]]
+  ['err',['err',['../a00083.html#a7304e186843604478e323002249df1a1',1,'gl_helper']]],
+  ['expdtofloat',['expDtofloat',['../a00083.html#ad55637812097befffbd217838739e1d6',1,'gl_helper']]],
+  ['expol',['expol',['../a00083.html#a78b4f4aa847ab159a9b2a5e5b6017059',1,'gl_helper']]]
 ];

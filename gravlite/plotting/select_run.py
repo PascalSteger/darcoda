@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -7,6 +7,7 @@
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
 import os, sys, time, glob, shutil
+import numpy as np
 import pdb
 
 def bufcount(filename):
@@ -38,11 +39,11 @@ def remove_empty_folders(fdl):
             with open(x[0]+"/ev.dat"):
                 # delete any folder that has empty ev.dat
                 if bufcount(x[0]+'/ev.dat')<=0:
-                    print('empty '+x[0]+'/ev.dat, deleted top dir')
+                    print('empty '+x[0]+'/ev.dat, delete containing directory')
                     removeDir(x[0])
                 continue
         except IOError:
-            print(x[0]+'/ev.dat does not exist, deleted top dir')
+            print(x[0]+'/ev.dat does not exist, delete containing directory')
             removeDir(x[0])
     return
 # \fn remove_empty_folders(fdl)
@@ -50,16 +51,15 @@ def remove_empty_folders(fdl):
 # @param fdl [(name, datestamp)] of all dirs in current mode
 
 
-def list_files(basedir, gp):
-    search_dir = gp.files.dir
+def list_files(basedir):
     from stat import S_ISREG, ST_CTIME, ST_MODE
-    dirs = list(filter(os.path.isdir, glob.glob(search_dir + "201*")))
+    dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
     
     from datetime import datetime
     # delete all folders without or with empty ev.dat inside!
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')) for x in dirs]
     remove_empty_folders(fdl)
-    dirs = list(filter(os.path.isdir, glob.glob(search_dir + "201*")))
+    dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
     fdl = [(x,\
             datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M'),\
             bufcount(x+'/ev.dat')) for x in dirs]
@@ -67,15 +67,21 @@ def list_files(basedir, gp):
     fdl.sort(key=lambda x: x[1])
 
     for i in range(len(fdl)):
+        fil = open(fdl[i][0]+'/gl_params.py','r')
+        pops = 0                          # default: 0 populations, error
+        for line in fil:
+            if ('self.pops' in line.split()): # new version only (old
+                                              #would have to search
+                                              #for 'pops' only)
+                pops = int(line.split()[2])
         print("%2d"%(i+1),': ',\
               datetime.strftime(fdl[i][1],'%Y-%m-%d %H:%M'),\
-              ' with ', "%7d"%fdl[i][2], ' iterations')
-    import numpy as np
+              ' with ', "%7d"%fdl[i][2], ' iterations', \
+              ' and ', pops, ' populations')
     return np.transpose(np.array(fdl))[:][0]
-## \fn list_files(basedir, gp)
+## \fn list_files(basedir)
 # return all working or completed MCMC run directories
 # @param basedir string of directory
-# @param gp
 
 
 def get_investigate():
@@ -83,7 +89,7 @@ def get_investigate():
     invalid=True
     while(invalid):
         try:
-            user_input = input('Investigate: (default: '+str(default)+", gaia, triax, hern, fornax, discsim, discmock): ")
+            user_input = input('Investigate: (default: '+str(default)+", gaia, triax, hern, obs, discsim, discmock): ")
             if not user_input:
                 user_input = str(default)
             sel = user_input
@@ -91,12 +97,27 @@ def get_investigate():
             print("error in input")
         invalid = True
         if sel == 'walk' or sel == 'gaia' or sel == 'triax' or sel == 'hern'\
-          or sel == 'fornax' or sel == 'discsim' or sel == 'discmock':
+          or sel == 'obs' or sel == 'discsim' or sel == 'discmock':
             invalid = False
     return sel
 ## \fn get_investigate(default)
 # ask user for choice on investigation (walk, gaia, triax, fornax, hern, discsim, discmock)
 # @return string
+
+
+def choose_obs(sel):
+    if sel == '0':
+        return 'for'
+    if sel == '1':
+        return 'car'
+    if sel == '2':
+        return 'scl'
+    if sel == '3':
+        return 'sex'
+    return 'for'
+## \fn choose_obs(sel)
+# mapping of selection (int) to directory name (string of length 3)
+# @param sel selection (int)
 
 
 def get_case(investigate):
@@ -110,9 +131,13 @@ def get_case(investigate):
             sel = int(user_input)
         except ValueError:
             print("error in input")
-        if 0<sel and ((sel <= 5 and investigate == 'walk') or \
-                      (sel <= 8 and investigate == 'gaia')):
+        if 0<=sel and ((sel <= 5 and investigate == 'walk') or \
+                      (sel <= 8 and investigate == 'gaia') or \
+                       (sel <=4 and investigate == 'obs')):
             invalid = False
+        # assign string if working with observed dwarfs
+        if investigate == 'obs':
+            sel = choose_obs(sel)
     return sel
 ## \fn get_case()
 # ask user for choice on case number (see gl_params and gl_class_files for definitions)
@@ -121,7 +146,7 @@ def get_case(investigate):
 
 def get_run(default):
     # interactive input
-    invalid=True
+    invalid = True
     while(invalid):
         try:
             user_input = input('Input: (default '+str(default)+"): ")
@@ -130,7 +155,7 @@ def get_run(default):
             selection = int(user_input)
         except ValueError:
             print("error in input")
-        if 0<selection and selection<=default:
+        if 0 < selection and selection <= default:
             invalid = False
     return selection - 1
 ## \fn get_run(default)
@@ -215,13 +240,16 @@ def run():
     action = 'k'
     investigate = get_investigate()
     case = get_case(investigate)
-    basedir = '../DT'+investigate+'/'+str(case)+'/' # TODO: for triax, need links
-    import import_path as ip
-    ip.import_path(basedir+'/gl_params.py')
-    pdb.set_trace()
+    if os.path.exists('/home/ast/read'):
+        machine = '/home/ast/read/dark/gravlite/'
+    else:
+        machine = '/home/psteger/sci/gravlite/'
+    basedir = os.path.abspath(machine+'/DT'+investigate+'/'+str(case)+'/')+'/'
     
+    # import import_path as ip
+    # ip.import_path(basedir+'/gl_params.py')
     while(action == 'k'):
-        fdl = list_files(basedir, gl_params)
+        fdl = list_files(basedir)
         sel = get_run(len(fdl))
         action = get_action()
         if action == 'k':
@@ -229,11 +257,13 @@ def run():
             shutil.rmtree(fdl[sel])
         
     prof = get_prof()
+    basename = fdl[sel] # full directory path, without '/'
+    timestamp = basename.split('/')[-1] # extract last bit
     if prof == 'rho' or prof=='nr':
-        return fdl[sel]+'/', prof, 0
+        return timestamp, basename+'/', prof, 0
     pop  = get_pop()
-    return fdl[sel]+'/', prof, pop
-## \fn run
+    return timestamp, basename+'/', prof, pop
+## \fn run()
 # display possible runs of the current investigation method, select one
 # @return basename, prof (string)
 

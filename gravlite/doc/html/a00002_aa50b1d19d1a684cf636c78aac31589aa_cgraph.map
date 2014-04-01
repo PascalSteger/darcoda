@@ -1,0 +1,6 @@
+<map id="gl_data.Datafile.read_nu" name="gl_data.Datafile.read_nu">
+<area shape="rect" id="node3" href="$a00095.html#a09982d8e1d00e7eb107271de24d0bd98" title="take 2D density and density error, get back 3D density and error&#39; " alt="" coords="216,59,395,88"/>
+<area shape="rect" id="node5" href="$a00095.html#a9169f84f6f4872b5be731e75e78255ed" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39; " alt="" coords="448,5,608,35"/>
+<area shape="rect" id="node7" href="$a00095.html#a8309f4d3eb7fbe3632d9a369a7992b33" title="take 3D density, calculate summed 3D mass " alt="" coords="449,59,607,88"/>
+<area shape="rect" id="node9" href="$a00095.html#a53a13afb11e8c26d0b2f4a90280796ed" title="calculate enclosed mass from summing up (density in rings)*(ring surface) " alt="" coords="443,112,613,141"/>
+</map>

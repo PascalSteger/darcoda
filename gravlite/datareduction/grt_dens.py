@@ -30,7 +30,7 @@ def run(gp):
     
     # set number and size of (linearly spaced) bins
     rmin = 0. #[rscale]
-    rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior #[rscale]
+    rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR #[rscale]
         
     print('rmax [rscale] = ', rmax)
     sel = (r<rmax)
@@ -39,50 +39,47 @@ def run(gp):
     
     if gp.lograd:
         # space logarithmically in radius
-        binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
+        binmin, binmax, rbin = bin_r_log(rmax/gp.nipol, rmax, gp.nipol)
     elif gp.consttr:
-        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gpr.nbins)
+        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gp.nipol)
     else:
-        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
+        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gp.nipol)
             
     #volume of a circular bin from binmin to binmax
-    vol = np.zeros(gpr.nbins)
-    for k in range(gpr.nbins):
+    vol = np.zeros(gp.nipol)
+    for k in range(gp.nipol):
         vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rscale**2]
             
     # rs = gpr.Rerror*np.random.randn(len(r))+r
     rs = r  #[rscale] # if no initial offset is whished
     
-    print('output: ', gpr.get_ntracer_file(0))
-    tr = open(gpr.get_ntracer_file(0),'w')
+    tr = open(gp.files.get_ntracer_file(0),'w')
     print(totmass, file=tr)
     tr.close()
 
-    print(gpr.get_dens_file(0))
-    de = open(gpr.get_dens_file(0),'w')
-    print(gpr.get_enc_mass_file(0))
-    em = open(gpr.get_enc_mass_file(0),'w')
+    de = open(gp.files.nufiles[0],'w')
+    em = open(gp.files.massfiles[0],'w')
     
     print('r','nu(r)/nu(0)','error', file=de)
     print('r','M(<r)','error', file=em)
 
     # 30 iterations for getting random picked radius values
-    density = np.zeros((gpr.nbins,gpr.n))
-    a       = np.zeros((gpr.nbins,gpr.n))
+    density = np.zeros((gp.nipol,gpr.n))
+    a       = np.zeros((gp.nipol,gpr.n))
     for k in range(gpr.n):
         rsi = gpr.Rerror * np.random.randn(len(rs)) + rs # [rscale]
-        for j in range(gpr.nbins):
+        for j in range(gp.nipol):
             ind1 = np.argwhere(np.logical_and(rsi>=binmin[j],rsi<binmax[j])).flatten() # [1]
             density[j][k] = (1.*len(ind1))/vol[j]*totmass # [munit/rscale**2]
             a[j][k] = 1.*len(ind1) #[1]
             
     dens0 = np.sum(density[0])/(1.*gpr.n) # [munit/rscale**2]
     print('dens0 = ',dens0,'[munit/rscale**2]')
-    crscale = open(gpr.get_params_file(0),'r')
+    crscale = open(gp.files.get_scale_file(0),'r')
     rscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
     crscale.close()
 
-    cdens = open(gpr.get_params_file(0),'a')
+    cdens = open(gp.files.get_scale_file(0),'a')
     print(dens0, file=cdens)               # [munit/rscale**2]
     print(dens0/rscale**2, file=cdens)      # [munit/pc**2]
     print(totmass, file=cdens)             # [munit]
@@ -91,9 +88,9 @@ def run(gp):
     ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
     denserr0 = dens0/np.sqrt(ab0)       # [munit/rscale**2]
 
-    p_dens  = np.zeros(gpr.nbins);  p_edens = np.zeros(gpr.nbins)
+    p_dens  = np.zeros(gp.nipol);  p_edens = np.zeros(gp.nipol)
     
-    for b in range(gpr.nbins):
+    for b in range(gp.nipol):
         dens = np.sum(density[b])/(1.*gpr.n) # [munit/rscale**2]
         ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
         denserr = dens/np.sqrt(ab)       # [munit/rscale**2]
@@ -106,7 +103,7 @@ def run(gp):
             p_dens[b] = dens/dens0   # [1]
             p_edens[b]= denserror    # [1] #100/rbin would be artificial guess
 
-    for b in range(gpr.nbins):
+    for b in range(gp.nipol):
         print(rbin[b], binmin[b], binmax[b], p_dens[b], p_edens[b], file=de) # [rscale], [dens0], [dens0]
         indr = (r<binmax[b])
         menclosed = 1.0*np.sum(indr)/totmass # /totmass for normalization to 1 at last bin #[totmass]

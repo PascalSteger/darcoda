@@ -1,0 +1,6 @@
+<map id="gl_int.ant_sigkaplos2surf" name="gl_int.ant_sigkaplos2surf">
+<area shape="rect" id="node3" href="$a00084.html#a4dd9ecf979cc39bfb66e02c8f74fb408" title="insert equally spaced points at 1/4, 1/2, and 3/4 of a bin span " alt="" coords="221,5,373,51"/>
+<area shape="rect" id="node5" href="$a00084.html#adf25e04b033508c22c68816014948c5a" title="integrate beta over r (integrals in front of and after sigma_r^2 integral) " alt="" coords="225,75,369,104"/>
+<area shape="rect" id="node9" href="$a00084.html#ac7ea665914b93dc73ce9f49a10fb9178" title="function from Lokas+2005, eq. " alt="" coords="265,128,329,157"/>
+<area shape="rect" id="node7" href="$a00084.html#a8f84d187088a15ad92a4caac0de6a6e7" title="extrapolate back to first bin, with splines " alt="" coords="423,75,572,104"/>
+</map>

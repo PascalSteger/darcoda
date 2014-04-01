@@ -1,0 +1,5 @@
+<map id="gl_analytic.nrwalktot_3D_deriv" name="gl_analytic.nrwalktot_3D_deriv">
+<area shape="rect" id="node3" href="$a00073.html#a71cc72addf4a5a9df0c1f093f4780430" title="return total mass density, stars+DM " alt="" coords="196,13,367,43"/>
+<area shape="rect" id="node5" href="$a00073.html#a091c58ecb7fd6c7ce1165487a3e8087c" title="gl_analytic.rhowalk_3D" alt="" coords="416,13,573,43"/>
+<area shape="rect" id="node7" href="$a00073.html#a9b72d7d99875a16fabb6d84a3370ade3" title="determine rho(r) for a generalized Hernquist model " alt="" coords="621,13,752,43"/>
+</map>

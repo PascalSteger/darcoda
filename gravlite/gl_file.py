@@ -6,18 +6,18 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import pdb
-import sys
+import sys, pdb
 import numpy as np
 import gl_physics as phys
 from gl_data import Datafile
 
 def bin_data(gp):
     if gp.investigate == 'hern':
-        import grh_com
-        import grh_Pos
-        import grh_MCMCbin
-        grh_MCMCbin.run()
+        import grh_com, grh_Pos, grh_MCMCbin
+        grh_com.run(gp)
+        grh_Pos.run()
+        grh_MCMCbin.run(gp)
+        grh_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
         import grg_COM, grg_MCMCbin
         grg_COM.run()
@@ -39,6 +39,10 @@ def bin_data(gp):
         grt_dens.run()
         import grt_siglos
         grt_siglos.run()
+    elif gp.investigate == 'obs':
+        import grd_COM, grd_MCMCbin
+        grd_COM.run(gp)
+        grd_MCMCbin.run(gp)
     elif gp.investigate == 'discsim':
         import grs_com_align # centering, if not aligned yet
         import grs_rho
@@ -51,15 +55,17 @@ def bin_data(gp):
 def get_data(gp):
     gp.dat = Datafile()
     if gp.investigate == 'discmock':
-        import gl_discmock as gs
-        gs.discmock()
+        import gl_disc_mock as gs
+        gs.disc_mock(gp)
     elif gp.investigate == 'discsim':
-        import gl_discsim as gs
-        gs.discsim()
+        import gl_disc_sim as gs
+        gs.disc_sim(gp)
     else: # for all dwarfs, read from files
         for i in range(gp.pops+1):
             A = np.loadtxt(gp.files.get_scale_file(i), unpack=False, skiprows=1)
-            gp.Rscale.append(A[0]) # TODO: error in Gaia case: sometimes, we do not have entries here
+            gp.Rscale.append(A[0]) # TODO: error in Gaia case:
+                                   # sometimes, we miss
+                                   # entries here
             gp.Nu0rscale.append(A[1])
             gp.Nu0pc.append(A[2])
             gp.totmass.append(A[3])
@@ -88,13 +94,13 @@ def arraydump(fname, arrays, app='a', narr=1):
                 print(line, file=fn)
     fn.close()
     return 0
-## \fn arraydump(fname, arrays, app='a', narr=1)
+## \fn arraydump(fname, arrays, app, narr)
 # This routine takes a number, narr, of equal length arrays
 # and appends/writes them to a specified file in columnated data format.
 # @param fname filename, string
 # @param arrays =[[arr1], [arr2]...] 
-# @param app='a' appending?
-# @param narr=1 number of arrays
+# @param app  ='a' appending?
+# @param narr =1 number of arrays
 
 
 def bufcount(filename):
@@ -111,3 +117,25 @@ def bufcount(filename):
     return lines
 ## \fn bufcount(filename)
 # count lines of a file
+
+def write_headers(gp, comp):
+    de = open(gp.files.nufiles[comp], 'w')
+    print('Rbin [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+          'Nu(R)/Nu(0) [1]','error [1]', file=de)
+    
+    em = open(gp.files.massfiles[comp],'w')
+    print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+          'M(<Binmax) [Msun]','error [Msun]', file=em)
+    
+    sigfil = open(gp.files.sigfiles[comp],'w')
+    print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+          'sigma_r(R) [km/s]','error [km/s]', file=sigfil)
+
+    kappafil = open(gp.files.kappafiles[comp],'w')
+    print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+          'kappa_los(R) [1]','error [1]', file=kappafil)
+    return de, em, sigfil, kappafil
+## \fn write_headers(gp, comp)
+# write headers for datareduction output files, and return file handlers
+# @param gp global parameters
+# @param comp component (0: all, 1,2,...)

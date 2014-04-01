@@ -47,14 +47,14 @@ def run():
         
         
         
-        Rbin,Binmin,Binmax,Dens,Denserr = np.loadtxt(gpr.get_dens_file(comp),\
+        Rbin,Binmin,Binmax,Dens,Denserr = np.loadtxt(gp.files.nufiles[comp],\
                                                      skiprows=1,usecols=(0,1,2,3,4),\
                                                      unpack=True) # 3*[Rscale], [km/s]
         Rbin*=Rscale[comp]; Binmin*=Rscale[comp]; Binmax*=Rscale[comp]; Dens*=Dens0pc[comp]; Denserr*=Dens0pc[comp]
         
         
         
-        rbin,binmin,binmax,dens,denserr = np.loadtxt(gpr.get_dens_file(comp)+'_3D',\
+        rbin,binmin,binmax,dens,denserr = np.loadtxt(gp.files.nufiles[comp]+'_3D',\
                                                      skiprows=1,usecols=(0,1,2,3,4),\
                                                      unpack=True) # 3*[Rscale], [km/s]
         rbin*=rscale[comp]; binmin*=rscale[comp]; binmax*=rscale[comp]; dens*=dens0pc[comp]; denserr*=dens0pc[comp]

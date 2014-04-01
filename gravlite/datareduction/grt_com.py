@@ -31,11 +31,9 @@ def run(gp):
     x0 *= 1000.                         # [pc]
     y0 *= 1000.                         # [pc]
     
-    # center of mass with means
-    #com_x, com_y = com_mean(x0,y0) # [TODO]
-    
     # shrinking sphere method
-    com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0,y0, vlos)
+    pm = np.ones(len(x0))
+    com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, vlos, pm)
     print('COM [pc]: ', com_x, com_y)
     print('VOM [km/s]', com_vz)
 
@@ -56,13 +54,13 @@ def run(gp):
     print('total number of stars: ',len(rc))
 
     r0 = np.sqrt(x0**2+y0**2)/rscale
-    sel = (r0<gpr.rprior)
+    sel = (r0<gp.maxR)
     x = x0[sel]/rscale; y = y0[sel]/rscale # [r_scale]
     vz = vlos[sel]
     m = np.ones(len(x))
     r = np.sqrt(x*x+y*y) #[r_scale]
     # print("x y z") on first line, to interprete data later on
-    crscale = open(gpr.get_params_file(0),'w')
+    crscale = open(gp.files.get_scale_file(0),'w')
     print('# rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
     print(rscale, file=crscale)
     crscale.close()

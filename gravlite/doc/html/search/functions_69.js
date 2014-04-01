@@ -1,14 +1,13 @@
 var searchData=
 [
-  ['igra',['igra',['../namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b',1,'deproj']]],
-  ['int_5fpoly_5finf',['int_poly_inf',['../namespacegl__int.html#a49d20fca6f1b7c74db0c5a433c244258',1,'gl_int']]],
-  ['int_5fsiglos2surf_5fold',['int_siglos2surf_old',['../namespacegl__int.html#a5d6f9314aae16fca4e6f02230ebd4459',1,'gl_int']]],
-  ['int_5fsigr2_5fold',['int_sigr2_old',['../namespacegl__int.html#a7c47781f6f573ad6fbc10780037f1f2c',1,'gl_int']]],
-  ['interpol',['interpol',['../classgl__data_1_1Datafile.html#a4ba41da3340bea0206b2104b007e5548',1,'gl_data::Datafile']]],
-  ['introduce_5fpoints_5fin_5fbetween',['introduce_points_in_between',['../namespacegl__int.html#a9fec3a7e52cf04af3cd75f7e01f1a61c',1,'gl_int']]],
-  ['intsigma',['intSigma',['../namespacedeproj.html#a1c05db439e5f6961ae0937b0e1034a25',1,'deproj']]],
-  ['invdelta',['invdelta',['../namespacephysics__sphere.html#a4821a09bee038aa1b0fb8db1d984bde2',1,'physics_sphere']]],
-  ['ipol',['ipol',['../namespacegl__helper.html#a22870f112617e9d7e545a7b1b49f7cd4',1,'gl_helper.ipol()'],['../namespaceplots__common.html#a27baa17d046fc76b8d45554ea024c688',1,'plots_common.ipol()']]],
-  ['ipol_5fdata',['ipol_data',['../namespacegl__file.html#a4f1a97302e0d7f7ef6ec9075f56e0f3c',1,'gl_file']]],
-  ['ipollog',['ipollog',['../namespacegl__helper.html#a3565099b0513f65e2d6cafce389aca14',1,'gl_helper.ipollog()'],['../namespaceplots__common.html#a908b79e061b3e14581716db2e3d22036',1,'plots_common.ipollog()']]]
+  ['import_5fpath',['import_path',['../a00116.html#a896f53e3cf5adb7bb47d751ad7f8fb51',1,'import_path']]],
+  ['insert_5fsys_5fpath',['insert_sys_path',['../a00116.html#a7e3d8f16dc8f9a2ab5e4b9c5d3cec338',1,'import_path']]],
+  ['int_5fpoly_5finf',['int_poly_inf',['../a00084.html#a92ff1beae39d01eb4e92d4ccdfbb40bd',1,'gl_int']]],
+  ['int_5fsiglos2surf_5fold',['int_siglos2surf_old',['../a00084.html#a475deef05e714ef2c398dcf7c55cd651',1,'gl_int']]],
+  ['int_5fsigr2_5fold',['int_sigr2_old',['../a00084.html#a1a4281d156259f34dbbf26ede649f067',1,'gl_int']]],
+  ['introduce_5fpoints_5fin_5fbetween',['introduce_points_in_between',['../a00084.html#a4dd9ecf979cc39bfb66e02c8f74fb408',1,'gl_int']]],
+  ['invdelta',['invdelta',['../a00092.html#a1bc5102e44707f9037c7d64f611092c3',1,'gl_physics']]],
+  ['ipol',['ipol',['../a00083.html#ae3cd006566b9ff167002fba9fa2c9491',1,'gl_helper']]],
+  ['ipol_5frhalf_5flog',['ipol_rhalf_log',['../a00117.html#a2e226a897a287e27954e12a3962ab699',1,'plot_multinest']]],
+  ['ipollog',['ipollog',['../a00083.html#adab572a40930360f928420bf5596b892',1,'gl_helper']]]
 ];

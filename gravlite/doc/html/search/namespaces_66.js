@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['femg',['femg',['../namespacefemg.html',1,'']]],
-  ['fitbivariate',['fitbivariate',['../namespacefitbivariate.html',1,'']]]
+  ['femg',['femg',['../a00072.html',1,'']]]
 ];

@@ -26,6 +26,9 @@ class Datafile:
         ## biggest radius of the data bins, in [pc]
         self.binmax = []
 
+        ## keep mass profile
+        self.Mdat = []; self.Merr = []
+        
         ## keep radial profile of the tracer density, averaged in 2D-rings
         self.nudat = []; self.Nudat = []
         ## keep error of Nudat, in [Msun/pc^2]
@@ -54,18 +57,22 @@ class Datafile:
             Nux    = Nux[:]    * gp.Rscale[pop]         # [pc]
             Nudat  = Nudat[:]  * gp.Nu0pc[pop]          # [Msun/pc^2]
             Nuerr  = Nuerr[:]  * gp.Nu0pc[pop]          # [Msun/pc^2]
-            self.rbin = Nux                             # [pc]
-            self.binmin = binmin * gp.Rscale[pop]       # [pc]
-            self.binmax = binmax * gp.Rscale[pop]       # [pc]
-            gp.xipol = self.rbin                        # [pc]
-            maxr = max(self.rbin)
-            gp.xepol = np.hstack([self.rbin, 2*maxr, 4*maxr, 8*maxr])
+
+            # take the overall bins for rbin, binmin, binmax vals
+            if pop == 0:
+                self.rbin = Nux                                 # [pc]
+                self.binmin = binmin * gp.Rscale[pop]           # [pc]
+                self.binmax = binmax * gp.Rscale[pop]           # [pc]
+                gp.xipol = self.rbin                            # [pc]
+                maxr = max(self.rbin)                           #
+                gp.xepol = np.hstack([self.rbin, 2*maxr, 4*maxr, 8*maxr]) #
             
             # deproject, # takes [pc], 2* [munit/pc^2], gives [pc], 2* [munit/pc^3],
             # already normalized to same total mass
-            if gp.geom=='sphere':
+            if gp.investigate == 'walk' or gp.investigate == 'obs' or gp.investigate == 'gaia':
                 dummy, nudat, nuerr = Rho_NORM_rho(self.rbin, Nudat, Nuerr)
             else:
+                print('working in disc symmetry')
                 nudat, nuerr = Nudat, Nuerr
 
             self.Nudat.append(Nudat) # [Msun/pc^2]
@@ -118,7 +125,7 @@ class Datafile:
 
 
     def save(self, fn):
-        fil = open(fn,'w')
+        fil = open(fn, 'wb')
         pickle.dump(self, fil)
         fil.close()
         return

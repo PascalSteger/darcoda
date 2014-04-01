@@ -1,20 +1,6 @@
 var searchData=
 [
-  ['values',['values',['../classgl__class__rate_1_1Rate.html#a6b131f27e48dfa2f3e154c6d1a1331c3',1,'gl_class_rate::Rate']]],
-  ['vicmd',['VICMD',['../namespacestellarmass.html#aae9a05eca1d26fd5e05afe08b75cd14a',1,'stellarmass']]],
-  ['vlos',['vlos',['../namespacecentreofmass.html#a6bf91a125dbd4d441ce45c9566aac276',1,'centreofmass.vlos()'],['../namespacevelocitydispersion.html#a6eb6ea4eaa37a3f458fec14da33c8946',1,'velocitydispersion.vlos()'],['../namespacecentreofmass.html#a234973d6be9ea1d86f9e4cdcb89faf6f',1,'centreofmass.vLOS()'],['../namespacevelocitydispersion.html#af1da724c13da377a342442f3cf3ae832',1,'velocitydispersion.vLOS()']]],
-  ['vlos1',['vlos1',['../namespacevelocitydispersion.html#aa47e0071f199bed3ad95d1b1c3a6ded6',1,'velocitydispersion']]],
-  ['vlosi',['vlosi',['../namespacevelocitydispersion.html#a0a6a6bcf023c53945db9f15ece794c78',1,'velocitydispersion']]],
-  ['vmag',['VMag',['../namespacestellarmass.html#a3ecc2a1e5186c692013a6eebb2e75b69',1,'stellarmass']]],
-  ['vol',['vol',['../namespacedensityfalloff.html#ae86b7025c7720f62d702da86f98063ee',1,'densityfalloff']]],
-  ['vphi',['vphi',['../namespacegr__sphere.html#ab360423424449a4b14a9cb3795ded8c7',1,'gr_sphere']]],
-  ['vr',['vr',['../namespacegr__sphere.html#a2d139d7764bd332c333665a0227b5e57',1,'gr_sphere']]],
-  ['vrerror',['vrerror',['../namespacevelocitydispersion.html#aa8c66949e39ce6a968d8110533d74a5f',1,'velocitydispersion']]],
-  ['vtheta',['vtheta',['../namespacegr__sphere.html#af566e6e93b37068dc0117f6ded92397a',1,'gr_sphere']]],
-  ['vtot',['Vtot',['../namespacecentreofmass.html#a62a85d7e0a8a1dcda62390b989f03d36',1,'centreofmass']]],
-  ['vx',['vx',['../namespacegr__sphere.html#a1b13f1abdac79f13982c23aad7b46524',1,'gr_sphere']]],
-  ['vxall',['vxall',['../namespacegr__sphere.html#a7b3fcb41fff7f44fd0de35fe1fdc27b1',1,'gr_sphere']]],
-  ['vy',['vy',['../namespacegr__sphere.html#a4369e34c69b5f30df2af1fdf1bee2072',1,'gr_sphere']]],
-  ['vz',['vz',['../namespacegr__sphere.html#a5724f76d0f28dc574e5cad90255c012a',1,'gr_sphere.vz()'],['../namespacegrh__com.html#a95e8bd460d280e3beece87ea5c425a27',1,'grh_com.vz()'],['../namespaceold__grh__com.html#aea39a0c2be1be0f414e2e898d5567479',1,'old_grh_com.vz()']]],
-  ['vznew',['vznew',['../namespacegrh__com.html#a966f4480e82aec12efb25f8bcca8cf58',1,'grh_com.vznew()'],['../namespaceold__grh__com.html#ae7f3c342f699855e85a38eda79d6cb6e',1,'old_grh_com.vznew()']]]
+  ['vicmd',['VICMD',['../a00121.html#ac93a64bae362c45f5e600b5ad1d35570',1,'stellarmass']]],
+  ['vmag',['Vmag',['../a00072.html#a9f51039236f9d9fd9fce68bd620615c1',1,'femg.Vmag()'],['../a00121.html#ac90b7f55d2082a759ba4d4d0f63f7e5f',1,'stellarmass.Vmag()'],['../a00121.html#a418f4aabe30b7300060a7ef7c4106737',1,'stellarmass.VMag()']]],
+  ['vrerror',['vrerror',['../a00096.html#a5c1c3bdf11c59f9036c82eef754bad36',1,'gr_params']]]
 ];

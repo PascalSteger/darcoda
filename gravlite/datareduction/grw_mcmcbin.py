@@ -29,7 +29,7 @@ def run(gp):
     R = np.sqrt(xall**2+yall**2) #[Rscale]
     # set number and size of (linearly spaced) bins
     Rmin = 0. # [Rscale]
-    Rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior # [Rscale]
+    Rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR           # [Rscale]
     print('Rmax [Rscale] = ', Rmax)
     R = R[(R<Rmax)]
 
@@ -37,19 +37,19 @@ def run(gp):
     # this must not be changed between readout and gravlite run
     # if you wish to change: set gp.getnewdata = True in gl_params.py
     if gp.lograd:
-        print(gpr.nbins,' bins in log spacings')
-        Binmin, Binmax, Rbin = bin_r_log(Rmax/gpr.nbins, Rmax, gpr.nbins)
+        print(gp.nipol,' bins in log spacings')
+        Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
     elif gp.consttr:
-        print(len(R)/gpr.nbins,' particles per bin')
-        Binmin, Binmax, Rbin = bin_r_const_tracers(R, len(R)/gpr.nbins)
+        print(len(R)/gp.nipol,' particles per bin')
+        Binmin, Binmax, Rbin = bin_r_const_tracers(R, len(R)/gp.nipol)
     else:
-        print(gpr.nbins, ' bins in linear spacings')
-        Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gpr.nbins)
+        print(gp.nipol, ' bins in linear spacings')
+        Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol)
 
 
     # volume of a circular ring from binmin to binmax
-    vol = np.zeros(gpr.nbins)
-    for k in range(gpr.nbins):
+    vol = np.zeros(gp.nipol)
+    for k in range(gp.nipol):
         vol[k] = 4.*np.pi/3.*(Binmax[k]**3 - Binmin[k]**3) # [Rscale^3]
 
 
@@ -64,8 +64,8 @@ def run(gp):
         # calculate 2D radius on the skyplane
         r = np.sqrt(x**2+y**2) # [Rscale]
         
-        # set maximum radius (if gpr.rprior is set)
-        rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior # [Rscale]
+        # set maximum radius (if gp.maxR is set)
+        rmax = max(r) if gp.maxR<0 else 1.0*gp.maxR # [Rscale]
         print('rmax [Rscale] = ', rmax)
         sel = (r<=rmax)
         x = x[sel]; y = y[sel]; z = z[sel]; v = v[sel]; r = r[sel] # [Rscale]
@@ -74,28 +74,24 @@ def run(gp):
         rs = r                   # + possible starting offset, [Rscale]
         vlos = v                 # + possible starting offset, [km/s]
         
-        print('output density: ')
-        print(gpr.get_ntracer_file(comp)+'_3D')
-        tr = open(gpr.get_ntracer_file(comp)+'_3D','w')
+        tr = open(gp.files.get_ntracer_file(comp)+'_3D', 'w')
         print(totmass, file=tr)
         tr.close()
 
-        print(gpr.get_dens_file(comp)+'_3D')
-        de = open(gpr.get_dens_file(comp)+'_3D','w')
-        print('rbin','binmin','binmax','nu(r)/nu(0)','error', file=de)
+        de = open(gp.files.nufiles[comp]+'_3D', 'w')
+        print('rbin','binmin','binmax','nu(r)/nu(0)', 'error', file=de)
 
-        print(gpr.get_enc_mass_file(comp)+'_3D')
-        em = open(gpr.get_enc_mass_file(comp)+'_3D','w')
+        em = open(gp.files.massfiles[comp]+'_3D','w')
         print('rbin','binmin','binmax','M(<r)','error', file=em)
 
 
         # gpr.n=30 iterations for getting random picked radius values
-        density = np.zeros((gpr.nbins,gpr.n))
-        a       = np.zeros((gpr.nbins,gpr.n)) # shared by density, siglos, kappa calcs
+        density = np.zeros((gp.nipol,gpr.n))
+        a       = np.zeros((gp.nipol,gpr.n)) # shared by density, siglos, kappa calcs
         for k in range(gpr.n):
             rsi = gpr.Rerror * np.random.randn(len(rs)) + rs # [Rscale]
             vlosi = gpr.vrerror*np.random.randn(len(vlos)) + vlos # [km/s]
-            for i in range(gpr.nbins):
+            for i in range(gp.nipol):
                 ind1 = np.argwhere(np.logical_and(rsi>=Binmin[i], rsi<Binmax[i])).flatten() # [1]
                 density[i][k] = (1.*len(ind1))/vol[i]*totmass # [munit/Rscale^2]
                 vlos1 = vlosi[ind1]                           # [km/s]
@@ -104,11 +100,11 @@ def run(gp):
         # output density
         dens0 = np.sum(density[0])/(1.*gpr.n) # [munit/Rscale^3]
         print('dens0 = ',dens0,' [munit/Rscale^3]')
-        crscale = open(gpr.get_params_file(comp)+'_3D','r')
+        crscale = open(gp.files.get_scale_file(comp)+'_3D','r')
         Rscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
         crscale.close()
 
-        cdens = open(gpr.get_params_file(comp)+'_3D','a')
+        cdens = open(gp.files.get_scale_file(comp)+'_3D','a')
         print(dens0, file=cdens)               # [munit/Rscale^3]
         print(dens0/Rscale**3, file=cdens)      # [munit/pc^3]
         print(totmass, file=cdens)             # [munit]
@@ -116,8 +112,8 @@ def run(gp):
 
         ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
         denserr0 = dens0/np.sqrt(ab0)       # [munit/Rscale^3]
-        p_dens  = np.zeros(gpr.nbins);  p_edens = np.zeros(gpr.nbins)
-        for b in range(gpr.nbins):
+        p_dens  = np.zeros(gp.nipol);  p_edens = np.zeros(gp.nipol)
+        for b in range(gp.nipol):
             dens = np.sum(density[b])/(1.*gpr.n) # [munit/Rscale^3]
             ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
             denserr = dens/np.sqrt(ab)       # [munit/Rscale^3]
@@ -150,7 +146,7 @@ def run(gp):
         ubound = p_dens+p_edens;
         fill_between(Rbin, lbound, ubound, alpha=0.5, color='r')
         yscale('log')
-        xlim([0, gpr.rprior])
+        xlim([0, gp.maxR])
         ylim([np.min(lbound), np.max(ubound)])
         xlabel(r'$r [r_c]$')
         ylabel(r'$\nu(r)/\nu(0)$')

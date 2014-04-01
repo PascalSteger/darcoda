@@ -37,10 +37,10 @@ def assign_pop(data, p, mu1, sig1, mu2, sig2):
 # get possible assignment to populations
 # @param data Magnesium linewidth, used for splitting populations [1]
 # @param p 
-# @param mu1 TODO
-# @param sig1 TODO
-# @param mu2 TODO
-# @param sig2 TODO
+# @param mu1 center of first population
+# @param sig1 spread of first pop
+# @param mu2 center of second population
+# @param sig2 spread of second pop
 
 
 def plot_traces(mcmc):
@@ -75,7 +75,7 @@ def plot_traces(mcmc):
     show()
 ## \fn plot_traces(mcmc)
 # plot all traces
-# @param mcmc TODO
+# @param mcmc MCMC object
 
 
 def bimodal_gauss(data):
@@ -151,8 +151,7 @@ if __name__=="__main__":
                                     19:expDtofloat, # PM0 [1]\
                                     20:expDtofloat}) # comp0 1,2,3(background)
 
-    pm = (PM0 >= gpr.pmsplit) #* (comp0<3) # exclude outliers .  TODO: do that without cheating
-    #pm = (PM0 >= 0.0)
+    pm = (PM0 >= gpr.pmsplit)
 
     data = np.array(Mg0[pm])
     # import random

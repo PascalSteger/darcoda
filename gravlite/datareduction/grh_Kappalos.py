@@ -10,13 +10,11 @@ import numpy as np
 import multiprocessing as mp
 import pdb
 
-import gl_params
-gp = gl_params.Params()
 import gr_params as gpr
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from scipy.stats import kurtosis
 
-def run():
+def run(gp):
     for comp in range(gpr.ncomp):
         print('input:', gpr.fileposspherical[comp])
         R,Phi,vlos = np.loadtxt(gpr.fileposspherical[comp],\
@@ -27,14 +25,14 @@ def run():
 
         Rmin = min(Rs); Rmax = max(Rs)
         if gp.lograd:
-            print(gpr.nbins,' bins in log spacings')
-            Binmin, Binmax, Rbin = bin_r_log(Rmax/gpr.nbins, Rmax, gpr.nbins)
+            print(gp.nipol,' bins in log spacings')
+            Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
         elif gp.consttr:
-            print(len(R)/gpr.nbins,' particles per bin')
-            Binmin, Binmax, Rbin = bin_r_const_tracers(Rs, len(Rs)/gpr.nbins)
+            print(len(R)/gp.nipol,' particles per bin')
+            Binmin, Binmax, Rbin = bin_r_const_tracers(Rs, len(Rs)/gp.nipol)
         else:
-            print(gpr.nbins, ' bins in linear spacings')
-            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gpr.nbins)
+            print(gp.nipol, ' bins in linear spacings')
+            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol)
 
         # if Dispvel is [] still after pool call,
         # some error occured inside following function:
@@ -68,8 +66,7 @@ def run():
         Kappaarr = np.array(Kappavel)
         abarr  = np.array(alog)
 
-        print('output:', gpr.filekappa[comp])
-        filekappa = open(gpr.filekappa[comp],'w')
+        filekappa = open(gp.files.kappafiles[comp], 'w')
         print('# R [pc]','Binmin [pc]','Binmax [pc]',\
               'Kappa_los(R) [1]','error [1]', file=filekappa)
 
@@ -84,4 +81,6 @@ def run():
     return
 
 if __name__=="__main__":
-    run()
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)

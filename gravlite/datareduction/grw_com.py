@@ -45,7 +45,7 @@ def run(gp):
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
         import pymcmetal as pmc
-        p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)   # [TODO]
+        p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
         pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)   # [1]
         # output: changed pm1, pm2
         # assumption: no component 3 stars are included
@@ -57,9 +57,6 @@ def run(gp):
     ind = ind[:gp.files.ntracer]
     x0=x0[ind]; y0=y0[ind]; z0=z0[ind]; comp0=comp0[ind]; vz0=vz0[ind]; vb0=vb0[ind]; Mg0=Mg0[ind]
     PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm3 = pm3[ind]; pm = pm1+pm2+pm3
-    
-    # get center of mass with means
-    #com_x, com_y,com_z = com_mean(x0,y0,z0,PM0) # [TODO], and TODO: z component included if available
     
     # get COM with shrinking sphere method
     com_x, com_y, com_z = com_shrinkcircle(x0,y0,z0,PM0)
@@ -78,10 +75,6 @@ def run(gp):
     R0 = np.sqrt(x0**2+y0**2) # [pc]
     Rc = R0                   # [pc]
     Rc.sort()                 # [pc]
-    for i in range(len(Rc)-1):
-        if Rc[i]>Rc[i+1]:               # [pc]
-            print('sorting error!')
-            exit(1)
     Rhalf = Rc[floor(len(Rc)/2)]        # [pc]
     Rscale = Rhalf                       # or gpr.r_DM # [pc]
     print('Rscale = ', Rscale,  ' pc')
@@ -92,8 +85,8 @@ def run(gp):
     x0 = x0/Rscale; y0 = y0/Rscale; z0 = z0/Rscale              # [Rscale]
     
     i = -1
-    for pmn in [pm,pm1,pm2,pm3]:
-        pmr = (R0<(gpr.rprior*Rscale))  # TODO: read from gl_class_file
+    for pmn in [pm, pm1, pm2, pm3]:
+        pmr = (R0<(gp.maxR*Rscale))  # TODO: read from gl_class_file
         pmn = pmn*pmr                  # [1]
         print("fraction of members = ",1.0*sum(pmn)/len(pmn))
         i = i+1
@@ -104,9 +97,9 @@ def run(gp):
         R = np.sqrt(x*x+y*y)            # [Rscale]
         
         # print("x y z" on first line, to interprete data later on)
-        crscale = open(gpr.get_params_file(i)+'_3D','w')
+        crscale = open(gp.files.get_scale_file(i)+'_3D','w')
         print('# Rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
-        print(Rscale, file=crscale)
+        print(np.median(R)*Rscale, file=crscale) # use 3 different half-light radii
         crscale.close()
 
         print('output: ',gpr.get_com_file(i)+'_3D')
@@ -145,4 +138,6 @@ def run(gp):
     
 if __name__=='__main__':
     # gpr.showplots = True
+    import gl_params
+    gp = gl_params.Params()
     run(gp)

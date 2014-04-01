@@ -7,44 +7,54 @@
 
 import numpy as np
 import pdb
-import gl_helper as gh
-import gl_plot   as gpl
-import gl_analytic as ga
-import gl_output as go
-import gl_physics as phys
-from gl_project import rho_INT_Rho, rho_param_INT_Rho
 
-output = go.Output()
 
-def read_scale():
+def read_scale(basename, gp):
     gp.Rscale = []
-    gp.Nu0rscale = [];  gp.Nu0pc = []
-    gp.totmass = [];    gp.maxvlos = []
+    gp.Nu0pc = []
+    gp.maxvlos = []
     for i in range(gp.pops+1):
-        A = np.loadtxt(gp.files.get_scale_file(i), unpack=False, skiprows=1)
+        # basename + 'scale_' + str(i) + '.txt'
+        A = np.loadtxt(gp.files.get_scale_file(i),\
+                       unpack=False, skiprows=1)
         gp.Rscale.append(A[0])
-        gp.Nu0rscale.append(A[1])
         gp.Nu0pc.append(A[2])
-        gp.totmass.append(A[3])
         gp.maxvlos.append(A[4])
-## \fn read_scale()
+## \fn read_scale(basename, gp)
 # read scale file, store into gp.*scale
+# @param basename string
+# @param gp
 
 
-def read_models():
+def correct_E_error(filename):
+    import os
+    os.system("sed -i 's/\\([0-9]\\)-\\([0-9]\\)/\\1E-\\2/g' " + filename)
+    return
+## \fn correct_E_error(filename)
+# replace 3.4230210-301 with 3.4230210E-301 the sed way
+# @param filename string
+
+
+def read_models(basename):
     # read in all accepted models
     print(basename+'/{ev.dat, phys_live.points}')
-    # REJECTED = np.loadtxt(basename+'/ev.dat', skiprows=0, unpack=False)
+    correct_E_error(basename + '/ev.dat')
+    correct_E_error(basename + '/phys_live.points')
+    REJECTED = np.loadtxt(basename+'/ev.dat', skiprows=0, unpack=False)
     LIVE = np.loadtxt(basename+'/phys_live.points', skiprows=0, unpack=False)
-    # ALL = np.vstack([REJECTED[:,:-3], LIVE[:,:-2]])
-    # for debugging
-    ALL = np.vstack([LIVE[:,:-2]])
+    ALL = np.vstack([REJECTED[:,:-3], LIVE[:,:-2]])
+    # for debugging, based on live points
+    # ALL = np.vstack([LIVE[:,:-2]])
+    # for debugging, fixed 100 models after N=1000 iterations
+    # ALL = np.vstack([REJECTED[1000:1100,:-2]])
     return ALL
-## \fn read_models
+## \fn read_models(basename)
 # read in all models, concatenate them
+# @param basename string
 
 
-def fill_nice(r0, M95lo, M68lo, Mmedi, M68hi, M95hi):
+def fill_nice(r0, M95lo, M68lo, Mmedi, M68hi, M95hi, gp):
+    import gl_plot as gpl
     gpl.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
     gpl.plot(r0, M95lo, color='black', lw=0.4)
     gpl.plot(r0, M95hi, color='black', lw=0.3)
@@ -52,20 +62,24 @@ def fill_nice(r0, M95lo, M68lo, Mmedi, M68hi, M95hi):
     gpl.plot(r0, M68lo, color='black', lw=0.4)
     gpl.plot(r0, M68hi, color='black', lw=0.3)
     gpl.plot(r0, Mmedi, 'r', lw=1)
-    gpl.axvline(gp.rstarhalf, color='gray', lw=0.5) # [pc]
+    for i in range(gp.pops):
+        gpl.axvline(gp.Rscale[i+1], color='gray', lw=0.5) # [pc]
     gpl.xlim([r0[0], r0[-1]])
     return
-## \fn fill_nice(r0, M95log, M68lo, Mmedi, M68hi, M95hi)
+## \fn fill_nice(r0, M95lo, M68lo, Mmedi, M68hi, M95hi, gp)
 # plot filled region for 1sigma and 2sigma confidence interval
 # @param r0 radius in [pc]
-# @param M95lo
-# @param M68lo
-# @param Mmedi
-# @param M68hi
-# @param M95hi
+# @param M95lo lower 2sigma bound
+# @param M68lo lower 1sigma bound
+# @param Mmedi median
+# @param M68hi upper 1sigma bound
+# @param M95hi upper 2sigma bound
+# @param gp
 
 
 def physical(r0, prof, pop, tmp_rho, tmp_nu, tmp_beta, gp):
+    import gl_physics as phys
+    from gl_project import rho_INT_Rho, rho_param_INT_Rho
     if prof == 'rho':
         tmp_prof = phys.rho(r0, tmp_rho, gp)
     elif prof == 'nr':
@@ -91,9 +105,10 @@ def physical(r0, prof, pop, tmp_rho, tmp_nu, tmp_beta, gp):
 # @param tmp_rho  internal representation of rho
 # @param tmp_nu   internal representation of nu
 # @param tmp_beta internal representation of beta
-
+# @param gp
 
 def plot_labels(prof, pop):
+    import gl_plot as gpl
     gpl.xlabel('$R\\quad[\\rm{pc}]$')
     if prof == 'rho':
         gpl.ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
@@ -138,7 +153,7 @@ def ipol_rhalf_log(X, Y, rhalf):
 # @param rhalf half-light radius in [pc]
 
 
-def plot_data(r0, prof, pop):
+def plot_data(r0, prof, pop, output):
     output.add('radius (data) [pc]', r0)
     if prof == 'Sig':
         # get 2D data here
@@ -146,7 +161,7 @@ def plot_data(r0, prof, pop):
         dum,dum,dum,Nudat,Nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], unpack=False, skiprows=1))
         Nudat *= gp.Nu0pc[pop]
         Nuerr *= gp.Nu0pc[pop]
-        Nunorm = ipol_rhalf_log(gp.xipol, Nudat, gp.rstarhalf)
+        Nunorm = ipol_rhalf_log(gp.xipol, Nudat, gp.Rscale[pop])
         Nudat /= Nunorm; Nuerr /= Nunorm
         dat = Nudat; err = Nuerr
         output.add('data [Msun/pc^2]', dat)
@@ -162,8 +177,9 @@ def plot_data(r0, prof, pop):
         output.add('error [km/s]', err)
         output.add('data - error [km/s]', dat-err)
         output.add('data + error [km/s]', dat+err)
+    import gl_plot as gpl
     gpl.fill_between(r0, dat-err, dat+err, color='blue', alpha=0.2, lw=1)
-    return
+    return output
 ## \fn plot_data(r0, prof, pop)
 # plot data as blue shaded region
 # @param r0 radii [pc]
@@ -192,8 +208,10 @@ def unit(prof):
 # @param prof string for profile
 
 
-def plot_analytic(r0, prof, pop, gp):
+def plot_analytic(r0, prof, pop, gp, output):
     output.add('radius (analytic) [pc]', r0)
+    from gl_project import rho_INT_Rho, rho_param_INT_Rho
+    import gl_analytic as ga
     if gp.investigate == 'gaia':
         if prof == 'rho':
             analytic = ga.rhogaiatot_3D(r0)
@@ -207,10 +225,10 @@ def plot_analytic(r0, prof, pop, gp):
         elif prof == 'Sig':
             analytic_3D = ga.nugaiatot_3D(r0)
             analytic = rho_INT_Rho(r0, analytic_3D)
-            Nunorm = ipol_rhalf_log(r0, analytic_3D, gp.rstarhalf)
+            Nunorm = ipol_rhalf_log(r0, analytic_3D, gp.Rscale[pop])
             analytic /= Nunorm
         elif prof == 'sig':
-            analytic = 0.*r0 # TODO
+            analytic = 0.*r0 # TODO: find analytical profile
     elif gp.investigate == 'walk':
         if prof == 'rho':
             analytic = ga.rhowalk_3D(r0, gp)[pop]
@@ -225,13 +243,14 @@ def plot_analytic(r0, prof, pop, gp):
         elif prof == 'Sig':
             analytic_3D = ga.rhowalk_3D(r0, gp)[pop]
             analytic = rho_INT_Rho(r0, analytic_3D)
-            Nunorm = ipol_rhalf_log(r0, analytic, gp.rstarhalf)
+            Nunorm = ipol_rhalf_log(r0, analytic, gp.Rscale[pop])
             analytic /= Nunorm
         elif prof == 'sig':
             analytic = 0.*r0            # TODO
     output.add('analytic ' + unit(prof), analytic)
+    import gl_plot as gpl
     gpl.plot(r0, analytic, 'b')
-    return analytic
+    return output
 ## \fn plot_analytic(r0, prof, pop, gp)
 # plot analytic curves in blue
 # @param r0 radius in [pc]
@@ -239,22 +258,20 @@ def plot_analytic(r0, prof, pop, gp):
 # @param pop which population to analyze (attention, default is 0 here!)
 
 
-def run(basename, prof, pop):
-    read_scale()
-    # read in half light radius, Nu0[munit/Rscale^2], Nu0[munit/pc^2], munit
-    print(gp.files.get_scale_file(pop))
-    A = np.loadtxt(gp.files.get_scale_file(0), unpack=False, skiprows=1)
-    gp.rstarhalf = A[0] # halflight radius
-    print('r_{1/2, all} = ', gp.rstarhalf)
+def run(basename, prof, pop, output, gp):
+    read_scale(basename, gp)
+    # read in half light radi(i,us), Nu0[munit/Rscale^2], Nu0[munit/pc^2], munit
+    print('r_{1/2, all} = ', gp.Rscale[0])
     # for all tracer particles, stored first ("0")
     # read in radial bins
+    import gl_helper as gh
     Radii, Binmin, Binmax, Nudat1, Nuerr1 = gh.readcol5(gp.files.nufiles[pop])
-    gp.xipol = Radii*gp.rstarhalf       # [pc]
+    gp.xipol = Radii*gp.Rscale[0]       # [pc]
     maxR = max(Radii)
     Radii = np.hstack([Radii, 2*maxR, 4*maxR, 8*maxR])
-    gp.xepol = Radii*gp.rstarhalf
+    gp.xepol = Radii*gp.Rscale[1]
     
-    models = read_models()
+    models = read_models(basename)
     
     # use physical representation for profiles
     profs = []
@@ -269,23 +286,24 @@ def run(basename, prof, pop):
             tmp_beta.append(M[off:off+gp.nbeta])
             off += gp.nbeta
         try:
-            tmp_prof = physical(gp.xepol, prof, pop, tmp_rho, tmp_nu[0], tmp_beta[0], gp) # TODO: handling of 2 pops
+            tmp_prof = physical(gp.xepol, prof, pop, tmp_rho, tmp_nu[0], tmp_beta[0], gp)
             profs.append(tmp_prof)
         except Exception as detail:
-            print('handling error in profile', detail)
+            print('handling error in profile: ', detail)
             continue
-
     sortedprofs = gh.sort_profiles_binwise(np.array(profs).transpose())
 
+    # get 1,2 sigma ranges, and median
     Mmin, M95lo, M68lo, Mmedi, \
       M68hi, M95hi, Mmax = gh.get_median_1_2_sig(sortedprofs)
     if prof == 'Sig':
-        Nunorm = ipol_rhalf_log(gp.xepol, Mmedi, gp.rstarhalf)
+        Nunorm = ipol_rhalf_log(gp.xepol, Mmedi, gp.Rscale[0])
         Mmin  /= Nunorm;   M95lo /= Nunorm;   M68lo /= Nunorm
         Mmedi /= Nunorm
         M68hi /= Nunorm;   M95hi /= Nunorm;   Mmax  /= Nunorm
         
     # set up plotting area
+    import gl_plot as gpl
     fig = gpl.start(); gpl.xscale('log')
     if prof=='rho' or prof=='Sig':
         gpl.yscale('log')
@@ -297,8 +315,8 @@ def run(basename, prof, pop):
         gp.xepol = np.hstack([gp.xepol[0]/2., gp.xepol, gp.rinfty*gp.xepol[-1]])
 
     if prof == 'Sig' or prof=='sig':
-        plot_data(gp.xipol, prof, pop)
-    plot_analytic(gp.xepol, prof, pop, gp)
+        output = plot_data(gp.xipol, prof, pop, output)
+    output = plot_analytic(gp.xepol, prof, pop, gp, output)
 
     radfill = gp.xepol
     if prof == 'sig' or prof=='Sig':
@@ -311,10 +329,11 @@ def run(basename, prof, pop):
     output.add('M 68% CL high '+ uni, M68hi)
     output.add('M 95% CL high '+ uni, M95hi)
     
-    fill_nice(radfill, M95lo, M68lo, Mmedi, M68hi, M95hi)
+    fill_nice(radfill, M95lo, M68lo, Mmedi, M68hi, M95hi, gp)
     output.write(basename+'/prof_'+prof+'_'+str(pop)+'.ascii')
     gpl.savefig(basename+'/prof_'+prof+'_'+str(pop)+'.png')
 
+    # save as pdf
     from matplotlib.backends.backend_pdf import PdfPages
     pp = PdfPages(basename+'/prof_'+prof+'_'+str(pop)+'.pdf')
     pp.savefig(fig)
@@ -322,23 +341,41 @@ def run(basename, prof, pop):
     
     gpl.ion(); gpl.show(); gpl.ioff()
     return
-## \fn run(basename, prof, pop)
+## \fn run(basename, prof, pop, gp)
 # main functionality
 # @param basename
 # @param prof string of profile to look at
 # @param pop population number
+# @param gp
 
-if __name__ == '__main__':
+
+
+def main():
     import select_run
-    basename, prof, pop = select_run.run(gp)
-    # TODO: locate output directory here
+    timestamp, basename, prof, pop = select_run.run()
+
+    # include runtime gl_params, but other files all from general file
+    import sys
+    import import_path as ip
+    ip.insert_sys_path(basename)
     import gl_params
-    gp = gl_params.Params()
+    del sys.path[0] # delete first entry in sys.path (output dir, only used for gl_params)
     
+    gp = gl_params.Params(timestamp) # set geometry here (update gl_params in old output dirs)
+
     import gl_file
     gp.dat = gl_file.get_data(gp)
-    
+
     gp.pops = select_run.get_pops(basename)
     print('working with ', gp.pops, ' populations')
-    run(basename, prof, pop)
+
+    import gl_output as go
+    output = go.Output()
+
+    run(basename, prof, pop, output, gp)
+
+    import gl_plot as gpl
     gpl.show()
+
+if __name__ == '__main__':
+    main()

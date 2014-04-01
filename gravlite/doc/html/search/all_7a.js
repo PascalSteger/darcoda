@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['z',['z',['../namespacegr__sphere.html#a91526546ac75fbb4d10cfb0455431d1e',1,'gr_sphere.z()'],['../namespacegrh__com.html#a02005dc623556b9c83600030ec1aa4ee',1,'grh_com.z()'],['../namespaceold__grh__com.html#aaef438c24c2b0e319581429a1d6ff366',1,'old_grh_com.z()'],['../namespacegomm.html#a62046bd692af85e64a2640a0a69ded5c',1,'gomm.Z()'],['../namespacegomm1D.html#a167322e53bb0a0aec5ccc333d9fee2b9',1,'gomm1D.Z()']]],
-  ['z0',['z0',['../namespacegl__disc__simple.html#a0f8b6f6ca1e88510fc3d39ce66f95d39',1,'gl_disc_simple']]],
-  ['z02',['z02',['../namespacegl__disc__simple.html#a11402ea691423e247e5be3ab1fe96ab8',1,'gl_disc_simple']]],
-  ['zmin',['zmin',['../namespacegl__disc__simple.html#a5b88e59a95cbf8c8233727d60f6084fa',1,'gl_disc_simple']]],
-  ['znew',['znew',['../namespacegrh__com.html#ab50223ecb988835602810e67b7ee5f88',1,'grh_com.znew()'],['../namespaceold__grh__com.html#a318e47271288644560eddf527ba8c51e',1,'old_grh_com.znew()']]],
-  ['zth',['zth',['../namespacegl__disc__simple.html#aad8328963f55de286f33eb4b5b1270fe',1,'gl_disc_simple']]]
+  ['z',['z',['../a00105.html#ad8ae11e80d948b791866d71f1bfdc5a9',1,'gr_sphere']]],
+  ['zmax',['zmax',['../a00007.html#a379bb6210dcacafc14840b59e284fcd6',1,'gl_params.Params.zmax()'],['../a00006.html#a03b27efad4c8ba5c9a67f8f61d1a8be4',1,'gl_params_disc.Params.zmax()'],['../a00009.html#a1ef5bef614e7965abbeda3b793042b18',1,'gl_params_for.Params.zmax()'],['../a00008.html#aff68f5c833c07025e59637f2a30909c0',1,'gl_params_triax.Params.zmax()'],['../a00010.html#acb7b42c1965d9d687dfb71a625498d90',1,'gl_params_walk.Params.zmax()']]],
+  ['zmin',['zmin',['../a00007.html#a5da9c06619b7dd4b20acae18c0c9d982',1,'gl_params.Params.zmin()'],['../a00006.html#a19106964f96610ae965e36d15a4b71fc',1,'gl_params_disc.Params.zmin()'],['../a00009.html#abc71d858cb5ee3df9d0618442b7d1e6a',1,'gl_params_for.Params.zmin()'],['../a00008.html#a83a9ec3ecd214133e9d8651d21033e98',1,'gl_params_triax.Params.zmin()'],['../a00010.html#a89aa3d0735df169af68e8b903cc00635',1,'gl_params_walk.Params.zmin()']]]
 ];

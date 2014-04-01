@@ -20,9 +20,7 @@ def myfill(x, N=3):
 
 import numpy as np
 import numpy.random as npr
-import sys
-import traceback
-import pdb
+import sys, traceback, pdb
 from scipy.interpolate import splrep, splev
 from scipy.integrate import quad
 import gl_plot as gpl
@@ -41,14 +39,14 @@ def quadinflog(x, y, A, B, stop = True):
     dropoffint = quad(invexp, A, B, epsrel=1e-4, limit=100, full_output=1)
     if stop and len(dropoffint)>3:
         print('warning in quad in quadinflog')
-        # pdb.set_trace()
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x, using splines
 # @param x free variable
-# @param integrand
+# @param y integrand
 # @param A left boundary
 # @param B right boundary
+# @param stop = True
 
 
 def quadinfloglog(x, y, A, B, stop=True):
@@ -61,12 +59,11 @@ def quadinfloglog(x, y, A, B, stop=True):
     dropoffint = quad(invexp, A, B, epsrel=1e-3, limi=100, full_output=1)
     if stop and len(dropoffint)>3:
         print('warning in quad in quadinfloglog')
-        # pdb.set_trace()
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x, using splines
 # @param x free variable
-# @param integrand
+# @param y integrand
 # @param A left boundary
 # @param B right boundary
 
@@ -83,27 +80,27 @@ def quadinflog2(x, y, A, B):
     dropoffint = quad(invexp, A, B)
     return dropoffint[0]
 ## \fn quadinflog2(x, y, A, B)
-# integrate y over x, using splines in log(log(y)) space
-# not used..
+# integrate y over x, using splines in log(log(y)) space not used
 # @param x free variable
-# @param integrand
+# @param y integrand
 # @param A left boundary
 # @param B right boundary
+# @return integrated y
 
 
 def checknan(arr, place=''):
     if np.isnan(np.sum(arr)):
         print('NaN found! '+place)
-        # pdb.set_trace()
         raise Exception('NaN', 'found')
         # not executed anymore :)
         traceback.print_tb(sys.exc_info()[2])
         return True
     else:
         return False
-## \fn checknan(arr, place=''):
+## \fn checknan(arr, place):
 # NaN encountered at any position in arr?
 # @param arr array of float values
+# @param place = '' show user where to search
 # @return True if NaN found
 
     
@@ -117,9 +114,10 @@ def checkpositive(arr, place=''):
         return True
     else:
         return False
-## \fn checkpositive(arr, place='')
+## \fn checkpositive(arr, place)
 # abort if negative value found
 # @param arr array of float values
+# @param place = '' tell user what to do better
 # @return Exception if (non-physical) negative value found
 
 
@@ -235,22 +233,21 @@ def smooth(xin, yin, smooth=1.e-9):
 # interpolate function in lin space, smooth it
 # @param xin free variable array
 # @param yin dependent array
-# @smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
+# @param smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
 
 
-def smoothlog(xin,yin,smooth=1.e-9):
-    return ipollog(xin,yin,xin,smooth)
-## \fn smoothlog(xin, yin, smooth=1.e-9
+def smoothlog(xin, yin, smooth=1.e-9):
+    return ipollog(xin, yin, xin, smooth)
+## \fn smoothlog(xin, yin, smooth=1.e-9)
 # interpolate function in log space, smooth it. use only if yin[i]>0
 # @param xin free variable array
 # @param yin dependent array
-# @smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
+# @param smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
 
 
 def ipol(xin,yin,xout,smooth=1.e-9):
     if np.isnan(np.sum(yin)):
         print('NaN found! Go check where it occured!')
-        pdb.set_trace()
     rbf = Rbf(xin, yin, smooth=smooth)
     return rbf(xout)
 ## \fn ipol(xin, yin, xout, smooth=1.e-9)
@@ -258,7 +255,7 @@ def ipol(xin,yin,xout,smooth=1.e-9):
 # @param xin free variable array
 # @param yin dependent array
 # @param xout interpolation points
-# @smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
+# @param smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
 
 
 def ipollog(xin, yin, xout, smooth=1.e-9):
@@ -273,7 +270,7 @@ def ipollog(xin, yin, xout, smooth=1.e-9):
 # @param xin free variable array
 # @param yin dependent array
 # @param xout interpolation points
-# @smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
+# @param smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
 
 
 def expol(xin, yin, xout):
@@ -324,7 +321,7 @@ def bin_r_log(rmin, rmax, nbin):
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
 
-def bin_r_const_tracers(r0,no):
+def bin_r_const_tracers(r0, no):
     # procedure: get all particles in bin i
     #            get minimum, maximum radius. get radius of min/max before/after bin i
     #            get mean of (half of max bin/min next bin) for bin radius
@@ -333,10 +330,11 @@ def bin_r_const_tracers(r0,no):
 
     no = int(no)
     
-    mini = list(range(1,len(r0),no))
-    maxi = list(range(no,len(r0),no))
+    mini = list(range(1,  len(r0), no))
+    maxi = list(range(no, len(r0), no))
     maxi.append(len(r0))
-    mini = np.array(mini)-1; maxi = np.array(maxi)-1
+    mini = np.array(mini)-1
+    maxi = np.array(maxi)-1
     minri = [];   maxri = []
     nbin = int(1.*len(r0)/no)
     for i in range(nbin):
@@ -344,7 +342,6 @@ def bin_r_const_tracers(r0,no):
         maxri.append(r0[maxi[i]])
 
     midri = []
-    # TODO: check fine to take *not* half the first particle radius for midri
     for i in range(nbin):
         midri.append((minri[i]+maxri[i])/2.)
     return minri, maxri, midri
@@ -353,6 +350,7 @@ def bin_r_const_tracers(r0,no):
 # @param r0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
+
 
 
 def sort_profiles_binwise(profs):
@@ -385,4 +383,85 @@ def get_median_1_2_sig(profs):
 # return envelopes of profiles at median, min, max, and 1, 2 sigma interval for a range of profiles
 # @param profs bin-wise sorted profiles
 # @return  Mmin, M95lo, M68lo, Mmedi, M68hi, M95hi, Mmax
+
+
+def binsmooth(r, array, low, high, nbin, nanreplace):
+    # sort r and array in ascending r order
+    index = np.argsort(r)
+    r = r[index]
+    array = array[index]
+
+    # determine bins
+    binsize = (high-low)/(1.*nbin)
+    rout = np.arange(nbin)*binsize + low
+    binmin = rout - binsize/2.
+    binmax = rout + binsize/2.
+
+    # prepare run
+    arrayout = np.zeros(nbin)
+    arrayout1 = np.zeros(nbin)
+    arrayout2 = np.zeros(nbin)
+    count_bin = np.zeros(nbin)
+    j=0
+    siz = len(r)
+    
+    for i in range(nbin):
+        count = 0
+        while (binmax[i] > r[j]):
+            arrayout1[i] = arrayout1[i]+array[j]
+            arrayout2[i] = arrayout2[i]+array[j]**2
+            if (j < siz-1):
+                j = j + 1
+                if (array[j] != 0):
+                    count = count + 1
+            else:
+                break
+
+        if (count > 0):
+            arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sigma
+        else:
+            arrayout[i] = nanreplace
+        count_bin[i] = count
+    return binmin, binmax, rout, arrayout, count_bin
+## \fn binsmooth(r, array, low, high, nbin, nanreplace)
+# This routine takes an array(r) and bins it in r bins of size bin, def. sigma from array in bins
+# @param r [pc]
+# @param array corresponding values for e.g. v_z
+# @param low [pc] lower bound on z range
+# @param high [pc] high bound on z range
+# @param nbin int, number of bins
+# @param nanreplace if there is no data in a particular bin, it assigns a value of array(r)=nanreplace
+# @return sqrt(avg(x**2)-avg(x)**2) from each bin, with dim [array]
+
+
+def bincount(r, rmax):
+    # sort radial bins
+    index = np.argsort(r)
+    r = r[index]
+
+    # prepare for run
+    nbin = len(rmax)
+    arrayout  = np.zeros(nbin)
+    count_bin = np.zeros(nbin)
+    error     = np.zeros(nbin)
+    j = 0
+    siz = len(r)
+
+    for i in range(nbin):
+        while (rmax[i] > r[j]):
+            arrayout[i] = arrayout[i] + 1.
+            if (j < siz-1):
+                j = j + 1
+            else:
+                break
+        count_bin[i] = arrayout[i]
+    
+    return arrayout, count_bin
+## \fn bincount(r, rmax)
+# take an array, r, and count the number of elements in r bins of size bin
+# WARNING!! THIS ROUTINE REQUIRES SORTED ACSENDING r ARRAYS.
+# @param r array of floats
+# @param rmax upper bound of bins
+# @return arrrayout, count_bin
+
 

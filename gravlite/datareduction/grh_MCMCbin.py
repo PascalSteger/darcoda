@@ -9,12 +9,9 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys
-import pdb
-import math
+import sys, math, pdb
 import numpy as np
 from scipy.stats import kurtosis
-from pylab import *
 
 import gr_params as gpr
 import gl_file as gfile
@@ -23,33 +20,32 @@ from gl_class_files import *
 from BiWeight import meanbiweight
 
 
-
 def run(gp):
     # determine radius once and for all from all tracers
     R, Phi, vzall = np.loadtxt(gpr.fileposspherical[0],
                                comments='#',unpack=True) # 2*[Rscale], [km/s]
     # set number and size of (linearly spaced) bins
     Rmin = 0.                                         # [Rscale]
-    Rmax = max(R) if gpr.rprior<0 else 1.0*gpr.rprior # [Rscale]
+    Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR       # [Rscale]
     print('Rmax [Rscale] = ', Rmax)                   # [Rscale]
     R = R[(R<=Rmax)]                                  # [Rscale]
 
     # this must not be changed between readout and gravlite run
     # if you wish to change: set gp.getnewdata = True in gl_params.py
     if gp.lograd:
-        Binmin, Binmax, Rbin = bin_r_log(Rmax/gpr.nbins, Rmax, gpr.nbins)
-        print(gpr.nbins,' bins in log spacings')
+        Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
+        print(gp.nipol,' bins in log spacings')
     elif gp.consttr:
-        Binmin, Binmax, Rbin = bin_r_const_tracers(R, len(R)/gpr.nbins)
-        print(len(R)/gpr.nbins,' particles per bin')
+        Binmin, Binmax, Rbin = bin_r_const_tracers(R, len(R)/gp.nipol)
+        print(len(R)/gp.nipol,' particles per bin')
     else:
-        Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gpr.nbins)
-        print(gpr.nbins, ' bins in linear spacings')
+        Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol)
+        print(gp.nipol, ' bins in linear spacings')
 
 
     # volume of a circular ring from binmin to binmax
-    Vol = np.zeros(gpr.nbins)
-    for k in range(gpr.nbins):
+    Vol = np.zeros(gp.nipol)
+    for k in range(gp.nipol):
         Vol[k] = np.pi*(Binmax[k]**2-Binmin[k]**2) # [Rscale^2]
 
 
@@ -62,8 +58,8 @@ def run(gp):
                                comments='#',unpack=True)
                                # [Rscale], [1], [km/s]
         
-        # set maximum radius (if gpr.rprior is set)
-        Rmax = max(R) if gpr.rprior<0 else 1.0*gpr.rprior # [Rscale]
+        # set maximum radius (if gp.maxR is set)
+        Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR         # [Rscale]
         print('Rmax [Rscale] = ', Rmax)
         sel = (R<=Rmax)
         R = R[sel]; v = v[sel] # [Rscale], [km/s]
@@ -73,44 +69,22 @@ def run(gp):
         vlos = v                 # + possible starting offset, [km/s]
         
         print('grh_MCMCbin: output density: ')
-        print(gpr.get_ntracer_file(comp))
-        tr = open(gpr.get_ntracer_file(comp),'w')
+        tr = open(gp.files.get_ntracer_file(comp),'w')
         print(totmass, file=tr)
         tr.close()
 
-        print(gpr.filedenfalloff[comp])
-        de = open(gpr.filedenfalloff[comp],'w')
-        print('Rbin [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
-              'Nu(R)/Nu(0) [1]','error [1]', file=de)
-
-        print(gpr.filemass[comp])
-        em = open(gpr.filemass[comp],'w')
-        print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
-              'M(<Binmax) [Msun]','error [Msun]', file=em)
-
-
-        print('grh_MCMCbin: output siglos: ',gpr.filesig[comp])
-        sigfil = open(gpr.filesig[comp],'w')
-        print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
-              'sigma_r(R) [km/s]','error [km/s]', file=sigfil)
-
-
-        print('grh_MCMCbin: output kurtosis: ',gpr.filekappa[comp])
-        kappafil = open(gpr.filekappa[comp],'w')
-        print('R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
-              'kappa_los(R) [1]','error [1]', file=kappafil)
-
+        de, em, sigfil, kappafile = gfile.write_headers(gp, comp)
 
         # gpr.n=30 iterations for getting random picked radius values
-        Density = np.zeros((gpr.nbins,gpr.n))
-        dispvelocity = np.zeros((gpr.nbins,gpr.n))
-        mom4         = np.zeros((gpr.nbins,gpr.n))
-        a            = np.zeros((gpr.nbins,gpr.n))
+        Density = np.zeros((gp.nipol,gpr.n))
+        dispvelocity = np.zeros((gp.nipol,gpr.n))
+        mom4         = np.zeros((gp.nipol,gpr.n))
+        a            = np.zeros((gp.nipol,gpr.n))
         # 'a' shared by density, siglos, kappa calcs
         for k in range(gpr.n):
             Rsi = gpr.Rerror * np.random.randn(len(Rs)) + Rs # [Rscale]
             vlosi = gpr.vrerror * np.random.randn(len(vlos)) + vlos # [km/s]
-            for i in range(gpr.nbins):
+            for i in range(gp.nipol):
                 ind1 = np.argwhere(np.logical_and(Rsi >= Binmin[i],Rsi<Binmax[i])).flatten() # [1]
                 Density[i][k] = (1.*len(ind1))/Vol[i]*totmass # [munit/rscale**2]
                 vlos1 = vlosi[ind1] # [km/s]
@@ -128,11 +102,11 @@ def run(gp):
         # output density
         Dens0 = np.sum(Density[0])/(1.*gpr.n) # [munit/Rscale^2]
         print('Dens0 = ',Dens0,'[munit/Rscale^2]')
-        crscale = open(gpr.get_params_file(comp),'r')
+        crscale = open(gp.files.get_scale_file(comp),'r')
         Rscale = np.loadtxt(crscale, comments='#', unpack=False) # [pc]
         crscale.close()
 
-        cdens = open(gpr.get_params_file(comp),'a')
+        cdens = open(gp.files.get_scale_file(comp),'a')
         print(Dens0, file=cdens)               # [munit/Rscale^2]
         print(Dens0*Rscale**2, file=cdens)     # [munit/pc^2]
         print(totmass, file=cdens)             # [munit]
@@ -140,8 +114,8 @@ def run(gp):
 
         ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(ab0)       # [munit/Rscale^2]
-        P_dens  = np.zeros(gpr.nbins);  P_edens = np.zeros(gpr.nbins)
-        for b in range(gpr.nbins):
+        P_dens  = np.zeros(gp.nipol);  P_edens = np.zeros(gp.nipol)
+        for b in range(gp.nipol):
             Dens = np.sum(Density[b])/(1.*gpr.n) # [munit/Rscale^2]
             ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
             Denserr = Dens/np.sqrt(ab)       # [munit/Rscale^2]
@@ -166,8 +140,8 @@ def run(gp):
 
 
         # output siglos
-        p_dvlos = np.zeros(gpr.nbins);        p_edvlos = np.zeros(gpr.nbins)
-        for b in range(gpr.nbins):
+        p_dvlos = np.zeros(gp.nipol);        p_edvlos = np.zeros(gp.nipol)
+        for b in range(gp.nipol):
             dispvel = np.sum(dispvelocity[b])/gpr.n # [km/s]
             ab = np.sum(a[b])/(1.*gpr.n)            # [1]
             if ab == 0:
@@ -180,11 +154,11 @@ def run(gp):
 
         maxvlos = max(p_dvlos)          # [km/s]
         print('maxvlos = ',maxvlos,'[km/s]')
-        fpars = open(gpr.get_params_file(comp),'a')
+        fpars = open(gp.files.get_scale_file(comp),'a')
         print(maxvlos, file=fpars)      # [km/s]
         fpars.close()
         
-        for b in range(gpr.nbins):
+        for b in range(gp.nipol):
             #     [Rscale] [Rscale]  [Rscale]   [maxvlos]                  [maxvlos]
             print(Rbin[b], Binmin[b], Binmax[b], np.abs(p_dvlos[b]/maxvlos), np.abs(p_edvlos[b]/maxvlos), file=sigfil)
         sigfil.close()
@@ -192,16 +166,16 @@ def run(gp):
 
 
         # output kurtosis kappa
-        p_kappa = np.zeros(gpr.nbins) # needed for plotting later
-        p_ekappa = np.zeros(gpr.nbins)
-        for b in range(gpr.nbins):
+        p_kappa = np.zeros(gp.nipol) # needed for plotting later
+        p_ekappa = np.zeros(gp.nipol)
+        for b in range(gp.nipol):
             kappavel = np.sum(mom4[b])/gpr.n # [1]
             ab = np.sum(a[b])/(1.*gpr.n)     # [1]
             if ab == 0:
                 kappavelerror = p_edvlos[b-1] # [1]
                 # attention! uses last error
             else:
-                kappavelerror = np.abs(kappavel/np.sqrt(ab)) # [1]            # TODO: /np.sqrt(n))?
+                kappavelerror = np.abs(kappavel/np.sqrt(ab)) # [1] TODO: /np.sqrt(n))?
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerror
             
@@ -210,8 +184,9 @@ def run(gp):
         kappafil.close()
     
 
-
         if not gpr.showplots: continue
+        from pylab import *
+
         # plot density
         ion(); subplot(111)
         print('Rbin = ', Rbin)
@@ -229,7 +204,7 @@ def run(gp):
         ylabel(r'$\nu_{2D}(R)/\nu_{2D}(0)$')
         savefig(gpr.get_dens_png(comp))
         # from gl_analytic import Sigma_anf
-        # plot(Rbin, Sigma_anf(Rbin*Rscale))  # Sigma_anf argument in [pc] !
+        # plot(Rbin, Sigma_anf(Rbin*Rscale,1.,1.)) # Sigma_anf argument in [pc]!
 
         ioff(); show(); clf()
 
@@ -247,7 +222,7 @@ def run(gp):
         xlim([0,3])
         savefig(gpr.get_siglos_png(comp))
         # from gl_analytic import sig_los_anf
-        # plot(Rbin,sig_los_anf(Rbin*Rscale)) # argument must be [pc] !
+        # plot(Rbin,sig_los_anf(Rbin*Rscale, Rscale, Mscale)) # argument must be [pc] !
 
         ioff();show();clf()
 

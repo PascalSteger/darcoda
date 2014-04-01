@@ -29,14 +29,14 @@ def run():
 
         Rmin = min(Rs); Rmax = max(Rs)
         if gp.lograd:
-            Binmin, Binmax, Rbin = bin_r_log(Rmax/gpr.nbins, Rmax, gpr.nbins)
-            print(gpr.nbins,' bins in log spacings')
+            Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
+            print(gp.nipol,' bins in log spacings')
         elif gp.consttr:
-            Binmin, Binmax, Rbin = bin_r_const_tracers(Rs, len(Rs)/gpr.nbins)
-            print(len(R)/gpr.nbins,' particles per bin')
+            Binmin, Binmax, Rbin = bin_r_const_tracers(Rs, len(Rs)/gp.nipol)
+            print(len(R)/gp.nipol,' particles per bin')
         else:
-            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gpr.nbins)
-            print(gpr.nbins, ' bins in linear spacings')
+            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol)
+            print(gp.nipol, ' bins in linear spacings')
 
         # if Dispvel is [] still after pool call,
         # some error occured inside following function:
@@ -71,10 +71,9 @@ def run():
         Sigarr = np.array(Dispvel)
         abarr  = np.array(alog)
 
-        print('output:')
-        print(gpr.filesig)
-        filesig = open(gpr.filesig[comp],'w')
-        print('R [pc]','Binmin [pc]','Binmax [pc]','Sigma_los(R) [km/s]','error [km/s]', file=filesig)
+        filesig = open(gp.files.sigfiles[comp],'w')
+        print('R [pc]','Binmin [pc]','Binmax [pc]',\
+              'Sigma_los(R) [km/s]','error [km/s]', file=filesig)
 
         P_Sigma = np.zeros(gpr.bins); P_ESigma = np.zeros(gpr.bins)
         for b in range(gpr.bins):
@@ -86,10 +85,10 @@ def run():
         filesig.close()
 
         if not gpr.showplots: continue
-        # plot siglos
         ion(); subplot(111)
         plot(Rbin,P_Sigma,'b',lw=1)
-        fill_between(Rbin,P_Sigma-P_ESigma,P_Sigma+P_ESigma,alpha=0.5,color='r') #[rscale],2*[km/s]
+        fill_between(Rbin,P_Sigma-P_ESigma,P_Sigma+P_ESigma,alpha=0.5,color='r')
+        # [rscale],2*[km/s]
 
         xlabel(r'$R [\mathrm{Rscale}]$')
         ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')

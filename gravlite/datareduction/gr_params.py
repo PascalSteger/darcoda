@@ -13,8 +13,8 @@ gp = gl_params.Params()
 from gl_class_files import *
 
 showplots = False
-n = 200
-nbins = gp.nipol
+n = 200 # number of iterations in MCMC_*
+# nbins = gp.nipol
 
 
 if gp.investigate == 'hern':
@@ -26,7 +26,6 @@ if gp.investigate == 'hern':
     Rcut = 1.e10                               # [Rvir]
     
     Rmin = 0. * gp.ascale; Rmax = 3.*gp.ascale # [pc]
-    rprior = 3.
     
     nit = 30             # set number of iterations
     procs = 1            # number of processes for parallel execution
@@ -62,9 +61,6 @@ if gp.investigate == 'hern':
     
      #################### files for Walker's mock data ####################
 elif gp.investigate == 'walk': # or just want to try some other generic pymc stuff:
-    # prior:  analysis is done out to rprior*r_core (half-light radius)
-    # if < 0: include all particles, r=max(x**2+y**2)
-    rprior = 3.0
     r_DM  = 1000.
     
     def rhodm(r):
@@ -77,7 +73,7 @@ elif gp.investigate == 'walk': # or just want to try some other generic pymc stu
     dir = fi.dir
     fil = dir+'mem2'
     
-    ncomp = gp.pops+1    # do analysis for all of them, plus one for all comp's
+    ncomp = gp.pops+1    # do analysis for all pops, plus one for all comp's
     
     pmsplit = 0.9 # minimum probability of membership required for analysis
     # use 0 if grw_* should be called from within gravlite
@@ -90,8 +86,7 @@ elif gp.investigate == 'gaia':
     dir = fi.dir
     fil = dir + 'dat'
     r_DM = 1000.
-    rprior = 3.                 # take data out to rprior*R_s
-    ncomp  = 2                  # TODO: search Gaia data for two-components, or find out how to split them
+    ncomp  = 2 # TODO: search Gaia corresponding two-components
 
 elif gp.investigate == 'triax':
     fi  = Files()
@@ -99,113 +94,64 @@ elif gp.investigate == 'triax':
     dir = fi.dir
     fil = dir + 'dat'
     r_DM = 1500.                  # [pc] TODO check
-    rprior = 3.                   # [r_DM?]
+
+elif gp.investigate == 'obs':
+    fi = Files(gp)
+    fi.set_obs(gp)
+    dir = fi.dir
+    fil = dir+'mem2'
+    pmsplit = 0.9
+    ncomp = gp.pops+1 # analysis for all components together, and each
+                      # population by itself
     
 Rerror  = 0.1      # distance error in [Rscale]
 vrerror = 0.1      # [km/s] 0.01 # velocity error. only raises sig_los
 
 
-import os; import os.path
-def newdir(bname):
-    if not os.path.exists(bname):
-        os.makedirs(bname)
-    return
-## \fn newdir(bname)
-# create new directory
-# @param bname path
-
-
 def get_com_file(n):
-    return dir+'centeredpos_%i.txt' %(n)
+    return gp.files.dir+'centeredpos_' + str(n) + '.txt'
 ## \fn get_com_file(n)
 # get filename of COM file
 # @param n population
 
 
 def get_com_png(n):
-    return dir+'centeredpos_%i.png' %(n)
+    return gp.files.dir+'centeredpos_' + str(n) + '.png'
 ## \fn get_com_png(n)
 # get filename of COM png
 # @param n population
 
 
-def get_params_file(n):
-    return dir+'scale_%i.txt' %(n)
-## \fn get_params_file(n)
-# get scale file
-# @param n population
-
-
-def get_ntracer_file(n):
-    return dir+'ntracer_%i.txt' %(n)
-## \fn get_ntracer_file(n)
-# get file with tracer information
-# @param n population
-
-
 def get_pos_sphere_file(n):
-    return dir+'sphericalpos_%i.txt' %(n)
+    return gp.files.dir+'sphericalpos_' + str(n) + '.txt'
 ## \fn get_pos_sphere_file(n)
 # get data file with spherical positions
 # @param n population
 
 
 def get_vel_sphere_file(n):
-    return dir+'sphericalvel_%i.txt' %(n)
+    return gp.files.dir+'sphericalvel_' + str(n) + '.txt'
 ## \fn get_vel_sphere_file(n)
 # get data file with velocities in spherical coordinates
 # @param n population
 
 
-def get_enc_mass_file(n):
-    newdir(dir+'enclosedmass/')
-    return dir+'enclosedmass/enclosedmass_%i.txt' %(n)
-## \fn get_enc_mass_file(n)
-# get data files with enclosed mass
-# @param n population
-
-
-def get_dens_file(n):
-    # TODO: use gl_class_files.nufiles here!
-    newdir(dir+'nu/')
-    return dir+'nu/nunotnorm_%i.txt' %(n)
-## \fn get_dens_file(n)
-# get data file with tracer density falloff
-# @param n population
-
-
 def get_dens_png(n):
-    return dir+'nu/nunotnorm_%i.png' %(n)
+    return gp.files.dir+'nu/nunotnorm_' + str(n) + '.png'
 ## \fn get_dens_png(n)
 # get png output file
 # @param n population
 
 
-def get_siglos_file(n):
-    newdir(dir+'siglos/')
-    return dir+'siglos/siglos_%i.txt' %(n)
-## \fn get_siglos_file(n)
-# get data file with line of sight velocity dispersion
-# @param n population
-
-
 def get_siglos_png(n):
-    return dir+'siglos/siglos_%i.png' %(n)
+    return gp.files.dir+'siglos/siglos_' + str(n) + '.png'
 ## \fn get_siglos_png(n)
 # get png output file for sigma
 # @param n population
 
 
-def get_kurtosis_file(n):
-    newdir(dir+'kappalos/')
-    return dir+'kappalos/kappalos_%i.txt' %(n)
-## \fn get_kurtosis_file(n)
-# get datafile for fourth order of the LOS velocity
-# @param n population
-
-
 def get_kurtosis_png(n):
-    return dir+'kappalos/kappalos_%i.png' %(n)
+    return gp.files.dir+'kappalos/kappalos_' + str(n) + '.png'
 ## \fn get_kurtosis_png(n)
 # get output png filename for kappa
 # @param n population

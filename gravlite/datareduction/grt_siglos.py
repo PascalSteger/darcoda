@@ -28,35 +28,34 @@ def run(gp):
     r = np.sqrt(x*x+y*y) # [rscale]
     
     #set binning
-    #gpr.nbins = (max - min)*N^(1/3)/(2*(Q3-Q1)) #(method of wand)
+    #gp.nipol = (max - min)*N^(1/3)/(2*(Q3-Q1)) #(method of wand)
     rmin = 0.                                       # [rscale]
-    rmax = max(r) if gpr.rprior<0 else 1.0*gpr.rprior # [rscale]
+    rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR # [rscale]
     
     if gp.lograd:
         # space logarithmically in radius
-        binmin, binmax, rbin = bin_r_log(rmax/gpr.nbins, rmax, gpr.nbins)
+        binmin, binmax, rbin = bin_r_log(rmax/gp.nipol, rmax, gp.nipol)
     elif gp.consttr:
-        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gpr.nbins)
+        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gp.nipol)
     else:
-        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gpr.nbins)
+        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gp.nipol)
         
     # offset from the start!
     rs = gpr.Rerror*np.random.randn(len(r))+r #[rscale]
     vlos = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
-    print('output: ',gpr.get_siglos_file(0))
-    vfil = open(gpr.get_siglos_file(0),'w')
-    print('r','sigma_r(r)','error', file=vfil)
+    vfil = open(gp.files.sigfiles[0], 'w')
+    print('r', 'sigma_r(r)', 'error', file=vfil)
 
     # 30 iterations for drawing a given radius in bin
-    dispvelocity = np.zeros((gpr.nbins,gpr.n))
-    a = np.zeros((gpr.nbins,gpr.n))
-    p_dvlos = np.zeros(gpr.nbins)
-    p_edvlos = np.zeros(gpr.nbins)
+    dispvelocity = np.zeros((gp.nipol,gpr.n))
+    a = np.zeros((gp.nipol,gpr.n))
+    p_dvlos = np.zeros(gp.nipol)
+    p_edvlos = np.zeros(gp.nipol)
     
     for k in range(gpr.n):
         rsi = gpr.Rerror*np.random.randn(len(rs))+rs #[rscale]
         vlosi = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
-        for i in range(gpr.nbins):
+        for i in range(gp.nipol):
             ind1 = np.argwhere(np.logical_and(rsi>binmin[i],rsi<binmax[i])).flatten()
             a[i][k] = len(ind1) #[1]
             vlos1 = vlosi[ind1] #[km/s]
@@ -68,7 +67,7 @@ def run(gp):
                                                   ci_mean=True,ci_std=True)[1]
                 # [km/s], see BiWeight.py
                 
-    for i in range(gpr.nbins):
+    for i in range(gp.nipol):
         dispvel = np.sum(dispvelocity[i])/gpr.n #[km/s]
         ab = np.sum(a[i])/(1.*gpr.n) #[1]
         if ab == 0:
@@ -81,14 +80,14 @@ def run(gp):
 
     maxvlos = max(p_dvlos) #[km/s]
     print('maxvlos = ',maxvlos,'[km/s]')
-    fpars = open(gpr.get_params_file(0),'a')
+    fpars = open(gp.files.get_scale_file(0),'a')
     print(maxvlos, file=fpars)          #[km/s]
     fpars.close()
     import shutil
-    shutil.copy2(gpr.get_params_file(0), gpr.get_params_file(1))
+    shutil.copy2(gp.files.get_scale_file(0), gp.files.get_scale_file(1))
 
 
-    for i in range(gpr.nbins):
+    for i in range(gp.nipol):
         #             [rscale]  [maxvlos]                  [maxvlos]
         print(rbin[i], binmin[i], binmax[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos), file=vfil) #/np.sqrt(n))
     vfil.close()
