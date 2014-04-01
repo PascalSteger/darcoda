@@ -1,5 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__project.html#a3e1880eced07010fe9c00b1ee3ceabb1" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39;" alt="" coords="237,5,397,35"/>
-<area shape="rect" id="node5" href="$namespacegl__project.html#aaa52d9c5da04754e937d646a0523df3e" title="take 3D density, calculate summed 3D mass" alt="" coords="239,59,396,88"/>
-<area shape="rect" id="node7" href="$namespacegl__project.html#a596e6d6e58cb793201afa9e711ab8b18" title="calculate enclosed mass from summing up (density in rings)*(ring surface)" alt="" coords="232,112,403,141"/>
-</map>

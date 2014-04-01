@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespaceselect__run.html#a00aeb4e2447e963a9a6a3c00e4eddb27" title="return all working or completed MCMC run directories" alt="" coords="164,5,297,35"/>
-<area shape="rect" id="node7" href="$namespaceselect__run.html#af144b897573110488e69e60cbd356031" title="ask user for choice on run number" alt="" coords="167,59,295,88"/>
-<area shape="rect" id="node9" href="$namespaceselect__run.html#a395a03b26fae61a005f29b11de9afc01" title="ask user for choice on action to take: print or delete" alt="" coords="157,112,304,141"/>
-<area shape="rect" id="node11" href="$namespaceselect__run.html#a815425137e005907a0abc7d92b0611ee" title="interactive input for prof: dens, delta1, delta2, M" alt="" coords="164,165,297,195"/>
-<area shape="rect" id="node5" href="$namespaceselect__run.html#aceaf2f6a8bacc7b5ba84f0fedebbbb36" title="determine no." alt="" coords="352,5,488,35"/>
-</map>

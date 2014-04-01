@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacedeproj.html#a0d475c4e2f101d713bb8f0797ca1bc4b" title="deproj.igra" alt="" coords="256,5,339,35"/>
-<area shape="rect" id="node5" href="$namespacegl__analytic.html#a59fdf268890950cddd353dbc6fc5a629" title="return total mass density, stars+DM" alt="" coords="207,59,388,88"/>
-<area shape="rect" id="node7" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq." alt="" coords="437,59,605,88"/>
-<area shape="rect" id="node9" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model" alt="" coords="653,59,784,88"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$namespacegl__analytic.html#a43f127219e94df5ce92418ef2d59ef7d" title="calculate 2D surface density from radius" alt="" coords="237,32,405,61"/>
-<area shape="rect" id="node5" href="$namespacegl__analytic.html#a3316fce0592362c14c91bf04e03d5aab" title="Walker model: read values from theoretical params file, calculate from eq." alt="" coords="453,5,621,35"/>
-<area shape="rect" id="node9" href="$namespacegl__project.html#aab51cad56b0d0968ca72d91be9bef19a" title="take 3D density, calculate projected surface density" alt="" coords="457,59,617,88"/>
-<area shape="rect" id="node7" href="$namespacegl__analytic.html#aa0ff27f7750539d5d944583dbb7bb417" title="determine rho(r) for a generalized Hernquist model" alt="" coords="669,5,800,35"/>
-</map>
