@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -22,7 +22,7 @@ def disc_sim(gp):
 
     #import all data from files
     if gp.importdata:
-        z_nu1_raw,nu1_dat_raw,nu1_dat_err_raw = gh.readcoln(gp.files.nufiles[0])
+        z_nu1_raw,nu1_dat_raw,nu1_dat_err_raw = gh.readcoln(gp.files.Sigfiles[0])
         z_sig1_raw,sig1_dat_raw,sig1_dat_err_raw = gh.readcoln(gp.files.sigfiles[0])
         #z_surf_raw,surftot_dat_raw,surftot_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[0])
         z_surf_raw,surfbar_dat_raw,surfbar_dat_err_raw = gh.readcoln(gp.files.surfdenfiles[0])
@@ -33,19 +33,19 @@ def disc_sim(gp):
         selsurf = (z_surf_raw > 0)
         
         if gp.pops == 2:
-            z_nu2_raw,nu2_dat_raw,nu2_dat_err_raw = gh.readcoln(gp.files.nufiles[1])
+            z_nu2_raw,nu2_dat_raw,nu2_dat_err_raw = gh.readcoln(gp.files.Sigfiles[1])
             z_sig2_raw,sig2_dat_raw,sig2_dat_err_raw = gh.readcoln(gp.files.sigfiles[2])
             
             selnu2 = (z_nu2_raw > 0)
             selsig2 = (z_sig2_raw > 0)  
 
         # baryonic surface density
-        gp.dat.Mx   = z_surf_raw[selsurf]*1000.         # [pc]
-        gp.dat.Mdat = surfbar_dat_raw[selsurf]          # [Msun/pc^2]
-        gp.dat.Merr = surfbar_dat_err_raw[selsurf]      # [Msun/pc^2]
+        gp.dat.Mx   = z_surf_raw[selsurf]*1000.      # [pc]
+        gp.dat.Mrdat = surfbar_dat_raw[selsurf]      # [Munit/pc^2]
+        gp.dat.Mrerr = surfbar_dat_err_raw[selsurf]  # [Munit/pc^2]
     
         # total surface density
-        gp.Mmodel = surftot_dat_raw[selsusrf]           # [Msun/pc^2]
+        gp.Mmodel = surftot_dat_raw[selsusrf]        # [Munit/pc^2]
         Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1)  
  
         # should be kappa data (not sure whether this is necessary)      
@@ -54,24 +54,23 @@ def disc_sim(gp):
         gp.dat.denserr   = gp.dat.densdat  #not necessary for a certainty
 
         gp.dat.nux1 = z_nu1_raw[selnu1]*1000.   # [pc]
-        gp.dat.nudat1 = nu1_dat_raw[selnu1]
+        gp.dat.nu1 = nu1_dat_raw[selnu1]
         gp.dat.nuerr1 = nu1_dat_err_raw[selnu1]
         
         gp.dat.sigx1 = z_sig1_raw[selsig1]*1000.
-        gp.dat.sigdat1 = sig1_dat_raw[selsig1]
+        gp.dat.sig1 = sig1_dat_raw[selsig1]
         gp.dat.sigerr1 = sig1_dat_err_raw[selsig1]
 
         if gp.pops == 2:
             gp.dat.nux2 = z_nu2_raw[selnu2]*1000.
-            gp.dat.nudat2 = nu2_dat_raw[selnu2]
+            gp.dat.nu2 = nu2_dat_raw[selnu2]
             gp.dat.nuerr2 = nu2_dat_err_raw[selnu2]
 
             gp.dat.sigx2 = z_sig2_raw[selsig2]*1000.
-            gp.dat.sigdat2 = z_sig2_raw[selsig2]
+            gp.dat.sig2 = z_sig2_raw[selsig2]
             gp.dat.sigerr2 = z_sig2_raw[selsig2]
 
         gp.dat.output()
-        gp.dat.save(gp.files.dir+'pp') # pickle
         return gp.dat
   
 
@@ -86,7 +85,7 @@ def disc_sim(gp):
 
         # Read in the data:
         mass, x_dat,y_dat,z_dat, vx_dat,vy_dat,vz_dat, pot_dat = gh.readcoln(gp.files.posvelfiles[0])
-        # assume units: Msun, 3*kpc, 3*km/s, [pot] <= last one not needed
+        # assume units: Munit, 3*kpc, 3*km/s, [pot] <= last one not needed
         # [Dave] v is in units [100 km/s] <= not possible?!
         if max(mass) != min(mass):
             print('**** Multimass data not yet supported ****')
@@ -121,8 +120,8 @@ def disc_sim(gp):
             vy_dat = vy_dat + npr.normal(-1.,1.,len(z_dat)) * vy_dat_err # [km/s]
             vz_dat = vz_dat + npr.normal(-1.,1.,len(z_dat)) * vz_dat_err # [km/s]
 
-        # Cut on zmax, cut zero velocities  TODO: why not allowing zero velocities? could be temporarily...
-        sel = (z_dat < zmax) * (abs(vz_dat) > 0.)   # [bool]
+        # Cut on zmax, cut zero velocities
+        sel = (z_dat < zmax) * (abs(vz_dat) >= 0.)   # [bool]
         z_dat  = z_dat[sel]               # [pc]
         vz_dat = vz_dat[sel]              # [km/s]
     
@@ -147,7 +146,6 @@ def disc_sim(gp):
         nu_dat_bin = nu_dat_bin / renorm  # [1]
         nu_dat_err_bin = nu_dat_err_bin / renorm   # [1]
 
-        # [TODO]: downsampling if needed 
         if gp.pops == 2:
             mass2, x_dat2,y_dat2,z_dat2, vx_dat2,vy_dat2,vz_dat2, pot_dat2 = gh.readcoln(gp.files.posvelfiles[1])
             if max(mass2) > min(mass2):
@@ -181,8 +179,8 @@ def disc_sim(gp):
                 vy_dat2 = vy_dat2 + npr.normal(-1.,1.,len(z_dat2)) * vy_dat_err2 # [km/s]
                 vz_dat2 = vz_dat2 + npr.normal(-1.,1.,len(z_dat2)) * vz_dat_err2 # [km/s]
 
-            # Cut on zmax, cut zero velocities  TODO: why not allowing zero velocities? could be temporarily...
-            sel = (z_dat2 < zmax) * (abs(vz_dat2) > 0.)   # [bool]
+            # Cut on zmax, cut zero velocities 
+            sel = (z_dat2 < zmax) * (abs(vz_dat2) >= 0.)   # [bool]
             z_dat2  = z_dat2[sel]               # [pc]
             vz_dat2 = vz_dat2[sel]              # [km/s]
     
@@ -211,12 +209,13 @@ def disc_sim(gp):
         # if gp.bprior:
         # Load the baryonic model:
         if gp.baryonmodel == 'silvia':
-            zvis,sigexpvis,sigexpviserr,sigsecvis,sigsecviserr = gh.readcoln('/home/ast/user/jread/Data/Local_dm/Vis/Sigma_MM.txt') # [kpc, Msun/pc^2, Msun/pc^2, Msun/pc^2, Msun/pc^2]
-            sigusevis    = sigsecvis      # [Msun/pc^2]
-            siguseviserr = sigsecviserr   # [Msun/pc^2]
+            zvis,sigexpvis,sigexpviserr,sigsecvis,sigsecviserr = gh.readcoln('/home/ast/user/jread/Data/Local_dm/Vis/Sigma_MM.txt') 
+            # [kpc, Munit/pc^2, Msun/pc^2, Msun/pc^2, Msun/pc^2]
+            sigusevis    = sigsecvis      # [Munit/pc^2]
+            siguseviserr = sigsecviserr   # [Munit/pc^2]
         elif gp.baryonmodel == 'sim':
             zvis, sigusevis, siguseviserr = gh.readcol3(gp.files.surfdenfiles[0])
-            # [kpc, Msun/pc^2, Msun/pc^2]
+            # [kpc, Munit/pc^2, Munit/pc^2]
             zvis *= 1000.                     # [pc]
             sigusevis    = gh.ipol(zvis, sigusevis, gp.xipol)   # interpolate to xipol radius array
             siguseviserr = gh.ipol(zvis, siguseviserr, gp.xipol)
@@ -224,26 +223,26 @@ def disc_sim(gp):
 
             # read in DM surface density
             zdm, sigusedm, sigusedmerr = gh.readcol3(gp.files.surfdenfiles[1])
-            # [kpc, Msun/pc^2, Msun/pc^2]
+            # [kpc, Munit/pc^2, Munit/pc^2]
             zdm *= 1000.                                # [pc]
-            sigusedm = gh.ipol(zdm, sigusedm, gp.xipol)   # interpolate to xipol radius array
+            sigusedm = gh.ipol(zdm, sigusedm, gp.xipol) # interpolate to xipol radius array
             sigusedmerr = gh.ipol(zdm, sigusedmerr, gp.xipol)
             zdm = gp.xipol                    # [pc]
         elif gp.baryonmodel == 'simple':
-            zvis = gp.xipol                               # [pc]
-            D = 250.                                  # [pc]
-            K = 1.65                                  # [TODO]
+            zvis = gp.xipol                   # [pc]
+            D = 250.                          # [pc]
+            K = 1.65                          # [TODO]
             sigusevis = K*zvis/sqrt(zvis**2.+D**2.) / (2.0*np.pi*G1)
             siguseviserr = sigusevis*0.01
 
-        # baryonic surface density, really a Sigma
+        # baryonic surface density, really a Sig
         gp.dat.Mx   = gp.xipol                # [pc]
-        gp.dat.Mdat = sigusevis               # [Msun/pc^2]
-        gp.dat.Merr = siguseviserr            # [Msun/pc^2]
+        gp.dat.Mrdat = sigusevis              # [Munit/pc^2]
+        gp.dat.Mrerr = siguseviserr           # [Munit/pc^2]
 
         # total surface density (same z array as baryonic)
-        gp.Mmodel = sigusevis + sigusedm                   # [Msun/pc^2]
-        Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1)           # [1000/pc (km/s)^2]
+        gp.Mmodel = sigusevis + sigusedm         # [Munit/pc^2]
+        Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1) # [1000/pc (km/s)^2]
  
         # should be kappa data (not sure whether this is necessary)      
         gp.dat.densx     = gp.xipol                       # [pc]
@@ -251,24 +250,23 @@ def disc_sim(gp):
         gp.dat.denserr   = gp.dat.densdat/np.sqrt(len(Kz_zstar))
 
         gp.dat.nux1   = gp.xipol          # [pc]
-        gp.dat.nudat1 = nu_dat_bin        # [Msun/pc^3]
-        gp.dat.nuerr1 = nu_dat_err_bin    # [Msun/pc^3]
+        gp.dat.nu1 = nu_dat_bin           # [Munit/pc^3]
+        gp.dat.nuerr1 = nu_dat_err_bin    # [Munit/pc^3]
         
         gp.dat.sigx1   = gp.xipol         # [pc]
-        gp.dat.sigdat1 = sig_dat_bin      # [km/s]
+        gp.dat.sig1 = sig_dat_bin         # [km/s]
         gp.dat.sigerr1 = sig_dat_err_bin  # [km/s]
 
         if gp.pops == 2:
             gp.dat.nux2 = gp.xipol               # [pc]
-            gp.dat.nudat2 = nu_dat_bin2          # [Msun/pc^3]
-            gp.dat.nuerr2 = nu_dat_err_bin2      # [Msun/pc^3]
+            gp.dat.nu2 = nu_dat_bin2             # [Munit/pc^3]
+            gp.dat.nuerr2 = nu_dat_err_bin2      # [Munit/pc^3]
 
             gp.dat.sigx2 = gp.xipol              # [pc]
-            gp.dat.sigdat2 = sig_dat_bin2        # [km/s]
+            gp.dat.sig2 = sig_dat_bin2           # [km/s]
             gp.dat.sigerr2 = sig_dat_err_bin2    # [km/s]
 
         gp.dat.output()
-        gp.dat.save(gp.files.dir+'pp') # pickle
         return gp.dat
 ## \fn disc_sim(gp)
 # read in disc simulation file

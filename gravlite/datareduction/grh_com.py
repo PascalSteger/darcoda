@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -20,13 +20,13 @@ def run(gp):
     nall = len(xall)                                                 # [1]
 
     # shuffle and restrict to ntracer random points
-    if(gpr.ntracers1>0):
-        ndm = min(gpr.ntracers1,nall-1)
+    if(gp.ntracer[0]>0):
+        ndm = min(gp.ntracer[0], nall-1)
         trace = random.sample(range(nall), nall)
     else:
-        ndm = min(gpr.ntracers2,nall-1)
+        ndm = min(gp.ntracer[1], nall-1)
         trace = random.sample(range(nall), nall)
-    if(gpr.ntracers1+gpr.ntracers2 == 0):
+    if(gp.ntracer[0]+gp.ntracer[1] == 0):
         ndm = nall
         trace = np.arange(nall)
 
@@ -37,7 +37,7 @@ def run(gp):
     vz = [ vzall[i]   for i in trace ] # [km/s]
     PM = np.array(PM); x=np.array(x); y=np.array(y); z=np.array(z); vz=np.array(vz)
 
-    from gl_centering import *
+    from gl_centering import com_shrinkcircle_v
     com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x,y,z,vz,PM) # 3*[ascale], [velocity]
     print('COM [ascale]: ', com_x, com_y, com_z, com_vz)
 
@@ -47,18 +47,16 @@ def run(gp):
     vznew = (vz-com_vz)*np.sqrt(gp.G1*Mscale/ascale) # [km/s], from conversion from system with L=G=M=1
 
     R0 = np.sqrt(xnew**2+ynew**2)   # [pc]
-    R0.sort()                       # [pc]
-    Rhalf = R0[len(R0)/2]           # [pc]
+    Rhalf = np.median(R0) # [pc]
     Rscale = Rhalf                  # or gpr.r_DM # [pc]
 
     print('Rscale = ', Rscale)
-    xnew /= Rscale; ynew /= Rscale    # [rscale]
 
     # only for 0 (all) and 1 (first and only population)
     for comp in range(gpr.ncomp):
         crscale = open(gp.files.get_scale_file(comp),'w')
-        print('# Rscale in [pc],',' surfdens_central (=dens0) in [munit/rscale**2],',\
-              ' and in [munit/pc**2],',' and totmass [munit],',\
+        print('# Rscale in [pc],',' surfdens_central (=dens0) in [Munit/rscale**2],',\
+              ' and in [Munit/pc**2],',' and totmass [Munit],',\
               ' and max(v_LOS) in [km/s]', file=crscale)
         print(Rscale, file=crscale)
         crscale.close()
@@ -67,7 +65,7 @@ def run(gp):
         filepos = open(gpr.fileposcenter[comp],'w')
         print('# x [Rscale]','y [Rscale]','vLOS [km/s]', file=filepos)
         for k in range(ndm):
-            print(xnew[k], ynew[k], vznew[k], file=filepos)
+            print(xnew[k]/Rscale, ynew[k]/Rscale, vznew[k], file=filepos)
         filepos.close()
         print('')
 

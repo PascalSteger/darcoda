@@ -1,145 +1,108 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
 # calculate surface mass density falloff of circular rings around center of mass
 # for triaxial systems
-# TODO: enable bins in elliptical form
+# TODO: enable ellipsoidal bins
 
 # (c) 2013 Pascal S.P. Steger
 
 
-import sys
-import pdb
+import sys, pdb
 import numpy as np
-from pylab import *
-import math
 import gr_params as gpr
 import gl_file as gfile
+import gl_helper as gh
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
-from gl_class_files import *
+
 
 def run(gp):
     print('input: ',gpr.get_com_file(0))
     # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(0),\
-                       skiprows=1,usecols=(0,1,2),unpack=True) #[rscale], [rscale], [km/s]
-    
-    # calculate 2D radius on the skyplane
-    r = np.sqrt(x**2+y**2) #[rscale]
-    
-    # set number and size of (linearly spaced) bins
-    rmin = 0. #[rscale]
-    rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR #[rscale]
-        
-    print('rmax [rscale] = ', rmax)
-    sel = (r<rmax)
-    x = x[sel]; y = y[sel]; v = v[sel] #[rscale]
-    totmass = 1.*len(x) #[munit], munit = 1/star
-    
-    if gp.lograd:
-        # space logarithmically in radius
-        binmin, binmax, rbin = bin_r_log(rmax/gp.nipol, rmax, gp.nipol)
-    elif gp.consttr:
-        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gp.nipol)
-    else:
-        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gp.nipol)
-            
-    #volume of a circular bin from binmin to binmax
-    vol = np.zeros(gp.nipol)
-    for k in range(gp.nipol):
-        vol[k] = np.pi*(binmax[k]**2-binmin[k]**2) # [rscale**2]
-            
-    # rs = gpr.Rerror*np.random.randn(len(r))+r
-    rs = r  #[rscale] # if no initial offset is whished
-    
-    tr = open(gp.files.get_ntracer_file(0),'w')
-    print(totmass, file=tr)
-    tr.close()
+                       skiprows=1,usecols=(0,1,2),unpack=True) #[Rscalei], [Rscalei], [km/s]
 
-    de = open(gp.files.nufiles[0],'w')
-    em = open(gp.files.massfiles[0],'w')
-    
-    print('r','nu(r)/nu(0)','error', file=de)
-    print('r','M(<r)','error', file=em)
+    for comp in range(2):
+        # calculate 2D radius on the skyplane
+        R = np.sqrt(x**2+y**2) # [Rscalei]
 
-    # 30 iterations for getting random picked radius values
-    density = np.zeros((gp.nipol,gpr.n))
-    a       = np.zeros((gp.nipol,gpr.n))
-    for k in range(gpr.n):
-        rsi = gpr.Rerror * np.random.randn(len(rs)) + rs # [rscale]
-        for j in range(gp.nipol):
-            ind1 = np.argwhere(np.logical_and(rsi>=binmin[j],rsi<binmax[j])).flatten() # [1]
-            density[j][k] = (1.*len(ind1))/vol[j]*totmass # [munit/rscale**2]
-            a[j][k] = 1.*len(ind1) #[1]
-            
-    dens0 = np.sum(density[0])/(1.*gpr.n) # [munit/rscale**2]
-    print('dens0 = ',dens0,'[munit/rscale**2]')
-    crscale = open(gp.files.get_scale_file(0),'r')
-    rscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
-    crscale.close()
+        # set number and size of bins
+        Rmin = 0. # [rscale]
+        Rmax = max(R) if gp.maxR < 0 else float(gp.maxR)   # [Rscale0]
+        sel = (R * Rscalei < Rmax * Rscale0)
+        x = x[sel]; y = y[sel]; v = v[sel] #[rscale]
+        totmass = 1.*len(x) #[munit], munit = 1/star
 
-    cdens = open(gp.files.get_scale_file(0),'a')
-    print(dens0, file=cdens)               # [munit/rscale**2]
-    print(dens0/rscale**2, file=cdens)      # [munit/pc**2]
-    print(totmass, file=cdens)             # [munit]
-    cdens.close()
-    
-    ab0   = np.sum(a[0])/(1.*gpr.n)     # [1]
-    denserr0 = dens0/np.sqrt(ab0)       # [munit/rscale**2]
-
-    p_dens  = np.zeros(gp.nipol);  p_edens = np.zeros(gp.nipol)
-    
-    for b in range(gp.nipol):
-        dens = np.sum(density[b])/(1.*gpr.n) # [munit/rscale**2]
-        ab   = np.sum(a[b])/(1.*gpr.n)       # [1]
-        denserr = dens/np.sqrt(ab)       # [munit/rscale**2]
-        denserror = np.sqrt((denserr/dens0)**2+(dens*denserr0/(dens0**2))**2) #[1]
-        if(math.isnan(denserror)):
-            denserror = 0. # [1]
-            p_dens[b] = p_dens[b-1]  # [1]
-            p_edens[b]= p_edens[b-1] # [1]
+        if gpr.lograd:
+            # space logarithmically in radius
+            Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol) # [Rscale0]
+        elif gp.consttr:
+            Binmin, Binmax, Rbin = bin_r_const_tracers(R, len(R)/gp.nipol) # [Rscale0]
         else:
-            p_dens[b] = dens/dens0   # [1]
-            p_edens[b]= denserror    # [1] #100/rbin would be artificial guess
+            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol) # [Rscale0]
 
-    for b in range(gp.nipol):
-        print(rbin[b], binmin[b], binmax[b], p_dens[b], p_edens[b], file=de) # [rscale], [dens0], [dens0]
-        indr = (r<binmax[b])
-        menclosed = 1.0*np.sum(indr)/totmass # /totmass for normalization to 1 at last bin #[totmass]
-        merror = menclosed/np.sqrt(ab) # artificial menclosed/10 gives good approximation #[totmass]
-        print(rbin[b], binmin[b], binmax[b], menclosed, merror, file=em) # [rscale], [totmass], [totmass]
-    de.close()
-    em.close()
+        Vol = gpr.volume_circular_ring(Binmin, Binmax, gp)
+
+        # rs = gpr.Rerr*np.random.randn(len(r))+r
+        Rs = R  # [Rscale] # if no initial offset is whished
+
+        tr = open(gp.files.get_ntracer_file(0),'w')
+        print(totmass, file=tr)
+        tr.close()
+
+        de, em, sigfil, kapfil = gfile.write_headers_2D(gp, 0)
+
+        # 30 iterations for getting random picked radius values
+        Density = np.zeros((gp.nipol,gpr.n))
+        tpb       = np.zeros((gp.nipol,gpr.n))
+        for k in range(gpr.n):
+            Rsi = gh.add_errors(Rs, gpr.Rerr) # [Rscalei]
+            for j in range(gp.nipol):
+                ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[j] * Rscale0,\
+                                                  Rsi * Rscalei <  Binmax[j] * Rscale0)).flatten() # [1]
+                Density[j][k] = float(len(ind1))/Vol[j]*totmass # [munit/Rscale0^2]
+                tpb[j][k] = float(len(ind1)) #[1]
+
+        Dens0 = np.sum(Density[0])/float(gpr.n) # [Munit/Rscale0^2]
+        Dens0pc = Dens0/Rscale0**2 # [Munit/pc^2]
+        gfile.write_density(gp.files.get_scale_file(0), Dens0pc, totmass)
+
+        tpbb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
+        Denserr0 = Dens0/np.sqrt(tpbb0)       # [Munit/rscale^2]
+
+        p_dens  = np.zeros(gp.nipol)
+        p_edens = np.zeros(gp.nipol)
+
+        for b in range(gp.nipol):
+            Dens = np.sum(Density[b])/float(gpr.n) # [Munit/rscale^2]
+            tpbb = np.sum(tpb[b])/float(gpr.n)       # [1]
+            Denserr = Dens/np.sqrt(tpbb)       # [Munit/rscale^2]
+            if(np.isnan(Denserr)):
+                p_dens[b] = p_dens[b-1]  # [1]
+                p_edens[b]= p_edens[b-1] # [1]
+            else:
+                p_dens[b] = Dens/Dens0   # [1]
+                p_edens[b]= Denserr/Dens0    # [1] #100/rbin would be artificial guess
+
+        for b in range(gp.nipol):
+            print(Rbin[b], Binmin[b], Binmax[b], p_dens[b], p_edens[b], file=de) # [rscale], [dens0], [dens0]
+            indr = (R < Binmax[b])
+            menclosed = float(np.sum(indr))/totmass
+             # /totmass for normalization to 1 at last bin #[totmass]
+            merr = menclosed/np.sqrt(tpbb) # artificial menclosed/10 gives good approximation #[totmass]
+            print(Rbin[b], Binmin[b], Binmax[b], menclosed, merr, file=em)
+            # [rscale], [totmass], [totmass]
+        de.close()
+        em.close()
 
 
-    if not gpr.showplots: return
-    ion(); subplot(111)
-    print('rbin = ', rbin)
-    print('p_dens = ', p_dens)
-    print('p_edens = ', p_edens)
+        if gpr.showplots:
+            gpr.show_plots_dens_2D(0, Rbin, p_dens, p_edens, Dens0pc)
 
-    plot(rbin, p_dens, 'b', linewidth=3)
-    lbound = p_dens-p_edens; lbound[lbound<1e-6] = 1e-6
-    ubound = p_dens+p_edens; 
-    fill_between(rbin,lbound,ubound,alpha=0.5,color='r')
-    # xscale('log'); 
-    yscale('log')
-    xlim([np.min(rbin),np.max(rbin)])
-    ylim([np.min(lbound),np.max(ubound)])
-    # ylim([1e-3,3.])#ylim([1e-6,2*np.max(p_dens)])
-    # ylim([0,1])
-    xlabel(r'$r [r_c]$')
-    ylabel(r'$\nu(r)/\nu(0)$')
-    # plt.legend(['\rho','\rho'],'lower left')
-    # title(fil)
-    # axes().set_aspect('equal')
-    savefig(gpr.get_dens_png(0))
-    if gpr.showplots:
-        ioff(); show(); clf()
 
 if __name__ == '__main__':
-    # gpr.showplots = True
+    gpr.showplots = True
     import gl_params
     gp = gl_params.Params()
     run(gp)

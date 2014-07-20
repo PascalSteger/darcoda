@@ -54,7 +54,7 @@ def stddevbiweight(vector, zero=None, eps=1e-20):
     if mad<eps:
         scale = 0.
     else:
-        u2 = ((vector-center)/(c*mad))**2 #[vecunit/vecunit**2]
+        u2 = ((vector-center)/(c*mad))**2 #[vecunit/vecunit^2]
         ind = np.argwhere(u2<=1.).flatten()
         count = len(ind) #[1]
         if count<3:
@@ -65,7 +65,7 @@ def stddevbiweight(vector, zero=None, eps=1e-20):
             term1 = (1.-u2[ind])    # [1]
             term2 = (1.-5.*u2[ind]) # [1]
             n = len(vector)         # [1]
-            scale = n*np.sum((vector[ind]-center)**2*term1**4) # [vecunit**2]
+            scale = n*np.sum((vector[ind]-center)**2*term1**4) # [vecunit^2]
             scale = np.sqrt(scale)/np.sum(term1*term2) # [vecunit]
   
     return scale

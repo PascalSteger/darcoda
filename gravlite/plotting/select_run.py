@@ -6,9 +6,8 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
-import os, sys, time, glob, shutil
+import os, sys, time, glob, shutil, pdb
 import numpy as np
-import pdb
 
 def bufcount(filename):
     f = open(filename)
@@ -38,16 +37,19 @@ def remove_empty_folders(fdl):
         try:
             with open(x[0]+"/ev.dat"):
                 # delete any folder that has empty ev.dat
-                if bufcount(x[0]+'/ev.dat')<=0:
-                    print('empty '+x[0]+'/ev.dat, delete containing directory')
-                    removeDir(x[0])
+                if bufcount(x[0]+'/ev.dat') <= 0:
+                    print('empty '+x[0]+'/ev.dat, delete containing directory?')
+                    # TODO find another proxy to determine whether models were found
+                    # removeDir(x[0])
                 continue
         except IOError:
-            print(x[0]+'/ev.dat does not exist, delete containing directory')
-            removeDir(x[0])
+            print(x[0]+'/ev.dat does not exist, delete containing directory?')
+            # TODO: other proxy above
+            # removeDir(x[0])
     return
 # \fn remove_empty_folders(fdl)
-# remove all folders in list fdl without any ev.dat file in it = where no iterations of the MultiNest algorithm were stored
+# remove all folders in list fdl without any ev.dat file in it = where
+# no iterations of the MultiNest algorithm were stored
 # @param fdl [(name, datestamp)] of all dirs in current mode
 
 
@@ -57,7 +59,8 @@ def list_files(basedir):
     
     from datetime import datetime
     # delete all folders without or with empty ev.dat inside!
-    fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')) for x in dirs]
+    fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
+                                 '%Y%m%d%H%M')) for x in dirs]
     remove_empty_folders(fdl)
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
     fdl = [(x,\
@@ -69,15 +72,25 @@ def list_files(basedir):
     for i in range(len(fdl)):
         fil = open(fdl[i][0]+'/gl_params.py','r')
         pops = 0                          # default: 0 populations, error
+        nipol = 0
+        nbeta = 0
         for line in fil:
-            if ('self.pops' in line.split()): # new version only (old
-                                              #would have to search
-                                              #for 'pops' only)
-                pops = int(line.split()[2])
+            lsp = line.split()
+            if len(lsp) < 1:
+                continue
+            if lsp[0] == 'self.pops':
+                pops = int(lsp[2])
+            elif lsp[0] == 'self.nipol':
+                nipol = int(lsp[2])
+            elif lsp[0] == 'self.nbeta':
+                nbeta = int(lsp[2])
+            elif lsp[0] == 'self.monotonic':
+                mono = lsp[2]
         print("%2d"%(i+1),': ',\
               datetime.strftime(fdl[i][1],'%Y-%m-%d %H:%M'),\
-              ' with ', "%7d"%fdl[i][2], ' iterations', \
-              ' and ', pops, ' populations')
+              "%5d"%fdl[i][2], 'its,', \
+              pops, 'pops,',\
+              nipol, 'bins,', 'nbeta=', nbeta, 'mono=', mono)
     return np.transpose(np.array(fdl))[:][0]
 ## \fn list_files(basedir)
 # return all working or completed MCMC run directories
@@ -86,10 +99,11 @@ def list_files(basedir):
 
 def get_investigate():
     default = 'walk'
-    invalid=True
+    invalid = True
     while(invalid):
         try:
-            user_input = input('Investigate: (default: '+str(default)+", gaia, triax, hern, obs, discsim, discmock): ")
+            user_input = input('Investigate: (default: '+str(default)+\
+                               ", walk, gaia, triax, hern, obs, discsim, discmock): ")
             if not user_input:
                 user_input = str(default)
             sel = user_input
@@ -101,7 +115,8 @@ def get_investigate():
             invalid = False
     return sel
 ## \fn get_investigate(default)
-# ask user for choice on investigation (walk, gaia, triax, fornax, hern, discsim, discmock)
+# ask user for choice on investigation
+# (walk, gaia, triax, fornax, hern, discsim, discmock)
 # @return string
 
 
@@ -121,7 +136,7 @@ def choose_obs(sel):
 
 
 def get_case(investigate):
-    default = 4
+    default = 2
     invalid = True
     while(invalid):
         try:
@@ -132,15 +147,17 @@ def get_case(investigate):
         except ValueError:
             print("error in input")
         if 0<=sel and ((sel <= 5 and investigate == 'walk') or \
-                      (sel <= 8 and investigate == 'gaia') or \
-                       (sel <=4 and investigate == 'obs')):
+                       (sel <= 8 and investigate == 'gaia') or \
+                       (sel < 4 and investigate == 'obs') or \
+                       (sel <= 7 and investigate == 'triax')):
             invalid = False
         # assign string if working with observed dwarfs
-        if investigate == 'obs':
-            sel = choose_obs(sel)
+        #if investigate == 'obs':
+        #    sel = choose_obs(sel)
     return sel
 ## \fn get_case()
-# ask user for choice on case number (see gl_params and gl_class_files for definitions)
+# ask user for choice on case number (see gl_params and gl_class_files
+# for definitions)
 # @return sel integer for case number
 
 
@@ -194,46 +211,78 @@ def get_pop():
             sel = user_input
         except ValueError:
             print('error in input')
-        if sel=='1' or (sel=='2' and gp.pops>1):
+        if sel=='1' or sel=='2':
             invalid = False
     return int(sel)
-## \fn get_pop
+## \fn get_pop()
+# get population integer
 # @return int of population (0: all, 1: first, ...)
 
 
 def get_prof():
-    default = 'rho'
+    default = 'all'
     invalid=True
     while(invalid):
         try:
-            user_input = input('profile: rho (default), nr, M, beta, betastar, Sig, sig: ')
+            user_input = input('profile: all, rho, nr, beta, betastar, Sig, sig, chi2: ')
             if not user_input:
                 user_input = default
             sel = user_input
         except ValueError:
             print("error in input")
-        if sel=='rho' or sel=='M' or sel=='beta' or sel=='betastar' or sel=='Sig' or sel=='sig' or sel=='nr':
+        if sel=='rho' or sel=='M' or sel=='beta' or sel=='betastar' or \
+          sel=='Sig' or sel=='sig' or sel=='nr' or sel=='all' or sel=='chi2':
             invalid = False
     return sel
-## \fn get_prof
+## \fn get_prof()
 # interactive input for prof: rho, M, beta, betastar, nu, sig
 # @return string
-
-
 
 
 def get_pops(basename):
     pops = 1
     with open(basename+'/gl_params.py', 'r') as f:
         for line in f:
-            if 'pops      = ' in line:
-                import re
-                pops = int(re.split('[=\n]', line)[-2])
+            lss = line.split()
+            if len(lss) == 0:
+                continue
+            if lss[0]=='self.pops':
+                pops = int(lss[2])
+                # import re
+                # pops = int(re.split('[=\n]', line)[-2])
     return pops
 ## \fn get_pops(basename)
 # return number of populations from gl_params stored in output directory
 # @param basename string of output dir
 # @return integer number of populations
+
+
+def get_nipol(basename):
+    nipol = 0
+    with open(basename+'/gl_params.py', 'r') as f:
+        for line in f:
+            if 'nipol      = ' in line:
+                import re
+                nipol = int(re.split('[=\n]', line)[-2])
+    return nipol
+## \fn get_nipol(basename)
+# return number bins from gl_params stored in output directory
+# @param basename string of output dir
+# @return integer number of bins
+
+
+def get_nbeta(basename):
+    nbeta = 0
+    with open(basename+'/gl_params.py', 'r') as f:
+        for line in f:
+            if 'nbeta      = ' in line:
+                import re
+                nipol = int(re.split('[=\n]', line)[-2])
+    return nbeta
+## \fn get_nbeta(basename)
+# return number of beta parameters  from gl_params stored in output directory
+# @param basename string of output dir
+# @return integer number of beta* parameters
 
 
 def run():
@@ -245,7 +294,6 @@ def run():
     else:
         machine = '/home/psteger/sci/gravlite/'
     basedir = os.path.abspath(machine+'/DT'+investigate+'/'+str(case)+'/')+'/'
-    
     # import import_path as ip
     # ip.import_path(basedir+'/gl_params.py')
     while(action == 'k'):
@@ -256,13 +304,13 @@ def run():
             import shutil
             shutil.rmtree(fdl[sel])
         
-    prof = get_prof()
+    #prof = get_prof()
     basename = fdl[sel] # full directory path, without '/'
     timestamp = basename.split('/')[-1] # extract last bit
-    if prof == 'rho' or prof=='nr':
-        return timestamp, basename+'/', prof, 0
-    pop  = get_pop()
-    return timestamp, basename+'/', prof, pop
+    #if prof == 'rho' or prof=='nr':
+    #    return timestamp, basename+'/', prof #, 0
+    # pop  = get_pop()
+    return timestamp, basename+'/'#, prof #, pop
 ## \fn run()
 # display possible runs of the current investigation method, select one
 # @return basename, prof (string)

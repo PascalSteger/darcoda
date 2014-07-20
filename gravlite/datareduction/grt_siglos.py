@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
 # calculate velocity dispersion of 2D rings from a Walker dataset'''
 # for triaxial systems
-# TODO: extend method to work with elliptical bins // introduce tensors (cf Agnello)
+### TODO: extend method to work with elliptical bins // introduce tensors (cf Agnello)
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
@@ -24,7 +24,7 @@ def run(gp):
     if gfile.bufcount(gpr.get_com_file(0))<2:
         return
     x,y,vlos = np.loadtxt(gpr.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
-    totmass = 1.*len(x)  # [munit], [Msun], where each star is weighted with the same mass
+    totmass = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rscale]
     
     #set binning
@@ -32,7 +32,7 @@ def run(gp):
     rmin = 0.                                       # [rscale]
     rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR # [rscale]
     
-    if gp.lograd:
+    if gpr.lograd:
         # space logarithmically in radius
         binmin, binmax, rbin = bin_r_log(rmax/gp.nipol, rmax, gp.nipol)
     elif gp.consttr:
@@ -41,8 +41,8 @@ def run(gp):
         binmin, binmax, rbin = bin_r_linear(rmin, rmax, gp.nipol)
         
     # offset from the start!
-    rs = gpr.Rerror*np.random.randn(len(r))+r #[rscale]
-    vlos = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
+    rs = gpr.Rerr*np.random.randn(len(r))+r #[rscale]
+    vlos = gpr.vrerr*np.random.randn(len(vlos))+vlos #[km/s]
     vfil = open(gp.files.sigfiles[0], 'w')
     print('r', 'sigma_r(r)', 'error', file=vfil)
 
@@ -53,8 +53,8 @@ def run(gp):
     p_edvlos = np.zeros(gp.nipol)
     
     for k in range(gpr.n):
-        rsi = gpr.Rerror*np.random.randn(len(rs))+rs #[rscale]
-        vlosi = gpr.vrerror*np.random.randn(len(vlos))+vlos #[km/s]
+        rsi = gpr.Rerr*np.random.randn(len(rs))+rs #[rscale]
+        vlosi = gpr.vrerr*np.random.randn(len(vlos))+vlos #[km/s]
         for i in range(gp.nipol):
             ind1 = np.argwhere(np.logical_and(rsi>binmin[i],rsi<binmax[i])).flatten()
             a[i][k] = len(ind1) #[1]
@@ -71,12 +71,12 @@ def run(gp):
         dispvel = np.sum(dispvelocity[i])/gpr.n #[km/s]
         ab = np.sum(a[i])/(1.*gpr.n) #[1]
         if ab == 0:
-            dispvelerror = p_edvlos[i-1] #[km/s]
+            dispvelerr = p_edvlos[i-1] #[km/s]
             # attention! uses last error
         else:
-            dispvelerror = dispvel/np.sqrt(ab) #[km/s]
+            dispvelerr = dispvel/np.sqrt(ab) #[km/s]
         p_dvlos[i] = dispvel      #[km/s]
-        p_edvlos[i]= dispvelerror #[km/s]
+        p_edvlos[i]= dispvelerr #[km/s]
 
     maxvlos = max(p_dvlos) #[km/s]
     print('maxvlos = ',maxvlos,'[km/s]')
@@ -86,30 +86,14 @@ def run(gp):
     import shutil
     shutil.copy2(gp.files.get_scale_file(0), gp.files.get_scale_file(1))
 
-
     for i in range(gp.nipol):
         #             [rscale]  [maxvlos]                  [maxvlos]
         print(rbin[i], binmin[i], binmax[i], np.abs(p_dvlos[i]/maxvlos),np.abs(p_edvlos[i]/maxvlos), file=vfil) #/np.sqrt(n))
     vfil.close()
 
-    if not gpr.showplots: return
-
-    ion(); subplot(111)
-    print('rbin = ', rbin,' rscale')
-    print('p_dvlos = ', p_dvlos,' km/s')
-    print('p_edvlos = ', p_edvlos, 'km/s')
-    plot(rbin, p_dvlos, 'b', linewidth=3)
-    fill_between(rbin, p_dvlos-p_edvlos, p_dvlos+p_edvlos, alpha=0.5, color='r') #[rscale],[km/s],[km/s]
-
-    xlabel(r'$r [rscale]$')
-    ylabel(r'$\langle\sigma_{LOS}\rangle [km/s]$')
-    ylim([-5,30])
-    # xscale('log')
-    xlim([np.min(rbin),np.max(rbin)])
-    #plt.legend(['\rho','\rho'],'lower left'); #title(dwarf)
-    savefig(gpr.get_siglos_png(0))
     if gpr.showplots:
-        ioff();show();clf()
+        gpr.show_plots_vlos(rbin, p_dvlos, p_edvlos)
+
 
 if __name__ == '__main__':
     gpr.showplots = True

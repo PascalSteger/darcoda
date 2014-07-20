@@ -1,49 +1,59 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython
 
 ##
 # @file
-# parameters for MultiNest.
-# cube = [0,1]^ndim,  ndim = nepol + 2*pops*(nepol+nbeta), 
-# Holds representations for overall density,
-# [tracer density, anisotropy]_{for each population}
-# Gives access to density, population profiles,
-# and calculate physical values from [0,1]
-# populations are counted from 0 = first component,
-# 1 = first additional component
+# store profiles to files
 
 # (c) 2013 ETHZ Pascal S.P. Steger
 
-import pdb
-import csv
+
+import pdb, csv
 import numpy as np
-import numpy.random as npr
-import random
-import gl_params
-gp = gl_params.Params()
-import gl_physics as phys
-import gl_helper as gh
 
 class Output:
     def __init__ (self):
-        self.container = []
+        self.descriptions = []
+        self.arrays = []
         return
     ## \fn __init__ (self)
     # constructor, with descriptor and data in array format
-    
+
+
+    def __repr__(self):
+        return "Output: "+self.descriptions+" "+self.arrays
+    ## \fn __repr__(self)
+    # string representation for ipython
+
+
     def add(self, d, arr):
-        self.container.append(np.hstack([d, arr]))
+        self.descriptions.append(d)
+        self.arrays.append(arr)
     # \fn add(d, arr)
     # add a column to ASCII data file
     # @param d string of description
     # @param arr np.array of floats
 
-    def write(self, filename):
+
+    def write_old(self, filename):
         with open(filename, 'w') as csvfile:
             csvw = csv.writer(csvfile, delimiter=',')
             for column in zip(*[s for s in self.container]):
                 csvw.writerow(column)
-
         return 0
+    ## \fn write_old(self, filename)
+    # old routine for output to file
+    # @param filename string
+
+
+    def write(self, filename):
+        headers = ",".join(self.descriptions)
+        csvfile = open(filename, 'wb')
+        np.savetxt(csvfile, np.transpose(np.array(self.arrays)), header=headers, delimiter=",")
+        csvfile.close()
+    ## \fn write(self, filename)
+    # write file to csv file
+    # @param filename string
+        
         
 ## \class Output
 # class for generating ASCII output files from plot_multinest

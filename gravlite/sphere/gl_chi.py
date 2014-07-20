@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,24 +8,11 @@
 
 from types import *
 import pdb
+import numpy as np
 import numpy.random as npr
 
-from gl_analytic import *
-from gl_project import rho_INT_Rho, rho_param_INT_Rho
-from gl_class_profiles import Profiles
-
-def compare_nu(pop, err, gp):
-    if err:
-        return gp.dat.Nuerr[pop] # [Msun/pc^2]
-    else:
-        return gp.dat.Nudat[pop]  # [Msun/pc^2]
-
-## \fn compare_nu(pop, err, gp)
-# return nu required for comparison to interpolated data
-# @param pop integer, population (in 0 (overall), 1, 2)
-# @param err bool, whether the corresponding error should be returned instead of data
-# @param gp global parameters
-
+import gl_analytic as ga
+# import gl_class_profiles as glp
 
 def chi2red(model, data, sig, dof):
     # if Degrees Of Freedom = 1, return non-reduced chi2
@@ -41,35 +28,47 @@ def chi2red(model, data, sig, dof):
 # @param dof Degrees Of Freedom
 
 
-def calc_chi2(profs, nuparstore, gp):
+def calc_chi2(profs, gp):
     chi2 = 0.
-    off = 0
-    for pop in np.arange(gp.pops)+1:
-        nuparams = nuparstore[pop-1]
-        Numodel  = rho_param_INT_Rho(gp.xepol, nuparams, gp) # [Msun/pc^2], on nipol bins
-        # Numodel = rho_INT_Rho(gp.xipol, profs.get_nu(pop)) # [Msun/pc^2]
-        Nudata  = compare_nu(pop, False, gp)           # [Msun/pc^2]
-        Nuerr   = compare_nu(pop, True, gp)            # [Msun/pc^2]
-        
-        chi2_nu  = chi2red(Numodel, Nudata, Nuerr, gp.dof) # [1]
-        chi2 += chi2_nu                 # [1]
-        
-        sigdat  = gp.dat.sigdat[pop]    # [km/s]
-        sigerr  = gp.dat.sigerr[pop]    # [km/s]
-        chi2_sig = chi2red(profs.get_sig(pop), sigdat, sigerr, gp.dof) # [1]
-        chi2 += chi2_sig                # [1]
-        # print('profs: ', profs.get_nu(pop)[0],', data: ', Nudata[0])
-        print('chi2_nu, chi2_sig = ',chi2_nu,' ',chi2_sig)
-        if gp.usekappa:
-            kapdat  = gp.dat.kapdat[pop] # [1]
-            kaperr  = gp.dat.kaperr[pop] # [1]
-            chi2_kap = chi2red(profs.get_kap(pop), kapdat, kaperr, gp.dof) # [1]
-            chi2 += chi2_kap            # [1]
 
+    Sigdat = gp.dat.Sig[0]              # [Munit/pc^2] from rho*
+    Sigerr = gp.dat.Sigerr[0]           # [Munit/pc^2]
+    Sigmodel = profs.get_prof('Sig', 0)
+    chi2_rhostar = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
+    chi2 += chi2_rhostar
+    print('chi2_rhostar     = ', chi2_rhostar)
+
+    # now run through the stellar tracers
+
+    for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]
+        Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
+        Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]
+        Sigmodel = profs.get_prof('Sig', pop)
+        chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
+        chi2 += chi2_Sig                 # [1]
+        
+        sigdat  = gp.dat.sig[pop]    # [km/s]
+        sigerr  = gp.dat.sigerr[pop]    # [km/s]
+        chi2_sig = chi2red(profs.get_prof('sig', pop), sigdat, sigerr, gp.nipol) # [1]
+        chi2 += chi2_sig                # [1]
+        print('chi2_{Sig, sig} = ', chi2_Sig, ' ', chi2_sig)
+        if gp.usekappa:
+            kapdat  = gp.dat.kap[pop] # [1]
+            kaperr  = gp.dat.kaperr[pop] # [1]
+            chi2_kap = chi2red(profs.get_kap(pop), kapdat, kaperr, gp.nipol) # [1]
+            chi2 += chi2_kap            # [1]
+        # TODO: check
+        # if gp.usezeta:
+        #     zetaadat = gp.dat.zetaadat[pop]
+        #     zetabdat = gp.dat.zetabdat[pop]
+        #     zetaaerr = gp.dat.zetaaerr[pop]
+        #     zetaberr = gp.dat.zetaberr[pop]
+        #     chi2_zetaa = chi2red(profs.get_prof('zetaa', pop), zetaadat, zetaaerr, gp.nipol)
+        #     chi2_zetab = chi2red(profs.get_prof('zetab', pop), zetabdat, zetaberr, gp.nipol)
+        #     chi2 += (chi2_zetaa + chi2_zetab)
     return chi2
-## \fn calc_chi2(profs, nuparstore, gp)
+## \fn calc_chi2(profs, gp)
 # Calculate chi^2
-# @param profs profiles for rho, M, nu_i, beta_i, sig_i, kap_i
-# @param nuparstore array of parameters for nu, pop 1 and 2
+# @param profs profiles for rho, M, rho*, nu_i, beta_i, sig_i, kap_i
 # @param gp global parameters
 

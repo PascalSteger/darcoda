@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,13 +8,10 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys
-import pdb
+import sys, pdb
 import pymc as mc
-
 from pylab import *
-import gl_params
-gp = gl_params.Params()
+
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
@@ -81,8 +78,8 @@ def plot_traces(mcmc):
 def bimodal_gauss(data):
     p = mc.Normal( "p", 0.5, 1./0.1**2)
     assignment = mc.Categorical("assignment", [p, 1-p], size = data.shape[0] ) 
-    print "prior assignment, with p = %.2f:"%p.value
-    print assignment.value[:100], "..."
+    print("prior assignment, with p = %.2f:"%p.value)
+    print(assignment.value[:100], "...")
 
     taus = 1.0/mc.Uniform( "stds", 0., 0.5, size=2)**2
     mu1  = mc.Uniform('mu1',-1.0,2.0)
@@ -104,9 +101,9 @@ def bimodal_gauss(data):
     def tau_i( assignment = assignment, taus = taus ):
         return taus[ assignment] 
 
-    print "Random assignments: ", assignment.value[ :10 ], "..."
-    print "Assigned center: ",    center_i.value[ :10], "..."
-    print "Assigned precision: ", tau_i.value[ :10], "..."
+    print("Random assignments: ", assignment.value[ :10 ], "...")
+    print("Assigned center: ",    center_i.value[ :10], "...")
+    print("Assigned precision: ", tau_i.value[ :10], "...")
 
 
     # and to combine it with the observations:
@@ -119,7 +116,7 @@ def bimodal_gauss(data):
     iter = 50000; burn = 40000; thin = 10
     M.sample( iter=iter, burn = burn, thin = thin)
 
-    print 'log_10(p) = ', M.logp
+    print('log_10(p) = ', M.logp)
     # M.db.commit()
     plot_traces(M)
     mu1, mu2 = M.trace('centers')[:].mean(axis=0)
@@ -138,7 +135,7 @@ def bimodal_gauss(data):
 # @return M MCMC object
 
 
-if __name__=="__main__":
+def run():
     x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                     usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
                                     dtype="d17",\
@@ -166,25 +163,25 @@ if __name__=="__main__":
         model = np.hstack([np.random.normal(mu1,sig1,p*len(data)),\
                            np.random.normal(mu2,sig2,(1.-p)*len(data))])
         ks2 = ks_2samp(data, model)
-        # print 'Kolmogorov-Smirnov test: ',ks2
+        # print('Kolmogorov-Smirnov test: ',ks2)
         mp.append(ks2[1])
-    print '<p> = ',np.mean(np.array(mp))
-    print 'median p = ',np.median(np.array(mp))
+    print('<p> = ',np.mean(np.array(mp)))
+    print('median p = ',np.median(np.array(mp)))
 
     clf()
     ion()
     colors = ["#348ABD", "#A60628"]
     bins = np.linspace(min(data),max(data),30)
     h1 = hist(data,bins=bins,color='k', alpha=0.2, normed=True)
-    print 'overall mean = ', np.mean(data)
+    print('overall mean = ', np.mean(data))
     
 #    hist(data[comp0==1],bins=bins,color='r',alpha=0.5,normed=True)
 #    axvline(x=np.mean(data[comp0==1]),color='r',ls='dashed')
-#    print 'mean 1 = ', np.mean(data[comp0==1]), ', found ',mu1,', ',sig1
+#    print('mean 1 = ', np.mean(data[comp0==1]), ', found ',mu1,', ',sig1)
 
 #    hist(data[comp0==2],bins=bins,color='b',alpha=0.5,normed=True)
 #    axvline(x=np.mean(data[comp0==2]),color='b',ls='dashed')
-#    print 'mean 2 = ', np.mean(data[comp0==2]), ', found ',mu2,', ',sig2
+#    print('mean 2 = ', np.mean(data[comp0==2]), ', found ',mu2,', ',sig2)
 
     x = bins
     y = p * norm.pdf(x, loc = mu1, scale = sig1)
@@ -219,3 +216,8 @@ if __name__=="__main__":
     # plt.xlabel("value of data point" );
     # ioff()
     show()
+
+
+    
+if __name__=="__main__":
+    run()

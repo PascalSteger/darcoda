@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -7,9 +7,8 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import gr_params as gpr
 import pdb
-import random
+import gr_params as gpr
 
 def run():
     for comp in range(gpr.ncomp):

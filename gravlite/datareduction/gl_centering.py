@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -6,10 +6,8 @@
 
 # (c) 2013 ETHZ, Pascal S.P. Steger, psteger@phys.ethz.ch
 
-import numpy as np
 import pdb
-# from gl_class_files import *
-
+import numpy as np
 
 def com_mean(x, y, z, pm):
     com_x = 1.*np.sum(x*pm)/np.sum(pm) # [pc]

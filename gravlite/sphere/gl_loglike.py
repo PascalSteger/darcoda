@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # define log likelihood function to be called by pyMultinest
@@ -6,59 +6,79 @@
 
 import numpy as np
 import pdb
-from gl_physics import rho, beta, sig_kap_los
+import gl_physics as phys
+
 from gl_class_profiles import Profiles
-from gl_priors import check_rho, check_nr, check_bprior, check_beta
+from gl_priors import check_bprior, check_beta
 from gl_chi import calc_chi2
 import gl_helper as gh
-    
+import gl_project as glp
+
+
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
 
-    rho_param = np.array(cube[off:off+gp.nepol])
-    # if check_nr(rho_param[2:-1]):
-    #     print('dn/dr too big!')
-    #     return gh.err(0.7, gp)
+    rhopar = np.array(cube[off:off+gp.nepol])
+    tmp_profs.set_prof('nr', rhopar[2:-1-3], 0, gp)
 
-    tmp_rho = rho(gp.xepol, rho_param, gp)
-    if(check_rho(tmp_rho, gp.rprior, gp.rhotol)):
-        print('rho slope error') # should be ensured by [0,1] priors and maxslope
-        return gh.err(1.)
-    tmp_profs.set_rho(tmp_rho[:gp.nipol])
+    tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
+    # rhopar hold [rho(rhalf), nr to be used for integration
+    # from halflight radius, defined on gp.xepol]
+    tmp_profs.set_prof('rho', tmp_rho[:gp.nipol], 0, gp)
+
+    # (only calculate) M, check
+    tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
+    tmp_profs.set_prof('M', tmp_M[:gp.nipol], 0, gp)
     off += gp.nepol
 
-    nuparstore = []
-    for pop in np.arange(gp.pops)+1:
-        nu_param = cube[off:off+gp.nepol]
-        nuparstore.append(nu_param)
-        
-        tmp_nu = rho(gp.xepol, nu_param, gp) #  [1], [pc]
-        # if check_rho(tmp_nu, gp):
-        #     print('nu error')
-        #     return err/2.
-        # if gp.bprior and check_bprior(tmp_rho, tmp_nu):
-        #      print('bprior error')
-        #      return gh.err(1.5, gp)
-        tmp_profs.set_nu(pop, tmp_nu[:gp.nipol]) # [munit/pc^3]
+    # get profile for rho*
+    rhostarpar = np.array(cube[off:off+gp.nepol])
+    tmp_profs.set_prof('nu', rhostarpar, 0, gp)
+    off += gp.nepol
+
+    for pop in np.arange(1, gp.pops+1):  # [1, 2, ..., gp.pops]
+        nupar = cube[off:off+gp.nepol]
         off += gp.nepol
 
-        beta_param = np.array(cube[off:off+gp.nbeta])
-        tmp_beta = beta(gp.xipol, beta_param, gp)
-        if check_beta(tmp_beta, gp):
-            print('beta error')
-            return gh.err(2., gp)
-        tmp_profs.set_beta(pop, tmp_beta)
+        betapar = cube[off:off+gp.nbeta]
         off += gp.nbeta
 
-        try:
-            sig, kap = sig_kap_los(gp.xepol, pop, rho_param, nu_param, beta_param, gp)
-            # sig and kap already are on data radii only, so no extension by 3 bins here
-        except Exception as detail:
-            return gh.err(3., gp)
-        tmp_profs.set_sig_kap(pop, sig, kap)
+        tmp_profs.set_prof('nu', nupar, pop, gp) # [Munit/pc^3]
+        # if nu priors are wished, enable them in gl_class_profiles
+
+        tmp_beta, tmp_betastar = phys.beta(gp.xipol, betapar, gp)
+
+        if check_beta(tmp_beta, gp):
+            print('beta error')
+            tmp_profs.chi2 = gh.err(1., gp)
+            return tmp_profs
+        tmp_profs.set_prof('beta', tmp_beta, pop, gp)
+        tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
+        
+        # try:
+        pdb.set_trace() # check order of magnitude
+        sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, nupar, betapar, pop, gp)
+        
+            # sig_LOS, kappa_LOS, and zeta are defined on data radii only, so no extension by 3 bins here
+
+        #except Exception as detail:
+        #    tmp_profs.chi2 = gh.err(2., gp)
+        #    return tmp_profs
+        tmp_profs.set_prof('sig', sig, pop, gp)
+        tmp_profs.set_prof('kap', kap, pop, gp)
+        tmp_profs.set_prof('zetaa', zetaa, pop, gp)
+        tmp_profs.set_prof('zetab', zetab, pop, gp)
     
-    # determine log likelihood (*not* reduced chi2)
-    chi2 = calc_chi2(tmp_profs, nuparstore, gp)
+    # determine log likelihood
+    chi2 = calc_chi2(tmp_profs, gp)
     print('found log likelihood = ', -chi2/2.)
-    return -chi2/2.   # from   likelihood L = exp(-\chi^2/2), want log of that
+    tmp_profs.chi2 = chi2
+    return tmp_profs
+## \fn geom_loglike(cube, ndim, nparams, gp)
+# define log likelihood function to be called by pyMultinest and plot_profiles
+# spherical version
+# @param cube parameter cube as defined by gl_class_cube, in physical space already (not [0,1] cube anymore)
+# @param ndim number of dimensions, needed as argument by multinest
+# @param nparams number of parameters, needed as argument by multinest
+# @param gp global parameters

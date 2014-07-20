@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -12,34 +12,13 @@ from scipy.interpolate import splrep, splev
 from gl_int import g
 import gl_plot as gpl
 
-def check_nr(nr, gp):
-    r0 = gp.xepol/gp.rstarhalf
-    if max(np.abs((nr[:-1]-nr[1:])/(r0[:-1]-r0[1:]))) > 20:
-        return True
-    return False
-## \fn check_nr(nr, gp)
-# check that n(r) is not jumping wildly
-# @param nr -d ln(rho)/d ln(r)
-# @param gp
-
-
-def check_rho(rho, rprior, rhotol):
-    if rprior:
-        rightrho = rho[1:]
-        leftrho  = rho[:-1]
-        if sum(rightrho/leftrho > rhotol) > 0:
-            return True
-    return False
-## \fn check_rho(rho)
-# check that density is not jumping wildly
-# @param rho density profile in [Msun/pc^3]
-
 
 def check_beta(beta, gp):
     # now checking beta <= 1
     if max(beta)>1.:
-        print('max beta!')              # TODO: remove, should be done by my_prior already
+        print('max beta!')
         return True
+
     # TODO: check smoothness of beta
 
     # now checking physical kappa: g(rvar, rfix, beta, dbetadr) >= 0
@@ -74,15 +53,9 @@ def check_beta(beta, gp):
 def check_bprior(rhocheck, nucheck):
     for jj in range(len(rhocheck)):
         if rhocheck[jj] < nucheck[jj]:
-            # gpl.clf(); gpl.yscale('log'); gpl.xscale('log')
-            # gpl.plot(gp.xepol, rhocheck, 'k')
-            # gpl.plot(gp.xepol, nucheck, 'b')
-            # gpl.axvline(gp.rstarhalf)
-            # pdb.set_trace()
             return True
-    #print('NO bprior!')
     return False
 ## \fn check_bprior(rhocheck, nucheck)
 # check that observed tracer mass is less than total mass
-# @param rhocheck density profile in [Msun/pc^3]
-# @param nucheck density profile in [Msun/pc^3]
+# @param rhocheck density profile in [Munit/pc^3]
+# @param nucheck density profile in [Munit/pc^3]

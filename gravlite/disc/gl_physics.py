@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -14,11 +14,11 @@ from scipy.interpolate import splrep, splint
 import gl_helper as gh
 
 
-def nr(dlr, gp):
+def nr(dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     r0 = gp.xepol
     r0 = np.hstack([r0[0]/1e4, r0[0]/2., r0, gp.rinfty*r0[-4]])
-    logr0 = np.log(r0/gp.rstarhalf)
+    logr0 = np.log(r0/gp.Rscale[pop])
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
     
@@ -27,13 +27,14 @@ def nr(dlr, gp):
     
     # evaluate spline at any points in between
     return spline_n #, splev(r0, spline_n)
-## \fn nr(r0, dlogrhodlogr, gp)
+## \fn nr(r0, dlogrhodlogr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
 # @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
+# @param pop int for population
 # @param r0 bin centers in [pc]
 
 
-def nr_medium(dlr, gp):
+def nr_medium(dlr, pop, gp):
     binmin = np.hstack([gp.dat.binmin[0]/1e4, \
                         gp.dat.binmin[0]/2., \
                         gp.dat.binmin, \
@@ -41,7 +42,7 @@ def nr_medium(dlr, gp):
                         3.*gp.xepol[-4], \
                         # gp.xepol[-4] is last data bin radius
                         5.*gp.xepol[-4], \
-                        11.*gp.xepol[-4]])
+                        11.*gp.xepol[-4]])      # [pc]
                         
     binmax = np.hstack([gp.dat.binmin[0]/2., \
                         gp.dat.binmin[0], \
@@ -49,20 +50,12 @@ def nr_medium(dlr, gp):
                         3*gp.xepol[-4], \
                         5.*gp.xepol[-4], \
                         11.*gp.xepol[-4], \
-                        (2*gp.rinfty-11.)*gp.xepol[-4]])
+                        (2*gp.rinfty-11.)*gp.xepol[-4]]) # [pc]
 
-    # gpl.plot(gp.xepol, 1*np.ones(len(gp.xepol)), 'b.')
-    # gpl.plot(gp.rinfty*gp.xepol[-4], 1, 'b.')
-    # gpl.plot(binmin, np.zeros(len(binmin)), '.')
-    # gpl.plot(binmax, 2*np.ones(len(binmax)), '.')
-    # gpl.ylim([-4, 4])
-    # gpl.xscale('log')
-
-    
     # extend asymptotes to 0, and high radius
-    r0 = np.hstack([binmin, binmax[-1]])
+    r0 = np.hstack([binmin, binmax[-1]])  # [pc]
     # 1+(Nbin+1)+1 entries
-    logr0 = np.log(r0/gp.rstarhalf)
+    logr0 = np.log(r0/gp.Rscale[pop])
     dlr = np.hstack([dlr[0], dlr, dlr[-1]]) # 1+Nbin+2 entries
     dlr *= -1.
     
@@ -70,27 +63,21 @@ def nr_medium(dlr, gp):
     spline_n = splrep(logr0, dlr, k=1)
     # evaluate spline at any points in between
     return spline_n #, splev(r0, spline_n)
-## \fn nr_medium(binmin, binmax, dlogrhodlogr, gp)
+## \fn nr_medium(dlr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
-# @param dlogrhodlogr : asymptote at 0, n(r) for all bins at outsides of bin, asymptote at infinity
-#                       1+Nbin+1 entries in [log Msun/pc^3/(log pc)]
-# @param binmin minimum of bins, Nbin entries in [pc]
-# @param binmax minimum of bins, Nbin entries in [pc]
+# @param dlr : asymptote at 0, n(r) for all bins at outsides of bin, asymptote at infinity
+#                       1+Nbin+1 entries in [log Munit/pc^3/(log pc)]
+# @param pop int for population (0 all, 1, 2..)
+# @param gp global parameters
 
 
-def rho(r0, arr, gp):
+def rho(r0, arr, pop, gp):
     rhoathalf = arr[0]
     arr = arr[1:]
+    spline_n = nr_medium(arr, pop, gp) # extrapolate on gp.xepol, as this is where definition is on
+    # spline_n_direct = nr(arr, pop, gp) # fix on gp.xepol, as this is where definition is on
 
-    spline_n = nr_medium(arr, gp) # extrapolate on gp.xepol, as this is where definition is on
-    # spline_n_direct = nr(arr, gp) # fix on gp.xepol, as this is where definition is on
-
-    rs =  np.log(r0/gp.rstarhalf) # have to integrate in d log(r)
-
-    # check assumption r_min < rstarhalf < r_max
-    if min(rs)>0. or max(rs)<0.:
-        print('assumption r_min < rstarhalf < r_max violated')
-        pdb.set_trace()
+    rs =  np.log(r0/gp.Rscale[pop]) # have to integrate in d log(r)
     logrright = rs[(rs>=0.)]
     logrleft  = rs[(rs<0.)]
     logrleft  = logrleft[::-1]
@@ -110,11 +97,12 @@ def rho(r0, arr, gp):
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)
     gh.checkpositive(tmp, 'rho()')
     return tmp
-## \fn rho(r0, arr, gp)
+## \fn rho(r0, arr, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
 # @param arr: rho(rstarhalf), asymptote_0, nr(gp.xipol), asymptote_infty
 # @param r0: radii to calculate density for, in physical units (pc)
+# @param pop int for which population
 # @param gp global parameters
 
 
@@ -122,10 +110,23 @@ def beta(xipol, param, gp):
     betatmp = 0.
     for i in range(gp.nbeta):
         betatmp += param[i]*(xipol/max(gp.xipol))**i
-    return betatmp
+    return betatmp, betatmp/(2.+betatmp)
 ## \fn beta(xipol, param, gp)
 # return sum of polynomials for tilt as fct of radius
 # TODO: get tilt size from Silvia's paper
+# @param xipol [pc]
+# @param param n_beta parameters
+# @param gp global parameters
+
+
+def tilt(xipol, param, gp):
+    tilttmp = 0.
+    for i in range(gp.nbeta):
+        tilttmp += param[i]*(xipol/max(gp.xipol))**i
+    return tilttmp
+## \fn tilt(xipol, param, gp)
+# return sum of polynomials for tilt as fct of radius
+# TODO: get tilt size from Garbari+2011
 # @param xipol [pc]
 # @param param n_beta parameters
 # @param gp global parameters
@@ -208,8 +209,7 @@ def nu_decrease(z, zpars, pars, gp):
 
 
 def kz(z_in, zpars, kzpars, blow, gp):
-    # Mirror prior
-    # kzparsu = abs(kzpars)
+    # kzparsu = abs(kzpars)    # Mirror prior
     
     # Assume here interpolation between dens "grid points", 
     # [linear or quadratic]. The grid points are stored 
@@ -264,7 +264,7 @@ def kz(z_in, zpars, kzpars, blow, gp):
             kz_out[jj] = 0.
         
     return kz_out
-## \fn kz(z_in, zpars, kzpars, blow)
+## \fn kz(z_in, zpars, kzpars, blow, gp)
 # General function to calculate the Kz force law:
 # Non-parametric Kz function here. Use cumulative integral to
 # ensure monotinicity in an efficient manner. Note here we
@@ -276,25 +276,27 @@ def kz(z_in, zpars, kzpars, blow, gp):
 # @param zpars z where kzpars is defined on [pc]
 # @param kzpars TODO
 # @param blow lower bound, baryonic surface density
-# @param gp
+# @param gp global parameters
 
 
-def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
+def sigz(zp, kzpars, nupars, norm, tpars, pop, gp):
     # calculate density and Kz force:
-    nu_z = nupars/np.max(nupars)          # normalized to 1
-    # kz_z = kz(zp, zp, kzpars, blow, quadratic) # TODO: reenable
+    # TODO: check rho same as in spherical system, with n'(r) sampling
+    nutmp = rho(zp, nupars, pop, gp)
+    nu_z = nutmp/np.max(nutmp)  # normalized to [1]
+    # kz_z = kz(zp, zp, kzpars, blow, quadratic) # TODO: reenable  # [TODO]
     kz_z = kzpars
     
     # add tilt correction [if required]:
-    Rsun = tparsR[0]
-    hr   = tparsR[1]
-    hsig = tparsR[2]
-    tc = sigma_rz(zp, zp, tpars)
-    tc = tc * (1.0/Rsun - 1.0/hr - 1.0/hsig)
+    #Rsun = tparsR[0]
+    #hr   = tparsR[1]
+    #hsig = tparsR[2]
+    #tc = sig_rz(zp, zp, tpars)
+    #tc = tc * (1.0/Rsun - 1.0/hr - 1.0/hsig)
     # flag when the tilt becomes significant:
-    if abs(np.sum(tc))/abs(np.sum(kz_z)) > 0.1:
-        print('Tilt > 10%!', abs(np.sum(tc)), abs(np.sum(kz_z)))
-    kz_z = kz_z-tc
+    #if abs(np.sum(tc))/abs(np.sum(kz_z)) > 0.1:
+    #    print('Tilt > 10%!', abs(np.sum(tc)), abs(np.sum(kz_z)))
+    #kz_z = kz_z-tc
     
     # do exact integral
     if not gp.quadratic:
@@ -345,18 +347,19 @@ def sigmaz(zp, kzpars, nupars, norm, tpars, tparsR):
 
                 sigint[i+1] = sigint[i] + intbit
     sig_z_t2 = 1.0/nu_z * (sigint + norm)
-    return  np.sqrt(sig_z_t2)
-## \fn sigmaz(zp, kzpars, nupars, norm, tpars, tparsR)
+    return  np.sqrt(sig_z_t2[:gp.nipol])
+## \fn sigz(zp, kzpars, nupars, norm, tpars, pop, gp)
 # calculate z velocity dispersion
 # @param zp vertical coordinate [pc]
 # @param kzpars kappa to be integrated to give force
 # @param nupars parameters for tracer density falloff
 # @param norm value C, corresponds to integration from 0 to rmin
 # @param tpars tilt parameters
-# @param tparsR tilt parameters: Rsun, hr, hsig
+# @param pop int for population (diff. halflight-radius)
+# @param gp global parameters
 
 
-def sigma_rz(z, zpars, tpars):
+def sig_rz(z, zpars, tpars):
     # Mirror prior
     tparsu = abs(tpars)
     
@@ -370,8 +373,8 @@ def sigma_rz(z, zpars, tpars):
     # Alternative here --> don't assume monotonic!
     f = gh.ipol(zpars, tparsu, z)
     return f
-## \fn sigma_rz(z, zpars, tpars)
+## \fn sig_rz(z, zpars, tpars)
 # General function to describe the tilt profile
 # @param z [pc]
-# @param zpars [pc] z, on which sigma is defined
+# @param zpars [pc] z, on which sig is defined
 # @param tpars tilt parameters: Rsun, hr, hsig

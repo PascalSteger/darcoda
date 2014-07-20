@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,8 +8,8 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-from gl_project import rho_INT_Rho, rho_SUM_Mr
 import pdb
+import gl_project as glp
 
 asech = lambda x: np.arccosh(1./x)
 asec  = lambda x: np.arccos(1./x)
@@ -30,15 +30,15 @@ def X(s0):
 # @param s0: radius, [1]
 
 
-def Sigma_anf(r0, a, M):
+def Sig_anf(r0, a, M):
     s = np.array(r0)/a                                          # [1]
-    return M/(2.*np.pi*a**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Msun/pc^2]
-## \fn Sigma_anf(r0, a, M)
+    return M/(2.*np.pi*a**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Munit/pc^2]
+## \fn Sig_anf(r0, a, M)
 # surface density of Hernquist profile, equation 3 from Baes&Dejonghe 2002
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
-# @param M scale mass in [Msun]
-# @return 2D surface density in [Msun/pc^2]
+# @param M scale mass in [Munit]
+# @return 2D surface density in [Munit/pc^2]
 
 
 def kappa_anf(r0):
@@ -50,10 +50,7 @@ def kappa_anf(r0):
 
 
 def walker_delta(pop, r0, gp):
-    r0
     delta_r   = betawalker(r0, gp)[pop-1]
-    # delta_r = gp.delta0
-    # delta_r = gh.ipol(gp.dat.nur1,   gp.delta0, r0) # extrapolate to r_tot?
     return delta_r
 ## \fn walker_delta(pop, r0, gp)
 # analytic value for the Osipkov-Merrit velocity anisotropy as defined in the Walker dataset
@@ -66,19 +63,19 @@ def walker_delta(pop, r0, gp):
 def rhohern(r0, rscale, rho0, alpha, beta, gamma):
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
-    tmp = 1.*rho0                       # [munit/pc^3]
-    tmp = tmp * (r0/rscale)**(-gamma)   # [munit/pc^3]
-    tmp = tmp * (1.+(r0/rscale)**alpha)**((gamma-beta)/alpha) # [munit/pc^3]
-    return tmp                          # [munit/pc^3]
+    tmp = 1.*rho0                       # [Munit/pc^3]
+    tmp = tmp * (r0/rscale)**(-gamma)   # [Munit/pc^3]
+    tmp = tmp * (1.+(r0/rscale)**alpha)**((gamma-beta)/alpha) # [Munit/pc^3]
+    return tmp                          # [Munit/pc^3]
 ## \fn rhohern(r0, rscale, rho0, alpha, beta, gamma):
 # determine rho(r) for a generalized Hernquist model
 # @param r0 radius in [pc]
 # @param rscale scale radius in [pc]
-# @param rho0 central 3D mass density, in [Msun/pc^3]
+# @param rho0 central 3D mass density, in [Munit/pc^3]
 # @param gamma inner slope
 # @param alpha outer slope
 # @param beta steepness of turnover
-# @return 3D Hernquist density in [Msun/pc^3]
+# @return 3D Hernquist density in [Munit/pc^3]
 
     
 def rhotriax(rad):
@@ -87,10 +84,10 @@ def rhotriax(rad):
     rs = 1500.                          # [pc]
     if gp.case == 0:               # core
         gamma = 0.23
-        rhos  = 1.177E-1                # [Msun/pc^3]
+        rhos  = 1.177E-1                # [Munit/pc^3]
     elif gp.case == 1:             # cusp
         gamma = 1.
-        rhos  = 5.522E-2                # [Msun/pc^3]
+        rhos  = 5.522E-2                # [Munit/pc^3]
 
     rho = rhos
     rho /= (rad/rs)**gamma
@@ -99,7 +96,7 @@ def rhotriax(rad):
 ## \fn rhotriax(rad)
 # density for a triaxial halo in Gaia challenge
 # @param rad radius in [pc]
-# @return density in [Msun/pc^3]
+# @return density in [Munit/pc^3]
 
 
 def rhowalk_3D(rad, gp):
@@ -125,11 +122,9 @@ def rhowalk_3D(rad, gp):
     beta_DM     = A[16]
     r_DM        = A[17] # [pc]
     alpha_DM    = A[18]
-    rho0        = A[19] # [Msun/pc^3]
+    rho0        = A[19] # [Munit/pc^3]
 
     ntracer1 = gp.ntracer[1-1]
-    # ntracer1 = np.loadtxt(gp.files.get_ntracer_file(1)+'_3D',unpack=True)
-    # [msun/pc^3]
         
     # 1)
     # rho0star1   = rho0/1.e6*ntracer1 #*10 * ntracer2 # too high, too low
@@ -137,27 +132,27 @@ def rhowalk_3D(rad, gp):
     # rho0star1   = rho0/1.e6 #*gp.G1*np.pi*1.5 # *ntracer1/(ntracer1+ntracer2)
     # rho0star2   = rho0/1.e6 #*gp.G1*np.pi/2. # *ntracer2/(ntracer1+ntracer2)
     # 3)
-    rho0star1    = rho0/1.e6*ntracer1
+    rho0star1    = rho0/1.e6*ntracer1 # TODO: Matt for factor 1e6
 
     # rhohern(r, rscale, rho0, alpha, beta, gamma): 
-    #  (2*[pc], or 2*[rcore]), [munit/pc^3], 3*[1]
+    #  (2*[pc], or 2*[rcore]), [Munit/pc^3], 3*[1]
     rhodm    = rhohern(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
     rhostar1 = rhohern(rad, r_star1, rho0star1, alpha_star1, beta_star1, gamma_star1)
 
+    if gp.pops==1:
+        return rhodm, rhostar1
     # [msun/pc^3]
 
-    # TODO: adjust for pops=1 case: only using rho0star1
-    # ntracer2  = np.loadtxt(gp.files.get_ntracer_file(2)+'_3D', unpack=True)
     ntracer2  = gp.ntracer[2-1]
     rho0star2 = rho0/1.e6*ntracer2
     rhostar2  = rhohern(rad, r_star2, rho0star2, alpha_star2, beta_star2, gamma_star2)
 
-    return rhodm, rhostar1, rhostar2                 # 3* [munit/pc^3]
+    return rhodm, rhostar1, rhostar2                 # 3* [Munit/pc^3]
 ## \fn rhowalk_3D(rad)
 # Walker model: read values from theoretical params file,
 # calculate from eq. 2 generalized Hernquist profiles
 # @param rad radius in [pc]
-# @return 3D density in [Msun/pc^3], for each DM, stellar pop 1, stellar pop 2
+# @return 3D density in [Munit/pc^3], for each DM, stellar pop 1, stellar pop 2 (if available)
 
 
 def rhogaiatot_3D(rad):
@@ -170,7 +165,7 @@ def rhogaiatot_3D(rad):
 ## \fn rhogaiatot_3D(rad)
 # give total density for the spherical Gaia challenge dataset
 # @param rad radius in [pc]
-# @return 3D overall density (DM+stellar population) in [Msun/pc^3]
+# @return 3D overall density (DM+stellar population) in [Munit/pc^3]
 
 
 def nugaiatot_3D(rad):
@@ -182,7 +177,7 @@ def nugaiatot_3D(rad):
 ## \fn rhogaiatot_3D(rad)
 # give total density for the spherical Gaia challenge dataset
 # @param rad radius in [pc]
-# @return 3D overall density (DM+stellar population) in [Msun/pc^3]
+# @return 3D overall density (DM+stellar population) in [Munit/pc^3]
 
 
 def nrwalktot_3D_deriv(rad, gp):
@@ -247,19 +242,24 @@ def nrgaiatot_3D(rad):
 
 
 def rhowalktot_3D(rad, gp):
-    rhodm, rhostar1, rhostar2 = rhowalk_3D(rad, gp)     # 3* [msun/pc^3]
-    return rhodm + rhostar1 + rhostar2                # [msun/pc^3]
+    # TODO: use clever np summation over arrays
+    if gp.pops==1:
+        rhodm, rhostar1 = rhowalk_3D(rad, gp)         # 3* [msun/pc^3]
+        return rhodm #+ rhostar1
+    elif gp.pops==2:
+        rhodm, rhostar1, rhostar2 = rhowalk_3D(rad, gp)
+        return rhodm #+ rhostar1 + rhostar2               # [msun/pc^3]
 ## \fn rhowalktot_3D(rad, gp)
 # return total mass density, stars+DM
 # @param rad radius in [pc]
 # @param gp
-# @return total 3D density in [Msun/pc^3]
+# @return total 3D density in [Munit/pc^3]
 
 
 def Mwalkertot(rbin):
     # based on underlying binned data
     # rhotot = rhowalktot_3D(rad)
-    # Mtot = rho_SUM_Mr(rad, rhotot)
+    # Mtot = glp.rho_SUM_Mr(rad, rhotot)
 
     # better method using quad numeric integration scheme with continuous rhowalktot
     from scipy.integrate import quad
@@ -269,7 +269,6 @@ def Mwalkertot(rbin):
 
     Mtot = np.zeros(gp.nipol); meps = np.zeros(gp.nipol)
     for i in range(gp.nipol):
-        pdb.set_trace()
         out = quad(igra, 0, rbin[i], limit=100, full_output=0) #or np.inf
         Mtot[i] = out[0]
         meps[i] = out[1]
@@ -278,7 +277,7 @@ def Mwalkertot(rbin):
 ## \fn Mwalkertot(rbin)
 # return total mass in Walker model
 # @param rbin radii of bins
-# @return total 3D mass for the Walker dataset in [Msun]
+# @return total 3D mass for the Walker dataset in [Munit]
 
 
 def q(i,j):
@@ -295,7 +294,7 @@ def q(i,j):
 
 
 def apar(i, alpha, beta, gamma, rho0):
-    C = rho0                    # TODO
+    C = rho0
     return 4.*np.pi*alpha*C/(alpha*(3-gamma)+i)*q(alpha*(beta-3.)-1.,i)
 ## \fn apar(i,alpha,beta,gamma,rho0)
 # a_parameter
@@ -357,7 +356,7 @@ def Phi(r,alpha,beta,gamma,rho0):
 # @param alpha [1]
 # @param beta [1]
 # @param gamma [1]
-# @param rho0 [Msun/pc^3]
+# @param rho0 [Munit/pc^3]
 
 
 def read_abc():
@@ -379,7 +378,7 @@ def read_abc():
     gamma_DM    = int(A[15])
     r_DM        = A[17] # [pc]
 
-    rho0        = A[19] # [Msun/pc^3]
+    rho0        = A[19] # [Munit/pc^3]
     return alpha_DM, beta_DM, gamma_DM, rho0, r_DM
 ## \fn read_abc()
 # read analytic values
@@ -389,7 +388,7 @@ def Mabc_analytic(r):
     # read in rho0, alpha, beta, gamma
     alpha,beta,gamma,rho0,r_DM = read_abc()
 
-    return -Phi(r,alpha,beta,gamma,rho0)*r/gp.G1    # [Msun]
+    return -Phi(r,alpha,beta,gamma,rho0)*r/gp.G1    # [Munit]
 ## \fn Mabc_analytic(r)
 # calculate enclosed mass
 
@@ -406,7 +405,7 @@ def PhiBeta(r,beta,C):
 def MBetaAnalytic(r):
     alpha,beta,gamma,rho0,r_DM = read_abc()
     r /= r_DM
-    return -PhiBeta(r,beta,rho0)*r/gp.G1 # [Msun]
+    return -PhiBeta(r,beta,rho0)*r/gp.G1 # [Munit]
 ## \fn MBetaAnalytic(r)
 # MBetaAnalytic
 # @param r in [pc]
@@ -423,9 +422,9 @@ def Manalytic(r):
 def Rhowalk(rad):
     rhodm, rhostar1, rhostar2 = rhowalk(rad)     # 3* [msun/pc^3]
 
-    surfdm    = rho_INT_Rho(rad, rhodm)    # [msun/pc^2]
-    surfstar1 = rho_INT_Rho(rad, rhostar1) # [msun/pc^2]
-    surfstar2 = rho_INT_Rho(rad, rhostar2) # [msun/pc^2]
+    surfdm    = glp.rho_INT_Rho(rad, rhodm)    # [msun/pc^2]
+    surfstar1 = glp.rho_INT_Rho(rad, rhostar1) # [msun/pc^2]
+    surfstar2 = glp.rho_INT_Rho(rad, rhostar2) # [msun/pc^2]
 
     return surfdm, surfstar1, surfstar2               # 3* [msun/pc^2]
 ## \fn Rhowalk(rad)
@@ -454,8 +453,9 @@ def betatriax(rad):
 
 
 def betawalker(rad, gp):
-    A = np.loadtxt(gp.files.analytic, unpack=False)
     # Osipkov-Merritt anisotropy profile with r_a/r_* = 10^4 for isotropic models
+    A = np.loadtxt(gp.files.analytic, unpack=False)
+    import pdb
     rars1  = A[10]
     rs1    = A[9] * 1000. # [pc]
     rbyrs1 = rad/rs1
@@ -474,7 +474,7 @@ def betawalker(rad, gp):
 
 
 def betagaia(rad):
-    beta_star1,r_DM,gamma_star1,r_star1,r_a1,gamma_DM,rho0 = gp.files.params
+    beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
     return rad**2/(rad**2+r_a1**2)
 ## \fn betagaia(rad)
 # Osipkov-Merritt velocity anisotropy profile
@@ -483,15 +483,15 @@ def betagaia(rad):
 
 def rho_anf(r0, a, M):
     s = r0/a                              # [1]
-    return M/(2.*np.pi*a**3)/(s*(1+s)**3) # [Msun/pc^3]
+    return M/(2.*np.pi*a**3)/(s*(1+s)**3) # [Munit/pc^3]
 ## \fn rho_anf(r0, a, M)
 # equation 2 from Hernquist 1990, 3D mass density
 # equation 2b from Baes&Dejonghe 2002
 # NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
-# @param M scale mass in [Msun]
-# @return density in [Msun/pc^3]
+# @param M scale mass in [Munit]
+# @return density in [Munit/pc^3]
 
 def rho_2_anf(r0, a, M, gamma = 1):
     rho0 = M*(3.-gamma)/(4.*np.pi*a**3)
@@ -512,48 +512,48 @@ def sigr2_anf(r0, a, M):
     return gp.G1*M/a*s*(1+s)**3*np.log(1.+1./s)-\
            gp.G1*M/(12.*a)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
 ## \fn sigr2_anf(r0, a, M)
-# sigma_r^2, equation 10 of Hernquist 1990
+# sig_r^2, equation 10 of Hernquist 1990
 # NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
-# @param M scale mass in [Msun]
-# @return sigma_r^2 in [(km/s)^2]
+# @param M scale mass in [Munit]
+# @return sig_r^2 in [(km/s)^2]
 
 
 
 def M_anf(r0, a, M):
     s = r0/a                            # [1]
-    return M*s**2/(1.+s)**2             # [Msun]
+    return M*s**2/(1.+s)**2             # [Munit]
 ## \fn M_anf(r0, a, M)
 # equation 3 from Hernquist 1990
 # NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
-# @param M scale mass in [Msun]
-# @return 3D mass in [Msun]
+# @param M scale mass in [Munit]
+# @return 3D mass in [Munit]
 
 def sig_los_anf(r0, a, M):
-    return np.sqrt(Sigma_sig_los_2_anf(r0, a, M)/Sigma_anf(r0, a, M))
+    return np.sqrt(Sig_sig_los_2_anf(r0, a, M)/Sig_anf(r0, a, M))
 ## \fn sig_los_anf(r0, a, M)
 # sig_los determined from analytic surfden*sig2 and surfden
 # NOT USED ANYMORE, only in grh_MCMCbin.py, for debugging, commented
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
-# @param M scale mass in [Msun]
-# @return sigma_LOS in [km/s]
+# @param M scale mass in [Munit]
+# @return sig_LOS in [km/s]
 
-def Sigma_sig_los_2_anf(r0, a, M):
+def Sig_sig_los_2_anf(r0, a, M):
     # \sigma_p = \sigma_projected = \sigma_{LOS}
     s = r0/a                            # [1]
     return gp.G1*M**2/(12.*np.pi*a**3)*(1./(2.*(1.-s**2)**3)\
                                           *(-3.*s**2*X(s)\
                                           *(8.*s**6-28.*s**4+35.*s**2-20.)\
                                           -24.*s**6+68.*s**4-65.*s**2+6.)\
-                                          -6.*np.pi*s) # [(km/s)^2 * Msun/pc^2]
-## \fn Sigma_sig_los_2_anf(r0, a, M)
+                                          -6.*np.pi*s) # [(km/s)^2 * Munit/pc^2]
+## \fn Sig_sig_los_2_anf(r0, a, M)
 # equation 21 from Baes&Dejonghe 2002
 # NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
-# @param M scale mass in [Msun]
-# @return surface density * sigma_LOS^2 in [(km/s)^2 * Msun/pc^2]
+# @param M scale mass in [Munit]
+# @return surface density * sig_LOS^2 in [(km/s)^2 * Munit/pc^2]

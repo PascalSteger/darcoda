@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -6,103 +6,84 @@
 
 # (c) 2013 ETHZ psteger@phys.ethz.ch
 
+import pdb
+import numpy as np
+import gl_project
+import gl_physics as phys
+
 
 class Profiles:
     def __init__(self, pops, nipol):
-        # TODO: rename content in disc case
         self.pops = pops
         self.nipol= nipol
-        import numpy as np
+        self.x0   = np.zeros(nipol)
+        self.chi2 = 0.0
         self.rho  = np.zeros(nipol)
         self.M    = np.zeros(nipol)
-        self.beta = np.zeros((pops+1)*nipol) # (pops+1) for overall, 1, 2, ...
+        self.tilt = np.zeros((pops+1)*nipol) # (pops+1) for overall, 1, 2, ...
         self.nu   = np.zeros((pops+1)*nipol) # dito
         self.sig  = np.zeros((pops+1)*nipol)
+        self.Sig  = np.zeros((pops+1)*nipol)
         self.kap  = np.zeros((pops+1)*nipol)
     ## \fn __init__(self, pops, nipol)
     # constructor
     # @param pops number of populations
     # @param nipol number of radial bins
 
-        
-    def set_rho(self, arr):
-        self.rho = arr
-    ## \fn set_rho(self, arr)
+
+
+    def set_prof(self, prof, arr, pop, gp):
+        if prof == 'rho':
+            self.rho = arr
+        elif prof == 'nr':
+            self.nr = arr
+        elif prof == 'M':
+            self.M = arr
+        elif prof == 'nu':
+            tmp_nu = phys.rho(gp.xepol, arr, pop, gp) #  [1], [pc]
+            self.nu[pop*self.nipol:(pop+1)*self.nipol] = tmp_nu[:gp.nipol]
+            Sig = gl_project.rho_param_INT_Rho_disc(gp.xepol, arr, pop, gp) # [Munit/pc^2], on nipol bins
+            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = Sig
+        elif prof == 'tilt':
+            self.tilt[pop*self.nipol:(pop+1)*self.nipol] = arr
+        elif prof == 'sig':
+            self.sig[pop*self.nipol:(pop+1)*self.nipol] = arr
+        elif prof == 'kap':
+            self.kap[pop*self.nipol:(pop+1)*self.nipol] = arr
+    ## \fn set_prof(self, prof, arr, pop, gp)
     # store density array
+    # @param prof profile identifier
     # @param arr array of floats
+    # @param pop population, if applicable
+    # @param gp global parameters, used for gp.xepol radii
 
-        
-    def get_rho(self):
+
+    def get_prof(self, prof, pop):
+        if prof == 'rho':
+            return self.rho
+        elif prof == 'nr':
+            return self.nr
+        elif prof == 'M':
+            return self.M
+        elif prof == 'Sig':
+            return self.Sig[pop*self.nipol:(pop+1)*self.nipol]
+        elif prof == 'tilt':
+            return self.tilt[pop*self.nipol:(pop+1)*self.nipol]
+        elif prof == 'sig':
+            return self.sig[pop*self.nipol:(pop+1)*self.nipol]
+        elif prof == 'kap':
+            return self.kap[pop*self.nipol:(pop+1)*self.nipol]
         return self.rho
-    ## \fn get_rho(self)
+    ## \fn get_prof(self, prof, pop)
     # return density array
-        
-        
-    def set_M(self, arr):
-        self.M = arr
-    ## \fn set_M(self, arr)
-    # store mass array
-    # @param arr float array
+    # @param prof of this profile
+    # @param pop and of this population (if applicable)
 
+    def __repr__(self):
+        return "Profiles (disc): "+str(self.chi2)
+    ## \fn __repr__(self)
+    # string representation for ipython
 
-    def get_M(self):
-        return self.M
-    ## \fn get_M(self)
-    # return mass profile in [Msun/pc^3]
-
-    
-    def set_nu(self, pop, arr):
-        self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr
-    ## \fn set_nu(self, pop, arr)
-    # store tracer density array, at right position
-    # @param pop population number, starts at 0 for all comp, 1 for first, ...
-    # @param arr float of profile
-
-    
-    def get_nu(self, pop):
-        return self.nu[pop*self.nipol:(pop+1)*self.nipol]
-    ## \fn get_nu(self, pop):
-    # return tracer density
-    # @param pop population number
-
-    
-    def set_beta(self, pop, arr):
-        self.beta[pop*self.nipol:(pop+1)*self.nipol] = arr
-    ## \fn set_beta(self, pop, arr)
-    # store velocity anisotropy array
-    # @param pop population number, starts at 0
-    # @param arr array of floats
-
-
-    def get_beta(self, pop):
-        return self.beta[pop*self.nipol:(pop+1)*self.nipol]
-    ## \fn get_beta(self, pop)
-    # get stored beta profile
-    # @param pop population number
-
-    
-    def set_sig_kap(self, pop, sigarr, kaparr):
-        self.sig[pop*self.nipol:(pop+1)*self.nipol] = sigarr
-        self.kap[pop*self.nipol:(pop+1)*self.nipol] = kaparr
-    ## \fn set_sig_kap(self, pop, sigarr, kaparr)
-    # store velocity dispersion, fourth order moment profile
-    # @param pop population number, starts at 0
-    # @param sigarr array of floats
-    # @param kaparr array of floats
-
-    
-    def get_sig(self, pop):
-        return self.sig[pop*self.nipol:(pop+1)*self.nipol]
-    ## \fn get_sig(self, pop)
-    # return sigma of a given population
-    # @param pop population number, start at 0 for first component
-
-    
-    def get_kap(self, pop):
-        return self.kap[pop*self.nipol:(pop+1)*self.nipol]
-    ## \fn get_kap(self, pop)
-    # return kappa of a given population
-    # @param pop population number, start at 0 for first component
 
 ## \class Profiles
 # class for storing all profiles

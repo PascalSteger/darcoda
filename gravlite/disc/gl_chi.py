@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -9,10 +9,8 @@
 
 from types import *
 import pdb
-import numpy.random as npr
+import numpy as np
 
-# from gl_analytic import *
-# from gl_project import rho_INT_Rho, rho_param_INT_Rho
 from gl_class_profiles import Profiles
 
 def chi2red(model, data, sig, dof):
@@ -29,29 +27,25 @@ def chi2red(model, data, sig, dof):
 # @param dof Degrees Of Freedom
 
 
-def calc_chi2(profs, nuparstore, gp):
+def calc_chi2(profs, gp):
     chi2 = 0.
     off = 0
+    # TODO: include rho*?
     for pop in np.arange(gp.pops)+1: # look at 0 (==1) for pop=1, and (1,2) for pop==2
-        nuparams = nuparstore[pop-1]
-        Numodel  = rho_param_INT_Rho(gp.xepol, nuparams, gp) # [Msun/pc^2], on nipol bins
-        # Numodel = rho_INT_Rho(gp.xipol, profs.get_nu(pop)) # [Msun/pc^2]
-        Nudata  = gp.dat.Nudat[pop]                      # [Msun/pc^2]
-        Nuerr   = gp.dat.Nuerr[pop]                      # [Msun/pc^2]
+        nudat   = gp.dat.nu[pop]     # [Munit/pc^3]
+        nuerr   = gp.dat.nuerr[pop]  # [Munit/pc^3]
+        chi2_nu  = chi2red(profs.get_prof('nu', pop), nudat, nuerr, gp.nipol) # [1]
+        chi2 += chi2_nu              # [1]
         
-        chi2_nu  = chi2red(Numodel, Nudata, Nuerr, gp.dof) # [1]
-        chi2 += chi2_nu                 # [1]
-        
-        sigdat  = gp.dat.sigdat[pop]    # [km/s]
-        sigerr  = gp.dat.sigerr[pop]    # [km/s]
-        chi2_sig = chi2red(profs.get_sig(pop), sigdat, sigerr, gp.dof) # [1]
-        chi2 += chi2_sig                # [1]
-        # print('profs: ', profs.get_nu(pop)[0],', data: ', Nudata[0])
+        sigdat  = gp.dat.sig[pop]    # [km/s]
+        sigerr  = gp.dat.sigerr[pop] # [km/s]
+        chi2_sig = chi2red(profs.get_prof('sig', pop), sigdat, sigerr, gp.nipol) # [1]
+        chi2 += chi2_sig             # [1]
         print('chi2_nu, chi2_sig = ', chi2_nu, ' ', chi2_sig)
         if gp.usekappa:
-            kapdat  = gp.dat.kapdat[pop]       # [1]
-            kaperr  = gp.dat.kaperr[pop]       # [1]
-            chi2_kap = chi2red(profs.get_kap(pop), kapdat, kaperr, gp.dof) # [1]
+            kapdat  = gp.dat.kap[pop]       # [1]
+            kaperr  = gp.dat.kaperr[pop]    # [1]
+            chi2_kap = chi2red(profs.get_kap(pop), kap, kaperr, gp.nipol) # [1]
             chi2 += chi2_kap                                     # [1]
     return chi2
 ## \fn calc_chi2(profs)

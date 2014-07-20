@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -48,7 +48,7 @@ def rho_INTDIRECT_Rho(r0, rho):
         yint = np.ones(len(xint))
         for j in range(i+1,len(r0nu)):
             yint[j-i] = r0nu[j] * rhonu[j]/np.sqrt(r0nu[j]**2-r0nu[i]**2) 
-            # [munit/lunit^3]
+            # [Munit/lunit^3]
 
         # Cubic-spline extrapolation to first bin
         tck = splrep(xint[1:],np.log(yint[1:]),k=3,s=0.)
@@ -63,15 +63,15 @@ def rho_INTDIRECT_Rho(r0, rho):
 
         # gpl.plot(r0nu[:-4], Rho, '.', color='green')
     tcke = splrep(r0nu[:-4],Rho)
-    Rhoout = splev(r0,tcke)     # [munit/lunit^2]
+    Rhoout = splev(r0,tcke)     # [Munit/lunit^2]
 
     gh.checkpositive(Rhoout, 'Rhoout in rho_INTDIRECT_Rho')
-    # [munit/lunit^2]
+    # [Munit/lunit^2]
     return Rhoout
 ## \fn rho_INTDIRECT_Rho(r0, rho)
 # take 3D density, calculate projected surface density
 # @param r0 bin radii, [pc]
-# @param rho 3D density, [Msun/pc^3]
+# @param rho 3D density, [Munit/pc^3]
 
 
 def rho_INT_Rho(r0, rho):
@@ -115,25 +115,25 @@ def rho_INT_Rho(r0, rho):
     gh.checkpositive(Rho, 'Rho in rho_INT_Rho')
     # gpl.plot(r0nu[:-4],Rho,'.')
     tcke = splrep(r0nu[:-4], Rho)
-    Rhoout = splev(r0, tcke)     # [munit/lunit^2]
+    Rhoout = splev(r0, tcke)     # [Munit/lunit^2]
 
     gh.checkpositive(Rhoout, 'Rhoout in rho_INT_Rho')
     return Rhoout
 ## \fn rho_INT_Rho(r0, rho)
 # take 3D density, calculate projected surface density
 # @param r0 radii of bins, [pc]
-# @param rho 3D density, [Msun/pc^3]
+# @param rho 3D density, [Munit/pc^3]
 
 
-def rho_param_INT_Rho(r0, rhoparam, gp):
+def rho_param_INT_Rho(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
-    # gh.checknan(rhoparam, 'rho_param_INT_Rho')
-    xmin = r0[0]/30. # tweaked. 1e4 gives error in quad()
-    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75]) # TODO: len -1! ok?
+    # gh.checknan(rhopar, 'rho_param_INT_Rho')
+    xmin = r0[0]/30. # tweaked. r0[0]/1e4 gives error in quad()
+    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
     r0nu = np.hstack([r0left, r0])
 
-    rhonu = phys.rho(r0nu, rhoparam, gp)
+    rhonu = phys.rho(r0nu, rhopar, pop, gp)
     Rho = np.zeros(len(r0nu)-gp.nexp)
     for i in range(len(r0nu)-gp.nexp):
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)         # [lunit]
@@ -151,14 +151,39 @@ def rho_param_INT_Rho(r0, rhoparam, gp):
         Rho[i] = gh.quadinflog(xnew[1:], ynew[1:], xmin, xnew[-1]) + C # np.inf)
 
     gh.checkpositive(Rho, 'Rho in rho_param_INT_Rho')
-    return Rho[4:] # @r0 (r0nu without r0left, and without 3 extension bins)
-## \fn rho_param_INT_Rho(r0, rhoparam, gp)
+    return Rho[len(r0left):] # @r0 (r0nu without r0left, and without 3 extension bins)
+## \fn rho_param_INT_Rho(r0, rhopar, pop, gp)
 # take 3D density parameters, calculate projected surface density
-# @param r0 radii of bins, [pc]
-# @param rhoparam 3D density, [Msun/pc^3]
-# @param gp
+# @param r0 radii of bins, (nepol-nexp entries) [pc]
+# @param rhopar 3D density, (nepol entries) [Munit/pc^3]
+# @param pop int population to take halflight radius from (0 both, 1, 2)
+# @param gp global parameters
 
 
+def rho_param_INT_Rho_disc(r0, rhopar, pop, gp):
+    # TODO: check integration for z direction only
+
+    # use splines on variable transformed integral
+    # \Sigma(R) = \int_{r=0}^{R} \rho(r) dr
+    xmin = r0[0]/30. # tweaked. r0[0]/1e4 gives error in quad()
+    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
+    r0nu = np.hstack([r0left, r0])
+
+    rhonu = phys.rho(r0nu, rhopar, pop, gp) # rho takes rho(rhalf) and n(r) parameters
+    Rho = np.zeros(len(r0nu)-gp.nexp)
+    for i in range(len(r0nu)-gp.nexp):
+        Rho[i] = gh.quadinflog(r0nu, rhonu, xmin, r0nu[i])
+
+    gh.checkpositive(Rho, 'Rho in rho_param_INT_Rho')
+    return Rho[len(r0left):] # @r0 (r0nu without r0left, and without 3 extension bins)
+## \fn rho_param_INT_Rho_disc(r0, rhopar, pop, gp)
+# take 3D density parameters, calculate projected surface density
+# @param r0 radii of bins, (nepol-nexp entries) [pc]
+# @param rhopar 3D density, (nepol entries) [Munit/pc^3]
+# @param pop int for population (0 both, 1, 2, ..)
+# @param gp global parameters
+
+    
 def rho_INTIPOL_Rho(r0, rho):
     # assume len(r) = 2*pnts, or at least pnts+4
     pnts = len(r0)-1 # start with one missing bin, s.t. interpolation on sub-bin possible
@@ -167,11 +192,11 @@ def rho_INTIPOL_Rho(r0, rho):
         xint = r0[i:]                                      # [lunit]
         yint = np.zeros(len(xint))
         for j in range(i+1,len(xint)):
-            yint[j] = r0[j] * rho[j]/np.sqrt(r0[j]**2-r0[i]**2) # [munit/lunit^3]
+            yint[j] = r0[j] * rho[j]/np.sqrt(r0[j]**2-r0[i]**2) # [Munit/lunit^3]
         
         # extrapolating with 1:3 is linear only! two points (1,2) to work with!
         yint[0] = gh.ipol(xint[1:3], yint[1:3], xint[0]) # linear extrapolation
-        # yint[0] = gh.ipol(xipol[1:3], yipol[1:3], xint[0], smooth=0.1) # higher smooth means lower sigmalos
+        # yint[0] = gh.ipol(xipol[1:3], yipol[1:3], xint[0], smooth=0.1) # higher smooth means lower sig_los
         # yint[0] = gh.ipollog(xipol[1:3], yipol[1:3], xint[0]) # too jumpy
         # yint[0] = gh.ipol(xipol[1:4], yipol[1:4], xint[0]) # increase, still missing at high radii
         # yint[0] = gh.ipol(xipol[1:3],yipol[1:3],xint[0]*1.1) # overall increase, kappa off @ 0 and max
@@ -196,22 +221,19 @@ def rho_INTIPOL_Rho(r0, rho):
         # circumvent that by requesting intpoly in [0,infty[
         if intpoly<0.: intpoly = 0.
 
-        Rho[i]  = 2.*(simps(yint, xint, even=gp.even) + intpoly) # [munit/lunit^2]
+        Rho[i]  = 2.*(simps(yint, xint, even=gp.even) + intpoly) # [Munit/lunit^2]
 
-    # better: extrapolation using polynomes
-    # surfden = gh.ipollog(r_tot[1:-1],surfden[1:-1],r_tot)
-    # Rho[0]  = gh.ipol(r0[1:3],Rho[1:3],[r0[0]]) # TODO: check that it's fine to disable
-
-    # extrapolate to last 4 bins, which were neglected for sake of extrapolating yint[0]
-    x = r0[-4:-1]                 # take values from half+some offset to last point known for Rho
-    y = np.log(Rho[-3:])          # [log(munit/lunit^2)]
+    # extrapolate to last 4 bins, which were neglected for sake of
+    # extrapolating yint[0]
+    x = r0[-4:-1] # take values from half+some offset to last point known for Rho
+    y = np.log(Rho[-3:])                        # [log(Munit/lunit^2)]
     polyhilo = np.polyfit(x,y,1)
 
     return np.hstack([Rho,np.exp(r0[-1:]*polyhilo[0]+polyhilo[1])])
 ## \fn rho_INTIPOL_Rho(r0, rho)
 # take 3D density, compute 2D density in bins, with interpolation
 # @param r0 radii in [pc]
-# @param rho 3D density, [Msun/pc^3]
+# @param rho 3D density, [Munit/pc^3]
 
 
 def Rho_SUM_MR(r0, Rho):
@@ -223,23 +245,28 @@ def Rho_SUM_MR(r0, Rho):
 ## \fn Rho_SUM_MR(r0, Rho)
 # calculate enclosed mass from summing up (density in rings)*(ring surface)
 # @param r0 radii, [pc]
-# @param Rho 2D density, [Msun/pc^2]
+# @param Rho 2D density, [Munit/pc^2]
 
 
 def rho_INT_Sum_MR(r0, rho):
     surf_tot = rho_INT_Rho(r0, rho)                # gives [rho0, 2D]
-    surfmass = Rho_SUM_MR(r0, surf_tot)            # [munit,2D]
-    # [munit, 2D]
+    surfmass = Rho_SUM_MR(r0, surf_tot)            # [Munit,2D]
+    # [Munit, 2D]
     return surfmass
 ## \fn rho_INT_Sum_MR(r0, rho)
 # take 3D (mass) density, convert it to surface density, 
 # and give back enclosed mass in rings
 # @param r0 radii, [pc]
-# @param rho 3D mass density, [Msun/pc^3]
+# @param rho 3D mass density, [Munit/pc^3]
 
 
 def Rho_NORM_rho(R0, Rho, Rhoerr):
-    rho =  Rho_INT_rho(R0, Rho)                      # [munit/lunit^3]
+    try:
+        rho =  Rho_INT_rho(R0, Rho)                      # [Munit/lunit^3]
+    except:
+        print('error in Rho_INT_rho')
+        pdb.set_trace()
+        
     if min(rho)<0.:
         print('*** got negative 3D density! ***')
         for i in range(len(rho)):
@@ -248,25 +275,28 @@ def Rho_NORM_rho(R0, Rho, Rhoerr):
 
     # normalization: calc tot mass from 2D and 3D, set equal,
     # get center 3D density rho0 right
-    # and convert it into [munit/lunit^3]
-    Mr = rho_SUM_Mr(R0, rho)[-1]                   # [munit]
+    # and convert it into [Munit/lunit^3]
+    Mr = rho_SUM_Mr(R0, rho)                   # [Munit]
 
-    r0  = R0 # TODO: correction for different radii!     R0 != r0, too bad
-    MR = Rho_SUM_MR(R0, Rho)[-1]                   # [munit]
+    # R0 != r0, too bad
+    # TODO: correction for 3D radii
+    r0  = R0
 
-    corr = MR/Mr
-    rho *= corr                                      # [munit/lunit^3]
+    MR = Rho_SUM_MR(R0, Rho)                   # [Munit]
+
+    corr = MR[-1]/Mr[-1]
+    rho *= corr                                      # [Munit/lunit^3]
     
     # fractional error propagation
-    rhoerr = rho * Rhoerr/Rho                        # [munit/lunit^3]
+    rhoerr = rho * Rhoerr/Rho                        # [Munit/lunit^3]
 
-    # [pc], [munit/lunit^3], [munit/lunit^3]
-    return r0, rho, rhoerr
+    # [pc], [Munit/lunit^3], [Munit/lunit^3]
+    return r0, rho, rhoerr, Mr
 ## \fn Rho_NORM_rho(R0, Rho, Rhoerr)
 # take 2D density and density error, get back 3D density and error'
 # @param R0 radius, [pc]
-# @param Rho 2D density, [Msun/pc^2]
-# @param Rhoerr 2D density error, [Msun/pc^2]
+# @param Rho 2D density, [Munit/pc^2]
+# @param Rhoerr 2D density error, [Munit/pc^2]
 
 
 
@@ -294,7 +324,7 @@ def Rho_INT_rho(R0, Rho):
     gh.checkpositive(Rhonu, 'Rhonu in Rho_INT_rho')
 
     tck1 = splrep(R0nu, Rhonu, k=3, s=0.)
-    dnubydR = splev(R0nu, tck1, der=1)
+    dnubydR = splev(R0nu, tck1, der=1)  # Attention, numerical derivative
 
     rho = np.zeros(len(R0nu)-4)
     for i in range(len(R0nu)-4):
@@ -302,7 +332,7 @@ def Rho_INT_rho(R0, Rho):
         yint = np.ones(len(xint))
         for j in range(i+1,len(R0nu)):
             yint[j-i] = dnubydR[j]/np.sqrt(R0nu[j]**2-R0nu[i]**2)
-            # [munit/lunit^3/lunit]
+            # [Munit/lunit^3/lunit]
 
         # Cubic-spline extrapolation to first bin
         tck = splrep(xint[1:],yint[1:],k=3,s=0.01)
@@ -311,22 +341,22 @@ def Rho_INT_rho(R0, Rho):
         tcknu = splrep(xnew,ynew,s=0) # interpolation in real space
         rho[i] = -1./np.pi * splint(0.,max(R0)*2.,tcknu)
     tcke = splrep(R0nu[:-4],rho)
-    rhoout = splev(R0,tcke)     # [munit/lunit^3]
-    return rhoout               # [munit/lunit^3]
+    rhoout = splev(R0,tcke)     # [Munit/lunit^3]
+    return rhoout               # [Munit/lunit^3]
 ## \fn Rho_INT_rho(R0, Rho):
 # take surface density, deproject, 2D => 3D with radius r'
 # @param R0 radius in [pc]
-# @param Rho 2D density in [Msun/pc^2]
+# @param Rho 2D density in [Munit/pc^2]
 
 
 def rho_SUM_Mr(r0max, rho):
     r0max = np.hstack([0., r0max])
     deltavol = 4./3.*np.pi*(r0max[1:]**3 - r0max[:-1]**3)    # [lunit^3]
-    deltaM   = rho * deltavol                       # [munit]
-    Mr = np.cumsum(deltaM)                          # [munit]
-    return Mr                                       # [munit]
+    deltaM   = rho * deltavol                       # [Munit]
+    Mr = np.cumsum(deltaM)                          # [Munit]
+    return Mr                                       # [Munit]
 ## \fn rho_SUM_Mr(r0max, rho)
 # take 3D density, calculate summed 3D mass
 # @param r0max radii in [pc]
-# @param rho 3D density in [Msun/pc^3]
+# @param rho 3D density in [Munit/pc^3]
 

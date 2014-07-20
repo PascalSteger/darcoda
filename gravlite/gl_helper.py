@@ -1,11 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
 # all helper functions
 
 # (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
-
+import sys, traceback, pdb
+import numpy as np
+from scipy.interpolate import splrep, splev
+from scipy.integrate import quad
+import gl_plot as gpl
 
 def myfill(x, N=3):
     if x==np.inf or x==-np.inf:
@@ -17,28 +21,84 @@ def myfill(x, N=3):
 # @param N number of paddings
 # @return 00x
 
+def ipol_rhalf_log(X, Y, rhalf):
+    for i in range(len(X)):
+        if X[i] < rhalf:
+            lowr = X[i]
+            lowi = i
+        if X[len(X)-i-1] > rhalf:
+            highr = X[len(X)-i-1]
+            highi = len(X)-i-1
+    dr = np.log(highr) - np.log(lowr)
+    dy = np.log(Y[highi]) - np.log(Y[lowi])
 
-import numpy as np
-import numpy.random as npr
-import sys, traceback, pdb
-from scipy.interpolate import splrep, splev
-from scipy.integrate import quad
-import gl_plot as gpl
+    Yhalf = np.exp(np.log(Y[lowi]) + (np.log(rhalf)-np.log(lowr))*dy/dr)
+    return Yhalf
+# \fn ipol_rhalf_log(X, Y, rhalf)
+# interpolate function in loglog space to value in between data points,
+# used for determination of Sig(rhalf)
+# @param X radii, usually gp.xipol in our case, in [pc]
+# @param Y values, usually Sig(gp.xipol) here, in [arb. units]
+# @param rhalf half-light radius in [pc]
+
+
+def print_summary(Rscale, Rc):
+    print('Rscale = ', Rscale, ' pc')
+    print('max(R) = ', max(Rc), ' pc')
+    print('last element of R : ', Rc[-1], ' pc')
+    print('total number of stars: ', len(Rc))
+    return
+## \fn print_summary(Rscale, Rc)
+# print Radius information
+# @param Rscale
+# @param Rc
+
+
+def draw_random_subset(x, ntracer):
+    ind = np.arange(len(x))
+    np.random.shuffle(ind)     # random.shuffle already changes ind
+    return ind[:ntracer]
+## \fn draw_random_subset(x, ntracer)
+# take an array, and return shuffled array of ntracer entries
+# no entry will be repeated
+
+
+def add_errors(R, error):
+    return R + error*np.random.randn(len(R))
+## \fn add_errors(R, error)
+# add procentual error to any quantity
+# @param R array
+# @param error in percent
+
 
 def quadinflog(x, y, A, B, stop = True):
+    # if min(y) == 0.0:
+    #    print('integration with 0')
+    if max(y) <= 0:
+        print('integration over 0')
+        return 0
     # work in log(y) space to enable smoother interpolating functions
     # scale to avoid any values <= 1
-    minlog = min(np.log(y))
+    minlog = min(np.log(y[y>0])) # exclude y==0 to circumvent error
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible
     # otherwise we get divergent integrals for high radii (low length of x and y)
-    tcknulog = splrep(x, np.log(y*shiftlog), k=1, s=0.1)
+    
+    # replace 0 values with 1e-XX
+    yshift = y * shiftlog
+    for i in range(len(yshift)):
+        if yshift[i] == 0:
+            yshift[i] = 10**(-10*i)
+
+    tcknulog = splrep(x, np.log(yshift), k=1, s=0.1)
     maxy = max(y)
     # invexp = lambda x: min(maxy, np.exp(splev(x,tcknulog,der=0))/shiftlog)
     invexp = lambda x: np.exp(splev(x,tcknulog,der=0))/shiftlog
     #invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x,tcknulog,der=0))/shiftlog)
     dropoffint = quad(invexp, A, B, epsrel=1e-4, limit=100, full_output=1)
+    # for debugging:
+    # dropoffint = quad(invexp, A, B, epsrel=1e-3, limit=50, full_output=1)
     if stop and len(dropoffint)>3:
-        print('warning in quad in quadinflog')
+        print('warning by quad in quadinflog')
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x, using splines
@@ -103,7 +163,7 @@ def checknan(arr, place=''):
 # @param place = '' show user where to search
 # @return True if NaN found
 
-    
+
 def checkpositive(arr, place=''):
     if checknan(arr, place):
         return True
@@ -111,6 +171,10 @@ def checkpositive(arr, place=''):
         print(place+" < 0 !")
         # traceback.print_tb(sys.exc_info()[2])
         raise Exception('negative','found')
+        return True
+    if max(arr) >= np.inf:
+        print('infinity in checkpositive '+place)
+        raise Exception('infinity', 'found')
         return True
     else:
         return False
@@ -178,7 +242,8 @@ def derivipol(y,x):
 
 
 def err(a, gp):
-    return gp.err/a*(1.+npr.rand()/1000.)
+    import numpy.random as npr
+    return gp.err/a*(1.+npr.rand()/100.)
 ## \fn err(a)
 # penalize prior violations with almost constant low likelihood
 # a small change makes sure that if all nlive points in MultiNest
@@ -247,7 +312,7 @@ def smoothlog(xin, yin, smooth=1.e-9):
 
 def ipol(xin,yin,xout,smooth=1.e-9):
     if np.isnan(np.sum(yin)):
-        print('NaN found! Go check where it occured!')
+        print('NaN found in interpolation! Go check where it occured!')
     rbf = Rbf(xin, yin, smooth=smooth)
     return rbf(xout)
 ## \fn ipol(xin, yin, xout, smooth=1.e-9)
@@ -260,7 +325,7 @@ def ipol(xin,yin,xout,smooth=1.e-9):
 
 def ipollog(xin, yin, xout, smooth=1.e-9):
     if min(yin)<0.:
-        print(file='negative value encountered in ipollog, working with ipol now')
+        print('negative value encountered in ipollog, working with ipol now')
         return ipol(xin,yin,xout,smooth)
     
     rbf = Rbf(xin, np.log10(yin), smooth=smooth)
@@ -418,7 +483,7 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
                 break
 
         if (count > 0):
-            arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sigma
+            arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sig
         else:
             arrayout[i] = nanreplace
         count_bin[i] = count
@@ -459,7 +524,7 @@ def bincount(r, rmax):
     return arrayout, count_bin
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
-# WARNING!! THIS ROUTINE REQUIRES SORTED ACSENDING r ARRAYS.
+# WARNING!! THIS ROUTINE REQUIRES SORTED ASCENDING r ARRAYS.
 # @param r array of floats
 # @param rmax upper bound of bins
 # @return arrrayout, count_bin

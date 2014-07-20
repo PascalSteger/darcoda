@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -13,7 +13,7 @@ import multiprocessing as mp
 
 def run(gp):
     # set binning
-    if gp.lograd:
+    if gpr.lograd:
       binmin,binmax,rbin = gh.bin_r_log(gpr.rmax/gp.nipol,gpr.rmax,gp.nbins)
     else:
       binmin,binmax,rbin = gh.bin_r_linear(gpr.rmin,gpr.rmax,gp.nbins)
@@ -21,10 +21,10 @@ def run(gp):
     print('input: ', gpr.fileposspherical)
     r,phi = np.loadtxt(gpr.fileposspherical,unpack=True,skiprows=1)
     ndm = len(r)
-    rs  = r       #gpr.Rerror*np.random.randn(ndm)+r
+    rs  = r       #gpr.Rerr*np.random.randn(ndm)+r
 
     def foo_pool(k):
-      rsi = gpr.Rerror*np.random.randn(len(rs))+rs
+      rsi = gpr.Rerr*np.random.randn(len(rs))+rs
       locmass = []; loca = []
       for i in range(bins):
         ind1=np.argwhere(np.logical_and( rsi > rbin[i], rsi < rbin[i+1])).flatten()
@@ -57,9 +57,9 @@ def run(gp):
     for i in range(bins):
       totmass  += np.sum(massarr[:,i])/gpr.nit
       ac       += np.sum(aarr[:,i])/gpr.nit
-      masserror = totmass/np.sqrt(ac)
-      print(rbin[i+1], totmass, masserror, file=filemass)
-      print(rbin[i+1], totmass, masserror)
+      masserr = totmass/np.sqrt(ac)
+      print(rbin[i+1], totmass, masserr, file=filemass)
+      print(rbin[i+1], totmass, masserr)
 
     filemass.close()
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,8 +8,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys
-import pdb
+import sys, pdb
 
 from pylab import *
 import gr_params as gpr
@@ -44,11 +43,21 @@ def run(gp):
     if gp.metalpop:
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
-        import pymcmetal as pmc
-        p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
-        pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)   # [1]
-        # output: changed pm1, pm2
-        # assumption: no component 3 stars are included
+        import pickle
+        fi = open('metalsplit.dat', 'rb')
+        DATA = pickle.load(fi)
+        fi.close()
+        p, mu1, sig1, mu2, sig2, M, pm1, pm2 = DATA
+
+        # TODO: do this in python2 once
+        #import pymcmetal as pmc
+        #p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
+        #pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
+        #DATA = [p, mu1, sig1, mu2, sig2, M, pm1, pm2]
+        #import pickle
+        #fi = open('metalsplit.dat', 'wb')
+        #pickle.dump(DATA, fi)
+        #fi.close()
 
     # cutting pm_i to a maximum of ntracers particles:
     from random import shuffle
@@ -73,71 +82,45 @@ def run(gp):
 
     # but still get the same radii as from 2D method, to get comparison of integration routines right
     R0 = np.sqrt(x0**2+y0**2) # [pc]
-    Rc = R0                   # [pc]
-    Rc.sort()                 # [pc]
-    Rhalf = Rc[floor(len(Rc)/2)]        # [pc]
+    Rhalf = np.medium(R0) # [pc]
     Rscale = Rhalf                       # or gpr.r_DM # [pc]
     print('Rscale = ', Rscale,  ' pc')
     print('max(R) = ', max(Rc) ,' pc')
     print('last element of R : ',Rc[-1],' pc')
     print('total number of stars: ',len(Rc))
     
-    x0 = x0/Rscale; y0 = y0/Rscale; z0 = z0/Rscale              # [Rscale]
-    
     i = -1
     for pmn in [pm, pm1, pm2, pm3]:
-        pmr = (R0<(gp.maxR*Rscale))  # TODO: read from gl_class_file
+        pmr = (R0<(gp.maxR*Rscale)) # [1] based on [pc]
         pmn = pmn*pmr                  # [1]
         print("fraction of members = ",1.0*sum(pmn)/len(pmn))
         i = i+1
-        x=x0[pmn]; y=y0[pmn]; z=z0[pmn]; vz=vz0[pmn]; vb=vb0[pmn];  # [1], [km/s]
+        x=x0[pmn]; y=y0[pmn]; z=z0[pmn]; vz=vz0[pmn]; vb=vb0[pmn];  # [pc], [km/s]
         Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn]   # [ang], [1], [1]
         m = np.ones(len(pmn))
         
-        R = np.sqrt(x*x+y*y)            # [Rscale]
-        
+        R = np.sqrt(x*x+y*y)            # [pc]
+        Rscalei = np.median(R)
+
         # print("x y z" on first line, to interprete data later on)
         crscale = open(gp.files.get_scale_file(i)+'_3D','w')
-        print('# Rscale in [pc], surfdens_central (=dens0) in [munit/rscale**2], and in [munit/pc**2], and totmass [munit], and max(v_LOS) in [km/s]', file=crscale)
-        print(np.median(R)*Rscale, file=crscale) # use 3 different half-light radii
+        print('# Rscale in [pc], surfdens_central (=dens0) in [Munit/Rscale0^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
+        print(Rscalei, file=crscale) # use 3 different half-light radii
         crscale.close()
 
         print('output: ',gpr.get_com_file(i)+'_3D')
         c = open(gpr.get_com_file(i)+'_3D','w')
-        print('# x [Rscale],','y [Rscale],', 'z [Rscale]','vLOS [km/s],','Rscale = ',Rscale,' pc', file=c)
+        print('# x [Rscale],','y [Rscale],', 'z [Rscale]','vLOS [km/s],','Rscale = ',Rscalei,' pc', file=c)
         for k in range(len(x)):
-            print(x[k],y[k],z[k],vz[k], file=c)      # 3* [Rscale], [km/s]
+            print(x[k]/Rscalei, y[k]/Rscalei, z[k]/Rscalei, vz[k], file=c) # 3* [pc], [km/s]
         c.close()
         
         
-        if not gpr.showplots: continue
-        # plot x-z values
-        ion(); subplot(111)
-        res = (abs(x)<3)*(abs(z)<3)
-        x = x[res]; z = z[res]           # [Rscale]
-        en = len(x)
-        if en == 0: continue
-        scatter(x[:en], z[:en], c=pmn[:en], s=35, vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
-        # xscale('log'); yscale('log')
-        if i == 0: colorbar()
-        circ_HL=Circle((0,0), radius=Rscale/Rscale, fc='None', ec='g', lw=1)
-        circ_DM=Circle((0,0), radius=gpr.r_DM/Rscale, fc='None', ec='r', lw=1)
-        gca().add_patch(circ_HL); gca().add_patch(circ_DM)
-        
-        # visible region
-        maxr = max(np.abs(x));  mayr = max(np.abs(z)) #[rscale]
-        width2 = max([maxr,mayr]) #[rscale]
-        xlim([-width2,width2]); ylim([-width2,width2])
-        axes().set_aspect('equal')
-    
-        xlabel(r'$x [R_s]$'); ylabel(r'$z [R_s]$')
-        # title(gpr.fil)
-        savefig(gpr.get_com_png(i)+'_3D.png')
-        if gpr.showplots:
-            ioff();show();clf()
-    
+        #if gpr.showplots:
+        #    gpr.show_part_pos(x, y, pmn, Rscale, i)
+
 if __name__=='__main__':
-    # gpr.showplots = True
+    gpr.showplots = True
     import gl_params
     gp = gl_params.Params()
     run(gp)
