@@ -1,0 +1,172 @@
+#+TITLE: Gravlite Performance Array
+#+AUTHOR: Pascal Steger
+#+EMAIL: psteger@phys.ethz.ch
+#+LANGUAGE: en
+#+OPTIONS: author email -toc
+
+* Walker Model No. 1 (cored profile)
+** 1 population
+*** 2014-04-09 17:25 with 2345 its, 1 pops, 5 bins, nbeta=2 
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404091725/ov_1.pdf]]
+*** 2014-04-12 22:05 with 1667 its, 1 pops, 10  bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122205/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122205/prof_chi2_0.png]]
+
+    
+*** 2014-04-09 17:26 with 2232 its, 1 pops, 5 bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404091726/ov_1.pdf]]
+*** 2014-04-12 22:09 with 1575 its, 1 pops, 10  bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122209/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122209/prof_chi2_0.png]]
+
+
+    
+*** 2014-04-09 17:33 with 2266 its, 1 pops, 5 bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404091733/ov_1.pdf]]
+*** 2014-04-12 22:12 with 1849 its, 1 pops, 10  bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122212/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122212/prof_chi2_0.png]]
+
+** 2 populations
+*** 2014-04-09 17:35 with 222 its, 2 pops, 5 bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404091735/ov_1.pdf]]
+*** 2014-04-12 22:07 with 240 its, 2 pops, 10  bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122207/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122207/prof_chi2_0.png]]
+
+
+*** 2014-04-09 17:36 with 175 its, 2 pops, 5 bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404091736/ov_1.pdf]]
+*** 2014-04-12 22:10 with 199 its, 2 pops, 10  bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122210/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122210/prof_chi2_0.png]]
+
+
+*** 2014-04-09 17:38 with 172 its, 2 pops, 5 bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404091738/ov_1.pdf]]
+*** 2014-04-12 22:13 with 162 its, 2 pops, 10  bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122213/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201404122213/prof_chi2_0.png]]
+    
+* Walker Model No. 4 (cusped profile)
+** 1 population
+*** 2014-04-09 17:25 with 2824 its, 1 pops, 5 bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404091725/ov_1.pdf]]
+*** 2014-04-12 22:06 with 2908 its, 1 pops, 10  bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122206/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122206/prof_chi2_0.png]]
+    
+*** 2014-04-09 17:27 with 2972 its, 1 pops, 5 bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404091727/ov_1.pdf]]
+*** 2014-04-12 22:09 with 2320 its, 1 pops, 10  bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122209/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122209/prof_chi2_0.png]]
+
+    
+*** 2014-04-09 17:34 with 3080 its, 1 pops, 5 bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404091734/ov_1.pdf]]
+*** 2014-04-12 22:12 with 2383 its, 1 pops, 10  bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122212/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122212/prof_chi2_0.png]]
+
+** 2 populations
+*** 2014-04-09 17:36 with 332 its, 2 pops, 5 bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404091736/ov_1.pdf]]
+*** 2014-04-12 22:08 with 356 its, 2 pops, 10  bins, nbeta=2
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122208/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122208/prof_chi2_0.png]]
+
+
+
+*** 2014-04-09 17:39 with 287 its, 2 pops, 5 bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404091739/ov_1.pdf]]
+*** 2014-04-12 22:11 with 326 its, 2 pops, 10  bins, nbeta=3
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122211/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404122211/prof_chi2_0.png]]
+
+
+*** 2014-04-09 17:42 with 276 its, 2 pops, 5 bins, nbeta=4
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201404091742/ov_1.pdf]]
+
+
+
+
+* Monotonicity prior
+  The monotonicity prior sets the asymptotic slope $0<n(r\to
+  0)<1.5<$. Starting from this, $\Delta n_i>0$ are added.
+
+  The runtime was about the same for the cored and cusped
+  profiles. Apparently the cusped profile is much harder to sample
+  with the prior on the asymptotic slope $<1.5$.
+
+  There is a possibility of having the median profile decreasing
+  temporarily if two populations of profiles exist: one with almost
+  constant $n(r)$, and one with lower $n$ values at $r=0$ and strongly
+  increasing $n(r)$.
+
+  
+** Cored Profile, 2657 iterations
+   [[/home/ast/read/dark/gravlite/DTwalk/1/201404111449/ov_1.pdf]]
+
+   [[/home/ast/read/dark/gravlite/DTwalk/1/201404111449/prof_chi2_0.png]]
+
+** Cusped Profile, 20 iterations
+   [[/home/ast/read/dark/gravlite/DTwalk/4/201404111451/ov_1.pdf]]
+
+   [[/home/ast/read/dark/gravlite/DTwalk/4/201404111451/prof_chi2_0.png]]
+* $n(r<r_{1/2})<1.5$
+** Cored profile
+
+*** 2014-05-06 07:54  2083 its, 1 pops, 5 bins, 4 nbeta
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060754/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060754/prof_chi2_0.png]]
+
+*** 2014-05-06 07:56   163 its, 2 pops, 5 bins, 4 nbeta
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060756/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060756/prof_chi2_0.png]]
+
+*** 2014-05-06 07:53  4944 its, 1 pops, 5 bins, 4 nbeta, mono
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060753/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060753/prof_chi2_0.png]]
+
+*** 2014-05-06 07:55  1857 its, 2 pops, 5 bins, 4 nbeta, mono
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060755/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/1/201405060755/prof_chi2_0.png]]
+
+
+** Cusped profile
+
+*** 2014-05-06 07:54  2805 its, 1 pops, 5 bins, 4 nbeta
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060754/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060754/prof_chi2_0.png]]
+
+*** 2014-05-06 07:57   262 its, 2 pops, 5 bins, 4 nbeta
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060757/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060757/prof_chi2_0.png]]
+
+*** 2014-05-06 07:53  2516 its, 1 pops, 5 bins, 4 nbeta, mono
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060753/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060753/prof_chi2_0.png]]
+
+*** 2014-05-06 07:56  2189 its, 2 pops, 5 bins, 4 nbeta, mono
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060756/ov_1.pdf]]
+
+    [[/home/ast/read/dark/gravlite/DTwalk/4/201405060756/prof_chi2_0.png]]
