@@ -15,7 +15,7 @@ from scipy.integrate import simps,trapz
 import gl_helper as gh
 
 
-def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Mdat, Merr, sigdat, sigerr, scales, gp):
+def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp):
     for comp in range(gp.pops+1):
         # write scales
         crscale = open(gp.files.get_scale_file(comp), 'w')
@@ -57,8 +57,20 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Mdat, Merr, sigd
 
     
 
-## \fn write_disc_output_files(gp)
+## \fn write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp)
 # for permanent and consistent data handling
+# @param Rbin
+# @param Binmin
+# @param Binmax
+# @param nudat
+# @param nuerr
+# @param Sigdat
+# @param Sigerr
+# @param Mdat
+# @param Merr
+# @param sigdat
+# @param sigerr
+# @param scales
 # @param gp global parameters
 
 
@@ -68,7 +80,7 @@ def run(gp):
     zmin = 100.                               # [pc], first bin center
     zmax = 1300.                              # [pc], last bin center
     # get Stuetzpunkte for theoretical profiles (not yet stars, finer spacing in real space)
-    nth = 3*gp.nipol
+    nth = gp.nipol
     zth = 1.* np.arange(nth) * (zmax-zmin)/(nth-1.) + zmin
     z0  = 240.                                # [pc], scaleheight of first population
     z02 = 200.                                # [pc], scaleheight of second population
@@ -100,7 +112,7 @@ def run(gp):
     # > 0 ((IDL, Justin)) stellar velocity dispersion
 
     # assign [0,1] * maxsig
-    ran2 = npr.normal(size=int(gp.ntracer[1-1]))  # [1]
+    ran2 = npr.normal(size=int(gp.ntracer[2-1]))  # [1]
     vzstar = ran2 * sigzstar                      # [km/s]
 
     # Add second population [thick-disc like]: 
@@ -133,11 +145,10 @@ def run(gp):
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin1, binmax1, z_dat_bin1, sig_dat_bin1, count_bin1 = gh.binsmooth(z_dat1, vz_dat1, \
                                                                      zmin, zmax, gp.nipol, 0.)
-    sig_dat_err_bin1 = sig_dat_bin1 / np.sqrt(count_bin1)
+    sig_dat_err_bin1 = np.sqrt(sig_dat_bin1) # Poisson errors
     
-    nu_dat_bin1, count_bin1 = gh.bincount(z_dat1, binmax1)
-    nu_dat_err_bin1 = nu_dat_bin1 / np.sqrt(count_bin1)
-    Mrdat1 = np.cumsum(count_bin1)
+    nu_dat_bin1, nu_dat_err_bin1 = gh.bincount(z_dat1, binmax1)
+    Mrdat1 = np.cumsum(nu_dat_bin1)
     Mrerr1 = Mrdat1*nu_dat_err_bin1/nu_dat_bin1
 
     scales=[[],[],[]]
@@ -165,11 +176,10 @@ def run(gp):
         # Calulate binned data (for plots/binned analysis):
         binmin2, binmax2, z_dat_bin2, sig_dat_bin2, count_bin2 = gh.binsmooth(z_dat2, vz_dat2, \
                                                                               zmin, zmax, gp.nipol, 0.)
-        sig_dat_err_bin2 = sig_dat_bin2 / np.sqrt(count_bin2) # Poissonian errors
+        sig_dat_err_bin2 = np.sqrt(sig_dat_bin2) # Poissonian errors
         
-        nu_dat_bin2, count_bin2 = gh.bincount(z_dat2, binmax2)
-        nu_dat_err_bin2 = nu_dat_bin2 / np.sqrt(count_bin2)
-        Mrdat2 = np.cumsum(count_bin2)
+        nu_dat_bin2, nu_dat_err_bin2 = gh.bincount(z_dat2, binmax2)
+        Mrdat2 = np.cumsum(nu_dat_bin2)
         Mrerr2 = Mrdat2*nu_dat_err_bin2/nu_dat_bin2
 
         scales[2].append(z02) # [pc]
@@ -187,8 +197,7 @@ def run(gp):
     sig_dat_err_bin0 = sig_dat_bin0 / np.sqrt(count_bin0)
     # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
     
-    nu_dat_bin0, count_bin0 = gh.bincount(z_dat0, binmax0)
-    nu_dat_err_bin0 = nu_dat_bin0 / np.sqrt(count_bin0)
+    nu_dat_bin0, nu_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
     renorm0 = max(nu_dat_bin0)
  
     xip = np.copy(z_dat_bin0)                        # [pc]
@@ -200,9 +209,9 @@ def run(gp):
     scales[0].append(Mrdat0[-1])
     scales[0].append(max(sig_dat_bin0))
 
-    rmin = binmin0 # [pc]
-    rbin = xip     # [pc]
-    rmax = binmax0 # [pc]
+    rmin = binmin0/scales[0][0] # [pc]
+    rbin = xip/scales[0][0]     # [pc]
+    rmax = binmax0/scales[0][0] # [pc]
     
     # store parameters for output
     # normalized by scale values
@@ -215,6 +224,20 @@ def run(gp):
     nuerr.append(nu_dat_err_bin0/scales[0][1])   # [Msun/pc^3]
     nuerr.append(nu_dat_err_bin1/scales[1][1])
     nuerr.append(nu_dat_err_bin2/scales[2][1])
+
+    Sigdat = []
+    # TODO
+    #Sigdat0 = gl_project.nu_param_INT_Sig_disc(xip, nu_dat_bin0, 0, gp)
+    #Sigdat1 = gl_project.nu_param_INT_Sig_disc(xip, nu_dat_bin1, 1, gp)
+    #Sigdat2 = gl_project.nu_param_INT_Sig_disc(xip, nu_dat_bin2, 2, gp)
+    #Sigdat.append(Sigdat0)
+    #Sigdat.append(Sigdat1)
+    #Sigdat.append(Sigdat2)
+
+    Sigerr = []
+    #Sigerr.append(Sigdat0/np.sqrt(len(Sigdat0)))
+    #Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
+    #Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
 
     Mrdat = []
     Mrdat.append(Mrdat0/scales[0][2])            # [Msun]
@@ -236,7 +259,8 @@ def run(gp):
     sigerr.append(sig_dat_err_bin1/scales[1][3])
     sigerr.append(sig_dat_err_bin2/scales[2][3])
 
-    write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, Mrdat, Mrerr,\
+    write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
+                            Sigdat, Sigerr, Mrdat, Mrerr,\
                             sigdat, sigerr, scales, gp)
     return gp.dat
 

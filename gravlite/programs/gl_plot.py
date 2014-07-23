@@ -9,6 +9,7 @@
 import numpy as np
 import pdb
 import matplotlib.pyplot as plt
+plt.ion()
 
 
 def startlog():

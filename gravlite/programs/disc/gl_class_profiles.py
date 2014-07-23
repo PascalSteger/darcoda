@@ -40,8 +40,7 @@ class Profiles:
         elif prof == 'M':
             self.M = arr
         elif prof == 'nu':
-            tmp_nu = phys.nu_decrease(gp.xepol, arr, gp) #  [1], [pc]
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = tmp_nu[3:-3]
+            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr[3:-3]
             Sig = gl_project.nu_param_INT_Sig_disc(gp.xepol, arr, pop, gp)
             # [Munit/pc^2], on nipol bins
             self.Sig[pop*self.nipol:(pop+1)*self.nipol] = Sig[3:-3]
@@ -66,6 +65,8 @@ class Profiles:
             return self.nr
         elif prof == 'M':
             return self.M
+        elif prof == 'nu':
+            return self.nu[pop*self.nipol:(pop+1)*self.nipol]
         elif prof == 'Sig':
             return self.Sig[pop*self.nipol:(pop+1)*self.nipol]
         elif prof == 'tilt':

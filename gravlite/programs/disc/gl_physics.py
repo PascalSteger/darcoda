@@ -17,7 +17,7 @@ import gl_helper as gh
 def nr(dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     r0 = gp.xepol
-    r0 = np.hstack([r0[0]/1e4, r0[0]/2., r0, gp.rinfty*r0[-4]])
+    r0 = np.hstack([r0[0]/1e4, r0[0]/2., r0, gp.rinfty*r0[-1]])
     logr0 = np.log(r0/gp.Rscale[pop])
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
@@ -330,7 +330,7 @@ def sigz(zp, rhopar, nupar, norm, tpar, pop, gp):
 
                 sigint[i+1] = sigint[i] + intbit
     sig_z_t2 = 1.0/nu_z * (sigint + norm)
-    return  np.sqrt(sig_z_t2[:gp.nipol])
+    return  np.sqrt(sig_z_t2[3:-3])
 ## \fn sigz(zp, rhopar, nupar, norm, tpars, pop, gp)
 # calculate z velocity dispersion
 # @param zp vertical coordinate [pc]

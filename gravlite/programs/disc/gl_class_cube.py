@@ -50,23 +50,21 @@ def map_tiltstar(pa, gp):
 
 
 def map_nr(pa, gp):
-    # get offset and n(r) profiles, calculate rho
-
     # first parameter gives half-light radius value of rho directly
-    # use [0,1]**3 to increase probability of sampling close to 0
-    # TODO: possible restriction from data?
-    pa[0] = 1./(1-pa[0]**2)-1. # [0,1[ => [0, infty[
+    scale = gp.rhohalf
+    width = gp.rhospread
+    pa[0] = 10**((pa[0]*2.*width)-width+np.log10(scale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     if 1 <= gp.iscale + 1:
-        pa[1] = (pa[1]**1)*2.0
+        pa[1] = (pa[1]**1)*gp.maxrhoslope/2.
     else:
-        pa[1] = (pa[1]**1)*2.999
+        pa[1] = (pa[1]**1)*min(gp.maxrhoslope, 2.99)
 
     # offset for the integration of dn(r)/dlog(r) at smallest radius
     if 2 <= gp.iscale + 1:
-        pa[2] = (pa[2]**1)*2.0
+        pa[2] = (pa[2]**1)*gp.maxrhoslope/2.
     else:
         pa[2] = (pa[2]**1)*gp.maxrhoslope
 
@@ -84,13 +82,13 @@ def map_nr(pa, gp):
 
         pa[i] = max(0., pa[i])
         if i <= gp.iscale+1: # iscale: no. bins with xipol<Rscale[all]
-            pa[i] = min(2.0, pa[i])
+            pa[i] = min(gp.maxrhoslope/2., pa[i])
         else:
             pa[i] = min(gp.maxrhoslope, pa[i])
     # rho slope for asymptotically reaching r = \infty is given directly
-    # must lie below -3
+    # must lie below -1
     # to ensure we have a finite mass at all radii 0<r<=\infty
-    pa[gp.nepol-1] = pa[gp.nepol-1] * gp.maxrhoslope # *(gp.maxrhoslope-3)+3
+    pa[gp.nepol-1] = pa[gp.nepol-1]*gp.maxrhoslope# *(gp.maxrhoslope-1)+1
     if gp.monotonic:
         pa[gp.nepol-1] += pa[gp.nepol-2]
 
@@ -110,7 +108,7 @@ def map_nr(pa, gp):
 def map_nu(pa, gp):
     # TODO: assertion len(pa)=gp.nupol
     for i in range(len(pa)):
-        pa[i] = 10**(pa[i]*(gp.maxlognu-gp.minlognu)+gp.minlognu)
+        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
     return pa
 ## \fn map_nu(pa, gp)
 # map tracer densities, directly
@@ -132,12 +130,12 @@ class Cube:
         # if we want any priors, here they have to enter:
         pc = self.cube
         off = 0
-        pc[off] = pc[off]*500 # for norm, TODO: sampling [0,infty]?
+        pc[off] = pc[off]*200-100+17**2 # for normalization C
         off += 1
         tmp = map_nr(pc[off:off+gp.nepol], gp)
         for i in range(gp.nepol):
-            pc[i] = tmp[i]
-        off = gp.nepol
+            pc[off+i] = tmp[i]
+        off += gp.nepol
         for pop in range(gp.pops):
             tmp = map_nu(pc[off:off+gp.nupol], gp)
             for i in range(gp.nupol):
@@ -156,7 +154,7 @@ class Cube:
 
 
     def __repr__(self):
-        return "Cube (disc)"
+        return "Cube (disc) with "+str(gp.pops)+" pops "
     
     def copy(self, cub):
         self.cube = cub

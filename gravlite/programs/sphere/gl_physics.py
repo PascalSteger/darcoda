@@ -12,8 +12,11 @@ import gl_chi as gc
 import gl_helper as gh
 
 from scipy.interpolate import splrep, splint, splev
-from gl_analytic import *
+import gl_analytic as ga
+import gl_project
 import gl_int as gi
+import gl_plot as gpl
+from pylab import *
 
 def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
     return rho0*(r/r_DM)**(-gamma_DM)*\
@@ -32,9 +35,8 @@ def nr(dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     r0 = gp.xepol
     r0 = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
-    logr0 = np.log(r0/gp.Rscale[pop])
     # up: common radii r0, but different scale radius for each pop
-    dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
+    logr0 = np.log(r0/gp.Rscale[pop])
     dlr *= -1.
     
     # use linear spline interpolation in r
@@ -99,7 +101,6 @@ def rho(r0, arr, pop, gp):
     arr = arr[1:]
 
     # spline_n = nr_medium(arr, pop, gp) # extrapolate
-    pdb.set_trace()
     spline_n = nr(arr, pop, gp) # fix on gp.xepol, where it's defined
 
     rs =  np.log(r0/gp.Rscale[pop]) # have to integrate in d log(r)
@@ -131,17 +132,26 @@ def rho(r0, arr, pop, gp):
 # @param gp global parameters
 
 
-def beta_star_to_beta(betastar):
+def nu(r0, arr, gp):
+    return gh.linipollog(gp.xepol, arr, r0)
+## \fn nu(r0, arr, gp)
+# interpolate nu parameters from gp.xepol where they are defined
+# to any radii r0 (typically gp.rfine) within range of gp.xepol
+# @param r0 radii [pc]
+# @param arr nu parameters in physical space (directly 3D density)
+# @param gp global parameters
+
+def betastar2beta(betastar):
     # beta^* = \frac{sig_r^2-sig_t^2}{sig_r^2+sig_t^2}
     # betastar is in [-1,1]
     # and symmetric
     return 2.*betastar/(1.+betastar)
-## \fn beta_star_to_beta(betastar)
+## \fn betastar2beta(betastar)
 # map beta* to beta
 # @param betastar float array
 
 
-def map_beta_star_poly(r0, arr, gp):
+def betastar(r0, arr, gp):
     r0 = np.array([r0]).flatten()
     betatmp = np.zeros(len(r0))
     for i in range(gp.nbeta):
@@ -149,14 +159,13 @@ def map_beta_star_poly(r0, arr, gp):
     # clipping beta* to the range [-1,1]
     # thus not allowing any unphysical beta,
     # but still allowing parameters to go the the max. value
-    
     for i in range(len(r0)):
         if betatmp[i] > 1.:
             betatmp[i] = 1.
         if betatmp[i] <= -0.99:
             betatmp[i] = -0.99 # excluding -inf values in beta
     return betatmp
-## \fn map_beta_star_poly(r0, arr, gp)
+## \fn betastar(r0, arr, gp)
 # map [0,1] to [-1,1] with a polynomial
 # @param r0 radii [pc]
 # @param arr normalized ai, s.t. abs(sum(ai)) = 1
@@ -164,9 +173,9 @@ def map_beta_star_poly(r0, arr, gp):
 
 
 def beta(r0, arr, gp):
-    betastar = map_beta_star_poly(r0, arr, gp)
-    betatmp  = beta_star_to_beta(betastar)
-    return betatmp, betastar
+    bstar = betastar(r0, arr, gp)
+    betatmp  = betastar2beta(bstar)
+    return betatmp, bstar
 ## \fn beta(r0, arr, gp)
 # return beta and beta* from beta parameter array
 # @param r0 radii [pc]
@@ -209,8 +218,6 @@ def calculate_surfdens(r, M):
 
 
 def sig_kap_zet(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
-    from gl_project import rho_param_INT_Rho
-
     siglos2, kaplos4, zetaa, zetab = gi.ant_sigkaplos(r0, rhopar, rhostarpar, nupar, betapar, pop, gp)
     siglos  = np.sqrt(siglos2)           # [km/s]
 

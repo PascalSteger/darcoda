@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -90,7 +90,7 @@ def run(gp):
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.05, # very low eff. in
+                    sampling_efficiency = 0.10, # very low eff. in
                                                 #case of const efficiency mode,
                                                 #README
                     n_iter_before_update = 1, # output after this many iterations
@@ -108,14 +108,14 @@ def run(gp):
                     resume = False,
                     context = 0,
                     write_output = True,
-                    log_zero = -1e90,      # points with log likelihood
+                    log_zero = -1e500,    # points with log likelihood
                                           #< log_zero will be
                                           #neglected
                     max_iter = 0,         # set to 0 for never
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
-                    init_MPI = True,     # use MPI
+                    init_MPI = False,     # use MPI
                     dump_callback = None)
 
 

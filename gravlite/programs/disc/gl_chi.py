@@ -34,12 +34,14 @@ def calc_chi2(profs, gp):
     for pop in np.arange(gp.pops)+1: # look at 0 (==1) for pop=1, and (1,2) for pop==2
         nudat   = gp.dat.nu[pop]     # [Munit/pc^3]
         nuerr   = gp.dat.nuerr[pop]  # [Munit/pc^3]
-        chi2_nu  = chi2red(profs.get_prof('nu', pop), nudat, nuerr, gp.nipol) # [1]
+        numodel = profs.get_prof('nu', pop)
+        chi2_nu  = chi2red(numodel, nudat, nuerr, gp.nipol)
         chi2 += chi2_nu              # [1]
         
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop] # [km/s]
-        chi2_sig = chi2red(profs.get_prof('sig', pop), sigdat, sigerr, gp.nipol) # [1]
+        sigmodel= profs.get_prof('sig', pop)
+        chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nipol) # [1]
         chi2 += chi2_sig             # [1]
         print('chi2_nu, chi2_sig = ', chi2_nu, ' ', chi2_sig)
         if gp.usekappa:

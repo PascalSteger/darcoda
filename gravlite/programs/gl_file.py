@@ -27,7 +27,7 @@ def bin_data(gp):
         grw_COM.run(gp)
         grw_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhowalktot)
-        if gp.model:
+        if gp.walker3D:
             import grw_com, grw_mcmcbin
             grw_com.run()
             grw_mcmcbin.run()
@@ -74,14 +74,17 @@ def get_data(gp):
 
 
 def get_rhohalfs(gp):
-    # Wolf, Walker method for M_half, r_half
-    # assuming isotropic Plummer profile:
-    r_half = gp.dat.rhalf[0] # [pc] from overall rho*
-    sigv = np.median(gp.dat.sig[0]) # [km/s] from overall rho*
-    M_half = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
-    # other estimate: Wolf+2010,
-    # M(4/3 r_half = R_half) = 4 r_half sigv**2/gp.G
-    gp.rhohalf = M_half/(4.*np.pi*r_half**3/3.)
+    if gp.geom == 'sphere':
+        # Wolf, Walker method for M_half, r_half
+        # assuming isotropic Plummer profile:
+        r_half = gp.dat.rhalf[0] # [pc] from overall rho*
+        sigv = np.median(gp.dat.sig[0]) # [km/s] from overall rho*
+        M_half = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
+        # other estimate: Wolf+2010,
+        # M(4/3 r_half = R_half) = 4 r_half sigv**2/gp.G
+        gp.rhohalf = M_half/(4.*np.pi*r_half**3/3.)
+    elif gp.geom == 'disc':
+        return -1.08
 ## \fn get_rhohalfs(gp)
 # get informed priors on 3D densities at half-light radius
 # via deprojection for nu

@@ -10,10 +10,12 @@ import numpy as np
 import pdb, scipy
 from scipy.integrate import simps,trapz,quad
 from scipy.interpolate import splrep, splev, splint
-import gl_int as gi
 import gl_helper as gh
 import gl_plot as gpl
 import gl_physics as phys
+import gl_project
+import gl_plot as gpl
+from pylab import *
 
 def int_poly_inf(r0,poly):
     f = -1/poly[0]*np.exp(poly[1]+poly[0]*r0)
@@ -118,16 +120,17 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
     # (*not* Sigma from nu_i, could miss populations, have 
     # varying selection function as fct of radius, 
     # need a M/L nuisance parameter)
-    rhonu += phys.rho(r0nu, rhostarpar, 0, gp)
+    rhonu += phys.nu(r0nu, rhostarpar, gp)
     betanu = phys.beta(r0nu, betapar, gp)[0]
-    nunu   = gh.ipollog(gp.xepol, nupar, r0nu) # interpolate points
+    nunu   = phys.nu(r0nu, nupar, gp)
+    idnu   = ant_intbeta_old(r0nu, betapar, gp)
 
     # integrate enclosed 3D mass from 3D density
     r0tmp = np.hstack([0.,r0nu])
     rhoint = 4.*np.pi*r0nu**2*rhonu
     # add point to avoid 0.0 in Mrnu(r0nu[0])
     rhotmp = np.hstack([0.,rhoint])
-    tck1 = splrep(r0tmp, rhotmp, k=3, s=0.) # not necessarily monotonic
+    tck1 = splrep(r0tmp, rhotmp, k=1, s=0.) # not necessarily monotonic
     Mrnu = np.zeros(len(r0nu))              # work in refined model
     for i in range(len(r0nu)):              # get Mrnu
         Mrnu[i] = splint(0., r0nu[i], tck1)
@@ -135,53 +138,53 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
 
     # (sigr2, 3D) * nu/exp(-idnu)
     xint = r0nu                           # [pc]
-    yint = Mrnu*nunu*r0nu**(2.*(betapar[0]-1.))/varepsilon(r0nu, betapar, gp)
+    yint = gp.G1 * Mrnu / r0nu**2         # [1/pc (km/s)^2]
+    yint *= nunu                          # [Munit/pc^4 (km/s)^2]
+    yint *= np.exp(idnu)                  # [Munit/pc^4 (km/s)^2]
     gh.checkpositive(yint, 'yint sigr2')
 
     # use quadinflog or quadinfloglog here
     sigr2nu = np.zeros(len(r0nu))
     for i in range(len(r0nu)):
         # TODO: check quadinflog with walker profiles
-        sigr2nu[i] = gh.quadinflog(xint, yint, r0nu[i], np.inf, True)
+        sigr2nu[i] = np.exp(-idnu[i])/nunu[i]*\
+                     gh.quadinflog(xint, yint, r0nu[i], gp.rinfty*r0nu[-1], True)
         if sigr2nu[i] == np.inf:
             sigr2nu[i] = 1e-100
         # last arg: warn if no convergence found
-    sigr2nu *= gp.G1/nunu
-    sigr2nu *= r0nu**(-2.*betapar[0])
-    sigr2nu *= varepsilon(r0nu, betapar, gp)
     gh.checkpositive(sigr2nu, 'sigr2nu in sigl2s')
 
     # project back to LOS values
     # sigl2sold = np.zeros(len(r0nu)-gp.nexp)
     sigl2s = np.zeros(len(r0nu)-gp.nexp)
     for i in range(len(r0nu)-gp.nexp): # get sig_los^2
-        xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)                # [pc]
-        ynew = 2.*(1-betanu[i]*(r0nu[i]**2)/(r0nu[i:]**2))    # TODO check
+        xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)             # [pc]
+        ynew = 2.*(1-betanu[i]*(r0nu[i]**2)/(r0nu[i:]**2)) # TODO check
         ynew *= nunu[i:] * sigr2nu[i:]
         gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
         # check sigr2nu: has too many entries of inf!
-        tcknu = splrep(xnew, ynew, k=1)
-        # interpolation in real space for int
 
-        sigl2s[i] = gh.quadinflog(xnew[1:], ynew[1:], xnew[0], np.inf, False)
+        # stop integration at xnew[-1] instead of at np.inf
+        # to circumvent inf when nunu has increase at fudge radii
+        sigl2s[i] = gh.quadinflog(xnew, ynew, 0, xnew[-1], False)
     # for last 3 bins, we are up to a factor 2 off
     gh.checkpositive(sigl2s, 'sigl2s')
 
     # calculate surface density on the same r0nu as the sigl2s
-    surfden = gi.rho_param_INT_Rho(r0, rhopar, pop, gp)
+    surfden = gl_project.rho_param_INT_Rho(r0nu, rhopar, pop, gp)
     siglos2 = sigl2s/surfden
     
     # derefine on radii of the input vector
     tck = splrep(r0nu[:-gp.nexp], np.log(siglos2), k=3, s=0.)
-    siglos2_out = np.exp(splev(r0, tck))[:-3]
+    siglos2_out = np.exp(splev(r0, tck))[gp.nexp:-gp.nexp]
     gh.checkpositive(siglos2_out, 'siglos2_out')
     if not gp.usekappa:
-        kapl4s_out = np.ones(len(sigl2s_out))
+        kapl4s_out = np.ones(len(siglos2_out))
     if gp.usekappa:
-        kapl4s_out = kappa(r0nu, Mrnu, nunu, sigr2nu, idnu, gp)  # TODO: /surfden?
+        kapl4s_out = kappa(r0nu, Mrnu, nunu, sigr2nu, idnu, gp)
         
-    zetaa = np.ones(len(sigl2s_out))
-    zetab = np.ones(len(sigl2s_out))
+    zetaa = np.ones(len(siglos2))
+    zetab = np.ones(len(siglos2))
     if gp.usezeta:
         zetaa, zetab = zeta(r0nu, Mrnu, nunu, gp)
 
@@ -199,7 +202,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
 # @param betapar velocity anisotropy in [1]
 # @param pop int for population to look at (really the scalrad for rhohalf)
 # @param gp global parameters
-# @return integral for sig_los^2 * surface density, correspondingly for 4th order kappa, zetaa, zetab
+# @return sig_los^2, correspondingly for 4th order kappa, zetaa, zetab
 
 
 def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
@@ -214,14 +217,13 @@ def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
     # need a M/L nuisance parameter)
     rhonu += phys.rho(r0nu, rhostarpar, 0, gp)
 
-    nunu   = phys.rho(r0nu, nupar, pop, gp)
+    nunu   = phys.nu(r0nu, nupar, gp)
     betanu, dum = phys.beta(r0nu, betapar, gp)[0]
 
     # calculate intbeta from beta approx directly
     # TODO: check difference between ant_intbeta and ant_intbeta_old
     # usig analytical value for beta, int(beta)
     idnu   = ant_intbeta_old(r0nu, betapar, gp) # 
-    # analytic
 
     # integrate enclosed 3D mass from 3D density
     r0tmp = np.hstack([0.,r0nu])

@@ -25,11 +25,11 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
     # rhopar hold [rho(rhalf), nr to be used for integration
     # from halflight radius, defined on gp.xepol]
-    tmp_profs.set_prof('rho', tmp_rho[:gp.nipol], 0, gp)
+    tmp_profs.set_prof('rho', tmp_rho, 0, gp) # TODO: cut tmp_rho
 
     # (only calculate) M, check
     tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
-    tmp_profs.set_prof('M', tmp_M[:gp.nipol], 0, gp)
+    tmp_profs.set_prof('M', tmp_M, 0, gp) # TODO: cut tmp_M
     off += gp.nepol
 
     # get profile for rho*
@@ -56,15 +56,14 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('beta', tmp_beta, pop, gp)
         tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
         
-        # try:
-        pdb.set_trace() # check order of magnitude
-        sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, nupar, betapar, pop, gp)
+        try:
+            sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, nupar, betapar, pop, gp)
         
             # sig_LOS, kappa_LOS, and zeta are defined on data radii only, so no extension by 3 bins here
 
-        #except Exception as detail:
-        #    tmp_profs.chi2 = gh.err(2., gp)
-        #    return tmp_profs
+        except Exception as detail:
+            tmp_profs.chi2 = gh.err(2., gp)
+            return tmp_profs
         tmp_profs.set_prof('sig', sig, pop, gp)
         tmp_profs.set_prof('kap', kap, pop, gp)
         tmp_profs.set_prof('zetaa', zetaa, pop, gp)

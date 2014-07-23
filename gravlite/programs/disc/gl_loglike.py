@@ -22,17 +22,14 @@ def geom_loglike(cube, ndim, nparams, gp):
     rhopar = np.array(cube[off:off+gp.nepol])
     tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
     tmp_profs.set_prof('rho', tmp_rho[3:-3], 0, gp)
-
+    off += gp.nepol
     # TODO: M
     # tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
     # tmp_profs.set_prof('M', tmp_M[:gp.nipol], 0, gp)
-    off += gp.nepol
+
 
     for pop in np.arange(gp.pops)+1:
         nupar = np.array(cube[off:off+gp.nupol])
-        tmp_nu = phys.nu_decrease(gp.xepol, nupar, gp) #  [pc], [1]
-        
-        # do baryonic prior check if gl_params.bprior = True; or use rho_DM+rho_tracer as rho_tot
         tmp_profs.set_prof('nu', nupar, pop, gp) # [Munit/pc^3]
         off += gp.nupol
 
@@ -46,9 +43,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         off += gp.nbeta
 
         #try:
-        # TODO: check integration
         sig = phys.sigz(gp.xepol, rhopar, nupar, norm, tiltpar, pop, gp)
-
         #except Exception as detail:
         #    print('sig kap exception')
         #    tmp_profs.chi2 = gh.err(3., gp)

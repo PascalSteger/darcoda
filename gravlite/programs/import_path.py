@@ -37,21 +37,15 @@ def import_path(fullpath):
 # @return module, use like module.some_fun()
 
 
-def set_geometry(inv, machine):
+def set_geometry(geom, machine):
     if machine == 'local':
         basepath = '/home/psteger/sci/gravlite/programs/'
     elif machine == 'darkside':
         basepath = '/home/ast/read/dark/gravlite/programs/'
 
     insert_sys_path(basepath + 'datareduction/')
-
-    if inv == 'discmock' or inv == 'discsim':
-        insert_sys_path(basepath + 'disc/')
-    else:
-        insert_sys_path(basepath + 'sphere/')
-        #from gl_priors import check_beta
-        #from gl_project import rho_SUM_Mr
-## \fn set_geometry(inv, machine)
+    insert_sys_path(basepath + geom)
+## \fn set_geometry(geom, machine)
 # get right directory for geometry-dependent imports
-# @param inv string of investigation. walk, discsim, gaia, ..
+# @param geom string of investigation geometry: disc or sphere
 # @param machine string for working machine. local or darkside

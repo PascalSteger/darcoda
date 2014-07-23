@@ -82,7 +82,7 @@ def map_nr(pa, scale, width, gp):
 
 def map_nu(pa, gp):
     for i in range(gp.nupol):
-        pa[i] = 10**(pa[i]*(gp.maxlognu-gp.minlognu)+gp.minlognu)
+        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
     return pa
 ## \fn map_nu(pa, gp)
 # map tracer densities, directly
@@ -103,7 +103,7 @@ def map_betastar(pa, gp):
     # pa[0] = np.sign(tmp)*tmp**2 # between -1 and 1 for first parameter
     off += 1
     for i in range(gp.nbeta-1):
-        pa[off] = (2*(pa[off]-0.5))*gp.maxbetaslope/(i+1)**2
+        pa[off] = (2*(pa[off]-0.5))*gp.maxbetaslope
         # rising beta prior would remove -0.5
         # /i in the end suppresses higher order wiggling
         off += 1
@@ -126,29 +126,29 @@ class Cube:
 
     def convert_to_parameter_space(self, gp):
         # if we want any priors, here they have to enter:
+        off = 0
         pc = self.cube
-        # DM density
-        tmp = map_nr(pc[0:gp.nepol], gp.rhohalf, gp.rhospread, gp)
+        # DM density rho, set in parametrization of n(r)
+        tmp_nr = map_nr(pc[0:gp.nepol], gp.rhohalf, gp.rhospread, gp)
         for i in range(gp.nepol):
-            pc[i] = tmp[i]
-        off = gp.nepol
+            pc[off+i] = tmp_nr[i]
+        off += gp.nepol
 
         # rho*
-        tmp = map_nu(pc[off:off+gp.nupol], gp)
+        tmp_rhostar = map_nu(pc[off:off+gp.nupol], gp)
         for i in range(gp.nupol):
-            pc[off+i] = tmp[i]
-        off += gp.nepol
+            pc[off+i] = tmp_rhostar[i]
+        off += gp.nupol
         
         for pop in range(gp.pops): # nu1, nu2, ...
-            tmp = map_nu(pc[off:off+gp.nupol], gp)
+            tmp_nu = map_nu(pc[off:off+gp.nupol], gp)
             for i in range(gp.nupol):
-                pc[off+i] = tmp[i]
+                pc[off+i] = tmp_nu[i]
             off += gp.nupol
-            tmp = map_betastar(pc[off:off+gp.nbeta], gp)
+            tmp_betastar = map_betastar(pc[off:off+gp.nbeta], gp)
             for i in range(gp.nbeta):
-                pc[off+i] = tmp[i]
+                pc[off+i] = tmp_betastar[i]
             off += gp.nbeta
-           
         return pc
     ## \fn convert_to_parameter_space(self, gp)
     # convert [0,1]^ndim to parameter space

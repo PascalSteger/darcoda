@@ -43,7 +43,7 @@ class Profiles:
         elif prof == 'M':
             self.M = arr
         elif prof == 'nu':
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr[:self.nipol] # arr has nepol-3 entries
+            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr[3:-3] # arr has nepol-3 entries
             arrnu = gh.linipollog(gp.xepol, arr, gp.xfine)
 
             Signu = rho_INTIPOL_Rho(gp.xfine, arrnu, gp) # [Munit/pc^2]

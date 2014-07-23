@@ -144,9 +144,9 @@ class Files:
         
 
     def get_sim_name(self, gp):
-        if gp.sim == 1:
+        if gp.hern_dual == 1:
             simname = 'unit_hern_1_'
-        elif gp.sim == 2:
+        elif gp.hern_dual == 2:
             simname = 'dual_unit_hern_1_'
         return simname
     ## \fn get_sim_name(self, gp)

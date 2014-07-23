@@ -520,7 +520,7 @@ def bincount(r, rmax):
     nbin = len(rmax)
     arrayout  = np.zeros(nbin)
     count_bin = np.zeros(nbin)
-    error     = np.zeros(nbin)
+    std       = np.zeros(nbin)
     j = 0
     siz = len(r)
 
@@ -532,14 +532,11 @@ def bincount(r, rmax):
             else:
                 break
         count_bin[i] = arrayout[i]
+        std[i] = np.sqrt(count_bin[i])
     
-    return arrayout, count_bin
+    return arrayout, std
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
-# WARNING!! THIS ROUTINE REQUIRES SORTED ASCENDING r ARRAYS.
 # @param r array of floats
 # @param rmax upper bound of bins
-# @return arrrayout, count_bin
-
-
-
+# @return arrrayout, std

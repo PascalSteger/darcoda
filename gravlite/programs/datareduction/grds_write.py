@@ -45,8 +45,8 @@ def disc_sim(gp):
         gp.dat.Mrerr = surfbar_dat_err_raw[selsurf]  # [Munit/pc^2]
     
         # total surface density
-        gp.Mmodel = surftot_dat_raw[selsusrf]        # [Munit/pc^2]
-        Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1)  
+        Mmodel = surftot_dat_raw[selsusrf]        # [Munit/pc^2]
+        Kz_zstar = -Mmodel * (2.*np.pi*gp.G1)  
  
         # should be kappa data (not sure whether this is necessary)      
         gp.dat.densx     = z_surf_raw[selsusrf]*1000.         # [pc]
@@ -205,8 +205,6 @@ def disc_sim(gp):
             nu_dat_bin2 /= renorm              # [1]
             nu_dat_err_bin2 /= renorm          # [1]
 
-
-        # if gp.bprior:
         # Load the baryonic model:
         if gp.baryonmodel == 'silvia':
             zvis,sigexpvis,sigexpviserr,sigsecvis,sigsecviserr = gh.readcoln('/home/ast/user/jread/Data/Local_dm/Vis/Sigma_MM.txt') 
@@ -241,8 +239,8 @@ def disc_sim(gp):
         gp.dat.Mrerr = siguseviserr           # [Munit/pc^2]
 
         # total surface density (same z array as baryonic)
-        gp.Mmodel = sigusevis + sigusedm         # [Munit/pc^2]
-        Kz_zstar = -gp.Mmodel * (2.*np.pi*gp.G1) # [1000/pc (km/s)^2]
+        Mmodel = sigusevis + sigusedm         # [Munit/pc^2]
+        Kz_zstar = -Mmodel * (2.*np.pi*gp.G1) # [1000/pc (km/s)^2]
  
         # should be kappa data (not sure whether this is necessary)      
         gp.dat.densx     = gp.xipol                       # [pc]

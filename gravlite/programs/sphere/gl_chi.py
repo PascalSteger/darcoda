@@ -39,7 +39,6 @@ def calc_chi2(profs, gp):
     print('chi2_rhostar     = ', chi2_rhostar)
 
     # now run through the stellar tracers
-
     for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]
         Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
         Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]

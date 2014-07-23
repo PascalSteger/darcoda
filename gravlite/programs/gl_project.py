@@ -208,33 +208,24 @@ def nu_param_INT_Sig_disc(r0, nupar, pop, gp):
 def rho_INTIPOL_Rho(r0, rho, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{r=\infty} \rho(r) d \sqrt(r^2-R^2)
-    xmin = r0[0]/30. # tweaked. r0[0]/1e4 gives error in quad()
-    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
-    r0nu = np.hstack([r0left, r0])
-
     gh.checkpositive(rho, 'rho in rho_INTIPOL_Rho')
-    pdb.set_trace()
-    rhonu = gh.ipollog(r0, rho, r0nu)
-    nexp = np.sum(gp.xfine > gp.xipol[-1])
-
-    Rho = np.zeros(len(r0nu)-nexp)
-    for i in range(len(r0nu)-nexp):
+    rmax = r0[-1]
+    rext = [2*rmax, 4*rmax, 8*rmax]
+    r0nu = np.hstack([r0, rext])
+    nexp = 3
+    rhoe = rho[-1]
+    rhonu = np.hstack([rho, rhoe/1e2, rhoe/1e4, rhoe/1e8])
+    Rho = np.zeros(len(r0))
+    for i in range(len(r0)):
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)         # [lunit]
         ynew = 2.*rhonu[i:]
 
         # power-law extension to infinity
-        C = gh.quadinflog(xnew[-nexp:], ynew[-nexp:], xnew[-1], 1e6*max(xnew)) #np.inf)
-        # tcknu  = splrep(xnew, ynew, k=3)
-        # interpolation in real space, not log space
-        # problem: splint below could give negative values
-        # reason:  for high radii (high i), have a spline that goes negative
-        # workaround: multiply by const/add const to keep spline positive @ all times
-        #             or set to log (but then integral is not straightforward
-        # Rho[i] = splint(0., xnew[-1], tcknu) + C
-        Rho[i] = gh.quadinflog(xnew[1:], ynew[1:], xmin, xnew[-1]) + C # np.inf)
+        C = gh.quadinflog(xnew[-nexp:], ynew[-nexp:], xnew[-1], gp.rinfty*xnew[-1])
+        Rho[i] = gh.quadinflog(xnew[1:], ynew[1:], xnew[0], xnew[-1]) + C
 
     gh.checkpositive(Rho, 'Rho in rho_INTIPOL_Rho')
-    return gh.ipollog(r0nu[:-nexp], Rho, r0)
+    return Rho
 ## \fn rho_INTIPOL_Rho(r0, rho, gp)
 # take 3D density, compute 2D density in bins, with interpolation
 # \Sigma(R) = 2\int_R^\infty dr \frac{\nu(r)}{\sqrt{r^2-R^2}}

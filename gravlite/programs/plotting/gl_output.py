@@ -19,12 +19,6 @@ class Output:
     # constructor, with descriptor and data in array format
 
 
-    def __repr__(self):
-        return "Output: "+self.descriptions+" "+self.arrays
-    ## \fn __repr__(self)
-    # string representation for ipython
-
-
     def add(self, d, arr):
         self.descriptions.append(d)
         self.arrays.append(arr)
@@ -53,7 +47,13 @@ class Output:
     ## \fn write(self, filename)
     # write file to csv file
     # @param filename string
-        
+
+
+    def __repr__(self):
+        return "Output: "+self.descriptions+" "+self.arrays
+    ## \fn __repr__(self)
+    # string representation for ipython
+
         
 ## \class Output
 # class for generating ASCII output files from plot_multinest
