@@ -484,18 +484,31 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
     
     for i in range(nbin):
         count = 0
+        #print('siz-1 = ', siz-1) 
         while (binmax[i] > r[j]):
+            #print('j = ', j, 'array[j] = ', array[j])
             arrayout1[i] = arrayout1[i]+array[j]
             arrayout2[i] = arrayout2[i]+array[j]**2
+            if (array[j] != 0):
+                count = count + 1
+
             if (j < siz-1):
                 j = j + 1
-                if (array[j] != 0):
-                    count = count + 1
             else:
                 break
 
         if (count > 0):
+            #print('count = ', count)
+            #print('\narrayout2[i] = ', arrayout2[i])
+            #print('arrayout1[i] = ', arrayout1[i])
             arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sig
+            #print('arrayout[i] = ', arrayout[i])
+            if np.isnan(arrayout[i]):
+                print('sqrt of negative found')
+                quit()
+            if np.isinf(arrayout[i]):
+                print('infinite arrayout found')
+                quit()
         else:
             arrayout[i] = nanreplace
         count_bin[i] = count
