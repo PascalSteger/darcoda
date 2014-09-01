@@ -17,13 +17,25 @@ import numpy as np
 import pdb
 
 
-def map_nr(pa, scale, width, gp):
+def map_nr(pa, prof, pop, gp):
     # get offset and n(r) profiles, calculate rho
-    iscale = gp.iscale
-    maxrhoslope = gp.maxrhoslope
-    nrscale = gp.nrtol
-    monotonic = gp.monotonic
-
+    if prof=='rho':
+        scale = gp.rhohalf
+        width = gp.rhospread
+        iscale = gp.iscale
+        maxrhoslope = gp.maxrhoslope
+        nrscale = gp.nrtol
+        monotonic = gp.monotonic
+    elif prof=='nu':
+        scale = gp.dat.nuhalf[pop]
+        width = gp.nuspread
+        iscale = gp.iscale_nu
+        maxrhoslope = gp.maxrhoslope_nu
+        nrscale = gp.nrtol_nu
+        monotonic = gp.monotonic_nu
+    else:
+        raise Exception('bad profile in gl_class_cube.map_nr')
+        
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
@@ -43,8 +55,8 @@ def map_nr(pa, scale, width, gp):
     else:
         pa[2] = (pa[2]**1)*maxrhoslope
 
-    rdef = gp.xepol
-    for i in range(3, gp.nepol-1):
+    rdef = gp.xepol # [pc]
+    for i in range(3, gp.nrho-1):
         # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
         # lie in between 0 and gp.maxrhoslope
         if monotonic:
@@ -62,26 +74,26 @@ def map_nr(pa, scale, width, gp):
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3
     # to ensure we have a finite mass at all radii 0<r<=\infty
-    pa[gp.nepol-1] = pa[gp.nepol-1] * maxrhoslope
+    pa[gp.nrho-1] = pa[gp.nrho-1] * maxrhoslope
     if monotonic:
-        pa[gp.nepol-1] += pa[gp.nepol-2]
+        pa[gp.nrho-1] += pa[gp.nrho-2]
     # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
-    # pa[gp.nepol-1] = max(pa[gp.nepol-1], 3.)
+    # pa[gp.nrho-1] = max(pa[gp.nrho-1], 3.)
     return pa
-## \fn map_nr(pa, scale, width, gp)
+## \fn map_nr(pa, prof, pop, gp)
 # mapping nr and rho parameters from [0,1] to full parameter space
 # setting all n(r<r_{iscale})<=2.0
 # and possibly a monotonically increasing function
 # first parameter is offset for rho_half
-# second parameter is asymptotic n(r\to0) value
+# second parameter is asymptotic n(r to 0) value
 # @param pa cube [0,1]^ndim
-# @param scale rho(r_half) [Munit/pc^3]
-# @param width [dex] in log10 space
+# @param prof string nu, rho, rhostar
+# @param pop population int, 0 for rho*, 1,2,... for tracer densities
 # @param gp global parameters
 
 
-def map_nu(pa, gp):
-    for i in range(gp.nupol):
+def map_nu_directly(pa, gp):
+    for i in range(gp.nepol):
         pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
     return pa
 ## \fn map_nu(pa, gp)
@@ -90,27 +102,54 @@ def map_nu(pa, gp):
 # @param gp global parameters
 
 
+def map_nu(pa, pop, gp):
+    dat = gp.dat.nu_epol[pop]
+    err = gp.dat.nuerr_epol[pop]
+    minnu = dat-20*err
+    maxnu = dat+20*err
+    for i in range(len(pa)):
+        minlog10nu = np.log10(minnu[i])
+        maxlog10nu = np.log10(maxnu[i])
+        pa[i] = 10**(pa[i]*(maxlog10nu-minlog10nu)+minlog10nu)
+    return pa
+## \fn map_nu(pa, pop, gp)
+# map tracer densities, directly
+# @param pa cube [0,1]^n
+# @param pop population int
+# @param gp global parameters
+
+
 def map_betastar(pa, gp):
-    off = 0
+    off_beta = 0
     # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
     # cluster around 0, go symmetrically in both directions,
-    pa[0] = 2.*(pa[0]-0.5)
+    pa[0] = 1.98*(pa[0]-0.5)
     # out to maxbetaslope
     # here we allow |beta_star,0| > 1, so that any models with
     # beta(<r_i) = 1, beta(>r_i) < 1
     # are searched as well
     # pa[0] = np.sign(tmp)*tmp**2 # between -1 and 1 for first parameter
-    off += 1
+    off_beta += 1
     for i in range(gp.nbeta-1):
-        pa[off] = (2*(pa[off]-0.5))*gp.maxbetaslope
+        pa[off_beta] = (2*(pa[off_beta]-0.5))*gp.maxbetaslope
         # rising beta prior would remove -0.5
         # /i in the end suppresses higher order wiggling
-        off += 1
+        off_beta += 1
     return pa
 ## \fn map_betastar(pa)
 # mapping beta parameters from [0,1] to full parameter space
 # @param pa parameter array
+
+
+def map_MtoL(pa, gp):
+    scale = gp.MtoLmax - gp.MtoLmin
+    pa = pa*scale+gp.MtoLmin
+    return pa
+## \fn map_MtoL(pa, gp)
+# map [0,1] to MtoL flat prior
+# @param pa scalar
+# @param gp global parameters holding MtoL{min,max}
 
 
 class Cube:
@@ -129,26 +168,35 @@ class Cube:
         off = 0
         pc = self.cube
         # DM density rho, set in parametrization of n(r)
-        tmp_nr = map_nr(pc[0:gp.nepol], gp.rhohalf, gp.rhospread, gp)
-        for i in range(gp.nepol):
+        offstep = gp.nrho
+        tmp_nr = map_nr(pc[0:offstep], 'rho', 0, gp)
+        for i in range(offstep):
             pc[off+i] = tmp_nr[i]
-        off += gp.nepol
+        off += offstep
 
         # rho*
-        tmp_rhostar = map_nu(pc[off:off+gp.nupol], gp)
-        for i in range(gp.nupol):
+        offstep = gp.nrho
+        tmp_rhostar = map_nr(pc[off:off+offstep], 'nu', 0, gp)
+        for i in range(offstep):
             pc[off+i] = tmp_rhostar[i]
-        off += gp.nupol
+        off += offstep
+        
+        offstep = 1
+        pc[off] = map_MtoL(pc[off], gp)
+        off += offstep
         
         for pop in range(gp.pops): # nu1, nu2, ...
-            tmp_nu = map_nu(pc[off:off+gp.nupol], gp)
-            for i in range(gp.nupol):
+            offstep = gp.nrho
+            tmp_nu = map_nr(pc[off:off+offstep], 'nu', pop, gp)
+            for i in range(offstep):
                 pc[off+i] = tmp_nu[i]
-            off += gp.nupol
-            tmp_betastar = map_betastar(pc[off:off+gp.nbeta], gp)
-            for i in range(gp.nbeta):
+            off += offstep
+
+            offstep = gp.nbeta
+            tmp_betastar = map_betastar(pc[off:off+offstep], gp)
+            for i in range(offstep):
                 pc[off+i] = tmp_betastar[i]
-            off += gp.nbeta
+            off += offstep
         return pc
     ## \fn convert_to_parameter_space(self, gp)
     # convert [0,1]^ndim to parameter space

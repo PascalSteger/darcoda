@@ -11,16 +11,27 @@ import sys, pdb
 import gr_params as gpr
 import gl_helper as gh
 from gl_centering import com_shrinkcircle_v_2D
+import pymultinest
 
 
-def p_plummer(R, rh):
-    return 2.*R/rh**2/(1.+R**2/rh**2)**2
+def p_plummer(R, rs):
+    return np.log(2.*R/rs**2/(1.+R**2/rs**2)**2)
+## \fn p_plummer(R, rh)
+# eq. 8 Walker 2011, likelihood that a tracer star is member of Plummer sphere
+# @param R projected radius from center, [arcmin]
+# @param rs scale radius, [arcmin]
 
 
 def p_gauss(X, Xmean, sigmaX, errorX):
     prefactor = 1./np.sqrt(2.*np.pi*(sigmaX**2+errorX**2))
     exponent = -0.5*(X-Xmean)**2/(sigmaX**2+errorX**2)
-    return prefactor*np.exp(exponent)
+    return np.log(prefactor*np.exp(exponent))
+## \fn p_gauss(X, Xmean, sigmaX, errorX)
+# eq. 9, 11 Walker 2011, likelihood based on generic Gauss function
+# @param X variable, property of stellar tracer
+# @param Xmean mean of all stars in that population
+# @param sigmaX spread of Gaussian
+# @param errorX observation error
 
 
 def p_MW(Xi, PMi, error):
@@ -29,15 +40,64 @@ def p_MW(Xi, PMi, error):
     for i in range(len(Xi)):
         nom += (1.-PMi[i])/np.sqrt(2.*np.pi*error**2)*np.exp(-0.5*(Xi[i]-X)**2/error[i]**2)
         denom += (1.-PM[i])
-    return nom/denom
+    return np.log(nom/denom)
+## \fn p_MW(Xi, PMi, error)
+# eq. 12 generic Walker 2011, likelihood that star is MW foreground
+# @param Xi variable, property of stellar tracer
+# @param PMi probability of membership
+# @param error observation error
 
 
+def pR(Rk, pop):
+    return p_gauss(Rk, Rmean[pop], sigmaR[pop], errorR[pop])
+## \fn pR(Rk, pop)
+# eq. 8 Walker 2011, probability distribution of radii
+# @param Rk radius of stellar tracer k, [arcmin]
+# @param pop int for population (0: MW, 1: 1, ...)
 
-import pymultinest
-import pdb
-import pickle
-import gl_params
-gp = gl_params.Params()
+
+def pV(Vk, pop):
+    return p_gauss(Vk, Vmean[pop], sigmaV[pop], errorV[pop])
+
+
+def pW(Wk, pop):
+    return p_gauss(Wk, Wmean[pop], sigmaW[pop], errorW[pop])
+
+
+def pjoint(Rk, Vk, Wk, PMk, pop):
+    if pop == 0:
+        pR = p_MW(Rk, PMk, Rerror)
+        pV = p_MW(Vk, PMk, Verror)
+        pW = p_MW(Wk, PMk, Werror)
+        return pR*pV*pW
+    else:
+        return pR(Rk, pop)*pV(Vk, pop)*pW(Wk, pop)
+## \fn pjoint(Rk, Vk, Wk, PMk, pop)
+# eq. 13 Walker 2011, joint probability distributions
+# @param Rk projected radius, [arcmin]
+# @param Vk LOS velocity [km/s]
+# @param Wk reduced magnesium index [Ang]
+# @param PMk probability of membership
+
+
+def Vmean(ds, als, Vd, dd, ad, mud, mua, D):
+    from numpy import sin, cos
+    Vm = cos(ds)*sin(als)*(Vd*cos(dd)*sin(ad)+D*mua*cos(dd)*cos(ad)-D*mud*sin(dd)*sin(ad))\
+         +cos(ds)*cos(als)*(Vd*cos(dd)*cos(ad)\
+                           -D*mud*sin(dd)*cos(ad)\
+                           -D*mua*cos(dd)*sin(ad))\
+         +sin(ds)*(Vd*sin(dd)+D*mud*cos(dd))
+    return Vm
+## \fn Vmean(ds, als, Vd, dd, ad, mud, mua, D)
+# eq. 10 Walker 2011, dwarf spheroidal systemic HRF, [km/s]
+# @param ds
+# @param als
+# @param Vd
+# @param dd
+# @param ad
+# @param mud
+# @param mua
+# @param D
 
 
 def show(filepath):
@@ -52,15 +112,19 @@ def myprior(cube, ndim, nparams):
     cube[0] = cube[0] # fmem
     cube[1] = cube[1] # fsub
     cube[2] = 10**(4.5*cube[2]) # r_half [pc]
+
     cube[3] = cube[3]*2000.-1000. # proper motion in x [km/s]
     cube[4] = cube[4]*2000.-1000. # proper motion in y [km/s]
-    off = 4 # offset from common parameters
-    pp = 3 # number of parameters per population
-    for i in range(3): # no. of pops goes in here
-        cube[i*pp+off]   = cube[i*pp+off] # rhalf_i / r_half
-        cube[i*pp+1+off] = cube[i*pp+1+off]*6.-3. # Wmean
-        cube[i*pp+2+off] = 10.**(cube[i*pp+2+off]*6.-5.)  # sigmaW^2 [Angstrom^2]
-        cube[i*pp+3+off] = 10.**(cube[i*pp+3+off]*10.-5.) # sigmaV^2 [(km/s)^2]
+    off = 5 # offset from common parameters
+    for pop in range(gp.pops+1): # no. of pops goes in here, first MW, then 1,2,..
+        cube[off] = cube[off] # rhalf_i / r_half
+        off += 1
+        cube[off] = cube[off]*6.-3. # Wmean
+        off += 1
+        cube[off] = 10.**(cube[off]*6.-5.)  # sigmaW^2 [Angstrom^2]
+        off += 1
+        cube[off] = 10.**(cube[off]*10.-5.) # sigmaV^2 [(km/s)^2]
+        off += 1
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -70,9 +134,34 @@ def myprior(cube, ndim, nparams):
 
 
 def myloglike(cube, ndim, nparams):
+    ev = 0.
     fmem = cube[0]
-    
-    return -tmp_profs.chi2/2.   # from   likelihood L = exp(-\chi^2/2), want log of that
+    fsub = cube[1]
+    f1 = fmem*fsub
+    f2 = fmem*(1-fsub)
+    ftot = [1-f1-f2, f1, f2]
+    # TODO: calculate log likelihood of assigning stars to each population
+    r_half = cube[2]
+    vx0 = cube[3]
+    vy0 = cube[4]
+    off = 5
+    for pop in range(gp.pops+1):
+        rhalf_i = cube[off]*r_half
+        off += 1
+        Wmean = cube[off]
+        off += 1
+        sigW2 = cube[off]
+        off += 1
+        sigV2 = cube[off]
+        off += 1
+        
+    logev = 0.0
+    for k in range(Nsample):
+        term = 0.0
+        for pop in range(gp.pops+1):
+            term += ftot[k] * w(Rk)*p(R[k], V[k], W[k], PM[k], pop)
+        logev += np.log(term)
+    return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
 # @param ndim number of dimensions, 2*npop*nipol + nipol
@@ -128,9 +217,9 @@ def run(gp):
                     n_dims,      n_params = n_dims+1, # None beforehands
                     n_clustering_params = n_dims, # separate modes on
                                                   # the rho parameters
-                                                  # only (gp.nepol in
+                                                  # only (gp.nrho in
                                                   # this case)
-                    wrapped_params = [ gp.pops, gp.nipol, gp.nepol], # do
+                    wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
@@ -172,4 +261,7 @@ def run(gp):
 
 
 if __name__=='__main__':
-
+    import gl_params
+    gp = gl_params.Params()
+    prepare_data(gp)
+    run(gp)

@@ -14,19 +14,19 @@ import numpy as np
 import gr_params as gpr
 import gl_file as gfile
 import gl_helper as gh
-from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
-
+import gl_project as glp
 
 def run(gp):
+    Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     print('input: ',gpr.get_com_file(0))
     # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(0),\
                        skiprows=1,usecols=(0,1,2),unpack=True) #[Rscalei], [Rscalei], [km/s]
 
-    for comp in range(2):
+    for pop in range(2):
         # calculate 2D radius on the skyplane
         R = np.sqrt(x**2+y**2) # [Rscalei]
-
+        Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
         # set number and size of bins
         Rmin = 0. # [rscale]
         Rmax = max(R) if gp.maxR < 0 else float(gp.maxR)   # [Rscale0]
@@ -36,11 +36,11 @@ def run(gp):
 
         if gpr.lograd:
             # space logarithmically in radius
-            Binmin, Binmax, Rbin = bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol) # [Rscale0]
+            Binmin, Binmax, Rbin = gh.bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol) # [Rscale0]
         elif gp.consttr:
-            Binmin, Binmax, Rbin = bin_r_const_tracers(R, len(R)/gp.nipol) # [Rscale0]
+            Binmin, Binmax, Rbin = gh.bin_r_const_tracers(R, len(R)/gp.nipol) # [Rscale0]
         else:
-            Binmin, Binmax, Rbin = bin_r_linear(Rmin, Rmax, gp.nipol) # [Rscale0]
+            Binmin, Binmax, Rbin = gh.bin_r_linear(Rmin, Rmax, gp.nipol) # [Rscale0]
 
         Vol = gpr.volume_circular_ring(Binmin, Binmax, gp)
 
@@ -51,7 +51,7 @@ def run(gp):
         print(totmass, file=tr)
         tr.close()
 
-        de, em, sigfil, kapfil = gfile.write_headers_2D(gp, 0)
+        f_Sig, f_nu, f_mass, f_sig, f_kap = gfile.write_headers_2D(gp, 0)
 
         # 30 iterations for getting random picked radius values
         Density = np.zeros((gp.nipol,gpr.n))
@@ -66,7 +66,7 @@ def run(gp):
 
         Dens0 = np.sum(Density[0])/float(gpr.n) # [Munit/Rscale0^2]
         Dens0pc = Dens0/Rscale0**2 # [Munit/pc^2]
-        gfile.write_density(gp.files.get_scale_file(0), Dens0pc, totmass)
+        gfile.write_Sig_scale(gp.files.get_scale_file(0), Dens0pc, totmass)
 
         tpbb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(tpbb0)       # [Munit/rscale^2]
@@ -86,15 +86,31 @@ def run(gp):
                 p_edens[b]= Denserr/Dens0    # [1] #100/rbin would be artificial guess
 
         for b in range(gp.nipol):
-            print(Rbin[b], Binmin[b], Binmax[b], p_dens[b], p_edens[b], file=de) # [rscale], [dens0], [dens0]
+            print(Rbin[b], Binmin[b], Binmax[b], p_dens[b], p_edens[b], file=f_Sig) 
+            # [rscale], [dens0], [dens0]
             indr = (R < Binmax[b])
             menclosed = float(np.sum(indr))/totmass
              # /totmass for normalization to 1 at last bin #[totmass]
             merr = menclosed/np.sqrt(tpbb) # artificial menclosed/10 gives good approximation #[totmass]
-            print(Rbin[b], Binmin[b], Binmax[b], menclosed, merr, file=em)
+            print(Rbin[b], Binmin[b], Binmax[b], menclosed, merr, file=f_mass)
             # [rscale], [totmass], [totmass]
         de.close()
         em.close()
+
+        # deproject Sig to get nu
+        numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
+        numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
+        numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
+        
+        nu0pc  = numedi[0]
+        gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
+
+        nuerr  = numax-numedi
+        for b in range(gp.nipol):
+            print(Rbin[b], Binmin[b], Binmax[b],\
+                  numedi[b]/nu0pc, nuerr[b]/nu0pc, \
+                  file = f_nu)
+        f_nu.close()
 
 
         if gpr.showplots:

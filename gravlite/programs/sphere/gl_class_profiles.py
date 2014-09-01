@@ -24,6 +24,7 @@ class Profiles:
         self.betastar = np.zeros((pops+1)*nipol)
         self.beta = np.zeros((pops+1)*nipol) # (pops+1) for overall (rho*), 1, 2, ...
         self.nu   = np.zeros((pops+1)*nipol) # dito
+        self.nrnu = np.zeros((pops+1)*nipol)
         self.Sig  = np.zeros((pops+1)*nipol)
         self.sig  = np.zeros((pops+1)*nipol)
         self.kap  = np.zeros((pops+1)*nipol)
@@ -36,6 +37,8 @@ class Profiles:
 
 
     def set_prof(self, prof, arr, pop, gp):
+        if len(arr) != len(self.x0):
+            raise Exception('wrong array to be stored')
         if prof == 'rho':
             self.rho = arr
         elif prof == 'nr':
@@ -43,12 +46,9 @@ class Profiles:
         elif prof == 'M':
             self.M = arr
         elif prof == 'nu':
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr[3:-3] # arr has nepol-3 entries
-            arrnu = gh.linipollog(gp.xepol, arr, gp.xfine)
-
-            Signu = rho_INTIPOL_Rho(gp.xfine, arrnu, gp) # [Munit/pc^2]
-            Sig = gh.linipollog(gp.xfine, Signu, gp.xipol)
-            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = Sig
+            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr # arr has nrho-3 entries
+        elif prof == 'nrnu':
+            self.nrnu[pop*self.nipol:(pop+1)*self.nipol] = arr
         elif prof == 'betastar':
             self.betastar[pop*self.nipol:(pop+1)*self.nipol] = arr
         elif prof == 'beta':
@@ -63,6 +63,9 @@ class Profiles:
             self.zetaa[pop*self.nipol:(pop+1)*self.nipol] = arr
         elif prof == 'zetab':
             self.zetab[pop*self.nipol:(pop+1)*self.nipol] = arr
+        else:
+            print(prof+' is an ')
+            raise Exception('unknown profile to be set in gl_class_profiles.set_prof')
     ## \fn set_prof(self, prof, arr, pop, gp)
     # store density array
     # @param prof profile identifier
@@ -82,6 +85,8 @@ class Profiles:
             return self.Sig[pop*self.nipol:(pop+1)*self.nipol]
         elif prof == 'nu':
             return self.nu[pop*self.nipol:(pop+1)*self.nipol]
+        elif prof == 'nrnu':
+            return self.nrnu[pop*self.nipol:(pop+1)*self.nipol]
         elif prof == 'betastar':
             return self.betastar[pop*self.nipol:(pop+1)*self.nipol]
         elif prof == 'beta':

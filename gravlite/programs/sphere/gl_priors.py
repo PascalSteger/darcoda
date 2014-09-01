@@ -34,10 +34,10 @@ def check_beta(beta, gp):
 
     r0nu = np.hstack([r0extl, r0, dR/2.+r0[:-1], r0extr])
     r0nu.sort()
-    tck0 = splrep(r0,beta*(r0**2+np.median(r0)**2), k=1, s=0.) # previous: k=2, s=0.1
-    betanu = splev(r0nu,tck0)/(r0nu**2+np.median(r0)**2)
+    splpar_bint = splrep(r0, beta*(r0**2+np.median(r0)**2), k=1, s=0.) # previous: k=2, s=0.1
+    betanu = splev(r0nu, splpar_bint)/(r0nu**2+np.median(r0)**2)
 
-    drspl = splev(r0nu,tck0, der=1)
+    drspl = splev(r0nu, splpar_bint, der=1)
     dbetanudr = (drspl-betanu*2*r0nu)/(r0nu**2+np.median(r0)**2)
     for i in range(len(r0nu)-4):
         for j in range(i+1,len(r0nu)):

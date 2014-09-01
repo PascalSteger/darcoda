@@ -10,18 +10,12 @@ import numpy as np
 import os, pdb, logging
 
 def check_investigate(inv):
-    if inv == 'walk':     return True
-    if inv == 'gaia':     return True
-    if inv == 'obs':      return True
+    if inv == 'walk': return True
+    if inv == 'gaia': return True
     if inv == 'discmock': return True
-    if inv == 'hern':     return True
-    if inv == 'triax':    return True
+    if inv == 'hern': return True
     raise Exception('wrong investigative case in gl_params')
     return False
-## \fn check_investigate(inv)
-# check whether there is a valid investigation chosen
-# @param inv string
-
 
 class Params():
     def __init__(self, timestamp = ''):
@@ -29,25 +23,27 @@ class Params():
         if not os.path.exists("/home/ast/read"):
             self.machine = 'local'    # machine: 'local' or 'darkside'
 
-        self.investigate  = 'gaia' # determine which data set to work on
+        self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
-                                  # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
-                                  #         challenge, 1 pop only 
-                                  # 'obs': real data from Fornax dwarf galaxy
+
+                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
+                        #         challenge, 1 pop only 'obs': real
+                        #         data from Fornax dwarf galaxy
         check_investigate(self.investigate)
 
-        self.case = 9 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
-                      # triax (1-4:core, 5-8:cusp)
-        self.pops = 1 # number of stellar tracer populations
+        self.case = 0 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+                      # triax (0:core, 1:cusp)
+        self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
         # case 2
-        self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N and sum
+        self.ntracer = [10000, 10000] # pop1, pop2, ..., pop_N (and
+                                      # take sum for all tracers)
 
         # unitsXS
         self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
@@ -75,7 +71,7 @@ class Params():
         ########## MultiNest options
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run
+        self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
@@ -89,12 +85,12 @@ class Params():
                                                 # more parameter for
                                                 # the asymptote to
                                                 # \infty
-        self.nfine = 24  # number of entries in integral lookup table
+        self.nfine = 30  # number of entries in integral lookup table
                          # gives no. log spaced points
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 1   # number of parameters for beta, in sum of
+        self.nbeta = 4   # number of parameters for beta, in sum of
                          # polynomials
 
         # next: # live points, > ndim, < 2^ndim, about number of
@@ -102,25 +98,24 @@ class Params():
         if self.investigate == 'discmock' or \
            self.investigate == 'discsim':
             self.geom = 'disc'
-            self.ndim = 1+self.nrho + (self.pops+1)*self.nrho + \
-                        self.pops*self.nbeta+1 # +1 for norm, +1 for MtoL
+            self.ndim = 1+self.nrho + self.pops*self.nrho + \
+                        self.pops*self.nbeta # +1 for norm
 
         else:
             self.geom = 'sphere'
             self.ndim = self.nrho + (self.pops+1)*self.nrho + \
-                        self.pops*self.nbeta + 1 # +1 for MtoL
+                        self.pops*self.nbeta
 
         self.nlive = 2*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
 
-        ########## spherical case and both cases
-        self.rhohalf = -1.    # prior density for rho at
+        ########## spherical case
+        self.rhohalf = 10**-1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
         self.rhospread = 1.       # with this spread, [dex] in log space
-        self.nuspread = 0.25
-        self.iscale = self.nrho/2 # scale below which range of
+        self.iscale = -1 # scale below which range of
                                          # n(r)<2. instead of
                                          # maxrhoslope; is adapted in
                                          # gl_data.read_nu; if set to
@@ -129,19 +124,15 @@ class Params():
         self.iscale_nu = -1
 
         self.nrtol  = 1.5/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 2./(8./self.nipol) # max change in dn(r)/d log(r)
+        self.nrtol_nu = 1.5/(8./self.nipol)
 
-        self.maxrhoslope  = 4    # maximum slope (change if
+        self.maxrhoslope  = 0.5    # maximum slope (change if
                                   # monotonicity prior used) of rho
-        self.maxrhoslope_nu = 6
-
-        # following two parameters are not used anymore
-        self.maxlog10nu = -7     # direct sampling of nu: min value
-        self.minlog10nu = -10     # direct sampling of nu: max value
-        self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
+        self.maxrhoslope_nu = 0.5
+        self.maxlog10nu = 4.     # direct sampling of nu: min value
+        self.minlog10nu = 0.     # direct sampling of nu: max value
+        self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
-        self.MtoLmin = 0.8
-        self.MtoLmax = 3.
 
 
         ########## disc case
@@ -149,8 +140,8 @@ class Params():
         # at zmin instead of 0 norm2 = 10.**2 # and for the second
         # component, if there is one
         self.quadratic = False    # linear or quad interpol.
-        self.monotonic = False    # mono-prior on rho(x)
-        self.monotonic_nu = False # mono-prior on nu(x)
+        self.monotonic = False    # mono-prior on rho(z)
+        self.monotonic_nu = False # mono-prior on nu(z)
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
 
         self.baryonmodel = 'sim' # read in surface density from
@@ -162,9 +153,9 @@ class Params():
                           # 'first', 'last'
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
-        self.usezeta    = False # switch to turn on (True) or off the
+        self.usezeta    = True  # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
-        self.checksig   = False # check sigma calculation routine with 'walk'
+
 
 
 

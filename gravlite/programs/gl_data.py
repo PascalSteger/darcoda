@@ -8,11 +8,20 @@
 
 import pdb
 import numpy as np
+from pylab import *
 import gl_physics as phys
 import gl_helper as gh
-from gl_project import Rho_NORM_rho
+import gl_project as glp
 from scipy.interpolate import splrep, splev
 
+def introduce_points_in_between(r0, gp):
+    rmin = np.log10(min(r0))
+    rmax = np.log10(max(r0))
+    return np.logspace(rmin, rmax, gp.nfine)
+## \fn introduce_points_in_between(r0, gp)
+# get gp.fine points logarithmically spaced points
+# @param r0 [pc] gp.xipol
+# @param gp global parameter
 
 class Datafile:
     def __init__(self):
@@ -24,14 +33,17 @@ class Datafile:
         self.binmax = []
 
         ## keep mass profile
-        self.Mrdat = []; self.Mrerr = []
+        self.Mrdat = []; self.Mrerr = []; self.Mrdat_fine = []; self.Mrerr_fine = []
         self.Mhalf = []; self.rhalf = []
         
         ## keep radial profile of the tracer density, averaged in 2D-rings
-        self.nu = []; self.Sig = []
-        ## keep error of Sigdat, in [Munit/pc^2]
-        self.nuerr = []; self.Sigerr = []
+        self.nu = [];    self.nu_fine = [];    self.nu_epol = []
+        self.nuerr = []; self.nuerr_fine = []; self.nuerr_epol = []
+
         self.nuhalf = []
+
+        self.Sig = [];     self.Sigerr = []
+        self.Sig_fine = [];self.Sigerr_fine = []
 
         ## keep line of sight velocity dispersion profile, in [km/s]
         self.sig = []
@@ -54,46 +66,66 @@ class Datafile:
             # 3*[rscale], [Sig0], [Sig0]
 
             # switch to Munit (msun) and pc here
-            Sigx    = Sigx[:]    * gp.Rscale[pop]         # [pc]
+            Sigx    = Sigx[:]    * gp.Xscale[pop]         # [pc]
             Sigdat  = Sigdat[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
             Sigerr  = Sigerr[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
 
             # take the overall bins for rbin, binmin, binmax vals
             if pop == 0:
                 self.rbin = Sigx                                 # [pc]
-                self.binmin = binmin * gp.Rscale[pop]           # [pc]
-                self.binmax = binmax * gp.Rscale[pop]           # [pc]
+                self.binmin = binmin * gp.Xscale[pop]           # [pc]
+                self.binmax = binmax * gp.Xscale[pop]           # [pc]
                 gp.xipol = self.rbin                            # [pc]
                 if gp.iscale >= 0:
-                    gp.iscale = np.sum(self.rbin<gp.Rscale[0])  # [1]
+                    gp.iscale = np.sum(self.rbin<gp.Xscale[0])  # [1]
                 minr = min(self.rbin)                           # [pc]
                 maxr = max(self.rbin)                           # [pc]
-                gp.xepol = np.hstack([minr/1.e4, minr/4., minr/2.,\
+                gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
                                       self.rbin, \
                                       2*maxr, 4*maxr, 8*maxr]) # [pc]
-                gp.xfine = gh.introduce_points_in_between(gp.xepol, gp)
-            # deproject, # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
+                gp.xfine = introduce_points_in_between(gp.xepol, gp)
+            # deproject, 
+            # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
             # already normalized to same total mass
             if gp.geom == 'sphere':
-                dummy, nudat, nuerr, Mrdat = Rho_NORM_rho(self.rbin, Sigdat, Sigerr)
-                self.Mrdat.append(Mrdat)     # [Munit]
-                Mhalf = Mrdat[-1]/2.
+                Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, \
+                                                    Sigdat, Sigerr, gp.xfine)
+                dummy, nudatnu, nuerrnu, Mrdatnu = glp.Rho_NORM_rho(gp.xfine, \
+                                                                Sigdatnu, Sigerrnu,\
+                                                                gp)
+                self.Sig_fine.append(Sigdatnu)
+                self.Sigerr_fine.append(Sigerrnu)
+                self.Mrdat_fine.append(Mrdatnu)
+                self.Mrerr_fine.append(Mrdatnu*nuerrnu/nudatnu) # TODO correct error
+                self.nu_fine.append(nudatnu)
+                self.nuerr_fine.append(nuerrnu)
+                self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
+                self.nuerr_epol.append(gh.linipollog(gp.xfine, nuerrnu, gp.xepol))
+                nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
+                nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
+                Mrdat = gh.linipollog(gp.xfine, Mrdatnu, gp.xipol)
+                self.Mrdat.append(Mrdat) # [Munit]
+                Mhalf = Mrdat[-1]/2.     # [Munit]
                 self.Mhalf.append(Mhalf) # [Munit]
                 
-                # spline interpolation with M as x axis:
-                Mtck = splrep(np.log(Mrdat), np.log(self.binmax), s=0.01)
-                r_half = np.exp(splev(np.log(Mhalf), Mtck))
-                # spline interpolation of nu:
-                nutck = splrep(np.log(gp.xipol), np.log(nudat), s=0.01)
+                # spline interpolation with M as x axis, to get half-mass of system:
+                splpar_M = splrep(np.log(Mrdat), np.log(self.binmax), s=0.01)
+                r_half = np.exp(splev(np.log(Mhalf), splpar_M)) # [pc]
                 self.rhalf.append(r_half) # [pc]
-                self.nuhalf.append(np.exp(splev(np.log(r_half), nutck))) # [Munit/pc^3]
-            else:
-                print('working in disc symmetry')
-                nudat, nuerr = Sigdat, Sigerr
 
-            self.Sig.append(Sigdat) # [Munit/pc^2]
+                # spline interpolation of nu at r_half:
+                splpar_nu = splrep(np.log(gp.xipol), np.log(nudat), s=0.01)
+                nuhalf = np.exp(splev(np.log(r_half), splpar_nu)) # [pc]
+                self.nuhalf.append(nuhalf)
+                # [Munit/pc^3]
+            else:
+                print('working in disc symmetry: reading nu directly')
+                dum, dum, dum, nudat, nuerr = \
+                        gh.readcol5(gp.files.nufiles[pop])
+
+            self.Sig.append(Sigdat)    # [Munit/pc^2]
             self.Sigerr.append(Sigerr) # [Munit/pc^2]
-            self.nu.append(nudat)   # [Munit/pc^3]
+            self.nu.append(nudat)      # [Munit/pc^3]
             self.nuerr.append(nuerr)   # [Munit/pc^3]
         return
     ## \fn read_Sig(self, gp)
@@ -105,7 +137,7 @@ class Datafile:
         for pop in np.arange(gp.pops+1):
             # print(gp.files.sigfiles[pop])
             Dummy, Dummy, Dummy, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
-            # 3*[Rscale], [maxsiglos], [maxsiglos]
+            # 3*[Xscale], [maxsiglos], [maxsiglos]
 
             # change to km/s here
             self.sig.append(sigdat[:] * gp.maxsiglos[pop]) # [km/s]
@@ -119,7 +151,7 @@ class Datafile:
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):
             Dummy, Dummy, Dummy, kapdat, kaperr = gh.readcol5(gp.files.kappafiles[pop])
-            # 3*[Rscale], [1], [1]
+            # 3*[Xscale], [1], [1]
 
             self.kap.append(kapdat) # [1]
             self.kaperr.append(kaperr) # [1]

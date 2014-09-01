@@ -36,7 +36,7 @@ def nr(dlr, pop, gp):
     r0 = gp.xepol
     r0 = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
     # up: common radii r0, but different scale radius for each pop
-    logr0 = np.log(r0/gp.Rscale[pop])
+    logr0 = np.log(r0/gp.Xscale[pop])
     dlr *= -1.
     
     # use linear spline interpolation in r
@@ -80,7 +80,7 @@ def nr_medium(dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     r0 = np.hstack([binmin, binmax[-1]])
     # 1+(Nbin+1)+1 entries
-    logr0 = np.log(r0/gp.Rscale[pop])
+    logr0 = np.log(r0/gp.Xscale[pop])
     dlr = np.hstack([dlr[0], dlr, dlr[-1]]) # 1+Nbin+2 entries
     dlr *= -1.
     
@@ -96,14 +96,15 @@ def nr_medium(dlr, pop, gp):
 # @param gp global parameters
 
 
-def rho(r0, arr, pop, gp):
+def rho(r0, rhopar, pop, gp):
+    arr = 1.*rhopar
     rhoathalf = arr[0]
     arr = arr[1:]
 
     # spline_n = nr_medium(arr, pop, gp) # extrapolate
     spline_n = nr(arr, pop, gp) # fix on gp.xepol, where it's defined
 
-    rs =  np.log(r0/gp.Rscale[pop]) # have to integrate in d log(r)
+    rs =  np.log(r0/gp.Xscale[pop]) # have to integrate in d log(r)
 
     logrright = rs[(rs>=0.)]
     logrleft  = rs[(rs<0.)]
@@ -123,23 +124,26 @@ def rho(r0, arr, pop, gp):
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)
     gh.checkpositive(tmp, 'rho()')
     return tmp
-## \fn rho(r0, arr, pop, gp)
+## \fn rho(r0, rhopar, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
-# @param arr rho(rstarhalf), asymptote_0, nr(xipol), asymptote_infty
+# @param rhopar rho(rstarhalf), asymptote_0, nr(xipol), asymptote_infty
 # @param r0 radii to calculate density for, in physical units (pc)
 # @param pop int for population, 0 all or DM, 1, 2, ...
 # @param gp global parameters
 
 
-def nu(r0, arr, gp):
-    return gh.linipollog(gp.xepol, arr, r0)
-## \fn nu(r0, arr, gp)
+def nu(r0, arr, pop, gp):
+    return rho(r0, arr, pop, gp)
+    #return gh.linipollog(gp.xepol, arr, r0)
+## \fn nu(r0, arr, pop, gp)
 # interpolate nu parameters from gp.xepol where they are defined
 # to any radii r0 (typically gp.rfine) within range of gp.xepol
 # @param r0 radii [pc]
 # @param arr nu parameters in physical space (directly 3D density)
+# @param pop id for population, to give the half-light radius
 # @param gp global parameters
+
 
 def betastar2beta(betastar):
     # beta^* = \frac{sig_r^2-sig_t^2}{sig_r^2+sig_t^2}
@@ -149,6 +153,13 @@ def betastar2beta(betastar):
 ## \fn betastar2beta(betastar)
 # map beta* to beta
 # @param betastar float array
+
+
+def beta2betastar(beta):
+    return beta/(2.-beta)
+## \fn beta2betastar(beta)
+# get back betastar from a beta
+# @param beta [1]
 
 
 def betastar(r0, arr, gp):
@@ -174,10 +185,10 @@ def betastar(r0, arr, gp):
 
 def beta(r0, arr, gp):
     bstar = betastar(r0, arr, gp)
-    betatmp  = betastar2beta(bstar)
+    betatmp = betastar2beta(bstar)
     return betatmp, bstar
 ## \fn beta(r0, arr, gp)
-# return beta and beta* from beta parameter array
+# beta and beta* from beta parameter array
 # @param r0 radii [pc]
 # @param arr float array, see gl_class_cube
 # @param gp global parameters
@@ -217,12 +228,12 @@ def calculate_surfdens(r, M):
 # @param M 3D mass profile
 
 
-def sig_kap_zet(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
-    siglos2, kaplos4, zetaa, zetab = gi.ant_sigkaplos(r0, rhopar, rhostarpar, nupar, betapar, pop, gp)
+def sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
+    siglos2, kaplos4, zetaa, zetab = gi.ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
     siglos  = np.sqrt(siglos2)           # [km/s]
 
     if gp.usekappa:
-        kaplos4     = kaplos4surf/surfden
+        kaplos4     = kaplos4surf/Sig
         # takes [Munit/pc^2 (km/s)^2], gives back [(km/s)^2]
         
         kaplos = kaplos4/(siglos2**2)
@@ -232,12 +243,13 @@ def sig_kap_zet(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
     # TODO check if zetaa, zetab need factor 1/surfden
 
     return siglos, kaplos, zetaa, zetab  # [km/s], [1]
-## \fn sig_kap_zet(r0, rhopar, rhostarpar, nupar, betapar, pop, gp)
+## \fn sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
 # General function to calculate sig_los
 # with analytic integral over fitting polynomial'
 # @param r0 radius [pc]
 # @param rhopar [1]
 # @param rhostarpar [1]
+# @param MtoL mass-to-light ratio [Msun/Lsun]
 # @param nupar 1D array 3D tracer density parameters [1]
 # @param betapar 1D array 3D velocity anisotropy parameters [1]
 # @param pop int population to take halflight radius from

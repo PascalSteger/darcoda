@@ -16,35 +16,35 @@ import gl_helper as gh
 
 def nr(dlr, pop, gp):
     # extend asymptotes to 0, and high radius
-    r0 = gp.xepol
-    r0 = np.hstack([r0[0]/1e4, r0[0]/2., r0, gp.rinfty*r0[-1]])
-    logr0 = np.log(r0/gp.Rscale[pop])
+    z0 = gp.xepol
+    z0 = np.hstack([z0[0]/1e4, z0[0]/2., z0, gp.rinfty*z0[-1]])
+    logz0 = np.log(z0/gp.Xscale[pop])
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
     
     # use linear spline interpolation in r
-    spline_n = splrep(logr0, dlr, k=1)
+    spline_n = splrep(logz0, dlr, k=1)
     
     # evaluate spline at any points in between
-    return spline_n #, splev(r0, spline_n)
-## \fn nr(r0, dlogrhodlogr, pop, gp)
+    return spline_n #, splev(z0, spline_n)
+## \fn nr(z0, dlogrhodlogr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
 # @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
 # @param pop int for population
-# @param r0 bin centers in [pc]
+# @param z0 bin centers in [pc]
 
 
 def nr_medium(dlr, pop, gp):
     # extend asymptotes to 0, and high radius
-    r0 = gp.xepol
-    r0 = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
-    logr0 = np.log(r0/gp.Rscale[pop])
-    # up: common radii r0, but different scale radius for each pop
+    z0 = gp.xepol
+    z0 = np.hstack([z0[0]/2, z0, gp.rinfty*z0[-1]])
+    logz0 = np.log(z0/gp.Xscale[pop])
+    # up: common radii z0, but different scale radius for each pop
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
     
     # use linear spline interpolation in r
-    spline_n = splrep(logr0, dlr, k=1)
+    spline_n = splrep(logz0, dlr, k=1)
     
     # evaluate spline at any points in between
     return spline_n
@@ -55,15 +55,15 @@ def nr_medium(dlr, pop, gp):
 # @param gp global parameters
 
 
-def rho(r0, arr, pop, gp):
+def rho(z0, arr, pop, gp):
     rhoathalf = arr[0]
     arr = arr[1:]
     # spline_n = nr_medium(arr, pop, gp) # extrapolate on gp.xepol, as this is where definition is on
     spline_n = nr(arr, pop, gp) # fix on gp.xepol, as this is where definition is on
 
-    rs =  np.log(r0/gp.Rscale[pop]) # have to integrate in d log(r)
-    logrright = rs[(rs>=0.)]
-    logrleft  = rs[(rs<0.)]
+    zs =  np.log(z0/gp.Xscale[pop]) # have to integrate in d log(r)
+    logrright = zs[(zs>=0.)]
+    logrleft  = zs[(zs<0.)]
     logrleft  = logrleft[::-1]
     logrhoright = []
 
@@ -81,11 +81,11 @@ def rho(r0, arr, pop, gp):
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)
     gh.checkpositive(tmp, 'rho()')
     return tmp
-## \fn rho(r0, arr, pop, gp)
+## \fn rho(z0, arr, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
 # @param arr: rho(rstarhalf), asymptote_0, nr(gp.xipol), asymptote_infty
-# @param r0: radii to calculate density for, in physical units (pc)
+# @param z0: radii to calculate density for, in physical units (pc)
 # @param pop int for which population
 # @param gp global parameters
 
@@ -117,8 +117,8 @@ def tilt(xipol, param, gp):
 
 
 def kappa(xipol, Kz):
-    r0 = xipol
-    kzpar = -np.hstack([Kz[0]/r0[0], (Kz[1:]-Kz[:-1])/(r0[1:]-r0[:-1])])
+    z0 = xipol
+    kzpar = -np.hstack([Kz[0]/z0[0], (Kz[1:]-Kz[:-1])/(z0[1:]-z0[:-1])])
     return kzpar
 ## \fn kappa(xipol, Kz)
 # calculate vertical force from Kz
@@ -180,7 +180,6 @@ def nu_decrease(zpars, pars, gp):
 # Fully non-parametric monotonic *decreasing* function [c.f. Kz function].
 # Note, here we explicitly avoid rnuz_z(0) = 0 since this would correspond
 # to a constraint rnu_z(zmax) = 0 which is only true if zmax = infty.
-# @param z array of z values above plane
 # @param zpars [pc]
 # @param pars nu parametrization in bins
 # @param gp global parameters
@@ -200,8 +199,8 @@ def kz(zpars, kzpar, gp):
             kz_z[i] = kz_z[i-1]+(a-b)/2./zz*(zr**2.-zl**2.)+b*zr-a*zl
     else:
         # Quadratic interpolation here: 
-        kz_z = np.zeros(gp.nepol)
-        for i in range(1,gp.nepol-1):
+        kz_z = np.zeros(gp.nrho)
+        for i in range(1,gp.nrho-1):
             z0 = zpars[i-1]
             z1 = zpars[i]
             z2 = zpars[i+1]
@@ -236,9 +235,9 @@ def kz(zpars, kzpar, gp):
 ## \fn kz(zpars, kzpar, gp)
 # General function to calculate the Kz force law:
 # Non-parametric Kz function here.
-# K_z(z)=\int_0^z \kappa(z')dz'
-#       = \Sigma_z(z)*2*\pi*G
-#       = \int_0^z 2 \pi G \rho(z') dz'
+# K_z(z)= int_0^z kappa(z')dz'
+#       = Sigma_z(z)*2*pi*G
+#       = int_0^z 2 pi G rho(z') dz'
 # ensure monotinicity in an efficient manner. Note here we
 # use kz_z(0) = kzpar(0) * dz so that it can be zero, or
 # otherwise just small in the case of large bins. This latter
@@ -249,11 +248,12 @@ def kz(zpars, kzpar, gp):
 # @param gp global parameters
 
 
-def sigz(zp, rhopar, nupar, norm, tpar, pop, gp):
+def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
     # calculate density and Kz force:
-    nutmp = nu_decrease(zp, nupar, gp)
+    nutmp = nupar
     nu_z = nutmp/np.max(nutmp)  # normalized to [1]
-    rhotmp = rho(zp, rhopar, 0, gp) # rho in linearly spaced bins 
+    rhotmp = rho(zp, rhopar, 0, gp) # rho in linearly spaced bins
+    rhotmp += MtoL*rhostarpar # add baryons
     kz_z = kz(zp, rhotmp, gp) # [(km/s)^2/pc]
     
     # add tilt correction [if required]:
@@ -331,10 +331,12 @@ def sigz(zp, rhopar, nupar, norm, tpar, pop, gp):
                 sigint[i+1] = sigint[i] + intbit
     sig_z_t2 = 1.0/nu_z * (sigint + norm)
     return  np.sqrt(sig_z_t2[3:-3])
-## \fn sigz(zp, rhopar, nupar, norm, tpars, pop, gp)
+## \fn sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpars, pop, gp)
 # calculate z velocity dispersion
 # @param zp vertical coordinate [pc]
 # @param rhopar rho to be integrated to give force K_z
+# @param rhostarpar overall baryonic light profile [Lsun]
+# @param MtoL mass-to-light ratio [Msun/Lsun]
 # @param nupar parameters for tracer density falloff
 # @param norm value C, corresponds to integration from 0 to rmin
 # @param tpars tilt parameters

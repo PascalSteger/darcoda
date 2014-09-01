@@ -8,6 +8,8 @@
 
 import numpy as np
 import pdb
+from pylab import *
+
 import gl_params
 gp = gl_params.Params()
 from gl_class_files import Files
@@ -17,21 +19,22 @@ showplots = False
 n = 100 # number of iterations in MCMC_*
 # nbins = gp.nipol
 
-Rerr  = 0.1      # distance error in [Rscale]
-vrerr = 0.1      # [km/s] 0.01 # velocity error. only raises sig_los
+Rerr  = 0.01      # distance error in [Xscale]
+vrerr = 2.0      # [km/s] 0.01 # velocity error. only raises sig_los
 
 lograd  = False    # log steps for radial bin in readout,
                         # show x-axis in log scale
 
+case = gp.case
 
 if gp.investigate == 'hern':
     repr  = 1     # choose simulation representation
-    ncomp = gp.pops+1     # number of populations + 1 (for all comps together)
+    pops = gp.pops+1     # number of populations + 1 (for all comps together)
     # numbers of tracers. both 0: take all particles
     
     Rcut = 1.e10                               # [Rvir]
-    Rmin = 0. * gp.Rscale[0] # [pc]
-    Rmax = 3. * gp.Rscale[0] # [pc]
+    Rmin = 0. * gp.Xscale[0] # [pc]
+    Rmax = 3. * gp.Xscale[0] # [pc]
     
     nit = 30             # set number of iterations
     procs = 1            # number of processes for parallel execution
@@ -79,7 +82,7 @@ elif gp.investigate == 'walk': # or just want to try some other generic pymc stu
     dir = fi.dir
     fil = dir+'mem2'
     
-    ncomp = gp.pops+1    # do analysis for all pops, plus one for all comp's
+    pops = gp.pops+1    # do analysis for all pops, plus one for all comp's
     
     pmsplit = 0.9 # minimum probability of membership required for analysis
     # use 0 if grw_* should be called from within gravlite
@@ -87,12 +90,12 @@ elif gp.investigate == 'walk': # or just want to try some other generic pymc stu
     filevelcartesian = dir+'simulation/vel_my.txt'
     
 elif gp.investigate == 'gaia':
-    fi  = Files()
-    fi.set_gaia()
+    fi  = Files(gp)
+    fi.set_gaia(gp)
     dir = fi.dir
     fil = dir + 'dat'
     r_DM = 1000.
-    ncomp  = 2 # TODO: search Gaia corresponding two-components
+    pops  = 2 # TODO: search Gaia corresponding two-components
 
 elif gp.investigate == 'triax':
     fi  = Files(gp)
@@ -107,7 +110,7 @@ elif gp.investigate == 'obs':
     dir = fi.dir
     fil = dir+'mem2'
     pmsplit = 0.9
-    ncomp = gp.pops+1 # analysis for all components together, and each
+    pops = gp.pops+1 # analysis for all components together, and each
                       # population by itself
     
 def volume_circular_ring(Binmin, Binmax, gp):
@@ -177,7 +180,7 @@ def determine_radius(R, Rmin, Rmax, gp):
         return gh.bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
     elif gp.consttr:
         print(len(R)/gp.nipol,' particles per bin')
-        return gh.bin_r_const_tracers(R, len(R)/gp.nipol)
+        return gh.bin_r_const_tracers(R, gp.nipol)
     else:
         print(gp.nipol, ' bins in linear spacings')
         return gh.bin_r_linear(Rmin, Rmax, gp.nipol)
@@ -191,13 +194,9 @@ def determine_radius(R, Rmin, Rmax, gp):
 # @param gp global parameters
 
 
-def show_part_pos(x, y, pmn, Rscale, comp):
-    from pylab import ion, subplot, plot, ioff, show
-    from pylab import clf, xlim, ylim, colorbar, scatter
-    from pylab import Circle, gca, axes, savefig, xlabel, ylabel
-    ion(); subplot(111)
+def show_part_pos(x, y, pmn, Xscale, comp):
     res = (abs(x)<3)*(abs(y)<3)
-    x = x[res]; y = y[res]           # [Rscale]
+    x = x[res]; y = y[res]           # [Xscale]
     en = len(x)
     if en == 0:
         return
@@ -206,10 +205,10 @@ def show_part_pos(x, y, pmn, Rscale, comp):
             vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
     # xscale('log'); yscale('log')
     colorbar()
-    circ_HL=Circle((0,0), radius=Rscale/Rscale, fc='None', ec='g', lw=1)
+    circ_HL=Circle((0,0), radius=Xscale/Xscale, fc='None', ec='g', lw=1)
     gca().add_patch(circ_HL)
     if gp.investigate != 'obs':
-        circ_DM=Circle((0,0), radius=r_DM/Rscale, fc='None', ec='r', lw=1)
+        circ_DM=Circle((0,0), radius=r_DM/Xscale, fc='None', ec='r', lw=1)
         gca().add_patch(circ_DM)
     
     # visible region
@@ -222,15 +221,14 @@ def show_part_pos(x, y, pmn, Rscale, comp):
     xlabel(r'$x [R_s]$')
     ylabel(r'$y [R_s]$')
     # title(fil)
-    savefig(get_com_png(comp))
-    ioff();show();clf()
+    # savefig(get_com_png(comp))
     return
-## \fn show_part_pos(x, y, pmn, Rscale, comp) show 2D scatter plot of particle
+## \fn show_part_pos(x, y, pmn, Xscale, comp) show 2D scatter plot of particle
 # positions
 # @param x coordinate
 # @param y coordinate
 # @param pmn probability of membership
-# @param Rscale scale radius in 2D
+# @param Xscale scale radius in 2D
 # @param comp population number: 0, 1, 2
 
 
@@ -256,13 +254,14 @@ def show_plots_dens_3D(comp, rbin, p_dens, p_edens, gp):
 
 
 def show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc):
-    from pylab import ion, subplot, plot, ioff, show, clf
     ion(); subplot(111)
 
     # plot density
     plot(Rbin, P_dens*Dens0pc, 'b', lw=1)
     lbound = (P_dens-P_edens)*Dens0pc; lbound[lbound<1e-6] = 1e-6
     ubound = (P_dens+P_edens)*Dens0pc
+    plot(Rbin, lbound, 'k')
+    plot(Rbin, ubound, 'k')
     fill_between(Rbin, lbound, ubound, alpha=0.5, color='r')
     yscale('log')
     # xlim([0, gp.maxR]); ylim([np.min(lbound),np.max(ubound)])
@@ -285,7 +284,7 @@ def show_plots_sigma(comp, Rbin, p_dvlos, p_edvlos):
     fill_between(Rbin, p_dvlos-p_edvlos, p_dvlos+p_edvlos, alpha=0.5, color='r')
     # [rscale],2*[km/s]
 
-    xlabel(r'$R [\mathrm{Rscale}]$')
+    xlabel(r'$R [\mathrm{Xscale}]$')
     ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')
     ylim([-1, 30])
     # xlim([0, gp.maxR])
@@ -329,7 +328,7 @@ def show_plots_kappa(comp, Rbin, p_kappa, p_ekappa):
     plot(Rbin, p_kappa, 'b', lw=1)
     fill_between(Rbin, p_kappa-p_ekappa, p_kappa+p_ekappa, alpha=0.5, color='r')
     # [rscale], 2*[1]
-    xlabel(r'$R [\mathrm{Rscale}]$')
+    xlabel(r'$R [\mathrm{Xscale}]$')
     ylabel(r'$\langle\kappa_{\mathrm{LOS}}\rangle [1]$')
     ylim([0, 5.])
     # xlim([0, gp.maxR])

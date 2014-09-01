@@ -23,7 +23,7 @@ import gl_project as glp
 
 
 def unit(prof):
-    if prof == 'rho':
+    if prof == 'rho' or prof == 'nu':
         unit = '[Msun/pc^3]'
     elif prof == 'M':
         unit = '[Msun]'
@@ -37,6 +37,8 @@ def unit(prof):
         unit = '[(Msun/pc^3)]'
     elif prof == 'sig':
         unit = '[km/s]'
+    else:
+        unit = 'a.u.'
     return unit
 ## \fn unit(prof)
 # return string with units for profile
@@ -62,12 +64,11 @@ class ProfileCollection():
     # constructor
     # @param pops number of populations
     # @param nipol number of bins
-    # @param subset [chi_min, chi_max] for models to be included in analysis
 
 
     def add(self, prof):
         self.chis.append(prof.chi2)
-        self.profs.append(prof)        
+        self.profs.append(prof)
     ## \fn add(self, prof)
     # add a profile
     # @param prof Profile to add
@@ -76,7 +77,7 @@ class ProfileCollection():
     def cut_subset(self):
         minchi = min(self.chis)
         maxchi = max(self.chis)
-        self.subset = [0., 10.*minchi]
+        self.subset = [0., 30.*minchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -102,23 +103,12 @@ class ProfileCollection():
                 self.goodprof.append(self.profs[k].get_prof(prof, pop))
                 self.goodchi.append(self.chis[k])
 
-        # TODO: use models with highest rhohalf, show masses
-        #fig, ax=gpl.fig()
-        #rhohalfmax = -1
-        #for k in range(len(self.profs)):
-        #    rho = self.profs[k].get_prof('rho', 0)
-        #    if rho[gp.nipol[len(rho)/2]] > rhohalfmax:
-        #        rhohalfmax = rho[gp.nipol[len(rho)/2]]
-        #        imax = 
-        # 30*minimum
-        #ax.plot(
-
         tmp = gh.sort_profiles_binwise(np.array(self.goodprof).transpose()).transpose()
         ll = len(tmp)
 
         #norm = 1
         #if prof == 'Sig':
-        #    norm = gh.ipol_rhalf_log(gp.xepol, tmp[ll/2], gp.Rscale[0])
+        #    norm = gh.ipol_rhalf_log(gp.xepol, tmp[ll/2], gp.Xscale[0])
 
         self.Mmin.set_prof(prof,  tmp[0],       pop, gp)
         self.M95lo.set_prof(prof, tmp[ll*0.05], pop, gp)
@@ -151,18 +141,19 @@ class ProfileCollection():
     def sort_profiles(self, gp):
         self.sort_prof('rho', 0, gp)
         self.sort_prof('M', 0, gp)
-        if gp.geom=='sphere':
-            self.sort_prof('nr', 0, gp)
-        self.sort_prof('rhostar', 0, gp)
-        self.sort_prof('betastar', 1, gp)
-        self.sort_prof('beta', 1, gp)
-        self.sort_prof('Sig', 1, gp)
-        self.sort_prof('sig', 1, gp)
-        if gp.pops == 2:
-            self.sort_prof('betastar', 2, gp)
-            self.sort_prof('beta', 2, gp)
-            self.sort_prof('Sig', 2, gp)
-            self.sort_prof('sig', 2, gp)
+
+        self.sort_prof('Sig', 0, gp)
+        self.sort_prof('nr', 0, gp)
+        self.sort_prof('nrnu', 0, gp)
+        self.sort_prof('nu', 0, gp)
+
+        for pop in np.arange(1, gp.pops+1):
+            self.sort_prof('betastar', pop, gp)
+            self.sort_prof('beta', pop, gp)
+            self.sort_prof('nu', pop, gp)
+            self.sort_prof('nrnu', pop, gp)
+            self.sort_prof('Sig', pop, gp)
+            self.sort_prof('sig', pop, gp)
     ## \fn sort_profiles(self, gp)
     # sort all profiles
     # @param gp global parameters
@@ -170,42 +161,67 @@ class ProfileCollection():
 
     def set_analytic(self, x0, gp):
         from gl_project import rho_INT_Rho, rho_param_INT_Rho, rho_SUM_Mr
+        r0 = x0 # [pc], spherical case
+        self.analytic.x0 = r0
+        anbeta = []; annu = []; annunr = []; anSig = []; ansig = []
         if gp.investigate == 'gaia':
-            r0 = x0 # [pc], spherical case
-            self.analytic.set_x0(r0)
-            rhoanalytic = ga.rhogaiatot_3D(r0)
-            self.analytic.set_prof('rho', rhoanalytic, 0, gp)
-            Manalytic = rho_SUM_Mr(r0, rhoanalytic)
-            self.analytic.set_prof('M', Manalytic, 0, gp)            
-            self.analytic.set_prof('nr', ga.nrgaiatot_3D(r0), 0, gp)
-            for pop in range(1, gp.pops+1):
-                # r0 scaling in pc, fine
-                self.analytic.set_prof('beta', ga.betagaia(r0), pop, gp)
-                be = ga.betagaia(r0)
-                self.analytic.set_prof('betastar', be/(2.-be), pop, gp)
-                analytic_3D = ga.nugaiatot_3D(r0)
-                Sig_an = rho_INT_Rho(r0, analytic_3D)
-                Signorm = gh.ipol_rhalf_log(r0, analytic_3D, gp.Rscale[pop])
-                self.analytic.set_prof('Sig', Sig_an / Signorm, pop, gp)
-                self.analytic.set_sig(0.*r0) # TODO: find analytical profile
+            anrho = ga.rhotot_gaia(r0, gp)
+            anM = rho_SUM_Mr(r0, anrho)
+            annr = ga.nr3Dtot_gaia(r0, gp)
+            tmp_annu = ga.rho_gaia(r0, gp)[1]
+            annu.append( tmp_annu )
+            anSig.append( rho_INT_Rho(r0, tmp_annu) )
+            for pop in np.arange(1, gp.pops+1):
+                beta = ga.beta_gaia(r0, gp)[pop]
+                anbeta.append(beta)
+                nu = ga.rho_gaia(r0,gp)[pop]
+                annu.append(nu)
+                anSig.append(rho_INT_Rho(r0, nu))
+
         elif gp.investigate == 'walk':
-            r0 = x0 # [pc], spherical case
-            self.analytic.x0 = r0
-            rhoanalytic = ga.rhowalk_3D(r0, gp)[0]
-            self.analytic.set_prof('rho', rhoanalytic, 0, gp)
-            Manalytic = rho_SUM_Mr(r0, rhoanalytic)
-            self.analytic.set_prof('M', Manalytic, 0, gp)
-            self.analytic.set_prof('nr', ga.nrwalktot_3D_deriv(r0, gp), 0, gp)
-            # TODO: rho^* and Sigma^* profiles from rhowalk
-            for pop in range(1, gp.pops+1):
-                be = ga.betawalker(r0, gp)[pop-1]
-                self.analytic.set_prof('beta', be, pop, gp)
-                self.analytic.set_prof('betastar', be/(2.-be), pop, gp)
-                analytic_3D = ga.rhowalk_3D(r0, gp)[pop]
-                Sig_an = rho_INT_Rho(r0, analytic_3D)
-                #Signorm = gh.ipol_rhalf_log(r0, Sig_an, gp.Rscale[pop])
-                self.analytic.set_prof('Sig', Sig_an, pop, gp)
-                self.analytic.set_prof('sig', 0.*r0-1, pop, gp) # TODO
+            anrho = ga.rho_walk(r0, gp)[0]
+            anM = rho_SUM_Mr(r0, anrho)
+            annr = ga.nr3Dtot_deriv_walk(r0, gp)
+            tmp_annu = ga.rho_walk(r0, gp)[1]
+            annu.append( tmp_annu )
+            anSig.append( rho_INT_Rho(r0, tmp_annu) )
+            for pop in np.arange(1, gp.pops+1):
+                beta = ga.beta_walk(r0, gp)[pop]
+                anbeta.append(beta)
+                nu = ga.rho_walk(r0, gp)[pop]
+                annu.append(nu)
+                anSig.append(rho_INT_Rho(r0, nu))
+
+        elif gp.investigate == 'triax':
+            anrho = ga.rho_triax(r0, gp)[0]
+            anM = rho_SUM_Mr(r0, anrho)
+            annr = ga.nr3Dtot_deriv_triax(r0, gp)
+            tmp_annu = ga.rho_triax(r0, gp)[1]
+            annu.append(tmp_annu)
+            anSig.append( rho_INT_Rho(r0, tmp_annu))
+            for pop in np.arange(1, gp.pops+1):
+                beta = ga.beta_triax(r0, gp)[pop]
+                anbeta.append(beta)
+                nu = ga.rho_triax(r0, gp)[pop]
+                annu.append(nu)
+                anSig.append(rho_INT_Rho(r0, nu))
+
+        self.analytic.set_prof('rho', anrho, 0, gp)
+        self.analytic.set_prof('M', anM, 0, gp)            
+        self.analytic.set_prof('nr', annr, 0, gp)
+
+        self.analytic.set_prof('nu', annu[0], 0, gp)
+        self.analytic.set_prof('nrnu', -gh.derivipol(np.log(annu[0]), np.log(r0)), 0, gp)
+        self.analytic.set_prof('Sig', anSig[0], 0, gp)
+        for pop in np.arange(1, gp.pops+1):
+            self.analytic.set_prof('beta', anbeta[pop-1], pop, gp)
+            self.analytic.set_prof('betastar', anbeta[pop-1]/(2.-anbeta[pop-1]), pop, gp)
+            self.analytic.set_prof('nu', annu[pop], pop, gp)
+            nunr = -gh.derivipol(np.log(annu[pop]), np.log(r0))
+            self.analytic.set_prof('nrnu', nunr, pop, gp)
+            self.analytic.set_prof('Sig', anSig[pop] , pop, gp)#/ Signorm, pop, gp)
+            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp) # TODO: find analytic profile
+
         return
     ## \fn set_analytic(x0, gp)
     # set analytic curves (later shown in blue)
@@ -222,13 +238,13 @@ class ProfileCollection():
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
         output.add('M 68% CL high '+ uni, self.M68hi.get_prof(prof, pop))
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
-        output.write(basename+'/prof_'+prof+'_'+str(pop)+'.ascii')
+        output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
 
         if gp.investigate =='walk' or gp.investigate=='gaia':
             out_an = go.Output()
             out_an.add('radius [pc]', self.analytic.x0)
             out_an.add('analytic profile', self.analytic.get_prof(prof, pop))
-            out_an.write(basename+'/prof_'+prof+'_'+str(pop)+'.analytic')
+            out_an.write(basename+'/output/analytic/prof_'+prof+'_'+str(pop)+'.analytic')
     ## \fn write_prof(self, basename, prof, pop, gp)
     # write output file for a single profile
     # @param basename directory string
@@ -241,7 +257,7 @@ class ProfileCollection():
         output = go.Output()
         output.add('edges', edges[1:])
         output.add('bins', bins)
-        output.write(basename+'/prof_chi2_0.ascii')
+        output.write(basename+'/output/prof_chi2_0.ascii')
         return
     ## \fn write_chi2(self, basename, edges, bins)
     # write ascii file with chi2 information
@@ -253,17 +269,18 @@ class ProfileCollection():
     def write_all(self, basename, gp):
         self.write_prof(basename, 'rho', 0, gp)
         self.write_prof(basename, 'M', 0, gp)
+        self.write_prof(basename, 'Sig', 0, gp)
+        self.write_prof(basename, 'nu', 0, gp)
+        self.write_prof(basename, 'nunr', 0, gp)
         if gp.geom=='sphere':
             self.write_prof(basename, 'nr', 0, gp)
-        self.write_prof(basename, 'betastar', 1, gp)
-        self.write_prof(basename, 'beta', 1, gp)
-        self.write_prof(basename, 'Sig', 1, gp)
-        self.write_prof(basename, 'sig', 1, gp)
-        if gp.pops == 2:
-            self.write_prof(basename, 'betastar', 2, gp)
-            self.write_prof(basename, 'beta', 2, gp)
-            self.write_prof(basename, 'Sig', 2, gp)
-            self.write_prof(basename, 'sig', 2, gp)
+        for pop in np.arange(1, gp.pops+1):
+            self.write_prof(basename, 'betastar', pop, gp)
+            self.write_prof(basename, 'beta', pop, gp)
+            self.write_prof(basename, 'Sig', pop, gp)
+            self.write_prof(basename, 'nu', pop, gp)
+            self.write_prof(basename, 'nunr', pop, gp)
+            self.write_prof(basename, 'sig', pop, gp)
     ## \fn write_all(self, basename, gp)
     # write output files for all profiles
     # @param basename directory string
@@ -292,12 +309,12 @@ class ProfileCollection():
         output.add('radius (data) [pc]', r0)
         if prof == 'Sig':
             # get 2D data here
-            # Rbin [Rscale], Binmin [Rscale], Binmax [Rscale], Sig(R)/Sig(0) [1], error [1]
+            # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], Sig(R)/Sig(0) [1], error [1]
             dum,dum,dum,Sigdat,Sigerr = np.transpose(np.loadtxt(gp.files.Sigfiles[pop], \
                                                               unpack=False, skiprows=1))
             Sigdat *= gp.Sig0pc[pop] # [Msun/pc^2]
             Sigerr *= gp.Sig0pc[pop] # [Msun/pc^2]
-            #Signorm = gh.ipol_rhalf_log(gp.xipol, Sigdat, gp.Rscale[pop])
+            #Signorm = gh.ipol_rhalf_log(gp.xipol, Sigdat, gp.Xscale[pop])
             output.add('data [Msun/pc^2]', Sigdat)
             output.add('error [Msun/pc^2]', Sigerr)
             output.add('data - error [Msun/pc^2]', Sigdat-Sigerr)
@@ -305,6 +322,20 @@ class ProfileCollection():
             ax.fill_between(r0, Sigdat-Sigerr, Sigdat+Sigerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([min(Sigdat-Sigerr)/2., 2.*max(Sigdat+Sigerr)])
+        elif prof == 'nu':
+            # get 3D data here
+            # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], nu(R)/nu(0) [1], error [1]
+            dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], \
+                                                              unpack=False, skiprows=1))
+            nudat *= gp.nu0pc[pop] # [Msun/pc^2]
+            nuerr *= gp.nu0pc[pop] # [Msun/pc^2]
+            output.add('data [Msun/pc^3]', nudat)
+            output.add('error [Msun/pc^3]', nuerr)
+            output.add('data - error [Msun/pc^2]', nudat-nuerr)
+            output.add('data + error [Msun/pc^2]', nudat+nuerr)
+            ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
+                            color='blue', alpha=0.3, lw=1)
+            ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)])
         elif prof == 'sig':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
@@ -319,7 +350,7 @@ class ProfileCollection():
             ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([0., 2.*max(sigdat+sigerr)])
-        output.write(basename+'/prof_'+prof+'_'+str(pop)+'.data')
+        output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
         return
     ## \fn plot_data(self, ax, basename, prof, pop, gp)
     # plot data as blue shaded region
@@ -340,8 +371,6 @@ class ProfileCollection():
 
         if prof == 'rho':
             ax.set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
-        elif prof == 'rhostar':
-            ax.set_ylabel('$\\rho^*\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
         elif prof == 'M':
             ax.set_ylabel('$M(r)$')
             ax.set_ylim([1e5, 1e11])
@@ -354,12 +383,18 @@ class ProfileCollection():
         elif prof == 'betastar':
             ax.set_ylabel('$\\beta^*_'+str(pop)+'$')
             ax.set_ylim([-1.05,1.05])
-        elif prof == 'Sig':
+        elif prof == 'Sig' and pop > 0:
             ax.set_ylabel('$\\Sigma_'+str(pop)+'\\quad[\\rm{M}_\\odot/\\rm{pc}^2]$')
-        elif prof == 'Sigstar':
+        elif prof == 'Sig' and pop == 0:
             ax.set_ylabel('$\\Sigma^*\\quad[\\rm{M}_\\odot/\\rm{pc}^2]$')
+        elif prof == 'nu' and pop > 0:
+            ax.set_ylabel('$\\nu_'+str(pop)+'\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
+        elif prof == 'nu' and pop == 0:
+            ax.set_ylabel('$\\rho^*\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
+        elif prof == 'nunr':
+            ax.set_ylabel('$n_{\\nu,'+str(pop)+'}(r)$')
         elif prof == 'sig':
-            ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\quad[\\rm{km}/\\rm{s}]$')
+            ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\\quad[\\rm{km}/\\rm{s}]$')
         return
     ## \fn plot_labels(self, ax, prof, pop, gp)
     # draw x and y labels
@@ -369,20 +404,22 @@ class ProfileCollection():
     # @param gp global parameters
 
 
-    def plot_Rscale_3D(self, ax, gp):
-        if gp.investigate == 'walk' or gp.investigate == 'gaia':
+    def plot_Xscale_3D(self, ax, gp):
+        if gp.investigate == 'walk':
             if gp.pops == 1:
-                rhodm, nu1 = ga.rhowalk_3D(gp.xipol, gp)
+                rhodm, nu1 = ga.rho_walk(gp.xipol, gp)
             else:
-                rhodm, nu1, nu2 = ga.rhowalk_3D(gp.xipol, gp)
-        for k in range(gp.pops):
+                rhodm, nu1, nu2 = ga.rho_walk(gp.xipol, gp)
+        elif gp.investigate == 'gaia':
+            rhodm, nu1 = ga.rho_gaia(gp.xipol, gp)
+        for pop in range(gp.pops):
             # use our models
-            nuprof = self.Mmedi.get_prof('nu', pop=k+1)
+            nuprof = self.Mmedi.get_prof('nu', pop+1)
             if gp.investigate == 'walk' or gp.investigate == 'gaia':
                 # or rather use analytic values, where available
-                if k == 0:
+                if pop == 0:
                     nuprof = nu1
-                elif k == 1:
+                elif pop == 1:
                     nuprof = nu2
 
             Mprof = glp.rho_SUM_Mr(gp.xipol, nuprof)
@@ -395,7 +432,7 @@ class ProfileCollection():
                     xx = (gp.xipol[kk-1]+gp.xipol[kk])/2
                     ax.axvline(xx, color='green', lw=0.5, alpha=0.7)
                     ihalf = kk
-    ## \fn plot_Rscale_3D(ax, gp)
+    ## \fn plot_Xscale_3D(ax, gp)
     # plot 3D half-light radii, based on median nu model
     # @param ax axis object
     # @param gp global parameters
@@ -418,17 +455,16 @@ class ProfileCollection():
         ax.plot(r0, Mmedi, 'r', lw=1)
 
         if prof == 'Sig' or prof == 'sig':
-            for i in range(gp.pops):
-                ax.axvline(gp.Rscale[i+1], color='blue', lw=0.5) # [pc]
+            for pop in range(gp.pops):
+                ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
         else:
-            self.plot_Rscale_3D(ax, gp)
+            self.plot_Xscale_3D(ax, gp)
         ax.set_xlim([r0[0],r0[-1]])
-        # TODO: get better range
-        #ax.set_xlim([gp.xipol[0], gp.xipol[-1]]) # gp.dat.binmax[-1]*gp.Rscale[0]])
+        #ax.set_xlim([gp.xipol[0], gp.xipol[-1]]) # gp.dat.binmax[-1]*gp.Xscale[0]])
         # if gp.pops==1:
-        #     ax.set_xlim([r0[0], 5*gp.Rscale[1]])
+        #     ax.set_xlim([r0[0], 5*gp.Xscale[1]])
         # else:
-        #     ax.set_xlim([r0[0], 5*max(gp.Rscale[1], gp.Rscale[2])])
+        #     ax.set_xlim([r0[0], 5*max(gp.Xscale[1], gp.Xscale[2])])
         return
     ## \fn fill_nice(self, ax, prof, pop, gp)
     # plot filled region for 1sigma and 2sigma confidence interval
@@ -445,7 +481,8 @@ class ProfileCollection():
         if prof != 'chi2':
             ax.set_xscale('log')
 
-        if prof == 'rho' or prof == 'rhostar' or prof == 'Sig' or prof == 'M' or prof=='Sigstar':
+        if prof == 'rho' or prof == 'Sig' or\
+           prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
 
         self.plot_labels(ax, prof, pop, gp)
@@ -462,24 +499,28 @@ class ProfileCollection():
             ax.step(edges[1:], bins, where='pre')
             plt.draw()
             self.write_chi2(basename, edges, bins)
-            fig.savefig(basename+'/prof_chi2_0.png')
-            pp = PdfPages(basename+'/prof_chi2_0.pdf')
+            fig.savefig(basename+'/output/prof_chi2_0.png')
+            pp = PdfPages(basename+'/output/prof_chi2_0.pdf')
             pp.savefig(fig)
             pp.close()
-
             return
 
         self.fill_nice(ax, prof, pop, gp)
         self.plot_N_samples(ax, prof, pop)
-        if prof == 'Sigstar' or prof == 'Sig' or prof == 'sig':
+        if prof == 'Sig' or prof=='nu' or prof == 'sig':
             self.plot_data(ax, basename, prof, pop, gp)
-        else:
-            if gp.investigate == 'walk' or gp.investigate == 'gaia':
-                ax.plot(self.analytic.x0, self.analytic.get_prof(prof, pop), 'b--', lw=2)
+
+        if gp.investigate == 'walk' or gp.investigate == 'gaia':
+            r0 = self.analytic.x0
+            y0 = self.analytic.get_prof(prof, pop)
+            #print(y0)
+            #print('prof = ', prof, ', pop = ', pop)
+            #pdb.set_trace()
+            ax.plot(r0, y0, 'b--', lw=2)
 
         plt.draw()
-        fig.savefig(basename+'/prof_'+prof+'_'+str(pop)+'.png')
-        pp = PdfPages(basename+'/prof_'+prof+'_'+str(pop)+'.pdf')
+        fig.savefig(basename+'/output/png/prof_'+prof+'_'+str(pop)+'.png')
+        pp = PdfPages(basename+'/output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
         pp.savefig(fig)
         pp.close()
         return
@@ -515,8 +556,8 @@ class ProfileCollection():
         ax.plot(r0, M68lo, color='black', lw=0.4)
         ax.plot(r0, M68hi, color='black', lw=0.3)
         ax.plot(r0, Mmedi, 'r', lw=1)
-        for i in range(gp.pops):
-            ax.axvline(gp.Rscale[i+1], color='gray', lw=0.5) # [pc]
+        for pop in range(gp.pops):
+            ax.axvline(gp.Xscale[pop+1], color='gray', lw=0.5) # [pc]
 
         ranalytic = data_analytic[:,0]
         analytic  = data_analytic[:,1]

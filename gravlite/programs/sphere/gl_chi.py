@@ -34,9 +34,9 @@ def calc_chi2(profs, gp):
     Sigdat = gp.dat.Sig[0]              # [Munit/pc^2] from rho*
     Sigerr = gp.dat.Sigerr[0]           # [Munit/pc^2]
     Sigmodel = profs.get_prof('Sig', 0)
-    chi2_rhostar = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
-    chi2 += chi2_rhostar
-    print('chi2_rhostar     = ', chi2_rhostar)
+    chi2_Sigstar = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
+    #chi2 += chi2_Sigstar # TODO reenable when normalization known
+    #print('chi2_Sigstar     = ', chi2_Sigstar)
 
     # now run through the stellar tracers
     for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]

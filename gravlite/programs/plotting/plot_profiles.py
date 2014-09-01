@@ -7,7 +7,7 @@
 
 # start off with plotting/ in front of path
 #import sys
-import pdb, pickle
+import pdb, pickle, os
 import numpy as np
 import numpy.random as npr
 npr.seed(1989) # for random events that are reproducible
@@ -18,18 +18,31 @@ plt.ioff()
 
 calculate_anew = False
 
+def prepare_output_folder(basename):
+    os.system('mkdir -p '+ basename + 'output/data/')
+    os.system('mkdir -p '+ basename + 'output/ascii/')
+    os.system('mkdir -p '+ basename + 'output/png/')
+    os.system('mkdir -p '+ basename + 'output/pdf/')
+    os.system('mkdir -p '+ basename + 'output/analytic/')
+    return 0
+## \fn prepare_output_folders(basename)
+# create directory structure in output folder
+# @param basename string, data folder
+
+
 def read_scale(basename, gp):
-    gp.Rscale = []
+    gp.Xscale = []
     gp.Sig0pc = []
     gp.maxsiglos = []
-    for i in range(gp.pops+1):
+    for pop in range(gp.pops+1):
         # basename + 'scale_' + str(i) + '.txt'
-        A = np.loadtxt(gp.files.get_scale_file(i),\
+        A = np.loadtxt(gp.files.get_scale_file(pop),\
                        unpack=False, skiprows=1)
-        gp.Rscale.append(A[0])  # [pc]
+        gp.Xscale.append(A[0])  # [pc]
         gp.Sig0pc.append(A[1])  # [Munit/pc^2]
         # totmass is A[2] # [Munit]
-        gp.maxsiglos.append(A[3]) # [km/s]
+        gp.nu0pc.append(A[3])   # [Munit/pc^3]
+        gp.maxsiglos.append(A[4]) # [km/s]
 ## \fn read_scale(basename, gp)
 # read scale file, store into gp.*scale
 # @param basename string
@@ -60,7 +73,7 @@ def read_models(basename):
     # for debugging, based on live points only
     # ALL = np.vstack([LIVE[:12,:-2]])
     # for debugging, fixed 100 models after N=1000 iterations
-    # ALL = np.vstack([REJECTED[1000:1100,:-2]])
+    #ALL = np.vstack([REJECTED[:6,:-2]])
     return ALL
 ## \fn read_models(basename)
 # read in all models, concatenate them
@@ -87,12 +100,13 @@ def pcload_single_entries(basename):
 if __name__ == '__main__':
     import select_run as sr
     timestamp, basename = sr.run()
+    prepare_output_folder(basename)
 
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
 
     # load stored parameters
-    ip.insert_sys_path(basename)
+    ip.insert_sys_path(basename+'programs/')
     import gl_params as glp
     ip.remove_first()
 
@@ -108,13 +122,13 @@ if __name__ == '__main__':
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
 
-    read_scale(basename, gp) # store half-light radii in  gp.Rscale
+    read_scale(basename, gp) # store half-light radii in  gp.Xscale
     import gl_helper as gh
-    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0]) # [Rscale0], [Munit/Rscale0^2]
-    gp.xipol = Radii * gp.Rscale[0]       # [pc] TODO check
-    maxR = max(Radii) # [pc]
-    Radii = np.hstack([Radii, 2*maxR, 4*maxR, 8*maxR])
-    gp.xepol = Radii * gp.Rscale[0]       # [pc] TODO check
+    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0]) # [Xscale0], [Munit/Xscale0^2]
+    gp.xipol = Radii * gp.Xscale[0]       # [pc]
+    maxR = max(Radii)                     # [pc]
+    Radii = np.hstack([Radii, 2*maxR, 4*maxR, 8*maxR]) # [pc]
+    gp.xepol = Radii * gp.Xscale[0]       # [pc]
 
     #if calculate_anew:
     #    pc = calculate_profiles(gp)
@@ -126,7 +140,8 @@ if __name__ == '__main__':
     pc.set_x0(gp.xipol) # [pc]
 
     if gp.investigate =='walk' or gp.investigate=='gaia':
-        r0analytic = np.logspace(np.log10(1.), np.log10(max(gp.xepol)), 100)
+        r0analytic = np.logspace(np.log10(1.),\
+                                 np.log10(max(gp.xepol)), 100)
         pc.set_analytic(r0analytic, gp)
 
     pc.sort_profiles(gp)
@@ -135,19 +150,18 @@ if __name__ == '__main__':
 
     pc.plot_profile(basename, 'chi2', 0, gp)
     pc.plot_profile(basename, 'rho', 0, gp)
-    pc.plot_profile(basename, 'Sigstar', 0, gp)
+    pc.plot_profile(basename, 'Sig', 0, gp)
+    pc.plot_profile(basename, 'nu', 0, gp)
+    pc.plot_profile(basename, 'nrnu', 0, gp)
+    pc.plot_profile(basename, 'nr', 0, gp)
     pc.plot_profile(basename, 'M', 0, gp)
-    if gp.geom == 'sphere':
-        pc.plot_profile(basename, 'nr', 0, gp)
-    pc.plot_profile(basename, 'betastar', 1, gp)
-    pc.plot_profile(basename, 'beta', 1, gp)
-    pc.plot_profile(basename, 'Sig', 1, gp)
-    pc.plot_profile(basename, 'sig', 1, gp)
-    if gp.pops == 2:
-        pc.plot_profile(basename, 'betastar', 2, gp)
-        pc.plot_profile(basename, 'beta', 2, gp)
-        pc.plot_profile(basename, 'Sig', 2, gp)
-        pc.plot_profile(basename, 'sig', 2, gp)
+
+    for pop in np.arange(1, gp.pops+1):
+        pc.plot_profile(basename, 'betastar', pop, gp)
+        pc.plot_profile(basename, 'beta', pop, gp)
+        pc.plot_profile(basename, 'Sig', pop, gp)
+        pc.plot_profile(basename, 'nu', pop, gp)
+        pc.plot_profile(basename, 'nrnu', pop, gp)
+        pc.plot_profile(basename, 'sig', pop, gp)
         
     # pc.plot_overview(basename, gp)
-    # plt.draw()

@@ -17,6 +17,7 @@ from pylab import *
 import gr_params as gpr
 import gl_file as gfile
 import gl_helper as gh
+import gl_project as glp
 from BiWeight import meanbiweight
 
 
@@ -34,20 +35,20 @@ def run(gp):
     Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
-    Rscale0 = gfile.read_Rscale(gp.files.get_scale_file(0)) # [pc]
+    Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
-    for comp in range(gpr.ncomp):
-        print('#######  working on component ',comp)
-        print('input: ', gpr.get_com_file(comp))
+    for pop in range(gpr.pops):
+        print('#######  working on component ',pop)
+        print('input: ', gpr.get_com_file(pop))
         # start from data centered on COM already:
-        if gfile.bufcount(gpr.get_com_file(comp))<2: continue
-        x,y,v = np.loadtxt(gpr.get_com_file(comp),\
+        if gfile.bufcount(gpr.get_com_file(pop))<2: continue
+        x,y,v = np.loadtxt(gpr.get_com_file(pop),\
                            skiprows=1,usecols=(0,1,2),unpack=True)
                            # [Rscalei], [Rscalei], [km/s]
 
         # calculate 2D radius on the skyplane
         R = np.sqrt(x**2+y**2) #[Rscalei]
-        Rscalei = gfile.read_Rscale(gp.files.get_scale_file(comp)) # [pc]
+        Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
 
         # set maximum radius (if gp.maxR is set)
         Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR # [Rscale0]
@@ -59,11 +60,11 @@ def run(gp):
         Rs = R                   # + possible starting offset, [Rscalei]
         vlos = v                 # + possible starting offset, [km/s]
         
-        tr = open(gp.files.get_ntracer_file(comp),'w')
+        tr = open(gp.files.get_ntracer_file(pop),'w')
         print(totmass, file=tr)
         tr.close()
 
-        de, em, sigfil, kappafil = gfile.write_headers_2D(gp, comp)
+        f_Sig, f_nu, f_mass, f_sig, f_kap = gfile.write_headers_2D(gp, pop)
 
         Density_kin   = np.zeros((gp.nipol, gpr.n))
         sigma     = np.zeros((gp.nipol, gpr.n))
@@ -132,7 +133,7 @@ def run(gp):
 
         Dens0 = np.sum(Density_phot[0])/float(gpr.n) # [Munit/Rscale^2]
         Dens0pc = Dens0/Rscale0**2              # [munis/pc^2]
-        gfile.write_density(gp.files.get_scale_file(comp), Dens0pc, totmass)
+        gfile.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass)
 
         tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(tpb0)       # [Munit/Rscale^2]
@@ -151,15 +152,29 @@ def run(gp):
                 P_dens[b] = Dens/Dens0   # [1]
                 P_edens[b]= Denserr/Dens0 # [1]
 
-            print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=de)
+            print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=f_Sig)
             # 3*[rscale], [dens0], [dens0]
             indr = (R<Binmax[b])
             Menclosed = float(np.sum(indr))/totmass # for normalization to 1#[totmass]
             Merr = Menclosed/np.sqrt(tpbb) # or artificial Menclosed/10 #[totmass]
-            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=em) # [Rscale0], 2* [totmass]
-        de.close()
-        em.close()
+            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=f_mass) # [Rscale0], 2* [totmass]
+        f_Sig.close()
+        f_mass.close()
 
+        # deproject Sig to get nu
+        numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
+        numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
+        numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
+        
+        nu0pc  = numedi[0]
+        gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
+
+        nuerr  = numax-numedi
+        for b in range(gp.nipol):
+            print(Rbin[b], Binmin[b], Binmax[b],\
+                  numedi[b]/nu0pc, nuerr[b]/nu0pc, \
+                  file = f_nu)
+        f_nu.close()
 
         # output siglos
         p_dvlos = np.zeros(gp.nipol);        p_edvlos = np.zeros(gp.nipol)
@@ -176,15 +191,15 @@ def run(gp):
 
         maxsiglos = max(p_dvlos) #[km/s]
         print('maxsiglos = ', maxsiglos, '[km/s]')
-        fpars = open(gp.files.get_scale_file(comp),'a')
+        fpars = open(gp.files.get_scale_file(pop),'a')
         print(maxsiglos, file=fpars)          #[km/s]
         fpars.close()
 
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], np.abs(p_dvlos[b]/maxsiglos),\
-                  np.abs(p_edvlos[b]/maxsiglos), file=sigfil)
+                  np.abs(p_edvlos[b]/maxsiglos), file=f_sig)
             # 3*[rscale], 2*[maxsiglos]
-        sigfil.close()
+        f_sig.close()
 
         # output kurtosis kappa
         p_kappa = np.zeros(gp.nipol) # needed for plotting later
@@ -201,14 +216,14 @@ def run(gp):
             p_ekappa[b] = kappavelerr
             
             print(Rbin[b], Binmin[b], Binmax[b], \
-                  kappavel, kappavelerr, file=kappafil)
+                  kappavel, kappavelerr, file=f_kap)
             # [rscale], 2*[1]
-        kappafil.close()
+        f_kap.close()
     
         if gpr.showplots:
-            gpr.show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc)
-            gpr.show_plots_sigma(comp, Rbin, p_dvlos, p_edvlos)
-            gpr.show_plots_kappa(comp, Rbin, p_kappa, p_ekappa)
+            gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Dens0pc)
+            gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
+            gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
 
 
 

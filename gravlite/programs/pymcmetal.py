@@ -3,7 +3,7 @@
 ##
 # @file
 # MCMC to split stellar tracers into two populations
-# assuming split by age is traced by age and thus metallicity
+# assuming split by age is traced by age and thus metallicity only
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
@@ -136,7 +136,7 @@ def bimodal_gauss(data):
 
 
 def run():
-    x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
+    x0,y0,z0,vz0,vb0,Mg0,PM0,pop0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                     usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
                                     dtype="d17",\
                                     converters={0:expDtofloat,  # x0  in pc \
@@ -146,7 +146,7 @@ def run():
                                     12:expDtofloat, # vb0(LOS due binary), km/s\
                                     13:expDtofloat, # Mg0 in Angstrom\
                                     19:expDtofloat, # PM0 [1]\
-                                    20:expDtofloat}) # comp0 1,2,3(background)
+                                    20:expDtofloat}) # pop0 1,2,3(background)
 
     pm = (PM0 >= gpr.pmsplit)
 
@@ -175,13 +175,13 @@ def run():
     h1 = hist(data,bins=bins,color='k', alpha=0.2, normed=True)
     print('overall mean = ', np.mean(data))
     
-#    hist(data[comp0==1],bins=bins,color='r',alpha=0.5,normed=True)
-#    axvline(x=np.mean(data[comp0==1]),color='r',ls='dashed')
-#    print('mean 1 = ', np.mean(data[comp0==1]), ', found ',mu1,', ',sig1)
+#    hist(data[pop0==1],bins=bins,color='r',alpha=0.5,normed=True)
+#    axvline(x=np.mean(data[pop0==1]),color='r',ls='dashed')
+#    print('mean 1 = ', np.mean(data[pop0==1]), ', found ',mu1,', ',sig1)
 
-#    hist(data[comp0==2],bins=bins,color='b',alpha=0.5,normed=True)
-#    axvline(x=np.mean(data[comp0==2]),color='b',ls='dashed')
-#    print('mean 2 = ', np.mean(data[comp0==2]), ', found ',mu2,', ',sig2)
+#    hist(data[pop0==2],bins=bins,color='b',alpha=0.5,normed=True)
+#    axvline(x=np.mean(data[pop0==2]),color='b',ls='dashed')
+#    print('mean 2 = ', np.mean(data[pop0==2]), ', found ',mu2,', ',sig2)
 
     x = bins
     y = p * norm.pdf(x, loc = mu1, scale = sig1)

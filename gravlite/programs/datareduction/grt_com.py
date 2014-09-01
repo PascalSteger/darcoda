@@ -43,7 +43,7 @@ def run(gp):
         Rc = np.sqrt(x0**2+y0**2) # [pc]
         Rhalf = np.median(Rc) # [pc]
         Rscale = Rhalf # or gpr.r_DM # [pc]
-        gp.Rscale.append(Rscale) # [pc]
+        gp.Xscale.append(Rscale) # [pc]
 
         print('Rscale = ', Rscale,' pc')
         print('max(R) = ', max(Rc),' pc')
@@ -56,10 +56,10 @@ def run(gp):
         m = np.ones(len(x))
         R = np.sqrt(x*x+y*y)*Rscale # [pc]
 
-        gfile.write_Rscale(gp.files.get_scale_file(comp), np.median(R))
+        gfile.write_Xscale(gp.files.get_scale_file(comp), np.median(R))
 
         c = open(gpr.get_com_file(comp), 'w')
-        print('# x [Rscale],','y [Rscale],','vLOS [km/s],','Rscale = ', \
+        print('# x [Xscale],','y [Xscale],','vLOS [km/s],','Xscale = ', \
               Rscale, ' pc', file=c)
         for k in range(len(x)):
             print(x[k], y[k], vz[k], file=c) #[rscale], [rscale], [km/s]

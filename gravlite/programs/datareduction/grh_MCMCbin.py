@@ -24,7 +24,7 @@ def run(gp):
     # determine radius once and for all from all tracers
     R, Phi, vzall = np.loadtxt(gpr.fileposspherical[0],
                                comments='#',unpack=True) # 2*[Rscale], [km/s]
-    Rscale0 = gfile.read_Rscale(gp.files.get_scale_file(0)) # [pc]
+    Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
     # set number and size of (linearly spaced) bins
     Rmin = 0.                                         # [Rscale]
@@ -51,19 +51,19 @@ def run(gp):
         Vol[k] = np.pi*(Binmax[k]**2-Binmin[k]**2) # [Rscale^2]
 
 
-    for comp in range(gpr.ncomp):
-        print('#######  working on component ',comp)
-        print('grh_MCMCbin: input: ',gpr.fileposspherical[comp])
+    for pop in range(gpr.pops):
+        print('#######  working on component ',pop)
+        print('grh_MCMCbin: input: ',gpr.fileposspherical[pop])
         # start from data centered on COM already:
-        if gfile.bufcount(gpr.fileposspherical[comp])<2: continue
-        R, Phi, v = np.loadtxt(gpr.fileposspherical[comp],\
+        if gfile.bufcount(gpr.fileposspherical[pop])<2: continue
+        R, Phi, v = np.loadtxt(gpr.fileposspherical[pop],\
                                comments='#',unpack=True)
                                # [Rscale], [1], [km/s]
         
         # set maximum radius (if gp.maxR is set)
         Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR         # [Rscale]
         print('Rmax [Rscale] = ', Rmax)
-        Rscalei = gfile.read_Rscale(gp.files.get_scale_file(comp)) # [pc]
+        Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
         sel = (R<=Rmax)
         R = R[sel]; v = v[sel] # [Rscale], [km/s]
         totmass = 1.*len(R) # [Munit], Munit = 1/star
@@ -72,11 +72,11 @@ def run(gp):
         vlos = v                 # + possible starting offset, [km/s]
         
         print('grh_MCMCbin: output density: ')
-        tr = open(gp.files.get_ntracer_file(comp),'w')
+        tr = open(gp.files.get_ntracer_file(pop),'w')
         print(totmass, file=tr)
         tr.close()
 
-        de, em, sigfil, kappafil = gfile.write_headers_2D(gp, comp)
+        de, em, sigfil, kappafil = gfile.write_headers_2D(gp, pop)
 
         # gpr.n=30 iterations for getting random picked radius values
         Density = np.zeros((gp.nipol,gpr.n))
@@ -116,11 +116,11 @@ def run(gp):
         # output density
         Dens0 = np.sum(Density[0])/(1.*gpr.n) # [Munit/Rscale^2]
         print('Dens0 = ', Dens0, '[Munit/Rscale^2]')
-        crscale = open(gp.files.get_scale_file(comp),'r')
+        crscale = open(gp.files.get_scale_file(pop),'r')
         Rscale = np.loadtxt(crscale, comments='#', unpack=False) # [pc]
         crscale.close()
 
-        cdens = open(gp.files.get_scale_file(comp),'a')
+        cdens = open(gp.files.get_scale_file(pop),'a')
         print(Dens0, file=cdens)               # [Munit/Rscale^2]
         Dens0pc = Dens0*Rscale**2
         print(Dens0pc, file=cdens)     # [Munit/pc^2]
@@ -168,7 +168,7 @@ def run(gp):
 
         maxsiglos = max(p_dvlos)          # [km/s]
         print('maxsiglos = ',maxsiglos,'[km/s]')
-        fpars = open(gp.files.get_scale_file(comp),'a')
+        fpars = open(gp.files.get_scale_file(pop),'a')
         print(maxsiglos, file=fpars)      # [km/s]
         fpars.close()
         
@@ -196,9 +196,9 @@ def run(gp):
         kappafil.close()
 
         if gpr.showplots:
-            gpr.show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc)
-            gpr.show_plots_sigma(comp, Rbin, p_dvlos, p_edvlos)
-            gpr.show_plots_kappa(comp, Rbin, p_kappa, p_ekappa)
+            gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Dens0pc)
+            gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
+            gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
 
             
 if __name__ == '__main__':

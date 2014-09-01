@@ -154,7 +154,7 @@ def run(gp):
         R = np.sqrt(x*x+y*y)            # [pc]
         Rscalei = np.median(R)          # [pc]
         import gl_file as gfile
-        gfile.write_Rscale(gp.files.get_scale_file(i), Rscalei) # [pc]
+        gfile.write_Xscale(gp.files.get_scale_file(i), Rscalei) # [pc]
         gfile.write_data_output(gpr.get_com_file(i), x/Rscalei, y/Rscalei, vz, Rscalei) # [pc]
 
         #if gpr.showplots:

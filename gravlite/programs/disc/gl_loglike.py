@@ -19,19 +19,25 @@ def geom_loglike(cube, ndim, nparams, gp):
     norm = cube[off]
     off += 1
 
-    rhopar = np.array(cube[off:off+gp.nepol])
+    rhopar = np.array(cube[off:off+gp.nrho])
     tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
     tmp_profs.set_prof('rho', tmp_rho[3:-3], 0, gp)
-    off += gp.nepol
+    off += gp.nrho
     # TODO: M
     # tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
     # tmp_profs.set_prof('M', tmp_M[:gp.nipol], 0, gp)
 
+    rhostarpar = np.array(cube[off:off+gp.nepol])
+    tmp_profs.set_prof('nu', rhostarpar, 0, gp) # [Munit/pc^3]
+    off += gp.nepol
+
+    MtoL = cube[off]
+    off += 1
 
     for pop in np.arange(gp.pops)+1:
-        nupar = np.array(cube[off:off+gp.nupol])
+        nupar = np.array(cube[off:off+gp.nepol])
         tmp_profs.set_prof('nu', nupar, pop, gp) # [Munit/pc^3]
-        off += gp.nupol
+        off += gp.nepol
 
         tiltpar = np.array(cube[off:off+gp.nbeta])
         tmp_tilt = phys.tilt(gp.xipol, tiltpar, gp)
@@ -43,7 +49,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         off += gp.nbeta
 
         #try:
-        sig = phys.sigz(gp.xepol, rhopar, nupar, norm, tiltpar, pop, gp)
+        sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
         #except Exception as detail:
         #    print('sig kap exception')
         #    tmp_profs.chi2 = gh.err(3., gp)

@@ -6,6 +6,8 @@
 
 import numpy as np
 import pdb
+from pylab import *
+
 import gl_physics as phys
 
 from gl_class_profiles import Profiles
@@ -19,33 +21,46 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
 
-    rhopar = np.array(cube[off:off+gp.nepol])
-    tmp_profs.set_prof('nr', rhopar[2:-1-3], 0, gp)
+    rhopar = np.array(cube[off:off+gp.nrho])
+    tmp_profs.set_prof('nr', 1.*rhopar[1+1+gp.nexp:-gp.nexp-1], 0, gp)
 
     tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
     # rhopar hold [rho(rhalf), nr to be used for integration
     # from halflight radius, defined on gp.xepol]
-    tmp_profs.set_prof('rho', tmp_rho, 0, gp) # TODO: cut tmp_rho
+    tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
 
     # (only calculate) M, check
     tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
-    tmp_profs.set_prof('M', tmp_M, 0, gp) # TODO: cut tmp_M
-    off += gp.nepol
+    tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
+    off += gp.nrho
 
     # get profile for rho*
-    rhostarpar = np.array(cube[off:off+gp.nupol])
-    tmp_profs.set_prof('nu', rhostarpar, 0, gp)
-    off += gp.nupol
+    rhostarpar = np.array(cube[off:off+gp.nrho])
+    rhostar = phys.rho(gp.xepol, rhostarpar, 0, gp)
+    tmp_profs.set_prof('nu', rhostar[gp.nexp:-gp.nexp], 0, gp)
+    off += gp.nrho
+
+    Signu = glp.rho_INTIPOL_Rho(gp.xepol, rhostar, gp) # [Munit/pc^2]
+    Sig = gh.linipollog(gp.xepol, Signu, gp.xipol)
+    tmp_profs.set_prof('Sig', Sig, 0, gp)
+
+    MtoL = cube[off]
+    off += 1
 
     for pop in np.arange(1, gp.pops+1):  # [1, 2, ..., gp.pops]
-        nupar = cube[off:off+gp.nupol]
-        off += gp.nupol
+        nupar = np.array(cube[off:off+gp.nrho])
+        tmp_nrnu = 1.*nupar[1+1+gp.nexp:-gp.nexp-1]
+        tmp_profs.set_prof('nrnu', tmp_nrnu, pop, gp)
+        tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)
+        tmp_profs.set_prof('nu', tmp_nu[gp.nexp:-gp.nexp], pop, gp)
+        off += gp.nrho
 
-        betapar = cube[off:off+gp.nbeta]
+        betapar = np.array(cube[off:off+gp.nbeta])
         off += gp.nbeta
 
-        tmp_profs.set_prof('nu', nupar, pop, gp) # [Munit/pc^3]
-        # if nu priors are wished, enable them in gl_class_profiles
+        tmp_Signu = glp.rho_INTIPOL_Rho(gp.xepol, tmp_nu, gp) # [Munit/pc^2]
+        tmp_Sig = gh.linipollog(gp.xepol, tmp_Signu, gp.xipol)
+        tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
 
         tmp_beta, tmp_betastar = phys.beta(gp.xipol, betapar, gp)
 
@@ -57,10 +72,8 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
         
         try:
-            sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, nupar, betapar, pop, gp)
+            sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
         
-            # sig_LOS, kappa_LOS, and zeta are defined on data radii only, so no extension by 3 bins here
-
         except Exception as detail:
             tmp_profs.chi2 = gh.err(2., gp)
             return tmp_profs
@@ -68,11 +81,20 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('kap', kap, pop, gp)
         tmp_profs.set_prof('zetaa', zetaa, pop, gp)
         tmp_profs.set_prof('zetab', zetab, pop, gp)
-    
+        
+
     # determine log likelihood
     chi2 = calc_chi2(tmp_profs, gp)
     print('found log likelihood = ', -chi2/2.)
     tmp_profs.chi2 = chi2
+
+    if gp.checksig:
+        import gl_analytic as ga
+        rho0check, rho1check = ga.rho_gaia(gp.xepol, gp)
+        dummy, beta1check = ga.beta_gaia(gp.xepol, gp)
+        betastar1check = phys.beta2betastar(beta1check)
+        pdb.set_trace()
+
     return tmp_profs
 ## \fn geom_loglike(cube, ndim, nparams, gp)
 # define log likelihood function to be called by pyMultinest and plot_profiles

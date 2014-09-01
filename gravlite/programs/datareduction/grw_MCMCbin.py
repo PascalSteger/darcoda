@@ -17,8 +17,9 @@ from pylab import *
 
 import gr_params as gpr
 import gl_file as gfile
-from gl_helper import expDtofloat, add_errors
-from BiWeight import meanbiweight
+import gl_helper as gh
+import BiWeight as BW
+import gl_project as glp
 
 def set_bndry(R, gp):
     Rmin = 0. #[Rscale]
@@ -38,7 +39,7 @@ def run(gp):
     xall,yall = np.loadtxt(gpr.get_com_file(0), skiprows=1, usecols=(0,1), unpack=True)
     # 2*[Rscale_0]
 
-    Rscale0 = gfile.read_Rscale(gp.files.get_scale_file(0)) # [pc]
+    Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     
     # calculate 2D radius on the skyplane
     R = np.sqrt(xall**2+yall**2) # [Rscale0]
@@ -47,28 +48,28 @@ def run(gp):
     Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
-    for comp in range(gpr.ncomp):
-        if gfile.empty(gpr.get_com_file(comp)): continue
-        print('####### working on component ',comp)
+    for pop in range(gpr.pops):
+        if gfile.empty(gpr.get_com_file(pop)): continue
+        print('####### working on component ',pop)
 
         # start from data centered on COM already:
-        print('input: ', gpr.get_com_file(comp))
-        x,y,v = np.loadtxt(gpr.get_com_file(comp),\
+        print('input: ', gpr.get_com_file(pop))
+        x,y,v = np.loadtxt(gpr.get_com_file(pop),\
                            skiprows=1,usecols=(0,1,2),unpack=True) #[Rscale_i], [Rscale_i], [km/s]
 
         R = np.sqrt(x**2+y**2) #[Rscale_i]
         
         # set maximum radius (if gp.maxR is set)
         Rmin, Rmax = set_bndry(R, gp) # [Rscale_i]
-        Rscalei = gfile.read_Rscale(gp.files.get_scale_file(comp)) # [pc]
+        Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
         sel = (R * Rscalei <= Rmax * Rscale0) # [pc]
         x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscale_i], [km/s]
         totmass = float(len(x)) # [Munit] We assume Mstar = 1 Munit for all stars
         Rs = R                  #+possible starting offset, [Rscale_i]
         vlos = v                #+possible starting offset, [km/s]
 
-        gfile.write_tracer_file(gp.files.get_ntracer_file(comp), totmass)
-        de, em, sigfil, kappafil = gfile.write_headers_2D(gp, comp)
+        gfile.write_tracer_file(gp.files.get_ntracer_file(pop), totmass)
+        f_Sig, f_nu, f_mass, f_sig, f_kap = gfile.write_headers_2D(gp, pop)
 
         # tracers per bin, shared by density, siglos, kappa
         # calculations
@@ -82,8 +83,8 @@ def run(gp):
         # v_LOS values
         # this gives us a handle on the stochastic error, which has a gaussian / normal distribution
         for k in range(gpr.n):
-            Rsi   = add_errors(Rs,   gpr.Rerr) # [Rscale_i]
-            vlosi = add_errors(vlos, gpr.vrerr) # [km/s]
+            Rsi   = gh.add_errors(Rs,   gpr.Rerr) # [Rscale_i]
+            vlosi = gh.add_errors(vlos, gpr.vrerr) # [km/s]
             for i in range(gp.nipol):
                 sel = np.argwhere(np.logical_and(Rsi*Rscalei >= Binmin[i]*Rscale0,\
                                                  Rsi*Rscalei <  Binmax[i]*Rscale0)).flatten() # [pc]
@@ -98,7 +99,7 @@ def run(gp):
                     zetaa[i][k] = zetaa[i-1][k]
                     zetab[i][k] = zetab[i-1][k]
                 else:
-                    sigma[i][k] = meanbiweight(vlosi[sel], ci_perc=68.4, ci_mean=True, ci_std=True)[1]
+                    sigma[i][k] = BW.meanbiweight(vlosi[sel], ci_perc=68.4, ci_mean=True, ci_std=True)[1]
                                         # [km/s], see BiWeight.py
                     kappa[i][k] = kurtosis(vlosi[sel], axis=0, fisher=False, bias=False) # [1]
                     # zetaa[i][k] = TODO
@@ -107,7 +108,7 @@ def run(gp):
         # central density averaged over gpr.n iterations
         Dens0 = np.sum(Density[0])/float(gpr.n) # [Munit/Rscale0^2]
         Dens0pc = Dens0/Rscale0**2              # [Munit/pc^2]
-        gfile.write_density(gp.files.get_scale_file(comp), Dens0pc, totmass)
+        gfile.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass)
 
         # number of tracers in central bin, it. averaged
         tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
@@ -127,20 +128,36 @@ def run(gp):
                 P_dens[b] = Dens/Dens0   # [1]
                 P_edens[b]= Denserr/Dens0    # [1]
 
-            print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=de)
+            print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=f_Sig)
             # 3*[Rscale0], [dens0], [dens0]
             indr = (R<Binmax[b])
             Menclosed = 1.0*np.sum(indr)/totmass # for normalization
                                                  # to 1 #[totmass]
             Merr = Menclosed/np.sqrt(tpbb) # or artificial
                                            # Menclosed/10 #[totmass]
-            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=em)
+            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=f_mass)
             # [Rscale], 2* [totmass]
-        de.close()
-        em.close()
+        f_Sig.close()
+        f_mass.close()
+
+        # deproject Sig to get nu
+        numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
+        numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
+        numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
+        
+        nu0pc  = numedi[0]
+        gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
+
+        nuerr  = numax-numedi
+        for b in range(gp.nipol):
+            print(Rbin[b], Binmin[b], Binmax[b],\
+                  numedi[b]/nu0pc, nuerr[b]/nu0pc, \
+                  file = f_nu)
+        f_nu.close()
 
         # output siglos
-        p_dvlos = np.zeros(gp.nipol);        p_edvlos = np.zeros(gp.nipol)
+        p_dvlos = np.zeros(gp.nipol)
+        p_edvlos = np.zeros(gp.nipol)
         for b in range(gp.nipol):
             dispvel = np.sum(sigma[b])/gpr.n #[km/s] # mean sigma
             tpbb = np.sum(tpb[b])/(float(gpr.n)) #[1]
@@ -154,16 +171,16 @@ def run(gp):
 
         maxsiglos = max(p_dvlos) #[km/s]
         print('maxsiglos = ', maxsiglos, '[km/s]')
-        fpars = open(gp.files.get_scale_file(comp),'a')
+        fpars = open(gp.files.get_scale_file(pop),'a')
         print(maxsiglos, file=fpars)          #[km/s]
         fpars.close()
         
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], \
                   np.abs(p_dvlos[b]/maxsiglos),np.abs(p_edvlos[b]/maxsiglos), \
-                  file=sigfil)
+                  file=f_sig)
             # 3*[rscale], 2*[maxsiglos]
-        sigfil.close()
+        f_sig.close()
 
 
         # output kurtosis kappa
@@ -182,14 +199,21 @@ def run(gp):
             
             print(Rbin[b], Binmin[b], Binmax[b],\
                   kappavel, kappavelerr, \
-                  file=kappafil)
+                  file=f_kap)
             # [rscale], 2*[1]
-        kappafil.close()
-    
-        if gpr.showplots:
-            gpr.show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc)
-            gpr.show_plots_sigma(comp, Rbin, p_dvlos, p_edvlos)
-            gpr.show_plots_kappa(comp, Rbin, p_kappa, p_ekappa)
+        f_kap.close()
+        if gpr.showplots and pop == 1:
+            import gl_analytic as ga
+            #gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Dens0pc)
+            mf1 = totmass
+            mf2 = 1
+            Sig_dm, Sig_star1, Sig_star2 = ga.Sig_walk(Rbin, mf1, mf2, gp)
+            loglog(Rbin, Dens0pc*P_dens, 'b.-')
+            loglog(Rbin, Sig_star1, 'r.-')
+            pdb.set_trace()
+            #gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
+            #gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
+            
             
 ## \fn run(gp)
 # main functionality

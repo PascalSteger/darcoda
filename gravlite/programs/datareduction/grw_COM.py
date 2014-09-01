@@ -150,9 +150,9 @@ def run(gp):
 
     # gh.print_summary(Rscale, Rc) # [pc]
     
-    i = -1
+    pop = -1
     for pmn in [pm, pm1, pm2]:
-        i = i+1                          # population number
+        pop = pop + 1                    # population number
         pmr = ( R0 < (gp.maxR*Rscale) )  # read max extension for data
                                          #(rprior*Rscale) from
                                          #gl_params
@@ -162,8 +162,8 @@ def run(gp):
         x, y, z, comp, vz, vb, Mg, PMN = select_pm(x0, y0, z0, comp0, vz0, vb0, Mg0, PM0, pmn)
         R = np.sqrt(x*x+y*y)             # [pc]
         Rscalei = np.median(R)
-        gfile.write_Rscale(gp.files.get_scale_file(i), Rscalei)
-        gfile.write_data_output(gpr.get_com_file(i), x/Rscalei, y/Rscalei, vz, Rscalei)
+        gfile.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
+        gfile.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
         
         #if gpr.showplots:
         #    gpr.show_part_pos(x, y, pmn, Rscale, i)

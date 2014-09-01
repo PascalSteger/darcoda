@@ -18,9 +18,9 @@ import gr_params as gpr
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 
 def run():
-    for comp in range(gpr.ncomp):
-        print('input:',gpr.fileposspherical[comp])
-        R, Phi, vlos = np.loadtxt(gpr.fileposspherical[comp],\
+    for pop in range(gpr.pops):
+        print('input:',gpr.fileposspherical[pop])
+        R, Phi, vlos = np.loadtxt(gpr.fileposspherical[pop],\
                                   comments='#', unpack=True)
         Totmass = 1.*len(R) # [Munit], Munit = 1/star
         # Rs=gpr.Rerr*np.random.randn(len(r))+r
@@ -57,22 +57,22 @@ def run():
         # output density
         Dens0 = np.sum(Density[0])/(1.*gpr.n) # [Munit/Rscale^3]
         print('Dens0 = ',Dens0,' [Munit/Rscale^2]')
-        crscale = open(gp.files.get_scale_file(comp),'r')
+        crscale = open(gp.files.get_scale_file(pop),'r')
         Rscale = np.loadtxt(cscale, comments='#', unpack=False)
         crscale.close()
 
-        cdens = open(gp.files.get_scale_file(comp),'a')
+        cdens = open(gp.files.get_scale_file(pop),'a')
         print(Dens0, file=cdens)               # [Munit/Rscale^2]
         print(Dens0/Rscale**2, file=cdens)      # [Munit/pc^2]
         print(Totmass, file=cdens)             # [Munit]
         cdens.close()
 
-        de = open(gp.files.Sigfiles[comp], 'w')
-        print('# Rbin [Rscale]','Binmin [Rscale]','Binmax [Rscale]',
+        de = open(gp.files.Sigfiles[pop], 'w')
+        print('# Rbin [Xscale]','Binmin [Xscale]','Binmax [Xscale]',
               'Sig(R)/Sig(0) [1]','error [1]', file=de)
     
-        em = open(gp.files.massfiles[comp], 'w')
-        print('# R [Rscale]','Binmin [Rscale]','Binmax [Rscale]',\
+        em = open(gp.files.massfiles[pop], 'w')
+        print('# R [Xscale]','Binmin [Xscale]','Binmax [Xscale]',\
               'M(<Binmax) [Munit]','error [Munit]', file=em)
     
         AB0   = np.sum(A[0])/(1.*gpr.n)     # [1]

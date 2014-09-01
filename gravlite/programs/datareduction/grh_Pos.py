@@ -11,10 +11,10 @@ import pdb
 import gr_params as gpr
 
 def run():
-    for comp in range(gpr.ncomp):
+    for pop in range(gpr.pops):
         print('grh_Pos: input:')
-        print(gpr.fileposcenter[comp])
-        xall,yall,vlosall = np.loadtxt(gpr.fileposcenter[comp],
+        print(gpr.fileposcenter[pop])
+        xall,yall,vlosall = np.loadtxt(gpr.fileposcenter[pop],
                                        comments='#', unpack=True)
         # 2*[Rscale], [km/s]
 
@@ -32,14 +32,14 @@ def run():
         # old output to cartesian variables: needed anywhere?
         # print('grh_Pos: output:')
         # print(gpr.fileposcartesian)
-        # fileposcartesian = open(gpr.fileposcartesian[comp], 'w')
+        # fileposcartesian = open(gpr.fileposcartesian[pop], 'w')
         # print('# x [], y []',file=fileposcartesian)
         # for k in range(n):
         #     print(x[k], y[k], file=fileposcartesian)
         # fileposcartesian.close()
 
         # print(gpr.filevelcartesian)
-        # filevelcartesian = open(gpr.filevelcartesian[comp], 'w')
+        # filevelcartesian = open(gpr.filevelcartesian[pop], 'w')
         # print('# vlos [km/s]',file=filevelcartesian)
         # for k in range(n):
         #     print(vlos[k],file=filevelcartesian)
@@ -63,12 +63,14 @@ def run():
             elif y[k]<0:                    # [Rscale]
                 Phi[k] = np.arctan(y[k]/x[k])-np.pi
 
-        print(gpr.fileposspherical[comp])
-        fileposspherical = open(gpr.fileposspherical[comp], 'w')
+        print(gpr.fileposspherical[pop])
+        fileposspherical = open(gpr.fileposspherical[pop], 'w')
         print('# R [Rscale]', 'Phi [rad]', 'vlos [km/s]', file=fileposspherical)
         for k in range(n):
             print(R[k], Phi[k], vlos[k], file=fileposspherical)
         fileposspherical.close()
+## \fn run()
+# main functionality, to be called from gravlite
 
         
 if __name__ == "__main__":

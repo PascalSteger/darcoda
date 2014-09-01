@@ -9,6 +9,7 @@
 import sys, pdb
 import numpy as np
 import gl_physics as phys
+import gl_analytic as ga
 from gl_data import Datafile
 
 def bin_data(gp):
@@ -20,13 +21,13 @@ def bin_data(gp):
         grh_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
         import grg_COM, grg_MCMCbin
-        grg_COM.run()
-        grg_MCMCbin.run()
+        grg_COM.run(gp)
+        grg_MCMCbin.run(gp)
     elif gp.investigate == 'walk':
         import grw_COM, grw_MCMCbin # inside there, split by metallicity
         grw_COM.run(gp)
         grw_MCMCbin.run(gp)
-        # run for 3D models as well if model is set (needed in rhowalktot)
+        # run for 3D models as well if model is set (needed in rhotot_walk)
         if gp.walker3D:
             import grw_com, grw_mcmcbin
             grw_com.run()
@@ -56,12 +57,19 @@ def bin_data(gp):
 
 def get_data(gp):
     gp.dat = Datafile()
-    for k in range(gp.pops+1):
-        A = np.loadtxt(gp.files.get_scale_file(k), unpack=False, skiprows=1)
-        gp.Rscale.append(A[0])
+    for pop in range(gp.pops+1):
+        A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
+        gp.Xscale.append(A[0])
         gp.Sig0pc.append(A[1])
         gp.totmass.append(A[2])
-        gp.maxsiglos.append(A[3])
+        if gp.geom == 'sphere':
+            gp.nu0pc.append(A[3])
+            gp.maxsiglos.append(A[4])
+        else:
+            gp.maxsiglos.append(A[3])
+    #if gp.investigate == "walk":
+    #    for pop in range(gp.pops):
+    #        gp.ntracer[pop] = gp.totmass[pop+1]
 
     gp.dat.read_Sig(gp)    # set gp.xipol in here
     gp.dat.read_sig(gp)
@@ -79,10 +87,15 @@ def get_rhohalfs(gp):
         # assuming isotropic Plummer profile:
         r_half = gp.dat.rhalf[0] # [pc] from overall rho*
         sigv = np.median(gp.dat.sig[0]) # [km/s] from overall rho*
-        M_half = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
+        #M_half = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
+
         # other estimate: Wolf+2010,
-        # M(4/3 r_half = R_half) = 4 r_half sigv**2/gp.G
-        gp.rhohalf = M_half/(4.*np.pi*r_half**3/3.)
+        M_half = 4*r_half*sigv**2/gp.G1;  r_half *= 4/3.
+
+        # density at half-light radius of baryons
+        rhohalf = M_half/(4.*np.pi/3*r_half**3)
+        gp.rhohalf = rhohalf
+        
     elif gp.geom == 'disc':
         return -1.08
 ## \fn get_rhohalfs(gp)
@@ -131,40 +144,48 @@ def bufcount(filename):
 # @param filename string
 
 
-def write_headers_2D(gp, comp):
-    de = open(gp.files.Sigfiles[comp], 'w')
-    print('Rbin [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-          'Sig(R) [Munit/pc^2];','error [1]', file=de)
-    
-    em = open(gp.files.massfiles[comp],'w')
-    print('R [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-          'M(<Binmax) [Munit];','error [Munit]', file=em)
-    
-    sigfil = open(gp.files.sigfiles[comp],'w')
-    print('R [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-          'sigma_p(R) [maxsiglos];','error [km/s]', file=sigfil)
+def write_headers_2D(gp, pop):
+    f_Sig = open(gp.files.Sigfiles[pop], 'w')
+    print('Rbin [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
+          'Sig(R) [Munit/pc^2];','error [Munit/pc^2]', file=f_Sig)
 
-    kappafil = open(gp.files.kappafiles[comp],'w')
-    print('R [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-          'kappa_los(R) [1];','error [1]', file=kappafil)
-    return de, em, sigfil, kappafil
-## \fn write_headers_2D(gp, comp)
+    f_nu = open(gp.files.nufiles[pop], 'w')
+    print('rbin [xscale];','binmin [xscale];','binmax [xscale];',\
+          'nu(r) [Munit/pc^3];','error [Munit/pc^3]', file=f_nu)
+    
+    f_mass = open(gp.files.massfiles[pop],'w')
+    print('R [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
+          'M(<Binmax) [Munit];','error [Munit]', file=f_mass)
+    
+    f_sig = open(gp.files.sigfiles[pop],'w')
+    print('R [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
+          'sigma_p(R) [maxsiglos];','error [km/s]', file=f_sig)
+
+    f_kap = open(gp.files.kappafiles[pop],'w')
+    print('R [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
+          'kappa_los(R) [1];','error [1]', file=f_kap)
+    return f_Sig, f_nu, f_mass, f_sig, f_kap
+## \fn write_headers_2D(gp, pop)
 # write headers for datareduction output files, and return file handlers
 # @param gp global parameters
-# @param comp component (0: all, 1,2,...)
+# @param pop component (0: all, 1,2,...)
 
 
-def write_headers_3D(gp, comp):
-    de = open(gp.files.Sigfiles[comp]+'_3D', 'w')
-    print('rbin [rscale];','binmin [rscale];','binmax [rscale];','nu(r) [nu(0)];', 'error', file=de)
+def write_headers_3D(gp, pop):
+    f_nu = open(gp.files.Sigfiles[pop]+'_3D', 'w')
+    print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
+          'nu(r) [nu(0)];', 'error', \
+          file=f_nu)
     
-    em = open(gp.files.massfiles[comp]+'_3D','w')
-    print('rbin [rscale];','binmin [rscale];','binmax [rscale];','M(<r) [Munit];','error', file=em)
-    return de, em
-## \fn write_headers_3D(gp, comp)
+    f_mass = open(gp.files.massfiles[pop]+'_3D','w')
+    print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
+          'M(<r) [Munit];','error',\
+          file=f_mass)
+    return f_nu, f_mass
+## \fn write_headers_3D(gp, pop)
 # write headers for the 3D quantity output
 # @param gp global parameters
-# @param comp population int
+# @param pop population int
 
 
 def empty(filename):
@@ -176,12 +197,12 @@ def empty(filename):
 # @param filename string
 
 
-def read_Rscale(filename):
+def read_Xscale(filename):
     crscale = open(filename, 'r')
-    Rscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
+    Xscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
     crscale.close()
-    return Rscale
-## \fn read_Rscale(filename)
+    return Xscale
+## \fn read_Xscale(filename)
 # read scale radius from file
 # @param filename string
 
@@ -196,44 +217,52 @@ def write_tracer_file(filename, totmass):
 # @param totmass
     
 
-def write_density(filename, Dens0pc, totmass):
+def write_Sig_scale(filename, Sig0pc, totmass):
     cdens = open(filename, 'a')
-    print(Dens0pc, file=cdens)                      # [Munit/pc^2]
+    print(Sig0pc, file=cdens)                      # [Munit/pc^2]
     print(totmass, file=cdens)                      # [Munit]
     cdens.close()
-## \fn write_density(filename, Dens0pc, totmass)
+## \fn write_Sig_scale(filename, Dens0pc, totmass)
 # output density
 # @param filename
-# @param Dens0 central density [Munit/Rscale^2]
-# @param Dens0pc central density [Munit/pc^2]
-# @param totmass
+# @param Sig0pc central density [Munit/pc^2]
+# @param totmass total tracer density mass
+
+
+def write_nu_scale(filename, nu0pc):
+    cdens = open(filename, 'a')
+    print(nu0pc, file=cdens)                      # [Munit/pc^2]
+    cdens.close()
+## \fn write_nu_scale(filename, nu0pc)
+# output 3D tracer density scale
+# @param filename
+# @param nu0pc central 3D tracer density [Munit/pc^3]
     
 
-def write_data_output(filename, x, y, vz, Rscale):
+def write_data_output(filename, x, y, vz, Xscale):
     print('output: ', filename)
     c = open(filename,'w')
-    print('# x [Rscale], y [Rscale], vLOS [km/s], Rscale = ',Rscale,' pc', file=c)
+    print('# x [Xscale], y [Xscale], vLOS [km/s], Xscale = ',Xscale,' pc', file=c)
     for k in range(len(x)):
-        print(x[k], y[k], vz[k], file=c)      # [Rscale], [Rscale], [km/s]
+        print(x[k], y[k], vz[k], file=c)      # [Xscale], [Xscale], [km/s]
     c.close()
     return
-## \fn write_data_output(filename, x, y, vz, Rscale)
+## \fn write_data_output(filename, x, y, vz, Xscale)
 # write x,y,vz to files
 # @param filename
 # @param x
 # @param y
 # @param vz
-# @param Rscale
+# @param Xscale
 
 
-def write_Rscale(filename, Rscale):
+def write_Xscale(filename, Xscale):
     crscale = open(filename, 'w')
-    print('# Rscale in [pc], surfdens_central (=dens0) in [Munit/Rscale^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
-    print(Rscale, file=crscale)
+    print('# Xscale in [pc], central surface density (Sig(0))in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s], and central 3D tracer density nu(0) in [Munit/Xscale^3]', file=crscale)
+    print(Xscale, file=crscale)
     crscale.close()
     return
-## \fn write_Rscale(filename, Rscale)
+## \fn write_Xscale(filename, Xscale)
 # store central values in scale_ file
 # @param filename string
-# @param Rscale float, [pc]
-
+# @param Xscale float, [pc]

@@ -39,13 +39,10 @@ def remove_empty_folders(fdl):
                 # delete any folder that has empty ev.dat
                 if bufcount(x[0]+'/ev.dat') <= 0:
                     print('empty '+x[0]+'/ev.dat, delete containing directory?')
-                    # TODO find another proxy to determine whether models were found
-                    # removeDir(x[0])
                 continue
         except IOError:
-            print(x[0]+'/ev.dat does not exist, delete containing directory?')
-            # TODO: other proxy above
-            # removeDir(x[0])
+            removeDir(x[0])
+            print(x[0]+'/ev.dat does not exist, removed empty directory '+x[0])
     return
 # \fn remove_empty_folders(fdl)
 # remove all folders in list fdl without any ev.dat file in it = where
@@ -70,7 +67,7 @@ def list_files(basedir):
     fdl.sort(key=lambda x: x[1])
 
     for i in range(len(fdl)):
-        fil = open(fdl[i][0]+'/gl_params.py','r')
+        fil = open(fdl[i][0]+'/programs/gl_params.py','r')
         pops = 0                          # default: 0 populations, error
         nipol = 0
         nbeta = 0
@@ -98,7 +95,7 @@ def list_files(basedir):
 
 
 def get_investigate():
-    default = 'discmock'
+    default = 'gaia'
     invalid = True
     while(invalid):
         try:
@@ -136,7 +133,7 @@ def choose_obs(sel):
 
 
 def get_case(investigate):
-    default = 0
+    default = 5
     invalid = True
     while(invalid):
         try:
@@ -242,7 +239,7 @@ def get_prof():
 
 def get_pops(basename):
     pops = 1
-    with open(basename+'/gl_params.py', 'r') as f:
+    with open(basename+'/programs/gl_params.py', 'r') as f:
         for line in f:
             lss = line.split()
             if len(lss) == 0:
@@ -260,7 +257,7 @@ def get_pops(basename):
 
 def get_nipol(basename):
     nipol = 0
-    with open(basename+'/gl_params.py', 'r') as f:
+    with open(basename+'/programs/gl_params.py', 'r') as f:
         for line in f:
             if 'nipol      = ' in line:
                 import re
@@ -274,7 +271,7 @@ def get_nipol(basename):
 
 def get_nbeta(basename):
     nbeta = 0
-    with open(basename+'/gl_params.py', 'r') as f:
+    with open(basename+'/programs/gl_params.py', 'r') as f:
         for line in f:
             if 'nbeta      = ' in line:
                 import re
@@ -296,7 +293,7 @@ def run():
         machine = '/home/psteger/sci/gravlite/'
     basedir = os.path.abspath(machine+'/DT'+investigate+'/'+str(case)+'/')+'/'
     # import import_path as ip
-    # ip.import_path(basedir+'/gl_params.py')
+    # ip.import_path(basedir+'/programs/gl_params.py')
     while(action == 'k'):
         fdl = list_files(basedir)
         sel = get_run(len(fdl))

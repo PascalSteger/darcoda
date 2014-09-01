@@ -58,8 +58,10 @@ class Files:
         self.analytic = ''
         ## file with 2D surface density
         self.surfdenfiles = []
-        ## files with tracer densities
+        ## files with 2D tracer surface densities
         self.Sigfiles  = []
+        ## files with 3D tracer densities
+        self.nufiles = []
         ## files with velocity dispersions
         self.sigfiles = []
         ## files with centered positions and velocities for the tracer particles
@@ -161,6 +163,9 @@ class Files:
         self.massfiles.append(self.dir+'M/'+sim+'M_0.txt')
         self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_0.txt') # all comp.
         self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_1.txt') # first comp.
+        self.nufiles.append(self.dir+'nu/'+sim+'nu_0.txt') # all comp.
+        self.nufiles.append(self.dir+'nu/'+sim+'nu_1.txt') # first comp.
+
 
         self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_0.txt') # all comp.
         self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_1.txt') # first comp.
@@ -171,6 +176,7 @@ class Files:
         if gp.pops == 1:
             self.massfiles.append(self.dir+'M/'+sim+'M_2.txt')
             self.Sigfiles.append(self.dir+'Sigma/' +sim+'Sig_2.txt')
+            self.nufiles.append(self.dir+'nu/' +sim+'nu_2.txt')
             self.sigfiles.append(self.dir+'/siglos/' +sim+'veldisplos_2.txt')
             self.kappafiles.append(self.dir+'/kappalos/' +sim+'kappalos_2.txt')
                 
@@ -178,6 +184,10 @@ class Files:
             self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig.txt') # all comp.
             self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_'+self.nstr1+'_0.txt')
             self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_0_'+self.nstr2+'.txt')
+
+            self.nufiles.append(self.dir+'nu/'+sim+'nu.txt') # all comp.
+            self.nufiles.append(self.dir+'nu/'+sim+'nu_'+self.nstr1+'_0.txt')
+            self.nufiles.append(self.dir+'nu/'+sim+'nu_0_'+self.nstr2+'.txt')
             
             self.sigfiles.append(self.dir+'/siglos/' +sim+'veldisplos_'+self.nstr1+'_'+nstr2+'.txt') # all comp
             self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_'+self.nstr1+'_0.txt')
@@ -196,23 +206,44 @@ class Files:
     def set_gaia(self, gp, timestamp=''):
         beta_star1 = 5; r_DM = 1000
         if gp.case == 1:
-            gamma_star1=0.1; r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
+            gamma_star1=0.1;
+            r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
         elif gp.case == 2:
-            gamma_star1=0.1; r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
+            gamma_star1=0.1; 
+            r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
         elif gp.case == 3:
-            gamma_star1=0.1; r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
+            gamma_star1=0.1; 
+            r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
         elif gp.case == 4:
-            gamma_star1=0.1; r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
+            gamma_star1=0.1; 
+            r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
         elif gp.case == 5:
-            gamma_star1=1.0; r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
+            gamma_star1=1.0; 
+            r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
         elif gp.case == 6:
-            gamma_star1=1.0; r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
+            gamma_star1=1.0; 
+            r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
         elif gp.case == 7:
-            gamma_star1=1.0; r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
+            gamma_star1=1.0; 
+            r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
         elif gp.case == 8:
-            gamma_star1=1.0; r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
+            gamma_star1=1.0; 
+            r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
 
-        self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
+        elif gp.case == 9:
+            gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
+            r_DM = 2000 # [pc]
+        elif gp.case == 10:
+            gamma_star1=1.0; r_star1=1750; r_a1=np.inf; gamma_DM=0; rho0=3.021516e-2
+            r_DM = 4000 # [pc]
+
+        self.params = [beta_star1, \
+                       r_DM, \
+                       gamma_star1, \
+                       r_star1, \
+                       r_a1, \
+                       gamma_DM, \
+                       rho0]
 
 
         AAA = gh.myfill(100*gamma_star1)  # 100
@@ -223,7 +254,9 @@ class Files:
              1: "cusp"
              }[gamma_DM]                # core
         FFFF = gh.myfill(1000*rho0, 4)
-        self.longdir = 'gs'+AAA+'_bs'+BBB+'_rcrs'+CCC+'_rarc'+DDD+'_'+EEEE+'_'+FFFF+'mpc3_df/'
+        self.longdir = 'gs'+AAA+'_bs'+BBB+'_rcrs'+CCC+\
+                       '_rarc'+DDD+'_'+EEEE+'_'+FFFF+'mpc3_df/'
+
         if gp.case == 9:
             self.longdir = 'data_h_rh2_rs05_gs10_ra0_b05n_10k/'
         elif gp.case == 10:
@@ -232,14 +265,17 @@ class Files:
         self.dir += timestamp + '/'
         ## new variable to hold the .dat input file
         self.datafile = self.dir + 'dat'
+        #self.analytic = self.dir + 'samplepars'
 
         self.massfiles.append(self.dir+'M/M_0.txt')
         self.Sigfiles.append(self.dir+'Sigma/Sig_0.txt') # all comp.
+        self.nufiles.append(self.dir+'nu/nu_0.txt') # all comp.
         self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
 
         self.massfiles.append(self.dir+'M/M_1.txt')
         self.Sigfiles.append(self.dir+'Sigma/Sig_1.txt') # first and only
+        self.nufiles.append(self.dir+'nu/nu_1.txt') # first and only
         self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_1.txt')
     ## \fn set_gaia(self, gp, timestamp)
@@ -312,19 +348,19 @@ class Files:
         self.longdir = "c1_"+AAA+"_"+BBB+"_"+CCC+"_"+DDD+"_"+EEE+"_c2_"+FFF+"_"+GGG+"_"+HHH+"_"+III+"_"+JJJ+"_"+NNN+"_6d/"
         self.dir = self.modedir + self.longdir
         self.dir += timestamp + '/'
-
-
+        
         self.analytic = self.dir + 'samplepars'
         # print('analytic set to ', self.analytic)
         LINE = np.loadtxt(self.analytic, skiprows=0, unpack=False)
         rho0        = LINE[19] # read from the corresp. samplepars file
         self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
         
-        for i in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
-            self.massfiles.append(self.dir+'M/M_'+str(i)+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(i)+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+str(i)+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(i)+'.txt')
+        for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
+            self.massfiles.append(self.dir+'M/M_'+str(pop)+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(pop)+'.txt')
+            self.nufiles.append(self.dir+'nu/nu_'+str(pop)+'.txt')
+            self.sigfiles.append(self.dir+'siglos/siglos_'+str(pop)+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(pop)+'.txt')
         return
     ## \fn set_walk(self, gp, timestamp)
     # derive filenames from Walker&Penarrubia parameters
@@ -339,12 +375,14 @@ class Files:
 
         self.massfiles.append(self.dir + 'M/M_0.txt')
         self.Sigfiles.append(self.dir    + 'Sigma/Sig_0.txt')
+        self.nufiles.append(self.dir    + 'nu/nu_0.txt')
         self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
 
         # first and only comp.
         self.massfiles.append(self.dir + 'M/M_0.txt')
         self.Sigfiles.append(self.dir    + 'Sigma/Sig_0.txt') 
+        self.nufiles.append(self.dir    + 'nu/nu_0.txt') 
         self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
         if gp.pops == 2:
@@ -360,11 +398,12 @@ class Files:
     def set_obs(self, gp, timestamp=''):
         self.dir = self.machine + '/DTobs/'+str(gp.case)+'/'
         self.dir += timestamp + '/'
-        for i in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
-            self.massfiles.append(self.dir + 'M/M_'+str(i)+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(i)+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+str(i)+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(i)+'.txt')
+        for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
+            self.massfiles.append(self.dir + 'M/M_'+str(pop)+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(pop)+'.txt')
+            self.nufiles.append(self.dir+'nu/nu_'+str(pop)+'.txt')
+            self.sigfiles.append(self.dir+'siglos/siglos_'+str(pop)+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(pop)+'.txt')
         return
     ## \fn set_obs(self, gp, timestamp)
     # set all variables in the case we work with Fornax observational data
@@ -374,7 +413,9 @@ class Files:
     
     def populate_output_dir(self, gp):
         # copy only after data is read in!
-        os.system('rsync -rl --exclude ".git" --exclude "doc" --exclude "__pycache__" ' + self.progdir + ' ' + self.outdir)
+        os.system('mkdir -p '+self.outdir+'/programs')
+        os.system('rsync -rl --exclude ".git" --exclude "doc" --exclude "__pycache__" ' + \
+                  self.progdir + ' ' + self.outdir+'/programs/')
         os.system('rsync -rl --exclude "201*" ' + self.dir + ' ' + self.outdir) # copy data for later reference
         # rsync -r --exclude '.git' source target to exclude .git dir from copy
         return
@@ -400,7 +441,7 @@ class Files:
         # entry for "all components" as the first entry. Convention: 0. all 1. pop, 2. pop, 3. pop = background
         self.dir = self.machine + 'DTdiscsim/mwhr/'
         self.dir += timestamp + '/'
-
+        # TODO: check whether nufiles are contained as well
         # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt')
         # self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # again all components
         # self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # all comp.
@@ -430,6 +471,7 @@ class Files:
         self.dir += timestamp + '/'
         self.massfiles.append(self.dir+'M/M_0.txt')
         self.Sigfiles.append(self.dir+'nu/nu_0.txt') # all comp.
+        # TODO nufiles
         self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
         self.massfiles.append(self.dir+'M/M_1.txt')

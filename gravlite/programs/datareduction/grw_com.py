@@ -17,6 +17,7 @@ from gl_class_files import *
 from gl_centering import *
 
 def run(gp):
+    ## read input measurements
     print('input: ', gpr.fil)
     x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                                  usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
@@ -32,9 +33,14 @@ def run(gp):
     # use component 12-1 instead of 6-1 for z velocity, to exclude observational errors
 
     # only use stars which are members of the dwarf: exclude pop3 by construction
-    pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
+    pm  = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
     PM0 = PM0[pm]
-    comp0 = comp0[pm]; x0=x0[pm]; y0=y0[pm]; z0=z0[pm]; vz0=vz0[pm]; vb0=vb0[pm]; Mg0=Mg0[pm]
+    comp0 = comp0[pm]
+    x0 = x0[pm]
+    y0 = y0[pm]
+    z0 = z0[pm]
+    vz0 = vz0[pm]; vb0 = vb0[pm]; Mg0 = Mg0[pm]
+
     pm1 = (comp0 == 1) # will be overwritten below if gp.metalpop
     pm2 = (comp0 == 2) # same same
     pm3 = (comp0 == 3)
@@ -49,7 +55,7 @@ def run(gp):
         fi.close()
         p, mu1, sig1, mu2, sig2, M, pm1, pm2 = DATA
 
-        # TODO: do this in python2 once
+        # TODO: do this in python2 once before invoking run before
         #import pymcmetal as pmc
         #p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
         #pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
@@ -63,9 +69,12 @@ def run(gp):
     from random import shuffle
     ind = np.arange(len(x0))
     np.random.shuffle(ind)
-    ind = ind[:gp.files.ntracer]
-    x0=x0[ind]; y0=y0[ind]; z0=z0[ind]; comp0=comp0[ind]; vz0=vz0[ind]; vb0=vb0[ind]; Mg0=Mg0[ind]
-    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm3 = pm3[ind]; pm = pm1+pm2+pm3
+    ind = ind[:np.sum(gp.ntracer)]
+
+    x0 = x0[ind];   y0 = y0[ind]; z0 = z0[ind]; comp0 = comp0[ind]
+    vz0 = vz0[ind]; vb0=vb0[ind]; Mg0 = Mg0[ind]
+    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm3 = pm3[ind]; 
+    pm = pm1+pm2+pm3
     
     # get COM with shrinking sphere method
     com_x, com_y, com_z = com_shrinkcircle(x0,y0,z0,PM0)
@@ -81,43 +90,62 @@ def run(gp):
     vz0 -= com_vz #[km/s]
 
     # but still get the same radii as from 2D method, to get comparison of integration routines right
-    R0 = np.sqrt(x0**2+y0**2) # [pc]
-    Rhalf = np.medium(R0) # [pc]
-    Rscale = Rhalf                       # or gpr.r_DM # [pc]
-    print('Rscale = ', Rscale,  ' pc')
-    print('max(R) = ', max(Rc) ,' pc')
-    print('last element of R : ',Rc[-1],' pc')
-    print('total number of stars: ',len(Rc))
+    r0 = np.sqrt(x0*x0+y0*y0+z0*z0) # [pc]
+    rhalf = np.median(r0) # [pc]
+    rscale = rhalf                       # or gpr.r_DM # [pc]
+
+    print('rscale = ', rscale,  ' pc')
+    print('max(R) = ', max(r0) ,' pc')
+    print('last element of R : ',r0[-1],' pc')
+    print('total number of stars: ',len(r0))
     
-    i = -1
-    for pmn in [pm, pm1, pm2, pm3]:
-        pmr = (R0<(gp.maxR*Rscale)) # [1] based on [pc]
+    pop = -1
+    for pmn in [pm, pm1, pm2]:
+        pmr = (r0<(gp.maxR*rscale)) # [1] based on [pc]
         pmn = pmn*pmr                  # [1]
-        print("fraction of members = ",1.0*sum(pmn)/len(pmn))
-        i = i+1
-        x=x0[pmn]; y=y0[pmn]; z=z0[pmn]; vz=vz0[pmn]; vb=vb0[pmn];  # [pc], [km/s]
-        Mg=Mg0[pmn]; comp=comp0[pmn]; PMN=PM0[pmn]   # [ang], [1], [1]
+        print("fraction of members = ", 1.0*sum(pmn)/len(pmn))
+        pop = pop + 1
+        x  = x0[pmn];  y = y0[pmn]; z = z0[pmn]; vz = vz0[pmn]; vb = vb0[pmn];  # [pc], [km/s]
+        Mg = Mg0[pmn]; comp = comp0[pmn]; PMN = PM0[pmn]   # [ang], [1], [1]
         m = np.ones(len(pmn))
         
-        R = np.sqrt(x*x+y*y)            # [pc]
-        Rscalei = np.median(R)
+        rscalei = np.median(np.sqrt(x*x+y*y+z*z))
 
         # print("x y z" on first line, to interprete data later on)
-        crscale = open(gp.files.get_scale_file(i)+'_3D','w')
-        print('# Rscale in [pc], surfdens_central (=dens0) in [Munit/Rscale0^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
-        print(Rscalei, file=crscale) # use 3 different half-light radii
+        crscale = open(gp.files.get_scale_file(pop)+'_3D','w')
+        print('# rscale in [pc], surfdens_central (=dens0) in [Munit/rscale0^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
+        print(rscalei, file=crscale) # use 3 different half-light radii
         crscale.close()
 
-        print('output: ',gpr.get_com_file(i)+'_3D')
-        c = open(gpr.get_com_file(i)+'_3D','w')
-        print('# x [Rscale],','y [Rscale],', 'z [Rscale]','vLOS [km/s],','Rscale = ',Rscalei,' pc', file=c)
+        # store recentered positions and velocity
+        print('output: ',gpr.get_com_file(pop)+'_3D')
+        c = open(gpr.get_com_file(pop)+'_3D','w')
+        print('# x [rscale],','y [rscale],', 'z [rscale]','vLOS [km/s],','rscale = ',rscalei,' pc', file=c)
         for k in range(len(x)):
-            print(x[k]/Rscalei, y[k]/Rscalei, z[k]/Rscalei, vz[k], file=c) # 3* [pc], [km/s]
+            print(x[k]/rscalei, y[k]/rscalei, z[k]/rscalei, vz[k], file=c) # 3* [pc], [km/s]
         c.close()
         
-        
-        #if gpr.showplots:
-        #    gpr.show_part_pos(x, y, pmn, Rscale, i)
+        if gpr.showplots and False:
+            from mpl_toolkits.mplot3d import Axes3D
+            import matplotlib.pyplot as plt
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            #res = (abs(x)<3*rscalei)*(abs(y)<3*rscalei)
+            #x = x[res]; y = y[res]; z = z[res]
+            en = len(x)
+
+            ax.scatter3D(x[:en], y[:en], z[:en], c=pmn[:en], s=35, \
+                    vmin=0.95, vmax=1.0, lw=0.0, alpha=0.2)
+
+            #circ_HL=Circle((0,0), radius=rscalei, fc='None', ec='b', lw=1)
+            #gca().add_patch(circ_HL)
+            #circ_DM=Circle((0,0), radius=gpr.r_DM, fc='None', ec='r', lw=1)
+            #gca().add_patch(circ_DM)
+
+            pdb.set_trace()
+            #clf()
+            #gpr.show_part_pos(x, y, pmn, rscalei, pop)
+
 
 if __name__=='__main__':
     gpr.showplots = True

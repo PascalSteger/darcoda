@@ -11,51 +11,58 @@ import numpy as np
 import numpy.random as npr
 import pdb
 from scipy.integrate import simps,trapz
+from pylab import *
 
 import gl_helper as gh
-
+import gr_params as gpr
 
 def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp):
-    for comp in range(gp.pops+1):
+    for pop in range(gp.pops+1):
         # write scales
-        crscale = open(gp.files.get_scale_file(comp), 'w')
-        print('# Rscale in [pc], surfdens_central (=dens0) in [Munit/Rscale^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
+        crscale = open(gp.files.get_scale_file(pop), 'w')
+        print('# Zscale in [pc], surfdens_central (=dens0) in [Munit/Zscale^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
         for b in range(4):
-            # Rscale, Dens0pc, totmass, maxsiglos
+            # Zscale, Dens0pc, totmass, nu0pc, maxsiglos
             # Dens0pc is *not* density at halflight radius as in spherical
             # code, but rather 3D tracer density at center
-            print(scales[comp][b], file=crscale) 
+            print(scales[pop][b], file=crscale) 
         crscale.close()
 
         # write tracer densities
-        de = open(gp.files.Sigfiles[comp], 'w')
-        print('Rbin [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-              'Sig(R) [Munit/pc^2];','error [1]', file=de)
+        f_Sig = open(gp.files.Sigfiles[pop], 'w')
+        print('Rbin [Zscale];','Binmin [Zscale];','Binmax [Zscale];',\
+              'Sig(R) [Munit/pc^2];','error [1]', file=f_Sig)
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], \
-                  nudat[comp][b], nuerr[comp][b], file=de)
-        de.close()
+                  Sigdat[pop][b], Sigerr[pop][b], file=f_Sig)
+        f_Sig.close()
+
+        # write tracer densities 3D
+        f_nu = open(gp.files.nufiles[pop], 'w')
+        print('Rbin [Zscale];','Binmin [Zscale];','Binmax [Zscale];',\
+              'nu(R) [Munit/pc^3];','error [1]', file=f_nu)
+        for b in range(gp.nipol):
+            print(Rbin[b], Binmin[b], Binmax[b], \
+                  nudat[pop][b], nuerr[pop][b], file=f_nu)
+        f_nu.close()
         
         # write velocity dispersion
-        sigfil = open(gp.files.sigfiles[comp],'w')
-        print('R [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-              'sigma_p(R) [maxsiglos];','error [km/s]', file=sigfil)
+        f_sig = open(gp.files.sigfiles[pop],'w')
+        print('R [Zscale];','Binmin [Zscale];','Binmax [Zscale];',\
+              'sigma_p(R) [maxsiglos];','error [km/s]', file=f_sig)
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], \
-                  sigdat[comp][b], sigerr[comp][b], file=sigfil)
-        sigfil.close()
+                  sigdat[pop][b], sigerr[pop][b], file=f_sig)
+        f_sig.close()
         
         # write enclosed mass
-        em = open(gp.files.massfiles[comp],'w')
-        print('R [Rscale];','Binmin [Rscale];','Binmax [Rscale];',\
-              'M(<Binmax) [Munit];','error [Munit]', file=em)
+        f_mass = open(gp.files.massfiles[pop],'w')
+        print('R [Zscale];','Binmin [Zscale];','Binmax [Zscale];',\
+              'M(<Binmax) [Munit];','error [Munit]', file=f_mass)
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], \
-                  Mdat[comp][b], Merr[comp][b], file=em)
-        em.close()
-        
-
-    
+                  Mdat[pop][b], Merr[pop][b], file=f_mass)
+        f_mass.close()
 
 ## \fn write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp)
 # for permanent and consistent data handling
@@ -80,8 +87,8 @@ def run(gp):
     zmin = 100.                               # [pc], first bin center
     zmax = 1300.                              # [pc], last bin center
     # get Stuetzpunkte for theoretical profiles (not yet stars, finer spacing in real space)
-    nth = gp.nipol
-    zth = 1.* np.arange(nth) * (zmax-zmin)/(nth-1.) + zmin
+    nth = gp.nipol                            # [1] number of bins
+    zth = 1.* np.arange(nth) * (zmax-zmin)/(nth-1.) + zmin # [pc] bin centers
     z0  = 240.                                # [pc], scaleheight of first population
     z02 = 200.                                # [pc], scaleheight of second population
     D   = 250.                                # [pc], scaleheight of all stellar tracers
@@ -89,12 +96,12 @@ def run(gp):
     F   = 1.65e-4                             # [TODO]
     C   = 17.**2.                             # [km/s] integration constant in sig
 
-    # Draw mock data: 
-    nu_zth = np.exp(-zth/z0)                                 # [1]
+    # Draw mock data from exponential disk:
+    nu_zth = np.exp(-zth/z0)                                 # [nu0] = [Msun/A/pc] 3D tracer density
     Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
 
     if gp.adddarkdisc:
-        DD = 600                                         # [pc]
+        DD = 600                                         # [pc] scaleheight of dark disc
         KD = 0.15 * 1.650                                # [TODO]
         Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.) # [TODO]
 
@@ -107,7 +114,8 @@ def run(gp):
 
     # project back to positions of stars
     ran = npr.uniform(size=int(gp.ntracer[1-1]))                 # [1]
-    zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions
+    zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions, exponential falloff
+
     sigzstar = gh.ipol(zth, sigzth, zstar)
     # > 0 ((IDL, Justin)) stellar velocity dispersion
 
@@ -117,8 +125,9 @@ def run(gp):
 
     # Add second population [thick-disc like]: 
     if gp.pops == 2:
-        nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02)
-        # no normalization to 1
+        nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02) 
+        # [nu0,2] = [Msun/A/pc], 3D tracer density, exponentially falling
+        # no normalization to 1 done here
         inti    = np.zeros(nth)
         for i in range(1, nth):
             inti[i] = simps(Kz_zth[:i]*nu_zth2[:i], zth[:i])
@@ -147,14 +156,26 @@ def run(gp):
                                                                      zmin, zmax, gp.nipol, 0.)
     sig_dat_err_bin1 = np.sqrt(sig_dat_bin1) # Poisson errors
     
-    nu_dat_bin1, nu_dat_err_bin1 = gh.bincount(z_dat1, binmax1)
-    Mrdat1 = np.cumsum(nu_dat_bin1)
-    Mrerr1 = Mrdat1*nu_dat_err_bin1/nu_dat_bin1
+    nu_dat_bin1, dum = gh.bincount(z_dat1, binmax1)
+    nu_dat_bin1 /= (binmax1-binmin1)
+    nu_dat_err_bin1 = np.sqrt(nu_dat_bin1)
+
+    if gpr.showplots:
+        nuscaleb = nu_zth[np.argmin(np.abs(zth-z0))]
+        loglog(zth, nu_zth/nuscaleb, 'b.-')
+        nuscaler = nu_dat_bin1[np.argmin(np.abs(zth-z0))]
+        loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
+        
+        pdb.set_trace()
+
+    Mrdat1 = np.cumsum(Sig_dat_bin1)
+    Mrerr1 = Mrdat1*Sig_dat_err_bin1/Sig_dat_bin1
 
     scales=[[],[],[]]
     scales[1].append(z0) # [pc]
-    scales[1].append(max(nu_dat_bin1))
+    scales[1].append(Sig_dat_bin1[0])
     scales[1].append(Mrdat1[-1])
+    scales[1].append(nu_dat_bin1[np.argmin(np.abs(zth-z0))])
     scales[1].append(max(sig_dat_bin1))
 
     # start analysis of "all stars" with only component 1,
@@ -178,13 +199,14 @@ def run(gp):
                                                                               zmin, zmax, gp.nipol, 0.)
         sig_dat_err_bin2 = np.sqrt(sig_dat_bin2) # Poissonian errors
         
-        nu_dat_bin2, nu_dat_err_bin2 = gh.bincount(z_dat2, binmax2)
+        Sig_dat_bin2, Sig_dat_err_bin2 = gh.bincount(z_dat2, z_dat_bin2)
         Mrdat2 = np.cumsum(nu_dat_bin2)
-        Mrerr2 = Mrdat2*nu_dat_err_bin2/nu_dat_bin2
+        Mrerr2 = np.sqrt(Mrdat2)
 
         scales[2].append(z02) # [pc]
-        scales[2].append(max(nu_dat_bin2)) # normalize by max density of first bin, rather
+        scales[2].append(Sig_dat_bin2[0])
         scales[2].append(Mrdat2[-1])
+        scales[2].append(nu_dat_bin2[0]) # normalize by max density of first bin, rather
         scales[2].append(max(sig_dat_bin2))
  
         # calculate properties for all pop together with stacked values
@@ -197,7 +219,7 @@ def run(gp):
     sig_dat_err_bin0 = sig_dat_bin0 / np.sqrt(count_bin0)
     # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
     
-    nu_dat_bin0, nu_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
+    Sig_dat_bin0, Sig_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
     renorm0 = max(nu_dat_bin0)
  
     xip = np.copy(z_dat_bin0)                        # [pc]
@@ -205,8 +227,9 @@ def run(gp):
     Mrerr0   = Mrdat0*nu_dat_err_bin0/nu_dat_bin0
 
     scales[0].append(D)  # [pc]
-    scales[0].append(max(nu_dat_bin0))
+    scales[0].append(Sig_dat_bin0[0])
     scales[0].append(Mrdat0[-1])
+    scales[0].append(nu_dat_bin0[0])
     scales[0].append(max(sig_dat_bin0))
 
     rmin = binmin0/scales[0][0] # [pc]
@@ -218,46 +241,50 @@ def run(gp):
     nudat = []
     nudat.append(nu_dat_bin0/scales[0][1])       # [Msun/pc^3]
     nudat.append(nu_dat_bin1/scales[1][1])
-    nudat.append(nu_dat_bin2/scales[2][1])
+    if gp.pops == 2:
+        nudat.append(nu_dat_bin2/scales[2][1])
 
     nuerr = []
     nuerr.append(nu_dat_err_bin0/scales[0][1])   # [Msun/pc^3]
     nuerr.append(nu_dat_err_bin1/scales[1][1])
-    nuerr.append(nu_dat_err_bin2/scales[2][1])
-
-    Sigdat = []
-    # TODO
-    #Sigdat0 = gl_project.nu_param_INT_Sig_disc(xip, nu_dat_bin0, 0, gp)
-    #Sigdat1 = gl_project.nu_param_INT_Sig_disc(xip, nu_dat_bin1, 1, gp)
-    #Sigdat2 = gl_project.nu_param_INT_Sig_disc(xip, nu_dat_bin2, 2, gp)
-    #Sigdat.append(Sigdat0)
-    #Sigdat.append(Sigdat1)
-    #Sigdat.append(Sigdat2)
-
-    Sigerr = []
-    #Sigerr.append(Sigdat0/np.sqrt(len(Sigdat0)))
-    #Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
-    #Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
+    if gp.pops == 2:
+        nuerr.append(nu_dat_err_bin2/scales[2][1])
 
     Mrdat = []
     Mrdat.append(Mrdat0/scales[0][2])            # [Msun]
     Mrdat.append(Mrdat1/scales[1][2])
-    Mrdat.append(Mrdat2/scales[2][2])
+    if gp.pops == 2:
+        Mrdat.append(Mrdat2/scales[2][2])
     
     Mrerr = []
     Mrerr.append(Mrerr0/scales[0][2])            # [Msun]
     Mrerr.append(Mrerr1/scales[1][2])
-    Mrerr.append(Mrerr2/scales[2][2])
+    if gp.pops == 2:
+        Mrerr.append(Mrerr2/scales[2][2])
+
+    Sigdat = []
+    Sigdat.append(Sig_dat_bin0/scales[0][3])
+    Sigdat.append(Sig_dat_bin1/scales[1][3])
+    if gp.pops == 2:
+        Sigdat.append(Sig_dat_bin2/scales[2][3])
+
+    Sigerr = []
+    Sigerr.append(Sigdat0/np.sqrt(len(Sigdat0)))
+    Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
+    if gp.pops == 2:
+        Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
 
     sigdat = []
     sigdat.append(sig_dat_bin0/scales[0][3])     # [km/s]
-    sigdat.append(sig_dat_bin1/scales[1][3])     
-    sigdat.append(sig_dat_bin2/scales[2][3])
+    sigdat.append(sig_dat_bin1/scales[1][3])
+    if gp.pops == 2:
+        sigdat.append(sig_dat_bin2/scales[2][3])
 
     sigerr = []
     sigerr.append(sig_dat_err_bin0/scales[0][3]) # [km/s]
     sigerr.append(sig_dat_err_bin1/scales[1][3])
-    sigerr.append(sig_dat_err_bin2/scales[2][3])
+    if gp.pops == 2:
+        sigerr.append(sig_dat_err_bin2/scales[2][3])
 
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\
@@ -269,3 +296,7 @@ def run(gp):
 # write it to files
 # @param gp global parameters
 
+if __name__=="__main__":
+    import gl_params
+    gp = gl_params.Params()
+    run(gp)

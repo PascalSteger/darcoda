@@ -53,16 +53,16 @@ def run(gp):
     print('Rscale = ', Rscale)
 
     # only for 0 (all) and 1 (first and only population)
-    for comp in range(gpr.ncomp):
-        crscale = open(gp.files.get_scale_file(comp),'w')
+    for pop in range(gpr.pops):
+        crscale = open(gp.files.get_scale_file(pop),'w')
         print('# Rscale in [pc],',' surfdens_central (=dens0) in [Munit/rscale**2],',\
               ' and in [Munit/pc**2],',' and totmass [Munit],',\
               ' and max(v_LOS) in [km/s]', file=crscale)
         print(Rscale, file=crscale)
         crscale.close()
 
-        print('grh_com: output: ', gpr.fileposcenter[comp])
-        filepos = open(gpr.fileposcenter[comp],'w')
+        print('grh_com: output: ', gpr.fileposcenter[pop])
+        filepos = open(gpr.fileposcenter[pop],'w')
         print('# x [Rscale]','y [Rscale]','vLOS [km/s]', file=filepos)
         for k in range(ndm):
             print(xnew[k]/Rscale, ynew[k]/Rscale, vznew[k], file=filepos)

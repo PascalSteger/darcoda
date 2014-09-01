@@ -78,13 +78,13 @@ def run(gp):
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
                     n_clustering_params = gp.ndim,# separate modes on
                                                   # the rho parameters
-                                                  # only: gp.nepol
-                    wrapped_params = [ gp.pops, gp.nipol, gp.nepol], # do
+                                                  # only: gp.nrho
+                    wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
                     importance_nested_sampling = False, # INS enabled
-                    multimodal = False,           # separate modes
+                    multimodal = True,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
                     evidence_tolerance = 0.0, # set to 0 to keep

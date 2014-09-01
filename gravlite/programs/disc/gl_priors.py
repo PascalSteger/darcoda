@@ -10,7 +10,6 @@
 import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev
-from gl_int import g
 import gl_plot as gpl
 
 

@@ -10,6 +10,7 @@ import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad
 import gl_plot as gpl
+from pylab import *
 
 def myfill(x, N=3):
     if x==np.inf or x==-np.inf:
@@ -42,15 +43,15 @@ def ipol_rhalf_log(X, Y, rhalf):
 # @param rhalf half-light radius in [pc]
 
 
-def print_summary(Rscale, Rc):
-    print('Rscale = ', Rscale, ' pc')
+def print_summary(Xscale, Rc):
+    print('Xscale = ', Xscale, ' pc')
     print('max(R) = ', max(Rc), ' pc')
     print('last element of R : ', Rc[-1], ' pc')
     print('total number of stars: ', len(Rc))
     return
-## \fn print_summary(Rscale, Rc)
+## \fn print_summary(Xscale, Rc)
 # print Radius information
-# @param Rscale
+# @param Xscale
 # @param Rc
 
 
@@ -71,9 +72,7 @@ def add_errors(R, error):
 # @param error in percent
 
 
-def quadinflog(x, y, A, B, stop = True):
-    # if min(y) == 0.0:
-    #    print('integration with 0')
+def quadinflog(x, y, A, B, stop = False):
     if max(y) <= 0:
         print('integration over 0')
         return 0
@@ -89,11 +88,11 @@ def quadinflog(x, y, A, B, stop = True):
         if yshift[i] == 0:
             yshift[i] = 10**(-10*i)
 
-    tcknulog = splrep(x, np.log(yshift), k=1, s=0.1)
+    splpar_nul = splrep(x, np.log(yshift), k=1, s=0.1)
     maxy = max(y)
-    # invexp = lambda x: min(maxy, np.exp(splev(x,tcknulog,der=0))/shiftlog)
-    invexp = lambda x: np.exp(splev(x,tcknulog,der=0))/shiftlog
-    #invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x,tcknulog,der=0))/shiftlog)
+    # invexp = lambda x: min(maxy, np.exp(splev(x,splpar_nul))/shiftlog)
+    invexp = lambda x: np.exp(splev(x, splpar_nul))/shiftlog
+    #invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x, splpar_nul))/shiftlog)
     dropoffint = quad(invexp, A, B, epsrel=1e-4, limit=100, full_output=1)
     # for debugging:
     # dropoffint = quad(invexp, A, B, epsrel=1e-3, limit=50, full_output=1)
@@ -109,13 +108,13 @@ def quadinflog(x, y, A, B, stop = True):
 # @param stop = True
 
 
-def quadinfloglog(x, y, A, B, stop=True):
+def quadinfloglog(x, y, A, B, stop = True):
     # work in log(x), log(y) space to enable smoother interpolating functions
     # scale to avoid any values <= 1
     # otherwise we get divergent integrals for high radii (low length of x and y)
-    tcknulog = splrep(np.log(x), np.log(y), k=1, s=0.1) # tunable k=2; s=0, ..
-    invexp = lambda x: np.exp(splev(np.log(x), tcknulog, der=0))
-    # invexp = lambda x: min(y[0], np.exp(splev(np.log(x), tcknulog, der=0)))
+    splpar_nul = splrep(np.log(x), np.log(y), k=1, s=0.1) # tunable k=2; s=0, ..
+    invexp = lambda x: np.exp(splev(np.log(x), splpar_nul))
+    # invexp = lambda x: min(y[0], np.exp(splev(np.log(x), splpar_nul)))
     dropoffint = quad(invexp, A, B, epsrel=1e-3, limi=100, full_output=1)
     if stop and len(dropoffint)>3:
         print('warning in quad in quadinfloglog')
@@ -135,8 +134,8 @@ def quadinflog2(x, y, A, B):
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible,
     # otherwise we get divergent integrals for high radii (low length of x and y)
     
-    tcknulog = splrep(x,np.log(np.log(y*shiftlog)), k=1, s=0.1)
-    invexp = lambda x: min(y[0], np.exp(np.exp(splev(x, tcknulog, der=0)))/shiftlog)
+    splpar_nul = splrep(x,np.log(np.log(y*shiftlog)), k=1, s=0.1)
+    invexp = lambda x: min(y[0], np.exp(np.exp(splev(x, splpar_nul)))/shiftlog)
     dropoffint = quad(invexp, A, B)
     return dropoffint[0]
 ## \fn quadinflog2(x, y, A, B)
@@ -170,11 +169,11 @@ def checkpositive(arr, place=''):
     if min(arr) < 0.:
         print(place+" < 0 !")
         # traceback.print_tb(sys.exc_info()[2])
-        raise Exception('negative','found')
+        raise Exception('negative value','found')
         return True
     if max(arr) >= np.inf:
         print('infinity in checkpositive '+place)
-        raise Exception('infinity', 'found')
+        raise Exception('infinite value', 'found')
         return True
     else:
         return False
@@ -183,6 +182,51 @@ def checkpositive(arr, place=''):
 # @param arr array of float values
 # @param place = '' tell user what to do better
 # @return Exception if (non-physical) negative value found
+
+
+
+def expolpowerlaw(R0, Sigdat, Rnuright, minp = -2.001):
+    alpha = (np.log(Sigdat[-3])-log(Sigdat[-1]))/(np.log(R0[-3])-np.log(R0[-1]))
+    alpha = min(alpha, minp) # assert finite mass
+    Sig0  = Sigdat[-1]
+    logSigdatright = np.log(Sig0)+alpha*(np.log(Rnuright)-np.log(R0[-1]))
+    return np.exp(logSigdatright)
+## \fn expolpowerlaw(R0, Sigdat, Rnuright, minp)
+# extrapolate to high radii, assuming a minimum powerlaw
+# @param R0 starting radii
+# @param Sigdat starting profile
+# @param Rnuright extrapolation radii
+# @param minp minimum powerlaw .. extrapolation has to fall at least as much
+
+
+def complete_nu(R0, Sigdat, Sigerr, Rnu):
+    Rnuleft = Rnu[Rnu<R0[0]]   # extension of radii to the left
+    Rnuright = Rnu[Rnu>R0[-1]] # extension of radii to the right
+    R0nu = Rnu[(Rnu>=R0[0]) * (Rnu<=R0[-1])] # [pc]
+
+    # TODO: use powerlaw to smaller radii
+    Sigdatleft = np.exp(expol(R0, np.log(Sigdat), Rnuleft, 'linear'))
+    Sigerrleft = (Sigerr[0]/Sigdat[0])*Sigdatleft
+
+    Sigdatnu = linipollog(R0, Sigdat, R0nu)
+    Sigerrnu = linipollog(R0, Sigerr, R0nu)
+
+    #Sigdatright = np.exp(expol(R0, np.log(Sigdat), Rnuright, 'linear'))
+    #Sigerrright = (Sigerr[-1]/Sigdat[-1])*Sigdatright
+    # powerlaw extension to highest radii from last 3 binned points
+    Sigdatright = expolpowerlaw(R0, Sigdat, Rnuright)
+    Sigerrright = (Sigerr[-1]/Sigdat[-1])*Sigdatright
+
+    Sigdatnu = np.hstack([Sigdatleft, Sigdatnu, Sigdatright])
+    Sigerrnu = np.hstack([Sigerrleft, Sigerrnu, Sigerrright])
+
+    return Sigdatnu, Sigerrnu
+## \fn complete_nu(R0, Sigdat, Sigerr, Rnu)
+# inter- and extrapolate Sigdat and Signu to Rnu (gp.xfine, generally)
+# @param R0 radii in [pc]
+# @param Sigdat surface density
+# @param Sigerr error
+# @param Rnu new radii [pc]
 
 
 def derivative(f):
@@ -268,15 +312,6 @@ def extend_radii(r0):
 # @param r0 original bin centers
 
 
-def introduce_points_in_between(r0, gp):
-    rmin = np.log10(min(r0))
-    rmax = np.log10(max(r0))
-    return np.logspace(rmin, rmax, gp.nfine)
-## \fn introduce_points_in_between(r0, gp)
-# get gp.fine points logarithmically spaced points
-# @param r0 [pc] gp.xipol
-# @param gp global parameter
-
 def readcol3(filena):
     a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
     return a,b,c
@@ -342,6 +377,13 @@ def ipollog(xin, yin, xout, smooth=1.e-9):
 
 def linipollog(xin, yin, xout):
     f = interp1d(np.log(xin), np.log(yin), kind='linear')
+    # sometimes, we have very small numerics giving slightly too
+    # big xout (not in range of xin anymore)
+    # here we correct that by setting the boundaries equal
+    if np.abs(xin[0]-xout[0])/xin[0] < xin[0]/1e6:
+        xout[0] = xin[0]
+    if np.abs(xin[-1]-xout[-1])/xin[-1] < xin[-1]/1e6:
+        xout[-1] = xin[-1]
     return np.exp(f(np.log(xout)))
 ## \fn linipollog(xin, yin, xout)
 # interpolate linearly in ln-ln-space
@@ -350,14 +392,15 @@ def linipollog(xin, yin, xout):
 # @param xout output positions in linear space
 
 
-def expol(xin, yin, xout):
-    rbf = Rbf(xin, yin)
+def expol(xin, yin, xout, fn='multiquadric'):
+    rbf = Rbf(xin, yin, function=fn)
     return rbf(xout)
-## \fn expol(xin, yin, xout)
+## \fn expol(xin, yin, xout, fn)
 # extrapolate data to xout, based on radial basis functions
 # @param xin free variable array
 # @param yin dependent array
 # @param xout interpolation points
+# @param fn function of interpolation, see http://docs.scipy.org/doc/scipy-0.7.x/reference/generated/scipy.interpolate.Rbf.html
 
 
 def wait():
@@ -366,9 +409,11 @@ def wait():
 ## \fn wait()
 # wait for key press
 
+
 def bin_r_linear(rmin, rmax, nbin):
     binlength = (rmax - rmin)/(1.*nbin) #[rscale]
-    binmin = np.zeros(nbin);  binmax = np.zeros(nbin)
+    binmin = np.zeros(nbin)
+    binmax = np.zeros(nbin)
     rbin = np.zeros(nbin)
     for k in range(nbin):
         binmin[k] = rmin+k*binlength #[rscale]
@@ -385,7 +430,8 @@ def bin_r_linear(rmin, rmax, nbin):
 
 def bin_r_log(rmin, rmax, nbin):
     bins   = np.logspace(np.log10(rmin), np.log10(rmax), nbin+1, endpoint=True)
-    binmin = bins[:-1]; binmax = bins[1:]
+    binmin = bins[:-1]
+    binmax = bins[1:]
     rbin = np.zeros(nbin)
     for k in range(nbin):
         rbin[k]   = np.logspace(np.log10(binmin[k]),np.log10(binmax[k]),3, endpoint=True)[1]
@@ -398,33 +444,49 @@ def bin_r_log(rmin, rmax, nbin):
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
 
-def bin_r_const_tracers(r0, no):
+def bin_r_const_tracers(x0, nbin):
     # procedure: get all particles in bin i
     #            get minimum, maximum radius. get radius of min/max before/after bin i
     #            get mean of (half of max bin/min next bin) for bin radius
-    order = np.argsort(r0)
-    r0 = np.array(r0)[order]
+    # make sure array is sorted in ascending order
+    order = np.argsort(x0)
+    x0 = np.array(x0)[order]
 
-    no = int(no)
+    # generate indices for all entries
+    ind = np.arange(len(x0))
     
-    mini = list(range(1,  len(r0), no))
-    maxi = list(range(no, len(r0), no))
-    maxi.append(len(r0))
-    mini = np.array(mini)-1
-    maxi = np.array(maxi)-1
-    minri = [];   maxri = []
-    nbin = int(1.*len(r0)/no)
-    for i in range(nbin):
-        minri.append(r0[mini[i]])
-        maxri.append(r0[maxi[i]])
+    # split along indices, having the last bin underfilled if no exact splitting possible
+    spl = np.array_split(ind, nbin)
 
-    midri = []
-    for i in range(nbin):
-        midri.append((minri[i]+maxri[i])/2.)
-    return minri, maxri, midri
-## \fn bin_r_const_tracers(r0, no)
+    binmin = []
+    binmax = []
+    binmin.append(x0[0]/2)
+    for bini in range(len(spl)-1):
+        lastR = x0[spl[bini][-1]]
+        firstRnext = x0[spl[bini+1][0]]
+        binboundary = (lastR+firstRnext)/2.
+        binmin.append(binboundary) # binmin of next bin
+        binmax.append(binboundary) # binmax of this bin
+    binmax.append(x0[-1]*1.01) # last bin stops after last datapoint
+    binmin = np.array(binmin)
+    binmax = np.array(binmax)
+
+    # define bin center to be at center in linear space
+    bincenterlin = (binmin+binmax)/2
+
+    # define bin center to be at center in log space
+    bincenterlog = np.exp((np.log(binmin)+np.log(binmax))/2)
+
+    # define bin center to be at median radius
+    bincentermed = []
+    for bini in range(len(spl)):
+        bincentermed.append(np.median(x0[spl[bini]]))
+    bincentermed = np.array(bincentermed)
+
+    return binmin, binmax, bincentermed
+## \fn bin_r_const_tracers(x0, no)
 # split interval into bins of constant particle number
-# @param r0 radii from all particles in an array
+# @param x0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
@@ -484,31 +546,18 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
     
     for i in range(nbin):
         count = 0
-        #print('siz-1 = ', siz-1) 
         while (binmax[i] > r[j]):
-            #print('j = ', j, 'array[j] = ', array[j])
             arrayout1[i] = arrayout1[i]+array[j]
             arrayout2[i] = arrayout2[i]+array[j]**2
             if (array[j] != 0):
                 count = count + 1
-
             if (j < siz-1):
                 j = j + 1
             else:
                 break
 
         if (count > 0):
-            #print('count = ', count)
-            #print('\narrayout2[i] = ', arrayout2[i])
-            #print('arrayout1[i] = ', arrayout1[i])
             arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sig
-            #print('arrayout[i] = ', arrayout[i])
-            if np.isnan(arrayout[i]):
-                print('sqrt of negative found')
-                quit()
-            if np.isinf(arrayout[i]):
-                print('infinite arrayout found')
-                quit()
         else:
             arrayout[i] = nanreplace
         count_bin[i] = count
@@ -529,7 +578,7 @@ def bincount(r, rmax):
     index = np.argsort(r)
     r = r[index]
 
-    # prepare for run
+    # prepare 
     nbin = len(rmax)
     arrayout  = np.zeros(nbin)
     count_bin = np.zeros(nbin)
