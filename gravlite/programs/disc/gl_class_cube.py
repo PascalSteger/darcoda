@@ -151,7 +151,7 @@ class Cube:
     ## \fn __init__ (self, pops)
     # constructor, with modes depending on locpop
 
-    
+
     def convert_to_parameter_space(self, gp):
         # if we want any priors, here they have to enter:
         pc = self.cube
@@ -177,7 +177,7 @@ class Cube:
         pc[off] = map_MtoL(pc[off], gp)
         off += offstep
 
-        for pop in range(gp.pops):
+        for pop in range(1, gp.pops+1):
             offstep = gp.nrho
             tmp = map_nr(pc[off:off+offstep], 'nu', pop, gp)
             for i in range(offstep):
@@ -189,7 +189,7 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp[i]
             off += offstep
-           
+
         return pc
     ## \fn convert_to_parameter_space(self, gp)
     # convert [0,1]^ndim to parameter space
@@ -199,7 +199,7 @@ class Cube:
 
     def __repr__(self):
         return "Cube (disc) with "+str(gp.pops)+" pops "
-    
+
     def copy(self, cub):
         self.cube = cub
         return self
