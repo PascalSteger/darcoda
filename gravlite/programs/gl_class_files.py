@@ -105,6 +105,7 @@ class Files:
         newdir(self.dir + 'Sigma/')
         newdir(self.dir + 'siglos/')
         newdir(self.dir + 'kappalos/')
+        newdir(self.dir + 'nu/')
         # create new pc2.save file for profile storage that is appended to during the run
         if timestamp == '':
             with open(self.outdir+'pc2.save', 'wb') as fi:
@@ -122,6 +123,10 @@ class Files:
             self.machine = '/home/ast/read/dark/gravlite/'
         elif machine == 'local':
             self.machine = '/home/psteger/sci/gravlite/'
+        elif machine == 'lisa_HS':
+            self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
+        elif machine == 'lisa_SS':
+            self.machine = '/home/sofia/????/darcoda/gravlite/'
         self.progdir = self.machine + 'programs/'
         self.modedir = self.machine + 'DT' + inv + '/'
         self.shortdir = self.modedir + str(case) + '/'
@@ -132,7 +137,7 @@ class Files:
     # @param case which special case in investigated
     # @param inv string of investigation
 
-    
+
     def set_ntracer(self, cas):
         ntracer = get_case(cas)
         ## number of tracers
@@ -143,7 +148,7 @@ class Files:
     ## \fn set_ntracer(self,cas)
     # set number of tracers
     # @param cas based on the case (3k, 30k tracers) we are working on
-        
+
 
     def get_sim_name(self, gp):
         if gp.hern_dual == 1:
@@ -155,7 +160,7 @@ class Files:
     # get simulation names in the Hernquist case
     # @param gp global parameters
 
-        
+
     def set_hern(self, gp, timestamp=''):
         self.dir = self.machine + 'DThern/'
         self.dir += timestamp + '/'
@@ -179,7 +184,7 @@ class Files:
             self.nufiles.append(self.dir+'nu/' +sim+'nu_2.txt')
             self.sigfiles.append(self.dir+'/siglos/' +sim+'veldisplos_2.txt')
             self.kappafiles.append(self.dir+'/kappalos/' +sim+'kappalos_2.txt')
-                
+
         elif gp.pops == 2: # before: _*_[1,2].txt
             self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig.txt') # all comp.
             self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_'+self.nstr1+'_0.txt')
@@ -188,14 +193,14 @@ class Files:
             self.nufiles.append(self.dir+'nu/'+sim+'nu.txt') # all comp.
             self.nufiles.append(self.dir+'nu/'+sim+'nu_'+self.nstr1+'_0.txt')
             self.nufiles.append(self.dir+'nu/'+sim+'nu_0_'+self.nstr2+'.txt')
-            
+
             self.sigfiles.append(self.dir+'/siglos/' +sim+'veldisplos_'+self.nstr1+'_'+nstr2+'.txt') # all comp
             self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_'+self.nstr1+'_0.txt')
             self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_0_'+self.nstr2+'.txt')
-            
+
             self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_'+self.nstr1+'_0.txt')
             self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_0_'+self.nstr2+'.txt')
-        
+
         return
     ## \fn set_hern(self, gp, timestamp)
     # set all filenames for Hernquist case
@@ -209,25 +214,25 @@ class Files:
             gamma_star1=0.1;
             r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
         elif gp.case == 2:
-            gamma_star1=0.1; 
+            gamma_star1=0.1;
             r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
         elif gp.case == 3:
-            gamma_star1=0.1; 
+            gamma_star1=0.1;
             r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
         elif gp.case == 4:
-            gamma_star1=0.1; 
+            gamma_star1=0.1;
             r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
         elif gp.case == 5:
-            gamma_star1=1.0; 
+            gamma_star1=1.0;
             r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
         elif gp.case == 6:
-            gamma_star1=1.0; 
+            gamma_star1=1.0;
             r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
         elif gp.case == 7:
-            gamma_star1=1.0; 
+            gamma_star1=1.0;
             r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
         elif gp.case == 8:
-            gamma_star1=1.0; 
+            gamma_star1=1.0;
             r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
 
         elif gp.case == 9:
@@ -250,7 +255,7 @@ class Files:
         BBB = gh.myfill(10*beta_star1)    # 050
         CCC = gh.myfill(100*r_star1/r_DM) # 100
         DDD = gh.myfill(100*r_a1/r_star1) # 100
-        EEEE = {0: "core",                     
+        EEEE = {0: "core",
              1: "cusp"
              }[gamma_DM]                # core
         FFFF = gh.myfill(1000*rho0, 4)
@@ -282,7 +287,7 @@ class Files:
     # derive filenames from gaia case
     # @param gp global parameters
     # @param timestamp for analysis
-        
+
 
     def set_walk(self, gp, timestamp=''):
         self.dir = self.machine + 'DTwalk/'
@@ -326,7 +331,7 @@ class Files:
             gamma_DM    = 0 # core
             rno         = 6
 
-            
+
         alpha_DM    = 1;    beta_DM     = 3;
         r_DM        = 1000                    # fixed to 1000pc
 
@@ -334,7 +339,7 @@ class Files:
         AAA = gh.myfill(100*gamma_star1)     # 100
         BBB = gh.myfill(10*beta_star1)       # 050
         CCC = gh.myfill(r_star1/10)          # 100
-        DDD = gh.myfill(100*r_a1)            # 100 
+        DDD = gh.myfill(100*r_a1)            # 100
         EEE = {0: "core",
              1: "cusp"
              }[gamma_DM]                     # core
@@ -348,13 +353,13 @@ class Files:
         self.longdir = "c1_"+AAA+"_"+BBB+"_"+CCC+"_"+DDD+"_"+EEE+"_c2_"+FFF+"_"+GGG+"_"+HHH+"_"+III+"_"+JJJ+"_"+NNN+"_6d/"
         self.dir = self.modedir + self.longdir
         self.dir += timestamp + '/'
-        
+
         self.analytic = self.dir + 'samplepars'
         # print('analytic set to ', self.analytic)
         LINE = np.loadtxt(self.analytic, skiprows=0, unpack=False)
         rho0        = LINE[19] # read from the corresp. samplepars file
         self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
-        
+
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             self.massfiles.append(self.dir+'M/M_'+str(pop)+'.txt')
             self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(pop)+'.txt')
@@ -381,8 +386,8 @@ class Files:
 
         # first and only comp.
         self.massfiles.append(self.dir + 'M/M_0.txt')
-        self.Sigfiles.append(self.dir    + 'Sigma/Sig_0.txt') 
-        self.nufiles.append(self.dir    + 'nu/nu_0.txt') 
+        self.Sigfiles.append(self.dir    + 'Sigma/Sig_0.txt')
+        self.nufiles.append(self.dir    + 'nu/nu_0.txt')
         self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
         if gp.pops == 2:
@@ -394,7 +399,7 @@ class Files:
     # @param gp parameters
     # @param timestamp for analysis
 
-    
+
     def set_obs(self, gp, timestamp=''):
         self.dir = self.machine + '/DTobs/'+str(gp.case)+'/'
         self.dir += timestamp + '/'
@@ -410,7 +415,7 @@ class Files:
     # @param gp
     # @param timestamp
 
-    
+
     def populate_output_dir(self, gp):
         # copy only after data is read in!
         os.system('mkdir -p '+self.outdir+'/programs')
@@ -435,7 +440,7 @@ class Files:
         return self.dir+'ntracer_'+str(i)+'.txt'
     ## \fn get_ntracer_file(self, i)
     # get filename with attached tracer information
-        
+
 
     def set_discsim(self, gp, timestamp=''):
         # entry for "all components" as the first entry. Convention: 0. all 1. pop, 2. pop, 3. pop = background
@@ -450,8 +455,8 @@ class Files:
         self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
         self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
         self.kappafiles.append(self.dir +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_stars.txt') # first comp.
-        self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density 
-        
+        self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density
+
         if gp.pops ==2:
             self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
             self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
@@ -465,22 +470,25 @@ class Files:
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
 
-    
+
     def set_discmock(self, gp, timestamp=''):
         self.dir = self.machine + 'DTdiscmock/0/'
         self.dir += timestamp + '/'
         self.massfiles.append(self.dir+'M/M_0.txt')
-        self.Sigfiles.append(self.dir+'nu/nu_0.txt') # all comp.
+        self.Sigfiles.append(self.dir+'Sigma/Sigma_0.txt') # all comp.
         # TODO nufiles
+        self.nufiles.append(self.dir+'nu/nu_0.txt')
         self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
         self.massfiles.append(self.dir+'M/M_1.txt')
-        self.Sigfiles.append(self.dir+'nu/nu_1.txt') # all comp.
+        self.Sigfiles.append(self.dir+'Sigma/Sigma_1.txt') # all comp.
+        self.nufiles.append(self.dir+'nu/nu_1.txt')
         self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_1.txt')
         if gp.pops == 2:
             self.massfiles.append(self.dir+'M/M_2.txt')
-            self.Sigfiles.append(self.dir+'nu/nu_2.txt') # all comp.
+            self.Sigfiles.append(self.dir+'Sigma/Sigma_2.txt') # all comp.
+            self.nufiles.append(self.dir+'nu/nu_2.txt')
             self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
             self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
 
@@ -489,7 +497,7 @@ class Files:
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
-        
+
 
     def get_outfiles(self):
         pre = self.outdir # + self.outname + '.'
@@ -499,14 +507,14 @@ class Files:
         return outplot, outdat, outtxt
     ## \fn get_outfiles(self)
     # get all output filenames
-        
+
 
     def get_outpng(self):
         pre = self.outdir # + self.outname + '.'
         return pre + 'png'
     ## \fn get_outpng(self)
     # get output filename for png picture
-        
+
 
     def get_outdat(self):
         pre = self.outdir # + self.outname + '.'
@@ -514,7 +522,7 @@ class Files:
     ## \fn get_outdat(self)
     # get output filename for data
 
-        
+
     def get_outtxt(self):
         pre = self.outdir # + self.outname + '.'
         return pre + 'txt'
@@ -526,7 +534,7 @@ class Files:
     ## \fn __repr__(self)
     # string representation
 
-      
+
 
 ## \class Files
 # Common base class for all filename sets

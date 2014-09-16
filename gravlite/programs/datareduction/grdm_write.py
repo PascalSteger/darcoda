@@ -25,7 +25,7 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
             # Zscale, Dens0pc, totmass, nu0pc, maxsiglos
             # Dens0pc is *not* density at halflight radius as in spherical
             # code, but rather 3D tracer density at center
-            print(scales[pop][b], file=crscale) 
+            print(scales[pop][b], file=crscale)
         crscale.close()
 
         # write tracer densities
@@ -45,7 +45,7 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
             print(Rbin[b], Binmin[b], Binmax[b], \
                   nudat[pop][b], nuerr[pop][b], file=f_nu)
         f_nu.close()
-        
+
         # write velocity dispersion
         f_sig = open(gp.files.sigfiles[pop],'w')
         print('R [Zscale];','Binmin [Zscale];','Binmax [Zscale];',\
@@ -54,7 +54,7 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
             print(Rbin[b], Binmin[b], Binmax[b], \
                   sigdat[pop][b], sigerr[pop][b], file=f_sig)
         f_sig.close()
-        
+
         # write enclosed mass
         f_mass = open(gp.files.massfiles[pop],'w')
         print('R [Zscale];','Binmin [Zscale];','Binmax [Zscale];',\
@@ -83,7 +83,7 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
 
 def run(gp):
     global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
-    # Set up simple population here using analytic formulae: 
+    # Set up simple population here using analytic formulae:
     zmin = 100.                               # [pc], first bin center
     zmax = 1300.                              # [pc], last bin center
     # get Stuetzpunkte for theoretical profiles (not yet stars, finer spacing in real space)
@@ -123,9 +123,9 @@ def run(gp):
     ran2 = npr.normal(size=int(gp.ntracer[2-1]))  # [1]
     vzstar = ran2 * sigzstar                      # [km/s]
 
-    # Add second population [thick-disc like]: 
+    # Add second population [thick-disc like]:
     if gp.pops == 2:
-        nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02) 
+        nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02)
         # [nu0,2] = [Msun/A/pc], 3D tracer density, exponentially falling
         # no normalization to 1 done here
         inti    = np.zeros(nth)
@@ -144,18 +144,18 @@ def run(gp):
     print('fraction of z<zmax selected elements: ', 1.*sum(sel)/(1.*len(sel)))
     z_dat1  = zstar[sel]
     vz_dat1 = vzstar[sel]
-    
+
     # throw away velocities of value zero (unstable?):
     sel = (abs(vz_dat1) > 0)
     print('fraction of vz_dat>0 selected elements: ', 1.*sum(sel)/(1.*len(sel)))
     z_dat1  = z_dat1[sel]
     vz_dat1 = vz_dat1[sel]
-    
+
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin1, binmax1, z_dat_bin1, sig_dat_bin1, count_bin1 = gh.binsmooth(z_dat1, vz_dat1, \
                                                                      zmin, zmax, gp.nipol, 0.)
     sig_dat_err_bin1 = np.sqrt(sig_dat_bin1) # Poisson errors
-    
+
     nu_dat_bin1, dum = gh.bincount(z_dat1, binmax1)
     nu_dat_bin1 /= (binmax1-binmin1)
     nu_dat_err_bin1 = np.sqrt(nu_dat_bin1)
@@ -165,9 +165,10 @@ def run(gp):
         loglog(zth, nu_zth/nuscaleb, 'b.-')
         nuscaler = nu_dat_bin1[np.argmin(np.abs(zth-z0))]
         loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
-        
+
         pdb.set_trace()
 
+    Sig_dat_bin1, Sig_dat_err_bin1 = gh.bincount(z_dat1, z_dat_bin1)
     Mrdat1 = np.cumsum(Sig_dat_bin1)
     Mrerr1 = Mrdat1*Sig_dat_err_bin1/Sig_dat_bin1
 
@@ -188,17 +189,21 @@ def run(gp):
         sel = (zstar2 < zmax)
         z_dat2  = zstar2[sel]
         vz_dat2 = vzstar2[sel]
-        
+
         # cut zero velocities:
         sel = (abs(vz_dat2) > 0)
         z_dat2  = z_dat2[sel]
         vz_dat2 = vz_dat2[sel]
-        
+
         # Calulate binned data (for plots/binned analysis):
         binmin2, binmax2, z_dat_bin2, sig_dat_bin2, count_bin2 = gh.binsmooth(z_dat2, vz_dat2, \
                                                                               zmin, zmax, gp.nipol, 0.)
         sig_dat_err_bin2 = np.sqrt(sig_dat_bin2) # Poissonian errors
-        
+
+        nu_dat_bin2, dum = gh.bincount(z_dat2, binmax2)
+        nu_dat_bin2 /= (binmax2-binmin2)
+        nu_dat_err_bin2 = np.sqrt(nu_dat_bin2)
+
         Sig_dat_bin2, Sig_dat_err_bin2 = gh.bincount(z_dat2, z_dat_bin2)
         Mrdat2 = np.cumsum(nu_dat_bin2)
         Mrerr2 = np.sqrt(Mrdat2)
@@ -208,20 +213,24 @@ def run(gp):
         scales[2].append(Mrdat2[-1])
         scales[2].append(nu_dat_bin2[0]) # normalize by max density of first bin, rather
         scales[2].append(max(sig_dat_bin2))
- 
+
         # calculate properties for all pop together with stacked values
         z_dat0 = np.hstack([z_dat1, z_dat2])
         vz_dat0 = np.hstack([vz_dat1, vz_dat2])
-        
+
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin0, binmax0, z_dat_bin0, sig_dat_bin0, count_bin0 = gh.binsmooth(z_dat0, vz_dat0, \
                                                                           zmin, zmax, gp.nipol, 0.)
     sig_dat_err_bin0 = sig_dat_bin0 / np.sqrt(count_bin0)
     # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
-    
+
+    nu_dat_bin0, dum = gh.bincount(z_dat0, binmax0)
+    nu_dat_bin0 /= (binmax0-binmin0)
+    nu_dat_err_bin0 = np.sqrt(nu_dat_bin0)
+
     Sig_dat_bin0, Sig_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
     renorm0 = max(nu_dat_bin0)
- 
+
     xip = np.copy(z_dat_bin0)                        # [pc]
     Mrdat0   = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gp.G1)
     Mrerr0   = Mrdat0*nu_dat_err_bin0/nu_dat_bin0
@@ -235,7 +244,7 @@ def run(gp):
     rmin = binmin0/scales[0][0] # [pc]
     rbin = xip/scales[0][0]     # [pc]
     rmax = binmax0/scales[0][0] # [pc]
-    
+
     # store parameters for output
     # normalized by scale values
     nudat = []
@@ -255,7 +264,7 @@ def run(gp):
     Mrdat.append(Mrdat1/scales[1][2])
     if gp.pops == 2:
         Mrdat.append(Mrdat2/scales[2][2])
-    
+
     Mrerr = []
     Mrerr.append(Mrerr0/scales[0][2])            # [Msun]
     Mrerr.append(Mrerr1/scales[1][2])
@@ -269,10 +278,10 @@ def run(gp):
         Sigdat.append(Sig_dat_bin2/scales[2][3])
 
     Sigerr = []
-    Sigerr.append(Sigdat0/np.sqrt(len(Sigdat0)))
-    Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
+    Sigerr.append(Sig_dat_bin0/np.sqrt(len(Sig_dat_bin0)))
+    Sigerr.append(Sig_dat_bin1/np.sqrt(len(Sig_dat_bin1)))
     if gp.pops == 2:
-        Sigerr.append(Sigdat1/np.sqrt(len(Sigdat1)))
+        Sigerr.append(Sig_dat_bin1/np.sqrt(len(Sig_dat_bin1)))
 
     sigdat = []
     sigdat.append(sig_dat_bin0/scales[0][3])     # [km/s]

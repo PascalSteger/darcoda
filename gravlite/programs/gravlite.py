@@ -37,7 +37,7 @@ def myprior(cube, ndim, nparams):
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
-# @param ndim number of dimensions, 2*npop*nipol + nipol 
+# @param ndim number of dimensions, 2*npop*nipol + nipol
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
@@ -51,7 +51,7 @@ def myloglike(cube, ndim, nparams):
         # convention: use chi^2 directly, not log likelihood
     # for output:
     # from   likelihood L = exp(-\chi^2/2), want log of that
-    return -tmp_profs.chi2/2. 
+    return -tmp_profs.chi2/2.
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
 # @param ndim number of dimensions, 2*npop*nipol + nipol
@@ -66,8 +66,7 @@ def prepare_data(gp):
 
     gfile.get_data(gp)
     gp.files.populate_output_dir(gp)
-    if gp.geom == 'sphere':
-        gfile.get_rhohalfs(gp)
+    gfile.get_rhohalfs(gp)
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
@@ -130,7 +129,7 @@ if __name__=="__main__":
     # procnm = MPI.Get_processor_name()
     # import sys
     # sys.stdout.write(hwmess % (myrank, nprocs, procnm))
-    
+
     # TODO: wait for prepare_data to finish
     # if MPI.COMM_WORLD.Get_rank() == 0:
     #     # TODO: wrong: have 0 take part in sampling as well
@@ -138,5 +137,3 @@ if __name__=="__main__":
     # else:
     #     # run with full MPI
     run(gp)
-
-

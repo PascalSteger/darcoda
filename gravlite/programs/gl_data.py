@@ -35,7 +35,7 @@ class Datafile:
         ## keep mass profile
         self.Mrdat = []; self.Mrerr = []; self.Mrdat_fine = []; self.Mrerr_fine = []
         self.Mhalf = []; self.rhalf = []
-        
+
         ## keep radial profile of the tracer density, averaged in 2D-rings
         self.nu = [];    self.nu_fine = [];    self.nu_epol = []
         self.nuerr = []; self.nuerr_fine = []; self.nuerr_epol = []
@@ -84,7 +84,7 @@ class Datafile:
                                       self.rbin, \
                                       2*maxr, 4*maxr, 8*maxr]) # [pc]
                 gp.xfine = introduce_points_in_between(gp.xepol, gp)
-            # deproject, 
+            # deproject,
             # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
             # already normalized to same total mass
             if gp.geom == 'sphere':
@@ -107,7 +107,7 @@ class Datafile:
                 self.Mrdat.append(Mrdat) # [Munit]
                 Mhalf = Mrdat[-1]/2.     # [Munit]
                 self.Mhalf.append(Mhalf) # [Munit]
-                
+
                 # spline interpolation with M as x axis, to get half-mass of system:
                 splpar_M = splrep(np.log(Mrdat), np.log(self.binmax), s=0.01)
                 r_half = np.exp(splev(np.log(Mhalf), splpar_M)) # [pc]
@@ -122,6 +122,7 @@ class Datafile:
                 print('working in disc symmetry: reading nu directly')
                 dum, dum, dum, nudat, nuerr = \
                         gh.readcol5(gp.files.nufiles[pop])
+                self.nuhalf.append(nudat[round(len(nudat)/2)]) #HS ToDo: check validity of this
 
             self.Sig.append(Sigdat)    # [Munit/pc^2]
             self.Sigerr.append(Sigerr) # [Munit/pc^2]
@@ -174,9 +175,8 @@ class Datafile:
     ## \fn read_zeta(self, gp)
     # read zeta profiles
     # @param gp global parameters
-    
+
     def __repr__(self):
         return "Datafile: radii "+self.rbin
     ## \fn __repr__(self)
     # string representation for ipython
-

@@ -51,7 +51,7 @@ def map_tiltstar(pa, gp):
 
 def map_nr(pa, prof, pop, gp):
     # first parameter gives half-light radius value of rho directly
-    pa[0] = 10**((pa[0]*2.*width)-width+np.log10(scale))
+
     if prof=='rho':
         maxrhoslope = gp.maxrhoslope
         monotonic = gp.monotonic
@@ -65,9 +65,11 @@ def map_nr(pa, prof, pop, gp):
         iscale = gp.iscale_nu
         nrtol = gp.nrtol_nu
         scale = gp.dat.nuhalf[pop]
-        width = gp.nuspread[pop]
+        width = gp.nuspread
     else:
         raise Exception('wrong prof in gl_class_cube.map_nr')
+
+    pa[0] = 10**((pa[0]*2.*width)-width+np.log10(scale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass

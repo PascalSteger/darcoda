@@ -95,9 +95,11 @@ def get_rhohalfs(gp):
         # density at half-light radius of baryons
         rhohalf = M_half/(4.*np.pi/3*r_half**3)
         gp.rhohalf = rhohalf
-        
+
     elif gp.geom == 'disc':
-        return -1.08
+        gp.rhohalf = np.average(gp.dat.nuhalf) #Assuming DM density negligible
+
+    return
 ## \fn get_rhohalfs(gp)
 # get informed priors on 3D densities at half-light radius
 # via deprojection for nu
@@ -122,7 +124,7 @@ def arraydump(fname, arrays, app='a', narr=1):
 # This routine takes a number, narr, of equal length arrays
 # and appends/writes them to a specified file in columnated data format.
 # @param fname filename, string
-# @param arrays =[[arr1], [arr2]...] 
+# @param arrays =[[arr1], [arr2]...]
 # @param app  ='a' appending?
 # @param narr =1 number of arrays
 
@@ -132,12 +134,12 @@ def bufcount(filename):
     lines = 0
     buf_size = 1024 * 1024
     read_f = f.read # loop optimization
-    
+
     buf = read_f(buf_size)
     while buf:
         lines += buf.count('\n')
         buf = read_f(buf_size)
-        
+
     return lines
 ## \fn bufcount(filename)
 # count lines of a file
@@ -152,11 +154,11 @@ def write_headers_2D(gp, pop):
     f_nu = open(gp.files.nufiles[pop], 'w')
     print('rbin [xscale];','binmin [xscale];','binmax [xscale];',\
           'nu(r) [Munit/pc^3];','error [Munit/pc^3]', file=f_nu)
-    
+
     f_mass = open(gp.files.massfiles[pop],'w')
     print('R [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
           'M(<Binmax) [Munit];','error [Munit]', file=f_mass)
-    
+
     f_sig = open(gp.files.sigfiles[pop],'w')
     print('R [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
           'sigma_p(R) [maxsiglos];','error [km/s]', file=f_sig)
@@ -176,7 +178,7 @@ def write_headers_3D(gp, pop):
     print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
           'nu(r) [nu(0)];', 'error', \
           file=f_nu)
-    
+
     f_mass = open(gp.files.massfiles[pop]+'_3D','w')
     print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
           'M(<r) [Munit];','error',\
@@ -215,7 +217,7 @@ def write_tracer_file(filename, totmass):
 # write tracer file
 # @param filename
 # @param totmass
-    
+
 
 def write_Sig_scale(filename, Sig0pc, totmass):
     cdens = open(filename, 'a')
@@ -237,7 +239,7 @@ def write_nu_scale(filename, nu0pc):
 # output 3D tracer density scale
 # @param filename
 # @param nu0pc central 3D tracer density [Munit/pc^3]
-    
+
 
 def write_data_output(filename, x, y, vz, Xscale):
     print('output: ', filename)

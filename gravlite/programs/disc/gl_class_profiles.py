@@ -19,6 +19,8 @@ class Profiles:
         self.x0   = np.zeros(nipol)
         self.chi2 = 0.0
         self.rho  = np.zeros(nipol)
+        self.nr   = np.zeros(nipol) #n(r) for mass density
+        self.nrnu = np.zeros(nipol) #n(r) for tracer density
         self.M    = np.zeros(nipol)
         self.tilt = np.zeros((pops+1)*nipol) # (pops+1) for overall, 1, 2, ...
         self.nu   = np.zeros((pops+1)*nipol) # dito

@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, pdb, logging
+import os, pdb, logging, socket, getpass
 
 def check_investigate(inv):
     if inv == 'walk':     return True
@@ -25,17 +25,26 @@ def check_investigate(inv):
 
 class Params():
     def __init__(self, timestamp = ''):
-        self.machine = 'darkside'
-        if not os.path.exists("/home/ast/read"):
-            self.machine = 'local'    # machine: 'local' or 'darkside'
 
-        self.investigate  = 'gaia' # determine which data set to work on
+        host_name = socket.gethostname()
+        user_name = getpass.getuser()
+
+        if 'darkside' in host_name:
+            self.machine = 'darkside'
+        elif 'pstgnt332' in host_name:
+            self.machine = 'local'
+        elif ('lisa' in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS'
+        elif ('lisa' in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS'
+
+        self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
                                   # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
-                                  #         challenge, 1 pop only 
+                                  #         challenge, 1 pop only
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
 
@@ -43,7 +52,7 @@ class Params():
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
-        
+
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
         # case 2
@@ -183,7 +192,7 @@ class Params():
         ########## global arrays
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins
-        self.xfine = np.array([]) # [pc] radii for lookup tables, 
+        self.xfine = np.array([]) # [pc] radii for lookup tables,
                                   #      gp.nfine long
 
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
@@ -211,10 +220,9 @@ class Params():
     # set up all parameters used in the course of the MultiNest run,
     # and the analysis routines in plot_multinest @param timestamp =
     # '', for output
-    
+
 
     def __repr__(self):
         return "Params: "+self.files.dir
     ## \fn __repr__(self)
     # string representation for ipython
-
