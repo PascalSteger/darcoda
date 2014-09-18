@@ -25,7 +25,7 @@ def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/pdf/')
     os.system('mkdir -p '+ basename + 'output/analytic/')
     return 0
-## \fn prepare_output_folders(basename)
+## \fn prepare_output_folder(basename)
 # create directory structure in output folder
 # @param basename string, data folder
 
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0]) # [Xscale0], [Munit/Xscale0^2]
     gp.xipol = Radii * gp.Xscale[0]       # [pc]
     maxR = max(Radii)                     # [pc]
-    Radii = np.hstack([Radii, 2*maxR, 4*maxR, 8*maxR]) # [pc]
+    Radii = np.hstack([Radii, 2*maxR, 4*maxR, 8*maxR]) # [pc]z
     gp.xepol = Radii * gp.Xscale[0]       # [pc]
 
     #if calculate_anew:

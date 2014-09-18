@@ -19,13 +19,13 @@ class Output:
     # constructor, with descriptor and data in array format
 
 
-    def add(self, d, arr):
+    def add(self, d, vec):
         self.descriptions.append(d)
-        self.arrays.append(arr)
-    # \fn add(d, arr)
+        self.arrays.append(vec)
+    # \fn add(d, vec)
     # add a column to ASCII data file
     # @param d string of description
-    # @param arr np.array of floats
+    # @param vec np.array of floats
 
 
     def write_old(self, filename):

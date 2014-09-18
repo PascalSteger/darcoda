@@ -5,7 +5,7 @@
 # Functions related to projection and deprojection of density in spherical models.
 # Conventions:
 # rho, r, Mr     denote 3D density, 3D radius, M(<3D radius)
-# Rho, R, MR     denote 2D density, 2D radius, M(<2D radius)
+# Sig, R, MR     denote 2D density, 2D radius, M(<2D radius)
 # *SUM*          denotes main method = summing
 # *INT*          denotes main method = integrating
 # *NORM*         denotes main method = renormalization
@@ -22,7 +22,7 @@ import gl_plot as gpl
 import gl_physics as phys
 
 
-def rho_param_INT_Rho_disc(z0, rhopar, pop, gp):
+def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
     # TODO: check integration for z direction only
 
     # use splines on variable transformed integral
@@ -32,13 +32,13 @@ def rho_param_INT_Rho_disc(z0, rhopar, pop, gp):
     z0nu = np.hstack([z0left, z0])
 
     rhonu = phys.rho(z0nu, rhopar, pop, gp) # rho takes rho(rhalf) and n(r) parameters
-    Rho = np.zeros(len(z0nu)-gp.nexp)
+    Sig = np.zeros(len(z0nu)-gp.nexp)
     for i in range(len(z0nu)-gp.nexp):
-        Rho[i] = gh.quadinflog(z0nu, rhonu, xmin, z0nu[i])
+        Sig[i] = gh.quadinflog(z0nu, rhonu, xmin, z0nu[i])
 
-    gh.checkpositive(Rho, 'Rho in rho_param_INT_Rho')
-    return Rho[len(z0left):] # @z0 (z0nu without z0left, and without 3 extension bins)
-## \fn rho_param_INT_Rho_disc(z0, rhopar, pop, gp)
+    gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig_disc')
+    return Sig[len(z0left):] # @z0 (z0nu without z0left, and without 3 extension bins)
+## \fn rho_param_INT_Sig_disc(z0, rhopar, pop, gp)
 # take 3D density parameters, calculate projected surface density
 # @param z0 radii of bins, (nrho-nexp entries) [pc]
 # @param rhopar 3D density, (nrho entries) [Munit/pc^3]

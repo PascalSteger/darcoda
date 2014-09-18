@@ -11,12 +11,13 @@ import numpy as np
 from scipy.interpolate import splrep, splev
 from gl_int import g
 import gl_plot as gpl
+from gl_helper import LOG
 
 
 def check_beta(beta, gp):
     # now checking beta <= 1
     if max(beta)>1.:
-        print('max beta!')
+        LOG(2, 'max beta!')
         return True
 
     # TODO: check smoothness of beta

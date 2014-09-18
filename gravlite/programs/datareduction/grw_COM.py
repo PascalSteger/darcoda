@@ -56,33 +56,32 @@ def select_pm(x, y, z, comp, vz, vb, Mg, PM, pm):
 # @param pm
 
 
-def read_data(filename, columns):
+def read_data(filename):
     # x0 in pc y0 in pc z0 in pc vz0 in km/s vb0(LOS due binary), km/s
     # Mg0 in Angstrom PM0 [1] comp0 1,2,3(background) use component
     # 12-1 instead of 6-1 for z velocity, to exclude observational
     # errors
     
-    x0,y0,z0,vz0,vb0,Mg0,PM0,comp0 = np.genfromtxt(filename, skiprows = 0, unpack = True,\
-                                                   usecols=columns,\
+    x0,y0,z0,vb0,vz0,Mg0,PM0,comp0 = np.genfromtxt(filename, skiprows = 0, unpack = True,\
+                                                   usecols=(0, 1, 2, 5, 11, 13, 19, 20),\
                                                    dtype="d17",\
                                                    converters={0:expDtofloat,\
                                                                1:expDtofloat,\
                                                                2:expDtofloat,\
                                                                5:expDtofloat,\
-                                                               12:expDtofloat,\
+                                                               11:expDtofloat,\
                                                                13:expDtofloat,\
                                                                19:expDtofloat,\
                                                                20:expDtofloat})
-    return x0, y0, z0, vz0, vb0, Mg0, PM0, comp0
-## \fn read_data(filename, columns)
+    return x0, y0, z0, vb0, vz0, Mg0, PM0, comp0
+## \fn read_data(filename)
 # read and convert data
-# @param filename
-# @param columns
+# @param filename string
 
 
 def run(gp):
     print('input: ', gpr.fil)
-    x0,y0,z0,vz0,vb0,Mg0,PM0,comp0 = read_data(gpr.fil, (0, 1, 2, 5, 12, 13, 19, 20))
+    x0,y0,z0,vb0,vz0,Mg0,PM0,comp0 = read_data(gpr.fil)
     # [pc], [km/s], [1]
 
     # only use stars which are members of the dwarf: exclude pop3 by
@@ -90,7 +89,7 @@ def run(gp):
     pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination,
                               #outliers
 
-    x0, y0, z0, comp0, vz0, vb0, Mg0, PM0 = select_pm(x0, y0, z0, comp0, vz0, vb0, Mg0, PM0, pm)
+    x0, y0, z0, comp0, vb0, vz0, Mg0, PM0 = select_pm(x0, y0, z0, comp0, vb0, vz0, Mg0, PM0, pm)
 
     # assign population
     if gp.pops==2:
@@ -121,19 +120,18 @@ def run(gp):
         #pickle.dump(DATA, fi)
         #fi.close()
 
-    x1, y1, z1, comp1, vz1, vb1, Mg1, PM1 = select_pm(x0, y0, z0, comp0, vz0, vb0, Mg0, PM0, pm1)
-    x2, y2, z2, comp2, vz2, vb2, Mg2, PM2 = select_pm(x0, y0, z0, comp0, vz0, vb0, Mg0, PM0, pm2)
+    x1, y1, z1, comp1, vb1, vz1, Mg1, PM1 = select_pm(x0, y0, z0, comp0, vb0, vz0, Mg0, PM0, pm1)
+    x2, y2, z2, comp2, vb2, vz2, Mg2, PM2 = select_pm(x0, y0, z0, comp0, vb0, vz0, Mg0, PM0, pm2)
 
     # cut to subsets
     ind1 = gh.draw_random_subset(x1, gp.ntracer[1-1])
-    x1, y1, z1, comp1, vz1, vb1, Mg1, PM1 = select_pm(x1, y1, z1, comp1, vz1, vb1, Mg1, PM1, ind1)
+    x1, y1, z1, comp1, vb1, vz1, Mg1, PM1 = select_pm(x1, y1, z1, comp1, vb1, vz1, Mg1, PM1, ind1)
     
     ind2 = gh.draw_random_subset(x2, gp.ntracer[2-1])
-    x2, y2, z2, comp2, vz2, vb2, Mg2, PM2 = select_pm(x2, y2, z2, comp2, vz2, vb2, Mg2, PM2, ind2)
+    x2, y2, z2, comp2, vb2, vz2, Mg2, PM2 = select_pm(x2, y2, z2, comp2, vb2, vz2, Mg2, PM2, ind2)
 
+    # use vz for no contamination, or vb for with contamination
     x0, y0, z0, vz0, pm1, pm2, pm = concat_pops(x1, x2, y1, y2, z1, z2, vz1, vz2, gp)
-    
-
     com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x0, y0, z0, vz0, pm) # [pc]
     print('COM [pc]: ', com_x, com_y, com_z)   # [pc]
     print('VOM [km/s]', com_vz)                # [km/s]

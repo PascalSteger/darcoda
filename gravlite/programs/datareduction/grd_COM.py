@@ -214,16 +214,16 @@ if __name__=='__main__':
     pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
     x0, y0, vz0, Mg0, PM0 = select_pm(x0, y0, vz0, Mg0, PM0, pm)
 
-    # assign population
-    if gp.pops == 2:
-        import pymcmetal as pmc
-        p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
-        pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
-        fi = open(gp.files.dir+'metalsplit.dat', 'w')
-        fi.write(str(p)+'\n')
-        fi.write(str(mu1)+'\n')
-        fi.write(str(sig1)+'\n')
-        fi.write(str(mu2)+'\n')
-        fi.write(str(sig2)+'\n')
-        fi.close()
-        np.savetxt(gp.files.dir+'metalsplit_assignment.dat', np.array([pm1, pm2]))
+    # assign population (OLD, new way is to run grd_split after grd_COM in gl_file
+    # if gp.pops == 2:
+    #     import pymcmetal as pmc
+    #     p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
+    #     pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
+    #     fi = open(gp.files.dir+'metalsplit.dat', 'w')
+    #     fi.write(str(p)+'\n')
+    #     fi.write(str(mu1)+'\n')
+    #     fi.write(str(sig1)+'\n')
+    #     fi.write(str(mu2)+'\n')
+    #     fi.write(str(sig2)+'\n')
+    #     fi.close()
+    #     np.savetxt(gp.files.dir+'metalsplit_assignment.dat', np.array([pm1, pm2]))

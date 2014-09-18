@@ -42,6 +42,10 @@ def set_geometry(geom, machine):
         basepath = '/home/psteger/sci/gravlite/programs/'
     elif machine == 'darkside':
         basepath = '/home/ast/read/dark/gravlite/programs/'
+    elif machine == 'lisa_HS':
+        basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/programs/'
+    elif machine == 'lisa_SS':
+        basebath = '/home/sofia/blah/darcoda/gravlite/programs/'
 
     insert_sys_path(basepath + 'datareduction/')
     insert_sys_path(basepath + geom)

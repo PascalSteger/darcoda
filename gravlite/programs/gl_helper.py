@@ -11,7 +11,54 @@ from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad
 import gl_plot as gpl
 from pylab import *
+import time
 
+# show all messages which are important enough (Level <= DEBUGLEVEL)
+DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
+
+def LOG(level, message, var=''):
+    if level > DEBUGLEVEL:
+        return
+    t = time.time()
+    print(time.ctime(t), message, var)
+    return
+## \fn LOG(level, warning, var)
+# print debugging message if level is important enough
+# @param level 0: none, 1: some, 2: more, 3: all
+# @param warning string
+# @param var variable (not mandatory)
+    
+
+def sanitize_vector(vec, length, mini, maxi):
+    if len(vec) != length:
+        pdb.set_trace()
+        raise Exception('vec has wrong length', len(vec))
+    if min(vec) < mini:
+        raise Exception('vec has too small value', min(vec))
+    if max(vec) > maxi:
+        raise Exception('vec has too high value', max(vec))
+    return
+## \fn sanitize_vector(vec, length, mini, maxi)
+# sanitize input (vectors)
+# @param vec vector
+# @param length int
+# @param mini minimum allowed value
+# @param maxi maximum allowed value
+
+
+def sanitize_scalar(var, mini, maxi):
+    if var < mini:
+        raise Exception('var has too small value')
+    if var > maxi:
+        raise Exception('var has too high value')
+    return
+## \fn sanitize_scalar(var, mini, maxi)
+# sanitize input (scalar)
+# @param var scalar, int or float or double
+# @param mini minimal value allowed
+# @param maxi maximum value allowed
+
+    
 def myfill(x, N=3):
     if x==np.inf or x==-np.inf:
         return "inf"
@@ -20,7 +67,8 @@ def myfill(x, N=3):
 #  print integer with leading zeros
 # @param x integer
 # @param N number of paddings
-# @return 00x
+# @return 00x or 0xy or xyz
+
 
 def ipol_rhalf_log(X, Y, rhalf):
     for i in range(len(X)):
@@ -44,10 +92,10 @@ def ipol_rhalf_log(X, Y, rhalf):
 
 
 def print_summary(Xscale, Rc):
-    print('Xscale = ', Xscale, ' pc')
-    print('max(R) = ', max(Rc), ' pc')
-    print('last element of R : ', Rc[-1], ' pc')
-    print('total number of stars: ', len(Rc))
+    LOG(2, 'Xscale/pc = ', Xscale)
+    LOG(2, 'max(R)/pc = ', max(Rc))
+    LOG(2, 'last element of R/pc : ', Rc[-1])
+    LOG(2, 'total number of stars: ', len(Rc))
     return
 ## \fn print_summary(Xscale, Rc)
 # print Radius information
@@ -72,9 +120,25 @@ def add_errors(R, error):
 # @param error in percent
 
 
+def quadinf(x, y, A, B, stop = False):
+    splpar_nul = splrep(x, y, k=1, s=0.) # s=0 needed for intbeta idnu
+    interp = lambda x: splev(x, splpar_nul)
+    dropoffint = quad(interp, A, B, epsrel=1e-4, limit=100, full_output=1)
+    if stop and len(dropoffint)>3:
+        LOG(1, 'warning by quad in quadinf')
+    return dropoffint[0]
+## \fn quadinf(x, y, A, B, stop)
+# integrate y over x, using splines
+# @param x free variable
+# @param y integrand
+# @param A left boundary
+# @param B right boundary
+# @param stop = True
+
+
 def quadinflog(x, y, A, B, stop = False):
     if max(y) <= 0:
-        print('integration over 0')
+        LOG(1, 'integration over 0', y)
         return 0
     # work in log(y) space to enable smoother interpolating functions
     # scale to avoid any values <= 1
@@ -97,10 +161,10 @@ def quadinflog(x, y, A, B, stop = False):
     # for debugging:
     # dropoffint = quad(invexp, A, B, epsrel=1e-3, limit=50, full_output=1)
     if stop and len(dropoffint)>3:
-        print('warning by quad in quadinflog')
+        print(1, 'warning by quad in quadinflog')
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
-# integrate y over x, using splines
+# integrate y over x for strongly decaying function, using splines
 # @param x free variable
 # @param y integrand
 # @param A left boundary
@@ -117,7 +181,7 @@ def quadinfloglog(x, y, A, B, stop = True):
     # invexp = lambda x: min(y[0], np.exp(splev(np.log(x), splpar_nul)))
     dropoffint = quad(invexp, A, B, epsrel=1e-3, limi=100, full_output=1)
     if stop and len(dropoffint)>3:
-        print('warning in quad in quadinfloglog')
+        LOG(1, 'warning in quad in quadinfloglog')
     return dropoffint[0]
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x, using splines
@@ -147,39 +211,39 @@ def quadinflog2(x, y, A, B):
 # @return integrated y
 
 
-def checknan(arr, place=''):
-    if np.isnan(np.sum(arr)):
-        print('NaN found! '+place)
+def checknan(vec, place=''):
+    if np.isnan(np.sum(vec)):
+        LOG(1, 'NaN found! '+place)
         raise Exception('NaN', 'found')
         # not executed anymore :)
         traceback.print_tb(sys.exc_info()[2])
         return True
     else:
         return False
-## \fn checknan(arr, place):
+## \fn checknan(vec, place):
 # NaN encountered at any position in arr?
-# @param arr array of float values
+# @param vec array of float values
 # @param place = '' show user where to search
 # @return True if NaN found
 
 
-def checkpositive(arr, place=''):
-    if checknan(arr, place):
+def checkpositive(vec, place=''):
+    if checknan(vec, place):
         return True
-    if min(arr) < 0.:
-        print(place+" < 0 !")
+    if min(vec) < 0.:
+        LOG(1, place+" < 0 !")
         # traceback.print_tb(sys.exc_info()[2])
         raise Exception('negative value','found')
         return True
-    if max(arr) >= np.inf:
-        print('infinity in checkpositive '+place)
+    if max(vec) >= np.inf:
+        LOG(1, 'infinity in checkpositive '+place)
         raise Exception('infinite value', 'found')
         return True
     else:
         return False
-## \fn checkpositive(arr, place)
+## \fn checkpositive(vec, place)
 # abort if negative value found
-# @param arr array of float values
+# @param vec array of float values
 # @param place = '' tell user what to do better
 # @return Exception if (non-physical) negative value found
 
@@ -338,18 +402,18 @@ def readcoln(filena):
 # @return array
 
     
-def pretty(arr,dig=3):
-    return ("%."+str(dig)+"f")%arr
-## \fn pretty(arr,dig=3)
+def pretty(vec,dig=3):
+    return ("%."+str(dig)+"f")%vec
+## \fn pretty(vec,dig=3)
 # clip floats after dig=3 digits
-# @param arr array of floats
+# @param vec array of floats
 # @param dig number of digits, default is 3
 
 
 from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
 def ipol(xin,yin,xout,smooth=1.e-9):
     if np.isnan(np.sum(yin)):
-        print('NaN found in interpolation! Go check where it occured!')
+        LOG(1, 'NaN found in interpolation! Go check where it occured!')
     rbf = Rbf(xin, yin, smooth=smooth)
     return rbf(xout)
 ## \fn ipol(xin, yin, xout, smooth=1.e-9)
@@ -362,7 +426,7 @@ def ipol(xin,yin,xout,smooth=1.e-9):
 
 def ipollog(xin, yin, xout, smooth=1.e-9):
     if min(yin)<0.:
-        print('negative value encountered in ipollog, working with ipol now')
+        LOG(1, 'negative value encountered in ipollog, working with ipol now')
         return ipol(xin,yin,xout,smooth)
     
     rbf = Rbf(xin, np.log10(yin), smooth=smooth)
@@ -376,6 +440,8 @@ def ipollog(xin, yin, xout, smooth=1.e-9):
 
 
 def linipollog(xin, yin, xout):
+    if len(xin) != len(yin):
+        raise Exception('linipollog: wrong array sizes')
     f = interp1d(np.log(xin), np.log(yin), kind='linear')
     # sometimes, we have very small numerics giving slightly too
     # big xout (not in range of xin anymore)
@@ -563,7 +629,7 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
         count_bin[i] = count
     return binmin, binmax, rout, arrayout, count_bin
 ## \fn binsmooth(r, array, low, high, nbin, nanreplace)
-# This routine takes an array(r) and bins it in r bins of size bin, def. sigma from array in bins
+# takes an array(r) and bins it in r bins of size bin, def. sigma from array in bins
 # @param r [pc]
 # @param array corresponding values for e.g. v_z
 # @param low [pc] lower bound on z range
@@ -602,3 +668,75 @@ def bincount(r, rmax):
 # @param r array of floats
 # @param rmax upper bound of bins
 # @return arrrayout, std
+
+def moments(data):
+    ep = 0.0
+    n = len(data)
+    if (n <= 1):
+        LOG(1, "len(data) must be at least 2 in gh.moments")
+        pdb.set_trace()
+    s=0.0;
+    # First pass to get the mean.
+    for j in range(n):
+        s += data[j]
+    ave  = s/n
+    adev = 0.0
+    var  = 0.0
+    skew = 0.0
+    curt = 0.0
+
+    # Second pass to get the first (absolute), second, third, and fourth moments
+    # of the deviation from the mean.
+    for j in range(n):
+        s = data[j]-ave
+        adev += np.abs(s)
+        ep += s
+        p = s*s
+        var += p
+        p *= s
+        skew += p
+        p *= s
+        curt += p
+
+    adev /= n
+    var = (var-ep*ep/n)/(n-1)
+    # Corrected two-pass formula.
+    sdev = np.sqrt(var)
+    # Put the pieces together according to the conentional definitions.
+    if var > 0:
+        skew = skew/(n*var*sdev)
+        curt = curt/(n*var*var)-3.0
+    else:
+        LOG(1, "No skew/kurtosis when variance = 0 (in moment)");
+    return ave, adev, sdev, var, skew, curt
+## \fn moments(data)
+# Given an array of data[1..n] , this routine returns its mean ave , average deviation adev ,
+# standard deviation sdev , variance var , skewness skew , and kurtosis curt .
+# from Numerical Recipes
+# @param data 1d array
+
+
+def Ntot(R0, Sigma):
+    xint = R0
+    yint = Sigma*R0
+    Ntot = quadinflog(xint, yint, 0., np.inf, False)
+    return Ntot
+## \fn Ntot(R0, Sigma)
+# return total number of stars
+# @param R0 radial bins [pc]
+# @param Sigma surface density profile, [Msun/pc^2]
+
+
+def starred(R0, X, Sigma, Ntot):
+    xint = R0 # plus extension with 3 bins, to infinity
+    yint = X*Sigma*R0
+    star = 1./Ntot * quadinflog(xint, yint, 0., np.inf, False)
+    return star
+## \fn starred(R0, X, Sigma, Ntot)
+# eq. 10 from Richardson, Fairbairn 2014
+# @param R0 2D radii of bins, [pc]
+# @param X quantity for weighted average
+# @param Sigma surface density at these radii, in [Munit/pc^2]
+# @param Ntot total number of stars
+
+

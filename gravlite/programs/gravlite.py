@@ -89,7 +89,7 @@ def run(gp):
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.10, # very low eff. in
+                    sampling_efficiency = 0.05, # very low eff. in
                                                 #case of const efficiency mode,
                                                 #README
                     n_iter_before_update = 1, # output after this many iterations

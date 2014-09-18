@@ -41,7 +41,7 @@ def disc_sim(gp):
 
         # baryonic surface density
         gp.dat.Mx   = z_surf_raw[selsurf]*1000.      # [pc]
-        gp.dat.Mrdat = surfbar_dat_raw[selsurf]      # [Munit/pc^2]
+        gp.dat.Mr = surfbar_dat_raw[selsurf]      # [Munit/pc^2]
         gp.dat.Mrerr = surfbar_dat_err_raw[selsurf]  # [Munit/pc^2]
     
         # total surface density
@@ -235,7 +235,7 @@ def disc_sim(gp):
 
         # baryonic surface density, really a Sig
         gp.dat.Mx   = gp.xipol                # [pc]
-        gp.dat.Mrdat = sigusevis              # [Munit/pc^2]
+        gp.dat.Mr = sigusevis              # [Munit/pc^2]
         gp.dat.Mrerr = siguseviserr           # [Munit/pc^2]
 
         # total surface density (same z array as baryonic)

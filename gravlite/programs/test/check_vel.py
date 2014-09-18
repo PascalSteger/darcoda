@@ -1,6 +1,6 @@
 #/usr/bin/env ipython3
 
-## \file check_vel
+## \file
 # check the distribution of LOS velocities
 
 import gl_plot as gpl

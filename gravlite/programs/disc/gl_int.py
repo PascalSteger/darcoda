@@ -13,7 +13,6 @@ from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
 import gl_plot as gpl
 import gl_physics as phys
-import gl_project
 import gl_plot as gpl
 from pylab import *
 

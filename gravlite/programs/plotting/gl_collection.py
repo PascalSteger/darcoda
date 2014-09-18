@@ -77,7 +77,7 @@ class ProfileCollection():
     def cut_subset(self):
         minchi = min(self.chis)
         maxchi = max(self.chis)
-        self.subset = [0., 30.*minchi]
+        self.subset = [0., np.inf*30.*minchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -160,51 +160,50 @@ class ProfileCollection():
 
 
     def set_analytic(self, x0, gp):
-        from gl_project import rho_INT_Rho, rho_param_INT_Rho, rho_SUM_Mr
         r0 = x0 # [pc], spherical case
         self.analytic.x0 = r0
-        anbeta = []; annu = []; annunr = []; anSig = []; ansig = []
+        anbeta = []; annu = []; annrnu = []; anSig = []; ansig = []
         if gp.investigate == 'gaia':
             anrho = ga.rhotot_gaia(r0, gp)
-            anM = rho_SUM_Mr(r0, anrho)
+            anM = glp.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_gaia(r0, gp)
             tmp_annu = ga.rho_gaia(r0, gp)[1]
             annu.append( tmp_annu )
-            anSig.append( rho_INT_Rho(r0, tmp_annu) )
+            anSig.append( glp.rho_INT_Sig(r0, tmp_annu) )
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_gaia(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_gaia(r0,gp)[pop]
                 annu.append(nu)
-                anSig.append(rho_INT_Rho(r0, nu))
+                anSig.append(glp.rho_INT_Sig(r0, nu))
 
         elif gp.investigate == 'walk':
             anrho = ga.rho_walk(r0, gp)[0]
-            anM = rho_SUM_Mr(r0, anrho)
-            annr = ga.nr3Dtot_deriv_walk(r0, gp)
+            anM = glp.rho_SUM_Mr(r0, anrho)
+            annr = ga.nr3Dtot_deriv_walk(r0, gp) # TODO too high in case of core
             tmp_annu = ga.rho_walk(r0, gp)[1]
             annu.append( tmp_annu )
-            anSig.append( rho_INT_Rho(r0, tmp_annu) )
+            anSig.append( glp.rho_INT_Sig(r0, tmp_annu) )
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_walk(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_walk(r0, gp)[pop]
                 annu.append(nu)
-                anSig.append(rho_INT_Rho(r0, nu))
+                anSig.append(glp.rho_INT_Sig(r0, nu))
 
         elif gp.investigate == 'triax':
             anrho = ga.rho_triax(r0, gp)[0]
-            anM = rho_SUM_Mr(r0, anrho)
+            anM = glp.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_deriv_triax(r0, gp)
             tmp_annu = ga.rho_triax(r0, gp)[1]
             annu.append(tmp_annu)
-            anSig.append( rho_INT_Rho(r0, tmp_annu))
+            anSig.append( glp.rho_INT_Sig(r0, tmp_annu))
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_triax(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_triax(r0, gp)[pop]
                 annu.append(nu)
-                anSig.append(rho_INT_Rho(r0, nu))
+                anSig.append( glp.rho_INT_Sig(r0, nu))
 
         self.analytic.set_prof('rho', anrho, 0, gp)
         self.analytic.set_prof('M', anM, 0, gp)            
@@ -217,8 +216,8 @@ class ProfileCollection():
             self.analytic.set_prof('beta', anbeta[pop-1], pop, gp)
             self.analytic.set_prof('betastar', anbeta[pop-1]/(2.-anbeta[pop-1]), pop, gp)
             self.analytic.set_prof('nu', annu[pop], pop, gp)
-            nunr = -gh.derivipol(np.log(annu[pop]), np.log(r0))
-            self.analytic.set_prof('nrnu', nunr, pop, gp)
+            nrnu = -gh.derivipol(np.log(annu[pop]), np.log(r0))
+            self.analytic.set_prof('nrnu', nrnu, pop, gp)
             self.analytic.set_prof('Sig', anSig[pop] , pop, gp)#/ Signorm, pop, gp)
             self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp) # TODO: find analytic profile
 
@@ -240,7 +239,8 @@ class ProfileCollection():
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
         output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
 
-        if gp.investigate =='walk' or gp.investigate=='gaia':
+        if (gp.investigate =='walk' or gp.investigate=='gaia') \
+           and (prof != 'Sig'):
             out_an = go.Output()
             out_an.add('radius [pc]', self.analytic.x0)
             out_an.add('analytic profile', self.analytic.get_prof(prof, pop))
@@ -271,7 +271,7 @@ class ProfileCollection():
         self.write_prof(basename, 'M', 0, gp)
         self.write_prof(basename, 'Sig', 0, gp)
         self.write_prof(basename, 'nu', 0, gp)
-        self.write_prof(basename, 'nunr', 0, gp)
+        self.write_prof(basename, 'nrnu', 0, gp)
         if gp.geom=='sphere':
             self.write_prof(basename, 'nr', 0, gp)
         for pop in np.arange(1, gp.pops+1):
@@ -279,7 +279,7 @@ class ProfileCollection():
             self.write_prof(basename, 'beta', pop, gp)
             self.write_prof(basename, 'Sig', pop, gp)
             self.write_prof(basename, 'nu', pop, gp)
-            self.write_prof(basename, 'nunr', pop, gp)
+            self.write_prof(basename, 'nrnu', pop, gp)
             self.write_prof(basename, 'sig', pop, gp)
     ## \fn write_all(self, basename, gp)
     # write output files for all profiles
@@ -391,7 +391,7 @@ class ProfileCollection():
             ax.set_ylabel('$\\nu_'+str(pop)+'\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
         elif prof == 'nu' and pop == 0:
             ax.set_ylabel('$\\rho^*\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
-        elif prof == 'nunr':
+        elif prof == 'nrnu':
             ax.set_ylabel('$n_{\\nu,'+str(pop)+'}(r)$')
         elif prof == 'sig':
             ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\\quad[\\rm{km}/\\rm{s}]$')
@@ -490,9 +490,11 @@ class ProfileCollection():
         if prof == 'chi2':
             goodchi = []
             for k in range(len(self.profs)):
-                if self.subset[0] <= self.chis[k] <= self.subset[1]:
+                if self.subset[0] <= self.chis[k]\
+                   and self.chis[k] <= self.subset[1]:
                     goodchi.append(self.chis[k])
-            print('plotting profile '+prof+' for '+str(len(goodchi))+' models')
+            print('plotting profile chi for '+str(len(goodchi))+' models')
+            print('min, max, maxsubset found chi2: ', min(self.chis), max(self.chis), self.subset[1])
             bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \
                                        bins=max(6,np.sqrt(len(goodchi))),\
                                        density=True)
@@ -510,12 +512,10 @@ class ProfileCollection():
         if prof == 'Sig' or prof=='nu' or prof == 'sig':
             self.plot_data(ax, basename, prof, pop, gp)
 
-        if gp.investigate == 'walk' or gp.investigate == 'gaia':
+        if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
+           and (prof != 'Sig'):
             r0 = self.analytic.x0
             y0 = self.analytic.get_prof(prof, pop)
-            #print(y0)
-            #print('prof = ', prof, ', pop = ', pop)
-            #pdb.set_trace()
             ax.plot(r0, y0, 'b--', lw=2)
 
         plt.draw()
@@ -575,105 +575,4 @@ class ProfileCollection():
         return "Profile Collection with "+str(len(self.profs))+" Profiles"
     ## \fn __repr__(self)
     # string representation for ipython
-
-    def plot_overview(self, basename, gp):
-        rho_data       = np.loadtxt(basename+'/prof_rho_0.ascii', skiprows=1, delimiter=',')
-        nr_data        = np.loadtxt(basename+'/prof_nr_0.ascii', skiprows=1, delimiter=',')
-        betastar1_data = np.loadtxt(basename+'/prof_betastar_1.ascii', skiprows=1, delimiter=',')
-        beta1_data     = np.loadtxt(basename+'/prof_beta_1.ascii', skiprows=1, delimiter=',')
-        Sig1_data      = np.loadtxt(basename+'/prof_Sig_1.ascii', skiprows=1, delimiter=',')
-        sig1_data      = np.loadtxt(basename+'/prof_sig_1.ascii', skiprows=1, delimiter=',')
-        if gp.pops == 2:
-            betastar2_data = np.loadtxt(basename+'/prof_betastar_2.ascii', skiprows=1, delimiter=',')
-            beta2_data     = np.loadtxt(basename+'/prof_beta_2.ascii', skiprows=1, delimiter=',')
-            Sig2_data      = np.loadtxt(basename+'/prof_Sig_2.ascii', skiprows=1, delimiter=',')
-            sig2_data      = np.loadtxt(basename+'/prof_sig_2.ascii', skiprows=1, delimiter=',')
-        if gp.investigate == 'walk' or gp.investigate=='gaia':
-            rho_analytic_data       = np.loadtxt(basename+'/prof_rho_0.analytic', skiprows=1, delimiter=',')
-            nr_analytic_data        = np.loadtxt(basename+'/prof_nr_0.analytic', skiprows=1, delimiter=',')
-            betastar1_analytic_data = np.loadtxt(basename+'/prof_betastar_1.analytic', skiprows=1, delimiter=',')
-            beta1_analytic_data     = np.loadtxt(basename+'/prof_beta_1.analytic', skiprows=1, delimiter=',')
-            Sig1_analytic_data      = np.loadtxt(basename+'/prof_Sig_1.analytic', skiprows=1, delimiter=',')
-            sig1_analytic_data      = np.loadtxt(basename+'/prof_sig_1.analytic', skiprows=1, delimiter=',')
-            if gp.pops == 2:
-                betastar2_analytic_data = np.loadtxt(basename+'/prof_betastar_2.analytic', skiprows=1, delimiter=',')
-                beta2_analytic_data     = np.loadtxt(basename+'/prof_beta_2.analytic', skiprows=1, delimiter=',')
-                Sig2_analytic_data      = np.loadtxt(basename+'/prof_Sig_2.analytic', skiprows=1, delimiter=',')
-                sig2_analytic_data      = np.loadtxt(basename+'/prof_sig_2.analytic', skiprows=1, delimiter=',')
-
-        # produce figure with plots for "GOOD" and "ALL" model sets
-        # +------+------+
-        # | rho  | nr   |
-        # +------+------+
-        # | b*1  | beta1|
-        # +------+------+
-        # | Sig1 | sig1 |
-        # +------+------+
-        # | b*2  | beta2| if pops > 1
-        # +------+------+
-        # | Sig2 | sig2 |
-        # +------+------+
-
-        if gp.pops == 1:
-            fig, ((ax_rho, ax_nr), (ax_bs1, ax_b1), (ax_Sig1, ax_sig1)) = plt.subplots(nrows=3, ncols=2, sharex=True)
-        elif gp.pops == 2:
-            fig, ((ax_rho, ax_nr), (ax_bs1, ax_b1), (ax_Sig1, ax_sig1), (ax_bs2, ax_b2), (ax_Sig2, ax_sig2)) = plt.subplots(nrows=5, ncols=2, sharex=True)
-
-        # ax3 = subplot(313,  sharex=ax1, sharey=ax1)
-        ax_rho.set_xscale('log')
-        ax_nr.set_xscale('log')
-        ax_bs1.set_xscale('log');
-        ax_b1.set_xscale('log')
-        ax_Sig1.set_xscale('log')
-        ax_sig1.set_xscale('log')
-        if gp.pops == 2:
-            ax_bs2.set_xscale('log')
-            ax_b2.set_xscale('log')
-            ax_Sig2.set_xscale('log')
-            ax_sig2.set_xscale('log')
-
-        ax_rho.set_yscale('log')
-        ax_nr.set_yscale('linear')
-        ax_bs1.set_yscale('linear')
-        ax_b1.set_yscale('linear')
-        ax_Sig1.set_yscale('log')
-        ax_sig1.set_yscale('linear')
-        if gp.pops == 2:
-            ax_bs2.set_yscale('linear')
-            ax_b2.set_yscale('linear')
-            ax_Sig2.set_yscale('log')
-            ax_sig2.set_yscale('linear')
-            ax_bs2.set_ylim([-1,1])
-            ax_b2.set_ylim([-1,1])
-
-        ax_nr.set_ylim([-1,6])
-        ax_bs1.set_ylim([-1,1])
-        ax_b1.set_ylim([-1,1])
-
-        if gp.investigate=='walk' or gp.investigate=='gaia':
-            self.plot_from_ascii(ax_rho,  rho_data,     rho_analytic_data, gp)
-            self.plot_from_ascii(ax_nr,   nr_data,      nr_analytic_data,  gp)
-            self.plot_from_ascii(ax_bs1,  betastar1_data, betastar1_analytic_data,gp)
-            self.plot_from_ascii(ax_b1,   beta1_data,    beta1_analytic_data,gp)
-            self.plot_from_ascii(ax_Sig1, Sig1_data,     Sig1_analytic_data, gp)
-            self.plot_from_ascii(ax_sig1, sig1_data,     sig1_analytic_data, gp)
-            if gp.pops == 2:
-                self.plot_from_ascii(ax_bs2,  betastar2_data, betastar2_analytic_data,  gp)
-                self.plot_from_ascii(ax_b2,   beta2_data,    beta2_analytic_data, gp)
-                self.plot_from_ascii(ax_Sig2, Sig2_data,     Sig2_analytic_data, gp)
-                self.plot_from_ascii(ax_sig2, sig2_data,     sig2_analytic_data, gp)
-
-        fig.tight_layout()
-
-        plt.draw()
-        fig.savefig(basename+'/ov.png')
-        pp = PdfPages(basename+'/ov.pdf')
-        pp.savefig(fig)
-        pp.close()
-    ## \fn plot_overview(self, basename, gp)
-    # plot a panel with all profiles
-    # NOT USED ANYMORE
-    # @param basename directory name for output files
-    # @param gp global parameters
-
 

@@ -12,8 +12,9 @@ from scipy.integrate import simps,trapz,quad
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
 import gl_plot as gpl
+import gl_analytic as ga
 import gl_physics as phys
-import gl_project
+import gl_project as glp
 import gl_plot as gpl
 from pylab import *
 
@@ -44,21 +45,26 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 # @param log bool for working in log space
 
 
-def ant_intbeta(r0, betapar, gp):
+def ant_intbeta(r0, r0turn, betapar, gp):
     # define function
-    yint = lambda x: phys.beta(x, betapar, gp)[0]/x
+    xint = 1.*r0
+    yint = phys.beta(xint, r0turn, betapar, gp)[0]/xint
+
+    # analytic values
+    # yint =  ga.beta_gaia(xint, gp)[1]/xint
 
     intbet = np.zeros(len(r0))
     for i in range(len(r0)):
-        intbet[i] = quad(yint, r0[0]/1.e5, r0[i])[0]
+        intbet[i] = gh.quadinf(xint, yint, r0[0]/1e5, r0[i])
+    # TODO: assumption here was that integration goes down to min(r0)/1e5
 
     gh.checknan(intbet, 'intbet in ant_intbeta')
     return intbet                                                # [1]
-## \fn ant_intbeta(r0, betapar, gp)
-# integrate beta over r
-# (integrals in front of and after sigma_r^2 integral)
-# TODO: gives -9, where _old gives -1, serious speed impact
+## \fn ant_intbeta(r0, r0turn, betapar, gp)
+# integrate beta(s)/s over s
+# (integrals in front of and after sigma_r^2 integral, factor 2 not in here)
 # @param r0 free variable, array, in [lunit]
+# @param r0turn needed for beta calculation: turning point
 # @param betapar integrand, array, in [1]
 # @param gp
 
@@ -78,27 +84,6 @@ def g(rvar, rfix, beta, dbetadr):
 # @param dbetadr d beta/dr, in [1]
 
 
-
-
-def starred(R, X, Sigma, gp):
-    xint = R
-    yint = Sigma*R
-    Ntot = gh.quadinflog(xint, yint, 0., np.inf, False)
-
-    xint = R # plus extension with 3 bins, to infinity
-    yint = X*Sigma*R
-    star = 1./Ntot * gh.quadinflog(xint, yint, 0., np.inf, False)
-    return Ntot, star
-
-## \fn starred(R, X, Sigma, gp)
-# eq. 10 from Richardson, Fairbairn 2014
-# @param R 2D radii of bins, in pc
-# @param X quantity for weighted average
-# @param Sigma surface density at these radii, in [Munit/pc^2]
-# @param gp global parameters
-
-
-
 def varepsilon(r0, betapar, gp):
     su = 0
     for k in np.arange(1, gp.nbeta):
@@ -114,57 +99,116 @@ def varepsilon(r0, betapar, gp):
 def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     r0nu   = gp.xfine # [pc]
     rhonu  = phys.rho(r0nu,  rhopar, 0, gp) # DM mass profile (first)
+    #loglog(r0nu, ga.rho_gaia(r0nu, gp)[0], 'b.-')
+    #loglog(r0nu, rhonu, 'r.-')
+    #xlabel('r/pc'); ylabel('rho')
+    #pdb.set_trace()
+
     # add up tracer densities to get overall density profile
     # add rho* to take into account the baryonic addition 
     # (*not* Sigma from nu_i, could miss populations, have 
-    # varying selection function as fct of radius, 
-    # need a M/L nuisance parameter)
-    rhostarnu = MtoL*phys.nu(r0nu, rhostarpar, pop, gp)
-    # rhonu += rhostarnu # TODO: reenable as soon as normalization done
+    # varying selection function as fct of radius
+    # need a M/L parameter)
+    # only if we work on real data, add up total baryonic contribution
+    if gp.investigate == 'obs':
+        rhostarnu = MtoL*phys.nu(r0nu, rhostarpar, pop, gp)
+        rhonu += rhostarnu
     
-    #if gp.checksig:
-    #    import gl_analytic as ga
-    #    anrho = ga.rho_gaia(r0nu, gp)[0]
-    #    rhonu = anrho
-    #    #loglog(r0nu, rhonu, 'r.-')
-    #    #loglog(r0nu, anrho, 'b.-')
-    #    #pdb.set_trace()
-    
-    betanu = phys.beta(r0nu, betapar, gp)[0]
-    nunu   = phys.nu(r0nu, nupar, pop, gp) # TODO: verify right calculation
-    idnu   = ant_intbeta_old(r0nu, betapar, gp)
+    #check influence of wrong beta
+    #betapar[3] -= 0.1
+
+    betanu = phys.beta(r0nu, gp.x0turn, betapar, gp)[0]
+    #clf()
+    anbeta = ga.beta_gaia(r0nu, gp)[1]
+    #plot(r0nu, anbeta, 'b.-')
+    #plot(r0nu, betanu, 'r.-')
+    #xlabel('r/pc'); ylabel('beta')
+    #pdb.set_trace()
+
+    #nupar[0] *= 1e3 # TODO: check that siglos**2 is not changing with scaling of nu
+    nunu   = phys.nu(r0nu, nupar, pop, gp)
+    #clf()
+    #loglog(gp.xipol, gp.dat.nu[pop], 'b.-')
+    annu = ga.rho_gaia(r0nu, gp)[pop]
+    #loglog(r0nu, annu, 'g.-')
+    #loglog(r0nu, nunu, 'r.-')
+    #xlabel('r/pc'); ylabel('nu')
+    #pdb.set_trace()
+
+    Signu  = glp.rho_param_INT_Sig(r0nu, nupar, pop, gp)
+    #clf()
+    #loglog(gp.xipol, gp.dat.Sig[pop], 'b.-')
+    #loglog(r0nu[:-gp.nexp], Signu, 'r.-')
+    #xlabel('r/pc'); ylabel('Sigma')
+    #pdb.set_trace()
+
+
+    # int beta(s)/s ds
+    # -----------------------------------------------------------------------
+    idnu   = ant_intbeta(r0nu, gp.x0turn, betapar, gp)
+    #clf()
+    #plot(r0nu, idnu, 'r.-')
+    beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
+    anidnu = 0.5*(np.log(r0nu**2+r_a1**2)-np.log(r_a1**2))
+    #plot(r0nu, anidnu, 'b.-')
+    #xlabel('r/pc'); ylabel('int ds beta(s)/s')
+    #pdb.set_trace()
 
     # integrate enclosed 3D mass from 3D density
     r0tmp = np.hstack([0.,r0nu])
-    rhoint = 4.*np.pi*r0nu**2*rhonu
+
+
+    # M(r)
+    # ----------------------------------------------------------------------
+    rhoint = 4.*np.pi*r0nu**2*rhonu # set to *nunu for check of integration 
     # add point to avoid 0.0 in Mrnu(r0nu[0])
     rhotmp = np.hstack([0.,rhoint])
     splpar_rho = splrep(r0tmp, rhotmp, k=1, s=0.) # not necessarily monotonic
     Mrnu = np.zeros(len(r0nu))              # work in refined model
     for i in range(len(r0nu)):              # get Mrnu
         Mrnu[i] = splint(0., r0nu[i], splpar_rho)
+    #loglog(gp.xipol, gp.dat.Mr[pop], 'g.-')
+    s = r0nu/r_DM # [1]
+    anMr = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
+    #clf()
+    #loglog(r0nu, anMr, 'b.-')
+    #loglog(r0nu, Mrnu, 'r.-')
+    #xlabel('r/pc'); ylabel('M(r)')
+    # pdb.set_trace()
     gh.checkpositive(Mrnu, 'Mrnu')
 
+
+    # sig_r^2
+    # --------------------------------------------------------------------------
     # (sigr2, 3D) * nu/exp(-idnu)
     xint = r0nu                           # [pc]
     yint = gp.G1 * Mrnu / r0nu**2         # [1/pc (km/s)^2]
     yint *= nunu                          # [Munit/pc^4 (km/s)^2]
-    yint *= np.exp(idnu)                  # [Munit/pc^4 (km/s)^2]
+    yint *= np.exp(2*idnu)                  # [Munit/pc^4 (km/s)^2]
     gh.checkpositive(yint, 'yint sigr2')
+    #loglog(xint, yint, 'r.-')
+    #loglog(xint, gp.G1 * anMr / r0nu**2 * annu * np.exp(2*anidnu), 'b.-')
+    #xlabel('xint/pc'); ylabel('yint')
+    #pdb.set_trace()
+
 
     # use quadinflog or quadinfloglog here
     sigr2nu = np.zeros(len(r0nu))
     for i in range(len(r0nu)):
         # TODO: check quadinflog with walker profiles
-        sigr2nu[i] = np.exp(-idnu[i])/nunu[i]*\
+        sigr2nu[i] = np.exp(-2*idnu[i])/nunu[i]*\
                      gh.quadinflog(xint, yint, r0nu[i], gp.rinfty*r0nu[-1], True)
         if sigr2nu[i] == np.inf:
             sigr2nu[i] = 1e-100
         # last arg: warn if no convergence found
     gh.checkpositive(sigr2nu, 'sigr2nu in sigl2s')
+    #clf()
+    #loglog(r0nu, sigr2nu, 'r.-')
+    #xlabel('r/pc');ylabel('sigr2nu')
+    #pdb.set_trace()
 
-    # project back to LOS values
-    # sigl2sold = np.zeros(len(r0nu)-gp.nexp)
+    # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
+    # --------------------------------------------------------------
     sigl2s = np.zeros(len(r0nu)-gp.nexp)
     for i in range(len(r0nu)-gp.nexp): # get sig_los^2
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)             # [pc]
@@ -178,27 +222,42 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         sigl2s[i] = gh.quadinflog(xnew, ynew, 0, xnew[-1], False)
     # for last 3 bins, we are up to a factor 2 off
     gh.checkpositive(sigl2s, 'sigl2s')
+    #clf()
+    #loglog(r0nu[:-gp.nexp], sigl2s, 'r.-')
+    #xlabel('r/pc'); ylabel('sigl2s')
+    #pdb.set_trace()
 
-    # calculate surface density on the same r0nu as the sigl2s
-    Sig = gl_project.rho_param_INT_Rho(r0nu, rhopar, pop, gp)
-    siglos2 = sigl2s/Sig
-    
+    siglos2 = sigl2s/Signu
+    #clf()
+    #plot(r0nu[:-gp.nexp], siglos2, 'r.-')
+    #xlabel('r/pc'); ylabel('siglos2')
+    #pdb.set_trace()
+
     # derefine on radii of the input vector
     splpar_sig = splrep(r0nu[:-gp.nexp], np.log(siglos2), k=3, s=0.)
-    siglos2_out = np.exp(splev(r0, splpar_sig))[gp.nexp:-gp.nexp]
+    siglos2_out = np.exp(splev(r0, splpar_sig))
     gh.checkpositive(siglos2_out, 'siglos2_out')
+    #clf()
+    #plot(r0, np.sqrt(siglos2_out), 'r.-', label='model')
+    #plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
+    #fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
+    #xscale('log'); xlim([1,2000])
+    #xlabel('r/pc');ylabel('sigma LOS')
+    #pdb.set_trace()
+
     if not gp.usekappa:
         kapl4s_out = np.ones(len(siglos2_out))
     if gp.usekappa:
         kapl4s_out = kappa(r0nu, Mrnu, nunu, sigr2nu, idnu, gp)
-        
-    zetaa = np.ones(len(siglos2_out))
-    zetab = np.ones(len(siglos2_out))
-    if gp.usezeta:
-        zetaanu, zetabnu = zeta(r0nu, Mrnu, nunu, gp)
-        zetaa = gh.linipollog(r0nu, zetaanu, r0)
-        zetab = gh.linipollog(r0nu, zetabnu, r0)
 
+    zetaa = -1; zetab = -1
+    if gp.usezeta:
+        zetaa, zetab = zeta(r0nu[:-gp.nexp], nunu[:-gp.nexp], \
+                            Signu,\
+                            Mrnu[:-gp.nexp], betanu[:-gp.nexp],\
+                            sigr2nu[:-gp.nexp], gp)
+
+    gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30)
     return siglos2_out, kapl4s_out, zetaa, zetab    
 ## \fn ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
 # calculate integral for sig_los^2 * surface density, 
@@ -235,7 +294,7 @@ def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
         pdb.set_trace()
 
     nunu   = phys.nu(r0nu, nupar, pop, gp)
-    betanu, dum = phys.beta(r0nu, betapar, gp)[0]
+    betanu, dum = phys.beta(r0nu, gp.x0turn, betapar, gp)[0]
 
     # calculate intbeta from beta approx directly
     # TODO: check difference between ant_intbeta and ant_intbeta_old
@@ -251,6 +310,8 @@ def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
     Mrnu = np.zeros(len(r0nu))              # work in refined model
     for i in range(len(r0nu)):              # get Mrnu
         Mrnu[i] = splint(0., r0nu[i], splpar_rho)
+
+
     gh.checkpositive(Mrnu, 'Mrnu')
 
     # (sigr2, 3D) * nu/exp(-idnu)
@@ -295,8 +356,6 @@ def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
     if gp.usekappa:
         kapl4s_out = kappa(r0nu, Mrnu, nunu, sigr2nu, idnu, gp)
         
-    zetaa = np.ones(len(sigl2s_out))
-    zetab = np.ones(len(sigl2s_out))
     if gp.usezeta:
         zetaa, zetab = zeta(r0nu, Mrnu, nunu, gp)
 
@@ -317,17 +376,40 @@ def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
 # @return integral for sig_los^2 * surface density, correspondingly for 4th order kappa, zetaa, zetab
 
 
-def zeta(r0nu, Mrnu, nunu, gp):
-    zetaa = np.zeros(gp.nipol)
-    zetab = np.zeros(gp.nipol)
-    # TODO: vector or integer?
+def zeta(r0nu, nunu, Signu, Mrnu, betanu, sigr2nu, gp):
+    # common parameters
+    N = gh.Ntot(r0nu, Signu)
+    vr2 = sigr2nu
+    dPhidr = gp.G1*Mrnu/r0nu**2
     
+    # zetaa scalar
+    xint = r0nu
+    yint = nunu*(5-2*betanu)*vr2*dPhidr*r0nu**3
+    nom = gh.quadinflog(xint, yint, 0., np.inf, False)
+    
+    yint = nunu*dPhidr*r0nu**3
+    denom = (gh.quadinflog(xint, yint, 0., np.inf, False))**2
+    
+    zetaa = 9*N/10. * nom/denom
+    
+    # zetab scalar
+    yint = nunu*(7-6*betanu)*vr2*dPhidr*r0nu**5
+    nom = gh.quadinflog(xint, yint, 0., np.inf, False)
+        
+    yint = Signu*r0nu**3
+    denom *= gh.quadinflog(xint, yint, 0., np.inf, False)
+
+    zetab = 9*N**2/35 * nom / denom
+
     return zetaa, zetab
-## \fn zeta(r0nu, Mrnu, nunu, gp)
+## \fn zeta(r0nu, nunu, Signu, Mrnu, betanu, sigr2nu, gp)
 # return zeta_A and zeta_B parameters by Richardson,Fairbairn 2014
 # @param r0nu radii, [pc]
-# @param Mrnu enclosed mass
 # @param nunu 3D tracer density
+# @param Signu 2D surface density
+# @param Mrnu enclosed mass
+# @param betanu anisotropy parameter
+# @param sigr2nu <v_r**2>
 # @param gp global parameter
 
 
@@ -374,7 +456,7 @@ def kappa(r0nu, Mrnu, nunu, sigr2nu, idnu, gp):
         splpar_nu = splrep(xnew,ynew) # not s=0.1, this sometimes gives negative entries after int
         kapl4s[i] = 2. * (splint(0., xnew[-1], splpar_nu) + C)
         #kapl4s[i] /= yscale
-        # print('ynew = ',ynew,', kapl4s =', kapl4s[i])
+        # LOG('ynew = ',ynew,', kapl4s =', kapl4s[i])
 
     # TODO: sometimes the last value of kapl4s is nan: why?
     gh.checkpositive(kapl4s, 'kapl4s in kappa_r^4')
@@ -447,7 +529,7 @@ def smooth_ext(x0, y0, xext, k=1, s=0.1, log=True, slope=-3., minval=0.):
     if log:
         tmp = np.exp(tmp)
     if min(tmp) < minval:
-        # print('extrapolation falling below ',minval,'!')
+        # LOG(2, 'extrapolation falling below ',minval,'!')
         for i in range(len(tmp)):
             if tmp[i]<0:
                 tmp[i] = 1.e-30
@@ -508,7 +590,7 @@ def ant_intbeta_old(r0, betapar, gp):
     r0ext = [r0[0]/5., r0[0]/4., r0[0]/3., r0[0]/2.]
     r0nu = np.hstack([r0ext, r0, r0[:-1]+(r0[1:]-r0[:-1])/2.])
     r0nu.sort()
-    betanu = phys.beta(r0nu, betapar, gp)[0]
+    betanu = phys.beta(r0nu, gp.x0turn, betapar, gp)[0]
     
     tmp = np.zeros(len(betanu))
     for i in range(5,len(betanu)):
@@ -522,8 +604,8 @@ def ant_intbeta_old(r0, betapar, gp):
 ## \fn ant_intbeta_old(r0, betapar, gp)
 # integrate beta over r
 # (integrals in front of and after sig_r^2 integral)
-# @param r0 free variable, array, in [lunit]
-# @param betapar integrand, array, in [1]
+# @param r0 free variable, vector, in [lunit]
+# @param betapar integrand, vector, in [1]
 # @param gp
 
 

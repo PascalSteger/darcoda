@@ -6,25 +6,29 @@
 
 # (c) 2013 Pascal S.P. Steger
 
+import sys, pdb, ipdb
 import numpy as np
-import sys, pdb
+from numpy import sin, cos
+
+import pymultinest
+
 import gr_params as gpr
 import gl_helper as gh
 from gl_centering import com_shrinkcircle_v_2D
-import pymultinest
-
+import BiWeight as BW
 
 def p_plummer(R, rs):
     return np.log(2.*R/rs**2/(1.+R**2/rs**2)**2)
 ## \fn p_plummer(R, rh)
 # eq. 8 Walker 2011, likelihood that a tracer star is member of Plummer sphere
-# @param R projected radius from center, [arcmin]
-# @param rs scale radius, [arcmin]
+# @param R projected radius from center, [pc]
+# @param rs scale radius, [pc]
 
 
 def p_gauss(X, Xmean, sigmaX, errorX):
     prefactor = 1./np.sqrt(2.*np.pi*(sigmaX**2+errorX**2))
     exponent = -0.5*(X-Xmean)**2/(sigmaX**2+errorX**2)
+    print('prefactor, exponent =',prefactor,exponent)
     return np.log(prefactor*np.exp(exponent))
 ## \fn p_gauss(X, Xmean, sigmaX, errorX)
 # eq. 9, 11 Walker 2011, likelihood based on generic Gauss function
@@ -34,71 +38,101 @@ def p_gauss(X, Xmean, sigmaX, errorX):
 # @param errorX observation error
 
 
-def p_MW(Xi, PMi, error):
+def p_MW(X, Xi, Xierror, PMi):
     nom = 0.
     denom = 0.
-    for i in range(len(Xi)):
-        nom += (1.-PMi[i])/np.sqrt(2.*np.pi*error**2)*np.exp(-0.5*(Xi[i]-X)**2/error[i]**2)
-        denom += (1.-PM[i])
+    for k in range(len(Xi)):
+        nom += (1.-PMi[k])/np.sqrt(2.*np.pi*Xierror[k]**2)*np.exp(-0.5*(Xi[k]-X)**2/Xierror[k]**2)
+        denom += (1.-PMi[k])
     return np.log(nom/denom)
-## \fn p_MW(Xi, PMi, error)
+## \fn p_MW(X, Xi, Xierror, PMi, error)
 # eq. 12 generic Walker 2011, likelihood that star is MW foreground
-# @param Xi variable, property of stellar tracer
+# @param X variable, property of one star
+# @param Xi properties of stellar tracers
+# @param Xierror errors on these
 # @param PMi probability of membership
 # @param error observation error
 
 
 def pR(Rk, pop):
-    return p_gauss(Rk, Rmean[pop], sigmaR[pop], errorR[pop])
+    print('pR')
+    return p_plummer(Rk, Rhalf_i[pop])
 ## \fn pR(Rk, pop)
 # eq. 8 Walker 2011, probability distribution of radii
-# @param Rk radius of stellar tracer k, [arcmin]
+# @param Rk radius of stellar tracer k, [pc]
 # @param pop int for population (0: MW, 1: 1, ...)
 
 
-def pV(Vk, pop):
-    return p_gauss(Vk, Vmean[pop], sigmaV[pop], errorV[pop])
+def pV(Vk, k, pop):
+    print('pV')
+    # mean LOS velocity
+    Vmean = calc_Vmean(alpha_s[k], delta_s[k])
+
+    return p_gauss(Vk, Vmean, sigmaV[pop], ve0[k])
+## \fn pV(Vk, pop)
+# eq. 9 Walker 2011, probability distribution of LOS velocities
+# @param Vk velocity of stellar tracer k, [km/s]
+# @param k ID of tracer star under investigation
+# @param pop int for population (0: MW, 1, 2..)
+
+def pW(Wk, k, pop):
+    print('pW')
+    return p_gauss(Wk, Wmean[pop], sigmaW[pop], We0[k])
+## \fn pW(Wk, k, pop)
+# eq. 11 Walker 2011, probability distribution of reduced magnesium index
+# @param Wk magnesium index, [Ang]
+# @param k ID for stellar tracer
+# @param pop int for population (0: MW, 1, 2..)
 
 
-def pW(Wk, pop):
-    return p_gauss(Wk, Wmean[pop], sigmaW[pop], errorW[pop])
-
-
-def pjoint(Rk, Vk, Wk, PMk, pop):
+def pjoint(R, k2, V, Verror, W, Werror, PM, k, pop):
+    print('pjoint for tracer star ',k,' of ',len(PM))
     if pop == 0:
-        pR = p_MW(Rk, PMk, Rerror)
-        pV = p_MW(Vk, PMk, Verror)
-        pW = p_MW(Wk, PMk, Werror)
-        return pR*pV*pW
+        pr = p_MW(R[k], R, k2, PM) # k2 is measured half-light radius of overall distro
+        pv = p_MW(V[k], V, Verror, PM)
+        pw = p_MW(W[k], W, Werror, PM)
+        return pr*pv*pw
     else:
-        return pR(Rk, pop)*pV(Vk, pop)*pW(Wk, pop)
-## \fn pjoint(Rk, Vk, Wk, PMk, pop)
+        return pR(R[k], pop)*pV(V[k], k, pop)*pW(W[k], k, pop)
+## \fn pjoint(R, k2, V, W, PM, k, pop)
 # eq. 13 Walker 2011, joint probability distributions
-# @param Rk projected radius, [arcmin]
-# @param Vk LOS velocity [km/s]
-# @param Wk reduced magnesium index [Ang]
-# @param PMk probability of membership
+# @param R projected radius, [pc]
+# @param k2 smoothing scale = half-light radius of overall distro
+# @param V LOS velocity [km/s]
+# @param Verror error on V
+# @param W reduced magnesium index [Ang]
+# @param Werror error on W
+# @param PM probability of membership
+# @param k int ID of star under investigation
+# @param pop int for population
 
 
-def Vmean(ds, als, Vd, dd, ad, mud, mua, D):
-    from numpy import sin, cos
-    Vm = cos(ds)*sin(als)*(Vd*cos(dd)*sin(ad)+D*mua*cos(dd)*cos(ad)-D*mud*sin(dd)*sin(ad))\
-         +cos(ds)*cos(als)*(Vd*cos(dd)*cos(ad)\
-                           -D*mud*sin(dd)*cos(ad)\
-                           -D*mua*cos(dd)*sin(ad))\
-         +sin(ds)*(Vd*sin(dd)+D*mud*cos(dd))
+def calc_Vmean(als, des):
+    # TODO debug
+
+    term1 = cos(des)*sin(als)*(Vd*cos(dd)*sin(ad)+\
+                           DL*mu_alpha*cos(dd)*cos(ad)-\
+                           DL*mu_delta*sin(dd)*sin(ad))
+    term2 = cos(des)*cos(als)*(Vd*cos(dd)*cos(ad)\
+                           -DL*mu_delta*sin(dd)*cos(ad)\
+                           -DL*mu_alpha*cos(dd)*sin(ad))
+    term3 = sin(des)*(Vd*sin(dd)+DL*mu_delta*cos(dd))
+    Vm = term1 + term2 + term3
+    pdb.set_trace()
+    print(' Vmean =',Vm)
     return Vm
-## \fn Vmean(ds, als, Vd, dd, ad, mud, mua, D)
+## \fn calc_Vmean(als, des)
 # eq. 10 Walker 2011, dwarf spheroidal systemic HRF, [km/s]
-# @param ds
-# @param als
-# @param Vd
-# @param dd
-# @param ad
-# @param mud
-# @param mua
-# @param D
+# @param als right ascension of star in [arcsec]
+# @param des declination of star in [arcsec]
 
+
+def w(Rk):
+    w_ipol = wpt[np.where(abs(Rk-Rpt) == min(abs(Rk-Rpt)))]
+    return w_ipol
+## \fn w(Rk)
+# return selection function as function of radius
+# @param Rk radius [pc]
 
 def show(filepath):
     subprocess.call(('xdg-open', filepath))
@@ -113,17 +147,17 @@ def myprior(cube, ndim, nparams):
     cube[1] = cube[1] # fsub
     cube[2] = 10**(4.5*cube[2]) # r_half [pc]
 
-    cube[3] = cube[3]*2000.-1000. # proper motion in x [km/s]
-    cube[4] = cube[4]*2000.-1000. # proper motion in y [km/s]
+    cube[3] = cube[3]*2000.-1000. # proper motion in x [km/s], mu_alpha
+    cube[4] = cube[4]*2000.-1000. # proper motion in y [km/s], mu_delta
     off = 5 # offset from common parameters
     for pop in range(gp.pops+1): # no. of pops goes in here, first MW, then 1,2,..
-        cube[off] = cube[off] # rhalf_i / r_half
+        cube[off] = cube[off] # Rhalf_i / Rhalf
         off += 1
         cube[off] = cube[off]*6.-3. # Wmean
         off += 1
-        cube[off] = 10.**(cube[off]*6.-5.)  # sigmaW^2 [Angstrom^2]
+        cube[off] = np.sqrt(10.**(cube[off]*6.-5.))  # sigmaW [Ang]
         off += 1
-        cube[off] = 10.**(cube[off]*10.-5.) # sigmaV^2 [(km/s)^2]
+        cube[off] = np.sqrt(10.**(cube[off]*10.-5.)) # sigmaV [km/s]
         off += 1
     return
 ## \fn myprior(cube, ndim, nparams) priors
@@ -142,25 +176,37 @@ def myloglike(cube, ndim, nparams):
     ftot = [1-f1-f2, f1, f2]
     # TODO: calculate log likelihood of assigning stars to each population
     r_half = cube[2]
-    vx0 = cube[3]
-    vy0 = cube[4]
+
+    global mu_alpha, mu_delta
+    mu_alpha = cube[3]
+    mu_delta = cube[4]
     off = 5
+
+    global Rhalf_i, sigmaW, sigmaV, Wmean
+    Rhalf_i = []; Wmean = []; sigmaW = []; sigmaV = []
     for pop in range(gp.pops+1):
-        rhalf_i = cube[off]*r_half
+        Rhalf_i.append(cube[off]*r_half)
         off += 1
-        Wmean = cube[off]
+        Wmean.append(cube[off])
         off += 1
-        sigW2 = cube[off]
+        sigmaW.append(cube[off])
         off += 1
-        sigV2 = cube[off]
+        sigmaV.append(cube[off])
         off += 1
+
         
+    print('starting logev evaluation')
     logev = 0.0
     for k in range(Nsample):
         term = 0.0
         for pop in range(gp.pops+1):
-            term += ftot[k] * w(Rk)*p(R[k], V[k], W[k], PM[k], pop)
+            term += ftot[pop] * w(R0[k])*\
+                    pjoint(R0, Rhalf_i[pop]*np.ones(len(v0)), v0, ve0,\
+                           W0, We0, PM0, k, pop)
+            # TODO divide by integral
         logev += np.log(term)
+
+        print(' found log(likelihood) = ',logev)
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
@@ -169,50 +215,86 @@ def myloglike(cube, ndim, nparams):
 # stored with actual parameters
 
 
-def prepare_data(gp):
+def run(gp):
+    global Nsample, R0, wpt, Rpt, v0, ve0, W0, We0, PM0
+    global Vmean, alpha_s, delta_s
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
+
                        
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
     # use all stellar tracer particles from now on, independent on their probability of membership
-    Mg0 = SigMg
+    W0 = SigMg
+    We0 = e_SigMg
     sig = abs(RAh[0])/RAh[0]
     print('RAh: signum = ',sig)
     RAh = RAh/sig
-    xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
+    # stellar position alpha_s, delta_s
+    # 15degrees in 1 hour right ascension
     
-    sig = abs(DEd[0])/DEd[0]
+    alpha_s = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
+    
+    sig = abs(DEd[0])/DEd[0]                # +/-
     print('DEd: signum = ',sig)
     DEd = DEd/sig
-    ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
+    delta_s = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
 
-    arcsec = 2.*np.pi/(360.*60.*60) # [pc]
 
+
+    # unit conversion into a set of [pc], [km/s]
+    arcsec = 2.*np.pi/(360.*60.*60)      # [rad/arcsec]
     kpc = 1000 # [pc]
+
+    alpha_s *= arcsec  # [rad]
+    delta_s *= arcsec  # [rad]
+
+
+    # instead of using other datasets for individual dSph,
+    # determine Heliocentric-Rest-Frame Line-Of-Sight velocity of dwarf Vd
+    # and position of dwarf (ad, dd)
+    # from probability-of-membership weighted means directly
+    global Vd, ad, dd
+    Vd = np.sum(VHel * PM)/np.sum(PM)    # [km/s]
+    ad = np.sum(alpha_s * PM)/np.sum(PM) # [arcsec]
+    dd = np.sum(delta_s * PM)/np.sum(PM) # [arcsec]
+
+
+    # determine distance to dwarf (TODO: reference)
+    global DL
     DL = {0: lambda x: x * (138),#+/- 8 for Fornax
           1: lambda x: x * (101),#+/- 5 for Carina
           2: lambda x: x * (79),  #+/- 4 for Sculptor
           3: lambda x: x * (86) #+/- 4 for Sextans
       }[gp.case](kpc)
 
-    xs *= (arcsec*DL) # [pc]
-    ys *= (arcsec*DL) # [pc]
+    xs = alpha_s*DL # [pc]
+    ys = delta_s*DL # [pc]
 
-    PM0 = np.copy(PM); x0 = np.copy(xs); y0 = np.copy(ys) # [pc]
-    vz0 = np.copy(VHel) # [km/s]
-## \fn prepare_data(gp)
-# prepare everything for multinest.MPI run
-# @param gp global parameters
+    PM0 = 1.*np.copy(PM)
+    
+    x0 = 1.*np.copy(xs)
+    y0 = 1.*np.copy(ys) # [pc]
+    R0 = np.sqrt(x0*x0+y0*y0)
+    v0 = 1.*np.copy(VHel) # [km/s]
+    ve0 = 1.*e_VHel # velocity error
+
+    Nsample = len(PM)
 
 
-def run(gp):
-    n_dims = 12
+    A = np.loadtxt(gp.files.dir+'w_2.0.dat')    
+    Rpt, wpt = A.T # [arcmin], [1]
+    arcmin = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
+    Rpt *= arcmin # [pc]
 
+
+    n_dims = 17
+
+    print('starting MultiNest run:')
     pymultinest.run(myloglike,   myprior,
                     n_dims,      n_params = n_dims+1, # None beforehands
                     n_clustering_params = n_dims, # separate modes on
@@ -263,5 +345,6 @@ def run(gp):
 if __name__=='__main__':
     import gl_params
     gp = gl_params.Params()
-    prepare_data(gp)
+
+
     run(gp)

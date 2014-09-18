@@ -17,18 +17,19 @@
 import pdb
 import numpy as np
 import numpy.random as npr
+import gl_helper as gh
 
-def map_tilt_slope(arr, gp):
-    T = np.zeros(len(arr))
-    T[0] = arr[0] # uniformly between 0 and 1
-    for i in np.arange(1,len(arr)):
+def map_tilt_slope(vec, gp):
+    T = np.zeros(len(vec))
+    T[0] = vec[0] # uniformly between 0 and 1
+    for i in np.arange(1,len(vec)):
         # TODO bounds and radius scaling
         T[i] = T[i-1] + \
-          (arr[i]-0.5)*np.sqrt((gp.xipol[i]-gp.xipol[i-1])/(gp.xipol[-1]))
+          (vec[i]-0.5)*np.sqrt((gp.xipol[i]-gp.xipol[i-1])/(gp.xipol[-1]))
     return T
-## \fn map_tilt_slope(arr, gp):
+## \fn map_tilt_slope(vec, gp):
 # map [0, 1] to [-infty, 1] for each
-# @param arr float array with values in [0,1]
+# @param vec float array with values in [0,1]
 # @param gp
 
 
@@ -50,8 +51,6 @@ def map_tiltstar(pa, gp):
 
 
 def map_nr(pa, prof, pop, gp):
-    # first parameter gives half-light radius value of rho directly
-
     if prof=='rho':
         maxrhoslope = gp.maxrhoslope
         monotonic = gp.monotonic
@@ -69,6 +68,7 @@ def map_nr(pa, prof, pop, gp):
     else:
         raise Exception('wrong prof in gl_class_cube.map_nr')
 
+    # first parameter gives half-light radius value of rho directly
     pa[0] = 10**((pa[0]*2.*width)-width+np.log10(scale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
@@ -191,6 +191,10 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp[i]
             off += offstep
+
+        if off != gp.ndim:
+            gh.LOG(1,'wrong subscripts in gl_class_cube')
+            raise Exception('wrong subscripts in gl_class_cube')
 
         return pc
     ## \fn convert_to_parameter_space(self, gp)

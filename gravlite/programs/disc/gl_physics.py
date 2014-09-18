@@ -14,24 +14,24 @@ from scipy.interpolate import splrep, splint
 import gl_helper as gh
 
 
-def nr(dlr, pop, gp):
+def nr(z0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
-    z0 = gp.xepol
-    z0 = np.hstack([z0[0]/1e4, z0[0]/2., z0, gp.rinfty*z0[-1]])
-    logz0 = np.log(z0/gp.Xscale[pop])
+    znu = np.hstack([z0[0]/1e4, z0[0]/2., z0, gp.rinfty*z0[-1]])
+    logznu = np.log(znu/gp.Xscale[pop])
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
     
     # use linear spline interpolation in r
-    spline_n = splrep(logz0, dlr, k=1)
+    spline_n = splrep(logznu, dlr, k=1)
     
     # evaluate spline at any points in between
     return spline_n #, splev(z0, spline_n)
-## \fn nr(z0, dlogrhodlogr, pop, gp)
+## \fn nr(z0, dlr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
-# @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
+# @param z0 bin centers, [pc]
+# @param dlr : asymptote at 0, n(r) for all bins, asymptote at infinity
 # @param pop int for population
-# @param z0 bin centers in [pc]
+# @param gp global parameters
 
 
 def nr_medium(dlr, pop, gp):
@@ -50,16 +50,17 @@ def nr_medium(dlr, pop, gp):
     return spline_n
 ## \fn nr(dlogrhodlogr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
+# NOT USED ANYMORE
 # @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
 # @param pop int for population (both, 1, 2, ...)
 # @param gp global parameters
 
 
-def rho(z0, arr, pop, gp):
-    rhoathalf = arr[0]
-    arr = arr[1:]
-    # spline_n = nr_medium(arr, pop, gp) # extrapolate on gp.xepol, as this is where definition is on
-    spline_n = nr(arr, pop, gp) # fix on gp.xepol, as this is where definition is on
+def rho(z0, vec, pop, gp):
+    rhoathalf = vec[0]
+    vec = vec[1:]
+    # spline_n = nr_medium(vec, pop, gp) # extrapolate on gp.xepol, as this is where definition is on
+    spline_n = nr(z0, vec, pop, gp)
 
     zs =  np.log(z0/gp.Xscale[pop]) # have to integrate in d log(r)
     logrright = zs[(zs>=0.)]
@@ -81,37 +82,39 @@ def rho(z0, arr, pop, gp):
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)
     gh.checkpositive(tmp, 'rho()')
     return tmp
-## \fn rho(z0, arr, pop, gp)
+## \fn rho(z0, vec, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
-# @param arr: rho(rstarhalf), asymptote_0, nr(gp.xipol), asymptote_infty
+# @param vec: rho(rstarhalf), asymptote_0, nr(gp.xipol), asymptote_infty
 # @param z0: radii to calculate density for, in physical units (pc)
 # @param pop int for which population
 # @param gp global parameters
 
 
-def beta(xipol, param, gp):
+def beta(zipol, z0turn, param, gp):
     betatmp = 0.
     for i in range(gp.nbeta):
-        betatmp += param[i]*(xipol/max(gp.xipol))**i
+        betatmp += param[i]*(zipol/z0turn)**i
     return betatmp, betatmp/(2.+betatmp)
-## \fn beta(xipol, param, gp)
+## \fn beta(zipol, z0turn, param, gp)
 # return sum of polynomials for tilt as fct of radius
 # TODO: get tilt size from Silvia's paper
-# @param xipol [pc]
+# @param zipol [pc]
+# @param z0turn turning radius [pc]
 # @param param n_beta parameters
 # @param gp global parameters
 
 
-def tilt(xipol, param, gp):
+def tilt(zipol, z0turn, param, gp):
     tilttmp = 0.
     for i in range(gp.nbeta):
-        tilttmp += param[i]*(xipol/max(gp.xipol))**i
+        tilttmp += param[i]*(zipol/z0turn)**i
     return tilttmp
-## \fn tilt(xipol, param, gp)
+## \fn tilt(zipol, z0turn, param, gp)
 # return sum of polynomials for tilt as fct of radius
 # TODO: get tilt size from Garbari+2011
-# @param xipol [pc]
+# @param zipol [pc]
+# @param z0turn [pc]
 # @param param n_beta parameters
 # @param gp global parameters
 
@@ -250,10 +253,14 @@ def kz(zpars, kzpar, gp):
 
 def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
     # calculate density and Kz force:
-    nutmp = nupar
+    nutmp = rho(zp, nupar, pop, gp)
     nu_z = nutmp/np.max(nutmp)  # normalized to [1]
+    gh.checkpositive(nu_z)
     rhotmp = rho(zp, rhopar, 0, gp) # rho in linearly spaced bins
-    rhotmp += MtoL*rhostarpar # add baryons
+    gh.checkpositive(rhotmp)
+    rhostartmp = rho(zp, rhostarpar, 0, gp)
+    gh.checkpositive(rhostartmp)
+    rhotmp += MtoL*rhostartmp # add baryons
     kz_z = kz(zp, rhotmp, gp) # [(km/s)^2/pc]
     
     # add tilt correction [if required]:
@@ -363,3 +370,15 @@ def sig_rz(z, zpars, tpars):
 # @param z [pc]
 # @param zpars [pc] z, on which sig is defined
 # @param tpars tilt parameters: Rsun, hr, hsig
+
+def nu_SUM_Sig(binmin, binmax, nudat):
+    if len(binmin) != len(nudat):
+        raise Exception('incompatible sizes of binmin and nudat')
+    counts = nudat*(binmax-binmin)
+    Sig = np.cumsum(counts)/binmax
+    return Sig
+## \fn nu_SUM_Sig(binmin, binmax, nudat)
+# sum up nu to get surface density Sig
+# @param binmin minimum of bin ranges in [pc]
+# @param binmax maximum of bin ranges in [pc]
+# @param nudat 3D density in bins, [Msun/pc^3]

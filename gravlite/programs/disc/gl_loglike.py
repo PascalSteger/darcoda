@@ -11,56 +11,72 @@ from gl_class_profiles import Profiles
 from gl_priors import check_bprior, check_tilt
 from gl_chi import calc_chi2
 import gl_physics as phys
-
+from pylab import *
     
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
+    offstep = 1
     norm = cube[off]
-    off += 1
+    off += offstep
 
-    rhopar = np.array(cube[off:off+gp.nrho])
+    offstep = gp.nrho
+    rhopar = np.array(cube[off:off+offstep])
     tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
-    tmp_profs.set_prof('rho', tmp_rho[3:-3], 0, gp)
-    off += gp.nrho
+    tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
+    off += offstep
+
     # TODO: M
     # tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
-    # tmp_profs.set_prof('M', tmp_M[:gp.nipol], 0, gp)
+    # tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
 
-    rhostarpar = np.array(cube[off:off+gp.nepol])
-    tmp_profs.set_prof('nu', rhostarpar, 0, gp) # [Munit/pc^3]
-    off += gp.nepol
+    offstep = gp.nrho
+    rhostarpar = np.array(cube[off:off+offstep])
+    tmp_rhostar = phys.rho(gp.xepol, rhostarpar, 0, gp)[gp.nexp:-gp.nexp]
+    tmp_profs.set_prof('nu', tmp_rhostar, 0, gp) # [Munit/pc^3]
+    Sigstar = phys.nu_SUM_Sig(gp.dat.binmin, gp.dat.binmax, tmp_rhostar) # [Munit/pc^2]
+    tmp_profs.set_prof('Sig', Sigstar, 0, gp)
+    off += offstep
 
     MtoL = cube[off]
     off += 1
 
-    for pop in np.arange(gp.pops)+1:
-        nupar = np.array(cube[off:off+gp.nepol])
-        tmp_profs.set_prof('nu', nupar, pop, gp) # [Munit/pc^3]
-        off += gp.nepol
+    for pop in np.arange(1, gp.pops+1):
+        offstep = gp.nrho
+        nupar = np.array(cube[off:off+offstep])
+        tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)[gp.nexp:-gp.nexp]
+        tmp_profs.set_prof('nu', tmp_nu, pop, gp) # [Munit/pc^3]
+        tmp_Sig = phys.nu_SUM_Sig(gp.dat.binmin, gp.dat.binmax, tmp_nu) # [Munit/pc^2]
+        tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
+        off += offstep
 
-        tiltpar = np.array(cube[off:off+gp.nbeta])
-        tmp_tilt = phys.tilt(gp.xipol, tiltpar, gp)
-        if check_tilt(tmp_tilt, gp):
-            print('tilt error')
-            tmp_profs.chi2 = gh.err(2., gp)
-            return tmp_profs
-        tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
-        off += gp.nbeta
+        if gp.checksig:
+            pdb.set_trace()
 
-        #try:
-        sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
-        #except Exception as detail:
-        #    print('sig kap exception')
-        #    tmp_profs.chi2 = gh.err(3., gp)
-        #    return tmp_profs
-        tmp_profs.set_prof('sig', sig, pop, gp)
-        # tmp_profs.set_prof('kap', kap, pop, gp)
-    
-    # determine log likelihood (*not* reduced chi2)
+        offstep = gp.nbeta
+        if gp.chi2_Sig_converged:
+            tiltpar = np.array(cube[off:off+offstep])
+            tmp_tilt = phys.tilt(gp.xipol, gp.x0turn, tiltpar, gp)
+            if check_tilt(tmp_tilt, gp):
+                gh.LOG(1, 'tilt error')
+                tmp_profs.chi2 = gh.err(2., gp)
+                return tmp_profs
+            tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
+            sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
+            tmp_profs.set_prof('sig', sig, pop, gp)
+            # tmp_profs.set_prof('kap', kap, pop, gp)
+        off += offstep # add also in case Sig has not yet converged
+        # to get the right variables
+
+    if off != gp.ndim:
+        gh.LOG(1,'wrong subscripts in gl_class_cube')
+        raise Exception('wrong subscripts in gl_class_cube')
+
+    # determine log likelihood
     chi2 = calc_chi2(tmp_profs, gp)
-    print('found log likelihood = ', -chi2/2.)
+    gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
+
     return tmp_profs   # from   likelihood L = exp(-\chi^2/2), want log of that
 ## \fn geom_loglike(cube, ndim, nparams, gp)
 # define log likelihood function to be called by pyMultinest and plot_profiles

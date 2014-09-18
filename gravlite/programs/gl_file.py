@@ -14,19 +14,20 @@ from gl_data import Datafile
 
 def bin_data(gp):
     if gp.investigate == 'hern':
-        import grh_com, grh_Pos, grh_MCMCbin
+        import grh_com, gr_MCMCbin 
+        #grh_Pos, grh_MCMCbin
         grh_com.run(gp)
-        grh_Pos.run()
-        grh_MCMCbin.run(gp)
-        grh_MCMCbin.run(gp)
+        gr_MCMCbin.run(gp)
+        # grh_Pos.run()
+        # grh_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
-        import grg_COM, grg_MCMCbin
+        import grg_COM, gr_MCMCbin
         grg_COM.run(gp)
-        grg_MCMCbin.run(gp)
+        gr_MCMCbin.run(gp)
     elif gp.investigate == 'walk':
-        import grw_COM, grw_MCMCbin # inside there, split by metallicity
+        import grw_COM, gr_MCMCbin # inside there, split by metallicity
         grw_COM.run(gp)
-        grw_MCMCbin.run(gp)
+        gr_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhotot_walk)
         if gp.walker3D:
             import grw_com, grw_mcmcbin
@@ -40,9 +41,10 @@ def bin_data(gp):
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM, grd_MCMCbin
+        import grd_COM, grd_split, gr_MCMCbin
         grd_COM.run(gp)
-        grd_MCMCbin.run(gp)
+        grd_split.run(gp)
+        gr_MCMCbin.run(gp)
     elif gp.investigate == 'discmock':
         import grdm_write
         grdm_write.run(gp)
@@ -166,7 +168,11 @@ def write_headers_2D(gp, pop):
     f_kap = open(gp.files.kappafiles[pop],'w')
     print('R [Xscale];','Binmin [Xscale];','Binmax [Xscale];',\
           'kappa_los(R) [1];','error [1]', file=f_kap)
-    return f_Sig, f_nu, f_mass, f_sig, f_kap
+
+    f_zeta = open(gp.files.zetafiles[pop], 'w')
+    print('zeta_A [1],  zeta_B [1]')
+
+    return f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta
 ## \fn write_headers_2D(gp, pop)
 # write headers for datareduction output files, and return file handlers
 # @param gp global parameters
@@ -224,9 +230,9 @@ def write_Sig_scale(filename, Sig0pc, totmass):
     print(Sig0pc, file=cdens)                      # [Munit/pc^2]
     print(totmass, file=cdens)                      # [Munit]
     cdens.close()
-## \fn write_Sig_scale(filename, Dens0pc, totmass)
+## \fn write_Sig_scale(filename, Sig0pc, totmass)
 # output density
-# @param filename
+# @param filename string
 # @param Sig0pc central density [Munit/pc^2]
 # @param totmass total tracer density mass
 

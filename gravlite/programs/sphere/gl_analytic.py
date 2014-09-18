@@ -10,6 +10,7 @@
 import numpy as np
 import pdb
 import gl_project as glp
+import gl_helper as gh
 
 asech = lambda x: np.arccosh(1./x)
 asec  = lambda x: np.arccos(1./x)
@@ -121,6 +122,7 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
 # Walker model: read values from theoretical params file,
 # calculate from eq. 2 generalized Hernquist profiles
 # @param rad radius in [pc]
+# @param gp global parameters
 # @param mf1 factor to go from rho to rho_star1
 # @param mf2 factor to go from rho to rho_star2
 # @return 3D density in [Munit/pc^3], for each DM, stellar pop 1, stellar pop 2 (if available)
@@ -143,8 +145,9 @@ def rho_gaia(rad, gp):
         nu0 = 2.2e7/r_star1**3
     elif gamma_star1 == 1.0:
         nu0 = 1.5e7/r_star1**3
-    print('rho0 = ',rho0, ', nu0 = 1')
-    print('r_DM = ', r_DM, ', r_star1 = ', r_star1)
+    gh.LOG(2, 'rho0 = ',rho0)
+    gh.LOG(2, 'r_DM = ', r_DM)
+    gh.LOG(2, 'r_star1 = ', r_star1)
 
     rhodm = rho(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
     rhostar1 = rho(rad, r_star1, nu0, \
@@ -182,7 +185,7 @@ def rhotot_gaia(rad, gp):
 
 def Sig_gaia(rad, gp):
     dummy, rhostar1 = rho_gaia(rad, gp)
-    return glp.rho_INT_Rho(rad, rhostar1)
+    return glp.rho_INT_Sig(rad, rhostar1)
 ## \fn Sig_gaia(rad, gp)
 # get projected surface density for Gaia tracer population
 # not based on analytic integral
@@ -210,6 +213,7 @@ def nu3Dtot_gaia(rad, gp):
 
 
 def nr3Dtot_deriv_walk(rad, gp):
+    # TODO too high for walk1, core
     lrho = np.log(rhotot_walk(rad, gp))
     lr   = np.log(rad)
     import gl_helper as gh
@@ -248,7 +252,7 @@ def nr3Dtot_walk(rad):
     elif gamma_DM == 1:
         nr = 2*rad/(r_DM+rad)+1
     else:
-        print('unknown gamma_DM = ', gamma_DM)
+        gh.LOG(1, 'unknown gamma_DM = ', gamma_DM)
         nr = 0.*rad
     return nr
 ## \fn nr3Dtot_walk(rad)
@@ -263,7 +267,7 @@ def nr3Dtot_gaia(rad, gp):
     elif gamma_DM == 1:
         nr = 2*rad/(r_DM+rad)+1
     else:
-        print('unknown gamma_DM = ', gamma_DM)
+        gh.LOG(1, 'unknown gamma_DM = ', gamma_DM)
         nr = 0.*rad
     return nr
 ## \fn nr3Dtot_gaia(rad, gp)
@@ -275,17 +279,16 @@ def nr3Dtot_gaia(rad, gp):
 def rhotot_walk(rad, gp, mf1=1, mf2=1):
     if gp.pops==1:
         rhodm, rhostar1 = rho_walk(rad, gp, mf1, mf2)         # 3* [msun/pc^3]
-        return rhodm + rhostar1
     elif gp.pops==2:
         rhodm, rhostar1, rhostar2 = rho_walk(rad, gp, mf1, mf2)
-        return rhodm + rhostar1 + rhostar2               # [msun/pc^3]
+    return rhodm               # [msun/pc^3]
 ## \fn rhotot_walk(rad, gp, mf1, mf2)
 # return total mass density, stars+DM
 # @param rad radius in [pc]
 # @param mf1 factor to go from DM rho0 to rho0_star1
 # @param mf2 factor to go from DM rho0 to rho0_star2
 # @param gp global parameters
-# @return total 3D density in [Munit/pc^3]
+# @return total 3D density in [Munit/pc^3]. in case of Walker dataset, we have that the tracer particles do not contribute to the overall density, thus we use the DM density only
 
 
 def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
@@ -305,12 +308,13 @@ def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
         out = quad(igra, 0, rbin[i], limit=100, full_output=0) #or np.inf
         Mtot[i] = out[0]
         meps[i] = out[1]
-    # print('errors: ',meps)
+    # gh.LOG(1, 'errors: ',meps)
     return Mtot
 ## \fn Mtot_walk(rbin, gp, mf1, mf2)
 # return total mass in Walker model
 # NOT USED ANYMORE
 # @param rbin radii of bins
+# @param gp global parameters
 # @param mf1 factor rho0 pop 1
 # @param mf2 factor rho0 pop 2
 # @return total 3D mass for the Walker dataset in [Munit]
@@ -318,9 +322,9 @@ def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
 def Sig_walk(rad, gp, mf1=1, mf2=1):
     rhodm, rhostar1, rhostar2 = rho_walk(rad, gp, mf1, mf2)     # 3* [msun/pc^3]
 
-    Sig_dm    = glp.rho_INT_Rho(rad, rhodm)    # [msun/pc^2]
-    Sig_star1 = glp.rho_INT_Rho(rad, rhostar1) # [msun/pc^2]
-    Sig_star2 = glp.rho_INT_Rho(rad, rhostar2) # [msun/pc^2]
+    Sig_dm    = glp.rho_INT_Sig(rad, rhodm)    # [msun/pc^2]
+    Sig_star1 = glp.rho_INT_Sig(rad, rhostar1) # [msun/pc^2]
+    Sig_star2 = glp.rho_INT_Sig(rad, rhostar2) # [msun/pc^2]
 
     return Sig_dm, Sig_star1, Sig_star2               # 3* [msun/pc^2]
 ## \fn Sig_walk(rad, gp, mf1, mf2)

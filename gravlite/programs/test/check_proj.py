@@ -11,49 +11,51 @@ import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
 
+import import_path as ip
+ip.insert_sys_path('/home/psteger/sci/gravlite/programs/datareduction')
+
+import gl_params as gp
 import gr_params as gpr
 import gl_file as gfile
-from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
-from gl_class_files import *
-from BiWeight import meanbiweight
-from gl_project import *
+import gl_helper as gp
+import gl_project as glp
 
 
 def run(gp):
     Rscale = []; Dens0Rscale = []; Dens0pc = []; Totmass = []; Maxsiglos = []
     rscale = []; dens0Rscale = []; dens0pc = []; totmass = []; maxsiglos = []
 
-    for comp in range(3):
-        A = np.loadtxt(gp.files.get_scale_file(comp), unpack=False, skiprows=1)
+    for pop in range(3):
+        A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
         Rscale.append(A[0])
         Dens0Rscale.append(A[1])
         Dens0pc.append(A[2])
         Totmass.append(A[3])
         
-        B = np.loadtxt(gp.files.get_scale_file(comp)+'_3D', unpack=False, skiprows=1)
+        B = np.loadtxt(gp.files.get_scale_file(pop)+'_3D', unpack=False, skiprows=1)
         rscale.append(B[0])
         dens0Rscale.append(B[1])
         dens0pc.append(B[2])
         totmass.append(B[3])
         
-        print('#######  working on component ',comp)
-        print('input: ',gpr.get_com_file(comp)+'_3D')
+        print('#######  working on component ',pop)
+        print('input: ',gpr.get_com_file(pop)+'_3D')
         # start from data centered on COM already:
-        if gfile.bufcount(gpr.get_com_file(comp)+'_3D')<2: continue
+        if gfile.bufcount(gpr.get_com_file(pop)+'_3D')<2: continue
         
         
         
-        Rbin,Binmin,Binmax,Dens,Denserr = np.loadtxt(gp.files.Sigfiles[comp],\
+        Rbin,Binmin,Binmax,Dens,Denserr = np.loadtxt(gp.files.Sigfiles[pop],\
                                                      skiprows=1,usecols=(0,1,2,3,4),\
                                                      unpack=True) # 3*[Rscale], [km/s]
-        Rbin*=Rscale[comp]; Binmin*=Rscale[comp]; Binmax*=Rscale[comp]; Dens*=Dens0pc[comp]; Denserr*=Dens0pc[comp]
+        Rbin*=Rscale[pop]; Binmin*=Rscale[pop]; Binmax*=Rscale[pop]; Dens*=Dens0pc[pop]; Denserr*=Dens0pc[pop]
         
         
         
-        rbin,binmin,binmax,dens,denserr = np.loadtxt(gp.files.Sigfiles[comp]+'_3D',\
+        rbin,binmin,binmax,dens,denserr = np.loadtxt(gp.files.Sigfiles[pop]+'_3D',\
                                                      skiprows=1,usecols=(0,1,2,3,4),\
                                                      unpack=True) # 3*[Rscale], [km/s]
-        rbin*=rscale[comp]; binmin*=rscale[comp]; binmax*=rscale[comp]; dens*=dens0pc[comp]; denserr*=dens0pc[comp]
+        rbin*=rscale[pop]; binmin*=rscale[pop]; binmax*=rscale[pop]; dens*=dens0pc[pop]; denserr*=dens0pc[pop]
         
         
         ion()
@@ -72,10 +74,10 @@ def run(gp):
         ax1.set_ylabel(r'$\nu_{2D}(R)/\nu_{2D}(0)$')
         
         try:
-            ax1.plot(Rbin, rho_INT_Rho(Rbin, dens,denserr))
-            ax1.plot(Rbin, rho_INT_Rho(Rbin, Rho_INT_rho(Rbin,Dens,Denserr),denserr))
+            ax1.plot(Rbin, glp.rho_INT_Sig(Rbin, dens, denserr, gp))
+            ax1.plot(Rbin, glp.rho_INT_Sig(Rbin, Sig_INT_rho(Rbin,Dens,Denserr),denserr, gp))
         except Exception as detail:
-            print('rho_INT_Rho giving NaN in plotting')
+            print('rho_INT_Sig giving NaN in plotting')
         draw()
         
         
@@ -93,11 +95,11 @@ def run(gp):
         ax2.yaxis.set_label_position("right")
         draw()
         
-        # projSig = rho_INT_Rho(rbin, dens)
+        # projSig = rho_INT_Sig(rbin, dens)
         # projSig = test(rbin, binmin, binmax, dens)
         # ax1.plot(rbin, projSig)
         
-        ax2.plot(rbin,Rho_INT_rho(Rbin,Dens,Denserr),color='green')
+        ax2.plot(rbin, glp.Sig_INT_rho(Rbin,Dens,Denserr),color='green')
         draw()
         
         ioff(); show()

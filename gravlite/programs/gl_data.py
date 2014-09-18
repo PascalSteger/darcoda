@@ -33,7 +33,7 @@ class Datafile:
         self.binmax = []
 
         ## keep mass profile
-        self.Mrdat = []; self.Mrerr = []; self.Mrdat_fine = []; self.Mrerr_fine = []
+        self.Mr = []; self.Mrerr = []; self.Mr_fine = []; self.Mrerr_fine = []
         self.Mhalf = []; self.rhalf = []
 
         ## keep radial profile of the tracer density, averaged in 2D-rings
@@ -76,6 +76,7 @@ class Datafile:
                 self.binmin = binmin * gp.Xscale[pop]           # [pc]
                 self.binmax = binmax * gp.Xscale[pop]           # [pc]
                 gp.xipol = self.rbin                            # [pc]
+                gp.x0turn = max(self.rbin)/2                    # [pc]
                 if gp.iscale >= 0:
                     gp.iscale = np.sum(self.rbin<gp.Xscale[0])  # [1]
                 minr = min(self.rbin)                           # [pc]
@@ -90,26 +91,26 @@ class Datafile:
             if gp.geom == 'sphere':
                 Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, \
                                                     Sigdat, Sigerr, gp.xfine)
-                dummy, nudatnu, nuerrnu, Mrdatnu = glp.Rho_NORM_rho(gp.xfine, \
+                dummy, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
                                                                 Sigdatnu, Sigerrnu,\
                                                                 gp)
                 self.Sig_fine.append(Sigdatnu)
                 self.Sigerr_fine.append(Sigerrnu)
-                self.Mrdat_fine.append(Mrdatnu)
-                self.Mrerr_fine.append(Mrdatnu*nuerrnu/nudatnu) # TODO correct error
+                self.Mr_fine.append(Mrnu)
+                self.Mrerr_fine.append(Mrnu*nuerrnu/nudatnu) # TODO correct error
                 self.nu_fine.append(nudatnu)
                 self.nuerr_fine.append(nuerrnu)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
                 self.nuerr_epol.append(gh.linipollog(gp.xfine, nuerrnu, gp.xepol))
                 nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
                 nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
-                Mrdat = gh.linipollog(gp.xfine, Mrdatnu, gp.xipol)
-                self.Mrdat.append(Mrdat) # [Munit]
-                Mhalf = Mrdat[-1]/2.     # [Munit]
+                Mr = gh.linipollog(gp.xfine, Mrnu, gp.xipol)
+                self.Mr.append(Mr) # [Munit]
+                Mhalf = Mr[-1]/2.     # [Munit]
                 self.Mhalf.append(Mhalf) # [Munit]
 
                 # spline interpolation with M as x axis, to get half-mass of system:
-                splpar_M = splrep(np.log(Mrdat), np.log(self.binmax), s=0.01)
+                splpar_M = splrep(np.log(Mr), np.log(self.binmax), s=0.01)
                 r_half = np.exp(splev(np.log(Mhalf), splpar_M)) # [pc]
                 self.rhalf.append(r_half) # [pc]
 
@@ -119,7 +120,7 @@ class Datafile:
                 self.nuhalf.append(nuhalf)
                 # [Munit/pc^3]
             else:
-                print('working in disc symmetry: reading nu directly')
+                gh.LOG(1, 'working in disc symmetry: reading nu directly')
                 dum, dum, dum, nudat, nuerr = \
                         gh.readcol5(gp.files.nufiles[pop])
                 self.nuhalf.append(nudat[round(len(nudat)/2)]) #HS ToDo: check validity of this
@@ -136,7 +137,6 @@ class Datafile:
 
     def read_sig(self, gp):
         for pop in np.arange(gp.pops+1):
-            # print(gp.files.sigfiles[pop])
             Dummy, Dummy, Dummy, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
             # 3*[Xscale], [maxsiglos], [maxsiglos]
 

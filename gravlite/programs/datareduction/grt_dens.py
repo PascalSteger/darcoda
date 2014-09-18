@@ -98,9 +98,9 @@ def run(gp):
         em.close()
 
         # deproject Sig to get nu
-        numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
-        numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
-        numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
+        numedi = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
+        numin  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
+        numax  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
         
         nu0pc  = numedi[0]
         gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)

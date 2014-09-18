@@ -15,6 +15,7 @@
 
 import numpy as np
 import pdb
+import gl_helper as gh
 
 
 def map_nr(pa, prof, pop, gp):
@@ -119,7 +120,7 @@ def map_nu(pa, pop, gp):
 # @param gp global parameters
 
 
-def map_betastar(pa, gp):
+def map_betastar_old(pa, gp):
     off_beta = 0
     # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
@@ -134,15 +135,48 @@ def map_betastar(pa, gp):
     for i in range(gp.nbeta-1):
         pa[off_beta] = (2*(pa[off_beta]-0.5))*gp.maxbetaslope
         # rising beta prior would remove -0.5
-        # /i in the end suppresses higher order wiggling
         off_beta += 1
+
     return pa
-## \fn map_betastar(pa)
-# mapping beta parameters from [0,1] to full parameter space
+## \fn map_betastar_old(pa, gp)
+# mapping beta parameters from [0,1] to full parameter space,
+# using consecutive polynomials
+# NOT USED ANYMORE
 # @param pa parameter array
+# @param gp global parameters
+
+
+def map_betastar_sigmoid(pa, gp):
+    gh.sanitize_vector(pa, 4, 0, 1)
+    # s0 = np.log(r0/r0turn)
+    # beta = a0/(1+np.exp(a1*s0+a2))+a3
+    pa[0] = pa[0]*4 + -2
+    pa[1] = pa[1]*4 + -1
+    pa[2] = pa[2]*1.5
+    pa[3] = pa[3]*1.5
+    return pa
+## \fn map_betastar(pa, gp)
+# mapping beta parameters from [0,1] to full param space
+# @param pa parameter vector, size 4
+# @param gp global parameters
+
+
+def map_betastar_j(pa, gp):
+    gh.sanitize_vector(pa, 4, 0, 1)
+    # betastar = exp(-(r/r0)^n)*(a0-a1)+a1
+    pa[0] = pa[0]*1.98-1 # a_0, betastar(r=0), in between -0.99 and +0.99
+    pa[1] = pa[1]*1.98-1 # a_1, betastar(r->infty), same range
+    pa[2] = pa[2]*max(gp.xipol) # r_0, scale radius for transition from a0->a1
+    pa[3] = pa[3]*3 # n, rate of transition
+    return pa
+## \fn map_betastar(pa, gp)
+# mapping beta parameters from [0,1] to full param space
+# @param pa parameter vector, size 4
+# @param gp global parameters
 
 
 def map_MtoL(pa, gp):
+    gh.sanitize_scalar(pa, 0, 1)
     scale = gp.MtoLmax - gp.MtoLmin
     pa = pa*scale+gp.MtoLmin
     return pa
@@ -174,18 +208,19 @@ class Cube:
             pc[off+i] = tmp_nr[i]
         off += offstep
 
-        # rho*
-        offstep = gp.nrho
-        tmp_rhostar = map_nr(pc[off:off+offstep], 'nu', 0, gp)
-        for i in range(offstep):
-            pc[off+i] = tmp_rhostar[i]
-        off += offstep
+        # rho* only for observations
+        if gp.investigate == 'obs':
+            offstep = gp.nrho
+            tmp_rhostar = map_nr(pc[off:off+offstep], 'nu', 0, gp)
+            for i in range(offstep):
+                pc[off+i] = tmp_rhostar[i]
+            off += offstep
         
-        offstep = 1
-        pc[off] = map_MtoL(pc[off], gp)
-        off += offstep
+            offstep = 1
+            pc[off] = map_MtoL(pc[off], gp)
+            off += offstep
         
-        for pop in range(gp.pops): # nu1, nu2, ...
+        for pop in range(1,gp.pops+1): # nu1, nu2, ...
             offstep = gp.nrho
             tmp_nu = map_nr(pc[off:off+offstep], 'nu', pop, gp)
             for i in range(offstep):
@@ -193,10 +228,15 @@ class Cube:
             off += offstep
 
             offstep = gp.nbeta
-            tmp_betastar = map_betastar(pc[off:off+offstep], gp)
+            tmp_betastar = map_betastar_j(pc[off:off+offstep], gp)
             for i in range(offstep):
                 pc[off+i] = tmp_betastar[i]
             off += offstep
+
+        if off != gp.ndim:
+            gh.LOG(1,'wrong subscripts in gl_class_cube')
+            raise Exception('wrong subscripts in gl_class_cube')
+
         return pc
     ## \fn convert_to_parameter_space(self, gp)
     # convert [0,1]^ndim to parameter space

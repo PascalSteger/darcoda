@@ -8,12 +8,12 @@
 
 import pdb
 import numpy as np
+
+from scipy.interpolate import splrep, splint, splev
 import gl_chi as gc
 import gl_helper as gh
 
-from scipy.interpolate import splrep, splint, splev
 import gl_analytic as ga
-import gl_project
 import gl_int as gi
 import gl_plot as gpl
 from pylab import *
@@ -31,22 +31,22 @@ def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
 # @param gamma_DM [1] central density slope
 
       
-def nr(dlr, pop, gp):
+def nr(r0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
-    r0 = gp.xepol
-    r0 = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
+    rnu = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
     # up: common radii r0, but different scale radius for each pop
-    logr0 = np.log(r0/gp.Xscale[pop])
-    dlr *= -1.
+    logrnu = np.log(rnu/gp.Xscale[pop])
+    dlrnu = -1.*dlr
     
     # use linear spline interpolation in r
-    spline_n = splrep(logr0, dlr, k=1)
+    spline_n = splrep(logrnu, dlrnu, k=1)
     
     # evaluate spline at any points in between
     return spline_n
-## \fn nr(dlogrhodlogr, pop, gp)
+## \fn nr(r0, dlr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
-# @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
+# @param r0 radii [pc]
+# @param dlr d log rho/ d log r: asymptote at 0, n(r) for all bins, asymptote at infinity
 # @param pop int for population (both, 1, 2, ...)
 # @param gp global parameters
 
@@ -90,6 +90,7 @@ def nr_medium(dlr, pop, gp):
     return spline_n #, splev(r0, spline_n)
 ## \fn nr_medium(dlogrhodlogr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes
+# NOT USED ANYMORE
 # @param dlogrhodlogr : asymptote at 0, n(r) for all bins at outsides of bin, asymptote at infinity
 #                       1+Nbin+1 entries in [log Munit/pc^3/(log pc)]
 # @param pop int for population (0 both, 1, 2..)
@@ -97,13 +98,16 @@ def nr_medium(dlr, pop, gp):
 
 
 def rho(r0, rhopar, pop, gp):
-    arr = 1.*rhopar
-    rhoathalf = arr[0]
-    arr = arr[1:]
+    # TODO find right size for vector rhopar
+    gh.sanitize_vector(rhopar, gp.nepol+3, 0, 1e30)
+    vec = 1.*rhopar
+    rhoathalf = vec[0]
+    vec = vec[1:]
 
-    # spline_n = nr_medium(arr, pop, gp) # extrapolate
-    spline_n = nr(arr, pop, gp) # fix on gp.xepol, where it's defined
+    # get spline representation on gp.xepol, where rhopar are defined on
+    spline_n = nr(gp.xepol, vec, pop, gp) 
 
+    # and apply it to these radii, which may be anything in between
     rs =  np.log(r0/gp.Xscale[pop]) # have to integrate in d log(r)
 
     logrright = rs[(rs>=0.)]
@@ -127,20 +131,20 @@ def rho(r0, rhopar, pop, gp):
 ## \fn rho(r0, rhopar, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
-# @param rhopar rho(rstarhalf), asymptote_0, nr(xipol), asymptote_infty
+# @param rhopar: rho(rstarhalf), asymptote nr 0, nr(xipol), asymptote nr infty
 # @param r0 radii to calculate density for, in physical units (pc)
 # @param pop int for population, 0 all or DM, 1, 2, ...
 # @param gp global parameters
 
 
-def nu(r0, arr, pop, gp):
-    return rho(r0, arr, pop, gp)
-    #return gh.linipollog(gp.xepol, arr, r0)
-## \fn nu(r0, arr, pop, gp)
-# interpolate nu parameters from gp.xepol where they are defined
+def nu(r0, vec, pop, gp):
+    return rho(r0, vec, pop, gp)
+    #return gh.linipollog(gp.xepol, vec, r0)
+## \fn nu(r0, vec, pop, gp)
+# possibly interpolate nu parameters from gp.xepol where they are defined
 # to any radii r0 (typically gp.rfine) within range of gp.xepol
 # @param r0 radii [pc]
-# @param arr nu parameters in physical space (directly 3D density)
+# @param vec nu parameters in physical space (directly 3D density)
 # @param pop id for population, to give the half-light radius
 # @param gp global parameters
 
@@ -162,35 +166,81 @@ def beta2betastar(beta):
 # @param beta [1]
 
 
-def betastar(r0, arr, gp):
-    r0 = np.array([r0]).flatten()
-    betatmp = np.zeros(len(r0))
-    for i in range(gp.nbeta):
-        betatmp += arr[i] * (r0/max(gp.xipol))**i
-    # clipping beta* to the range [-1,1]
-    # thus not allowing any unphysical beta,
-    # but still allowing parameters to go the the max. value
-    for i in range(len(r0)):
-        if betatmp[i] > 1.:
-            betatmp[i] = 1.
-        if betatmp[i] <= -0.99:
-            betatmp[i] = -0.99 # excluding -inf values in beta
+def betastar_sigmoid(r0, r0turn, vec, gp):
+    gh.sanitize_vector(vec, 4, -1e6, 1e6)
+    gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
+
+    s=np.log(r0/r0turn)
+    betatmp = vec[0]/(1+np.exp(vec[1]*s+vec[2]))+vec[3]*np.ones(len(r0))
     return betatmp
-## \fn betastar(r0, arr, gp)
-# map [0,1] to [-1,1] with a polynomial
+## \fn betastar(r0, r0turn, vec, gp)
+# calculate betastar from 4 parameters, using general sigmoid function
 # @param r0 radii [pc]
-# @param arr normalized ai, s.t. abs(sum(ai)) = 1
+# @param r0turn turn-over radius, normally rhalf or half the max radius
+# @param vec 4 parameters
 # @param gp global parameters
 
 
-def beta(r0, arr, gp):
-    bstar = betastar(r0, arr, gp)
+def betastar_j(r0, r0turn, vec, gp):
+    gh.sanitize_vector(vec, 4, -1, max(gp.xipol))
+    gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
+
+    s=np.log(r0/r0turn)
+    a0 = vec[0]
+    a1 = vec[1]
+    rt = vec[2]
+    nt = vec[3]
+    betatmp = np.exp(-(r0/rt)**nt)*(a0-a1)+a1
+
+    return betatmp
+## \fn betastar(r0, r0turn, vec, gp)
+# calculate betastar from 4 parameters, using exp directly
+# @param r0 radii [pc]
+# @param r0turn turn-over radius, normally rhalf or half the max radius
+# @param vec 4 parameters
+# @param gp global parameters
+
+
+def betastar(r0, r0turn, vec, gp):
+    return betastar_j(r0, r0turn, vec, gp)
+## \fn betastar(r0, r0turn, vec, gp)
+# calculate betastar from 4 parameters
+# @param r0 radii [pc]
+# @param r0turn turn-over radius, normally rhalf or half the max radius
+# @param vec 4 parameters
+# @param gp global parameters
+
+
+
+def betastar_old(r0, r0turn, vec, gp):
+    r0 = np.array([r0]).flatten()
+    betatmp = np.zeros(len(r0))
+    for i in range(len(vec)):
+        betatmp += vec[i] * (r0/r0turn)**i
+    # clipping beta* to the range [-1,1]
+    # thus not allowing any unphysical beta,
+    # but still allowing parameters to go the the max. value
+    for off in range(len(r0)):
+        # clipping to range [gp.minbetastar, gp.maxbetastar]
+        betatmp[off] = min(gp.maxbetastar, betatmp[off])
+        betatmp[off] = max(gp.minbetastar, betatmp[off])
+    return betatmp
+## \fn betastar(r0, vec, gp)
+# map [0,1] to [-1,1] with a polynomial
+# @param r0 radii [pc]
+# @param vec normalized ai, s.t. abs(sum(ai)) = 1
+# @param gp global parameters
+
+
+def beta(r0, r0turn, vec, gp):
+    bstar = betastar(r0, r0turn, vec, gp)
     betatmp = betastar2beta(bstar)
     return betatmp, bstar
-## \fn beta(r0, arr, gp)
+## \fn beta(r0, r0turn, vec, gp)
 # beta and beta* from beta parameter array
 # @param r0 radii [pc]
-# @param arr float array, see gl_class_cube
+# @param r0turn turning radius [pc]
+# @param vec float array, see gl_class_cube
 # @param gp global parameters
 
 
@@ -219,9 +269,9 @@ def calculate_surfdens(r, M):
     gh.checkpositive(deltaM, 'unphysical negative mass increment encountered')
     
     deltavol = np.pi*(r0[1:]**2 - r0[:-1]**2)        # [lunit^2]
-    Rho = deltaM/deltavol                           # [Munit/lunit^2]
-    gh.checkpositive(Rho, 'Rho in calculate_surfdens')
-    return Rho                                      # [Munit/lunit^2]
+    Sig = deltaM/deltavol                           # [Munit/lunit^2]
+    gh.checkpositive(Sig, 'Sig in calculate_surfdens')
+    return Sig                                      # [Munit/lunit^2]
 ## \fn calculate_surfdens(r, M)
 # take mass(<r) in bins, calc mass in annuli, get surface density
 # @param r radius in [pc]
@@ -233,14 +283,13 @@ def sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     siglos  = np.sqrt(siglos2)           # [km/s]
 
     if gp.usekappa:
-        kaplos4     = kaplos4surf/Sig
+        kaplos4 = kaplos4surf/Sig
         # takes [Munit/pc^2 (km/s)^2], gives back [(km/s)^2]
         
-        kaplos = kaplos4/(siglos2**2)
+        kaplos  = kaplos4/(siglos2**2)
         # - 3.0 # subtract 3.0 for Gaussian distribution in Fisher version.
     else:
         kaplos = 3.*np.ones(len(siglos))
-    # TODO check if zetaa, zetab need factor 1/surfden
 
     return siglos, kaplos, zetaa, zetab  # [km/s], [1]
 ## \fn sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)

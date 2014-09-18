@@ -32,9 +32,9 @@ def run(gp):
     x0, y0, z0, vx, vy, vz = np.transpose(np.loadtxt(gpr.fil))
     # for purely tangential beta=-0.5 models, have units of kpc instead of pc
     if gpr.case == 9 or gp.case == 10:
-        x0 *= 1000.
-        y0 *= 1000.
-        z0 *= 1000.
+        x0 *= 1000. # [pc]
+        y0 *= 1000. # [pc]
+        z0 *= 1000. # [pc]
 
     # cutting pm_i to a maximum of ntracers particles:
     from random import shuffle

@@ -51,7 +51,7 @@ class Files:
         ## relative path to the 'programs' directory
         self.progdir = ''
         self.modedir = ''
-        self.set_dir(gp.machine, gp.case, gp.investigate) # 'darkside' or 'local'
+        self.set_dir(gp.machine, gp.case, gp.investigate)
         ## file with 2D summed masses
         self.massfiles = []
         ## file with analytic values for Walker models
@@ -67,7 +67,9 @@ class Files:
         ## files with centered positions and velocities for the tracer particles
         self.posvelfiles = []
         ## files for the fourth order moment of the LOS velocity
-        self.kappafiles = [];
+        self.kappafiles = []
+        ## file for zeta_A, zeta_B parameters
+        self.zetafiles = []
 
         ## [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
         self.params = []
@@ -121,7 +123,7 @@ class Files:
     def set_dir(self, machine, case, inv):
         if machine == 'darkside':
             self.machine = '/home/ast/read/dark/gravlite/'
-        elif machine == 'local':
+        elif machine == 'pstgnt332':
             self.machine = '/home/psteger/sci/gravlite/'
         elif machine == 'lisa_HS':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
@@ -166,6 +168,7 @@ class Files:
         self.dir += timestamp + '/'
         sim = self.get_sim_name(gp)
         self.massfiles.append(self.dir+'M/'+sim+'M_0.txt')
+        self.massfiles.append(self.dir+'M/'+sim+'M_1.txt')
         self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_0.txt') # all comp.
         self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_1.txt') # first comp.
         self.nufiles.append(self.dir+'nu/'+sim+'nu_0.txt') # all comp.
@@ -178,29 +181,17 @@ class Files:
         self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_0.txt') # all comp.
         self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_1.txt') # first comp.
 
-        if gp.pops == 1:
+        self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_0.txt')
+        self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_1.txt')
+
+        if gp.pops == 2:
             self.massfiles.append(self.dir+'M/'+sim+'M_2.txt')
-            self.Sigfiles.append(self.dir+'Sigma/' +sim+'Sig_2.txt')
-            self.nufiles.append(self.dir+'nu/' +sim+'nu_2.txt')
-            self.sigfiles.append(self.dir+'/siglos/' +sim+'veldisplos_2.txt')
-            self.kappafiles.append(self.dir+'/kappalos/' +sim+'kappalos_2.txt')
-
-        elif gp.pops == 2: # before: _*_[1,2].txt
-            self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig.txt') # all comp.
-            self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_'+self.nstr1+'_0.txt')
-            self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_0_'+self.nstr2+'.txt')
-
-            self.nufiles.append(self.dir+'nu/'+sim+'nu.txt') # all comp.
-            self.nufiles.append(self.dir+'nu/'+sim+'nu_'+self.nstr1+'_0.txt')
-            self.nufiles.append(self.dir+'nu/'+sim+'nu_0_'+self.nstr2+'.txt')
-
-            self.sigfiles.append(self.dir+'/siglos/' +sim+'veldisplos_'+self.nstr1+'_'+nstr2+'.txt') # all comp
-            self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_'+self.nstr1+'_0.txt')
-            self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_0_'+self.nstr2+'.txt')
-
-            self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_'+self.nstr1+'_0.txt')
-            self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_0_'+self.nstr2+'.txt')
-
+            self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_2.txt')
+            self.nufiles.append(self.dir+'nu/'+sim+'nu_2.txt')
+            self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_2.txt')
+            self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_2.txt')
+            self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_2.txt')
+        
         return
     ## \fn set_hern(self, gp, timestamp)
     # set all filenames for Hernquist case
@@ -272,17 +263,15 @@ class Files:
         self.datafile = self.dir + 'dat'
         #self.analytic = self.dir + 'samplepars'
 
-        self.massfiles.append(self.dir+'M/M_0.txt')
-        self.Sigfiles.append(self.dir+'Sigma/Sig_0.txt') # all comp.
-        self.nufiles.append(self.dir+'nu/nu_0.txt') # all comp.
-        self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
-        self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
+        for pop in np.arange(gp.pops+1):
+            spop = str(pop)
+            self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt') # all comp.
+            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt') # all comp.
+            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
 
-        self.massfiles.append(self.dir+'M/M_1.txt')
-        self.Sigfiles.append(self.dir+'Sigma/Sig_1.txt') # first and only
-        self.nufiles.append(self.dir+'nu/nu_1.txt') # first and only
-        self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
-        self.kappafiles.append(self.dir+'kappalos/kappalos_1.txt')
     ## \fn set_gaia(self, gp, timestamp)
     # derive filenames from gaia case
     # @param gp global parameters
@@ -355,17 +344,18 @@ class Files:
         self.dir += timestamp + '/'
 
         self.analytic = self.dir + 'samplepars'
-        # print('analytic set to ', self.analytic)
         LINE = np.loadtxt(self.analytic, skiprows=0, unpack=False)
         rho0        = LINE[19] # read from the corresp. samplepars file
         self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
 
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
-            self.massfiles.append(self.dir+'M/M_'+str(pop)+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(pop)+'.txt')
-            self.nufiles.append(self.dir+'nu/nu_'+str(pop)+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+str(pop)+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(pop)+'.txt')
+            spop = str(pop)
+            self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
         return
     ## \fn set_walk(self, gp, timestamp)
     # derive filenames from Walker&Penarrubia parameters
@@ -374,25 +364,23 @@ class Files:
 
 
     def set_triax(self, gp, timestamp=''):
+        if gp.pops == 2:
+            print('IMPLEMENT 2 tracer populations for triaxial dataset')
+            sys.exit(1)
+
         self.longdir = str(gp.case) + '/'
         self.dir = self.modedir + self.longdir
         self.dir += timestamp + '/'
 
-        self.massfiles.append(self.dir + 'M/M_0.txt')
-        self.Sigfiles.append(self.dir    + 'Sigma/Sig_0.txt')
-        self.nufiles.append(self.dir    + 'nu/nu_0.txt')
-        self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
-        self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
+        for pop in np.arange(gp.pops+1):
+            spop = str(pop)
+            self.massfiles.append(self.dir  + 'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir   + 'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir    + 'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir   + 'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir + 'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir  + 'zeta/zeta_'+spop+'.txt')
 
-        # first and only comp.
-        self.massfiles.append(self.dir + 'M/M_0.txt')
-        self.Sigfiles.append(self.dir    + 'Sigma/Sig_0.txt')
-        self.nufiles.append(self.dir    + 'nu/nu_0.txt')
-        self.sigfiles.append(self.dir   + 'siglos/siglos_0.txt')
-        self.kappafiles.append(self.dir + 'kappalos/kappalos_0.txt')
-        if gp.pops == 2:
-            print('IMPLEMENT 2 tracer populations for triaxial dataset')
-            sys.exit(1)
         return
     ## \fn set_triax(self, gp, timestamp)
     # set all parameters for working on the triaxial data
@@ -404,11 +392,13 @@ class Files:
         self.dir = self.machine + '/DTobs/'+str(gp.case)+'/'
         self.dir += timestamp + '/'
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
-            self.massfiles.append(self.dir + 'M/M_'+str(pop)+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+str(pop)+'.txt')
-            self.nufiles.append(self.dir+'nu/nu_'+str(pop)+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+str(pop)+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+str(pop)+'.txt')
+            spop = str(pop)
+            self.massfiles.append(self.dir + 'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
         return
     ## \fn set_obs(self, gp, timestamp)
     # set all variables in the case we work with Fornax observational data

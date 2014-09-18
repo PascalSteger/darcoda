@@ -8,7 +8,6 @@
 
 import pdb
 import numpy as np
-from gl_project import rho_param_INT_Rho, rho_INTIPOL_Rho
 import gl_physics as phys
 import gl_helper as gh
 
@@ -28,50 +27,54 @@ class Profiles:
         self.Sig  = np.zeros((pops+1)*nipol)
         self.sig  = np.zeros((pops+1)*nipol)
         self.kap  = np.zeros((pops+1)*nipol)
-        self.zetaa = np.zeros((pops+1)*nipol)
-        self.zetab = np.zeros((pops+1)*nipol)
+        self.zetaa = 0.
+        self.zetab = 0.
     ## \fn __init__(self, pops, nipol)
     # constructor
     # @param pops number of populations
     # @param nipol number of radial bins
 
 
-    def set_prof(self, prof, arr, pop, gp):
-        if len(arr) != len(self.x0):
-            raise Exception('wrong array to be stored')
+    def set_prof(self, prof, vec, pop, gp):
+        gh.sanitize_vector(vec, len(self.x0), -200, 1e30)
         if prof == 'rho':
-            self.rho = arr
+            self.rho = vec
         elif prof == 'nr':
-            self.nr = arr
+            self.nr = vec
         elif prof == 'M':
-            self.M = arr
+            self.M = vec
         elif prof == 'nu':
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr # arr has nrho-3 entries
+            self.nu[pop*self.nipol:(pop+1)*self.nipol] = vec # vec has nrho-3 entries
         elif prof == 'nrnu':
-            self.nrnu[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.nrnu[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'betastar':
-            self.betastar[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.betastar[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'beta':
-            self.beta[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.beta[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'Sig':
-            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'sig':
-            self.sig[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.sig[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'kap':
-            self.kap[pop*self.nipol:(pop+1)*self.nipol] = arr
-        elif prof == 'zetaa':
-            self.zetaa[pop*self.nipol:(pop+1)*self.nipol] = arr
-        elif prof == 'zetab':
-            self.zetab[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.kap[pop*self.nipol:(pop+1)*self.nipol] = vec
         else:
-            print(prof+' is an ')
             raise Exception('unknown profile to be set in gl_class_profiles.set_prof')
-    ## \fn set_prof(self, prof, arr, pop, gp)
+    ## \fn set_prof(self, prof, vec, pop, gp)
     # store density array
     # @param prof profile identifier
-    # @param arr array of floats
+    # @param vec array of floats
     # @param pop population, if applicable
     # @param gp global parameters
+
+
+    def set_zeta(self, zetaa, zetab, pop):
+        self.zetaa = zetaa
+        self.zetab = zetab
+    ## \fn set_zeta(self, zetaa, zetab, pop)
+    # store zeta scalars, RichardsonFairbairn 2014
+    # @param zetaa first virial parameter
+    # @param zetab second virial parameter
+    # @param pop 1,2,...
 
         
     def get_prof(self, prof, pop):
@@ -95,15 +98,19 @@ class Profiles:
             return self.sig[pop*self.nipol:(pop+1)*self.nipol]
         elif prof == 'kap':
             return self.kap[pop*self.nipol:(pop+1)*self.nipol]
-        elif prof == 'zetaa':
-            return self.zetaa[pop*self.nipol:(pop+1)*self.nipol]
-        elif prof == 'zetab':
-            return self.zetab[pop*self.nipol:(pop+1)*self.nipol]
-        return self.rho
+        else:
+            raise Exception('specify prof!')
     ## \fn get_prof(self, prof, pop)
     # return density array
     # @param prof of this profile
     # @param pop and of this population (if applicable)
+
+
+    def get_zeta(self, pop):
+        return self.zetaa, self.zetab
+    ## \fn get_zeta(self, pop)
+    # return zeta parameters, scalar
+    # @param pop int 1,2,... for population
 
 
     def __repr__(self):

@@ -19,8 +19,8 @@ from gl_centering import *
 def run(gp):
     ## read input measurements
     print('input: ', gpr.fil)
-    x0,y0,z0,vz0,vb0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
-                                                 usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
+    x0,y0,z0,vb0,vz0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
+                                                 usecols=(0, 1, 2, 5, 11, 13, 19, 20),\
                                                  dtype="d17",\
                                                  converters={0:expDtofloat,  # x0  in pc \
                                                              1:expDtofloat,  # y0  in pc \

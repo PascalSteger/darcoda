@@ -10,7 +10,7 @@ import pdb
 import numpy as np
 import gl_project
 import gl_physics as phys
-
+import gl_helper as gh
 
 class Profiles:
     def __init__(self, pops, nipol):
@@ -33,29 +33,28 @@ class Profiles:
     # @param nipol number of radial bins
 
 
-
-    def set_prof(self, prof, arr, pop, gp):
+    def set_prof(self, prof, vec, pop, gp):
+        gh.sanitize_vector(vec, len(self.x0), -1e30, 1e30)
         if prof == 'rho':
-            self.rho = arr
+            self.rho = vec
         elif prof == 'nr':
-            self.nr = arr
+            self.nr = vec
         elif prof == 'M':
-            self.M = arr
+            self.M = vec
         elif prof == 'nu':
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = arr[3:-3]
-            Sig = gl_project.nu_param_INT_Sig_disc(gp.xepol, arr, pop, gp)
-            # [Munit/pc^2], on nipol bins
-            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = Sig[3:-3]
+            self.nu[pop*self.nipol:(pop+1)*self.nipol] = vec
+        elif prof == 'Sig':
+            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'tilt':
-            self.tilt[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.tilt[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'sig':
-            self.sig[pop*self.nipol:(pop+1)*self.nipol] = arr
+            self.sig[pop*self.nipol:(pop+1)*self.nipol] = vec
         elif prof == 'kap':
-            self.kap[pop*self.nipol:(pop+1)*self.nipol] = arr
-    ## \fn set_prof(self, prof, arr, pop, gp)
-    # store density array
+            self.kap[pop*self.nipol:(pop+1)*self.nipol] = vec
+    ## \fn set_prof(self, prof, vec, pop, gp)
+    # store density vector
     # @param prof profile identifier
-    # @param arr array of floats
+    # @param vec array of floats
     # @param pop population, if applicable
     # @param gp global parameters, used for gp.xepol radii
 

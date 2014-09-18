@@ -144,9 +144,9 @@ def get_case(investigate):
         except ValueError:
             print("error in input")
         if 0<=sel and ((sel <= 5 and investigate == 'walk') or \
-                       (sel <= 8 and investigate == 'gaia') or \
+                       (sel <= 10 and investigate == 'gaia') or \
                        (sel < 4 and investigate == 'obs') or \
-                       (sel <= 7 and investigate == 'triax') or \
+                       (sel <= 8 and investigate == 'triax') or \
                        (sel == 0 and investigate == 'discmock')):
             invalid = False
         # assign string if working with observed dwarfs
