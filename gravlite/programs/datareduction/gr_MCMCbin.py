@@ -73,6 +73,12 @@ def run(gp):
     R = R[(R<Rmax)] # [Rscale0]
 
     Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
+    gp.xipol = Rbin
+    minr = min(Rbin)                           # [pc]
+    maxr = max(Rbin)                           # [pc]
+    gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
+                          Rbin, \
+                          2*maxr, 4*maxr, 8*maxr]) # [pc]
     Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
     Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
@@ -96,10 +102,10 @@ def run(gp):
         sel = (R * Rscalei <= Rmax * Rscale0)
         x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
         totmass = float(len(x)) # [Munit], Munit = 1/star
-        
+
         Rs = R                   # + possible starting offset, [Rscalei]
         vlos = v                 # + possible starting offset, [km/s]
-        
+
         tr = open(gp.files.get_ntracer_file(pop),'w')
         print(totmass, file=tr)
         tr.close()
@@ -144,18 +150,18 @@ def run(gp):
                     v4[i][k] = (curt+3)*var**2
 
             Sigma = Sig_kin[:,k]
-            Ntot[k] = gh.Ntot(Rbin, Sigma)
-            zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k])
-            v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k]))**2
+            Ntot[k] = gh.Ntot(Rbin, Sigma, gp)
+            zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k], gp)
+            v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k], gp))**2
             zetaa[k] /= v2denom
 
-            zetab[k] = gh.starred(Rbin, v4[:,k]*Rbin**2, Sigma, Ntot[k])
+            zetab[k] = gh.starred(Rbin, v4[:,k]*Rbin**2, Sigma, Ntot[k], gp)
             zetab[k] /= v2denom
-            zetab[k] /= (gh.starred(Rbin, Rbin, Sigma, Ntot[k]))**2
+            zetab[k] /= (gh.starred(Rbin, Rbin, Sigma, Ntot[k], gp))**2
 
 
         if gp.investigate == 'obs':
-            Sig_phot = obs_Sig_phot(Binmin, Binmax, Sig_kin, gp) 
+            Sig_phot = obs_Sig_phot(Binmin, Binmax, Sig_kin, gp)
         else:
             Sig_phot = Sig_kin
 
@@ -193,7 +199,7 @@ def run(gp):
         numedi = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
         numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
         numax  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens+P_edens), gp)
-        
+
         nu0pc  = numedi[0]
         gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
@@ -243,7 +249,7 @@ def run(gp):
                 kappavelerr = np.abs(kappavel/np.sqrt(tpbb)) #[1]
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerr
-            
+
             print(Rbin[b], Binmin[b], Binmax[b], \
                   kappavel, kappavelerr, file=f_kap)
             # [rscale], 2*[1]
@@ -252,7 +258,7 @@ def run(gp):
 
         print(np.median(zetaa), np.median(zetab), file=f_zeta)
         f_zeta.close()
-    
+
         if gpr.showplots:
             gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Sig0pc)
             gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
@@ -265,4 +271,3 @@ if __name__ == '__main__':
     import gl_params
     gp = gl_params.Params()
     run(gp)
-

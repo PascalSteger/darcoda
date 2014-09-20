@@ -36,7 +36,7 @@ def map_nr(pa, prof, pop, gp):
         monotonic = gp.monotonic_nu
     else:
         raise Exception('bad profile in gl_class_cube.map_nr')
-        
+
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
@@ -147,13 +147,15 @@ def map_betastar_old(pa, gp):
 
 
 def map_betastar_sigmoid(pa, gp):
-    gh.sanitize_vector(pa, 4, 0, 1)
+    gh.sanitize_vector(pa, 5, 0, 1)
     # s0 = np.log(r0/r0turn)
-    # beta = a0/(1+np.exp(a1*s0+a2))+a3
-    pa[0] = pa[0]*4 + -2
-    pa[1] = pa[1]*4 + -1
-    pa[2] = pa[2]*1.5
-    pa[3] = pa[3]*1.5
+    # kappa = (a0-a1)/(betastar(r_s) - a1)-1
+    # beta = (a0-a1)/(1+kappa*exp(alpha*s0))
+    pa[0] = pa[0]*1.98 - 1 # a0
+    pa[1] = pa[1]*1.98 - 1 # a1
+    pa[2] = pa[2]*1.98 - 1 # betastar(r_s)
+    pa[3] = pa[3]*5        # alpha
+    pa[4] = pa[4]*max(gp.xipol) # r_s
     return pa
 ## \fn map_betastar(pa, gp)
 # mapping beta parameters from [0,1] to full param space
@@ -215,11 +217,11 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp_rhostar[i]
             off += offstep
-        
+
             offstep = 1
             pc[off] = map_MtoL(pc[off], gp)
             off += offstep
-        
+
         for pop in range(1,gp.pops+1): # nu1, nu2, ...
             offstep = gp.nrho
             tmp_nu = map_nr(pc[off:off+offstep], 'nu', pop, gp)
@@ -228,7 +230,7 @@ class Cube:
             off += offstep
 
             offstep = gp.nbeta
-            tmp_betastar = map_betastar_j(pc[off:off+offstep], gp)
+            tmp_betastar = map_betastar_sigmoid(pc[off:off+offstep], gp)
             for i in range(offstep):
                 pc[off+i] = tmp_betastar[i]
             off += offstep
@@ -242,14 +244,14 @@ class Cube:
     # convert [0,1]^ndim to parameter space
     # such that values in cube are the parameters we need for rho, nu_i, beta_i
     # @param gp
-    
+
 
     def __repr__(self):
         return "Cube: "+self.pops+" populations"
     ## \fn __repr__(self)
     # string representation for ipython
 
-    
+
     def copy(self, cub):
         self.cube = cub
         return self

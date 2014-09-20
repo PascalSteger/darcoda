@@ -6,8 +6,9 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
-import os, sys, time, glob, shutil, pdb
+import os, sys, time, glob, shutil, pdb, socket, getpass
 import numpy as np
+
 
 def bufcount(filename):
     f = open(filename)
@@ -53,7 +54,7 @@ def remove_empty_folders(fdl):
 def list_files(basedir):
     from stat import S_ISREG, ST_CTIME, ST_MODE
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
-    
+
     from datetime import datetime
     # delete all folders without or with empty ev.dat inside!
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
@@ -176,7 +177,7 @@ def get_run(default):
 ## \fn get_run(default)
 # ask user for choice on run number
 # @param default default value: last one
-# @return selection-1 integer 
+# @return selection-1 integer
 
 
 def get_action():
@@ -287,10 +288,19 @@ def run():
     action = 'k'
     investigate = get_investigate()
     case = get_case(investigate)
-    if os.path.exists('/home/ast/read'):
-        machine = '/home/ast/read/dark/gravlite/'
-    else:
-        machine = '/home/psteger/sci/gravlite/'
+
+    host_name = socket.gethostname()
+    user_name = getpass.getuser()
+
+    if 'darkside' in host_name:
+        self.machine = 'darkside'
+    elif 'pstgnt332' in host_name:
+        self.machine = 'pstgnt332'
+    elif ('lisa' in host_name) and ('hsilverw' in user_name):
+        self.machine = 'lisa_HS'
+    elif ('lisa' in host_name) and ('sofia' in user_name):
+        self.machine = 'lisa_SS'
+
     basedir = os.path.abspath(machine+'/DT'+investigate+'/'+str(case)+'/')+'/'
     # import import_path as ip
     # ip.import_path(basedir+'/programs/gl_params.py')
@@ -301,7 +311,7 @@ def run():
         if action == 'k':
             import shutil
             shutil.rmtree(fdl[sel])
-        
+
     #prof = get_prof()
     basename = fdl[sel] # full directory path, without '/'
     timestamp = basename.split('/')[-1] # extract last bit

@@ -61,11 +61,11 @@ class Params():
         self.msun= 1.981e30                   # [kg]
         self.km_in_m  = 1000.                      # [m]
         self.kpc = 1000.                      # [pc]
-        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m 
+        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
         # [pc msun^-1 (km/s)^2]
 
         ########## data options
-        self.getnewdata = True # get new data computed from
+        self.getnewdata = False # get new data computed from
                                 # observations before burn-in
         self.consttr    = True  # set radial bin by constant number of
                                 # tracer particles
@@ -103,9 +103,9 @@ class Params():
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 4   # number of parameters for beta, in sum of
+        self.nbeta = 5   # number of parameters for beta, in sum of
                          # polynomials
-        self.x0turn = -1 # [pc] pinch radius for beta polynomial, set in data readin 
+        self.x0turn = -1 # [pc] pinch radius for beta polynomial, set in data readin
 
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
@@ -172,7 +172,7 @@ class Params():
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
-        self.checksig   = False # check sigma calculation routine with 'walk'
+        self.checksig   = True # check sigma calculation routine with 'walk'
 
 
 

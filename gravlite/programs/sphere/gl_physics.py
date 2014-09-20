@@ -30,17 +30,17 @@ def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
 # @param beta_DM [1]
 # @param gamma_DM [1] central density slope
 
-      
+
 def nr(r0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     rnu = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
     # up: common radii r0, but different scale radius for each pop
     logrnu = np.log(rnu/gp.Xscale[pop])
     dlrnu = -1.*dlr
-    
+
     # use linear spline interpolation in r
     spline_n = splrep(logrnu, dlrnu, k=1)
-    
+
     # evaluate spline at any points in between
     return spline_n
 ## \fn nr(r0, dlr, pop, gp)
@@ -60,7 +60,7 @@ def nr_medium(dlr, pop, gp):
                         # gp.xepol[-4] is last data bin radius
                         5.*gp.xepol[-4], \
                         11.*gp.xepol[-4]])
-                        
+
     binmax = np.hstack([gp.dat.binmin[0]/2., \
                         gp.dat.binmin[0], \
                         gp.dat.binmax, \
@@ -76,14 +76,14 @@ def nr_medium(dlr, pop, gp):
     # gpl.ylim([-4, 4])
     # gpl.xscale('log')
 
-    
+
     # extend asymptotes to 0, and high radius
     r0 = np.hstack([binmin, binmax[-1]])
     # 1+(Nbin+1)+1 entries
     logr0 = np.log(r0/gp.Xscale[pop])
     dlr = np.hstack([dlr[0], dlr, dlr[-1]]) # 1+Nbin+2 entries
     dlr *= -1.
-    
+
     # use linear spline interpolation in r
     spline_n = splrep(logr0, dlr, k=1)
     # evaluate spline at any points in between
@@ -105,7 +105,7 @@ def rho(r0, rhopar, pop, gp):
     vec = vec[1:]
 
     # get spline representation on gp.xepol, where rhopar are defined on
-    spline_n = nr(gp.xepol, vec, pop, gp) 
+    spline_n = nr(gp.xepol, vec, pop, gp)
 
     # and apply it to these radii, which may be anything in between
     rs =  np.log(r0/gp.Xscale[pop]) # have to integrate in d log(r)
@@ -201,8 +201,29 @@ def betastar_j(r0, r0turn, vec, gp):
 # @param gp global parameters
 
 
+def betastar_5(r0, r0turn, vec, gp):
+    gh.sanitize_vector(vec, gp.nbeta, -1, max(gp.xipol))
+    gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
+
+    s0 = np.log(r0/vec[4])
+    a0 = vec[0]
+    a1 = vec[1]
+    betars = vec[2]
+    alpha = vec[3]
+    kappa = (a0-a1)/(betars-a1)-1
+    betatmp = (a0-a1)/(1+np.exp(alpha*s0))+a1
+
+    return betatmp
+## \fn betastar(r0, r0turn, vec, gp)
+# calculate betastar from sigmoid with 4 parameters, using exp directly, with explicit meaning
+# @param r0 radii [pc]
+# @param r0turn turn-over radius, normally rhalf or half the max radius, attention: last parameter in new version
+# @param vec 4 parameters
+# @param gp global parameters
+
+
 def betastar(r0, r0turn, vec, gp):
-    return betastar_j(r0, r0turn, vec, gp)
+    return betastar_5(r0, r0turn, vec, gp)
 ## \fn betastar(r0, r0turn, vec, gp)
 # calculate betastar from 4 parameters
 # @param r0 radii [pc]
@@ -267,7 +288,7 @@ def calculate_surfdens(r, M):
 
     deltaM = M0[1:]-M0[:-1]                       # [Munit]
     gh.checkpositive(deltaM, 'unphysical negative mass increment encountered')
-    
+
     deltavol = np.pi*(r0[1:]**2 - r0[:-1]**2)        # [lunit^2]
     Sig = deltaM/deltavol                           # [Munit/lunit^2]
     gh.checkpositive(Sig, 'Sig in calculate_surfdens')
@@ -285,7 +306,7 @@ def sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     if gp.usekappa:
         kaplos4 = kaplos4surf/Sig
         # takes [Munit/pc^2 (km/s)^2], gives back [(km/s)^2]
-        
+
         kaplos  = kaplos4/(siglos2**2)
         # - 3.0 # subtract 3.0 for Gaussian distribution in Fisher version.
     else:

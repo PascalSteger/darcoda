@@ -13,8 +13,8 @@ from scipy.interpolate import splrep, splev, splint
 from pylab import *
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/gravlite/programs/datareduction')
-ip.insert_sys_path('/home/psteger/sci/gravlite/programs/sphere')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/datareduction')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/sphere')
 
 #from gl_timing import *
 import time
@@ -141,7 +141,7 @@ for i in range(len(rfine)-gp.nexp): # get sig_los^2
     ynew *= nunu[i:] * sigr2nu[i:]
     gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
     # check sigr2nu: has too many entries of inf!
-    
+
     # stop integration at xnew[-1] instead of at np.inf
     # to circumvent inf when nunu has increase at fudge radii
     sigl2s[i] = gh.quadinflog(xnew, ynew, 0, gp.rinfty*xnew[-1], False)
@@ -149,7 +149,7 @@ for i in range(len(rfine)-gp.nexp): # get sig_los^2
 gh.checkpositive(sigl2s, 'sigl2s')
 
 # calculate surface density on the same rfine as the sigl2s
-surfden = glp.rho_INT_Sig(rfine, nunu)
+surfden = glp.rho_INT_Sig(rfine, nunu, gp)
 siglos = np.sqrt(sigl2s/surfden[:-gp.nexp])
 
 elapsed_time = time.time() - start_time

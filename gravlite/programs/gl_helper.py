@@ -8,7 +8,7 @@
 import sys, traceback, pdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
-from scipy.integrate import quad
+from scipy.integrate import quad, romberg
 import gl_plot as gpl
 from pylab import *
 import time
@@ -27,15 +27,18 @@ def LOG(level, message, var=''):
 # @param level 0: none, 1: some, 2: more, 3: all
 # @param warning string
 # @param var variable (not mandatory)
-    
+
 
 def sanitize_vector(vec, length, mini, maxi):
     if len(vec) != length:
-        pdb.set_trace()
+        #pdb.set_trace()
+        LOG(1, 'vec has wrong length')
         raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
+        LOG(2, 'vec has too small value')
         raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
+        LOG(2, 'vec has too high value')
         raise Exception('vec has too high value', max(vec))
     return
 ## \fn sanitize_vector(vec, length, mini, maxi)
@@ -48,8 +51,10 @@ def sanitize_vector(vec, length, mini, maxi):
 
 def sanitize_scalar(var, mini, maxi):
     if var < mini:
+        LOG(1, 'var has too small value')
         raise Exception('var has too small value')
     if var > maxi:
+        LOG(1, 'var has too high value')
         raise Exception('var has too high value')
     return
 ## \fn sanitize_scalar(var, mini, maxi)
@@ -58,7 +63,7 @@ def sanitize_scalar(var, mini, maxi):
 # @param mini minimal value allowed
 # @param maxi maximum value allowed
 
-    
+
 def myfill(x, N=3):
     if x==np.inf or x==-np.inf:
         return "inf"
@@ -145,24 +150,40 @@ def quadinflog(x, y, A, B, stop = False):
     minlog = min(np.log(y[y>0])) # exclude y==0 to circumvent error
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible
     # otherwise we get divergent integrals for high radii (low length of x and y)
-    
+
     # replace 0 values with 1e-XX
     yshift = y * shiftlog
     for i in range(len(yshift)):
         if yshift[i] == 0:
             yshift[i] = 10**(-10*i)
 
+    #N = 1000
     splpar_nul = splrep(x, np.log(yshift), k=1, s=0.1)
     maxy = max(y)
-    # invexp = lambda x: min(maxy, np.exp(splev(x,splpar_nul))/shiftlog)
+    ## invexp = lambda x: min(maxy, np.exp(splev(x,splpar_nul))/shiftlog)
     invexp = lambda x: np.exp(splev(x, splpar_nul))/shiftlog
-    #invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x, splpar_nul))/shiftlog)
-    dropoffint = quad(invexp, A, B, epsrel=1e-4, limit=100, full_output=1)
-    # for debugging:
-    # dropoffint = quad(invexp, A, B, epsrel=1e-3, limit=50, full_output=1)
-    if stop and len(dropoffint)>3:
-        print(1, 'warning by quad in quadinflog')
-    return dropoffint[0]
+    ##invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x, splpar_nul))/shiftlog)
+
+    # integration with robust quad method (can take np.inf as boundary)
+    #start = time.time()
+    #for its in range(N):
+    #   dropoffint = quad(invexp, A, B, epsrel=1e-4, limit=50, full_output=0)[0]
+    ## for debugging:
+    ##dropoffint = quad(invexp, A, B, epsrel=1e-3, limit=100, full_output=1)
+    #if stop and len(dropoffint)>3:
+    #    print(1, 'warning by quad in quadinflog')
+    #elapsed = (time.time()-start)/N
+    #print('one iteration quad takes ', elapsed, 's')
+
+    # integration with Romberg (can take vector input in function)
+    #start = time.time()
+    #for its in range(N):
+    dropoffint = romberg(invexp, A, B, rtol=1e-3, divmax=15, vec_func=True)
+    #elapsed = (time.time()-start)/N
+    #print('one iteration romberg takes ', elapsed, 's')
+    #pdb.set_trace()
+
+    return dropoffint
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x for strongly decaying function, using splines
 # @param x free variable
@@ -197,7 +218,7 @@ def quadinflog2(x, y, A, B):
     minlog = min(np.log(y))
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible,
     # otherwise we get divergent integrals for high radii (low length of x and y)
-    
+
     splpar_nul = splrep(x,np.log(np.log(y*shiftlog)), k=1, s=0.1)
     invexp = lambda x: min(y[0], np.exp(np.exp(splev(x, splpar_nul)))/shiftlog)
     dropoffint = quad(invexp, A, B)
@@ -310,7 +331,7 @@ def deriv(y,x):
         xnew.append(x[i]+step/flick)
 
     ynew = ipol(x,y,xnew,smooth=1.5e-9)
-    
+
     dydx = []
     for i in range(len(x)):
         dydx.append((ynew[2*i+1]-ynew[2*i])/(step/flick))
@@ -401,7 +422,7 @@ def readcoln(filena):
 # @param filena filename
 # @return array
 
-    
+
 def pretty(vec,dig=3):
     return ("%."+str(dig)+"f")%vec
 ## \fn pretty(vec,dig=3)
@@ -428,7 +449,7 @@ def ipollog(xin, yin, xout, smooth=1.e-9):
     if min(yin)<0.:
         LOG(1, 'negative value encountered in ipollog, working with ipol now')
         return ipol(xin,yin,xout,smooth)
-    
+
     rbf = Rbf(xin, np.log10(yin), smooth=smooth)
     return 10**(rbf(xout))
 ## \fn ipollog(xin, yin, xout, smooth=1.e-9)
@@ -520,7 +541,7 @@ def bin_r_const_tracers(x0, nbin):
 
     # generate indices for all entries
     ind = np.arange(len(x0))
-    
+
     # split along indices, having the last bin underfilled if no exact splitting possible
     spl = np.array_split(ind, nbin)
 
@@ -609,7 +630,7 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
     count_bin = np.zeros(nbin)
     j=0
     siz = len(r)
-    
+
     for i in range(nbin):
         count = 0
         while (binmax[i] > r[j]):
@@ -644,7 +665,7 @@ def bincount(r, rmax):
     index = np.argsort(r)
     r = r[index]
 
-    # prepare 
+    # prepare
     nbin = len(rmax)
     arrayout  = np.zeros(nbin)
     count_bin = np.zeros(nbin)
@@ -661,7 +682,7 @@ def bincount(r, rmax):
                 break
         count_bin[i] = arrayout[i]
         std[i] = np.sqrt(count_bin[i])
-    
+
     return arrayout, std
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
@@ -716,27 +737,27 @@ def moments(data):
 # @param data 1d array
 
 
-def Ntot(R0, Sigma):
+def Ntot(R0, Sigma, gp):
     xint = R0
     yint = Sigma*R0
-    Ntot = quadinflog(xint, yint, 0., np.inf, False)
+    Ntot = quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
     return Ntot
-## \fn Ntot(R0, Sigma)
+## \fn Ntot(R0, Sigma, gp)
 # return total number of stars
 # @param R0 radial bins [pc]
 # @param Sigma surface density profile, [Msun/pc^2]
+# @param gp global parameters
 
 
-def starred(R0, X, Sigma, Ntot):
+def starred(R0, X, Sigma, Ntot, gp):
     xint = R0 # plus extension with 3 bins, to infinity
     yint = X*Sigma*R0
-    star = 1./Ntot * quadinflog(xint, yint, 0., np.inf, False)
+    star = 1./Ntot * quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
     return star
-## \fn starred(R0, X, Sigma, Ntot)
+## \fn starred(R0, X, Sigma, Ntot, gp)
 # eq. 10 from Richardson, Fairbairn 2014
 # @param R0 2D radii of bins, [pc]
 # @param X quantity for weighted average
 # @param Sigma surface density at these radii, in [Munit/pc^2]
 # @param Ntot total number of stars
-
-
+# @param gp global parameters

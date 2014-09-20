@@ -34,6 +34,7 @@ def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
     rhonu = phys.rho(z0nu, rhopar, pop, gp) # rho takes rho(rhalf) and n(r) parameters
     Sig = np.zeros(len(z0nu)-gp.nexp)
     for i in range(len(z0nu)-gp.nexp):
+        # TODO speed up using the same function for integrating all parts
         Sig[i] = gh.quadinflog(z0nu, rhonu, xmin, z0nu[i])
 
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig_disc')

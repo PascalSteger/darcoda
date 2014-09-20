@@ -150,9 +150,12 @@ if __name__ == '__main__':
 
     pc.plot_profile(basename, 'chi2', 0, gp)
     pc.plot_profile(basename, 'rho', 0, gp)
-    pc.plot_profile(basename, 'Sig', 0, gp)
-    pc.plot_profile(basename, 'nu', 0, gp)
-    pc.plot_profile(basename, 'nrnu', 0, gp)
+
+    if gp.investigate == 'obs':
+        pc.plot_profile(basename, 'Sig', 0, gp)
+        pc.plot_profile(basename, 'nu', 0, gp)
+        pc.plot_profile(basename, 'nrnu', 0, gp)
+
     pc.plot_profile(basename, 'nr', 0, gp)
     pc.plot_profile(basename, 'M', 0, gp)
 
@@ -163,5 +166,5 @@ if __name__ == '__main__':
         pc.plot_profile(basename, 'nu', pop, gp)
         pc.plot_profile(basename, 'nrnu', pop, gp)
         pc.plot_profile(basename, 'sig', pop, gp)
-        
+
     # pc.plot_overview(basename, gp)

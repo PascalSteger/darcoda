@@ -29,7 +29,7 @@ def rho_INTDIRECT_Sig(r0, rho):
     # more points to the left help, but not so much
     r0ext = np.array([0.,r0[0]/6.,r0[0]/5.,r0[0]/4.,\
                       r0[0]/3.,r0[0]/2.,r0[0]/1.5])
-    
+
     # introduce new points in between
     dR = r0[1:]-r0[:-1]
     r0nu = np.hstack([r0ext,r0,dR/4.+r0[:-1],dR/2.+r0[:-1],.75*dR+r0[:-1]])
@@ -48,7 +48,7 @@ def rho_INTDIRECT_Sig(r0, rho):
         xint = r0nu[i:]         # [lunit]
         yint = np.ones(len(xint))
         for j in range(i+1,len(r0nu)):
-            yint[j-i] = r0nu[j] * rhonu[j]/np.sqrt(r0nu[j]**2-r0nu[i]**2) 
+            yint[j-i] = r0nu[j] * rhonu[j]/np.sqrt(r0nu[j]**2-r0nu[i]**2)
             # [Munit/lunit^3]
 
         # Cubic-spline extrapolation to first bin
@@ -73,7 +73,7 @@ def rho_INTDIRECT_Sig(r0, rho):
 # @param rho 3D density, [Munit/pc^3]
 
 
-def rho_INT_Sig(r0, rho):
+def rho_INT_Sig(r0, rho, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     gh.checknan(rho, 'rho_INT_Sig')
@@ -84,7 +84,7 @@ def rho_INT_Sig(r0, rho):
     dR = r0[1:]-r0[:-1]
     r0nu = np.hstack([r0ext,r0])
     # points in between possible, but not helping much:
-    # ,dR*0.25+r0[:-1],dR*0.50+r0[:-1],dR*0.75+r0[:-1]]) 
+    # ,dR*0.25+r0[:-1],dR*0.50+r0[:-1],dR*0.75+r0[:-1]])
     r0nu.sort()
     rhonu = np.exp(splev(r0nu, splpar_rho))
 
@@ -96,7 +96,7 @@ def rho_INT_Sig(r0, rho):
     r0nu   = np.hstack([r0nu, r0ext])
     rhonu  = np.hstack([rhonu, rhoext])
     gh.checkpositive(rhonu, 'rhonu in rho_INT_Sig')
-    
+
     Sig = np.zeros(len(r0nu)-4)
     for i in range(len(r0nu)-4):
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)         # [lunit]
@@ -105,8 +105,8 @@ def rho_INT_Sig(r0, rho):
         ynew *= yscale
 
         # power-law extension to infinity
-        C = gh.quadinflog(xnew[-4:],ynew[-4:],xnew[-1],np.inf)
-        
+        C = gh.quadinflog(xnew[-4:],ynew[-4:],xnew[-1], gp.rinfty*max(gp.xepol))
+
         splpar_nu  = splrep(xnew,ynew,k=3) # interpolation in real space. previous: k=2, s=0.1
         Sig[i] = splint(0., xnew[-1], splpar_nu) + C
 
@@ -116,10 +116,11 @@ def rho_INT_Sig(r0, rho):
 
     gh.checkpositive(Sigout, 'Sigout in rho_INT_Sig')
     return Sigout
-## \fn rho_INT_Sig(r0, rho)
+## \fn rho_INT_Sig(r0, rho, gp)
 # take 3D density, calculate projected surface density
 # @param r0 radii of bins, [pc]
 # @param rho 3D density, [Munit/pc^3]
+# @param gp global parameters
 
 
 def rho_param_INT_Sig(r0, rhopar, pop, gp):
@@ -137,7 +138,8 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
         ynew = 2.*rhonu[i:]
 
         # power-law extension to infinity
-        C = gh.quadinflog(xnew[-gp.nexp:], ynew[-gp.nexp:], xnew[-1], 1e6*max(xnew)) #np.inf)
+        # TODO check 1e6 => gp.rinfty is fine
+        C = gh.quadinflog(xnew[-gp.nexp:], ynew[-gp.nexp:], xnew[-1], gp.rinfty*max(xnew)) #np.inf)
         # splpar_nu  = splrep(xnew, ynew, k=3)
         # interpolation in real space, not log space
         # problem: splint below could give negative values
@@ -200,21 +202,22 @@ def Sig_SUM_MR(r0, Sig):
 # @param Sig 2D density, [Munit/pc^2]
 
 
-def rho_INT_Sum_MR(r0, rho):
-    surf_tot = rho_INT_Sig(r0, rho)                # gives [rho0, 2D]
+def rho_INT_Sum_MR(r0, rho, gp):
+    surf_tot = rho_INT_Sig(r0, rho, gp)                # gives [rho0, 2D]
     surfmass = Sig_SUM_MR(r0, surf_tot)            # [Munit,2D]
     # [Munit, 2D]
     return surfmass
-## \fn rho_INT_Sum_MR(r0, rho)
-# take 3D (mass) density, convert it to surface density, 
+## \fn rho_INT_Sum_MR(r0, rho, gp)
+# take 3D (mass) density, convert it to surface density,
 # and give back enclosed mass in rings
 # @param r0 radii, [pc]
 # @param rho 3D mass density, [Munit/pc^3]
+# @param gp global parameters
 
 
 def Sig_NORM_rho(R0, Sig, Sigerr, gp):
     rho =  Sig_INT_rho(R0, Sig, gp)         # [Munit/lunit^3]
-    
+
     if min(rho)<0.:
         gh.LOG(1, '*** Sig_NORM_rho: got bin with negative 3D density! ***')
         for i in range(len(rho)):
@@ -235,7 +238,7 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
     corr = MR[-1]/Mr[-1]
     gh.LOG(2, ' * Sig_NORM_rho:  no correction by ', corr)
     # rho *= corr                                      # [Munit/lunit^3]
-    
+
     # fractional error propagation
     # TODO: not the case, really.
     # needs to be included in Sig_INT_rho()
@@ -257,11 +260,12 @@ def Sig_INT_rho(R0, Sig, gp):
     for i in range(len(Sig)-gp.nexp):
         xint = np.sqrt(R0[i:]**2-R0[i]**2)
         yint = np.exp(splev(np.sqrt(xint**2+R0[i]**2), splpar_Sig))
-        J[i] = gh.quadinflog(xint, yint, 0., np.inf)
-        
+        J[i] = gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol))
+
         #yf = lambda r: np.exp(splev(np.sqrt(r**2+R0[i]**2), splpar_Sig))
         #J[i] = quad(yf, 0, np.inf)[0]
 
+        # OLD: direct integration with integrand as fct of x
         #xint = R0[i:]
         #yint = Sig[i:]*R0[i:]/np.sqrt(R0[i:]**2-R0[i]**2)
         #J[i] = gh.quadinflog(xint[1:], yint[1:], R0[i], np.inf)
@@ -338,4 +342,3 @@ def rho_SUM_Mr(r0max, rho):
 # take 3D density, calculate summed 3D mass
 # @param r0max radii in [pc]
 # @param rho 3D density in [Munit/pc^3]
-

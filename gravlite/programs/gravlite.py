@@ -21,6 +21,10 @@ import pymultinest
 import pickle, pdb
 import gl_params
 import gl_plot as gpl
+
+import warnings
+warnings.simplefilter('ignore') # set to 'error' when debugging
+
 gp = gl_params.Params()
 
 def show(filepath):
@@ -82,7 +86,7 @@ def run(gp):
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
-                    importance_nested_sampling = False, # INS enabled
+                    importance_nested_sampling = True, # INS enabled
                     multimodal = True,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
@@ -90,10 +94,10 @@ def run(gp):
                                               # algorithm working
                                               # indefinitely
                     sampling_efficiency = 0.05, # very low eff. in
-                                                #case of const efficiency mode,
-                                                #README
-                    n_iter_before_update = 1, # output after this many iterations
-                    null_log_evidence = -1e90,
+                                                # case of const efficiency mode,
+                                                # according to MultiNest README
+                    n_iter_before_update = 10, # output after this many iterations
+                    null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
                                             #max. = number of live
                                             #points
@@ -110,7 +114,7 @@ def run(gp):
                     log_zero = -1e500,    # points with log likelihood
                                           #< log_zero will be
                                           #neglected
-                    max_iter = 0,         # set to 0 for never
+                    max_iter = 1000,         # set to 0 for never
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)

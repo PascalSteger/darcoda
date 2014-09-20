@@ -169,13 +169,13 @@ class ProfileCollection():
             annr = ga.nr3Dtot_gaia(r0, gp)
             tmp_annu = ga.rho_gaia(r0, gp)[1]
             annu.append( tmp_annu )
-            anSig.append( glp.rho_INT_Sig(r0, tmp_annu) )
+            anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp) )
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_gaia(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_gaia(r0,gp)[pop]
                 annu.append(nu)
-                anSig.append(glp.rho_INT_Sig(r0, nu))
+                anSig.append(glp.rho_INT_Sig(r0, nu, gp))
 
         elif gp.investigate == 'walk':
             anrho = ga.rho_walk(r0, gp)[0]
@@ -183,13 +183,13 @@ class ProfileCollection():
             annr = ga.nr3Dtot_deriv_walk(r0, gp) # TODO too high in case of core
             tmp_annu = ga.rho_walk(r0, gp)[1]
             annu.append( tmp_annu )
-            anSig.append( glp.rho_INT_Sig(r0, tmp_annu) )
+            anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp) )
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_walk(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_walk(r0, gp)[pop]
                 annu.append(nu)
-                anSig.append(glp.rho_INT_Sig(r0, nu))
+                anSig.append(glp.rho_INT_Sig(r0, nu, gp))
 
         elif gp.investigate == 'triax':
             anrho = ga.rho_triax(r0, gp)[0]
@@ -197,16 +197,16 @@ class ProfileCollection():
             annr = ga.nr3Dtot_deriv_triax(r0, gp)
             tmp_annu = ga.rho_triax(r0, gp)[1]
             annu.append(tmp_annu)
-            anSig.append( glp.rho_INT_Sig(r0, tmp_annu))
+            anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp))
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_triax(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_triax(r0, gp)[pop]
                 annu.append(nu)
-                anSig.append( glp.rho_INT_Sig(r0, nu))
+                anSig.append( glp.rho_INT_Sig(r0, nu, gp))
 
         self.analytic.set_prof('rho', anrho, 0, gp)
-        self.analytic.set_prof('M', anM, 0, gp)            
+        self.analytic.set_prof('M', anM, 0, gp)
         self.analytic.set_prof('nr', annr, 0, gp)
 
         self.analytic.set_prof('nu', annu[0], 0, gp)
@@ -575,4 +575,3 @@ class ProfileCollection():
         return "Profile Collection with "+str(len(self.profs))+" Profiles"
     ## \fn __repr__(self)
     # string representation for ipython
-

@@ -8,7 +8,7 @@ import gl_params
 gp = gl_params.Params()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/gravlite/programs/sphere/')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/sphere/')
 import gl_analytic as ga
 
 def analytic_beta(x, gp):
@@ -31,7 +31,7 @@ def model_beta(r0, vec):
     #         betatmp[i] = 1.
     #     if betatmp[i] <= -1.:
     #         betatmp[i] = -0.99999999999 # excluding -inf values in beta
-    
+
     return 2.*betatmp/(1.+betatmp)
 ## \fn model_beta(r0, vec)
 # map [0,1] to [-1,1] with a polynomial
@@ -61,4 +61,3 @@ plt.savefig('beta_fit.png')
 
 print(popt)
 print(pcov)
-

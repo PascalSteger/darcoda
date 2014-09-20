@@ -19,12 +19,12 @@ def X(s0):
     Xout = np.zeros(len(s0))
     for i in range(len(s0)):
         s = s0[i]                       # [1]
-        
+
         if s<=1.:
             Xout[i] = (1.-s**2)**(-0.5)*asech(s) # [1]
         else:
             Xout[i] = (s**2-1.)**(-0.5)*asec(s) # [1]
-        
+
     return Xout                         # [1]
 ## \fn X(s0)
 # equation 33, 34 from Hernquist 1990
@@ -48,7 +48,7 @@ def rho(r0, rscale, rho0, alpha, beta, gamma):
 # @param beta steepness of turnover
 # @return 3D Hernquist density in [Munit/pc^3]
 
-    
+
 def rho_triax(rad):
     alpha = 1.
     beta = 4.
@@ -77,13 +77,13 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
     # and the corresponding variables for the stellar component
 
     A = np.loadtxt(gp.files.analytic, unpack=False)
-    
+
     gamma_star1 = A[7]
     beta_star1  = A[8]
     alpha_star1 = 2.0
     r_star1     = 1000*A[9] #[pc] # both description of filename and file content is wrong
     # name is rstar/10 in three digits, file content is given in kpc
-    
+
     gamma_star2 = A[11]
     beta_star2  = A[12]
     alpha_star2 = 2.0
@@ -104,7 +104,7 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
     # 3)
     rho0star1    = rho0*mf1#/1.e6*ntracer1 # TODO: Matt for factor 1e6
 
-    # rho(r, rscale, rho0, alpha, beta, gamma): 
+    # rho(r, rscale, rho0, alpha, beta, gamma):
     #  (2*[pc], or 2*[rcore]), [Munit/pc^3], 3*[1]
     rhodm    = rho(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
     rhostar1 = rho(rad, r_star1, rho0star1, alpha_star1, beta_star1, gamma_star1)
@@ -137,10 +137,10 @@ def rho_gaia(rad, gp):
     if gp.case == 9 or gp.case == 10:
         alpha_star1 = 0.5
         beta_DM = 4.
-    
+
     beta_star1, r_DM, gamma_star1, r_star1, r_a1,\
         gamma_DM,rho0 = gp.files.params
-    
+
     if gamma_star1 == 0.1:
         nu0 = 2.2e7/r_star1**3
     elif gamma_star1 == 1.0:
@@ -164,9 +164,9 @@ def M_gaia(rad, gp):
     rhodm, rhostar = rho_gaia(rad, gp)
     # 3D radius here
 
-    Mdm = glp.rho_INT_Sum_MR(rad, rhodm)
+    Mdm = glp.rho_INT_Sum_MR(rad, rhodm, gp)
     # after here, have in 2D radial bins
-    Mstar = glp.rho_INT_Sum_MR(rad, rhostar)
+    Mstar = glp.rho_INT_Sum_MR(rad, rhostar, gp)
     return Mdm, Mstar
 ## \fn M_gaia(rad, gp)
 # calculate mass in 2D radial bins
@@ -185,7 +185,7 @@ def rhotot_gaia(rad, gp):
 
 def Sig_gaia(rad, gp):
     dummy, rhostar1 = rho_gaia(rad, gp)
-    return glp.rho_INT_Sig(rad, rhostar1)
+    return glp.rho_INT_Sig(rad, rhostar1, gp)
 ## \fn Sig_gaia(rad, gp)
 # get projected surface density for Gaia tracer population
 # not based on analytic integral
@@ -322,9 +322,9 @@ def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
 def Sig_walk(rad, gp, mf1=1, mf2=1):
     rhodm, rhostar1, rhostar2 = rho_walk(rad, gp, mf1, mf2)     # 3* [msun/pc^3]
 
-    Sig_dm    = glp.rho_INT_Sig(rad, rhodm)    # [msun/pc^2]
-    Sig_star1 = glp.rho_INT_Sig(rad, rhostar1) # [msun/pc^2]
-    Sig_star2 = glp.rho_INT_Sig(rad, rhostar2) # [msun/pc^2]
+    Sig_dm    = glp.rho_INT_Sig(rad, rhodm, gp)    # [msun/pc^2]
+    Sig_star1 = glp.rho_INT_Sig(rad, rhostar1, gp) # [msun/pc^2]
+    Sig_star2 = glp.rho_INT_Sig(rad, rhostar2, gp) # [msun/pc^2]
 
     return Sig_dm, Sig_star1, Sig_star2               # 3* [msun/pc^2]
 ## \fn Sig_walk(rad, gp, mf1, mf2)
@@ -447,13 +447,13 @@ def Phi(r,alpha,beta,gamma,rho0):
 
 def read_abc():
     A = np.loadtxt(gp.files.analytic, unpack=False)
-    
+
     alpha_star1 = 2
     beta_star1  = int(A[8])
     gamma_star1 = int(A[7])
     r_star1     = 1000*A[9] #[pc] # both description of filename and file contents are wrong
     # name is rstar/10 in three digits, file content is given in kpc
-    
+
     alpha_star2 = 2
     beta_star2  = int(A[12])
     gamma_star2 = int(A[11])
@@ -496,7 +496,7 @@ def MBetaAnalytic(r):
 # MBetaAnalytic
 # @param r in [pc]
 
-    
+
 def Manalytic(r):
     alpha,beta,gamma,rho0,r_DM = read_abc()
     return 4*np.pi*rho0*(1./(1.+r/r_DM)+np.log(1.+r/r_DM)-1.)
@@ -504,7 +504,7 @@ def Manalytic(r):
 # analytic mass profile
 # @param r radius in [pc]
 
-    
+
 def beta_gaia(rad, gp):
     if gp.investigate != 'gaia':
         raise Exception('wrong investigation!')

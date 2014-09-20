@@ -70,7 +70,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         if gp.chi2_Sig_converged:
             betapar = np.array(cube[off:off+offstep])
             tmp_beta, tmp_betastar = phys.beta(gp.xipol, gp.x0turn, betapar, gp)
-            
+
             if check_beta(tmp_beta, gp):
                 gh.LOG(2, 'beta error')
                 tmp_profs.chi2 = gh.err(1., gp)
@@ -88,21 +88,21 @@ def geom_loglike(cube, ndim, nparams, gp):
                     nr = -gh.derivipol(np.log(anrho), np.log(gp.xfine))
                     dlr = np.hstack([nr[0], nr, nr[-1]])
                     rhopar = np.hstack([rhopar_half, dlr])
-                
+
                     rhostarpar = 0.0*rhopar
                     MtoL = 0.0
-                    betapar = np.array([-1, 2, 0.2701, 1])
+                    betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02])
 
                     annu = ga.rho_gaia(gp.xfine, gp)[1]
                     nupar_half = annu[np.argmin(np.abs(gp.xfine-gp.Xscale[1]))]
                     nrnu = -gh.derivipol(np.log(annu), np.log(gp.xfine))
                     dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
                     nupar = np.hstack([nupar_half, dlrnu])
-                    
+
                 sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
                                                      rhostarpar, MtoL, \
                                                      nupar, betapar, pop, gp)
-            
+
             except Exception as detail:
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)

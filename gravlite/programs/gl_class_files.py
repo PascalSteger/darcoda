@@ -124,7 +124,7 @@ class Files:
         if machine == 'darkside':
             self.machine = '/home/ast/read/dark/gravlite/'
         elif machine == 'pstgnt332':
-            self.machine = '/home/psteger/sci/gravlite/'
+            self.machine = '/home/psteger/sci/darcoda/gravlite/'
         elif machine == 'lisa_HS':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
         elif machine == 'lisa_SS':
@@ -191,7 +191,7 @@ class Files:
             self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_2.txt')
             self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_2.txt')
             self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_2.txt')
-        
+
         return
     ## \fn set_hern(self, gp, timestamp)
     # set all filenames for Hernquist case

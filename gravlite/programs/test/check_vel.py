@@ -6,7 +6,7 @@
 import gl_plot as gpl
 import numpy as np
 
-vlos=np.loadtxt('/home/psteger/sci/gravlite/DTobs/0/table_all.bin', skiprows=39, usecols=(11,))
+vlos=np.loadtxt('/home/psteger/sci/darcoda/gravlite/DTobs/0/table_all.bin', skiprows=39, usecols=(11,))
 fig, ax=gpl.start()
 
 ax.hist(vlos, 150)

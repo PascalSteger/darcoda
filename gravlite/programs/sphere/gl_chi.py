@@ -32,12 +32,13 @@ def calc_chi2(profs, gp):
     chi2 = 0.
 
     # calc chi^2 from overall baryonic tracers
-    Sigdat = gp.dat.Sig[0]              # [Munit/pc^2] from rho*
-    Sigerr = gp.dat.Sigerr[0]           # [Munit/pc^2]
-    Sigmodel = profs.get_prof('Sig', 0)
-    chi2_Sigstar = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
-    chi2 += chi2_Sigstar
-    gh.LOG(1, 'chi2_Sigstar  = ', chi2_Sigstar)
+    if gp.investigate == 'obs':
+        Sigdat = gp.dat.Sig[0]              # [Munit/pc^2] from rho*
+        Sigerr = gp.dat.Sigerr[0]           # [Munit/pc^2]
+        Sigmodel = profs.get_prof('Sig', 0)
+        chi2_Sigstar = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
+        chi2 += chi2_Sigstar
+        gh.LOG(1, 'chi2_Sigstar  = ', chi2_Sigstar)
 
     # now run through the stellar tracers
     for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]
@@ -50,7 +51,7 @@ def calc_chi2(profs, gp):
 
         if not gp.chi2_Sig_converged:
             continue
-        
+
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop]    # [km/s]
         chi2_sig = chi2red(profs.get_prof('sig', pop), sigdat, sigerr, gp.nipol) # [1]
@@ -82,4 +83,3 @@ def calc_chi2(profs, gp):
 # Calculate chi^2
 # @param profs profiles for rho, M, rho*, nu_i, beta_i, sig_i, kap_i
 # @param gp global parameters
-
