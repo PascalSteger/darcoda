@@ -292,16 +292,17 @@ def run():
     host_name = socket.gethostname()
     user_name = getpass.getuser()
 
-    if 'darkside' in host_name:
-        self.machine = 'darkside'
-    elif 'pstgnt332' in host_name:
-        self.machine = 'pstgnt332'
+    if 'pstgnt332' in host_name:
+        basepath = '/home/psteger/sci/darcoda/gravlite/'
+    elif 'darkside' in host_name:
+        basepath = '/home/ast/read/dark/gravlite/'
     elif ('lisa' in host_name) and ('hsilverw' in user_name):
-        self.machine = 'lisa_HS'
+        basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
-        self.machine = 'lisa_SS'
+        basebath = '/home/sofia/blah/darcoda/gravlite/'
 
-    basedir = os.path.abspath(machine+'/DT'+investigate+'/'+str(case)+'/')+'/'
+    basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
+
     # import import_path as ip
     # ip.import_path(basedir+'/programs/gl_params.py')
     while(action == 'k'):
