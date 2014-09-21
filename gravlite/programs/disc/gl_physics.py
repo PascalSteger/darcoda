@@ -20,10 +20,10 @@ def nr(z0, dlr, pop, gp):
     logznu = np.log(znu/gp.Xscale[pop])
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
-    
+
     # use linear spline interpolation in r
     spline_n = splrep(logznu, dlr, k=1)
-    
+
     # evaluate spline at any points in between
     return spline_n #, splev(z0, spline_n)
 ## \fn nr(z0, dlr, pop, gp)
@@ -42,10 +42,10 @@ def nr_medium(dlr, pop, gp):
     # up: common radii z0, but different scale radius for each pop
     dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
     dlr *= -1.
-    
+
     # use linear spline interpolation in r
     spline_n = splrep(logz0, dlr, k=1)
-    
+
     # evaluate spline at any points in between
     return spline_n
 ## \fn nr(dlogrhodlogr, pop, gp)
@@ -91,30 +91,28 @@ def rho(z0, vec, pop, gp):
 # @param gp global parameters
 
 
-def beta(zipol, z0turn, param, gp):
+def beta(zipol, param, gp):
     betatmp = 0.
     for i in range(gp.nbeta):
-        betatmp += param[i]*(zipol/z0turn)**i
+        betatmp += param[i]*(zipol/max(gp.xipol))**i
     return betatmp, betatmp/(2.+betatmp)
-## \fn beta(zipol, z0turn, param, gp)
+## \fn beta(zipol, param, gp)
 # return sum of polynomials for tilt as fct of radius
 # TODO: get tilt size from Silvia's paper
 # @param zipol [pc]
-# @param z0turn turning radius [pc]
 # @param param n_beta parameters
 # @param gp global parameters
 
 
-def tilt(zipol, z0turn, param, gp):
+def tilt(zipol, param, gp):
     tilttmp = 0.
     for i in range(gp.nbeta):
-        tilttmp += param[i]*(zipol/z0turn)**i
+        tilttmp += param[i]*(zipol/max(zipol))**i
     return tilttmp
-## \fn tilt(zipol, z0turn, param, gp)
+## \fn tilt(zipol, param, gp)
 # return sum of polynomials for tilt as fct of radius
 # TODO: get tilt size from Garbari+2011
 # @param zipol [pc]
-# @param z0turn [pc]
 # @param param n_beta parameters
 # @param gp global parameters
 
@@ -131,7 +129,7 @@ def kappa(xipol, Kz):
 
 def nu_decrease(zpars, pars, gp):
     parsu = abs(pars)                        # Mirror prior
-    
+
     if gp.monotonic:
         rnuz_z = np.zeros(len(zpars))
         rnuz_z[0] = parsu[0]
@@ -141,10 +139,10 @@ def nu_decrease(zpars, pars, gp):
     else:
         # Alternative here --> don't assume monotonic!
         fun = parsu
-    
-    # Normalise: 
+
+    # Normalise:
     if not gp.quadratic:
-        # Exact linear interpolation integral: 
+        # Exact linear interpolation integral:
         norm_nu = 0.
         for i in range(len(zpars)-1):
             zl = zpars[i]; zr = zpars[i+1]; zz = zr-zl
@@ -156,16 +154,16 @@ def nu_decrease(zpars, pars, gp):
             z0 = zpars[i-1]; z1 = zpars[i]; z2 = zpars[i+1]
             f0 = fun[i-1];   f1 = fun[i];   f2 = fun[i+1]
             h = z2-z1
-            a = f0; b = (f1-a)/h; c = (f2-2.*b*h-a)/2./h**2. 
+            a = f0; b = (f1-a)/h; c = (f2-2.*b*h-a)/2./h**2.
             z1d = z1-z0; z2d = z1**2.-z0**2.; z3d = z1**3.-z0**3.
-            
+
             if i == len(zpars)-2:
-                # Last bin integrate from z0 --> z2: 
+                # Last bin integrate from z0 --> z2:
                 z1d = z2-z0; z2d = z2**2.-z0**2.; z3d = z2**3.-z0**3.
-            
+
             intquad = (a - b*z0 + c*z0*z1)*z1d + (b/2. - c/2.*(z0+z1))*z2d + c/3.*z3d
             norm_nu = norm_nu + intquad
-            
+
             sel  = (z > z0 and z < z2)
             zcut = z[sel]
             tcut = testy[sel]
@@ -189,9 +187,9 @@ def nu_decrease(zpars, pars, gp):
 
 
 def kz(zpars, kzpar, gp):
-    # Solve interpolated integral for Kz: 
+    # Solve interpolated integral for Kz:
     if not gp.quadratic:
-        # Linear interpolation here: 
+        # Linear interpolation here:
         kz_z = np.zeros(len(zpars))
         for i in range(1, len(zpars)):
             zl = zpars[i-1]
@@ -201,7 +199,7 @@ def kz(zpars, kzpar, gp):
             a = kzpar[i]
             kz_z[i] = kz_z[i-1]+(a-b)/2./zz*(zr**2.-zl**2.)+b*zr-a*zl
     else:
-        # Quadratic interpolation here: 
+        # Quadratic interpolation here:
         kz_z = np.zeros(gp.nrho)
         for i in range(1,gp.nrho-1):
             z0 = zpars[i-1]
@@ -222,18 +220,18 @@ def kz(zpars, kzpar, gp):
             if i == n_elements(zpars)-2:
                 # Deal with very last bin:
                 z1d = z2-z1; z2d = z2**2.-z1**2.; z3d = z2**3.-z1**3.
-                
+
                 intbit = (a - b*z0 + c*z0*z1)*z1d + (b/2. - c/2.*(z0+z1))*z2d + c/3.*z3d
                 kz_z[i+1] = kz_z[i] + intbit
-    
-    # Error checking. Sometimes when kz_z(0) << kz_z(1), 
-    # the interpolant can go negative. This just means that 
+
+    # Error checking. Sometimes when kz_z(0) << kz_z(1),
+    # the interpolant can go negative. This just means that
     # we have resolved what should be kz_z(0) = 0. A simple
-    # fix should suffice: 
+    # fix should suffice:
     for jj in range(0,len(kz_z)):
         if (kz_z[jj] < 0):
             kz_z[jj] = 0.
-        
+
     return kz_z
 ## \fn kz(zpars, kzpar, gp)
 # General function to calculate the Kz force law:
@@ -244,7 +242,7 @@ def kz(zpars, kzpar, gp):
 # ensure monotinicity in an efficient manner. Note here we
 # use kz_z(0) = kzpar(0) * dz so that it can be zero, or
 # otherwise just small in the case of large bins. This latter
-# avoids the interpolated kz_out[0] going negative for coarse 
+# avoids the interpolated kz_out[0] going negative for coarse
 # binning.
 # @param zpars z where kzpar is defined on [pc]
 # @param kzpar rho in bins [Msun/pc^3]
@@ -262,7 +260,7 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
     gh.checkpositive(rhostartmp)
     rhotmp += MtoL*rhostartmp # add baryons
     kz_z = kz(zp, rhotmp, gp) # [(km/s)^2/pc]
-    
+
     # add tilt correction [if required]:
     #Rsun = tparsR[0]
     #hr   = tparsR[1]
@@ -273,10 +271,10 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
     #if abs(np.sum(tc))/abs(np.sum(kz_z)) > 0.1:
     #    print('Tilt > 10%!', abs(np.sum(tc)), abs(np.sum(kz_z)))
     #kz_z = kz_z-tc
-    
+
     # do exact integral
     if not gp.quadratic:
-        # linear interpolation here: 
+        # linear interpolation here:
         sigint = np.zeros(len(zp))
         for i in range(1,len(zp)):
             zl = zp[i-1];  zr = zp[i];  zz = zr-zl
@@ -284,12 +282,12 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
             a = nu_z[i]
             q = kz_z[i-1]
             p = kz_z[i]
-        
+
             intbit = (a-b)*(p-q)/(3.0*zz**2.) * (zr**3.-zl**3.) + \
                 ((a-b)/(2.0*zz) * (q-(p-q)*zl/zz) + (p-q)/(2.0*zz)  * \
                  (b-(a-b)*zl/zz)) * (zr**2.-zl**2.)+\
                 (b-(a-b)*zl/zz) * (q-(p-q)*zl/zz) * zz
-      
+
             if i==0:
                 sigint[0] = intbit
             else:
@@ -320,7 +318,7 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
 
             sigint[i] = sigint[i-1] + intbit
             if i == len(zp)-2:
-                # Deal with very last bin: 
+                # Deal with very last bin:
                 z1d = z2-z1
                 z2d = z2**2.-z1**2.
                 z3d = z2**3.-z1**3.
@@ -354,14 +352,14 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
 def sig_rz(z, zpars, tpars):
     # Mirror prior
     tparsu = abs(tpars)
-    
+
     # dz = zpars[2]-zpars[1]
     # sig_Rz = np.zeros(gp.nipol)
     # sig_Rz[0] = tparsu[0] * dz / 2.
     # for i in range(1,gp.nipol):
     #   sig_Rz[i] = sig_Rz[i-1] + tparsu[i] * dz
     # f = gp.ipol(zpars,sig_Rz,z)
-    
+
     # Alternative here --> don't assume monotonic!
     f = gh.ipol(zpars, tparsu, z)
     return f

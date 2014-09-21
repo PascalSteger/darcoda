@@ -105,7 +105,6 @@ class Params():
                           # is reached, must be >= 11
         self.nbeta = 5   # number of parameters for beta, in sum of
                          # polynomials
-        self.x0turn = -1 # [pc] pinch radius for beta polynomial, set in data readin
 
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found

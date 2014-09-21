@@ -76,7 +76,6 @@ class Datafile:
                 self.binmin = binmin * gp.Xscale[pop]           # [pc]
                 self.binmax = binmax * gp.Xscale[pop]           # [pc]
                 gp.xipol = self.rbin                            # [pc]
-                gp.x0turn = max(self.rbin)/2                    # [pc]
                 if gp.iscale >= 0:
                     gp.iscale = np.sum(self.rbin<gp.Xscale[0])  # [1]
                 minr = min(self.rbin)                           # [pc]

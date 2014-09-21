@@ -173,37 +173,15 @@ def betastar_sigmoid(r0, r0turn, vec, gp):
     s=np.log(r0/r0turn)
     betatmp = vec[0]/(1+np.exp(vec[1]*s+vec[2]))+vec[3]*np.ones(len(r0))
     return betatmp
-## \fn betastar(r0, r0turn, vec, gp)
+## \fn betastar(r0, vec, gp)
 # calculate betastar from 4 parameters, using general sigmoid function
 # @param r0 radii [pc]
-# @param r0turn turn-over radius, normally rhalf or half the max radius
 # @param vec 4 parameters
 # @param gp global parameters
 
 
-def betastar_j(r0, r0turn, vec, gp):
-    gh.sanitize_vector(vec, 4, -1, max(gp.xipol))
-    gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
-
-    s=np.log(r0/r0turn)
-    a0 = vec[0]
-    a1 = vec[1]
-    rt = vec[2]
-    nt = vec[3]
-    betatmp = np.exp(-(r0/rt)**nt)*(a0-a1)+a1
-
-    return betatmp
-## \fn betastar(r0, r0turn, vec, gp)
-# calculate betastar from 4 parameters, using exp directly
-# @param r0 radii [pc]
-# @param r0turn turn-over radius, normally rhalf or half the max radius
-# @param vec 4 parameters
-# @param gp global parameters
-
-
-def betastar_5(r0, r0turn, vec, gp):
+def betastar_5(r0, vec, gp):
     gh.sanitize_vector(vec, gp.nbeta, -1, max(gp.xipol))
-    gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
 
     s0 = np.log(r0/vec[4])
     a0 = vec[0]
@@ -214,20 +192,18 @@ def betastar_5(r0, r0turn, vec, gp):
     betatmp = (a0-a1)/(1+np.exp(alpha*s0))+a1
 
     return betatmp
-## \fn betastar(r0, r0turn, vec, gp)
+## \fn betastar(r0, vec, gp)
 # calculate betastar from sigmoid with 4 parameters, using exp directly, with explicit meaning
 # @param r0 radii [pc]
-# @param r0turn turn-over radius, normally rhalf or half the max radius, attention: last parameter in new version
 # @param vec 4 parameters
 # @param gp global parameters
 
 
-def betastar(r0, r0turn, vec, gp):
-    return betastar_5(r0, r0turn, vec, gp)
-## \fn betastar(r0, r0turn, vec, gp)
+def betastar(r0, vec, gp):
+    return betastar_5(r0, vec, gp)
+## \fn betastar(r0, vec, gp)
 # calculate betastar from 4 parameters
 # @param r0 radii [pc]
-# @param r0turn turn-over radius, normally rhalf or half the max radius
 # @param vec 4 parameters
 # @param gp global parameters
 
@@ -246,21 +222,21 @@ def betastar_old(r0, r0turn, vec, gp):
         betatmp[off] = min(gp.maxbetastar, betatmp[off])
         betatmp[off] = max(gp.minbetastar, betatmp[off])
     return betatmp
-## \fn betastar(r0, vec, gp)
+## \fn betastar_old(r0, vec, gp)
 # map [0,1] to [-1,1] with a polynomial
+# NOT USED ANYMORE
 # @param r0 radii [pc]
 # @param vec normalized ai, s.t. abs(sum(ai)) = 1
 # @param gp global parameters
 
 
-def beta(r0, r0turn, vec, gp):
-    bstar = betastar(r0, r0turn, vec, gp)
+def beta(r0, vec, gp):
+    bstar = betastar(r0, vec, gp)
     betatmp = betastar2beta(bstar)
     return betatmp, bstar
-## \fn beta(r0, r0turn, vec, gp)
+## \fn beta(r0, vec, gp)
 # beta and beta* from beta parameter array
 # @param r0 radii [pc]
-# @param r0turn turning radius [pc]
 # @param vec float array, see gl_class_cube
 # @param gp global parameters
 

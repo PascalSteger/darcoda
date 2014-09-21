@@ -45,10 +45,10 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 # @param log bool for working in log space
 
 
-def ant_intbeta(r0, r0turn, betapar, gp):
+def ant_intbeta(r0, betapar, gp):
     # define function
     xint = 1.*r0
-    yint = phys.beta(xint, r0turn, betapar, gp)[0]/xint
+    yint = phys.beta(xint, betapar, gp)[0]/xint
 
     # analytic values
     # yint =  ga.beta_gaia(xint, gp)[1]/xint
@@ -60,11 +60,10 @@ def ant_intbeta(r0, r0turn, betapar, gp):
 
     gh.checknan(intbet, 'intbet in ant_intbeta')
     return intbet                                                # [1]
-## \fn ant_intbeta(r0, r0turn, betapar, gp)
+## \fn ant_intbeta(r0, betapar, gp)
 # integrate beta(s)/s over s
 # (integrals in front of and after sigma_r^2 integral, factor 2 not in here)
 # @param r0 free variable, array, in [lunit]
-# @param r0turn needed for beta calculation: turning point
 # @param betapar integrand, array, in [1]
 # @param gp
 
@@ -117,7 +116,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     #check influence of wrong beta
     #betapar[3] -= 0.1
 
-    betanu = phys.beta(r0nu, gp.x0turn, betapar, gp)[0]
+    betanu = phys.beta(r0nu, betapar, gp)[0]
     clf()
     anbeta = ga.beta_gaia(r0nu, gp)[1]
     plot(r0nu, anbeta, 'b.-')
@@ -145,7 +144,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     # int beta(s)/s ds
     # -----------------------------------------------------------------------
-    idnu   = ant_intbeta(r0nu, gp.x0turn, betapar, gp)
+    idnu   = ant_intbeta(r0nu, betapar, gp)
     clf()
     plot(r0nu, idnu, 'r.-')
     beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
@@ -295,7 +294,7 @@ def ant_sigkaplos2surf_ipol(r0, rhopar, rhostarpar, nupar, betapar, pop, gp):
         pdb.set_trace()
 
     nunu   = phys.nu(r0nu, nupar, pop, gp)
-    betanu, dum = phys.beta(r0nu, gp.x0turn, betapar, gp)[0]
+    betanu, dum = phys.beta(r0nu, betapar, gp)[0]
 
     # calculate intbeta from beta approx directly
     # TODO: check difference between ant_intbeta and ant_intbeta_old
@@ -591,7 +590,7 @@ def ant_intbeta_old(r0, betapar, gp):
     r0ext = [r0[0]/5., r0[0]/4., r0[0]/3., r0[0]/2.]
     r0nu = np.hstack([r0ext, r0, r0[:-1]+(r0[1:]-r0[:-1])/2.])
     r0nu.sort()
-    betanu = phys.beta(r0nu, gp.x0turn, betapar, gp)[0]
+    betanu = phys.beta(r0nu, betapar, gp)[0]
 
     tmp = np.zeros(len(betanu))
     for i in range(5,len(betanu)):

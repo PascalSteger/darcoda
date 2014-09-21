@@ -25,7 +25,7 @@ def analytic_beta(x):
 
 
 x = gp.xipol
-xturn = gp.Xscale[0] #max(gp.xipol)/2
+#xturn = gp.Xscale[0] #max(gp.xipol)/2
 y = analytic_beta(x)
 
 def modelbetaj(r0, vec0, vec1, vec2, vec3):
@@ -64,11 +64,12 @@ popt3, pcov3 = curve_fit(modelbeta4, x, y)
 x = gp.xfine
 y = analytic_beta(x)
 ax1.plot(x, y, 'b--', lw=2, label='analytic')
-ax1.axvline(xturn)
+#ax1.axvline(xturn)
 ax1.set_ylim([-0.2, 1.2])
 ax1.set_xscale('log')
 ax1.plot(x, modelbeta4(x, *popt3), 'g.-', alpha=0.8, label='new sigmoid')
-ax1.plot(x, phys.betastar(x, xturn, popt3, gp), 'r--', lw=2, label='phys.beta')
+
+ax1.plot(x, phys.betastar(x, popt3, gp), 'r--', lw=2, label='phys.beta')
 #ax1.plot(x, modelbetaj(x, *poptj), alpha=0.8, label='new 4 param model')
 
 ax1.set_yticks(np.linspace(0.0, 1.0, 6,endpoint=True))

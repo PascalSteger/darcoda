@@ -69,7 +69,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         offstep = gp.nbeta
         if gp.chi2_Sig_converged:
             betapar = np.array(cube[off:off+offstep])
-            tmp_beta, tmp_betastar = phys.beta(gp.xipol, gp.x0turn, betapar, gp)
+            tmp_beta, tmp_betastar = phys.beta(gp.xipol, betapar, gp)
 
             if check_beta(tmp_beta, gp):
                 gh.LOG(2, 'beta error')

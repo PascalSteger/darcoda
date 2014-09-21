@@ -12,7 +12,7 @@ from gl_priors import check_bprior, check_tilt
 from gl_chi import calc_chi2
 import gl_physics as phys
 from pylab import *
-    
+
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
@@ -56,7 +56,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         offstep = gp.nbeta
         if gp.chi2_Sig_converged:
             tiltpar = np.array(cube[off:off+offstep])
-            tmp_tilt = phys.tilt(gp.xipol, gp.x0turn, tiltpar, gp)
+            tmp_tilt = phys.tilt(gp.xipol, tiltpar, gp)
             if check_tilt(tmp_tilt, gp):
                 gh.LOG(1, 'tilt error')
                 tmp_profs.chi2 = gh.err(2., gp)
