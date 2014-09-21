@@ -92,7 +92,6 @@ def geom_loglike(cube, ndim, nparams, gp):
                     rhostarpar = 0.0*rhopar
                     MtoL = 0.0
                     betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02])
-
                     annu = ga.rho_gaia(gp.xfine, gp)[1]
                     nupar_half = annu[np.argmin(np.abs(gp.xfine-gp.Xscale[1]))]
                     nrnu = -gh.derivipol(np.log(annu), np.log(gp.xfine))
