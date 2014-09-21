@@ -1,0 +1,71 @@
+#!/usr/bin/env ipython3
+
+##
+# @file
+# Functions related to projection and deprojection of density in spherical models.
+# Conventions:
+# rho, r, Mr     denote 3D density, 3D radius, M(<3D radius)
+# Rho, R, MR     denote 2D density, 2D radius, M(<2D radius)
+# *SUM*          denotes main method = summing
+# *INT*          denotes main method = integrating
+# *NORM*         denotes main method = renormalization
+
+# (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
+
+import numpy as np
+import pdb
+from scipy.integrate import simps
+from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
+from scipy.interpolate import splrep, splev, splint
+import gl_helper as gh
+import gl_plot as gpl
+import gl_physics as phys
+
+
+def rho_param_INT_Rho_disc(r0, rhopar, pop, gp):
+    # TODO: check integration for z direction only
+
+    # use splines on variable transformed integral
+    # \Sigma(R) = \int_{r=0}^{R} \rho(r) dr
+    xmin = r0[0]/30. # tweaked. r0[0]/1e4 gives error in quad()
+    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
+    r0nu = np.hstack([r0left, r0])
+
+    rhonu = phys.rho(r0nu, rhopar, pop, gp) # rho takes rho(rhalf) and n(r) parameters
+    Rho = np.zeros(len(r0nu)-gp.nexp)
+    for i in range(len(r0nu)-gp.nexp):
+        Rho[i] = gh.quadinflog(r0nu, rhonu, xmin, r0nu[i])
+
+    gh.checkpositive(Rho, 'Rho in rho_param_INT_Rho')
+    return Rho[len(r0left):] # @r0 (r0nu without r0left, and without 3 extension bins)
+## \fn rho_param_INT_Rho_disc(r0, rhopar, pop, gp)
+# take 3D density parameters, calculate projected surface density
+# @param r0 radii of bins, (nrho-nexp entries) [pc]
+# @param rhopar 3D density, (nrho entries) [Munit/pc^3]
+# @param pop int for population (0 both, 1, 2, ..)
+# @param gp global parameters
+
+
+def nu_param_INT_Sig_disc(r0, nupar, pop, gp):
+    # TODO: check integration for z direction only
+    # use splines on variable transformed integral
+    # \Sigma(R) = \int_{r=0}^{R} \rho(r) dr
+    r0nu = r0
+
+    nunu = phys.nu_decrease(r0nu, nupar, gp)
+    Sig = np.zeros(len(r0nu))
+    for i in range(len(r0nu)):
+        Sig[i] = gh.quadinflog(r0nu, nunu, r0nu[0], r0nu[i])
+
+    gh.checkpositive(Sig, 'Sig in nu_param_INT_Sig_disc')
+    return Sig
+## \fn nu_param_INT_Sig_disc(r0, nupar, pop, gp)
+# take 3D density parameters, calculate projected surface density
+# @param r0 radii of bins, (nrho-nexp entries) [pc]
+# @param nupar 3D density, (nrho entries) [Munit/pc^3]
+# @param pop int for population (0 both, 1, 2, ..)
+# @param gp global parameters
+
+    
+
+

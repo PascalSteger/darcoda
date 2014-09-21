@@ -65,7 +65,7 @@ class Params():
         # [pc msun^-1 (km/s)^2]
 
         ########## data options
-        self.getnewdata = False # get new data computed from
+        self.getnewdata = True # get new data computed from
                                 # observations before burn-in
         self.consttr    = True  # set radial bin by constant number of
                                 # tracer particles
@@ -171,7 +171,7 @@ class Params():
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
-        self.checksig   = True # check sigma calculation routine with 'walk'
+        self.checksig   = False # check sigma calculation routine with 'walk'
 
 
 
