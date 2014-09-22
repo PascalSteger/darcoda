@@ -41,7 +41,7 @@ def set_geometry(geom, machine):
     if machine == 'pstgnt332':
         basepath = '/home/psteger/sci/darcoda/gravlite/programs/'
     elif machine == 'darkside':
-        basepath = '/home/ast/read/dark/gravlite/programs/'
+        basepath = '/home/ast/read/user/psteger/software/darcoda/gravlite/programs/'
     elif machine == 'lisa_HS':
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/programs/'
     elif machine == 'lisa_SS':

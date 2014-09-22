@@ -122,7 +122,7 @@ class Files:
 
     def set_dir(self, machine, case, inv):
         if machine == 'darkside':
-            self.machine = '/home/ast/read/dark/gravlite/'
+            self.machine = '/home/ast/read/user/psteger/software/darcoda/gravlite/'
         elif machine == 'pstgnt332':
             self.machine = '/home/psteger/sci/darcoda/gravlite/'
         elif machine == 'lisa_HS':
