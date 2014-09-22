@@ -101,7 +101,7 @@ def run(gp):
                     max_modes = gp.nlive,   # preallocation of modes:
                                             #max. = number of live
                                             #points
-                    mode_tolerance = -1.e60,   # mode tolerance in the
+                    mode_tolerance = -1.e100,   # mode tolerance in the
                                                #case where no special
                                                #value exists: highly
                                                #negative
@@ -114,7 +114,7 @@ def run(gp):
                     log_zero = -1e500,    # points with log likelihood
                                           #< log_zero will be
                                           #neglected
-                    max_iter = 1000,         # set to 0 for never
+                    max_iter = 0,         # set to 0 for never
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
