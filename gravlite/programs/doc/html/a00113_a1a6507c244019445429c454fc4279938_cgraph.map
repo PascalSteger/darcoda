@@ -1,6 +1,0 @@
-<map id="grt_dens.run" name="grt_dens.run">
-<area shape="rect" id="node3" href="$a00086.html#a77f4841997d8a7b7e8f731c7208285f2" title="split interval into bins, in a logarithmic fashion " alt="" coords="157,5,288,35"/>
-<area shape="rect" id="node5" href="$a00086.html#af20d87d0aac4453276d762c7e42a7dd5" title="split interval into bins of constant particle number " alt="" coords="151,58,295,105"/>
-<area shape="rect" id="node7" href="$a00086.html#a40fb01b0ec34e3e41223f4c9d57b79ff" title="split interval linearly into bins " alt="" coords="151,128,295,157"/>
-<area shape="rect" id="node9" href="$a00100.html#a4aad5f9b1df9f4dffeccc07576bbfa40" title="open the output (pdf) file for the user " alt="" coords="173,181,272,211"/>
-</map>

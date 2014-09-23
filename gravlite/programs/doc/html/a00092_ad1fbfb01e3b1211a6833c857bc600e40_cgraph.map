@@ -1,5 +1,0 @@
-<map id="gl_physics.rhodm_hernquist" name="gl_physics.rhodm_hernquist">
-<area shape="rect" id="node3" href="$a00092.html#a2f4ffa9a0fbd2c89878c017d1aaf00f8" title="gl_physics.nr" alt="" coords="241,5,340,35"/>
-<area shape="rect" id="node5" href="$a00092.html#a5f5148902ecf39c5bca5adc5e3a8afa7" title="gl_physics.nr_medium" alt="" coords="392,84,544,113"/>
-<area shape="rect" id="node7" href="$a00092.html#a1f70d603a30b23187bbe93725ee7f3b6" title="calculate density, from interpolated n(r) = &#45;log(rho(r)) using interpolation to left and right of r=r..." alt="" coords="237,109,344,139"/>
-</map>

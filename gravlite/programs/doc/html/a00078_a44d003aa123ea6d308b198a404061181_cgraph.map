@@ -1,5 +1,0 @@
-<map id="check_proj.run" name="check_proj.run">
-<area shape="rect" id="node3" href="$a00103.html#a3cc02350ead70199a88819d9796a8c28" title="take 3D density, calculate projected surface density " alt="" coords="160,5,320,35"/>
-<area shape="rect" id="node5" href="$a00103.html#a9169f84f6f4872b5be731e75e78255ed" title="take surface density, deproject, 2D =&gt; 3D with radius r&#39; " alt="" coords="160,59,320,88"/>
-<area shape="rect" id="node7" href="$a00106.html#a4aad5f9b1df9f4dffeccc07576bbfa40" title="open the output (pdf) file for the user " alt="" coords="191,112,289,141"/>
-</map>

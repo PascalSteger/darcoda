@@ -1,6 +1,0 @@
-<map id="grw_mcmcbin.run" name="grw_mcmcbin.run">
-<area shape="rect" id="node3" href="$a00083.html#a77f4841997d8a7b7e8f731c7208285f2" title="split interval into bins, in a logarithmic fashion " alt="" coords="187,5,317,35"/>
-<area shape="rect" id="node5" href="$a00083.html#af20d87d0aac4453276d762c7e42a7dd5" title="split interval into bins of constant particle number " alt="" coords="180,58,324,105"/>
-<area shape="rect" id="node7" href="$a00083.html#a40fb01b0ec34e3e41223f4c9d57b79ff" title="split interval linearly into bins " alt="" coords="180,128,324,157"/>
-<area shape="rect" id="node9" href="$a00097.html#a4aad5f9b1df9f4dffeccc07576bbfa40" title="open the output (pdf) file for the user " alt="" coords="203,181,301,211"/>
-</map>
