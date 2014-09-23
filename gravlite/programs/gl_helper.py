@@ -32,14 +32,14 @@ def LOG(level, message, var=''):
 def sanitize_vector(vec, length, mini, maxi):
     if len(vec) != length:
         LOG(1, 'vec has wrong length')
-        pdb.set_trace()
-        raise Exception('vec has wrong length', len(vec))
+        #pdb.set_trace()
+        #raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
-        raise Exception('vec has too small value', min(vec))
+        #raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
-        raise Exception('vec has too high value', max(vec))
+        #raise Exception('vec has too high value', max(vec))
     return
 ## \fn sanitize_vector(vec, length, mini, maxi)
 # sanitize input (vectors)
@@ -52,10 +52,10 @@ def sanitize_vector(vec, length, mini, maxi):
 def sanitize_scalar(var, mini, maxi):
     if var < mini:
         LOG(1, 'var has too small value')
-        raise Exception('var has too small value')
+        #raise Exception('var has too small value')
     if var > maxi:
         LOG(1, 'var has too high value')
-        raise Exception('var has too high value')
+        #raise Exception('var has too high value')
     return
 ## \fn sanitize_scalar(var, mini, maxi)
 # sanitize input (scalar)
