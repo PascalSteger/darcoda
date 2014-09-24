@@ -151,11 +151,16 @@ def map_betastar_sigmoid(pa, gp):
     # s0 = np.log(r0/r0turn)
     # kappa = (a0-a1)/(betastar(r_s) - a1)-1
     # beta = (a0-a1)/(1+kappa*exp(alpha*s0))
-    pa[0] = pa[0]*1.98 - 1 # a0
-    pa[1] = pa[1]*1.98 - 1 # a1
-    pa[2] = pa[2]*1.98 - 1 # betastar(r_s)
+    bmin = gp.minbetastar
+    bmax = gp.maxbetastar
+    bdiff = bmax-bmin
+    pa[0] = pa[0]*bdiff + bmin # a0
+    if gp.beta00prior:
+        pa[0] = 0
+    pa[1] = pa[1]*bdiff + bmin # a1
+    pa[2] = pa[2]*bdiff + bmin # betastar(r_s)
     pa[3] = pa[3]*5        # alpha
-    pa[4] = pa[4]*max(gp.xipol) # r_s
+    pa[4] = pa[4]*max(gp.xepol) # r_s
     return pa
 ## \fn map_betastar(pa, gp)
 # mapping beta parameters from [0,1] to full param space

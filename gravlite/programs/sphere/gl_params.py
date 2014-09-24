@@ -45,7 +45,7 @@ class Params():
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
 
-        self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 6 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -81,7 +81,7 @@ class Params():
 
         ########## MultiNest options
         self.chi2_Sig_converged = False # set to False to first converge on Sig
-        self.chi2_switch = 1000.
+        self.chi2_switch = 10.
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run
@@ -124,7 +124,7 @@ class Params():
                                   # half-light radius of tracers
                                   # calculated in gl_data
         self.rhospread = 1.       # with this spread, [dex] in log space
-        self.nuspread = 0.5
+        self.nuspread = 1.0
         self.iscale = self.nrho/2 # scale below which range of
                                          # n(r)<2. instead of
                                          # maxrhoslope; is adapted in
@@ -133,10 +133,10 @@ class Params():
                                          # everywhere
         self.iscale_nu = -1
 
-        self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
+        self.nrtol  = 1.5/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
+        self.nrtol_nu = 1.5/(8./self.nipol) # max change in dn(r)/d log(r)
 
-        self.maxrhoslope  = 4    # maximum slope (change if
+        self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxrhoslope_nu = 5
 
@@ -145,8 +145,9 @@ class Params():
         self.minlog10nu = -10     # direct sampling of nu: max value
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta*
-        self.minbetastar = -0.99  # clipping for beta, default: -0.99
+        self.minbetastar = 0.0  # clipping for beta, default: -0.99
         self.maxbetastar = 1.0    # clipping for beta, default:  1.00
+        self.beta00prior = False  # prior beta(r=0) = 0
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
