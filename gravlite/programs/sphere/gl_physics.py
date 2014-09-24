@@ -199,7 +199,13 @@ def betastar_5(r0, vec, gp):
 
 
 def betastar(r0, vec, gp):
-    return betastar_5(r0, vec, gp)
+    bs = betastar_5(r0, vec, gp)
+    for k in range(len(r0)):
+        if bs[k] < gp.minbetastar:
+            bs[k] = gp.minbetastar
+        if bs[k] > gp.maxbetastar:
+            bs[k] = gp.maxbetastar
+    return bs
 ## \fn betastar(r0, vec, gp)
 # calculate betastar from 4 parameters
 # @param r0 radii [pc]

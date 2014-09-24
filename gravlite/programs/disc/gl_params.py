@@ -133,6 +133,7 @@ class Params():
         self.minlog10nu = 0.     # direct sampling of nu: max value
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
+        self.beta00prior = False  # prior beta(r=0) = 0
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
