@@ -162,7 +162,7 @@ def myprior(cube, ndim, nparams):
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
-# @param ndim number of dimensions, 2*npop*nipol + nipol 
+# @param ndim number of dimensions, 2*npop*nipol + nipol
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
@@ -194,7 +194,7 @@ def myloglike(cube, ndim, nparams):
         sigmaV.append(cube[off])
         off += 1
 
-        
+
     print('starting logev evaluation')
     logev = 0.0
     for k in range(Nsample):
@@ -223,7 +223,7 @@ def run(gp):
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
 
-                       
+
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
@@ -236,9 +236,9 @@ def run(gp):
     RAh = RAh/sig
     # stellar position alpha_s, delta_s
     # 15degrees in 1 hour right ascension
-    
+
     alpha_s = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
-    
+
     sig = abs(DEd[0])/DEd[0]                # +/-
     print('DEd: signum = ',sig)
     DEd = DEd/sig
@@ -276,7 +276,7 @@ def run(gp):
     ys = delta_s*DL # [pc]
 
     PM0 = 1.*np.copy(PM)
-    
+
     x0 = 1.*np.copy(xs)
     y0 = 1.*np.copy(ys) # [pc]
     R0 = np.sqrt(x0*x0+y0*y0)
@@ -286,7 +286,7 @@ def run(gp):
     Nsample = len(PM)
 
 
-    A = np.loadtxt(gp.files.dir+'w_2.0.dat')    
+    A = np.loadtxt(gp.files.dir+'w_2.0.dat')
     Rpt, wpt = A.T # [arcmin], [1]
     arcmin = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
     Rpt *= arcmin # [pc]
@@ -346,5 +346,8 @@ if __name__=='__main__':
     import gl_params
     gp = gl_params.Params()
 
-
     run(gp)
+
+# works with investigation = 'obs', pops = 2, metalpop = True
+# profile with python3 -m cProfile grd_split.py
+# TODO output:

@@ -39,7 +39,7 @@ class Params():
         self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         self.checksig = False # debug sig calculation?
-        
+
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
         # case 2
@@ -73,7 +73,7 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_Sig_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100. # if chi2<chi2_switch, add chi2_sig 
+        self.chi2_switch = 100. # if chi2<chi2_switch, add chi2_sig
 
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
@@ -152,8 +152,6 @@ class Params():
                                  # 'silvia', 'sim', 'simple'
 
         ########## integration options
-        self.even = 'avg' # for simps integration (everywhere): 'avg',
-                          # 'first', 'last'
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = True  # switch to turn on (True) or off the
@@ -174,7 +172,7 @@ class Params():
         ########## global arrays
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins
-        self.xfine = np.array([]) # [pc] radii for lookup tables, 
+        self.xfine = np.array([]) # [pc] radii for lookup tables,
                                   #      gp.nfine long
 
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
@@ -202,10 +200,9 @@ class Params():
     # set up all parameters used in the course of the MultiNest run,
     # and the analysis routines in plot_multinest @param timestamp =
     # '', for output
-    
+
 
     def __repr__(self):
         return "Params: "+self.files.dir
     ## \fn __repr__(self)
     # string representation for ipython
-

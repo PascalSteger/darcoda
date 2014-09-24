@@ -45,7 +45,7 @@ class Params():
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
 
-        self.case = 6 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -55,14 +55,6 @@ class Params():
         # case 2
         self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N and sum
 
-        # unitsXS
-        self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
-        self.pc_in_m  = 3.08567758e16              # [m]
-        self.msun= 1.981e30                   # [kg]
-        self.km_in_m  = 1000.                      # [m]
-        self.kpc = 1000.                      # [pc]
-        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
-        # [pc msun^-1 (km/s)^2]
 
         ########## data options
         self.getnewdata = True # get new data computed from
@@ -166,14 +158,22 @@ class Params():
                                  # 'silvia', 'sim', 'simple'
 
         ########## integration options
-        self.even = 'avg' # for simps integration (everywhere): 'avg',
-                          # 'first', 'last'
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
         self.checksig   = False # check sigma calculation routine with 'walk'
 
+
+
+        # unitsXS
+        self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
+        self.pc_in_m  = 3.08567758e16              # [m]
+        self.msun= 1.981e30                   # [kg]
+        self.km_in_m  = 1000.                      # [m]
+        self.kpc = 1000.                      # [pc]
+        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
+        # [pc msun^-1 (km/s)^2]
 
 
         ########## filesystem-related
