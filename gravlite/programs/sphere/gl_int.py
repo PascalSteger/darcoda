@@ -48,7 +48,7 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 def ant_intbeta(r0, betapar, gp):
     # define function
     xint = 1.*r0
-    yint = phys.beta(xint, betapar, gp)[0]/xint
+    yint = phys.beta(xint, betapar, gp)[0]/xint-0.5 #TODO remove -0.5
 
     # analytic values
     # yint =  ga.beta_gaia(xint, gp)[1]/xint
@@ -98,10 +98,11 @@ def varepsilon(r0, betapar, gp):
 def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     r0nu   = gp.xfine # [pc]
     rhonu  = phys.rho(r0nu,  rhopar, 0, gp) # DM mass profile (first)
-    #loglog(r0nu, ga.rho_gaia(r0nu, gp)[0], 'b.-')
-    #loglog(r0nu, rhonu, 'r.-')
-    #xlabel('r/pc'); ylabel('rho')
-    #pdb.set_trace()
+    if gp.checksig:
+        loglog(r0nu, ga.rho_gaia(r0nu, gp)[0], 'b.-')
+        loglog(r0nu, rhonu, 'r.-')
+        xlabel('r/pc'); ylabel('rho')
+        pdb.set_trace()
 
     # add up tracer densities to get overall density profile
     # add rho* to take into account the baryonic addition
@@ -116,42 +117,46 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     #check influence of wrong beta
     #betapar[3] -= 0.1
 
-    betanu = phys.beta(r0nu, betapar, gp)[0]
-    #clf()
-    #anbeta = ga.beta_gaia(r0nu, gp)[1]
-    #plot(r0nu, anbeta, 'b.-')
-    #plot(r0nu, betanu, 'r.-')
-    #xlabel('r/pc'); ylabel('beta')
-    #pdb.set_trace()
+    betanu = phys.beta(r0nu, betapar, gp)[0]-0.5
+    if gp.checksig:
+        clf()
+        anbeta = ga.beta_gaia(r0nu, gp)[1]
+        plot(r0nu, anbeta, 'b.-')
+        plot(r0nu, betanu, 'r.-')
+        xlabel('r/pc'); ylabel('beta')
+        pdb.set_trace()
 
     #nupar[0] *= 1e3 # TODO: check that siglos**2 is not changing with scaling of nu
     nunu   = phys.nu(r0nu, nupar, pop, gp)
-    #clf()
-    #loglog(gp.xipol, gp.dat.nu[pop], 'b.-')
-    #annu = ga.rho_gaia(r0nu, gp)[pop]
-    #loglog(r0nu, annu, 'g.-')
-    #loglog(r0nu, nunu, 'r.-')
-    #xlabel('r/pc'); ylabel('nu')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        loglog(gp.xipol, gp.dat.nu[pop], 'b.-')
+        annu = ga.rho_gaia(r0nu, gp)[pop]
+        loglog(r0nu, annu, 'g.-')
+        loglog(r0nu, nunu, 'r.-')
+        xlabel('r/pc'); ylabel('nu')
+        pdb.set_trace()
 
     Signu  = glp.rho_param_INT_Sig(r0nu, nupar, pop, gp)
-    #clf()
-    #loglog(gp.xipol, gp.dat.Sig[pop], 'b.-')
-    #loglog(r0nu[:-gp.nexp], Signu, 'r.-')
-    #xlabel('r/pc'); ylabel('Sigma')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        loglog(gp.xipol, gp.dat.Sig[pop], 'b.-')
+        loglog(r0nu[:-gp.nexp], Signu, 'r.-')
+        xlabel('r/pc'); ylabel('Sigma_nu')
+        pdb.set_trace()
 
 
     # int beta(s)/s ds
     # -----------------------------------------------------------------------
     idnu   = ant_intbeta(r0nu, betapar, gp)
-    #clf()
-    #plot(r0nu, idnu, 'r.-')
-    beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
-    #anidnu = 0.5*(np.log(r0nu**2+r_a1**2)-np.log(r_a1**2))
-    #plot(r0nu, anidnu, 'b.-')
-    #xlabel('r/pc'); ylabel('int ds beta(s)/s')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        plot(r0nu, idnu, 'r.-')
+        beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
+        anidnu = 0.5*(np.log(r0nu**2+r_a1**2)-np.log(r_a1**2))
+        plot(r0nu, anidnu, 'b.-')
+        xlabel('r/pc'); ylabel('int ds beta(s)/s')
+        pdb.set_trace()
 
     # integrate enclosed 3D mass from 3D density
     r0tmp = np.hstack([0.,r0nu])
@@ -167,14 +172,15 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     for i in range(len(r0nu)):              # get Mrnu
         Mrnu[i] = splint(0., r0nu[i], splpar_rho)
     gh.checkpositive(Mrnu, 'Mrnu')
-    #loglog(gp.xipol, gp.dat.Mr[pop], 'g.-')
-    s = r0nu/r_DM # [1]
-    anMr = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
-    #clf()
-    #loglog(r0nu, anMr, 'b.-')
-    #loglog(r0nu, Mrnu, 'r.-')
-    #xlabel('r/pc'); ylabel('M(r)')
-    #pdb.set_trace()
+    if gp.checksig:
+        loglog(gp.xipol, gp.dat.Mr[pop], 'g.-')
+        s = r0nu/r_DM # [1]
+        anMr = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
+        clf()
+        loglog(r0nu, anMr, 'b.-')
+        loglog(r0nu, Mrnu, 'r.-')
+        xlabel('r/pc'); ylabel('M(r)')
+        pdb.set_trace()
 
 
 
@@ -186,11 +192,12 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     yint *= nunu                          # [Munit/pc^4 (km/s)^2]
     yint *= np.exp(2*idnu)                  # [Munit/pc^4 (km/s)^2]
     gh.checkpositive(yint, 'yint sigr2')
-    #clf()
-    #loglog(xint, yint, 'r.-')
-    #loglog(xint, gp.G1 * anMr / r0nu**2 * annu * np.exp(2*anidnu), 'b--')
-    #xlabel('xint/pc'); ylabel('yint')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        loglog(xint, yint, 'r.-')
+        loglog(xint, gp.G1 * anMr / r0nu**2 * annu * np.exp(2*anidnu), 'b--')
+        xlabel('xint/pc'); ylabel('yint')
+        pdb.set_trace()
 
 
     # use quadinflog or quadinfloglog here
@@ -204,10 +211,11 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
             sigr2nu[i] = 1e-100
         # last arg: warn if no convergence found
     gh.checkpositive(sigr2nu, 'sigr2nu in sigl2s')
-    #clf()
-    #loglog(r0nu, sigr2nu, 'r.-')
-    #xlabel('r/pc');ylabel('sigr2nu')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        loglog(r0nu, sigr2nu, 'r.-')
+        xlabel('r/pc');ylabel('sigr2nu')
+        pdb.set_trace()
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
     # --------------------------------------------------------------
@@ -224,28 +232,31 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         sigl2s[i] = gh.quadinflog(xnew, ynew, 0, xnew[-1], False)
     # for last 3 bins, we are up to a factor 2 off
     gh.checkpositive(sigl2s, 'sigl2s')
-    #clf()
-    #loglog(r0nu[:-gp.nexp], sigl2s, 'r.-')
-    #xlabel('r/pc'); ylabel('sigl2s')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        loglog(r0nu[:-gp.nexp], sigl2s, 'r.-')
+        xlabel('r/pc'); ylabel('sigl2s')
+        pdb.set_trace()
 
     siglos2 = sigl2s/Signu
-    #clf()
-    #plot(r0nu[:-gp.nexp], siglos2, 'r.-')
-    #xlabel('r/pc'); ylabel('siglos2')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        plot(r0nu[:-gp.nexp], siglos2, 'r.-')
+        xlabel('r/pc'); ylabel('siglos2')
+        pdb.set_trace()
 
     # derefine on radii of the input vector
     splpar_sig = splrep(r0nu[:-gp.nexp], np.log(siglos2), k=3, s=0.)
     siglos2_out = np.exp(splev(r0, splpar_sig))
     gh.checkpositive(siglos2_out, 'siglos2_out')
-    #clf()
-    #plot(r0, np.sqrt(siglos2_out), 'r.-', label='model')
-    #plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
-    #fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
-    #xscale('log'); xlim([1,2000])
-    #xlabel('r/pc');ylabel('sigma LOS')
-    #pdb.set_trace()
+    if gp.checksig:
+        clf()
+        plot(r0, np.sqrt(siglos2_out), 'r.-', label='model')
+        plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
+        fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
+        xscale('log'); xlim([1,2000])
+        xlabel('r/pc');ylabel('sigma LOS')
+        pdb.set_trace()
 
     if not gp.usekappa:
         kapl4s_out = np.ones(len(siglos2_out))

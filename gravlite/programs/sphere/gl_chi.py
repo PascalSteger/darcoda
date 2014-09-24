@@ -42,12 +42,21 @@ def calc_chi2(profs, gp):
 
     # now run through the stellar tracers
     for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]
-        Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
-        Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]
-        Sigmodel = profs.get_prof('Sig', pop)
-        chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
-        chi2 += chi2_Sig                 # [1]
-        gh.LOG(1, ' chi2_Sig   = ', chi2_Sig)
+
+        #Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
+        #Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]
+        #Sigmodel = profs.get_prof('Sig', pop)
+        #chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
+        #chi2 += chi2_Sig                 # [1]
+        #gh.LOG(1, ' chi2_Sig   = ', chi2_Sig)
+
+        nudat   = gp.dat.nu[pop]      # [Munit/pc^2]
+        nuerr   = gp.dat.nuerr[pop]   # [Munit/pc^2]
+        numodel = profs.get_prof('nu', pop)
+        chi2_nu  = chi2red(numodel, nudat, nuerr, gp.nipol) # [1]
+        chi2 += chi2_nu                 # [1]
+        gh.LOG(1, ' chi2_nu   = ', chi2_nu)
+
 
         if not gp.chi2_Sig_converged:
             continue

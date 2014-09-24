@@ -459,7 +459,7 @@ class ProfileCollection():
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
         else:
             self.plot_Xscale_3D(ax, gp)
-        ax.set_xlim([r0[0],r0[-1]])
+        ax.set_xlim([r0[0]/2,r0[-1]*1.5])
         #ax.set_xlim([gp.xipol[0], gp.xipol[-1]]) # gp.dat.binmax[-1]*gp.Xscale[0]])
         # if gp.pops==1:
         #     ax.set_xlim([r0[0], 5*gp.Xscale[1]])
