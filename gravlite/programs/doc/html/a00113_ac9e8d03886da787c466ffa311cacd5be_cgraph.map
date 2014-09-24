@@ -1,7 +1,0 @@
-<map id="grh_Kappalos.run" name="grh_Kappalos.run">
-<area shape="rect" id="node3" href="$a00090.html#a77f4841997d8a7b7e8f731c7208285f2" title="split interval into bins, in a logarithmic fashion " alt="" coords="189,5,320,35"/>
-<area shape="rect" id="node5" href="$a00090.html#af20d87d0aac4453276d762c7e42a7dd5" title="split interval into bins of constant particle number " alt="" coords="183,58,327,105"/>
-<area shape="rect" id="node7" href="$a00090.html#a40fb01b0ec34e3e41223f4c9d57b79ff" title="split interval linearly into bins " alt="" coords="183,128,327,157"/>
-<area shape="rect" id="node9" href="$a00115.html#a7812b6f74b1d8d38ebdfd04b5eb96ad1" title="grh_menc2D.foo_pool" alt="" coords="180,181,329,211"/>
-<area shape="rect" id="node11" href="$a00115.html#a2ad45a2555abf468dce3e59b0a4b0ec5" title="grh_menc2D.log_result" alt="" coords="177,235,332,264"/>
-</map>

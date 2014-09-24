@@ -1,6 +1,0 @@
-<map id="massedit.main" name="massedit.main">
-<area shape="rect" id="node3" href="$a00128.html#a32c7a119d0771c24dae51b9e58a0a57e" title="Instantiate an editor and process arguments. " alt="" coords="160,32,323,61"/>
-<area shape="rect" id="node5" href="$a00128.html#a57c5a089b2ce29d2e1f5b75f8fe9d544" title="Parse command line argument. " alt="" coords="371,5,573,35"/>
-<area shape="rect" id="node7" href="$a00128.html#a1852a7ea49d51461fb9f1e5ff2531794" title="massedit.edit_files" alt="" coords="407,59,537,88"/>
-<area shape="rect" id="node9" href="$a00128.html#ac03a901459f4dff82f8d4bec383ffbfd" title="Retrieve files that match any of the patterns. " alt="" coords="621,59,757,88"/>
-</map>
