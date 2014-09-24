@@ -138,8 +138,8 @@ class Params():
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta*
         self.minbetastar = 0.0  # clipping for beta, default: -0.99
-        self.maxbetastar = 1.0    # clipping for beta, default:  1.00
-        self.beta00prior = False  # prior beta(r=0) = 0
+        self.maxbetastar = 0.99    # clipping for beta, default:  1.00
+        self.beta00prior = True  # prior beta(r=0) = 0
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
