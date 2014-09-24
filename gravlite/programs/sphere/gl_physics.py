@@ -165,13 +165,13 @@ def beta2betastar(beta):
 # @param beta [1]
 
 
-def betastar_sigmoid(r0, r0turn, vec, gp):
-    gh.sanitize_vector(vec, 4, -1e6, 1e6)
-    gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
+# def betastar_sigmoid(r0, r0turn, vec, gp):
+#     gh.sanitize_vector(vec, 4, -1e6, 1e6)
+#     gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
 
-    s=np.log(r0/r0turn)
-    betatmp = vec[0]/(1+np.exp(vec[1]*s+vec[2]))+vec[3]*np.ones(len(r0))
-    return betatmp
+#     s=np.log(r0/r0turn)
+#     betatmp = vec[0]/(1+np.exp(vec[1]*s+vec[2]))+vec[3]*np.ones(len(r0))
+#     return betatmp
 ## \fn betastar(r0, vec, gp)
 # calculate betastar from 4 parameters, using general sigmoid function
 # @param r0 radii [pc]

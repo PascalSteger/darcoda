@@ -50,9 +50,13 @@ def myloglike(cube, ndim, nparams):
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
-    with open(gp.files.outdir+'pc2.save', 'ab') as fi:
-        pickle.dump(tmp_profs, fi)
-        # convention: use chi^2 directly, not log likelihood
+
+    # we only store models after the initial Sigma burn-in
+    if gp.chi2_Sig_converged:
+        with open(gp.files.outdir+'pc2.save', 'ab') as fi:
+            pickle.dump(tmp_profs, fi)
+            # convention: use chi^2 directly, not log likelihood
+
     # for output:
     # from   likelihood L = exp(-\chi^2/2), want log of that
     return -tmp_profs.chi2/2.

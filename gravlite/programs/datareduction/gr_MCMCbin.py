@@ -150,6 +150,8 @@ def run(gp):
                     v4[i][k] = (curt+3)*var**2
 
             Sigma = Sig_kin[:,k]
+            if not gp.usezeta:
+                continue
             Ntot[k] = gh.Ntot(Rbin, Sigma, gp)
             zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k], gp)
             v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k], gp))**2
@@ -255,15 +257,14 @@ def run(gp):
             # [rscale], 2*[1]
         f_kap.close()
 
-
-        print(np.median(zetaa), np.median(zetab), file=f_zeta)
+        if gp.usezeta:
+            print(np.median(zetaa), np.median(zetab), file=f_zeta)
         f_zeta.close()
 
         if gpr.showplots:
             gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Sig0pc)
             gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
             gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
-
 
 
 if __name__ == '__main__':

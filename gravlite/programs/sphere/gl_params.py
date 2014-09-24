@@ -45,7 +45,7 @@ class Params():
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
 
-        self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -125,8 +125,8 @@ class Params():
                                          # everywhere
         self.iscale_nu = -1
 
-        self.nrtol  = 1.5/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1.5/(8./self.nipol) # max change in dn(r)/d log(r)
+        self.nrtol  = 1.8/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
+        self.nrtol_nu = 1.8/(8./self.nipol) # max change in dn(r)/d log(r)
 
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
@@ -137,7 +137,7 @@ class Params():
         self.minlog10nu = -10     # direct sampling of nu: max value
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta*
-        self.minbetastar = 0.0  # clipping for beta, default: -0.99
+        self.minbetastar = 0.00  # clipping for beta, default: -0.99
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00
         self.beta00prior = True  # prior beta(r=0) = 0
         self.MtoLmin = 0.8

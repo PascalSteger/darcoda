@@ -83,7 +83,7 @@ def geom_loglike(cube, ndim, nparams, gp):
             try:
                 if gp.checksig:
                     import gl_analytic as ga
-                    anrho = ga.rho_gaia(gp.xepol, gp)[0]/10. # TODO remove
+                    anrho = ga.rho_gaia(gp.xepol, gp)[0]
                     rhopar_half = anrho[np.argmin(np.abs(gp.xepol-gp.Xscale[0]))]
                     nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
                     dlr = np.hstack([nr[0], nr, nr[-1]])

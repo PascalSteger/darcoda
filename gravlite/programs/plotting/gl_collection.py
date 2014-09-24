@@ -77,7 +77,7 @@ class ProfileCollection():
     def cut_subset(self):
         minchi = min(self.chis)
         maxchi = max(self.chis)
-        self.subset = [0., np.inf*30.*minchi]
+        self.subset = [0., 30.*minchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -489,9 +489,8 @@ class ProfileCollection():
         if prof == 'chi2':
             goodchi = []
             for k in range(len(self.profs)):
-                if self.subset[0] <= self.chis[k]\
-                   and self.chis[k] <= self.subset[1]:
-                    goodchi.append(self.chis[k])
+                # do include all chi^2 values for plot
+                goodchi.append(self.chis[k])
             print('plotting profile chi for '+str(len(goodchi))+' models')
             print('min, max, maxsubset found chi2: ', min(self.chis), max(self.chis), self.subset[1])
             bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \

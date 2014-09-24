@@ -48,7 +48,7 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 def ant_intbeta(r0, betapar, gp):
     # define function
     xint = 1.*r0
-    yint = phys.beta(xint, betapar, gp)[0]/xint-0.5 #TODO remove -0.5
+    yint = phys.beta(xint, betapar, gp)[0]/xint
 
     # analytic values
     # yint =  ga.beta_gaia(xint, gp)[1]/xint
@@ -101,7 +101,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     if gp.checksig:
         loglog(r0nu, ga.rho_gaia(r0nu, gp)[0], 'b.-')
         loglog(r0nu, rhonu, 'r.-')
-        xlabel('r/pc'); ylabel('rho')
+        #xlabel('r/pc'); ylabel('rho')
         pdb.set_trace()
 
     # add up tracer densities to get overall density profile
@@ -117,13 +117,13 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     #check influence of wrong beta
     #betapar[3] -= 0.1
 
-    betanu = phys.beta(r0nu, betapar, gp)[0]-0.5
+    betanu = phys.beta(r0nu, betapar, gp)[0]
     if gp.checksig:
         clf()
         anbeta = ga.beta_gaia(r0nu, gp)[1]
         plot(r0nu, anbeta, 'b.-')
         plot(r0nu, betanu, 'r.-')
-        xlabel('r/pc'); ylabel('beta')
+        #xlabel('r/pc'); ylabel('beta')
         pdb.set_trace()
 
     #nupar[0] *= 1e3 # TODO: check that siglos**2 is not changing with scaling of nu
@@ -134,7 +134,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         annu = ga.rho_gaia(r0nu, gp)[pop]
         loglog(r0nu, annu, 'g.-')
         loglog(r0nu, nunu, 'r.-')
-        xlabel('r/pc'); ylabel('nu')
+        #xlabel('r/pc'); ylabel('nu')
         pdb.set_trace()
 
     Signu  = glp.rho_param_INT_Sig(r0nu, nupar, pop, gp)
@@ -142,7 +142,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         clf()
         loglog(gp.xipol, gp.dat.Sig[pop], 'b.-')
         loglog(r0nu[:-gp.nexp], Signu, 'r.-')
-        xlabel('r/pc'); ylabel('Sigma_nu')
+        #xlabel('r/pc'); ylabel('Sigma nu')
         pdb.set_trace()
 
 
@@ -214,7 +214,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     if gp.checksig:
         clf()
         loglog(r0nu, sigr2nu, 'r.-')
-        xlabel('r/pc');ylabel('sigr2nu')
+        #xlabel('r/pc');ylabel('sigr2nu')
         pdb.set_trace()
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
@@ -235,14 +235,14 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     if gp.checksig:
         clf()
         loglog(r0nu[:-gp.nexp], sigl2s, 'r.-')
-        xlabel('r/pc'); ylabel('sigl2s')
+        #xlabel('r/pc'); ylabel('sigl2s')
         pdb.set_trace()
 
     siglos2 = sigl2s/Signu
     if gp.checksig:
         clf()
         plot(r0nu[:-gp.nexp], siglos2, 'r.-')
-        xlabel('r/pc'); ylabel('siglos2')
+        #xlabel('r/pc'); ylabel('siglos2')
         pdb.set_trace()
 
     # derefine on radii of the input vector
@@ -255,7 +255,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
         fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
         xscale('log'); xlim([1,2000])
-        xlabel('r/pc');ylabel('sigma LOS')
+        #xlabel('r/pc');ylabel('sigma LOS')
         pdb.set_trace()
 
     if not gp.usekappa:

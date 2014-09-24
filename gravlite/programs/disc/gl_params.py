@@ -154,7 +154,7 @@ class Params():
         ########## integration options
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
-        self.usezeta    = True  # switch to turn on (True) or off the
+        self.usezeta    = False  # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
 
 

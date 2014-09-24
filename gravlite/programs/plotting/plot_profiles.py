@@ -124,20 +124,22 @@ if __name__ == '__main__':
 
     read_scale(basename, gp) # store half-light radii in  gp.Xscale
     import gl_helper as gh
+
     Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0]) # [Xscale0], [Munit/Xscale0^2]
-    # TODO: set Xscale
+    # we have verified that indeed the stored files in the run directory are used
+
     gp.xipol = Radii * gp.Xscale[0]       # [pc]
     maxR = max(Radii)                     # [pc]
     minR = min(Radii)
     Radii = np.hstack([minR/8, minR/4, minR/2, Radii, 2*maxR, 4*maxR, 8*maxR]) # [pc]
     gp.xepol = Radii * gp.Xscale[0]       # [pc]
 
-    #if calculate_anew:
-    #    pc = calculate_profiles(gp)
-    #    pcsave(basename, pc)
-    #else:
     pc = pcload_single_entries(basename)
-    # pc = pcload(basename)
+
+    # first plot all chi^2 values in histogram
+    pc.plot_profile(basename, 'chi2', 0, gp)
+
+    # then select only the best models for plotting the profiles
     pc.cut_subset()
     pc.set_x0(gp.xipol) # [pc]
 
@@ -150,7 +152,7 @@ if __name__ == '__main__':
 
     pc.write_all(basename, gp)
 
-    pc.plot_profile(basename, 'chi2', 0, gp)
+
     pc.plot_profile(basename, 'rho', 0, gp)
 
     if gp.investigate == 'obs':
