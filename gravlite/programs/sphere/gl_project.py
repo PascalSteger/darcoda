@@ -126,7 +126,8 @@ def rho_INT_Sig(r0, rho, gp):
 def rho_param_INT_Sig(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
-    gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, max(gp.nrtol, gp.rhohalf+gp.rhospread))
+    gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
+                       max(gp.maxrhoslope, 10**(gp.rhohalf+gp.rhospread)))
     xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
     r0nu = gp.xfine
 

@@ -14,9 +14,9 @@ import gl_helper as gh
 import gl_project as glp
 from scipy.interpolate import splrep, splev
 
-def introduce_points_in_between(r0, rmax, gp):
+def introduce_points_in_between(r0, gp):
     rmin = np.log10(min(r0))
-    rmax = np.log10(rmax)
+    rmax = np.log10(max(r0))
     return np.logspace(rmin, rmax, gp.nfine)
 ## \fn introduce_points_in_between(r0, gp)
 # get gp.fine points logarithmically spaced points
@@ -82,7 +82,7 @@ class Datafile:
                 gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
                                       self.rbin, \
                                       2*maxr, 4*maxr, 8*maxr]) # [pc]
-                gp.xfine = introduce_points_in_between(gp.xepol, gp.rinfty, gp)
+                gp.xfine = introduce_points_in_between(gp.xepol, gp)
             # deproject,
             # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
             # already normalized to same total mass

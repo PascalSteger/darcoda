@@ -95,8 +95,7 @@ class Params():
         self.rinfty = 30. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 5   # number of parameters for beta, in sum of
-                         # polynomials
+        self.nbeta = 4   # number of parameters for beta
 
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found

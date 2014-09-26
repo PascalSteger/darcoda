@@ -96,7 +96,11 @@ def varepsilon(r0, betapar, gp):
 
 
 def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
-    r0fine   = gp.xfine
+
+    rmin = np.log10(min(r0))
+    rmax = np.log10(max(r0)*gp.rinfty)
+    r0fine = np.logspace(rmin, rmax, gp.nfine)
+
 
     # rho
     # --------------------------------------------------------------------------
