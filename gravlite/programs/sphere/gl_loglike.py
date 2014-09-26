@@ -8,6 +8,8 @@ import numpy as np
 import pdb
 from pylab import *
 
+from scipy.interpolate import splev, splrep
+
 import gl_physics as phys
 
 from gl_class_profiles import Profiles
@@ -44,7 +46,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('nu', rhostar[gp.nexp:-gp.nexp], 0, gp)
         off += offstep
 
-        Signu = glp.rho_INTIPOL_Sig(gp.xepol, rhostar, gp) # [Munit/pc^2]
+        Signu = glp.rho_param_INT_Sig(gp.xepol, rhostar, 0, gp) # [Munit/pc^2]
         Sig = gh.linipollog(gp.xepol, Signu, gp.xipol)
         tmp_profs.set_prof('Sig', Sig, 0, gp)
 
@@ -61,7 +63,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('nrnu', tmp_nrnu, pop, gp)
         tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)
         tmp_profs.set_prof('nu', tmp_nu[gp.nexp:-gp.nexp], pop, gp)
-        tmp_Signu = glp.rho_INTIPOL_Sig(gp.xepol, tmp_nu, gp) # [Munit/pc^2]
+        tmp_Signu = glp.rho_param_INT_Sig(gp.xepol, nupar, pop, gp) # [Munit/pc^2]
         tmp_Sig = gh.linipollog(gp.xepol, tmp_Signu, gp.xipol)
         tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
         off += offstep
@@ -80,32 +82,35 @@ def geom_loglike(cube, ndim, nparams, gp):
             gh.sanitize_vector(tmp_betastar, len(tmp_profs.x0), -1, 1)
             tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
 
-            try:
-                if gp.checksig:
-                    import gl_analytic as ga
-                    anrho = ga.rho_gaia(gp.xepol, gp)[0]
-                    rhopar_half = anrho[np.argmin(np.abs(gp.xepol-gp.Xscale[0]))]
-                    nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
-                    dlr = np.hstack([nr[0], nr, nr[-1]])
-                    rhopar = np.hstack([rhopar_half, dlr])
+            #try:
+            if gp.checksig:
+                import gl_analytic as ga
+                # anrho = ga.rho_gaia(gp.xepol, gp)[0]
+                anrho = ga.rho_hern(gp.xepol, gp.ana, gp.anM)
+                rhopar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
+                nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
+                dlr = np.hstack([nr[0], nr, nr[-1]])
+                rhopar = np.hstack([rhopar_half, dlr])
 
-                    rhostarpar = 0.0*rhopar
-                    MtoL = 0.0
-                    betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02])
-                    annu = ga.rho_gaia(gp.xepol, gp)[1]
-                    nupar_half = annu[np.argmin(np.abs(gp.xepol-gp.Xscale[1]))]
-                    nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
-                    dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
-                    nupar = np.hstack([nupar_half, dlrnu])
+                rhostarpar = 0.0*rhopar
+                MtoL = 0.0
+                #betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02])
+                betapar = np.array([0, 0, 0, 2, 500])
+                # annu = ga.rho_gaia(gp.xepol, gp)[1]
+                annu = ga.rho_hern(gp.xepol, gp.ana, gp.anM)
+                nupar_half = np.exp(splev(gp.Xscale[1], splrep(gp.xepol, np.log(annu))))
+                nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
+                dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
+                nupar = np.hstack([nupar_half, dlrnu])
 
-                sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
-                                                     rhostarpar, MtoL, \
-                                                     nupar, betapar, pop, gp)
+            sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
+                                                 rhostarpar, MtoL, \
+                                                 nupar, betapar, pop, gp)
 
-            except Exception as detail:
-                gh.LOG(1, 'sigma error')
-                tmp_profs.chi2 = gh.err(2., gp)
-                return tmp_profs
+            #except Exception as detail:
+            #    gh.LOG(1, 'sigma error')
+            #    tmp_profs.chi2 = gh.err(2., gp)
+            #    return tmp_profs
             tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
             tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
             tmp_profs.set_zeta(zetaa, zetab, pop)

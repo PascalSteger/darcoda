@@ -14,7 +14,7 @@ from pylab import *
 import time
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
-DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
+DEBUGLEVEL = 3 # 0: none, 1: some, 2: more, 3: all
 
 def LOG(level, message, var=''):
     if level > DEBUGLEVEL:
@@ -32,13 +32,15 @@ def LOG(level, message, var=''):
 def sanitize_vector(vec, length, mini, maxi):
     if len(vec) != length:
         LOG(1, 'vec has wrong length')
-        #pdb.set_trace()
+        pdb.set_trace()
         #raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
+        pdb.set_trace()
         #raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
+        pdb.set_trace()
         #raise Exception('vec has too high value', max(vec))
     return
 ## \fn sanitize_vector(vec, length, mini, maxi)

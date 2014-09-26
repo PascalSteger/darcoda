@@ -33,7 +33,7 @@ def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
 
 def nr(r0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
-    rnu = np.hstack([r0[0]/2, r0, gp.rinfty*r0[-1]])
+    rnu = np.hstack([r0[0]/gp.rinfty, r0, gp.rinfty*r0[-1]])
     # up: common radii r0, but different scale radius for each pop
     logrnu = np.log(rnu/gp.Xscale[pop])
     dlrnu = -1.*dlr
@@ -51,56 +51,10 @@ def nr(r0, dlr, pop, gp):
 # @param gp global parameters
 
 
-def nr_medium(dlr, pop, gp):
-    binmin = np.hstack([gp.dat.binmin[0]/1e4, \
-                        gp.dat.binmin[0]/2., \
-                        gp.dat.binmin, \
-                        gp.dat.binmax[-1], \
-                        3.*gp.xepol[-4], \
-                        # gp.xepol[-4] is last data bin radius
-                        5.*gp.xepol[-4], \
-                        11.*gp.xepol[-4]])
-
-    binmax = np.hstack([gp.dat.binmin[0]/2., \
-                        gp.dat.binmin[0], \
-                        gp.dat.binmax, \
-                        3*gp.xepol[-4], \
-                        5.*gp.xepol[-4], \
-                        11.*gp.xepol[-4], \
-                        (2*gp.rinfty-11.)*gp.xepol[-4]])
-
-    # gpl.plot(gp.xepol, 1*np.ones(len(gp.xepol)), 'b.')
-    # gpl.plot(gp.rinfty*gp.xepol[-4], 1, 'b.')
-    # gpl.plot(binmin, np.zeros(len(binmin)), '.')
-    # gpl.plot(binmax, 2*np.ones(len(binmax)), '.')
-    # gpl.ylim([-4, 4])
-    # gpl.xscale('log')
-
-
-    # extend asymptotes to 0, and high radius
-    r0 = np.hstack([binmin, binmax[-1]])
-    # 1+(Nbin+1)+1 entries
-    logr0 = np.log(r0/gp.Xscale[pop])
-    dlr = np.hstack([dlr[0], dlr, dlr[-1]]) # 1+Nbin+2 entries
-    dlr *= -1.
-
-    # use linear spline interpolation in r
-    spline_n = splrep(logr0, dlr, k=1)
-    # evaluate spline at any points in between
-    return spline_n #, splev(r0, spline_n)
-## \fn nr_medium(dlogrhodlogr, pop, gp)
-# calculate n(r) at any given radius, as linear interpolation with two asymptotes
-# NOT USED ANYMORE
-# @param dlogrhodlogr : asymptote at 0, n(r) for all bins at outsides of bin, asymptote at infinity
-#                       1+Nbin+1 entries in [log Munit/pc^3/(log pc)]
-# @param pop int for population (0 both, 1, 2..)
-# @param gp global parameters
-
-
 def rho(r0, rhopar, pop, gp):
     gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30)
-    vec = 1.*rhopar
-    rhoathalf = vec[0]
+    vec = 1.*rhopar # make a new copy so we do not overwrite rhopar
+    rho_at_rhalf = vec[0]
     vec = vec[1:]
 
     # get spline representation on gp.xepol, where rhopar are defined on
@@ -109,19 +63,26 @@ def rho(r0, rhopar, pop, gp):
     # and apply it to these radii, which may be anything in between
     rs =  np.log(r0/gp.Xscale[pop]) # have to integrate in d log(r)
 
-    logrright = rs[(rs>=0.)]
-    logrleft  = rs[(rs<0.)]
-    logrleft  = logrleft[::-1] # inverse order
+    logrright = []; logrleft = []
+    if np.rank(rs) == 0:
+        if rs>0:
+            logrright.append(rs)
+        else:
+            logrleft.append(rs)
+    else:
+        logrright = rs[(rs>=0.)]
+        logrleft  = rs[(rs<0.)]
+        logrleft  = logrleft[::-1] # inverse order
 
     logrhoright = []
     for i in np.arange(0, len(logrright)):
-        logrhoright.append(np.log(rhoathalf) + \
+        logrhoright.append(np.log(rho_at_rhalf) + \
                            splint(0., logrright[i], spline_n))
                            # integration along dlog(r) instead of dr
 
     logrholeft = []
     for i in np.arange(0, len(logrleft)):
-        logrholeft.append(np.log(rhoathalf) + \
+        logrholeft.append(np.log(rho_at_rhalf) + \
                           splint(0., logrleft[i], spline_n))
 
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)

@@ -510,13 +510,21 @@ def beta_gaia(rad, gp):
         raise Exception('wrong investigation!')
     if gp.case == 9 or gp.case == 10:
         # constant tangential velocity anisotropy of beta=-0.5
-        return rad*0.0-0.5
+        return rad*0.0-0.5, rad*0.0-0.5
     beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
     beta = rad**2/(rad**2+r_a1**2)
     return beta, beta
 ## \fn beta_gaia(rad, gp)
 # Osipkov-Merritt velocity anisotropy profile, for pop 0, pop 1
 # @param rad radius in [pc]
+# @param gp global parameters
+
+
+def beta_hern(rad, gp):
+    return 0.*rad, 0.*rad
+## \fn beta_hern(rad, gp)
+# analytic value for beta in Hernquist case
+# @param rad radius [pc]
 # @param gp global parameters
 
 
@@ -538,7 +546,6 @@ def rho_hern(r0, a, M):
 ## \fn rho_hern(r0, a, M)
 # equation 2 from Hernquist 1990, 3D mass density
 # equation 2b from Baes&Dejonghe 2002
-# NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
 # @param M scale mass in [Munit]
@@ -589,7 +596,6 @@ def sigr2_hern(r0, a, M, G):
            G*M/(12.*a)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
 ## \fn sigr2_hern(r0, a, M, G)
 # sig_r^2, equation 10 of Hernquist 1990
-# NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
 # @param M scale mass in [Munit]
@@ -601,7 +607,6 @@ def sig_los_hern(r0, a, M, G):
     return np.sqrt(Sig_sig_los_2_hern(r0, a, M, G)/Sig_hern(r0, a, M))
 ## \fn sig_los_hern(r0, a, M)
 # sig_los determined from analytic surfden*sig2 and surfden
-# NOT USED ANYMORE, only in grh_MCMCbin.py, for debugging, commented
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
 # @param M scale mass in [Munit]
@@ -627,7 +632,6 @@ def Sig_sig_los_2_hern(r0, a, M, G):
                                           -6.*np.pi*s) # [(km/s)^2 * Munit/pc^2]
 ## \fn Sig_sig_los_2_hern(r0, a, M, G)
 # equation 21 from Baes&Dejonghe 2002
-# NOT USED ANYMORE
 # @param r0 radius in [pc]
 # @param a scale radius in [pc]
 # @param M scale mass in [Munit]

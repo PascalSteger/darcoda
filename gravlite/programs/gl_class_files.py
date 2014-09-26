@@ -415,7 +415,7 @@ class Files:
         # rsync -r --exclude '.git' source target to exclude .git dir from copy
         return
     ## \fn populate_output_dir(self, gp)
-    # copy data and program files to output directory, with timestamp
+    # copy data files to output directory, with timestamp
     # @param gp global parameters
 
 

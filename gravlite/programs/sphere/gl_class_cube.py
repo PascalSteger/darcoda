@@ -97,26 +97,9 @@ def map_nu_directly(pa, gp):
     for i in range(gp.nepol):
         pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
     return pa
-## \fn map_nu(pa, gp)
+## \fn map_nu_directly(pa, gp)
 # map tracer densities, directly
 # @param pa cube [0,1]^n
-# @param gp global parameters
-
-
-def map_nu(pa, pop, gp):
-    dat = gp.dat.nu_epol[pop]
-    err = gp.dat.nuerr_epol[pop]
-    minnu = dat-20*err
-    maxnu = dat+20*err
-    for i in range(len(pa)):
-        minlog10nu = np.log10(minnu[i])
-        maxlog10nu = np.log10(maxnu[i])
-        pa[i] = 10**(pa[i]*(maxlog10nu-minlog10nu)+minlog10nu)
-    return pa
-## \fn map_nu(pa, pop, gp)
-# map tracer densities, directly
-# @param pa cube [0,1]^n
-# @param pop population int
 # @param gp global parameters
 
 

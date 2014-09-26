@@ -45,7 +45,7 @@ class Params():
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
 
-        self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -57,7 +57,7 @@ class Params():
 
 
         ########## data options
-        self.getnewdata = True # get new data computed from
+        self.getnewdata = False # get new data computed from
                                 # observations before burn-in
         self.consttr    = True  # set radial bin by constant number of
                                 # tracer particles
@@ -72,7 +72,7 @@ class Params():
 
 
         ########## MultiNest options
-        self.chi2_Sig_converged = False # set to False to first converge on Sig
+        self.chi2_Sig_converged = True # set to False to first converge on Sig
         self.chi2_switch = 10.
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
@@ -90,9 +90,9 @@ class Params():
                                                 # more parameter for
                                                 # the asymptote to
                                                 # \infty
-        self.nfine = 2*self.nipol  # number of entries in integral lookup table
+        self.nfine = 100 #2*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
-        self.rinfty = 5. # interpolate from last slope to slope at
+        self.rinfty = 30. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
         self.nbeta = 5   # number of parameters for beta, in sum of
@@ -137,9 +137,9 @@ class Params():
         self.minlog10nu = -10     # direct sampling of nu: max value
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta*
-        self.minbetastar = 0.00  # clipping for beta, default: -0.99
+        self.minbetastar = -0.99  # clipping for beta, default: -0.99
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00
-        self.beta00prior = True  # prior beta(r=0) = 0
+        self.beta00prior = False  # prior beta(r=0) = 0
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
@@ -162,8 +162,9 @@ class Params():
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
-        self.checksig   = False # check sigma calculation routine with 'walk'
-
+        self.checksig   = True  # check sigma calculation routine with 'walk'
+        self.ana        = 1. # scale radius of Hernquist profile in [pc]
+        self.anM        = 1.   # total mass of Hernquist profile in [Msun]
 
 
         # unitsXS

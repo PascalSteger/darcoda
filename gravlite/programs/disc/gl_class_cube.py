@@ -74,15 +74,15 @@ def map_nr(pa, prof, pop, gp):
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     if 1 <= iscale + 1:
-        pa[1] = (pa[1]**1)*maxrhoslope/2.
+        pa[1] = pa[1]*maxrhoslope/2.
     else:
-        pa[1] = (pa[1]**1)*min(maxrhoslope, 2.99)
+        pa[1] = pa[1]*min(maxrhoslope, 2.99)
 
     # offset for the integration of dn(r)/dlog(r) at smallest radius
     if 2 <= iscale + 1:
-        pa[2] = (pa[2]**1)*maxrhoslope/2.
+        pa[2] = pa[2]*maxrhoslope/2.
     else:
-        pa[2] = (pa[2]**1)*maxrhoslope
+        pa[2] = pa[2]*maxrhoslope
 
     rdef = gp.xepol
     for i in range(3, gp.nrho-1):
@@ -168,11 +168,11 @@ class Cube:
             pc[off+i] = tmp[i]
         off += offstep
 
-        # rho*
+        # rho_baryons
         offstep = gp.nrho
-        tmp_rhostar = map_nr(pc[off:off+offstep], 'nu', 0, gp)
+        tmp_rho_baryons = map_nr(pc[off:off+offstep], 'nu', 0, gp)
         for i in range(offstep):
-            pc[off+i] = tmp_rhostar[i]
+            pc[off+i] = tmp_rho_baryons[i]
         off += offstep
 
         offstep = 1

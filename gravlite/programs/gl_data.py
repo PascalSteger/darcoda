@@ -14,9 +14,9 @@ import gl_helper as gh
 import gl_project as glp
 from scipy.interpolate import splrep, splev
 
-def introduce_points_in_between(r0, gp):
+def introduce_points_in_between(r0, rmax, gp):
     rmin = np.log10(min(r0))
-    rmax = np.log10(max(r0))
+    rmax = np.log10(rmax)
     return np.logspace(rmin, rmax, gp.nfine)
 ## \fn introduce_points_in_between(r0, gp)
 # get gp.fine points logarithmically spaced points
@@ -33,17 +33,16 @@ class Datafile:
         self.binmax = []
 
         ## keep mass profile
-        self.Mr = []; self.Mrerr = []; self.Mr_fine = []; self.Mrerr_fine = []
+        self.Mr = []; self.Mrerr = []
         self.Mhalf = []; self.rhalf = []
 
         ## keep radial profile of the tracer density, averaged in 2D-rings
-        self.nu = [];    self.nu_fine = [];    self.nu_epol = []
-        self.nuerr = []; self.nuerr_fine = []; self.nuerr_epol = []
+        self.nu = [];    self.nu_epol = []
+        self.nuerr = []; self.nuerr_epol = []
 
         self.nuhalf = []
 
         self.Sig = [];     self.Sigerr = []
-        self.Sig_fine = [];self.Sigerr_fine = []
 
         ## keep line of sight velocity dispersion profile, in [km/s]
         self.sig = []
@@ -83,7 +82,7 @@ class Datafile:
                 gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
                                       self.rbin, \
                                       2*maxr, 4*maxr, 8*maxr]) # [pc]
-                gp.xfine = introduce_points_in_between(gp.xepol, gp)
+                gp.xfine = introduce_points_in_between(gp.xepol, gp.rinfty, gp)
             # deproject,
             # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
             # already normalized to same total mass
@@ -93,12 +92,6 @@ class Datafile:
                 dummy, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
                                                                 Sigdatnu, Sigerrnu,\
                                                                 gp)
-                self.Sig_fine.append(Sigdatnu)
-                self.Sigerr_fine.append(Sigerrnu)
-                self.Mr_fine.append(Mrnu)
-                self.Mrerr_fine.append(Mrnu*nuerrnu/nudatnu) # TODO correct error
-                self.nu_fine.append(nudatnu)
-                self.nuerr_fine.append(nuerrnu)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
                 self.nuerr_epol.append(gh.linipollog(gp.xfine, nuerrnu, gp.xepol))
                 nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)

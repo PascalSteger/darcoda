@@ -126,10 +126,9 @@ def rho_INT_Sig(r0, rho, gp):
 def rho_param_INT_Sig(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
-    # gh.checknan(rhopar, 'rho_param_INT_Sig')
-    xmin = r0[0]/15. # tweaked. r0[0]/1e4 gives error in quad()
-    r0left = np.array([xmin, r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
-    r0nu = np.hstack([r0left, r0])
+    gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, max(gp.nrtol, gp.rhohalf+gp.rhospread))
+    xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
+    r0nu = gp.xfine
 
     rhonu = phys.rho(r0nu, rhopar, pop, gp)
     Sig = np.zeros(len(r0nu)-gp.nexp)
@@ -138,55 +137,56 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
         ynew = 2.*rhonu[i:]
 
         # power-law extension to infinity
-        # TODO check 1e6 => gp.rinfty is fine
-        C = gh.quadinflog(xnew[-gp.nexp:], ynew[-gp.nexp:], xnew[-1], gp.rinfty*max(xnew)) #np.inf)
-        # splpar_nu  = splrep(xnew, ynew, k=3)
-        # interpolation in real space, not log space
-        # problem: splint below could give negative values
-        # reason:  for high radii (high i), have a spline that goes negative
-        # workaround: multiply by const/add const to keep spline positive @ all times
-        #             or set to log (but then integral is not straightforward
-        # Sig[i] = splint(0., xnew[-1], splpar_nu) + C
+        C = gh.quadinflog(xnew[-gp.nexp:], ynew[-gp.nexp:], xnew[-1], gp.rinfty*xnew[-1])
         Sig[i] = gh.quadinflog(xnew[1:], ynew[1:], xmin, xnew[-1]) + C # np.inf)
 
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')
-    return Sig[len(r0left):] # @r0 (r0nu without r0left, and without 3 extension bins to right)
+
+    # interpolation onto r0
+    tck1 = splrep(np.log(gp.xfine[:-gp.nexp]), np.log(Sig))
+    Sigout = np.exp(splev(np.log(r0), tck1))
+    return Sigout
 ## \fn rho_param_INT_Sig(r0, rhopar, pop, gp)
 # take 3D density parameters, calculate projected surface density
-# @param r0 radii of bins, (nrho-nexp entries) [pc]
+# @param r0 radii of bins, [pc]
 # @param rhopar 3D density, (nrho entries) [Munit/pc^3]
 # @param pop int population to take halflight radius from (0 both, 1, 2)
 # @param gp global parameters
 
 
-def rho_INTIPOL_Sig(r0, rho, gp):
+def rho_param_INT_Sig_theta(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
-    # \Sigma(R) = \int_{r=R}^{r=\infty} \rho(r) d \sqrt(r^2-R^2)
-    # \Sigma(R) = 2\int_R^\infty dr \frac{\nu(r)}{\sqrt{r^2-R^2}}
-    # \Sigma(R) = \int_{r=R}^{r=\infty} \rho(r) d \sqrt(r^2-R^2)
+    # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
+    gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, max(gp.nrtol, gp.rhohalf+gp.rhospread))
 
-    gh.checkpositive(rho, 'rho in rho_INTIPOL_Sig')
-    rmax = r0[-1]
-    rext = [2*rmax, 4*rmax, 8*rmax]
-    r0nu = np.hstack([r0, rext])
-    nexp = 3
-    rhoe = rho[-1]
-    rhonu = np.hstack([rho, rhoe/1e2, rhoe/1e4, rhoe/1e8])
-    Sig = np.zeros(len(r0))
-    for i in range(len(r0)):
-        xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)         # [lunit]
-        ynew = 2.*rhonu[i:]
+    xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
+    r0nu = gp.xfine
 
-        # power-law extension to infinity
-        C = gh.quadinflog(xnew[-nexp:], ynew[-nexp:], xnew[-1], gp.rinfty*xnew[-1])
-        Sig[i] = gh.quadinflog(xnew[1:], ynew[1:], xnew[0], xnew[-1]) + C
+    bit = 1.e-4
+    theta = np.linspace(0, np.pi/2-bit, gp.nfine)
+    cth = np.cos(theta)
+    cth2 = cth*cth
+    Rproj = 1.*r0nu
 
-    gh.checkpositive(Sig, 'Sig in rho_INTIPOL_Sig')
-    return Sig
-## \fn rho_INTIPOL_Sig(r0, rho, gp)
-# take 3D density, compute 2D density in bins, with interpolation
-# @param r0 radii in [pc]
-# @param rho 3D density, [Munit/pc^3]
+    rhonu = phys.rho(r0nu, rhopar, pop, gp)
+    Sig = np.zeros(len(r0nu))
+    for i in range(len(r0nu)):
+        rq = Rproj[i]/cth
+        rhoq = np.interp(rq, r0nu, rhonu, left=0, right=0)#rhonu[-1]/1e10) # best for hern
+        #rhoq = phys.rho(rq, rhopar, pop, gp)
+        Sig[i] = 2.*Rproj[i]*simps(rhoq/cth2, theta)
+
+    gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')
+
+    # interpolation onto r0
+    tck1 = splrep(np.log(gp.xfine), np.log(Sig))
+    Sigout = np.exp(splev(np.log(r0), tck1))
+    return Sigout
+## \fn rho_param_INT_Sig_theta(r0, rhopar, pop, gp)
+# take 3D density parameters, calculate projected surface density with theta substitution
+# @param r0 radii of bins, [pc]
+# @param rhopar 3D density parameters, (nrho entries) [Munit/pc^3]
+# @param pop int population to take halflight radius from (0 both, 1, 2)
 # @param gp global parameters
 
 
