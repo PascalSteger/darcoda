@@ -29,73 +29,39 @@ case = gp.case
 
 if gp.investigate == 'hern':
     repr  = 1     # choose simulation representation
-    pops = gp.pops+1     # number of populations + 1 (for all comps together)
-    # numbers of tracers. both 0: take all particles
-    
-    Rcut = 1.e10                               # [Rvir]
+    Rcut = 1.e10  # [Rvir]
     Rmin = 0. * gp.Xscale[0] # [pc]
     Rmax = 3. * gp.Xscale[0] # [pc]
-    
-    nit = 30             # set number of iterations
-    procs = 1            # number of processes for parallel execution
-    
-    dir = gp.files.dir
-        
+
     simname = gp.files.get_sim_name(gp) # dir+'simulation/'+prename+'unit_hern_%i' %(repr)
-    simpos = dir+'simulation/'+simname+'stars_pos.txt'
-    simvel = dir+'simulation/'+simname+'stars_vel.txt'
-    fileposcartesian = []; fileposcenter = []; filevelcartesian = [];
-    fileposcartesian.append(dir+'simulation/'+simname+'pos_0.txt')
-    fileposcartesian.append(dir+'simulation/'+simname+'pos_1.txt')
-    fileposcenter.append(dir+'simulation/'+simname+'centeredpos_0.txt')
-    fileposcenter.append(dir+'simulation/'+simname+'centeredpos_1.txt')
-    filevelcartesian.append(dir+'simulation/'+simname+'vel_0.txt')
-    filevelcartesian.append(dir+'simulation/'+simname+'vel_1.txt')
-    
-    fileposspherical =[]; filevelspherical = []
-    fileposspherical.append(dir+'simulation/'+simname+'sphericalpos_0.txt')
-    fileposspherical.append(dir+'simulation/'+simname+'sphericalpos_1.txt')
-    filevelspherical.append(dir+'simulation/'+simname+'sphericalvel_0.txt')
-    filevelspherical.append(dir+'simulation/'+simname+'sphericalvel_1.txt')
-        
-    filemass = []; filedenfalloff = []; filesig = []; filekappa = []
-    filemass.append(dir+'M/'+simname+'M_0.txt')
-    filemass.append(dir+'M/'+simname+'M_1.txt')
-    filedenfalloff.append(dir+'Sigma/'+simname+'Sigma_0.txt')
-    filedenfalloff.append(dir+'Sigma/'+simname+'Sigma_1.txt')
-    filesig.append(dir+'siglos/'+simname+'veldisplos_0.txt')
-    filesig.append(dir+'siglos/'+simname+'veldisplos_1.txt')
-    filekappa.append(dir+'kappalos/'+simname+'kappalos_0.txt')
-    filekappa.append(dir+'kappalos/'+simname+'kappalos_1.txt')
-    
-     #################### files for Walker's mock data ####################
+    simpos = gp.files.dir+'simulation/'+simname+'stars_pos.txt'
+    simvel = gp.files.dir+'simulation/'+simname+'stars_vel.txt'
+
+
 elif gp.investigate == 'walk': # or just want to try some other generic pymc stuff:
     r_DM  = 1000.
-    
+
     def rhodm(r):
         exp = ((1.*gamma_DM-beta_DM)/alpha_DM)
         rho = rho0*(r/r_DM)**(-gamma_DM)*(1.+(r/r_DM)**alpha_DM)**exp
         return rho
-    
+
     fi = Files(gp)
     fi.set_walk(gp)
     dir = fi.dir
     fil = dir+'mem2'
-    
-    pops = gp.pops+1    # do analysis for all pops, plus one for all comp's
-    
+
     pmsplit = 0.9 # minimum probability of membership required for analysis
     # use 0 if grw_* should be called from within gravlite
     fileposcartesian = dir+'simulation/pos.txt'
     filevelcartesian = dir+'simulation/vel_my.txt'
-    
+
 elif gp.investigate == 'gaia':
     fi  = Files(gp)
     fi.set_gaia(gp)
     dir = fi.dir
     fil = dir + 'dat'
     r_DM = 1000.
-    pops  = 2 # TODO: search Gaia corresponding two-components
 
 elif gp.investigate == 'triax':
     fi  = Files(gp)
@@ -110,9 +76,7 @@ elif gp.investigate == 'obs':
     dir = fi.dir
     fil = dir+'mem2'
     pmsplit = 0.9
-    pops = gp.pops+1 # analysis for all components together, and each
-                      # population by itself
-    
+
 def volume_circular_ring(Binmin, Binmax, gp):
     Vol = np.zeros(gp.nipol)
     for k in range(gp.nipol):
@@ -126,51 +90,10 @@ def volume_circular_ring(Binmin, Binmax, gp):
 
 
 def get_com_file(n):
+    gh.sanitize_scalar(n, 0, 2)
     return gp.files.dir+'centeredpos_' + str(n) + '.txt'
 ## \fn get_com_file(n)
 # get filename of COM file
-# @param n population
-
-
-def get_com_png(n):
-    return gp.files.dir+'centeredpos_' + str(n) + '.png'
-## \fn get_com_png(n)
-# get filename of COM png
-# @param n population
-
-
-def get_pos_sphere_file(n):
-    return gp.files.dir+'sphericalpos_' + str(n) + '.txt'
-## \fn get_pos_sphere_file(n)
-# get data file with spherical positions
-# @param n population
-
-
-def get_vel_sphere_file(n):
-    return gp.files.dir+'sphericalvel_' + str(n) + '.txt'
-## \fn get_vel_sphere_file(n)
-# get data file with velocities in spherical coordinates
-# @param n population
-
-
-def get_dens_png(n):
-    return gp.files.dir+'Sigma/Sig_' + str(n) + '.png'
-## \fn get_dens_png(n)
-# get png output file
-# @param n population
-
-
-def get_siglos_png(n):
-    return gp.files.dir+'siglos/siglos_' + str(n) + '.png'
-## \fn get_siglos_png(n)
-# get png output file for sigma
-# @param n population
-
-
-def get_kurtosis_png(n):
-    return gp.files.dir+'kappalos/kappalos_' + str(n) + '.png'
-## \fn get_kurtosis_png(n)
-# get output png filename for kappa
 # @param n population
 
 
@@ -210,18 +133,18 @@ def show_part_pos(x, y, pmn, Xscale, comp):
     if gp.investigate != 'obs':
         circ_DM=Circle((0,0), radius=r_DM/Xscale, fc='None', ec='r', lw=1)
         gca().add_patch(circ_DM)
-    
+
     # visible region
     maxr = max(np.abs(x));  mayr = max(np.abs(y)) # [rscale]
     width2 = max([maxr,mayr]) # [rscale]
     xlim([-width2,width2])
     ylim([-width2,width2])
     axes().set_aspect('equal')
-    
+
     xlabel(r'$x [R_s]$')
     ylabel(r'$y [R_s]$')
     # title(fil)
-    # savefig(get_com_png(comp))
+    # savefig(gp.files.dir+'centeredpos_' + str(n) + '.png')
     return
 ## \fn show_part_pos(x, y, pmn, Xscale, comp) show 2D scatter plot of particle
 # positions
@@ -243,7 +166,7 @@ def show_plots_dens_3D(comp, rbin, p_dens, p_edens, gp):
     ylim([np.min(lbound), np.max(ubound)])
     xlabel(r'$r [r_c]$')
     ylabel(r'$\nu(r)/\nu(0)$')
-    savefig(gpr.get_dens_png_3D(comp))
+    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
     ioff(); show(); clf()
 ## \fn show_plots_dens_3D(Rbin, p_dens, p_edens, gp)
 # show density
@@ -267,7 +190,7 @@ def show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc):
     # xlim([0, gp.maxR]); ylim([np.min(lbound),np.max(ubound)])
     xlabel(r'$R [R_c]$')
     ylabel(r'$\nu_{2D}(R) [\mathrm{Munit/pc/pc}]$')
-    savefig(get_dens_png(comp))
+    savefig(gp.files.dir+'Sigma/Sig_' + str(n) + '.png')
     ioff(); show(); clf()
 ## \fn show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc)
 # show density
@@ -332,7 +255,7 @@ def show_plots_kappa(comp, Rbin, p_kappa, p_ekappa):
     ylabel(r'$\langle\kappa_{\mathrm{LOS}}\rangle [1]$')
     ylim([0, 5.])
     # xlim([0, gp.maxR])
-    savefig(get_kurtosis_png(comp))
+    savefig( gp.files.dir+'kappalos/kappalos_' + str(n) + '.png')
     ioff(); show(); clf()
 ## \fn show_plots_kappa(comp, Rbin, P_dens, P_edens, p_dvlos, p_edvlos, p_kappa, p_ekappa, Dens0pc)
 # show kappa profile with errors

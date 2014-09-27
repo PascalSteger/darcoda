@@ -158,10 +158,11 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
 def rho_param_INT_Sig_theta(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
-    gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, max(gp.nrtol, gp.rhohalf+gp.rhospread))
+    gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
+                       max(gp.maxrhoslope, 10**(gp.rhohalf+gp.rhospread)))
 
-    xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
-    r0nu = gp.xfine
+    xmin = r0[0]/15. # needed, if not: loose on first 4 bins
+    r0nu = 1.*r0
 
     bit = 1.e-4
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
@@ -180,9 +181,9 @@ def rho_param_INT_Sig_theta(r0, rhopar, pop, gp):
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')
 
     # interpolation onto r0
-    tck1 = splrep(np.log(gp.xfine), np.log(Sig))
-    Sigout = np.exp(splev(np.log(r0), tck1))
-    return Sigout
+    #tck1 = splrep(np.log(gp.xfine), np.log(Sig))
+    #Sigout = np.exp(splev(np.log(r0), tck1))
+    return Sig #out
 ## \fn rho_param_INT_Sig_theta(r0, rhopar, pop, gp)
 # take 3D density parameters, calculate projected surface density with theta substitution
 # @param r0 radii of bins, [pc]

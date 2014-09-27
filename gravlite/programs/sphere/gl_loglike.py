@@ -95,9 +95,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                 rhostarpar = 0.0*rhopar
                 MtoL = 0.0
                 #betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02])
-                betapar = np.array([0, 0, 0, 2, 500])
-                pdb.set_trace()
-                bb = phys.beta(gp.xipol, betapar, gp)
+                betapar = np.array([0, 0, 2, max(gp.xipol)/2])
                 # annu = ga.rho_gaia(gp.xepol, gp)[1]
                 annu = ga.rho_hern(gp.xepol, gp.ana, gp.anM)
                 nupar_half = np.exp(splev(gp.Xscale[1], splrep(gp.xepol, np.log(annu))))

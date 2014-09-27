@@ -53,7 +53,7 @@ def run(gp):
     binmin, binmax, rbin = gpr.determine_radius(r, rmin, rmax, gp) # [pc]
     vol = volume_spherical_shell(binmin, binmax, gp) # [pc^3]
 
-    for pop in range(gpr.pops):
+    for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ',gpr.get_com_file(pop)+'_3D')
         # start from data centered on COM already:
@@ -67,17 +67,17 @@ def run(gp):
         z *= rscalei
         # calculate 2D radius on the skyplane
         r = np.sqrt(x**2+y**2+z**2) # [pc]
-        
+
         # set maximum radius (if gp.maxR is set)
         rmax = max(r) if gp.maxR<0 else 1.0*gp.maxR # [pc]
         print('rmax [pc] = ', rmax)
         sel = (r<=rmax)
         x = x[sel]; y = y[sel]; z = z[sel]; v = v[sel]; r = r[sel] # [rscale]
         totmass = 1.*len(x) # [Munit], Munit = 1/star
-            
+
         rs = r                   # + possible starting offset, [rscale]
         vlos = v                 # + possible starting offset, [km/s]
-        
+
         gfile.write_tracer_file(gp.files.get_ntracer_file(pop)+'_3D', totmass)
         de, em = gfile.write_headers_3D(gp, pop)
 
@@ -93,13 +93,13 @@ def run(gp):
                 vlos1 = vlosi[ind1]                           # [km/s]
                 a[i][k] = 1.*len(ind1)                        # [1]
 
-                
+
         dens0 = np.sum(density[0])/(1.*gpr.n) # [Munit/rscale^3]
         print('dens0 = ',dens0,' [Munit/rscale^3]')
 
         dens0pc = dens0/rscale0**3
         gfile.write_Sig_scale(gp.files.get_scale_file(pop)+'_3D', dens0pc, totmass)
-        
+
         tpb0   = np.sum(a[0])/float(gpr.n)     # [1] tracers per bin
         denserr0 = dens0/np.sqrt(tpb0)       # [Munit/rscale^3]
         p_dens  = np.zeros(gp.nipol)
@@ -150,4 +150,3 @@ if __name__ == '__main__':
     import gl_params
     gp = gl_params.Params()
     run(gp)
-

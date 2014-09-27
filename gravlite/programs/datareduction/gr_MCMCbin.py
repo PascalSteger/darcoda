@@ -83,7 +83,7 @@ def run(gp):
 
     Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
-    for pop in range(gpr.pops):
+    for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ', gpr.get_com_file(pop))
         # start from data centered on COM already:

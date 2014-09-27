@@ -14,12 +14,9 @@ from gl_data import Datafile
 
 def bin_data(gp):
     if gp.investigate == 'hern':
-        import grh_com, gr_MCMCbin 
-        #grh_Pos, grh_MCMCbin
+        import grh_com, gr_MCMCbin
         grh_com.run(gp)
         gr_MCMCbin.run(gp)
-        # grh_Pos.run()
-        # grh_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
         import grg_COM, gr_MCMCbin
         grg_COM.run(gp)

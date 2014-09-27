@@ -130,7 +130,7 @@ def map_betastar_old(pa, gp):
 
 
 def map_betastar_sigmoid(pa, gp):
-    gh.sanitize_vector(pa, 5, 0, 1)
+    gh.sanitize_vector(pa, gp.nbeta, 0, 1)
     # s0 = np.log(r0/r0turn)
     # kappa = (a0-a1)/(betastar(r_s) - a1)-1
     # beta = (a0-a1)/(1+kappa*exp(alpha*s0))

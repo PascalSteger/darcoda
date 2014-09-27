@@ -9,42 +9,43 @@
 import numpy as np
 import random, pdb
 import gr_params as gpr
-
-Mscale = 1.
-ascale = 1.
+import gl_helper as gh
 
 def run(gp):
+    gp.anM = 1.
+    gp.ana = 1.
+
     print('grh_com: input: ', gpr.simpos)
-    xall, yall, zall = np.loadtxt(gpr.simpos, skiprows=1, unpack=True) # 3*[ascale]
-    vxall,vyall,vzall= np.loadtxt(gpr.simvel, skiprows=1, unpack=True) # 3*[ascale]
+    xall, yall, zall = np.loadtxt(gpr.simpos, skiprows=1, unpack=True) # 3*[gp.ana]
+    vxall,vyall,vzall= np.loadtxt(gpr.simvel, skiprows=1, unpack=True) # 3*[gp.ana]
     nall = len(xall)                                                 # [1]
 
     # shuffle and restrict to ntracer random points
     if(gp.ntracer[0]>0):
-        ndm = min(gp.ntracer[0], nall-1)
+        ndm = int(min(gp.ntracer[0], nall-1))
         trace = random.sample(range(nall), nall)
     else:
-        ndm = min(gp.ntracer[1], nall-1)
+        ndm = int(min(gp.ntracer[1], nall-1))
         trace = random.sample(range(nall), nall)
     if(gp.ntracer[0]+gp.ntracer[1] == 0):
-        ndm = nall
+        ndm = int(nall)
         trace = np.arange(nall)
 
     PM = [1. for i in trace] # [1]=const, no prob. of membership info in dataset
-    x  = [ xall[i]    for i in trace ] # [ascale]
-    y  = [ yall[i]    for i in trace ] # [ascale]
-    z  = [ zall[i]    for i in trace ] # [ascale]
+    x  = [ xall[i]    for i in trace ] # [gp.ana]
+    y  = [ yall[i]    for i in trace ] # [gp.ana]
+    z  = [ zall[i]    for i in trace ] # [gp.ana]
     vz = [ vzall[i]   for i in trace ] # [km/s]
     PM = np.array(PM); x=np.array(x); y=np.array(y); z=np.array(z); vz=np.array(vz)
 
     from gl_centering import com_shrinkcircle_v
-    com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x,y,z,vz,PM) # 3*[ascale], [velocity]
-    print('COM [ascale]: ', com_x, com_y, com_z, com_vz)
+    com_x, com_y, com_z, com_vz = com_shrinkcircle_v(x,y,z,vz,PM) # 3*[gp.ana], [velocity]
+    print('COM [gp.ana]: ', com_x, com_y, com_z, com_vz)
 
-    xnew = (x-com_x)*ascale      # [pc]
-    ynew = (y-com_y)*ascale      # [pc]
-    znew = (z-com_z)*ascale      # [pc]
-    vznew = (vz-com_vz)*np.sqrt(gp.G1*Mscale/ascale) # [km/s], from conversion from system with L=G=M=1
+    xnew = (x-com_x)*gp.ana      # [pc]
+    ynew = (y-com_y)*gp.ana      # [pc]
+    znew = (z-com_z)*gp.ana      # [pc]
+    vznew = (vz-com_vz)*np.sqrt(gp.G1*gp.anM/gp.ana) # [km/s], from conversion from system with L=G=M=1
 
     R0 = np.sqrt(xnew**2+ynew**2)   # [pc]
     Rhalf = np.median(R0) # [pc]
@@ -53,7 +54,7 @@ def run(gp):
     print('Rscale = ', Rscale)
 
     # only for 0 (all) and 1 (first and only population)
-    for pop in range(gpr.pops):
+    for pop in range(gp.pops+1):
         crscale = open(gp.files.get_scale_file(pop),'w')
         print('# Rscale in [pc],',' surfdens_central (=dens0) in [Munit/rscale**2],',\
               ' and in [Munit/pc**2],',' and totmass [Munit],',\
@@ -69,7 +70,7 @@ def run(gp):
         filepos.close()
         print('')
 
-        
+
 if __name__=='__main__':
     gpr.showplots = True
     import gl_params

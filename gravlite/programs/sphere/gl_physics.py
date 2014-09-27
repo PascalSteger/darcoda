@@ -146,16 +146,14 @@ def betastar_4(r0, vec, gp):
     s0 = np.log(r0/vec[3])
     a0 = vec[0]
     a1 = vec[1]
-    betars = (a1-a0)/2+a0
     alpha = vec[2]
-    kappa = (a0-a1)/(betars-a1)-1
-    betatmp = (a0-a1)/(1+kappa*np.exp(alpha*s0))+a1
+    betatmp = (a0-a1)/(1+np.exp(alpha*s0))+a1
 
     return betatmp
 ## \fn betastar_4(r0, vec, gp)
 # calculate betastar from sigmoid with 4 parameters, using exp directly, with explicit meaning
 # @param r0 radii [pc]
-# @param vec 4 parameters
+# @param vec 4 parameters: asymptote of beta at r->0, asymptote of beta at r->infty, speed of change, scale radius at which change takes place
 # @param gp global parameters
 
 

@@ -40,7 +40,7 @@ def run(gp):
     # 2*[Rscale_0]
 
     Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
-    
+
     # calculate 2D radius on the skyplane
     R = np.sqrt(xall**2+yall**2) # [Rscale0]
     Rmin, Rmax = set_bndry(R, gp) # [Rscale0]
@@ -48,7 +48,7 @@ def run(gp):
     Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
-    for pop in range(gpr.pops):
+    for pop in range(gp.pops+1):
         if gfile.empty(gpr.get_com_file(pop)): continue
         print('####### working on component ',pop)
 
@@ -58,7 +58,7 @@ def run(gp):
                            skiprows=1,usecols=(0,1,2),unpack=True) #[Rscale_i], [Rscale_i], [km/s]
 
         R = np.sqrt(x**2+y**2) #[Rscale_i]
-        
+
         # set maximum radius (if gp.maxR is set)
         Rmin, Rmax = set_bndry(R, gp) # [Rscale_i]
         Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
@@ -120,7 +120,7 @@ def run(gp):
             Dens = np.sum(Density[b])/float(gpr.n) # [Munit/Rscale^2]
             tpbb   = np.sum(tpb[b])/float(gpr.n)       # [1]
             Denserr = Dens/np.sqrt(tpbb)       # [Munit/Rscale^2]
-            
+
             if(np.isnan(Denserr)):
                 P_dens[b] = P_dens[b-1]  # [1]
                 P_edens[b]= P_edens[b-1] # [1]
@@ -144,7 +144,7 @@ def run(gp):
         numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
         numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
         numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
-        
+
         nu0pc  = numedi[0]
         gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
@@ -174,7 +174,7 @@ def run(gp):
         fpars = open(gp.files.get_scale_file(pop),'a')
         print(maxsiglos, file=fpars)          #[km/s]
         fpars.close()
-        
+
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], \
                   np.abs(p_dvlos[b]/maxsiglos),np.abs(p_edvlos[b]/maxsiglos), \
@@ -196,7 +196,7 @@ def run(gp):
                 kappavelerr = np.abs(kappavel/np.sqrt(tpbb)) #[1]
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerr
-            
+
             print(Rbin[b], Binmin[b], Binmax[b],\
                   kappavel, kappavelerr, \
                   file=f_kap)
@@ -213,16 +213,15 @@ def run(gp):
             pdb.set_trace()
             #gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
             #gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
-            
-            
+
+
 ## \fn run(gp)
 # main functionality
 # @param gp global parameters
-            
+
 
 if __name__ == '__main__':
     gpr.showplots = True
     import gl_params
     gp = gl_params.Params()
     run(gp)
-

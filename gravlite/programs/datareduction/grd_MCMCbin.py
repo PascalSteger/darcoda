@@ -37,7 +37,7 @@ def run(gp):
 
     Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
-    for pop in range(gpr.pops):
+    for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ', gpr.get_com_file(pop))
         # start from data centered on COM already:
@@ -56,10 +56,10 @@ def run(gp):
         sel = (R * Rscalei <= Rmax * Rscale0)
         x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
         totmass = float(len(x)) # [Munit], Munit = 1/star
-        
+
         Rs = R                   # + possible starting offset, [Rscalei]
         vlos = v                 # + possible starting offset, [km/s]
-        
+
         tr = open(gp.files.get_ntracer_file(pop),'w')
         print(totmass, file=tr)
         tr.close()
@@ -165,7 +165,7 @@ def run(gp):
         numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
         numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
         numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
-        
+
         nu0pc  = numedi[0]
         gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
@@ -214,12 +214,12 @@ def run(gp):
                 kappavelerr = np.abs(kappavel/np.sqrt(tpbb)) #[1]
             p_kappa[b] = kappavel
             p_ekappa[b] = kappavelerr
-            
+
             print(Rbin[b], Binmin[b], Binmax[b], \
                   kappavel, kappavelerr, file=f_kap)
             # [rscale], 2*[1]
         f_kap.close()
-    
+
         if gpr.showplots:
             gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Dens0pc)
             gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
@@ -232,4 +232,3 @@ if __name__ == '__main__':
     import gl_params
     gp = gl_params.Params()
     run(gp)
-

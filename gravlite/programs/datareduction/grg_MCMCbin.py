@@ -24,7 +24,7 @@ from gl_project import Rho_INT_rho
 
 
 def run(gp):
-    xall, yall = np.loadtxt(gpr.get_com_file(0), skiprows=1, usecols=(0,1), unpack=True) 
+    xall, yall = np.loadtxt(gpr.get_com_file(0), skiprows=1, usecols=(0,1), unpack=True)
     # 2*[Rscale]
     # calculate 2D radius on the skyplane
     R = np.sqrt(xall**2+yall**2) # [Rscale0]
@@ -37,13 +37,13 @@ def run(gp):
     Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
     Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
-    for pop in range(gpr.pops):
+    for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ',gpr.get_com_file(pop))
         # start from data centered on COM already:
         if gfile.bufcount(gpr.get_com_file(pop))<2: continue
         x,y,v = np.loadtxt(gpr.get_com_file(pop),\
-                           skiprows=1,usecols=(0,1,2),unpack=True) 
+                           skiprows=1,usecols=(0,1,2),unpack=True)
                            # [Rscalei], [Rscalei], [km/s]
 
         # calculate 2D radius on the skyplane
@@ -55,7 +55,7 @@ def run(gp):
         sel = (R * Rscalei <= Rmax * Rscale0) # [pc]
         x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
         totmass = float(len(x)) # [Munit], Munit = 1/star
-            
+
         Rs = R                   # + possible starting offset, [Rscalei]
         vlos = v                 # + possible starting offset, [km/s]
 
@@ -68,7 +68,7 @@ def run(gp):
         kappa   = np.zeros((gp.nipol, gpr.n))
         zetaa   = np.zeros((gp.nipol, gpr.n))
         zetab   = np.zeros((gp.nipol, gpr.n))
-        
+
         # gpr.n=30 iterations for getting random picked radius values
         for k in range(gpr.n):
             Rsi   = add_errors(Rs,   gpr.Rerr)  # [Rscalei]
@@ -107,7 +107,7 @@ def run(gp):
             Dens = np.sum(Density[b])/float(gpr.n) # [Munit/Rscale^2]
             tpbb   = np.sum(tpb[b])/float(gpr.n)       # [1]
             Denserr = Dens/np.sqrt(tpbb)       # [Munit/Rscale^2]
-            
+
             if(np.isnan(Denserr)):
                 P_dens[b] = P_dens[b-1]  # [1]
                 P_edens[b]= P_edens[b-1] # [1]
@@ -126,13 +126,13 @@ def run(gp):
                   file=f_mass)
         f_Sig.close()
         f_mass.close()
-        
+
 
         # deproject Sig to get nu
         numedi = Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
         numin  = Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
         numax  = Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
-        
+
         nu0pc  = numedi[0]
         gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
@@ -162,7 +162,7 @@ def run(gp):
         fpars = open(gp.files.get_scale_file(pop),'a')
         print(maxsiglos, file=fpars)          #[km/s]
         fpars.close()
-        
+
         for b in range(gp.nipol):
             print(Rbin[b], Binmin[b], Binmax[b], \
                   p_dvlos[b]/maxsiglos, p_edvlos[b]/maxsiglos, \
@@ -207,7 +207,7 @@ def run(gp):
 
             nu_gaia = ga.rho_gaia(Ri, gp)[1]
             #loglog(Ri, nu_gaia, 'b.-')
-            
+
             pdb.set_trace()
 
 if __name__ == '__main__':

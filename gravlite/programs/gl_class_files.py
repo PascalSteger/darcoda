@@ -409,10 +409,16 @@ class Files:
     def populate_output_dir(self, gp):
         # copy only after data is read in!
         os.system('mkdir -p '+self.outdir+'/programs')
-        os.system('rsync -rl --exclude ".git" --exclude "doc" --exclude "__pycache__" ' + \
-                  self.progdir + ' ' + self.outdir+'/programs/')
-        os.system('rsync -rl --exclude "201*" ' + self.dir + ' ' + self.outdir) # copy data for later reference
+
         # rsync -r --exclude '.git' source target to exclude .git dir from copy
+        os.system('rsync -rl --exclude ".git" --exclude "doc"'+\
+                  ' --exclude "__pycache__" ' + \
+                  self.progdir + ' ' + self.outdir+'/programs/')
+        # copy data for later reference,
+        # in Hernquist case: neglect simulation folder
+        os.system('rsync -rl --exclude "201*" --exclude "simulation" ' + \
+                  ' --exclude "cones" ' + self.dir + ' ' + self.outdir)
+
         return
     ## \fn populate_output_dir(self, gp)
     # copy data files to output directory, with timestamp

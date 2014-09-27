@@ -106,6 +106,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     # --------------------------------------------------------------------------
     rhofine  = phys.rho(r0fine,  rhopar, 0, gp) # DM mass profile (first)
     if gp.checksig:
+        clf()
         loglog(r0fine, rhofine, 'r.-', label='rederived from dn/dlogr params')
         loglog(r0fine, ga.rho_hern(r0fine, gp.ana, gp.anM), 'b--', label='analytic Hernquist')
         #loglog(r0fine, ga.rho_gaia(r0fine, gp)[0], 'b--', label='analytic')
@@ -177,10 +178,15 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     #nupar[0] *= 1e3 # TODO: check that siglos**2 is not changing with scaling of nu
     nufine   = phys.nu(r0fine, nupar, pop, gp)
     if gp.checksig:
-        clf()
-        #loglog(gp.xipol, gp.dat.nu[pop], 'g.-', label='data')
         #annu = ga.rho_gaia(r0fine, gp)[pop]
         annu = ga.rho_hern(r0fine, gp.ana, gp.anM)
+
+    if gp.checksig:
+        clf()
+        loglog(gp.xipol, gp.dat.nu[pop], 'g.-', label='data')
+        fill_between(gp.xipol, gp.dat.nu[pop]-gp.dat.nuerr[pop], \
+                     gp.dat.nu[pop]+gp.dat.nuerr[pop],\
+                     color='g', alpha=0.6)
         loglog(r0fine, nufine, 'r.-', label='model')
         loglog(r0fine, annu, 'b--', label='analytic')
         legend(loc='lower left')
@@ -194,10 +200,14 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     Sigfine  = glp.rho_param_INT_Sig_theta(r0fine, nupar, pop, gp)
     if gp.checksig:
         clf()
+        loglog(gp.xipol, gp.dat.Sig[pop], 'g--', label='data')
+
         loglog(r0fine, Sigfine, 'r.-', label='model')
         anSig = ga.Sig_hern(r0fine, gp.ana, gp.anM)
         loglog(r0fine, anSig, 'b--', label='analytic')
-        #loglog(gp.xipol, gp.dat.Sig[pop], 'g--', label='data')
+        fill_between(gp.xipol, gp.dat.Sig[pop]-gp.dat.Sigerr[pop], \
+                     gp.dat.Sig[pop]+gp.dat.Sigerr[pop],\
+                     color='g', alpha=0.6)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\Sigma$')
         legend(loc='lower left')
@@ -208,11 +218,13 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     # -----------------------------------------------------------------------
     intbetasfine   = ant_intbeta(r0fine, betapar, gp)
     if gp.checksig:
-        clf()
-        plot(r0fine, intbetasfine, 'r.-', label='model')
-        beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
+        #beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
         # anintbetasfine = 0.5*(np.log(r0fine**2+r_a1**2)-np.log(r_a1**2)) # gaia
         anintbetasfine = 0.0*r0fine
+
+    if gp.checksig:
+        clf()
+        plot(r0fine, intbetasfine, 'r.-', label='model')
         plot(r0fine, anintbetasfine, 'b--', label='analytic')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\int ds \\beta(s)/s$')
@@ -234,12 +246,13 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     for i in range(len(r0fine)):
         Mrfine[i] = splint(0., r0fine[i], splpar_rho)
     gh.checkpositive(Mrfine, 'Mrfine')
+    if gp.checksig:
+        #anMr = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
+        anMr = ga.M_hern(r0fine, gp.ana, gp.anM)
 
     if gp.checksig:
         #loglog(gp.xipol, gp.dat.Mr[pop], 'g.-', label='data')
         #s = r0fine/r_DM # [1]
-        #anMr = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
-        anMr = ga.M_hern(r0fine, gp.ana, gp.anM)
         clf()
         loglog(r0fine, Mrfine, 'r.-', label='model')
         loglog(r0fine, anMr, 'b--', label='analytic')
@@ -294,10 +307,10 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         integ /= shiftlog
 
         # loglog
-        # splpar_nul = splrep(np.log(xint), np.log(yint), k=1, s=0.1) # tunable k=2; s=0, ..
-        # invexp = lambda x: np.exp(splev(np.log(x), splpar_nul))
-        # integ = romberg(invexp, r0fine[k], 5*r0fine[-1],\
-        #                 rtol=1e-3, divmax=15, vec_func=True)
+        #splpar_nul = splrep(np.log(xint), np.log(yint), k=1, s=0.1) # tunable k=2; s=0, ..
+        #invexp = lambda x: np.exp(splev(np.log(x), splpar_nul))
+        #integ = romberg(invexp, r0fine[k], 5*r0fine[-1],\
+        #                rtol=1e-3, divmax=15, vec_func=True)
         sigr2model[k] = np.exp(-2*intbetasfine[k])/nufine[k]*integ
 
         # old function quadinflog
@@ -388,7 +401,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         plot(r0fine, ansiglos**2, 'b--', label='analytic')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2$')
-        legend(loc='lower left')
+        legend(loc='upper right')
         savefig('fit_siglos2_hern.png')
         pdb.set_trace()
 
@@ -405,12 +418,12 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         plot(r0, np.sqrt(siglos2_out_dsqrt), 'g.-', label='dsqrt')
         plot(r0, np.sqrt(siglos2_out_dtheta), 'r.-', label='dtheta')
         plot(r0, ansiglos, 'b--', label='analytic')
-        #plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
-        #fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
-        xscale('log'); xlim([1,2000])
+        plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
+        fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
+        xscale('log')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}$')
-        legend(loc='lower left')
+        legend(loc='upper right')
         savefig('fit_siglos_out_hern.png')
         pdb.set_trace()
     siglos2_out = siglos2_out_dtheta
