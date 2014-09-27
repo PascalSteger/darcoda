@@ -7,7 +7,7 @@ import pdb
 import gl_params
 gp = gl_params.Params()
 import gl_file as gf
-gf.get_data(gp)
+gf.get_binned_data(gp)
 
 import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/sphere/')

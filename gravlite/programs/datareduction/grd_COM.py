@@ -11,6 +11,7 @@ import numpy as np
 import sys, pdb
 import gr_params as gpr
 import gl_helper as gh
+import gl_file as gf
 from gl_centering import com_shrinkcircle_v_2D
 
 def concat_pops(x1, x2, y1, y2, vz1, vz2, gp):
@@ -50,12 +51,12 @@ def run(gp):
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
-                       
+
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
-    
+
     # only use stars which are members of the dwarf
     pm = (PM>=0.95)
     print("fraction of members = ",1.*sum(pm)/len(pm))
@@ -68,7 +69,7 @@ def run(gp):
     print('RAh: signum = ',sig)
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
-    
+
     sig = abs(DEd[0])/DEd[0]
     print('DEd: signum = ',sig)
     DEd = DEd/sig
@@ -108,10 +109,10 @@ def run(gp):
 
     x1, y1, vz1, Mg1, PM1 = select_pm(x0, y0, vz0, Mg0, PM0, pm1)
     x2, y2, vz2, Mg2, PM2 = select_pm(x0, y0, vz0, Mg0, PM0, pm2)
-    
+
     # cutting pm_i to a maximum of ntracers_i particles each:
     from random import shuffle
-    
+
     ind1 = np.arange(len(x1))
     np.random.shuffle(ind1)     # random.shuffle already changes ind
     ind1 = ind1[:gp.ntracer[1-1]]
@@ -127,19 +128,19 @@ def run(gp):
 
     # optimum: get 3D center of mass with means
     # com_x, com_y, com_z = com_mean(x0,y0,z0,PM0) # 3*[pc],  z component included if available
-    
+
     com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, vz0, pm) # [pc], [km/s]
 
     # from now on, work with 2D data only; z0 was only used to get center in (x,y) better
     # x0 -= com_x; y0 -= com_y # [pc]
     # vz0 -= com_vz #[km/s]
-    
+
     R0 = np.sqrt(x0**2+y0**2) # [pc]
     Rhalf = np.median(R0) # [pc]
     Rscale = Rhalf # [pc] overall
 
     # gh.print_summary(Rscale, R0) # [pc]
-    
+
     i = -1
     for pmn in [pm, pm1, pm2]:
         i = i+1
@@ -153,13 +154,12 @@ def run(gp):
         m = np.ones(len(pmn))
         R = np.sqrt(x*x+y*y)            # [pc]
         Rscalei = np.median(R)          # [pc]
-        import gl_file as gfile
-        gfile.write_Xscale(gp.files.get_scale_file(i), Rscalei) # [pc]
-        gfile.write_data_output(gpr.get_com_file(i), x/Rscalei, y/Rscalei, vz, Rscalei) # [pc]
+        gf.write_Xscale(gp.files.get_scale_file(i), Rscalei) # [pc]
+        gf.write_data_output(gpr.get_com_file(i), x/Rscalei, y/Rscalei, vz, Rscalei) # [pc]
 
         #if gpr.showplots:
         #    gpr.show_part_pos(x, y, pmn, Rscale, i)
-    
+
 if __name__=='__main__':
     # for debugging input issues here:
     gpr.showplots = True
@@ -171,12 +171,12 @@ if __name__=='__main__':
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
-                       
+
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
-    
+
     # only use stars which are members of the dwarf
     pm = (PM>=0.95)
     print("fraction of members = ", 1.*sum(pm)/len(pm))
@@ -189,7 +189,7 @@ if __name__=='__main__':
     print('RAh: signum = ',sig)
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec] (use 360 deg/12 hrs)
-    
+
     sig = abs(DEd[0])/DEd[0]
     print('DEd: signum = ',sig)
     DEd = DEd/sig

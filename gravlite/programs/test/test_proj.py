@@ -21,8 +21,6 @@ import time
 import gl_params as gp
 gp.rinfty = 5
 gp.nexp = 3
-#import gr_params as grp
-#import gl_file as gfile
 import gl_helper as gh
 import gl_int as gi
 import gl_project as glp

@@ -13,7 +13,7 @@ from pylab import *
 from random import shuffle
 import gr_params as gpr
 import gl_helper as gh
-import gl_file as gfile
+import gl_file as gf
 from gl_helper import expDtofloat
 from gl_centering import com_shrinkcircle_v
 
@@ -61,7 +61,7 @@ def read_data(filename):
     # Mg0 in Angstrom PM0 [1] comp0 1,2,3(background) use component
     # 12-1 instead of 6-1 for z velocity, to exclude observational
     # errors
-    
+
     x0,y0,z0,vb0,vz0,Mg0,PM0,comp0 = np.genfromtxt(filename, skiprows = 0, unpack = True,\
                                                    usecols=(0, 1, 2, 5, 11, 13, 19, 20),\
                                                    dtype="d17",\
@@ -126,7 +126,7 @@ def run(gp):
     # cut to subsets
     ind1 = gh.draw_random_subset(x1, gp.ntracer[1-1])
     x1, y1, z1, comp1, vb1, vz1, Mg1, PM1 = select_pm(x1, y1, z1, comp1, vb1, vz1, Mg1, PM1, ind1)
-    
+
     ind2 = gh.draw_random_subset(x2, gp.ntracer[2-1])
     x2, y2, z2, comp2, vb2, vz2, Mg2, PM2 = select_pm(x2, y2, z2, comp2, vb2, vz2, Mg2, PM2, ind2)
 
@@ -141,13 +141,13 @@ def run(gp):
     x0 -= com_x # [pc]
     y0 -= com_y # [pc]
     vz0 -= com_vz # [km/s]
-    
+
     R0 = np.sqrt(x0**2+y0**2) # [pc]
     Rhalf = np.median(R0) # [pc]
     Rscale = Rhalf        # [pc] from all tracer points
 
     # gh.print_summary(Rscale, Rc) # [pc]
-    
+
     pop = -1
     for pmn in [pm, pm1, pm2]:
         pop = pop + 1                    # population number
@@ -160,9 +160,9 @@ def run(gp):
         x, y, z, comp, vz, vb, Mg, PMN = select_pm(x0, y0, z0, comp0, vz0, vb0, Mg0, PM0, pmn)
         R = np.sqrt(x*x+y*y)             # [pc]
         Rscalei = np.median(R)
-        gfile.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
-        gfile.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
-        
+        gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
+        gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
+
         #if gpr.showplots:
         #    gpr.show_part_pos(x, y, pmn, Rscale, i)
 

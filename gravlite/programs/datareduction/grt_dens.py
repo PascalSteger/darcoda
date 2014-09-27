@@ -12,12 +12,12 @@
 import sys, pdb
 import numpy as np
 import gr_params as gpr
-import gl_file as gfile
+import gl_file as gf
 import gl_helper as gh
 import gl_project as glp
 
 def run(gp):
-    Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
+    Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     print('input: ',gpr.get_com_file(0))
     # start from data centered on COM already:
     x,y,v = np.loadtxt(gpr.get_com_file(0),\
@@ -26,7 +26,7 @@ def run(gp):
     for pop in range(2):
         # calculate 2D radius on the skyplane
         R = np.sqrt(x**2+y**2) # [Rscalei]
-        Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
+        Rscalei = gf.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
         # set number and size of bins
         Rmin = 0. # [rscale]
         Rmax = max(R) if gp.maxR < 0 else float(gp.maxR)   # [Rscale0]
@@ -51,7 +51,7 @@ def run(gp):
         print(totmass, file=tr)
         tr.close()
 
-        f_Sig, f_nu, f_mass, f_sig, f_kap = gfile.write_headers_2D(gp, 0)
+        f_Sig, f_nu, f_mass, f_sig, f_kap = gf.write_headers_2D(gp, 0)
 
         # 30 iterations for getting random picked radius values
         Density = np.zeros((gp.nipol,gpr.n))
@@ -66,7 +66,7 @@ def run(gp):
 
         Dens0 = np.sum(Density[0])/float(gpr.n) # [Munit/Rscale0^2]
         Dens0pc = Dens0/Rscale0**2 # [Munit/pc^2]
-        gfile.write_Sig_scale(gp.files.get_scale_file(0), Dens0pc, totmass)
+        gf.write_Sig_scale(gp.files.get_scale_file(0), Dens0pc, totmass)
 
         tpbb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(tpbb0)       # [Munit/rscale^2]
@@ -86,7 +86,7 @@ def run(gp):
                 p_edens[b]= Denserr/Dens0    # [1] #100/rbin would be artificial guess
 
         for b in range(gp.nipol):
-            print(Rbin[b], Binmin[b], Binmax[b], p_dens[b], p_edens[b], file=f_Sig) 
+            print(Rbin[b], Binmin[b], Binmax[b], p_dens[b], p_edens[b], file=f_Sig)
             # [rscale], [dens0], [dens0]
             indr = (R < Binmax[b])
             menclosed = float(np.sum(indr))/totmass
@@ -101,9 +101,9 @@ def run(gp):
         numedi = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
         numin  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
         numax  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
-        
+
         nu0pc  = numedi[0]
-        gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
+        gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
         nuerr  = numax-numedi
         for b in range(gp.nipol):

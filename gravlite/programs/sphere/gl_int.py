@@ -98,7 +98,7 @@ def varepsilon(r0, betapar, gp):
 def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     rmin = np.log10(min(r0))
-    rmax = np.log10(max(r0)*gp.rinfty)
+    rmax = np.log10(max(r0))#*gp.rinfty)
     r0fine = np.logspace(rmin, rmax, gp.nfine)
 
     # rho
@@ -346,8 +346,8 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     start = time.time()
     sigl2s_dtheta = np.zeros(len(r0fine))
-    xmin = gp.xfine[0]/1. # needed, if not: loose on first 4 bins
-    r0fine = gp.xfine
+    xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
+    #r0fine = gp.xfine
 
     bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)

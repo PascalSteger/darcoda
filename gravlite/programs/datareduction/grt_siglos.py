@@ -14,24 +14,24 @@ import sys
 import math
 from BiWeight import meanbiweight
 import gr_params as gpr
-import gl_file as gfile
+import gl_file as gf
 from gl_class_files import *
 from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
 
 def run(gp):
     # get radius, used for all binning
     print('input: ', gpr.get_com_file(0))
-    if gfile.bufcount(gpr.get_com_file(0))<2:
+    if gf.bufcount(gpr.get_com_file(0))<2:
         return
     x,y,vlos = np.loadtxt(gpr.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
     totmass = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rscale]
-    
+
     #set binning
     #gp.nipol = (max - min)*N^(1/3)/(2*(Q3-Q1)) #(method of wand)
     rmin = 0.                                       # [rscale]
     rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR # [rscale]
-    
+
     if gpr.lograd:
         # space logarithmically in radius
         binmin, binmax, rbin = bin_r_log(rmax/gp.nipol, rmax, gp.nipol)
@@ -39,7 +39,7 @@ def run(gp):
         binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gp.nipol)
     else:
         binmin, binmax, rbin = bin_r_linear(rmin, rmax, gp.nipol)
-        
+
     # offset from the start!
     rs = gpr.Rerr*np.random.randn(len(r))+r #[rscale]
     vlos = gpr.vrerr*np.random.randn(len(vlos))+vlos #[km/s]
@@ -51,7 +51,7 @@ def run(gp):
     a = np.zeros((gp.nipol,gpr.n))
     p_dvlos = np.zeros(gp.nipol)
     p_edvlos = np.zeros(gp.nipol)
-    
+
     for k in range(gpr.n):
         rsi = gpr.Rerr*np.random.randn(len(rs))+rs #[rscale]
         vlosi = gpr.vrerr*np.random.randn(len(vlos))+vlos #[km/s]
@@ -66,7 +66,7 @@ def run(gp):
                 dispvelocity[i][k] = meanbiweight(vlos1,ci_perc=68.4,\
                                                   ci_mean=True,ci_std=True)[1]
                 # [km/s], see BiWeight.py
-                
+
     for i in range(gp.nipol):
         dispvel = np.sum(dispvelocity[i])/gpr.n #[km/s]
         ab = np.sum(a[i])/(1.*gpr.n) #[1]
@@ -100,4 +100,3 @@ if __name__ == '__main__':
     import gl_params
     gp = gl_params.Params()
     run(gp)
-

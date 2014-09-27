@@ -15,7 +15,7 @@ from scipy.stats import kurtosis
 from pylab import *
 
 import gr_params as gpr
-import gl_file as gfile
+import gl_file as gf
 from gl_helper import expDtofloat, add_errors
 from gl_class_files import *
 from BiWeight import meanbiweight
@@ -35,20 +35,20 @@ def run(gp):
 
     Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
-    Rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)) # [pc]
+    Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ',gpr.get_com_file(pop))
         # start from data centered on COM already:
-        if gfile.bufcount(gpr.get_com_file(pop))<2: continue
+        if gf.bufcount(gpr.get_com_file(pop))<2: continue
         x,y,v = np.loadtxt(gpr.get_com_file(pop),\
                            skiprows=1,usecols=(0,1,2),unpack=True)
                            # [Rscalei], [Rscalei], [km/s]
 
         # calculate 2D radius on the skyplane
         R = np.sqrt(x**2+y**2) # [Rscalei]
-        Rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
+        Rscalei = gf.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
 
         # set maximum radius (if gp.maxR is set)
         Rmax = max(R) if gp.maxR < 0 else 1.0*gp.maxR # [Rscale0]
@@ -59,8 +59,8 @@ def run(gp):
         Rs = R                   # + possible starting offset, [Rscalei]
         vlos = v                 # + possible starting offset, [km/s]
 
-        gfile.write_tracer_file(gp.files.get_ntracer_file(pop), totmass)
-        f_Sig, f_nu, f_mass, f_sig, f_kap = gfile.write_headers_2D(gp, pop)
+        gf.write_tracer_file(gp.files.get_ntracer_file(pop), totmass)
+        f_Sig, f_nu, f_mass, f_sig, f_kap = gf.write_headers_2D(gp, pop)
 
         tpb     = np.zeros((gp.nipol, gpr.n)) # tracers per bin
         Density = np.zeros((gp.nipol, gpr.n))
@@ -97,7 +97,7 @@ def run(gp):
         # output density
         Dens0 = np.sum(Density[0])/(1.*gpr.n) # [Munit/Rscale^2]
         Dens0pc = Dens0/Rscale0**2              # [munis/pc^2]
-        gfile.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass)
+        gf.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass)
 
         tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(tpb0)       # [Munit/Rscale^2]
@@ -134,7 +134,7 @@ def run(gp):
         numax  = Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
 
         nu0pc  = numedi[0]
-        gfile.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
+        gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
         nuerr  = numax-numedi
         for b in range(gp.nipol):

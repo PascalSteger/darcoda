@@ -40,8 +40,9 @@ class Params():
 
 
         ########## data options
-        self.getnewdata = True # get new data computed from
+        self.getnewdata = False # get new data computed from
                                 # observations before burn-in
+        self.getnewpos  = False # read in the positions and v_LOS again
         self.consttr    = True  # set radial bin by constant number of
                                 # tracer particles
         self.metalpop   = False # split metallicities with a separate

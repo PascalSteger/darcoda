@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     gp = glp.Params(timestamp)
     import gl_file as glf
-    gp.dat = glf.get_data(gp)
+    gp.dat = glf.get_binned_data(gp)
 
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')

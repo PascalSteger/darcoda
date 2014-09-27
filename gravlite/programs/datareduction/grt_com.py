@@ -15,7 +15,7 @@ import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 from gl_centering import *
-import gl_file as gfile
+import gl_file as gf
 
 def run(gp):
     print('input: ', gpr.fil)
@@ -27,10 +27,10 @@ def run(gp):
     np.random.shuffle(ind)
     ind = ind[:3000]
     x0 = x0[ind];    y0 = y0[ind];    vlos = vlos[ind]
-    
+
     x0 *= 1000.                         # [pc]
     y0 *= 1000.                         # [pc]
-    
+
     # shrinking sphere method
     pm = np.ones(len(x0))
     com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, vlos, pm)
@@ -56,7 +56,7 @@ def run(gp):
         m = np.ones(len(x))
         R = np.sqrt(x*x+y*y)*Rscale # [pc]
 
-        gfile.write_Xscale(gp.files.get_scale_file(comp), np.median(R))
+        gf.write_Xscale(gp.files.get_scale_file(comp), np.median(R))
 
         c = open(gpr.get_com_file(comp), 'w')
         print('# x [Xscale],','y [Xscale],','vLOS [km/s],','Xscale = ', \
@@ -67,7 +67,7 @@ def run(gp):
 
         if gpr.showplots:
             gpr.show_part_pos(x, y, np.ones(len(x)), Rscale, comp)
-    
+
 if __name__=='__main__':
     gpr.showplots = True
     import gl_params

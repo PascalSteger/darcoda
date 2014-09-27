@@ -12,10 +12,36 @@ import gl_physics as phys
 import gl_analytic as ga
 from gl_data import Datafile
 
+
+def read_data(gp):
+    if gp.investigate == 'hern':
+        import grh_com
+        grh_com.run(gp)
+    elif gp.investigate == 'gaia':
+        import grg_COM
+        grg_COM.run(gp)
+    elif gp.investigate == 'walk':
+        import grw_COM
+        grw_COM.run(gp)
+        # run for 3D models as well if model is set (needed in rhotot_walk)
+        if gp.walker3D:
+            import grw_com
+            grw_com.run()
+    elif gp.investigate == 'triax':
+        import grt_com
+        grt_com.run(gp)
+    elif gp.investigate == 'obs':
+        import grd_COM, grd_split
+        grd_COM.run(gp)
+        grd_split.run(gp)
+## \fn read_data(gp)
+# read in files with differing file formats, write out to common x, y, vz file
+# @param gp global parameters
+
+
 def bin_data(gp):
     if gp.investigate == 'hern':
-        import grh_com, gr_MCMCbin
-        grh_com.run(gp)
+        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
         import grg_COM, gr_MCMCbin
@@ -54,7 +80,7 @@ def bin_data(gp):
 # @param gp global parameter
 
 
-def get_data(gp):
+def get_binned_data(gp):
     gp.dat = Datafile()
     for pop in range(gp.pops+1):
         A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
@@ -75,8 +101,8 @@ def get_data(gp):
     if gp.usekappa:
         gp.dat.read_kappa(gp)
     return gp.dat
-## \fn get_data(gp)
-# read in data, store in a gl_data class
+## \fn get_binned_data(gp)
+# read in binned data, store in a gl_data class
 # @param gp global parameters
 
 

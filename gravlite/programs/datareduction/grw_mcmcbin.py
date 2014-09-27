@@ -16,7 +16,7 @@ from scipy.stats import kurtosis
 from pylab import *
 
 import gr_params as gpr
-import gl_file as gfile
+import gl_file as gf
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from gl_class_files import *
 from BiWeight import meanbiweight
@@ -36,7 +36,7 @@ def volume_spherical_shell(binmin, binmax, gp):
 def run(gp):
     xall,yall,zall = np.loadtxt(gpr.get_com_file(0),skiprows=1,\
                                 usecols=(0,1,2),unpack=True) # 2*[rscale0]
-    rscale0 = gfile.read_Xscale(gp.files.get_scale_file(0)+'_3D')
+    rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)+'_3D')
     xall *= rscale0
     yall *= rscale0
     zall *= rscale0
@@ -57,11 +57,11 @@ def run(gp):
         print('#######  working on component ',pop)
         print('input: ',gpr.get_com_file(pop)+'_3D')
         # start from data centered on COM already:
-        if gfile.bufcount(gpr.get_com_file(pop)+'_3D')<2: continue
+        if gf.bufcount(gpr.get_com_file(pop)+'_3D')<2: continue
         x,y,z,v = np.loadtxt(gpr.get_com_file(pop)+'_3D',\
                            skiprows=1,usecols=(0,1,2,3),unpack=True)
         # 3*[rscale], [km/s]
-        rscalei = gfile.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
+        rscalei = gf.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
         x *= rscalei
         y *= rscalei
         z *= rscalei
@@ -78,8 +78,8 @@ def run(gp):
         rs = r                   # + possible starting offset, [rscale]
         vlos = v                 # + possible starting offset, [km/s]
 
-        gfile.write_tracer_file(gp.files.get_ntracer_file(pop)+'_3D', totmass)
-        de, em = gfile.write_headers_3D(gp, pop)
+        gf.write_tracer_file(gp.files.get_ntracer_file(pop)+'_3D', totmass)
+        de, em = gf.write_headers_3D(gp, pop)
 
         # gpr.n=30 iterations for getting random picked radius values
         density = np.zeros((gp.nipol,gpr.n))
@@ -98,7 +98,7 @@ def run(gp):
         print('dens0 = ',dens0,' [Munit/rscale^3]')
 
         dens0pc = dens0/rscale0**3
-        gfile.write_Sig_scale(gp.files.get_scale_file(pop)+'_3D', dens0pc, totmass)
+        gf.write_Sig_scale(gp.files.get_scale_file(pop)+'_3D', dens0pc, totmass)
 
         tpb0   = np.sum(a[0])/float(gpr.n)     # [1] tracers per bin
         denserr0 = dens0/np.sqrt(tpb0)       # [Munit/rscale^3]

@@ -164,7 +164,7 @@ def rho_param_INT_Sig_theta(r0, rhopar, pop, gp):
     xmin = r0[0]/15. # needed, if not: loose on first 4 bins
     r0nu = 1.*r0
 
-    bit = 1.e-4
+    bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
     cth = np.cos(theta)
     cth2 = cth*cth

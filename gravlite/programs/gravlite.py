@@ -68,13 +68,15 @@ def myloglike(cube, ndim, nparams):
 
 
 def prepare_data(gp):
-    import gl_file as gfile
+    import gl_file as gf
     if gp.getnewdata:
-        gfile.bin_data(gp)
+        if gp.getnewpos:
+            gf.read_data(gp)
+        gf.bin_data(gp)
 
-    gfile.get_data(gp)
+    gf.get_binned_data(gp)
     gp.files.populate_output_dir(gp)
-    gfile.get_rhohalfs(gp)
+    gf.get_rhohalfs(gp)
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters

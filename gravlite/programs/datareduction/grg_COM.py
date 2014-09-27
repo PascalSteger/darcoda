@@ -14,7 +14,7 @@ from pylab import *
 import gr_params as gpr
 import gl_helper as gh
 import gl_centering as glc
-import gl_file as gfile
+import gl_file as gf
 
 def select_pm(x, y, z, vz, pm):
     return x[pm], y[pm], z[pm], vz[pm]
@@ -40,13 +40,13 @@ def run(gp):
     from random import shuffle
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
     x0, y0, z0, vz0 = select_pm(x0, y0, z0, vz, ind1)
-    
+
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
     com_x, com_y, com_z, com_vz = glc.com_shrinkcircle_v(x0, y0, z0, vz, PM)
 
-    # from now on, work with 2D data only; 
+    # from now on, work with 2D data only;
     # z0 was only used to get center in (x,y) better
-    
+
     x0 -= com_x  # [pc]
     y0 -= com_y  # [pc]
     vz -= com_vz # [km/s]
@@ -61,12 +61,12 @@ def run(gp):
         R = np.sqrt(x*x+y*y) # [pc]
         Rscalei = np.median(R)
         # print("x y z" on first line, to interprete data later on)
-        gfile.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
-        gfile.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
+        gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
+        gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
 
         # if gpr.showplots:
         #     gpr.show_part_pos(x, y, pmn, Rscale, i)
-    
+
 if __name__=='__main__':
     gpr.showplots = True
     import gl_params
