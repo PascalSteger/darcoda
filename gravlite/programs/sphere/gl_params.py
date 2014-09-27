@@ -25,18 +25,6 @@ def check_investigate(inv):
 class Params():
     def __init__(self, timestamp = ''):
 
-        host_name = socket.gethostname()
-        user_name = getpass.getuser()
-
-        if 'darkside' in host_name:
-            self.machine = 'darkside'
-        elif 'pstgnt332' in host_name:
-            self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS'
-        elif ('lisa' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS'
-
         self.investigate  = 'hern' # determine which data set to work on
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
@@ -44,16 +32,11 @@ class Params():
                                   #         challenge, 1 pop only
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
-
         self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
-                      # if changed: set getnewdata=True!
 
-        # Set number of tracer stars to look at take all particles #
-        # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
-        # case 2
-        self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N and sum
+        self.ntracer = [1e6, 1e6] # number of tracer stars pop1, pop2,..., pop_N
 
 
         ########## data options
@@ -162,8 +145,9 @@ class Params():
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
         self.checksig   = True  # check sigma calculation routine with 'walk'
-        self.ana        = 1. # scale radius of Hernquist profile in [pc]
-        self.anM        = 1.   # total mass of Hernquist profile in [Msun]
+        self.stopstep   = 9     # stop after step number ..., enter debugger
+        self.ana        = 1.    # scale radius of Hernquist profile in [pc]
+        self.anM        = 1.    # total mass of Hernquist profile in [Msun]
 
 
         # unitsXS
@@ -177,6 +161,17 @@ class Params():
 
 
         ########## filesystem-related
+        host_name = socket.gethostname()
+        user_name = getpass.getuser()
+        if 'darkside' in host_name:
+            self.machine = 'darkside'
+        elif 'pstgnt332' in host_name:
+            self.machine = 'pstgnt332'
+        elif ('lisa' in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS'
+        elif ('lisa' in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS'
+
         import import_path as ip
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version

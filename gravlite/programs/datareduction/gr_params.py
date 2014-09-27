@@ -19,8 +19,8 @@ showplots = False
 n = 100 # number of iterations in MCMC_*
 # nbins = gp.nipol
 
-Rerr  = 0.01      # distance error in [Xscale]
-vrerr = 2.0      # [km/s] 0.01 # velocity error. only raises sig_los
+Rerr  = 0. #0.01      # distance error in [Xscale]
+vrerr = 0. #2.0      # [km/s] 0.01 # velocity error. only raises sig_los
 
 lograd  = False    # log steps for radial bin in readout,
                         # show x-axis in log scale

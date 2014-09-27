@@ -85,8 +85,7 @@ def geom_loglike(cube, ndim, nparams, gp):
             #try:
             if gp.checksig:
                 import gl_analytic as ga
-                # anrho = ga.rho_gaia(gp.xepol, gp)[0]
-                anrho = ga.rho_hern(gp.xepol, gp.ana, gp.anM)
+                anrho = ga.rho(gp.xepol, gp)[0]
                 rhopar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
                 nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
                 dlr = np.hstack([nr[0], nr, nr[-1]])
@@ -94,10 +93,9 @@ def geom_loglike(cube, ndim, nparams, gp):
 
                 rhostarpar = 0.0*rhopar
                 MtoL = 0.0
-                #betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02])
-                betapar = np.array([0, 0, 2, max(gp.xipol)/2])
-                # annu = ga.rho_gaia(gp.xepol, gp)[1]
-                annu = ga.rho_hern(gp.xepol, gp.ana, gp.anM)
+                #betapar = np.array([  4.24378376e-14,   1, 1, 2, 1.41421356e+02]) # for gaia
+                betapar = np.array([0, 0, 2, max(gp.xipol)/2]) # for hern
+                annu = ga.rho(gp.xepol, gp)[1]
                 nupar_half = np.exp(splev(gp.Xscale[1], splrep(gp.xepol, np.log(annu))))
                 nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
                 dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])

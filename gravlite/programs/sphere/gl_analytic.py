@@ -164,10 +164,15 @@ def M_gaia(rad, gp):
     rhodm, rhostar = rho_gaia(rad, gp)
     # 3D radius here
 
-    Mdm = glp.rho_INT_Sum_MR(rad, rhodm, gp)
-    # after here, have in 2D radial bins
-    Mstar = glp.rho_INT_Sum_MR(rad, rhostar, gp)
-    return Mdm, Mstar
+    beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
+    if gamma_DM == 1:
+        s = rad/r_DM
+        Mstar = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
+    else:
+        #Mdm = glp.rho_INT_Sum_MR(rad, rhodm, gp)
+        Mstar = glp.rho_INT_Sum_MR(rad, rhostar, gp)
+    # from here on, we assume to work on 2D radii
+    return Mstar, Mstar
 ## \fn M_gaia(rad, gp)
 # calculate mass in 2D radial bins
 # @param rad radius in pc, 3D
@@ -184,8 +189,10 @@ def rhotot_gaia(rad, gp):
 
 
 def Sig_gaia(rad, gp):
-    dummy, rhostar1 = rho_gaia(rad, gp)
-    return glp.rho_INT_Sig(rad, rhostar1, gp)
+    rhodm, rhostar1 = rho_gaia(rad, gp)
+    Sigdm = glp.rho_INT_Sig(rad, rhodm, gp)
+    Sigstar = glp.rho_INT_Sig(rad, rhodm, gp)
+    return Sigdm, Sigstar
 ## \fn Sig_gaia(rad, gp)
 # get projected surface density for Gaia tracer population
 # not based on analytic integral
@@ -322,25 +329,12 @@ def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
 def Sig_walk(rad, gp, mf1=1, mf2=1):
     rhodm, rhostar1, rhostar2 = rho_walk(rad, gp, mf1, mf2)     # 3* [msun/pc^3]
 
-    Sig_dm    = glp.rho_INT_Sig(rad, rhodm, gp)    # [msun/pc^2]
     Sig_star1 = glp.rho_INT_Sig(rad, rhostar1, gp) # [msun/pc^2]
     Sig_star2 = glp.rho_INT_Sig(rad, rhostar2, gp) # [msun/pc^2]
 
-    return Sig_dm, Sig_star1, Sig_star2               # 3* [msun/pc^2]
+    return Sig_star1+Sig_star2, Sig_star1, Sig_star2               # 3* [msun/pc^2]
 ## \fn Sig_walk(rad, gp, mf1, mf2)
-# calculate 2D surface density from radius
-# @param rad radius in [pc]
-# @param gp global parameters
-# @param mf1 factor rho0 pop 1
-# @param mf2 factor rho0 pop 2
-
-
-def Sigtot_walk(rad, gp, mf1=1, mf2=1):
-    Sig_dm, Sig_star1, Sig_star2 = Sig_walk(rad, gp, mf1, mf2)   # 3*[msun/pc^2]
-    return Sig_dm + Sig_star1 + Sig_star2              # [msun/pc^2]
-## \fn Sigtot_walk(rad, gp, mf1, mf2)
-# return total surface density, stars+DM
-# NOT USED ANYMORE
+# calculate 2D surface density from radius for pop 0, 1, 2
 # @param rad radius in [pc]
 # @param gp global parameters
 # @param mf1 factor rho0 pop 1
@@ -520,12 +514,11 @@ def beta_gaia(rad, gp):
 # @param gp global parameters
 
 
-def beta_hern(rad, gp):
+def beta_hern(rad):
     return 0.*rad, 0.*rad
-## \fn beta_hern(rad, gp)
+## \fn beta_hern(rad)
 # analytic value for beta in Hernquist case
 # @param rad radius [pc]
-# @param gp global parameters
 
 
 def beta_triax(rad):
@@ -540,78 +533,158 @@ def beta_triax(rad):
 # @param rad in [pc]
 
 
-def rho_hern(r0, a, M):
-    s = r0/a                              # [1]
-    return M/(2.*np.pi*a**3)/(s*(1+s)**3) # [Munit/pc^3]
-## \fn rho_hern(r0, a, M)
+def beta(rad, gp):
+    if gp.investigate =='hern':
+        return beta_hern(rad)
+    elif gp.investigate =='gaia':
+        return beta_gaia(rad, gp)
+    elif gp.investigate == 'walk':
+        return beta_walk(rad, gp)
+    else:
+        gh.LOG(1, 'ga.beta not defined')
+        pdb.set_trace()
+## \fn beta(rad, gp)
+# analytic profile for all investigations
+# @param rad radii in pc
+# @param gp global parameters
+
+
+def rho_hern(r0, gp):
+    s = r0/gp.ana                              # [1]
+    rho = gp.anM/(2.*np.pi*gp.ana**3)/(s*(1+s)**3) # [Munit/pc^3]
+    return rho, rho
+## \fn rho_hern(r0, gp)
 # equation 2 from Hernquist 1990, 3D mass density
 # equation 2b from Baes&Dejonghe 2002
 # @param r0 radius in [pc]
-# @param a scale radius in [pc]
-# @param M scale mass in [Munit]
+# @param gp global parameters
 # @return density in [Munit/pc^3]
 
 
-def rho_hern2(r0, a, M, gamma = 1):
-    rho0 = M*(3.-gamma)/(4.*np.pi*a**3)
-    rho0 *= (r0/a)**(-gamma)
-    rho0 *= (1.+r0/a)**(gamma-4.)
-    return rho0
-## \fn rho_hern2(r0, a, M, gamma = 1)
+def rho_hern2(r0, gp, gamma = 1):
+    rho0 = M*(3.-gamma)/(4.*np.pi*gp.ana**3)
+    rho0 *= (r0/gp.ana)**(-gamma)
+    rho0 *= (1.+r0/gp.ana)**(gamma-4.)
+    return rho0, rho0
+## \fn rho_hern2(r0, gp, gamma = 1)
 # find theoretical mass profile of double-Dehnen spheres with stars,
 # according to http://www.astrosim.net/code/doku.php?id=home:codetest:massmodel:sphericaltest
-# NOT USED ANYMORE
 # @param r0 radius in pc
-# @param a  scale radius of the overall mass distribution in pc
-# @param M  M_infty of all stars+DM
+# @param gp global parameters
 # @param gamma inner density slope. default: cusp
 
 
-def M_hern(r0, a, M):
-    s = r0/a                            # [1]
-    return M*s**2/(1.+s)**2             # [Munit]
-## \fn M_hern(r0, a, M)
+def rho(r0, gp):
+    if gp.investigate == 'hern':
+        return rho_hern(r0, gp)
+    elif gp.investigate == 'gaia':
+        return rho_gaia(r0, gp)
+    elif gp.investigate == 'walk':
+        return rho_walk(r0, gp)
+    else:
+        gh.LOG(1, 'ga.rho not defined')
+        pdb.set_trace()
+## \fn rho(rad, gp)
+# analytic total mass density profile for all investigations
+# @param rad radii in pc
+# @param gp global parameters
+
+
+def M_hern(r0, gp):
+    s = r0/gp.ana                            # [1]
+    Mr =  gp.anM*s**2/(1.+s)**2             # [Munit]
+    return Mr, Mr
+## \fn M_hern(r0, gp)
 # equation 3 from Hernquist 1990
-# NOT USED ANYMORE
 # @param r0 radius in [pc]
-# @param a scale radius in [pc]
-# @param M scale mass in [Munit]
+# @param gp global parameters
 # @return 3D mass in [Munit]
 
 
-def Sig_hern(r0, a, M):
-    s = np.array(r0)/a                                          # [1]
-    return M/(2.*np.pi*a**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Munit/pc^2]
-## \fn Sig_hern(r0, a, M)
+def Mr(r0, gp):
+    if gp.investigate == 'hern':
+        return M_hern(r0, gp)
+    elif gp.investigate == 'gaia':
+        return M_gaia(r0, gp)
+    else:
+        gh.LOG(1, 'ga.Mr not defined')
+        pdb.set_trace()
+## \fn Mr(rad, gp)
+# analytic total mass profile for all investigations
+# @param rad radii in pc
+# @param gp global parameters
+
+
+def Sig_hern(r0, gp):
+    s = np.array(r0)/gp.ana                                          # [1]
+    Sigma =  gp.anM/(2.*np.pi*gp.ana**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Munit/pc^2]
+    return Sigma, Sigma
+## \fn Sig_hern(r0, gp)
 # surface density of Hernquist profile, equation 3 from Baes&Dejonghe 2002
 # @param r0 radius in [pc]
-# @param a scale radius in [pc]
-# @param M scale mass in [Munit]
+# @param gp global parameters
 # @return 2D surface density in [Munit/pc^2]
 
 
-def sigr2_hern(r0, a, M, G):
-    s = np.array(r0)/a          # [pc/1000pc]
-    return G*M/a*s*(1+s)**3*np.log(1.+1./s)-\
-           G*M/(12.*a)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
-## \fn sigr2_hern(r0, a, M, G)
+def Sigma(r0, gp):
+    if gp.investigate == 'hern':
+        return Sig_hern(r0, gp)
+    elif gp.investigate == 'gaia':
+        return Sig_gaia(r0, gp)
+    elif gp.investigate == 'walk':
+        return Sig_walk(r0, gp)
+    else:
+        gh.LOG(1, 'ga.Sigma not defined')
+        pdb.set_trace()
+## \fn Sigma(rad, gp)
+# analytic total mass surface density profile for all investigations
+# @param rad radii in pc
+# @param gp global parameters
+# @return Sigma_0, Sigma_1
+
+
+def sigr2_hern(r0, gp):
+    s = np.array(r0)/gp.ana          # [pc/1000pc]
+    return gp.G1*gp.anM/gp.ana*s*(1+s)**3*np.log(1.+1./s)-\
+           gp.G1*gp.anM/(12.*gp.ana)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
+## \fn sigr2_hern(r0, gp)
 # sig_r^2, equation 10 of Hernquist 1990
 # @param r0 radius in [pc]
-# @param a scale radius in [pc]
-# @param M scale mass in [Munit]
-# @param G gravitational constant
+# @param gp global parameters
 # @return sig_r^2 in [(km/s)^2]
 
 
-def sig_los_hern(r0, a, M, G):
-    return np.sqrt(Sig_sig_los_2_hern(r0, a, M, G)/Sig_hern(r0, a, M))
-## \fn sig_los_hern(r0, a, M)
+def sigr2(r0, gp):
+    if gp.investigate == 'hern':
+        return sigr2_hern(r0, gp)
+    else:
+        gh.LOG(1, 'ga.Sigma not defined')
+        pdb.set_trace()
+## \fn sigr2(rad, gp)
+# analytic total mass surface density profile for all investigations
+# @param rad radii in pc
+# @param gp global parameters
+# @return sigr2
+
+
+def sig_los_hern(r0, gp):
+    return np.sqrt(Sig_sig_los_2_hern(r0, gp)/Sig_hern(r0, gp)[1])
+## \fn sig_los_hern(r0, gp)
 # sig_los determined from analytic surfden*sig2 and surfden
 # @param r0 radius in [pc]
-# @param a scale radius in [pc]
-# @param M scale mass in [Munit]
-# @param G gravitational constant
-# @return sig_LOS in [km/s]
+# @param gp global parameters
+# @return sig_LOS for pop  in [km/s]
+
+
+def sig_los(r0, gp):
+    if gp.investigate == 'hern':
+        return sig_los_hern(r0, gp)
+    else:
+        gh.LOG(1, 'ga.sig_los not defined')
+## \fn sig_los(r0, gp)
+# sigma_LOS for all investigations
+# @param r0 radii in pc
+# @param gp global parameters
 
 
 def kappa_hern(r0):
@@ -622,18 +695,32 @@ def kappa_hern(r0):
 # @return 3 for Gaussian velocity distribution
 
 
-def Sig_sig_los_2_hern(r0, a, M, G):
+def Sig_sig_los_2_hern(r0, gp):
     # \sigma_p = \sigma_projected = \sigma_{LOS}
-    s = r0/a                            # [1]
-    return G*M**2/(12.*np.pi*a**3)*(1./(2.*(1.-s**2)**3)\
+    if gp.investigate != 'hern':
+        gh.LOG(1, 'wrong investigation')
+        pdb.set_trace()
+    s = r0/gp.ana                            # [1]
+    return gp.G1*gp.anM**2/(12.*np.pi*gp.ana**3)*(1./(2.*(1.-s**2)**3)\
                                           *(-3.*s**2*X(s)\
                                           *(8.*s**6-28.*s**4+35.*s**2-20.)\
                                           -24.*s**6+68.*s**4-65.*s**2+6.)\
                                           -6.*np.pi*s) # [(km/s)^2 * Munit/pc^2]
-## \fn Sig_sig_los_2_hern(r0, a, M, G)
+## \fn Sig_sig_los_2_hern(r0, gp)
 # equation 21 from Baes&Dejonghe 2002
 # @param r0 radius in [pc]
-# @param a scale radius in [pc]
-# @param M scale mass in [Munit]
-# @param G gravitational constant
+# @param gp global parameters
 # @return surface density * sig_LOS^2 in [(km/s)^2 * Munit/pc^2]
+
+
+def Sig_sig_los_2(r0, gp):
+    if gp.investigate == 'hern':
+        return Sig_sig_los_2_hern(r0, gp)
+    else:
+        gh.LOG(1, 'ga.Sig_sig_los_2 not defined')
+        pdb.set_trace()
+## \fn Sig_sig_los_2(rad, gp)
+# surface density time sigma_r^2
+# @param rad radii in pc
+# @param gp global parameters
+# @return Sigma*sigma_r^2
