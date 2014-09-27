@@ -7,7 +7,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 import matplotlib.pyplot as plt
 plt.ion()
 

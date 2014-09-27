@@ -7,7 +7,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import pdb, scipy
+import ipdb, scipy
 from scipy.integrate import simps,trapz,quad
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh

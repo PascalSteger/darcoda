@@ -7,7 +7,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import pdb, scipy, time
+import ipdb, scipy, time
 from scipy.integrate import simps,trapz,quad,romberg
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
@@ -110,7 +110,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\rho(r)$')
         legend(loc='lower left')
         savefig('fit_rho_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
     #N = 100
     #start = time.time()
@@ -137,7 +137,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     #    ylabel('$\\Sigma/\\Sigma_{\\rm{analytic}}$')
     #    legend(loc='lower left')
     #    savefig('fit_Sig_hern.png')
-    #    pdb.set_trace()
+    #    ipdb.set_trace()
 
     # add up tracer densities to get overall density profile
     # add rho* to take into account the baryonic addition
@@ -166,7 +166,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylim([-0.5, 1.0])
         legend(loc='lower right')
         savefig('fit_beta_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
     # nu
     # ------------------------------------------------------------------------
@@ -187,7 +187,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\nu$')
         savefig('fit_nu_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
     # \Sigma
     # -----------------------------------------------------------------------
@@ -206,7 +206,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\Sigma$')
         legend(loc='lower left')
         savefig('fit_Sig_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
     # int beta(s)/s ds
     # -----------------------------------------------------------------------
@@ -224,7 +224,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\int ds \\beta(s)/s$')
         legend(loc='lower right')
         savefig('fit_intbeta_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
 
 
@@ -253,7 +253,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$M(r)$')
         legend(loc='lower right')
         savefig('fit_M_hern_better.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
 
     # nu(r)\cdot\sigma_r^2(r) integrand
@@ -272,7 +272,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$yint$')
         legend(loc='lower left')
         savefig('fit_nu_sigmar2_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
 
     # actual integration
@@ -322,7 +322,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_r^2(r)\\nu(r)$')
         legend(loc='lower right')
         savefig('fit_sigr2_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
@@ -378,7 +378,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}^2 \Sigma$')
         legend(loc='lower left')
         savefig('fit_Sig_siglos2_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
 
     # sigma_LOS^2
@@ -395,7 +395,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}^2$')
         legend(loc='upper right')
         savefig('fit_siglos2_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
 
     # derefine on radii of the input vector
     splpar_sig_dtheta = splrep(r0fine, np.log(siglos2_dtheta), k=3, s=0.)
@@ -417,7 +417,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}$')
         legend(loc='upper right')
         savefig('fit_siglos_out_hern.png')
-        pdb.set_trace()
+        ipdb.set_trace()
     siglos2_out = siglos2_out_dtheta
 
     if not gp.usekappa:

@@ -9,7 +9,7 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys, pdb
+import sys, ipdb
 import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
@@ -208,7 +208,7 @@ def run(gp):
             nu_gaia = ga.rho_gaia(Ri, gp)[1]
             #loglog(Ri, nu_gaia, 'b.-')
 
-            pdb.set_trace()
+            ipdb.set_trace()
 
 if __name__ == '__main__':
     gpr.showplots = True

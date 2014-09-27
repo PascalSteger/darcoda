@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 from pylab import *
 
 import gl_params

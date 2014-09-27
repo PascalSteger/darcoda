@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, pdb, logging, socket, getpass
+import os, ipdb, logging, socket, getpass
 
 def check_investigate(inv):
     if inv == 'discmock': return True

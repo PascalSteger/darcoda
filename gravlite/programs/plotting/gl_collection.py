@@ -7,7 +7,7 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb, sys
+import ipdb, sys
 import matplotlib
 #matplotlib.use('tkagg')
 import matplotlib.pyplot as plt

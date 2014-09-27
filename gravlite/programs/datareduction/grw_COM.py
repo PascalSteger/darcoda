@@ -8,7 +8,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys, pdb
+import sys, ipdb
 from pylab import *
 from random import shuffle
 import gr_params as gpr

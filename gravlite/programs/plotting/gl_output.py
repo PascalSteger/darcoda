@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 
-import pdb, csv
+import ipdb, csv
 import numpy as np
 
 class Output:
@@ -54,6 +54,6 @@ class Output:
     ## \fn __repr__(self)
     # string representation for ipython
 
-        
+
 ## \class Output
 # class for generating ASCII output files from plot_multinest

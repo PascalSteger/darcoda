@@ -64,7 +64,7 @@ nudatnu = glp.Sig_INT_rho(rfine, Sigdatnu, gp)
 loglog(rfine, nudatnu, 'r.-', lw=0.5)
 #nudatnuold = glp.Sig_INT_rho_buggy(rfine, Sigdatnu, gp) #negative found
 #loglog(rfine, nudatnuold, 'g.-')
-pdb.set_trace()
+ipdb.set_trace()
 
 dummy, nudatnu, nuerrnu, Mrdatnu = glp.Sig_NORM_rho(rfine, Sigdatnu, Sigerrnu, gp)
 
@@ -160,4 +160,4 @@ siglanf = ga.sig_los_hern(rfine, 1, 1, G1)
 plot(rfine, siglanf, 'b.-')
 xscale('log')
 plot(rfine, siglos, 'r.-')
-pdb.set_trace()
+ipdb.set_trace()

@@ -8,7 +8,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys, pdb
+import sys, ipdb
 
 from pylab import *
 import gr_params as gpr
@@ -45,7 +45,7 @@ def run(gp):
     pm2 = (comp0 == 2) # same same
     pm3 = (comp0 == 3)
 
-    
+
     if gp.metalpop:
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
@@ -73,9 +73,9 @@ def run(gp):
 
     x0 = x0[ind];   y0 = y0[ind]; z0 = z0[ind]; comp0 = comp0[ind]
     vz0 = vz0[ind]; vb0=vb0[ind]; Mg0 = Mg0[ind]
-    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm3 = pm3[ind]; 
+    PM0 = PM0[ind]; pm1 = pm1[ind]; pm2 = pm2[ind]; pm3 = pm3[ind];
     pm = pm1+pm2+pm3
-    
+
     # get COM with shrinking sphere method
     com_x, com_y, com_z = com_shrinkcircle(x0,y0,z0,PM0)
     print('COM [pc]: ', com_x, com_y, com_z)
@@ -85,7 +85,7 @@ def run(gp):
     print('VOM [km/s]', com_vz)
 
     # from now on, continue to work with 3D data. store to different files
-    
+
     x0 -= com_x; y0 -= com_y; z0 -= com_z # [pc]
     vz0 -= com_vz #[km/s]
 
@@ -98,7 +98,7 @@ def run(gp):
     print('max(R) = ', max(r0) ,' pc')
     print('last element of R : ',r0[-1],' pc')
     print('total number of stars: ',len(r0))
-    
+
     pop = -1
     for pmn in [pm, pm1, pm2]:
         pmr = (r0<(gp.maxR*rscale)) # [1] based on [pc]
@@ -108,7 +108,7 @@ def run(gp):
         x  = x0[pmn];  y = y0[pmn]; z = z0[pmn]; vz = vz0[pmn]; vb = vb0[pmn];  # [pc], [km/s]
         Mg = Mg0[pmn]; comp = comp0[pmn]; PMN = PM0[pmn]   # [ang], [1], [1]
         m = np.ones(len(pmn))
-        
+
         rscalei = np.median(np.sqrt(x*x+y*y+z*z))
 
         # print("x y z" on first line, to interprete data later on)
@@ -124,7 +124,7 @@ def run(gp):
         for k in range(len(x)):
             print(x[k]/rscalei, y[k]/rscalei, z[k]/rscalei, vz[k], file=c) # 3* [pc], [km/s]
         c.close()
-        
+
         if gpr.showplots and False:
             from mpl_toolkits.mplot3d import Axes3D
             import matplotlib.pyplot as plt
@@ -142,7 +142,7 @@ def run(gp):
             #circ_DM=Circle((0,0), radius=gpr.r_DM, fc='None', ec='r', lw=1)
             #gca().add_patch(circ_DM)
 
-            pdb.set_trace()
+            ipdb.set_trace()
             #clf()
             #gpr.show_part_pos(x, y, pmn, rscalei, pop)
 

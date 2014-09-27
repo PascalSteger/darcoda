@@ -8,9 +8,8 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 import gl_project as glp
 
 asech = lambda x: np.arccosh(1./x)
 asec  = lambda x: np.arccos(1./x)
-

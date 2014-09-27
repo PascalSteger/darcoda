@@ -6,7 +6,7 @@
 
 # (c) 2013 ETHZ psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 import gl_project
 import gl_physics as phys

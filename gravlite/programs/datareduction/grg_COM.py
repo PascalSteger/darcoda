@@ -8,7 +8,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys, pdb
+import sys, ipdb
 
 from pylab import *
 import gr_params as gpr

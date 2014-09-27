@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ, Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import random, pdb
+import random, ipdb
 import gr_params as gpr
 import gl_helper as gh
 

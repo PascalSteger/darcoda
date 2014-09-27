@@ -14,7 +14,7 @@
 
 # (c) 2013 ETHZ Pascal S.P. Steger
 
-import pdb
+import ipdb
 import numpy as np
 import numpy.random as npr
 import gl_helper as gh

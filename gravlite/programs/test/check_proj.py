@@ -6,7 +6,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import sys, pdb
+import sys, ipdb
 import numpy as np
 from scipy.stats import kurtosis
 from pylab import *

@@ -9,7 +9,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 
-import sys, pdb
+import sys, ipdb
 import numpy as np
 import gr_params as gpr
 import gl_file as gf

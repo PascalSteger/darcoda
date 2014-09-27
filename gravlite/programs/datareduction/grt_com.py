@@ -8,7 +8,7 @@
 
 
 import numpy as np
-import sys, pdb
+import sys, ipdb
 
 from pylab import *
 import gr_params as gpr

@@ -7,7 +7,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 from scipy.interpolate import splrep, splev
 

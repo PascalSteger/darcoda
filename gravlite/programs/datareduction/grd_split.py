@@ -6,9 +6,8 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys, pdb, ipdb
+import sys, ipdb
 import numpy as np
-from numpy import sin, cos
 
 import pymultinest
 
@@ -110,15 +109,15 @@ def pjoint(R, k2, V, Verror, W, Werror, PM, k, pop):
 def calc_Vmean(als, des):
     # TODO debug
 
-    term1 = cos(des)*sin(als)*(Vd*cos(dd)*sin(ad)+\
-                           DL*mu_alpha*cos(dd)*cos(ad)-\
-                           DL*mu_delta*sin(dd)*sin(ad))
-    term2 = cos(des)*cos(als)*(Vd*cos(dd)*cos(ad)\
-                           -DL*mu_delta*sin(dd)*cos(ad)\
-                           -DL*mu_alpha*cos(dd)*sin(ad))
-    term3 = sin(des)*(Vd*sin(dd)+DL*mu_delta*cos(dd))
+    term1 = np.cos(des)*np.sin(als)*(Vd*np.cos(dd)*np.sin(ad)+\
+                           DL*mu_alpha*np.cos(dd)*np.cos(ad)-\
+                           DL*mu_delta*np.sin(dd)*np.sin(ad))
+    term2 = np.cos(des)*np.cos(als)*(Vd*np.cos(dd)*np.cos(ad)\
+                           -DL*mu_delta*np.sin(dd)*np.cos(ad)\
+                           -DL*mu_alpha*np.cos(dd)*np.sin(ad))
+    term3 = np.sin(des)*(Vd*np.sin(dd)+DL*mu_delta*np.cos(dd))
     Vm = term1 + term2 + term3
-    pdb.set_trace()
+    ipdb.set_trace()
     print(' Vmean =',Vm)
     return Vm
 ## \fn calc_Vmean(als, des)

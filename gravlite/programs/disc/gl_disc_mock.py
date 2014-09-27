@@ -9,7 +9,7 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb
+import ipdb
 from scipy.integrate import simps,trapz
 
 import gl_helper as gh
@@ -17,7 +17,7 @@ import gl_helper as gh
 
 def disc_mock(gp):
     global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
-    # Set up simple population here using analytic formulae: 
+    # Set up simple population here using analytic formulae:
     zmin = 100.                               # [pc], first bin center
     zmax = 1300.                              # [pc], last bin center
     # get Stuetzpunkte for theoretical profiles (not yet stars, finer spacing in real space)
@@ -30,7 +30,7 @@ def disc_mock(gp):
     F   = 1.65e-4                             # [TODO]
     C   = 17.**2.                             # [km/s] integration constant in sig
 
-    # Draw mock data: 
+    # Draw mock data:
     nu_zth = np.exp(-zth/z0)                                 # [1]
     Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
 
@@ -56,7 +56,7 @@ def disc_mock(gp):
     ran2 = npr.normal(size=int(gp.ntracer[1-1]))  # [1]
     vzstar = ran2 * sigzstar                      # [km/s]
 
-    # Add second population [thick-disc like]: 
+    # Add second population [thick-disc like]:
     if gp.pops == 2:
         nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02)
         # no normalization to 1
@@ -76,18 +76,18 @@ def disc_mock(gp):
     print('fraction of z<zmax selected elements: ', 1.*sum(sel)/(1.*len(sel)))
     z_dat  = zstar[sel]
     vz_dat = vzstar[sel]
-    
+
     # throw away velocities of value zero (unstable?):
     sel = (abs(vz_dat) > 0)
     print('fraction of vz_dat>0 selected elements: ', 1.*sum(sel)/(1.*len(sel)))
     z_dat  = z_dat[sel]
     vz_dat = vz_dat[sel]
-    
+
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin, binmax, z_dat_bin, sig_dat_bin, count_bin = gh.binsmooth(z_dat, vz_dat, \
                                                                      zmin, zmax, gp.nipol, 0.)
     sig_dat_err_bin = sig_dat_bin / np.sqrt(count_bin)
-    
+
     nu_dat_bin, count_bin = gh.bincount(z_dat, binmax)
     nu_dat_err_bin = nu_dat_bin / np.sqrt(count_bin)
     renorm = max(nu_dat_bin)
@@ -104,17 +104,17 @@ def disc_mock(gp):
         sel = (zstar2 < zmax)
         z_dat2  = zstar2[sel]
         vz_dat2 = vzstar2[sel]
-        
+
         # cut zero velocities:
         sel = (abs(vz_dat2) > 0)
         z_dat2  = z_dat2[sel]
         vz_dat2 = vz_dat2[sel]
-        
+
         # Calulate binned data (for plots/binned analysis):
         binmin2, binmax2, z_dat_bin2, sig_dat_bin2, count_bin2 = gh.binsmooth(z_dat2, vz_dat2, \
                                                                               zmin, zmax, gp.nipol, 0.)
         sig_dat_err_bin2 = sig_dat_bin2 / np.sqrt(count_bin2)
-        
+
         nu_dat_bin2, count_bin2 = gh.bincount(z_dat2, binmax2)
         nu_dat_err_bin2 = nu_dat_bin2 / np.sqrt(count_bin2)
         renorm2 = max(nu_dat_bin2) # normalize by max density of first bin, rather
@@ -124,13 +124,13 @@ def disc_mock(gp):
         # CALCULATE PROPERTIES FOR ALL POP TOGETHER
         z_dat0 = np.hstack([z_dat, z_dat2])
         vz_dat0 = np.hstack([vz_dat, vz_dat2])
-        
+
         # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
         binmin0, binmax0, z_dat_bin0, sig_dat_bin0, count_bin0 = gh.binsmooth(z_dat0, vz_dat0, \
                                                                               zmin, zmax, gp.nipol, 0.)
         sig_dat_err_bin0 = sig_dat_bin0 / np.sqrt(count_bin0)
         # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
-        
+
         nu_dat_bin0, count_bin0 = gh.bincount(z_dat0, binmax0)
         nu_dat_err_bin0 = nu_dat_bin0 / np.sqrt(count_bin0)
         renorm0 = max(nu_dat_bin0)
@@ -152,7 +152,7 @@ def disc_mock(gp):
 
     gp.dat.nu.append(nu_dat_bin0)        # [Msun/pc^3], normalized to 1 at center
     gp.dat.nuerr.append(nu_dat_err_bin0) # [Msun/pc^3], normalized
-        
+
     gp.dat.sig.append(sig_dat_bin0)       # [km/s]
     gp.dat.sigerr.append(sig_dat_err_bin0)# [km/s]
 
@@ -162,7 +162,7 @@ def disc_mock(gp):
 
     gp.dat.sig.append(sig_dat_bin)        # [km/s]
     gp.dat.sigerr.append(sig_dat_err_bin) # [km/s]
-    
+
     if gp.pops == 2:
         gp.Rscale.append(z02)                 # [pc]
         gp.dat.nu.append(nu_dat_bin2)        # [Msun/pc^3], normalized to 1
@@ -175,4 +175,3 @@ def disc_mock(gp):
 ## \fn disc_mock(gp)
 # generate disc data from analytic form, return 3D densities, delta (=tilt)
 # @param gp global parameters
-

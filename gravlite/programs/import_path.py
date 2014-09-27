@@ -3,7 +3,7 @@
 ## @file
 # import file with full path specification, only once, setting back sys.path
 
-import os, sys, pdb
+import os, sys, ipdb
 from imp import reload
 
 

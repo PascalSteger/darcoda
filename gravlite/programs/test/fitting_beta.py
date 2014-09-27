@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import pdb
+import ipdb
 import gl_params
 gp = gl_params.Params()
 import gl_file as gf
@@ -102,4 +102,4 @@ pp = PdfPages('beta_fit_all.pdf')
 pp.savefig(fig)
 pp.close()
 
-pdb.set_trace()
+ipdb.set_trace()

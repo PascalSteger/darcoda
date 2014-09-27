@@ -6,7 +6,7 @@
 
 # (c) 2013 ETHZ, Pascal S.P. Steger, psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 
 def com_mean(x, y, z, pm):

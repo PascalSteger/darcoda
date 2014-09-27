@@ -5,7 +5,7 @@
 # all helper functions
 
 # (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
-import sys, traceback, pdb
+import sys, traceback, ipdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg
@@ -31,15 +31,15 @@ def LOG(level, message, var=''):
 def sanitize_vector(vec, length, mini, maxi):
     if len(vec) != length:
         LOG(1, 'vec has wrong length')
-        pdb.set_trace()
+        ipdb.set_trace()
         #raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
-        pdb.set_trace()
+        ipdb.set_trace()
         #raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
-        pdb.set_trace()
+        ipdb.set_trace()
         #raise Exception('vec has too high value', max(vec))
     return
 ## \fn sanitize_vector(vec, length, mini, maxi)
@@ -182,7 +182,7 @@ def quadinflog(x, y, A, B, stop = False):
     dropoffint = romberg(invexp, A, B, rtol=1e-3, divmax=15, vec_func=True)
     #elapsed = (time.time()-start)/N
     #print('one iteration romberg takes ', elapsed, 's')
-    #pdb.set_trace()
+    #ipdb.set_trace()
 
     return dropoffint
 ## \fn quadinflog(x, y, A, B)
@@ -696,7 +696,7 @@ def moments(data):
     n = len(data)
     if (n <= 1):
         LOG(1, "len(data) must be at least 2 in gh.moments")
-        pdb.set_trace()
+        ipdb.set_trace()
     s=0.0;
     # First pass to get the mean.
     for j in range(n):

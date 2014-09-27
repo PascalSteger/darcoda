@@ -20,7 +20,7 @@
 #
 #   Estimation of the scale ('dispersion') of a distribution,
 #   resistant for outliers and robust for a broad range of
-#   non-Gaussian underlying populations.  
+#   non-Gaussian underlying populations.
 #
 # REFERENCES:
 #   Beers, T. C., Flynn, K., & Gebhardt, K. 1990, AJ, 100, 32
@@ -35,7 +35,7 @@
 #------------------------------------------------------------------
 
 
-import pdb
+import ipdb
 import numpy as np
 from scipy.stats import t as Tfunc
 from scipy.stats import chi2 as CHI2
@@ -66,7 +66,7 @@ def stddevbiweight(vector, zero=None, eps=1e-20):
             n = len(vector)         # [1]
             scale = n*np.sum((vector[ind]-center)**2*term1**4) # [vecunit^2]
             scale = np.sqrt(scale)/np.sum(term1*term2) # [vecunit]
-  
+
     return scale
 ## \fn stddevbiweight(vector, zero=None, eps=1e-20)
 ## PURPOSE: Estimation of the scale ('dispersion') of a distribution,
@@ -143,7 +143,7 @@ def meanbiweight(vector,itmax=10,fracmin=[],eps=1e-24,\
         ci_std[1] =  STDDEV*(np.sqrt((n-1)/CHI2.ppf(ci_alpha*0.5,n-1))-1)   #[vecunit]
     else:
         ci_std = np.zeros(2)
-        
+
     if type(ci_mean)!=np.ndarray or type(ci_std)!=np.ndarray:
         print('out=',center,STDDEV,ci_mean,ci_std)
         ci_mean = np.zeros(2)
@@ -160,11 +160,11 @@ def meanbiweight(vector,itmax=10,fracmin=[],eps=1e-24,\
 # Robust and Exploratory Data Analysis (Wiley, New York)
 # @param vector      = distribution in vector form
 # @param itmax =10    = maximum number of iterations used in determination of
-#                      the central location; default 10 
+#                      the central location; default 10
 # @param fracmin =[]   = minimum fractional change in median absolute deviation
 #                      (MAD), used as convergence criterion in iteration;
 #                      default 0.03*sqrt(0.5/(n-1)), with n number of vector
-#                      elements  
+#                      elements
 # @param eps =1e-24   = small number: iteration is stopped if MAD < EPS;
 #                      default 1.0e-24
 # @param ci_perc =95  = default confidence interval (95), 1sigma=68.4

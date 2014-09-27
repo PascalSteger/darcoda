@@ -6,7 +6,7 @@
 
 # (c) 2013 ETHZ psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 import gl_physics as phys
 import gl_helper as gh
@@ -76,7 +76,7 @@ class Profiles:
     # @param zetab second virial parameter
     # @param pop 1,2,...
 
-        
+
     def get_prof(self, prof, pop):
         if prof == 'rho':
             return self.rho
@@ -121,4 +121,3 @@ class Profiles:
 
 ## \class Profiles
 # class for storing all profiles
-

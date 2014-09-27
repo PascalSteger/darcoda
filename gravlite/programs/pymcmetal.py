@@ -8,7 +8,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys, pdb
+import sys, ipdb
 import pymc as mc
 from pylab import *
 
@@ -33,7 +33,7 @@ def assign_pop(data, p, mu1, sig1, mu2, sig2):
 ## \fn assign_pop(data, p, mu1, sig1, mu2, sig2)
 # get possible assignment to populations
 # @param data Magnesium linewidth, used for splitting populations [1]
-# @param p 
+# @param p
 # @param mu1 center of first population
 # @param sig1 spread of first pop
 # @param mu2 center of second population
@@ -55,7 +55,7 @@ def plot_traces(mcmc):
     leg.get_frame().set_alpha(0.7)
 
     subplot(312)
-    std_trace = mcmc.trace("stds")[:] 
+    std_trace = mcmc.trace("stds")[:]
     plt.plot(std_trace[:,0], label="trace of standard deviation of cluster 0",\
              c = colors[0])
     plt.plot(std_trace[:,1], label="trace of standard deviation of cluster 1",\
@@ -77,7 +77,7 @@ def plot_traces(mcmc):
 
 def bimodal_gauss(data):
     p = mc.Normal( "p", 0.5, 1./0.1**2)
-    assignment = mc.Categorical("assignment", [p, 1-p], size = data.shape[0] ) 
+    assignment = mc.Categorical("assignment", [p, 1-p], size = data.shape[0] )
     print("prior assignment, with p = %.2f:"%p.value)
     print(assignment.value[:100], "...")
 
@@ -93,13 +93,13 @@ def bimodal_gauss(data):
         return cs
     # centers = mc.Normal( "centers", [mu0,mu0+dmu], [dmu2, dmu2], size=2)
 
-    @mc.deterministic 
+    @mc.deterministic
     def center_i( assignment = assignment, centers = centers ):
-        return centers[ assignment] 
-    
+        return centers[ assignment]
+
     @mc.deterministic
     def tau_i( assignment = assignment, taus = taus ):
-        return taus[ assignment] 
+        return taus[ assignment]
 
     print("Random assignments: ", assignment.value[ :10 ], "...")
     print("Assigned center: ",    center_i.value[ :10], "...")
@@ -174,7 +174,7 @@ def run():
     bins = np.linspace(min(data),max(data),30)
     h1 = hist(data,bins=bins,color='k', alpha=0.2, normed=True)
     print('overall mean = ', np.mean(data))
-    
+
 #    hist(data[pop0==1],bins=bins,color='r',alpha=0.5,normed=True)
 #    axvline(x=np.mean(data[pop0==1]),color='r',ls='dashed')
 #    print('mean 1 = ', np.mean(data[pop0==1]), ', found ',mu1,', ',sig1)
@@ -187,14 +187,14 @@ def run():
     y = p * norm.pdf(x, loc = mu1, scale = sig1)
     plt.plot(x, y, label = "posterior pop 1", lw = 2 )
     plt.fill_between( x, y, color = colors[0], alpha = 0.3 )
-    
+
     y = (1-p) * norm.pdf(x, loc = mu2, scale = sig2)
     plt.plot(x, y, label = "posterior pop 2", lw = 2 )
     plt.fill_between( x, y, color = colors[1], alpha = 0.3 )
 
     y = p * norm.pdf(x, loc = mu1, scale = sig1) + (1-p) * norm.pdf(x, loc = mu2, scale = sig2)
     plt.plot(x, y, label = "overall fitted distribution", lw = 2 )
-    
+
     plt.legend(loc = "upper left")
     plt.title( "Visualizing Clusters using posterior-mean parameters" );
 
@@ -218,6 +218,6 @@ def run():
     show()
 
 
-    
+
 if __name__=="__main__":
     run()

@@ -8,7 +8,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 from scipy.integrate import quad
 from scipy.misc import factorial
 

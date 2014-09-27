@@ -8,7 +8,7 @@
 # (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
 
 from types import *
-import pdb
+import ipdb
 import numpy as np
 
 from gl_class_profiles import Profiles
@@ -77,4 +77,3 @@ def calc_chi2(profs, gp):
 ## \fn calc_chi2(profs)
 # Calculate chi^2
 # @param profs profiles for rho, M, nu_i, beta_i, sig_i, kap_i
-
