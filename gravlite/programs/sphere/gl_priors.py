@@ -10,7 +10,6 @@ import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev
 from gl_int import g
-import gl_plot as gpl
 from gl_helper import LOG
 
 
@@ -28,7 +27,7 @@ def check_beta(beta, gp):
     r0 = gp.xipol
     dR = r0[1:]-r0[:-1]
     r0extl = np.array([r0[0]/6., r0[0]/5., r0[0]/4., r0[0]/3., r0[0]/2., r0[0]/1.5])
-    
+
     # extrapolation to the right (attention, could overshoot)
     dr0 = (r0[-1]-r0[-2])/8.
     r0extr = np.hstack([r0[-1]+dr0, r0[-1]+2*dr0, r0[-1]+3*dr0, r0[-1]+4*dr0])

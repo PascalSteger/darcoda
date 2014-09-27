@@ -9,6 +9,10 @@
 
 import numpy as np
 import pdb
+from scipy.integrate import quad
+from scipy.misc import factorial
+
+import gl_helper as gh
 import gl_project as glp
 
 asech = lambda x: np.arccosh(1./x)
@@ -18,12 +22,12 @@ def X(s0):
     Xout = np.zeros(len(s0))
     for i in range(len(s0)):
         s = s0[i]                       # [1]
-        
+
         if s<=1.:
             Xout[i] = (1.-s**2)**(-0.5)*asech(s) # [1]
         else:
             Xout[i] = (s**2-1.)**(-0.5)*asec(s) # [1]
-        
+
     return Xout                         # [1]
 ## \fn X(s0)
 # equation 33, 34 from Hernquist 1990
@@ -77,7 +81,7 @@ def rhohern(r0, rscale, rho0, alpha, beta, gamma):
 # @param beta steepness of turnover
 # @return 3D Hernquist density in [Munit/pc^3]
 
-    
+
 def rhotriax(rad):
     alpha = 1.
     beta = 4.
@@ -106,13 +110,13 @@ def rhowalk_3D(rad, gp):
     # and the corresponding variables for the stellar component
 
     A = np.loadtxt(gp.files.analytic, unpack=False)
-    
+
     gamma_star1 = A[7]
     beta_star1  = A[8]
     alpha_star1 = 2.0
     r_star1     = 1000*A[9] #[pc] # both description of filename and file content is wrong
     # name is rstar/10 in three digits, file content is given in kpc
-    
+
     gamma_star2 = A[11]
     beta_star2  = A[12]
     alpha_star2 = 2.0
@@ -125,7 +129,7 @@ def rhowalk_3D(rad, gp):
     rho0        = A[19] # [Munit/pc^3]
 
     ntracer1 = gp.ntracer[1-1]
-        
+
     # 1)
     # rho0star1   = rho0/1.e6*ntracer1 #*10 * ntracer2 # too high, too low
     # 2)
@@ -134,7 +138,7 @@ def rhowalk_3D(rad, gp):
     # 3)
     rho0star1    = rho0/1.e6*ntracer1 # TODO: Matt for factor 1e6
 
-    # rhohern(r, rscale, rho0, alpha, beta, gamma): 
+    # rhohern(r, rscale, rho0, alpha, beta, gamma):
     #  (2*[pc], or 2*[rcore]), [Munit/pc^3], 3*[1]
     rhodm    = rhohern(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
     rhostar1 = rhohern(rad, r_star1, rho0star1, alpha_star1, beta_star1, gamma_star1)
@@ -183,17 +187,15 @@ def nugaiatot_3D(rad):
 def nrwalktot_3D_deriv(rad, gp):
     lrho = np.log(rhowalktot_3D(rad, gp))
     lr   = np.log(rad)
-    import gl_helper as gh
     return -gh.derivcoarse(lrho, lr)
 ## \fn nrwalktot_3D(rad)
 # plot d log rho/d log r
 # @param rad radius in pc, not in log
-    
+
 
 def nrtriaxtot_3D_deriv(rad):
     lrho = np.log(rhotriax(rad))
     lr   = np.log(rad)
-    import gl_helper as gh
     return -gh.derivcoarse(lrho, lr)
 ## \fn nrwalktot_3D(rad)
 # plot d log rho/d log r
@@ -203,7 +205,6 @@ def nrtriaxtot_3D_deriv(rad):
 def nrgaiatot_3D_deriv(rad):
     lrho = np.log(rhogaiatot_3D(rad))
     lr   = np.log(rad)
-    import gl_helper as gh
     return -gh.derivcoarse(lrho, lr)
 ## \fn nrgaiatot_3D(rad)
 # plot d log rho/d log r
@@ -262,7 +263,6 @@ def Mwalkertot(rbin):
     # Mtot = glp.rho_SUM_Mr(rad, rhotot)
 
     # better method using quad numeric integration scheme with continuous rhowalktot
-    from scipy.integrate import quad
 
     def igra(r):
         return 4.*np.pi*r**2*rhowalktot_3D(r)
@@ -281,7 +281,6 @@ def Mwalkertot(rbin):
 
 
 def q(i,j):
-    from scipy.misc import factorial
     if i >= j and j >= 0:
         return (-1.)**j*factorial(i)/(factorial(j)*factorial(i-j))
     else:
@@ -359,13 +358,13 @@ def Phi(r,alpha,beta,gamma,rho0):
 
 def read_abc():
     A = np.loadtxt(gp.files.analytic, unpack=False)
-    
+
     alpha_star1 = 2
     beta_star1  = int(A[8])
     gamma_star1 = int(A[7])
     r_star1     = 1000*A[9] #[pc] # both description of filename and file contents are wrong
     # name is rstar/10 in three digits, file content is given in kpc
-    
+
     alpha_star2 = 2
     beta_star2  = int(A[12])
     gamma_star2 = int(A[11])
@@ -408,7 +407,7 @@ def MBetaAnalytic(r):
 # MBetaAnalytic
 # @param r in [pc]
 
-    
+
 def Manalytic(r):
     alpha,beta,gamma,rho0,r_DM = read_abc()
     return 4*np.pi*rho0*(1./(1.+r/r_DM)+np.log(1.+r/r_DM)-1.)
@@ -437,7 +436,7 @@ def Rhowalktot(rad):
 # return total surface density, stars+DM
 # @param rad radius in [pc]
 
-    
+
 def betatriax(rad):
     eta = 0.5
     rsbeta = 810.                       # [pc]
@@ -453,7 +452,6 @@ def betatriax(rad):
 def betawalker(rad, gp):
     # Osipkov-Merritt anisotropy profile with r_a/r_* = 10^4 for isotropic models
     A = np.loadtxt(gp.files.analytic, unpack=False)
-    import pdb
     rars1  = A[10]
     rs1    = A[9] * 1000. # [pc]
     rbyrs1 = rad/rs1

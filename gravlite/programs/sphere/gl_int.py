@@ -11,11 +11,9 @@ import pdb, scipy, time
 from scipy.integrate import simps,trapz,quad,romberg
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
-import gl_plot as gpl
 import gl_analytic as ga
 import gl_physics as phys
 import gl_project as glp
-import gl_plot as gpl
 from pylab import *
 
 def int_poly_inf(r0,poly):

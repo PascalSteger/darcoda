@@ -9,7 +9,6 @@ import sys, traceback, pdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg
-import gl_plot as gpl
 from pylab import *
 import time
 

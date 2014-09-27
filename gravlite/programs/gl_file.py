@@ -8,8 +8,9 @@
 
 import sys, pdb
 import numpy as np
-import gl_physics as phys
+
 import gl_analytic as ga
+import gl_physics as phys
 from gl_data import Datafile
 
 
@@ -54,8 +55,8 @@ def bin_data(gp):
         # run for 3D models as well if model is set (needed in rhotot_walk)
         if gp.walker3D:
             import grw_com, grw_mcmcbin
-            grw_com.run()
-            grw_mcmcbin.run()
+            grw_com.run(gp)
+            grw_mcmcbin.run(gp)
     elif gp.investigate == 'triax':
         import grt_com
         grt_com.run(gp)

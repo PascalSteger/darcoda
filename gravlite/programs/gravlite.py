@@ -20,12 +20,14 @@ import subprocess
 import pymultinest
 import pickle, pdb
 import gl_params
-import gl_plot as gpl
+
 
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
 
 gp = gl_params.Params()
+
+import gl_file as gf
 
 def show(filepath):
     subprocess.call(('xdg-open', filepath))
@@ -68,7 +70,6 @@ def myloglike(cube, ndim, nparams):
 
 
 def prepare_data(gp):
-    import gl_file as gf
     if gp.getnewdata:
         if gp.getnewpos:
             gf.read_data(gp)

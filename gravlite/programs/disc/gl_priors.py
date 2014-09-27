@@ -10,7 +10,6 @@
 import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev
-import gl_plot as gpl
 
 
 def check_tilt(tmp_tilt, gp):

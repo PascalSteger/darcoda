@@ -15,7 +15,6 @@ import gl_helper as gh
 
 import gl_analytic as ga
 import gl_int as gi
-import gl_plot as gpl
 from pylab import *
 
 def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):

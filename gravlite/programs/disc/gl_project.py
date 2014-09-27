@@ -18,9 +18,8 @@ from scipy.integrate import simps
 from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
-import gl_plot as gpl
 import gl_physics as phys
-
+from pylab import *
 
 def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
     # TODO: check integration for z direction only
@@ -66,7 +65,3 @@ def nu_param_INT_Sig_disc(z0, nupar, pop, gp):
 # @param nupar 3D density, (nrho entries) [Munit/pc^3]
 # @param pop int for population (0 both, 1, 2, ..)
 # @param gp global parameters
-
-    
-
-
