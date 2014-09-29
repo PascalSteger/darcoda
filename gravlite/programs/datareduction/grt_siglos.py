@@ -32,13 +32,7 @@ def run(gp):
     rmin = 0.                                       # [rscale]
     rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR # [rscale]
 
-    if gpr.lograd:
-        # space logarithmically in radius
-        binmin, binmax, rbin = bin_r_log(rmax/gp.nipol, rmax, gp.nipol)
-    elif gp.consttr:
-        binmin, binmax, rbin = bin_r_const_tracers(r, len(r)/gp.nipol)
-    else:
-        binmin, binmax, rbin = bin_r_linear(rmin, rmax, gp.nipol)
+    binmin, binmax, rbin = gpr.determine_radius(r, rmin, rmax, gp) # [rscale0]
 
     # offset from the start!
     rs = gpr.Rerr*np.random.randn(len(r))+r #[rscale]

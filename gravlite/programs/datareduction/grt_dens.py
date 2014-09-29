@@ -34,14 +34,7 @@ def run(gp):
         x = x[sel]; y = y[sel]; v = v[sel] #[rscale]
         totmass = 1.*len(x) #[munit], munit = 1/star
 
-        if gpr.lograd:
-            # space logarithmically in radius
-            Binmin, Binmax, Rbin = gh.bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol) # [Rscale0]
-        elif gp.consttr:
-            Binmin, Binmax, Rbin = gh.bin_r_const_tracers(R, len(R)/gp.nipol) # [Rscale0]
-        else:
-            Binmin, Binmax, Rbin = gh.bin_r_linear(Rmin, Rmax, gp.nipol) # [Rscale0]
-
+        Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
         Vol = gpr.volume_circular_ring(Binmin, Binmax, gp)
 
         # rs = gpr.Rerr*np.random.randn(len(r))+r

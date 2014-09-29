@@ -153,9 +153,9 @@ class Files:
 
 
     def get_sim_name(self, gp):
-        if gp.hern_dual == 1:
+        if gp.hern_sim_pops == 1:
             simname = 'unit_hern_1_'
-        elif gp.hern_dual == 2:
+        elif gp.hern_sim_pops == 2:
             simname = 'dual_unit_hern_1_'
         return simname
     ## \fn get_sim_name(self, gp)
@@ -173,7 +173,6 @@ class Files:
         self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_1.txt') # first comp.
         self.nufiles.append(self.dir+'nu/'+sim+'nu_0.txt') # all comp.
         self.nufiles.append(self.dir+'nu/'+sim+'nu_1.txt') # first comp.
-
 
         self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_0.txt') # all comp.
         self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_1.txt') # first comp.

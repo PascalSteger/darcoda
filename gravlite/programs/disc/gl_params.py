@@ -61,10 +61,6 @@ class Params():
                                 # tracer particles
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
-        self.walker3D = False # for walker mock data: use 3D models
-        self.hern_dual = 2 # use hernquist model with 1 or 2 particle
-                     # types. do not use second type (DM) as
-                     # population
         self.maxR = 5.            # [Xscale], max range in radial bins
 
 

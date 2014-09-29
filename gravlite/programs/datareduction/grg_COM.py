@@ -31,7 +31,7 @@ def run(gp):
     print('input:',gpr.fil)
     x0, y0, z0, vx, vy, vz = np.transpose(np.loadtxt(gpr.fil))
     # for purely tangential beta=-0.5 models, have units of kpc instead of pc
-    if gpr.case == 9 or gp.case == 10:
+    if gp.case == 9 or gp.case == 10:
         x0 *= 1000. # [pc]
         y0 *= 1000. # [pc]
         z0 *= 1000. # [pc]

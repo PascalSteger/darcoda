@@ -15,17 +15,15 @@ gp = gl_params.Params()
 from gl_class_files import Files
 import gl_helper as gh
 
+# show plots during execution of data readout?
+# set automatically if gr_MCMCbin.py is called on the command line
 showplots = False
-n = 100 # number of iterations in MCMC_*
-# nbins = gp.nipol
+
+n = 3 # number of iterations in gr_MCMCbin
 
 Rerr  = 0. #0.01      # distance error in [Xscale]
 vrerr = 0. #2.0      # [km/s] 0.01 # velocity error. only raises sig_los
 
-lograd  = False    # log steps for radial bin in readout,
-                        # show x-axis in log scale
-
-case = gp.case
 
 if gp.investigate == 'hern':
     repr  = 1     # choose simulation representation
@@ -34,9 +32,15 @@ if gp.investigate == 'hern':
     Rmax = 3. * gp.Xscale[0] # [pc]
 
     simname = gp.files.get_sim_name(gp) # dir+'simulation/'+prename+'unit_hern_%i' %(repr)
-    simpos = gp.files.dir+'simulation/'+simname+'stars_pos.txt'
-    simvel = gp.files.dir+'simulation/'+simname+'stars_vel.txt'
-
+    if gp.pops == 1:
+        simpos = gp.files.dir+'simulation/'+simname+'pos.txt'
+        simvel = gp.files.dir+'simulation/'+simname+'vel.txt'
+    elif gp.pops == 2:
+        simpos = gp.files.dir+'simulation/'+simname+'stars_pos.txt'
+        simvel = gp.files.dir+'simulation/'+simname+'stars_vel.txt'
+    else:
+        gh.LOG(0, 'get data for more than 2 pops in Hernquist profile')
+        ipdb.set_trace()
 
 elif gp.investigate == 'walk': # or just want to try some other generic pymc stuff:
     r_DM  = 1000.
@@ -77,6 +81,7 @@ elif gp.investigate == 'obs':
     fil = dir+'mem2'
     pmsplit = 0.9
 
+
 def volume_circular_ring(Binmin, Binmax, gp):
     Vol = np.zeros(gp.nipol)
     for k in range(gp.nipol):
@@ -98,26 +103,27 @@ def get_com_file(n):
 
 
 def determine_radius(R, Rmin, Rmax, gp):
-    if lograd:
-        print(gp.nipol, ' bins in log spacings')
-        return gh.bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
-    elif gp.consttr:
-        print(len(R)/gp.nipol,' particles per bin')
-        return gh.bin_r_const_tracers(R, gp.nipol)
-    else:
-        print(gp.nipol, ' bins in linear spacings')
+    if gp.binning == 'linspace':
+        gh.LOG(2, ' bins in linear spacings: ', gp.nipol)
         return gh.bin_r_linear(Rmin, Rmax, gp.nipol)
+    elif gp.binning == 'logspace':
+        gh.LOG(2, ' bins in log spacings: ', gp.nipol)
+        return gh.bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
+    elif gp.binning == 'consttr':
+        gh.LOG(2, ' particles per bin: ', len(R)/gp.nipol)
+        return gh.bin_r_const_tracers(R, gp.nipol)
+
 ## \fn determine_radius(R, Rmin, Rmax, gp)
-# determine radius once and for all. this must not be changed between
+# determine bin radii once and for all. this must not be changed between
 # readout and gravlite run. if you wish to change: set gp.getnewdata =
 # True in gl_params.py
-# @param R
+# @param R radii of all tracer particles
 # @param Rmin float
 # @param Rmax float
 # @param gp global parameters
 
 
-def show_part_pos(x, y, pmn, Xscale, comp):
+def show_part_pos(x, y, pmn, Xscale):
     res = (abs(x)<3)*(abs(y)<3)
     x = x[res]; y = y[res]           # [Xscale]
     en = len(x)
@@ -146,17 +152,17 @@ def show_part_pos(x, y, pmn, Xscale, comp):
     # title(fil)
     # savefig(gp.files.dir+'centeredpos_' + str(n) + '.png')
     return
-## \fn show_part_pos(x, y, pmn, Xscale, comp) show 2D scatter plot of particle
-# positions
+## \fn show_part_pos(x, y, pmn, Xscale)
+# show 2D scatter plot of particle positions
 # @param x coordinate
 # @param y coordinate
 # @param pmn probability of membership
 # @param Xscale scale radius in 2D
-# @param comp population number: 0, 1, 2
 
 
-def show_plots_dens_3D(comp, rbin, p_dens, p_edens, gp):
+def show_plots_dens_3D(rbin, p_dens, p_edens, gp):
     ion(); subplot(111)
+    clf()
     plot(rbin, p_dens, 'b', lw=1)
     lbound = p_dens-p_edens; lbound[lbound<1e-6] = 1e-6
     ubound = p_dens+p_edens;
@@ -167,7 +173,7 @@ def show_plots_dens_3D(comp, rbin, p_dens, p_edens, gp):
     xlabel(r'$r [r_c]$')
     ylabel(r'$\nu(r)/\nu(0)$')
     savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
-    ioff(); show(); clf()
+    ioff(); show()
 ## \fn show_plots_dens_3D(Rbin, p_dens, p_edens, gp)
 # show density
 # @param Rbin
@@ -176,9 +182,9 @@ def show_plots_dens_3D(comp, rbin, p_dens, p_edens, gp):
 # @param gp global parameters
 
 
-def show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc):
+def show_plots_dens_2D(Rbin, P_dens, P_edens, Dens0pc):
     ion(); subplot(111)
-
+    clf()
     # plot density
     plot(Rbin, P_dens*Dens0pc, 'b', lw=1)
     lbound = (P_dens-P_edens)*Dens0pc; lbound[lbound<1e-6] = 1e-6
@@ -187,36 +193,33 @@ def show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc):
     plot(Rbin, ubound, 'k')
     fill_between(Rbin, lbound, ubound, alpha=0.5, color='r')
     yscale('log')
-    # xlim([0, gp.maxR]); ylim([np.min(lbound),np.max(ubound)])
     xlabel(r'$R [R_c]$')
     ylabel(r'$\nu_{2D}(R) [\mathrm{Munit/pc/pc}]$')
     savefig(gp.files.dir+'Sigma/Sig_' + str(n) + '.png')
-    ioff(); show(); clf()
-## \fn show_plots_dens_2D(comp, Rbin, P_dens, P_edens, Dens0pc)
+    ioff(); show()
+## \fn show_plots_dens_2D(Rbin, P_dens, P_edens, Dens0pc)
 # show density
-# @param comp int component
 # @param Rbin bin radii, array, [pc]
 # @param P_dens density
 # @param P_edens error on density
 # @param Dens0pc central density in Munit/pc^3
 
 
-def show_plots_sigma(comp, Rbin, p_dvlos, p_edvlos):
+def show_plots_sigma(Rbin, p_dvlos, p_edvlos):
     ion(); subplot(111)
-    plot(Rbin, p_dvlos, 'b', lw=1)
+    clf()
+    plot(Rbin, p_dvlos, 'b', lw=1, label='data')
     fill_between(Rbin, p_dvlos-p_edvlos, p_dvlos+p_edvlos, alpha=0.5, color='r')
     # [rscale],2*[km/s]
 
     xlabel(r'$R [\mathrm{Xscale}]$')
     ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')
-    ylim([-1, 30])
-    # xlim([0, gp.maxR])
-    savefig(get_siglos_png(comp))
-    ioff(); show(); clf()
+
+    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
+    ioff(); show()
     return
 ## \fn show_plots_sigma(Rbin, p_dvlos, p_edvlos)
 # show sigma
-# @param comp int
 # @param Rbin [pc]
 # @param p_dvlos
 # @param p_edvlos
@@ -224,6 +227,7 @@ def show_plots_sigma(comp, Rbin, p_dvlos, p_edvlos):
 
 def show_plots_vlos(rbin, p_dvlos, p_edvlos):
     ion(); subplot(111)
+    clf()
     print('rbin = ', rbin,' rscale')
     print('p_dvlos = ', p_dvlos,' km/s')
     print('p_edvlos = ', p_edvlos, 'km/s')
@@ -236,8 +240,8 @@ def show_plots_vlos(rbin, p_dvlos, p_edvlos):
     ylim([-5,30])
     # xscale('log')
     xlim([np.min(rbin),np.max(rbin)])
-    savefig(gpr.get_siglos_png(0))
-    ioff();show();clf()
+    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
+    ioff();show()
 ## \fn show_plots_vlos(rbin, p_dvlos, p_edvlos)
 # show line-of-sight velocity profile with error bars
 # @param rbin [pc]
@@ -246,7 +250,7 @@ def show_plots_vlos(rbin, p_dvlos, p_edvlos):
 
 
 
-def show_plots_kappa(comp, Rbin, p_kappa, p_ekappa):
+def show_plots_kappa(Rbin, p_kappa, p_ekappa):
     ion(); subplot(111)
     plot(Rbin, p_kappa, 'b', lw=1)
     fill_between(Rbin, p_kappa-p_ekappa, p_kappa+p_ekappa, alpha=0.5, color='r')
@@ -257,9 +261,8 @@ def show_plots_kappa(comp, Rbin, p_kappa, p_ekappa):
     # xlim([0, gp.maxR])
     savefig( gp.files.dir+'kappalos/kappalos_' + str(n) + '.png')
     ioff(); show(); clf()
-## \fn show_plots_kappa(comp, Rbin, P_dens, P_edens, p_dvlos, p_edvlos, p_kappa, p_ekappa, Dens0pc)
+## \fn show_plots_kappa(Rbin, P_dens, P_edens, p_dvlos, p_edvlos, p_kappa, p_ekappa, Dens0pc)
 # show kappa profile with errors
-# @param comp int
 # @param Rbin [pc]
 # @param p_kappa
 # @param p_ekappa

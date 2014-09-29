@@ -223,7 +223,8 @@ def run(gp):
         if gpr.showplots:
             gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Dens0pc)
             gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
-            gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
+            if gp.usekappa:
+                gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
 
 
 

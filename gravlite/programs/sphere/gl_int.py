@@ -417,6 +417,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}$')
         legend(loc='upper right')
         savefig('fit_siglos_out_hern.png')
+        ylim([0.,0.03])
         ipdb.set_trace()
     siglos2_out = siglos2_out_dtheta
 

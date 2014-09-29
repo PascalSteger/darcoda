@@ -55,6 +55,7 @@ def obs_Sig_phot(Binmin, Binmax, Sig_kin, gp):
     return Sig_phot
 ## \fn obs_Sig_phot(Binmin, Binmax, Sig_kin, gp)
 # return photometric surface density for observations with selection function w
+# only in 'obs' investigation
 # @param Binmin [pc]
 # @param Binmax [pc]
 # @param Sig_kin [Msun/pc^2]
@@ -87,24 +88,28 @@ def run(gp):
         print('#######  working on component ',pop)
         print('input: ', gpr.get_com_file(pop))
         # start from data centered on COM already:
-        if gf.bufcount(gpr.get_com_file(pop))<2: continue
-        x,y,v = np.loadtxt(gpr.get_com_file(pop),\
-                           skiprows=1,usecols=(0,1,2),unpack=True)
-                           # [Rscalei], [Rscalei], [km/s]
+        if gf.bufcount(gpr.get_com_file(pop))<2:
+            continue
 
-        # calculate 2D radius on the skyplane
-        R = np.sqrt(x**2+y**2) #[Rscalei]
-        Rscalei = gf.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
+        # only read in data if needed: pops = 1: reuse data from pop=0 part
+        if (gp.pops == 1 and pop < 1 or gp.pops == 2):
+            x,y,v = np.loadtxt(gpr.get_com_file(pop),\
+                               skiprows=1,usecols=(0,1,2),unpack=True)
+            # [Rscalei], [Rscalei], [km/s]
 
-        # set maximum radius (if gp.maxR is set)
-        Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR # [Rscale0]
-        print('Rmax [Rscale0] = ', Rmax)
-        sel = (R * Rscalei <= Rmax * Rscale0)
-        x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
-        totmass = float(len(x)) # [Munit], Munit = 1/star
+            # calculate 2D radius on the skyplane
+            R = np.sqrt(x**2+y**2) #[Rscalei]
+            Rscalei = gf.read_Xscale(gp.files.get_scale_file(pop)) # [pc]
 
-        Rs = R                   # + possible starting offset, [Rscalei]
-        vlos = v                 # + possible starting offset, [km/s]
+            # set maximum radius (if gp.maxR is set)
+            Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR # [Rscale0]
+            print('Rmax [Rscale0] = ', Rmax)
+            sel = (R * Rscalei <= Rmax * Rscale0)
+            x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
+            totmass = float(len(x)) # [Munit], Munit = 1/star
+
+            Rs = R                   # + possible starting offset, [Rscalei]
+            vlos = v                 # + possible starting offset, [km/s]
 
         tr = open(gp.files.get_ntracer_file(pop),'w')
         print(totmass, file=tr)
@@ -112,65 +117,76 @@ def run(gp):
 
         f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta = gf.write_headers_2D(gp, pop)
 
-        Sig_kin   = np.zeros((gp.nipol, gpr.n))
-        siglos    = np.zeros((gp.nipol, gpr.n))
-        v2        = np.zeros((gp.nipol, gpr.n))
-        v4        = np.zeros((gp.nipol, gpr.n))
-        kappa     = np.zeros((gp.nipol, gpr.n))
-        Ntot      = np.zeros(gpr.n)
-        zetaa     = np.zeros(gpr.n)
-        zetab     = np.zeros(gpr.n)
-        # shared by density, siglos, kappa c alcs
-        tpb       = np.zeros((gp.nipol,gpr.n))
-        for k in range(gpr.n):
-            Rsi   = gh.add_errors(Rs,   gpr.Rerr)   # [Rscalei]
-            vlosi = gh.add_errors(vlos, gpr.vrerr)   # [km/s]
-            for i in range(gp.nipol):
-                ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
+        if (gp.pops == 1 and pop < 1) or gp.pops == 2:
+            Sig_kin   = np.zeros((gp.nipol, gpr.n))
+            siglos    = np.zeros((gp.nipol, gpr.n))
+            if gp.usekappa:
+                kappa     = np.zeros((gp.nipol, gpr.n))
+            if gp.usezeta:
+                v2        = np.zeros((gp.nipol, gpr.n))
+                v4        = np.zeros((gp.nipol, gpr.n))
+                Ntot      = np.zeros(gpr.n)
+                zetaa     = np.zeros(gpr.n)
+                zetab     = np.zeros(gpr.n)
+
+            # particle selections, shared by density, siglos, kappa and zeta calculations
+            tpb       = np.zeros((gp.nipol,gpr.n))
+            for k in range(gpr.n):
+                Rsi   = gh.add_errors(Rs,   gpr.Rerr)   # [Rscalei]
+                vlosi = gh.add_errors(vlos, gpr.vrerr)   # [km/s]
+                for i in range(gp.nipol):
+                    ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
                                                   Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
-                tpb[i][k] = float(len(ind1)) #[1]
-                Sig_kin[i][k] = float(len(ind1))*totmass/Vol[i]
-                # [Munit/rscale**2]
+                    tpb[i][k] = float(len(ind1)) #[1]
+                    Sig_kin[i][k] = float(len(ind1))*totmass/Vol[i] # [Munit/rscale**2]
 
-                if(len(ind1)<=1):
-                    siglos[i][k] = siglos[i-1][k]
-                    print('### using last value, missing data')
-                    kappa[i][k] = kappa[i-1][k]
-                    # attention! should be 0, uses last value
-                    v2[i][k] = v2[i-1][k]
-                    v4[i][k] = v4[i-1][k]
-                else:
-                    siglos[i][k] = meanbiweight(vlosi[ind1], ci_perc=68.4, \
-                                               ci_mean=True, ci_std=True)[1]
-                                        # [km/s], see BiWeight.py
-                    kappa[i][k] = kurtosis(vlosi[ind1], axis=0, \
-                                           fisher=False, bias=False) # [1]
-                    ave, adev, sdev, var, skew, curt = gh.moments(vlosi[ind1])
-                    v2[i][k] = var
-                    v4[i][k] = (curt+3)*var**2
+                    if(len(ind1)<=1):
+                        siglos[i][k] = siglos[i-1][k]
+                        print('### using last value, missing data')
+                        if gp.usekappa:
+                            kappa[i][k] = kappa[i-1][k]
+                            # attention! should be 0, uses last value
+                        if gp.usezeta:
+                            v2[i][k] = v2[i-1][k]
+                            v4[i][k] = v4[i-1][k]
+                    else:
+                        siglos[i][k] = meanbiweight(vlosi[ind1], ci_perc=68.4, \
+                                                    ci_mean=True, ci_std=True)[1]
+                        # [km/s], see BiWeight.py
+                        if gp.usekappa:
+                            kappa[i][k] = kurtosis(vlosi[ind1], axis=0, \
+                                                   fisher=False, bias=False) # [1]
+                        if gp.usezeta:
+                            ave, adev, sdev, var, skew, curt = gh.moments(vlosi[ind1])
+                            v2[i][k] = var
+                            v4[i][k] = (curt+3)*var**2
 
-            Sigma = Sig_kin[:,k]
-            if not gp.usezeta:
-                continue
-            Ntot[k] = gh.Ntot(Rbin, Sigma, gp)
-            zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k], gp)
-            v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k], gp))**2
-            zetaa[k] /= v2denom
+                Sigma = Sig_kin[:,k]
+                if gp.usezeta:
+                    Ntot[k] = gh.Ntot(Rbin, Sigma, gp)
+                    zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k], gp)
+                    v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k], gp))**2
+                    zetaa[k] /= v2denom
 
-            zetab[k] = gh.starred(Rbin, v4[:,k]*Rbin**2, Sigma, Ntot[k], gp)
-            zetab[k] /= v2denom
-            zetab[k] /= (gh.starred(Rbin, Rbin, Sigma, Ntot[k], gp))**2
+                    zetab[k] = gh.starred(Rbin, v4[:,k]*Rbin**2, Sigma, Ntot[k], gp)
+                    zetab[k] /= v2denom
+                    zetab[k] /= (gh.starred(Rbin, Rbin, Sigma, Ntot[k], gp))**2
 
 
-        if gp.investigate == 'obs':
-            Sig_phot = obs_Sig_phot(Binmin, Binmax, Sig_kin, gp)
-        else:
-            Sig_phot = Sig_kin
+            if gp.investigate == 'obs':
+                Sig_phot = obs_Sig_phot(Binmin, Binmax, Sig_kin, gp)
+            else:
+                Sig_phot = Sig_kin
 
+        # do the following for all populations
         Sig0 = np.sum(Sig_phot[0])/float(gpr.n) # [Munit/Rscale^2]
         Sig0pc = Sig0/Rscale0**2              # [munis/pc^2]
         gf.write_Sig_scale(gp.files.get_scale_file(pop), Sig0pc, totmass)
 
+
+
+        # calculate density and mass profile, store it
+        # ----------------------------------------------------------------------
         tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Sigerr0 = Sig0/np.sqrt(tpb0)       # [Munit/Rscale^2]
         P_dens  = np.zeros(gp.nipol)
@@ -197,6 +213,7 @@ def run(gp):
         f_Sig.close()
         f_mass.close()
 
+
         # deproject Sig to get nu
         numedi = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
         numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
@@ -212,7 +229,10 @@ def run(gp):
                   file = f_nu)
         f_nu.close()
 
-        # output siglos
+
+
+        # calculate and output siglos
+        # --------------------------------------------------------------
         p_dvlos = np.zeros(gp.nipol)
         p_edvlos = np.zeros(gp.nipol)
         for b in range(gp.nipol):
@@ -238,28 +258,36 @@ def run(gp):
             # 3*[rscale], 2*[maxsiglos]
         f_sig.close()
 
-        # output kurtosis kappa
-        p_kappa = np.zeros(gp.nipol) # needed for plotting later
-        p_ekappa = np.zeros(gp.nipol)
-        for b in range(gp.nipol):
-            kappavel = np.sum(kappa[b])/gpr.n #[1]
-            tpbb = np.sum(tpb[b])/float(gpr.n) #[1]
-            if tpbb == 0:
-                kappavelerr = p_edvlos[b-1] #[1]
-                # attention! uses last error
-            else:
-                kappavelerr = np.abs(kappavel/np.sqrt(tpbb)) #[1]
-            p_kappa[b] = kappavel
-            p_ekappa[b] = kappavelerr
 
-            print(Rbin[b], Binmin[b], Binmax[b], \
-                  kappavel, kappavelerr, file=f_kap)
-            # [rscale], 2*[1]
-        f_kap.close()
 
+        # calculate and output kurtosis kappa
+        # --------------------------------------------------------------
+        if gp.usekappa:
+            p_kappa = np.zeros(gp.nipol) # needed for plotting later
+            p_ekappa = np.zeros(gp.nipol)
+            for b in range(gp.nipol):
+                kappavel = np.sum(kappa[b])/gpr.n #[1]
+                tpbb = np.sum(tpb[b])/float(gpr.n) #[1]
+                if tpbb == 0:
+                    kappavelerr = p_edvlos[b-1] #[1]
+                    # attention! uses last error
+                else:
+                    kappavelerr = np.abs(kappavel/np.sqrt(tpbb)) #[1]
+                p_kappa[b] = kappavel
+                p_ekappa[b] = kappavelerr
+
+                print(Rbin[b], Binmin[b], Binmax[b], \
+                      kappavel, kappavelerr, file=f_kap)
+                # [rscale], 2*[1]
+            f_kap.close()
+
+
+        # output zetas
+        # -------------------------------------------------------------
         if gp.usezeta:
             print(np.median(zetaa), np.median(zetab), file=f_zeta)
-        f_zeta.close()
+            f_zeta.close()
+
 
         if gpr.showplots:
             gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Sig0pc)

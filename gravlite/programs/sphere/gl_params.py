@@ -35,22 +35,24 @@ class Params():
         self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
-
-        self.ntracer = [1e6, 1e6] # number of tracer stars pop1, pop2,..., pop_N
+        if self.investigate == 'hern':
+            self.pops = 1
+        self.ntracer = [1e6] # number of tracer stars pop1 (Hernquist case), pop2, ...
 
 
         ########## data options
-        self.getnewdata = False # get new data computed from
+        self.getnewdata = True # get new data computed from
                                 # observations before burn-in
-        self.getnewpos  = False # read in the positions and v_LOS again
-        self.consttr    = True  # set radial bin by constant number of
-                                # tracer particles
+        self.getnewpos  = True # read in the positions and v_LOS again
+        self.binning    = 'consttr' # linspace, logspace, consttr
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
         self.walker3D = False # for walker mock data: use 3D models
-        self.hern_dual = 2 # use hernquist model with 1 or 2 particle
+        self.hern_sim_pops = 1 # use hernquist model with 1 or 2 particle
                      # types. do not use second type (DM) as
                      # population
+        if self.pops == 1:
+            self.hern_sim_pops = 1
         self.maxR = 5.            # [Xscale], max range in radial bins
 
 
@@ -60,7 +62,7 @@ class Params():
         self.chi2_switch = 10.
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run
+        self.nipol = 50   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
@@ -146,9 +148,8 @@ class Params():
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
         self.checksig   = True  # check sigma calculation routine with 'walk'
-        self.stopstep   = 9     # stop after step number ..., enter debugger
-        self.ana        = 1.    # scale radius of Hernquist profile in [pc]
-        self.anM        = 1.    # total mass of Hernquist profile in [Msun]
+        self.stopstep   = 1     # stop after step number ..., enter debugger
+
 
 
         # unitsXS
@@ -159,6 +160,11 @@ class Params():
         self.kpc = 1000.                      # [pc]
         self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
         # [pc msun^-1 (km/s)^2]
+
+        if self.investigate == 1:
+            self.G1 = 1.
+        self.ana        = 1.    # scale radius of Hernquist profile in [pc]
+        self.anM        = 1.    # total mass of Hernquist profile in [Msun]
 
 
         ########## filesystem-related
