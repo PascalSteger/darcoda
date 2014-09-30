@@ -94,7 +94,6 @@ def varepsilon(r0, betapar, gp):
 
 
 def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
-
     rmin = np.log10(min(r0))
     rmax = np.log10(max(r0)*gp.rinfty)
     r0fine = np.logspace(rmin, rmax, gp.nfine)
@@ -111,33 +110,6 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         legend(loc='lower left')
         savefig('fit_rho_hern.png')
         ipdb.set_trace()
-
-    #N = 100
-    #start = time.time()
-    #elapsed = (time.time()-start)/N
-    #print('one iteration dsqrt takes ', elapsed, 's')
-    #for k in range(N):
-    #Sigfine_dsqrt  = glp.rho_param_INT_Sig(r0fine, rhopar, 0, gp)
-    #elapsed = (time.time()-start)/N
-    #print('one iteration dsqrt takes ', elapsed, 's')
-
-    #start = time.time()
-    #for k in range(N):
-    #Sigfine_dtheta  = glp.rho_param_INT_Sig_theta(r0fine, rhopar, 0, gp)
-    #elapsed = (time.time()-start)/N
-    #print('one iteration dtheta takes ', elapsed, 's')
-
-    #if gp.checksig:
-    #    clf()
-    #    anSig = ga.Sigma(r0fine, gp)
-    #    loglog(r0fine, anSig, 'b-', label='analytic')
-    #    loglog(r0fine, Sigfine_dsqrt, 'r.', label='dsqrt')
-    #    loglog(r0fine, Sigfine_dtheta, 'g.', label='dtheta')
-    #    xlabel('$r/\\rm{pc}$')
-    #    ylabel('$\\Sigma/\\Sigma_{\\rm{analytic}}$')
-    #    legend(loc='lower left')
-    #    savefig('fit_Sig_hern.png')
-    #    ipdb.set_trace()
 
     # add up tracer densities to get overall density profile
     # add rho* to take into account the baryonic addition
@@ -274,14 +246,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         savefig('fit_nu_sigmar2_hern.png')
         ipdb.set_trace()
 
-
     # actual integration
-    #
-    #cth = cos(theta)
-    #sth = sin(theta)
-    #for i in range(len(r)):
-    #	rq = r[i] / cth
-    start = time.time()
     xmin = r0fine[0]/15. # needed, if not: loose on first 4 bins
     bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
@@ -289,60 +254,21 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     sth = np.sin(theta)
     cth2 = cth*cth
     Rproj = 1.*r0fine
-    sigr2model_theta = np.zeros(len(r0fine))
+    sigr2model = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
         rq = Rproj[k]/cth
         Mrq = np.interp(rq, r0fine, Mrfine, left=0, right=0)
         nuq = np.interp(rq, r0fine, nufine, left=0, right=0)
         intbetaq = np.interp(rq, r0fine, intbetasfine, left=0, right=0)
-        sigr2model_theta[k] =  np.exp(-2*intbetasfine[k])/(r0fine[k] * nufine[k])*simps(gp.G1*Mrq*nuq*np.exp(2*intbetaq)*sth, theta)
+        sigr2model[k] =  np.exp(-2*intbetasfine[k])/(r0fine[k] * nufine[k])*simps(gp.G1*Mrq*nuq*np.exp(2*intbetaq)*sth, theta)
     # clean last value (which is always 0 by construction)
-    sigr2model_theta[-1] = sigr2model_theta[-2]/10.
-    elapsed = time.time()-start
-    print('one iteration dtheta in sigr2 takes ', elapsed, 's')
-
-
-    # ---------------------------------------------------------------
-    # use quadinflog or quadinfloglog here
-    start = time.time()
-    sigr2model = np.zeros(len(r0fine))
-    for k in range(len(r0fine)):
-        # log space
-        minlog = min(np.log(yint[yint>0]))
-        # exclude y==0 to circumvent error
-        shiftlog = np.exp(2-minlog)
-        # otherwise we get divergent integrals for high radii
-        yshift = yint * shiftlog
-        splpar_nul = splrep(xint, np.log(yshift), k=1, s=0.)
-        invexp = lambda x: np.exp(splev(x, splpar_nul))
-        integ = romberg(invexp, r0fine[k], gp.rinfty*r0fine[-1],\
-                             rtol=1e-3, divmax=15, vec_func=True)
-        integ /= shiftlog
-
-        # loglog
-        #splpar_nul = splrep(np.log(xint), np.log(yint), k=1, s=0.1)
-        # tunable k=2; s=0, ..
-        #invexp = lambda x: np.exp(splev(np.log(x), splpar_nul))
-        #integ = romberg(invexp, r0fine[k], 5*r0fine[-1],\
-        #                rtol=1e-3, divmax=15, vec_func=True)
-        sigr2model[k] = np.exp(-2*intbetasfine[k])/nufine[k]*integ
-
-        # old function quadinflog
-        #sigr2model[k] = np.exp(-2*intbetasfine[k])/nufine[k]*\
-        #                gh.quadinflog(xint, yint, r0fine[k],\
-        #                gp.rinfty*r0fine[-1], True)
-
-        if sigr2model[k] == np.inf:
-            sigr2model[k] = 1e-100
-    elapsed = time.time()-start
-    print('one iteration dsqrt in sigr2 takes ', elapsed, 's')
+    sigr2model[-1] = sigr2model[-2]/10.
 
     gh.checkpositive(sigr2model, 'sigr2model in sigl2s')
     if gp.checksig and gp.stopstep <= 8:
         clf()
         ansigr2 = ga.sigr2(r0fine, gp)
-        loglog(r0fine, sigr2model, 'g.-', label='model dsqrt')
-        loglog(r0fine, sigr2model_theta, 'r.-', label='model dtheta')
+        loglog(r0fine, sigr2model, 'r.-', label='model')
         loglog(r0fine, ansigr2, 'b--', label='analytic')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_r^2(r)\\nu(r)$')
@@ -353,23 +279,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
     # -------------------------------------------------------------
-    start = time.time()
-    sigl2s_dsqrt = np.zeros(len(r0fine)-gp.nexp)             #
-    for k in range(len(r0fine)-gp.nexp): # get sig_los^2
-        xnew = np.sqrt(r0fine[k:]**2-r0fine[k]**2)             # [pc]
-        ynew = 2.*(1-betafine[k]*(r0fine[k]**2)/(r0fine[k:]**2)) # TODO check
-        ynew *= nufine[k:] * sigr2model_theta[k:]
-        gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
-        # check sigr2model: has too many entries of inf!
-
-        # stop integration at xnew[-1] instead of at np.inf
-        # to circumvent inf when nufine has increase at fudge radii
-        sigl2s_dsqrt[k] = gh.quadinflog(xnew, ynew, 0, xnew[-1], False)
-    elapsed = time.time()-start
-    print('one iteration dsqrt takes ', elapsed, 's')
-
-    start = time.time()
-    sigl2s_dtheta = np.zeros(len(r0fine))
+    sigl2s = np.zeros(len(r0fine))
     xmin = r0fine[0]/15. # needed, if not: loose on first 4 bins
 
     bit = 1.e-6
@@ -377,24 +287,17 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     cth = np.cos(theta)
     cth2 = cth*cth
     Rproj = 1.*r0fine
-    ynew = (1-betafine*cth2)*sigr2model_theta*nufine
+    ynew = (1-betafine*cth2)*sigr2model*nufine
     for k in range(len(r0fine)):
         rq = Rproj[k]/cth
         ynewq = np.interp(rq, r0fine, ynew, left=0, right=0)
-        sigl2s_dtheta[k] = 2.*Rproj[k]*simps(ynewq/cth2, theta)
-    elapsed = time.time()-start
-    print('one iteration dtheta takes ', elapsed, 's')
+        sigl2s[k] = 2.*Rproj[k]*simps(ynewq/cth2, theta)
 
-
-    #sigl2s = sigl2s_dtheta[:-gp.nexp]
-    # for last 3 bins, we are up to a factor 2 off
-    gh.checkpositive(sigl2s_dtheta, 'sigl2s_dtheta')
-    gh.checkpositive(sigl2s_dsqrt, 'sigl2s_dsqrt')
+    gh.checkpositive(sigl2s, 'sigl2s')
     if gp.checksig and gp.stopstep <= 9:
         clf()
         anSigsiglos2_hern = ga.Sig_sig_los_2(r0fine, gp)
-        loglog(r0fine[:-gp.nexp], sigl2s_dsqrt, 'g.-', label='dsqrt')
-        loglog(r0fine, sigl2s_dtheta, 'r.-', label='dtheta')
+        loglog(r0fine, sigl2s, 'r.-', label='model')
         loglog(r0fine, anSigsiglos2_hern, 'b--', label='analytic')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2 \Sigma$')
@@ -405,13 +308,11 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     # sigma_LOS^2
     # ----------------------------------------------------------------------
-    siglos2_dtheta = sigl2s_dtheta/Sigfine
-    siglos2_dsqrt = sigl2s_dsqrt/Sigfine[:-gp.nexp]
+    siglos2 = sigl2s/Sigfine
     if gp.checksig and gp.stopstep <= 10:
         clf()
         ansiglos = ga.sig_los(r0fine, gp)
-        plot(r0fine[:-gp.nexp], siglos2_dsqrt, 'g.-', label='dsqrt')
-        plot(r0fine, siglos2_dtheta, 'r.-', label='dtheta')
+        plot(r0fine, siglos2, 'r.-', label='model')
         plot(r0fine, ansiglos**2, 'b--', label='analytic')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2$')
@@ -420,17 +321,13 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ipdb.set_trace()
 
     # derefine on radii of the input vector
-    splpar_sig_dtheta = splrep(r0fine, np.log(siglos2_dtheta), k=3, s=0.)
-    splpar_sig_dsqrt = splrep(r0fine[:-gp.nexp], np.log(siglos2_dsqrt), k=3, s=0.)
-    siglos2_out_dtheta = np.exp(splev(r0, splpar_sig_dtheta))
-    siglos2_out_dsqrt = np.exp(splev(r0, splpar_sig_dsqrt))
-    gh.checkpositive(siglos2_out_dtheta, 'siglos2_out_dtheta')
-    gh.checkpositive(siglos2_out_dsqrt, 'siglos2_out_dsqrt')
+    splpar_sig = splrep(r0fine, np.log(siglos2), k=3, s=0.)
+    siglos2_out = np.exp(splev(r0, splpar_sig))
+    gh.checkpositive(siglos2_out, 'siglos2_out')
     if gp.checksig and gp.stopstep <= 11:
         clf()
         ansiglos = ga.sig_los(r0, gp)
-        plot(r0, np.sqrt(siglos2_out_dsqrt), 'g.-', label='dsqrt')
-        plot(r0, np.sqrt(siglos2_out_dtheta), 'r.-', label='dtheta')
+        plot(r0, np.sqrt(siglos2_out), 'r.-', label='model')
         plot(r0, ansiglos, 'b--', label='analytic')
         plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
         fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
@@ -440,19 +337,18 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         legend(loc='upper right')
         savefig('fit_siglos_out_hern.png')
         ipdb.set_trace()
-    siglos2_out = siglos2_out_dtheta
 
     if not gp.usekappa:
         kapl4s_out = np.ones(len(siglos2_out))
     if gp.usekappa:
-        kapl4s_out = kappa(r0fine, Mrfine, nufine, sigr2model_theta, intbetasfine, gp)
+        kapl4s_out = kappa(r0fine, Mrfine, nufine, sigr2model, intbetasfine, gp)
 
     zetaa = -1; zetab = -1
     if gp.usezeta:
         zetaa, zetab = zeta(r0fine[:-gp.nexp], nufine[:-gp.nexp], \
                             Sigfine,\
                             Mrfine[:-gp.nexp], betafine[:-gp.nexp],\
-                            sigr2model_theta[:-gp.nexp], gp)
+                            sigr2model[:-gp.nexp], gp)
 
     gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30)
     return siglos2_out, kapl4s_out, zetaa, zetab
