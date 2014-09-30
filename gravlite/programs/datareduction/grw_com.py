@@ -113,7 +113,7 @@ def run(gp):
 
         # print("x y z" on first line, to interprete data later on)
         crscale = open(gp.files.get_scale_file(pop)+'_3D','w')
-        print('# rscale in [pc], surfdens_central (=dens0) in [Munit/rscale0^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
+        print('# rscale in [pc], surfdens_central (=dens0) in [Munit/rscale0^2], and in [Munit/pc^2], and totmass [Munit], and max(sigma_LOS) in [km/s]', file=crscale)
         print(rscalei, file=crscale) # use 3 different half-light radii
         crscale.close()
 
@@ -141,10 +141,8 @@ def run(gp):
             #gca().add_patch(circ_HL)
             #circ_DM=Circle((0,0), radius=gpr.r_DM, fc='None', ec='r', lw=1)
             #gca().add_patch(circ_DM)
-
             ipdb.set_trace()
-            #clf()
-            #gpr.show_part_pos(x, y, pmn, rscalei, pop)
+            gpr.show_part_pos(x, y, pmn, rscalei)
 
 
 if __name__=='__main__':

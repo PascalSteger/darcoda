@@ -146,8 +146,6 @@ def run(gp):
     Rhalf = np.median(R0) # [pc]
     Rscale = Rhalf        # [pc] from all tracer points
 
-    # gh.print_summary(Rscale, Rc) # [pc]
-
     pop = -1
     for pmn in [pm, pm1, pm2]:
         pop = pop + 1                    # population number
@@ -163,8 +161,8 @@ def run(gp):
         gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
         gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
 
-        #if gpr.showplots:
-        #    gpr.show_part_pos(x, y, pmn, Rscale, i)
+        if gpr.showplots:
+            gpr.show_part_pos(x, y, pmn, Rscale)
 
 if __name__=='__main__':
     gpr.showplots = True

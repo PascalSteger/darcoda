@@ -54,21 +54,23 @@ def run(gp):
     for pop in range(gp.pops+1):
         crscale = open(gp.files.get_scale_file(pop),'w')
         print('# Rscale in [pc],',' surfdens_central (=dens0) in [Munit/rscale**2],',\
-              ' and in [Munit/pc**2],',' and totmass [Munit],',\
-              ' and max(v_LOS) in [km/s]', file=crscale)
+              ' and totmass [Munit],',\
+              ' and max(sigma_LOS) in [km/s]', file=crscale)
         print(Rscale, file=crscale)
         crscale.close()
 
         gh.LOG(2, 'grh_com: output: ', gpr.get_com_file(pop))
-        filepos = open(gpr.get_com_file(pop),'w')
+        filepos = open(gpr.get_com_file(pop), 'w')
         print('# x [Rscale]','y [Rscale]','vLOS [km/s]', file=filepos)
         for k in range(ndm):
             print(xnew[k]/Rscale, ynew[k]/Rscale, vznew[k], file=filepos)
         filepos.close()
         gh.LOG(2, '')
 
-        if gpr.showplots:
-            gpr.show_part_pos(x, y, PM, Rscale, pop)
+        # disabled as too many particles are to be plotted
+        # use random subset, if at all
+        #if gpr.showplots:
+        #    gpr.show_part_pos(x, y, PM, Rscale)
 
 if __name__=='__main__':
     gpr.showplots = True

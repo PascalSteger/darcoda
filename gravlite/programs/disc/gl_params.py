@@ -173,7 +173,7 @@ class Params():
 
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
         # in [Munit/pc^2], and totmass
-        # [Munit], and max(v_LOS) in [km/s]
+        # [Munit], and max(sigma_LOS) in [km/s]
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
         self.totmass=[];       self.maxsiglos=[]
@@ -182,6 +182,7 @@ class Params():
         if self.investigate != 'walk' and\
            self.investigate != 'triax' and\
            self.investigate != 'gaia' and\
+           self.investigate != 'hern' and\
            self.investigate != 'discmock':
             # each is set for all components and first component by
             # default

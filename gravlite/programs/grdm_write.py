@@ -20,7 +20,7 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
     for pop in range(gp.pops+1):
         # write scales
         crscale = open(gp.files.get_scale_file(pop), 'w')
-        print('# Zscale in [pc], surfdens_central (=dens0) in [Munit/Zscale^2], and in [Munit/pc^2], and totmass [Munit], and max(v_LOS) in [km/s]', file=crscale)
+        print('# Zscale in [pc], surfdens_central (=dens0) in [Munit/Zscale^2], and in [Munit/pc^2], and totmass [Munit], and max(sigma_LOS) in [km/s]', file=crscale)
         for b in range(4):
             # Zscale, Dens0pc, totmass, nu0pc, maxsiglos
             # Dens0pc is *not* density at halflight radius as in spherical

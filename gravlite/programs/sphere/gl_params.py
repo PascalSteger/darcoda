@@ -41,9 +41,9 @@ class Params():
 
 
         ########## data options
-        self.getnewdata = True # get new data computed from
+        self.getnewdata = False # get new data computed from
                                 # observations before burn-in
-        self.getnewpos  = True # read in the positions and v_LOS again
+        self.getnewpos  = False # read in the positions and v_LOS again
         self.binning    = 'consttr' # linspace, logspace, consttr
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
@@ -62,7 +62,7 @@ class Params():
         self.chi2_switch = 10.
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.nipol = 50   # IF CHANGED => set getnewdata = True to run
+        self.nipol = 25   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
@@ -148,7 +148,7 @@ class Params():
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
         self.checksig   = True  # check sigma calculation routine with 'walk'
-        self.stopstep   = 1     # stop after step number ..., enter debugger
+        self.stopstep   = 9     # stop after step number ..., enter debugger
 
 
 
@@ -197,7 +197,7 @@ class Params():
 
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
         # in [Munit/pc^2], and totmass
-        # [Munit], and max(v_LOS) in [km/s]
+        # [Munit], and max(sigma_LOS) in [km/s]
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
         self.totmass=[];       self.maxsiglos=[]
@@ -206,6 +206,7 @@ class Params():
         if self.investigate != 'walk' and\
            self.investigate != 'triax' and\
            self.investigate != 'gaia' and\
+           self.investigate != 'hern' and\
            self.investigate != 'discmock':
             # each is set for all components and first component by
             # default

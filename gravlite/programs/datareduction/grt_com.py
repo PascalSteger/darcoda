@@ -39,7 +39,7 @@ def run(gp):
     y0 -= com_y # [pc]
     vlos -= com_vz #[km/s]
 
-    for comp in range(2):
+    for pop in range(2):
         Rc = np.sqrt(x0**2+y0**2) # [pc]
         Rhalf = np.median(Rc) # [pc]
         Rscale = Rhalf # or gpr.r_DM # [pc]
@@ -56,9 +56,9 @@ def run(gp):
         m = np.ones(len(x))
         R = np.sqrt(x*x+y*y)*Rscale # [pc]
 
-        gf.write_Xscale(gp.files.get_scale_file(comp), np.median(R))
+        gf.write_Xscale(gp.files.get_scale_file(pop), np.median(R))
 
-        c = open(gpr.get_com_file(comp), 'w')
+        c = open(gpr.get_com_file(pop), 'w')
         print('# x [Xscale],','y [Xscale],','vLOS [km/s],','Xscale = ', \
               Rscale, ' pc', file=c)
         for k in range(len(x)):
@@ -66,7 +66,7 @@ def run(gp):
         c.close()
 
         if gpr.showplots:
-            gpr.show_part_pos(x, y, np.ones(len(x)), Rscale, comp)
+            gpr.show_part_pos(x, y, np.ones(len(x)), Rscale)
 
 if __name__=='__main__':
     gpr.showplots = True

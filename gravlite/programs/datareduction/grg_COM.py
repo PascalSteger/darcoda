@@ -64,8 +64,8 @@ def run(gp):
         gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
         gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
 
-        # if gpr.showplots:
-        #     gpr.show_part_pos(x, y, pmn, Rscale, i)
+        if gpr.showplots:
+            gpr.show_part_pos(x, y, pmn, Rscale)
 
 if __name__=='__main__':
     gpr.showplots = True

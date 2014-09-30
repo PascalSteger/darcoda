@@ -221,10 +221,10 @@ def run(gp):
         f_kap.close()
 
         if gpr.showplots:
-            gpr.show_plots_dens_2D(pop, Rbin, P_dens, P_edens, Dens0pc)
-            gpr.show_plots_sigma(pop, Rbin, p_dvlos, p_edvlos)
+            gpr.show_plots_dens_2D(Rbin, P_dens, P_edens, Dens0pc)
+            gpr.show_plots_sigma(Rbin, p_dvlos, p_edvlos)
             if gp.usekappa:
-                gpr.show_plots_kappa(pop, Rbin, p_kappa, p_ekappa)
+                gpr.show_plots_kappa(Rbin, p_kappa, p_ekappa)
 
 
 

@@ -139,11 +139,9 @@ def run(gp):
     Rhalf = np.median(R0) # [pc]
     Rscale = Rhalf # [pc] overall
 
-    # gh.print_summary(Rscale, R0) # [pc]
-
-    i = -1
+    pop = -1
     for pmn in [pm, pm1, pm2]:
-        i = i+1
+        pop = pop+1
         pmr = (R0<(gp.maxR*Rscale)) # read max extension for data
                                     # (rprior*Rscale) from gl_params
         pmn = pmn*pmr                   # [1]
@@ -154,11 +152,11 @@ def run(gp):
         m = np.ones(len(pmn))
         R = np.sqrt(x*x+y*y)            # [pc]
         Rscalei = np.median(R)          # [pc]
-        gf.write_Xscale(gp.files.get_scale_file(i), Rscalei) # [pc]
-        gf.write_data_output(gpr.get_com_file(i), x/Rscalei, y/Rscalei, vz, Rscalei) # [pc]
+        gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei) # [pc]
+        gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei) # [pc]
 
-        #if gpr.showplots:
-        #    gpr.show_part_pos(x, y, pmn, Rscale, i)
+        if gpr.showplots:
+            gpr.show_part_pos(x, y, pmn, Rscale)
 
 if __name__=='__main__':
     # for debugging input issues here:

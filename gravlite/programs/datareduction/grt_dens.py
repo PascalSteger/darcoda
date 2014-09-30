@@ -105,9 +105,8 @@ def run(gp):
                   file = f_nu)
         f_nu.close()
 
-
         if gpr.showplots:
-            gpr.show_plots_dens_2D(0, Rbin, p_dens, p_edens, Dens0pc)
+            gpr.show_plots_dens_2D(Rbin*Rscalei, p_dens, p_edens, Dens0pc)
 
 
 if __name__ == '__main__':
