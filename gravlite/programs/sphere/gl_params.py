@@ -25,14 +25,14 @@ def check_investigate(inv):
 class Params():
     def __init__(self, timestamp = ''):
 
-        self.investigate  = 'hern' # determine which data set to work on
+        self.investigate  = 'gaia' # determine which data set to work on
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
                                   # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
                                   #         challenge, 1 pop only
                                   # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
-        self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
         if self.investigate == 'hern':
@@ -41,9 +41,9 @@ class Params():
 
 
         ########## data options
-        self.getnewdata = False # get new data computed from
+        self.getnewdata = True # get new data computed from
                                 # observations before burn-in
-        self.getnewpos  = False # read in the positions and v_LOS again
+        self.getnewpos  = True # read in the positions and v_LOS again
         self.binning    = 'consttr' # linspace, logspace, consttr
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC

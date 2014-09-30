@@ -31,14 +31,14 @@ def X(s0):
 # @param s0: radius, [1]
 
 
-def rho(r0, rscale, rho0, alpha, beta, gamma):
+def rho_general(r0, rscale, rho0, alpha, beta, gamma):
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
     tmp = 1.*rho0                       # [Munit/pc^3]
     tmp = tmp * (r0/rscale)**(-gamma)   # [Munit/pc^3]
     tmp = tmp * (1.+(r0/rscale)**alpha)**((gamma-beta)/alpha) # [Munit/pc^3]
     return np.array(tmp)                          # [Munit/pc^3]
-## \fn rho(r0, rscale, rho0, alpha, beta, gamma):
+## \fn rho_general(r0, rscale, rho0, alpha, beta, gamma):
 # determine rho(r) for a generalized Hernquist model
 # @param r0 radius in [pc]
 # @param rscale scale radius in [pc]
@@ -106,8 +106,8 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
 
     # rho(r, rscale, rho0, alpha, beta, gamma):
     #  (2*[pc], or 2*[rcore]), [Munit/pc^3], 3*[1]
-    rhodm    = rho(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
-    rhostar1 = rho(rad, r_star1, rho0star1, alpha_star1, beta_star1, gamma_star1)
+    rhodm    = rho_general(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
+    rhostar1 = rho_general(rad, r_star1, rho0star1, alpha_star1, beta_star1, gamma_star1)
 
     if gp.pops==1:
         return rhodm, rhostar1
@@ -115,7 +115,7 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
 
     #ntracer2  = gp.ntracer[2]
     rho0star2 = rho0*mf2#/1.e6*ntracer2
-    rhostar2  = rho(rad, r_star2, rho0star2, alpha_star2, beta_star2, gamma_star2)
+    rhostar2  = rho_general(rad, r_star2, rho0star2, alpha_star2, beta_star2, gamma_star2)
 
     return rhodm, rhostar1, rhostar2                 # 3* [Munit/pc^3]
 ## \fn rho_walk(rad, gp, mf1, mf2)
@@ -149,8 +149,8 @@ def rho_gaia(rad, gp):
     gh.LOG(2, 'r_DM = ', r_DM)
     gh.LOG(2, 'r_star1 = ', r_star1)
 
-    rhodm = rho(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
-    rhostar1 = rho(rad, r_star1, nu0, \
+    rhodm = rho_general(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
+    rhostar1 = rho_general(rad, r_star1, nu0, \
                    alpha_star1, beta_star1, gamma_star1)
     return rhodm, rhostar1
 ## \fn rho_gaia(rad, gp)
@@ -210,7 +210,7 @@ def nu3Dtot_gaia(rad, gp):
         alpha_star1 = 0.5
         beta_DM = 4.
     beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
-    nustar1 = rho(rad, r_star1, rho0, alpha_star1, beta_star1, gamma_star1)
+    nustar1 = rho_general(rad, r_star1, rho0, alpha_star1, beta_star1, gamma_star1)
     return nustar1
 ## \fn nu3Dtot_gaia(rad, gp)
 # give total density for the spherical Gaia challenge dataset
