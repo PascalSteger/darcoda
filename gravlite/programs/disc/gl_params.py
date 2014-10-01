@@ -55,8 +55,9 @@ class Params():
                                                         # (km/s)^2]
 
         ########## data options
-        self.getnewdata = True # get new data computed from
+        self.getnewdata = True  # get new data computed from
                                 # observations before burn-in
+        self.getnewpos  = True  # redo the first data conversion step
         self.consttr    = True  # set radial bin by constant number of
                                 # tracer particles
         self.metalpop   = False # split metallicities with a separate
@@ -179,11 +180,7 @@ class Params():
         self.totmass=[];       self.maxsiglos=[]
 
         # for investigations without data:
-        if self.investigate != 'walk' and\
-           self.investigate != 'triax' and\
-           self.investigate != 'gaia' and\
-           self.investigate != 'hern' and\
-           self.investigate != 'discmock':
+        if self.investigate != 'discmock':
             # each is set for all components and first component by
             # default
             self.rscale.append(1.);           self.rscale.append(1.)
