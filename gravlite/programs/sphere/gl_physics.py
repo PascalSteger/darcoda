@@ -16,6 +16,7 @@ import gl_helper as gh
 import gl_analytic as ga
 import gl_int as gi
 from pylab import *
+ion()
 
 def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
     return rho0*(r/r_DM)**(-gamma_DM)*\
@@ -51,7 +52,8 @@ def nr(r0, dlr, pop, gp):
 
 
 def rho(r0, rhopar, pop, gp):
-    gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30)
+    # TODO reenable
+    #gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30)
     vec = 1.*rhopar # make a new copy so we do not overwrite rhopar
     rho_at_rhalf = vec[0]
     vec = vec[1:]

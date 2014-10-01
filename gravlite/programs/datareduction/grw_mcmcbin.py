@@ -14,6 +14,7 @@ import sys, ipdb
 import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
+ion()
 
 import gr_params as gpr
 import gl_file as gf

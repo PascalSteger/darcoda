@@ -12,6 +12,7 @@ import math
 import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
+ion()
 
 import gl_params
 gp = gl_params.Params()

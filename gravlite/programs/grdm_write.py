@@ -12,6 +12,7 @@ import numpy.random as npr
 import ipdb
 from scipy.integrate import simps,trapz
 from pylab import *
+ion()
 
 import gl_helper as gh
 import gr_params as gpr

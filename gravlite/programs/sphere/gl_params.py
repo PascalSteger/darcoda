@@ -9,7 +9,7 @@
 import numpy as np
 import os, ipdb, logging, socket, getpass
 
-def check_investigate(inv):
+def sanitize_investigate(inv):
     if inv == 'walk':     return True
     if inv == 'gaia':     return True
     if inv == 'obs':      return True
@@ -17,21 +17,22 @@ def check_investigate(inv):
     if inv == 'triax':    return True
     raise Exception('wrong investigative case in gl_params')
     return False
-## \fn check_investigate(inv)
+## \fn sanitize_investigate(inv)
 # check whether there is a valid investigation chosen
 # @param inv string
 
 
 class Params():
     def __init__(self, timestamp = ''):
-
+        # basic setup
+        # ----------------------------------------------------------------------
         self.investigate  = 'gaia' # determine which data set to work on
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
                                   # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
                                   #         challenge, 1 pop only
                                   # 'obs': real data from Fornax dwarf galaxy
-        check_investigate(self.investigate)
+        sanitize_investigate(self.investigate)
         self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
@@ -40,7 +41,9 @@ class Params():
         self.ntracer = [1e6] # number of tracer stars pop1 (Hernquist case), pop2, ...
 
 
-        ########## data options
+
+        # data options
+        # ----------------------------------------------------------------------
         self.getnewdata = True # get new data computed from
                                 # observations before burn-in
         self.getnewpos  = True # read in the positions and v_LOS again
@@ -58,6 +61,7 @@ class Params():
 
 
         ########## MultiNest options
+        # ----------------------------------------------------------------------
         self.chi2_Sig_converged = True # set to False to first converge on Sig
         self.chi2_switch = 10.
         # Set number of terms for enclosedmass+tracer+anisotropy bins
@@ -78,10 +82,11 @@ class Params():
                                                 # \infty
         self.nfine = 100 #2*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
-        self.rinfty = 30. # interpolate from last slope to slope at
+        self.rinfty = 10 # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
         self.nbeta = 4   # number of parameters for beta
+
 
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
@@ -91,12 +96,12 @@ class Params():
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
-
         self.nlive = 2*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
 
         ########## spherical case and both cases
+        # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
@@ -109,14 +114,11 @@ class Params():
                                          # -1 here, use maxrhoslope
                                          # everywhere
         self.iscale_nu = -1
-
         self.nrtol  = 1.8/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
         self.nrtol_nu = 1.8/(8./self.nipol) # max change in dn(r)/d log(r)
-
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxrhoslope_nu = 5
-
         # following two parameters are not used anymore
         self.maxlog10nu = -7     # direct sampling of nu: min value
         self.minlog10nu = -10     # direct sampling of nu: max value
@@ -130,6 +132,7 @@ class Params():
 
 
         ########## disc case
+        # ----------------------------------------------------------------------
         # norm1 = 17.**2 # offset of sig[0]/nu[0], from int starting
         # at zmin instead of 0 norm2 = 10.**2 # and for the second
         # component, if there is one
@@ -137,22 +140,23 @@ class Params():
         self.monotonic = False    # mono-prior on rho(x)
         self.monotonic_nu = False # mono-prior on nu(x)
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
-
         self.baryonmodel = 'sim' # read in surface density from
                                  # corresponding surfden file
                                  # 'silvia', 'sim', 'simple'
 
         ########## integration options
+        # ----------------------------------------------------------------------
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
         self.checksig   = True  # check sigma calculation routine with 'walk'
-        self.stopstep   = 9     # stop after step number ..., enter debugger
+        self.stopstep   = 1     # stop after step number ..., enter debugger
 
 
 
         # unitsXS
+        # ----------------------------------------------------------------------
         self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
         self.pc_in_m  = 3.08567758e16              # [m]
         self.msun= 1.981e30                   # [kg]
@@ -160,14 +164,14 @@ class Params():
         self.kpc = 1000.                      # [pc]
         self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
         # [pc msun^-1 (km/s)^2]
-
-        if self.investigate == 1:
+        if self.investigate == 'hern':
             self.G1 = 1.
-        self.ana        = 1.    # scale radius of Hernquist profile in [pc]
-        self.anM        = 1.    # total mass of Hernquist profile in [Msun]
+            self.ana        = 1.    # scale radius of Hernquist profile in [pc]
+            self.anM        = 1.    # total mass of Hernquist profile in [Msun]
 
 
         ########## filesystem-related
+        # ----------------------------------------------------------------------
         host_name = socket.gethostname()
         user_name = getpass.getuser()
         if 'darkside' in host_name:
@@ -190,18 +194,17 @@ class Params():
 
 
         ########## global arrays
+        # ----------------------------------------------------------------------
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins
         self.xfine = np.array([]) # [pc] radii for lookup tables,
                                   #      gp.nfine long
-
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
         # in [Munit/pc^2], and totmass
         # [Munit], and max(sigma_LOS) in [km/s]
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
         self.totmass=[];       self.maxsiglos=[]
-
         # for investigations without data:
         if self.investigate != 'walk' and\
            self.investigate != 'triax' and\

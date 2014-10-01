@@ -15,6 +15,7 @@ import gl_analytic as ga
 import gl_physics as phys
 import gl_project as glp
 from pylab import *
+ion()
 
 def int_poly_inf(r0,poly):
     f = -1/poly[0]*np.exp(poly[1]+poly[0]*r0)
@@ -105,10 +106,13 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         clf()
         loglog(r0fine, rhofine, 'r.-', label='rederived from dn/dlogr params')
         loglog(r0fine, ga.rho(r0fine, gp)[0], 'b--', label='analytic')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\rho(r)$')
         legend(loc='lower left')
-        savefig('fit_rho_hern.png')
+        savefig('fit_rho_'+gp.investigate+'.png')
         ipdb.set_trace()
 
     # add up tracer densities to get overall density profile
@@ -120,7 +124,6 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     if gp.investigate == 'obs':
         nu_baryons = MtoL*phys.nu(r0fine, rhostarpar, pop, gp)
         rhofine += nu_baryons
-
     # TODO: check influence of wrong beta
     # betapar[3] -= 0.1
 
@@ -133,11 +136,15 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         anbeta = ga.beta(r0fine, gp)[1]
         plot(r0fine, betafine, 'r.-', label='model')
         plot(r0fine, anbeta, 'b--', label='analytic')
+        xscale('log')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\beta$')
         ylim([-0.5, 1.0])
         legend(loc='lower right')
-        savefig('fit_beta_hern.png')
+        savefig('fit_beta_'+gp.investigate+'.png')
         ipdb.set_trace()
 
     # nu
@@ -146,7 +153,6 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     nufine   = phys.nu(r0fine, nupar, pop, gp)
     if gp.checksig:
         annu = ga.rho(r0fine, gp)[pop]
-
     if gp.checksig and gp.stopstep <= 3:
         clf()
         loglog(gp.xipol, gp.dat.nu[pop], 'g.-', label='data')
@@ -156,54 +162,65 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         loglog(r0fine, nufine, 'r.-', label='model')
         loglog(r0fine, annu, 'b--', label='analytic')
         legend(loc='lower left')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\nu$')
-        savefig('fit_nu_hern.png')
+        savefig('fit_nu_'+gp.investigate+'.png')
         ipdb.set_trace()
+
 
     # \Sigma
     # ---------------------------------------------------------------
     Sigfine  = glp.rho_param_INT_Sig_theta(r0fine, nupar, pop, gp)
     if gp.checksig and gp.stopstep <= 4:
         clf()
-        loglog(gp.xipol, gp.dat.Sig[pop], 'g--', label='data')
-
-        loglog(r0fine, Sigfine, 'r.-', label='model')
         anSig = ga.Sigma(r0fine, gp)[pop]
+        loglog(gp.xipol, gp.dat.Sig[pop], 'g--', label='data')
+        loglog(r0fine, Sigfine, 'r.-', label='model')
         loglog(r0fine, anSig, 'b--', label='analytic')
         fill_between(gp.xipol, gp.dat.Sig[pop]-gp.dat.Sigerr[pop], \
                      gp.dat.Sig[pop]+gp.dat.Sigerr[pop],\
                      color='g', alpha=0.6)
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\Sigma$')
         legend(loc='lower left')
-        savefig('fit_Sig_hern.png')
+        savefig('fit_Sig_'+gp.investigate+'.png')
         ipdb.set_trace()
+
 
     # int beta(s)/s ds
     # ---------------------------------------------------------------
     intbetasfine   = ant_intbeta(r0fine, betapar, gp)
     if gp.checksig:
-        #beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
-        # anintbetasfine = 0.5*(np.log(r0fine**2+r_a1**2)-np.log(r_a1**2)) # gaia
-        anintbetasfine = 0.0*r0fine
-
+        if gp.investigate == 'gaia':
+            beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
+            anintbetasfine = 0.5*(np.log(r0fine**2+r_a1**2)-np.log(r_a1**2))
+        elif gp.investigate == 'hern':
+            anintbetasfine = 0.0*r0fine
     if gp.checksig and gp.stopstep <= 5 :
         clf()
         plot(r0fine, intbetasfine, 'r.-', label='model')
         plot(r0fine, anintbetasfine, 'b--', label='analytic')
+        ylim([-5, 5])
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
+        xscale('log')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\int ds \\beta(s)/s$')
         legend(loc='lower right')
-        savefig('fit_intbeta_hern.png')
+        savefig('fit_intbeta_'+gp.investigate+'.png')
         ipdb.set_trace()
-
 
 
     # M(r)
     # ---------------------------------------------------------------
     rhoint = 4.*np.pi*r0fine**2*rhofine
-
     # add point to avoid 0.0 in Mrfine(r0fine[0])
     r0tmp = np.hstack([0.,r0fine])
     rhotmp = np.hstack([0.,rhoint])
@@ -214,13 +231,15 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     gh.checkpositive(Mrfine, 'Mrfine')
     if gp.checksig:
         anMr = ga.Mr(r0fine, gp)[pop]
-
     if gp.checksig and gp.stopstep <= 6:
         #loglog(gp.xipol, gp.dat.Mr[pop], 'g.-', label='data')
         #s = r0fine/r_DM # [1]
         clf()
         loglog(r0fine, Mrfine, 'r.-', label='model')
         loglog(r0fine, anMr, 'b--', label='analytic')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$M(r)$')
         legend(loc='lower right')
@@ -240,69 +259,91 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         clf()
         loglog(xint, yint, 'r.-', label='model')
         loglog(xint, gp.G1 * anMr / r0fine**2 * annu * np.exp(2*anintbetasfine), 'b--', label='from analytic')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$xint/\\rm{pc}$')
         ylabel('$yint$')
         legend(loc='lower left')
-        savefig('fit_nu_sigmar2_hern.png')
+        savefig('fit_nu_sigmar2_'+gp.investigate+'.png')
         ipdb.set_trace()
 
-    # actual integration
-    xmin = r0fine[0]/15. # needed, if not: loose on first 4 bins
-    bit = 1.e-6
-    theta = np.linspace(0, np.pi/2-bit, gp.nfine)
-    cth = np.cos(theta)
-    sth = np.sin(theta)
-    cth2 = cth*cth
-    Rproj = 1.*r0fine
-    sigr2model = np.zeros(len(r0fine))
+    # actual integration, gives \sigma_r^2 \nu
+    sigr2nu_model = np.zeros(len(r0fine))
+    sigr2nu_model_new = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
-        rq = Rproj[k]/cth
+        theta_old = np.linspace(0, np.arccos(r0fine[k]/(gp.rinfty*max(gp.xepol))), gp.nfine)
+        theta = np.arccos(r0fine[k]/r0fine[k:])
+        rq = r0fine[k]/np.cos(theta)
+
         Mrq = np.interp(rq, r0fine, Mrfine, left=0, right=0)
         nuq = np.interp(rq, r0fine, nufine, left=0, right=0)
         intbetaq = np.interp(rq, r0fine, intbetasfine, left=0, right=0)
-        sigr2model[k] =  np.exp(-2*intbetasfine[k])/(r0fine[k] * nufine[k])*simps(gp.G1*Mrq*nuq*np.exp(2*intbetaq)*sth, theta)
-    # clean last value (which is always 0 by construction)
-    sigr2model[-1] = sigr2model[-2]/10.
+        func_interp_before = Mrq*nuq*np.exp(2*intbetaq)
 
-    gh.checkpositive(sigr2model, 'sigr2model in sigl2s')
+        func_base = Mrfine*nufine*np.exp(2*intbetasfine)
+        #func_interp_after = np.interp(rq, r0fine, func_base, left=0, right=0)
+        func_interp_after = func_base[k:]
+
+        #print('median(func_interp_after / func_interp_before = ',\
+        #      np.median(func_interp_after / func_interp_before))
+
+        sigr2nu_model[k] =  np.exp(-2*intbetasfine[k])/r0fine[k] * \
+                            gp.G1*simps(func_interp_before*np.sin(theta), theta)
+
+        sigr2nu_model_new[k] = np.exp(-2*intbetasfine[k])/r0fine[k] * \
+                               gp.G1*simps(func_interp_after*np.sin(theta), theta)
+
+    # clean last value (which is always 0 by construction)
+    sigr2nu_model[-1] = sigr2nu_model[-2]/10.
+    sigr2nu_model_new[-1] = sigr2nu_model_new[-2]/10.
+    gh.checkpositive(sigr2nu_model, 'sigr2nu_model in sigl2s')
+    gh.checkpositive(sigr2nu_model_new, 'sigr2nu_model_new in sigl2s')
     if gp.checksig and gp.stopstep <= 8:
         clf()
-        ansigr2 = ga.sigr2(r0fine, gp)
-        loglog(r0fine, sigr2model, 'r.-', label='model')
-        loglog(r0fine, ansigr2, 'b--', label='analytic')
+        ansigr2nu = ga.sigr2(r0fine, gp)*annu
+        loglog(r0fine, sigr2nu_model, 'r.-', label='model, interp each function')
+        loglog(r0fine, sigr2nu_model_new, 'k--', label='model, interp product')
+        loglog(r0fine, ansigr2nu, 'b--', label='analytic')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_r^2(r)\\nu(r)$')
         legend(loc='lower right')
-        savefig('fit_sigr2_hern.png')
-        ipdb.set_trace()
+        savefig('fit_sigr2_'+gp.investigate+'.png')
 
+    sigr2nu_model = sigr2nu_model_new
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
     # -------------------------------------------------------------
     sigl2s = np.zeros(len(r0fine))
-    xmin = r0fine[0]/15. # needed, if not: loose on first 4 bins
-
-    bit = 1.e-6
-    theta = np.linspace(0, np.pi/2-bit, gp.nfine)
-    cth = np.cos(theta)
-    cth2 = cth*cth
-    Rproj = 1.*r0fine
-    ynew = (1-betafine*cth2)*sigr2model*nufine
     for k in range(len(r0fine)):
-        rq = Rproj[k]/cth
-        ynewq = np.interp(rq, r0fine, ynew, left=0, right=0)
-        sigl2s[k] = 2.*Rproj[k]*simps(ynewq/cth2, theta)
+        bit = 1.e-6
+        theta = np.linspace(0, np.pi/2-bit, gp.nfine)
+        # work on same radii as data are given
+        theta = np.arccos(r0fine[k]/r0fine[k:])
+        cth = np.cos(theta)
+        cth2 = cth*cth
+        ynew = (1-betafine[k:]*cth2)*sigr2nu_model[k:]
 
+        rq = r0fine[k]/cth
+        ynewq = np.interp(rq, r0fine[k:], ynew, left=0, right=0)
+        sigl2s[k] = 2.*r0fine[k]*simps(ynewq/cth2, theta)
+    sigl2s[-1] = sigl2s[-2]/10.
     gh.checkpositive(sigl2s, 'sigl2s')
     if gp.checksig and gp.stopstep <= 9:
         clf()
         anSigsiglos2_hern = ga.Sig_sig_los_2(r0fine, gp)
         loglog(r0fine, sigl2s, 'r.-', label='model')
         loglog(r0fine, anSigsiglos2_hern, 'b--', label='analytic')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2 \Sigma$')
         legend(loc='lower left')
-        savefig('fit_Sig_siglos2_hern.png')
+        savefig('fit_Sig_siglos2_'+gp.investigate+'.png')
         ipdb.set_trace()
 
 
@@ -314,16 +355,20 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ansiglos = ga.sig_los(r0fine, gp)
         plot(r0fine, siglos2, 'r.-', label='model')
         plot(r0fine, ansiglos**2, 'b--', label='analytic')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
+        xscale('log')
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2$')
         legend(loc='upper right')
-        savefig('fit_siglos2_hern.png')
+        savefig('fit_siglos2_'+gp.investigate+'.png')
         ipdb.set_trace()
 
     # derefine on radii of the input vector
     splpar_sig = splrep(r0fine, np.log(siglos2), k=3, s=0.)
     siglos2_out = np.exp(splev(r0, splpar_sig))
-    gh.checkpositive(siglos2_out, 'siglos2_out')
+    # gh.checkpositive(siglos2_out, 'siglos2_out')
     if gp.checksig and gp.stopstep <= 11:
         clf()
         ansiglos = ga.sig_los(r0, gp)
@@ -332,23 +377,26 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
         fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
         xscale('log')
+        axvline(max(gp.xipol))
+        axvline(min(gp.xipol))
+        axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}$')
         legend(loc='upper right')
-        savefig('fit_siglos_out_hern.png')
+        savefig('fit_siglos_out_'+gp.investigate+'.png')
         ipdb.set_trace()
 
     if not gp.usekappa:
         kapl4s_out = np.ones(len(siglos2_out))
     if gp.usekappa:
-        kapl4s_out = kappa(r0fine, Mrfine, nufine, sigr2model, intbetasfine, gp)
+        kapl4s_out = kappa(r0fine, Mrfine, nufine, sigr2nu_model, intbetasfine, gp)
 
     zetaa = -1; zetab = -1
     if gp.usezeta:
         zetaa, zetab = zeta(r0fine[:-gp.nexp], nufine[:-gp.nexp], \
                             Sigfine,\
                             Mrfine[:-gp.nexp], betafine[:-gp.nexp],\
-                            sigr2model[:-gp.nexp], gp)
+                            sigr2nu_model[:-gp.nexp], gp)
 
     gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30)
     return siglos2_out, kapl4s_out, zetaa, zetab

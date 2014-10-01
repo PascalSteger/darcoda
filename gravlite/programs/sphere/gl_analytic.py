@@ -145,9 +145,10 @@ def rho_gaia(rad, gp):
         nu0 = 2.2e7/r_star1**3
     elif gamma_star1 == 1.0:
         nu0 = 1.5e7/r_star1**3
-    gh.LOG(2, 'rho0 = ',rho0)
-    gh.LOG(2, 'r_DM = ', r_DM)
-    gh.LOG(2, 'r_star1 = ', r_star1)
+    gh.LOG(2, '  analytic rho_gaia:')
+    gh.LOG(2, '   rho0 = ',rho0)
+    gh.LOG(2, '   r_DM = ', r_DM)
+    gh.LOG(2, '   r_star1 = ', r_star1)
 
     rhodm = rho_general(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
     rhostar1 = rho_general(rad, r_star1, nu0, \
@@ -191,7 +192,7 @@ def rhotot_gaia(rad, gp):
 def Sig_gaia(rad, gp):
     rhodm, rhostar1 = rho_gaia(rad, gp)
     Sigdm = glp.rho_INT_Sig(rad, rhodm, gp)
-    Sigstar = glp.rho_INT_Sig(rad, rhodm, gp)
+    Sigstar = glp.rho_INT_Sig(rad, rhostar1, gp)
     return Sigdm, Sigstar
 ## \fn Sig_gaia(rad, gp)
 # get projected surface density for Gaia tracer population
@@ -658,8 +659,8 @@ def sigr2(r0, gp):
     if gp.investigate == 'hern':
         return sigr2_hern(r0, gp)
     else:
-        gh.LOG(1, 'ga.Sigma not defined')
-        ipdb.set_trace()
+        gh.LOG(1, 'ga.sigr2 not defined')
+        return 0*r0-1
 ## \fn sigr2(rad, gp)
 # analytic total mass surface density profile for all investigations
 # @param rad radii in pc
@@ -681,6 +682,7 @@ def sig_los(r0, gp):
         return sig_los_hern(r0, gp)
     else:
         gh.LOG(1, 'ga.sig_los not defined')
+        return 0*r0-1
 ## \fn sig_los(r0, gp)
 # sigma_LOS for all investigations
 # @param r0 radii in pc
@@ -718,7 +720,7 @@ def Sig_sig_los_2(r0, gp):
         return Sig_sig_los_2_hern(r0, gp)
     else:
         gh.LOG(1, 'ga.Sig_sig_los_2 not defined')
-        ipdb.set_trace()
+        return 0.*r0-1
 ## \fn Sig_sig_los_2(rad, gp)
 # surface density time sigma_r^2
 # @param rad radii in pc

@@ -18,6 +18,8 @@ from scipy.integrate import simps
 from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
 from scipy.interpolate import splrep, splev, splint
 from pylab import *
+ion()
+
 import gl_helper as gh
 import gl_physics as phys
 
@@ -155,38 +157,31 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
 # @param gp global parameters
 
 
-def rho_param_INT_Sig_theta(r0, rhopar, pop, gp):
+def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
                        max(gp.maxrhoslope, 10**(gp.rhohalf+gp.rhospread)))
-
-    xmin = r0[0]/15. # needed, if not: loose on first 4 bins
-    r0nu = 1.*r0
-
     bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
     cth = np.cos(theta)
     cth2 = cth*cth
-    Rproj = 1.*r0nu
-
-    rhonu = phys.rho(r0nu, rhopar, pop, gp)
-    Sig = np.zeros(len(r0nu))
-    for i in range(len(r0nu)):
+    rhonu = phys.rho(Rproj, rhopar, pop, gp)
+    Sig = np.zeros(len(Rproj))
+    for i in range(len(Rproj)):
         rq = Rproj[i]/cth
-        rhoq = np.interp(rq, r0nu, rhonu, left=0, right=0)#rhonu[-1]/1e10) # best for hern
+        rhoq = np.interp(rq, Rproj, rhonu, left=0, right=0)#rhonu[-1]/1e10) # best for hern
         #rhoq = phys.rho(rq, rhopar, pop, gp)
         Sig[i] = 2.*Rproj[i]*simps(rhoq/cth2, theta)
-
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')
 
     # interpolation onto r0
     #tck1 = splrep(np.log(gp.xfine), np.log(Sig))
     #Sigout = np.exp(splev(np.log(r0), tck1))
-    return Sig #out
-## \fn rho_param_INT_Sig_theta(r0, rhopar, pop, gp)
+    return Sig
+## \fn rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp)
 # take 3D density parameters, calculate projected surface density with theta substitution
-# @param r0 radii of bins, [pc]
+# @param Rproj radii of 2D bins, [pc]
 # @param rhopar 3D density parameters, (nrho entries) [Munit/pc^3]
 # @param pop int population to take halflight radius from (0 both, 1, 2)
 # @param gp global parameters

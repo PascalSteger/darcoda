@@ -12,6 +12,7 @@ from gl_priors import check_bprior, check_tilt
 from gl_chi import calc_chi2
 import gl_physics as phys
 from pylab import *
+ion()
 
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)

@@ -11,6 +11,7 @@ import numpy as np
 import sys, ipdb
 
 from pylab import *
+ion()
 import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *

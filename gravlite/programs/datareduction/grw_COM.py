@@ -10,7 +10,9 @@
 import numpy as np
 import sys, ipdb
 from pylab import *
+ion()
 from random import shuffle
+
 import gr_params as gpr
 import gl_helper as gh
 import gl_file as gf

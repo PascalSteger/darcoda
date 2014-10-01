@@ -11,6 +11,7 @@ import sys
 import numpy as np
 from scipy.interpolate import splrep, splev, splint
 from pylab import *
+ion()
 
 import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/datareduction')

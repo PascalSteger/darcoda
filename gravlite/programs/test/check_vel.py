@@ -5,6 +5,7 @@
 
 import numpy as np
 from pylab import *
+ion()
 
 vlos=np.loadtxt('/home/psteger/sci/darcoda/gravlite/DTobs/0/table_all.bin', skiprows=39, usecols=(11,))
 

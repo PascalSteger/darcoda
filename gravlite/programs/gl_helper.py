@@ -10,6 +10,7 @@ import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg
 from pylab import *
+ion()
 import time
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)

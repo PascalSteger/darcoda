@@ -10,6 +10,7 @@ import sys, ipdb
 import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
+ion()
 
 import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/datareduction')

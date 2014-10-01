@@ -11,6 +11,8 @@ import numpy as np
 import sys, ipdb
 
 from pylab import *
+ion()
+
 import gr_params as gpr
 import gl_helper as gh
 import gl_centering as glc

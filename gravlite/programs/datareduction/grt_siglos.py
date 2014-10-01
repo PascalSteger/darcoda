@@ -9,9 +9,11 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 from pylab import *
+ion()
 import numpy as np
 import sys
 import math
+
 from BiWeight import meanbiweight
 import gr_params as gpr
 import gl_file as gf

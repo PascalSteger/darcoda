@@ -13,3 +13,4 @@ from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
 import gl_physics as phys
 from pylab import *
+ion()

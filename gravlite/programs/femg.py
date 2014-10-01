@@ -7,10 +7,15 @@
 
 import numpy
 import sys
+from pylab import *
+ion()
+import numpy as np
+from matplotlib.ticker import NullFormatter
+
 if(len(sys.argv)<2):
     print("use: femg.py [car,scl,sex,for]")
     exit(1)
-    
+
 dwarf = sys.argv[1]
 dir = gp.files.machine
 print(dir+dwarf+"/table_merged.bin")
@@ -34,9 +39,6 @@ ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm]
 Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm]
 SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
 
-from pylab import *
-import numpy as np
-from matplotlib.ticker import NullFormatter
 
 # the random data
 x = SigFe;   y = SigMg

@@ -35,18 +35,16 @@ def modelbetaj(r0, vec0, vec1, vec2, vec3):
 
 def modelbeta_sigmoid(r0, vec0, vec1, vec2, vec3, vec4):
     # sigmoid with offsets
-    s=np.log(r0/vec4)
+    s=np.log(r0/vec3)
     betastartmp = vec0/(1+np.exp(vec1*s+vec2))+vec3*np.ones(len(r0))
     return betastartmp
 
 
-def modelbeta4(r0, vec0, vec1, vec2, vec3, vec4):
-    s0=np.log(r0/vec4)
+def modelbeta4(r0, vec0, vec1, vec2, vec3):
+    s0=np.log(r0/vec3)
     a0 = vec0
     a1 = vec1
-    betars = vec2
-    alpha = vec3
-    kappa = (a0-a1)/(betars-a1)-1
+    alpha = vec2
     betastartmp = (a0-a1)/(1+np.exp(alpha*s0))+a1
     return betastartmp
 
