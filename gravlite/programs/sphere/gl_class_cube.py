@@ -18,7 +18,12 @@ import ipdb
 import gl_helper as gh
 
 
-def map_nr(pa, prof, pop, gp):
+def map_nr(params, prof, pop, gp):
+    rhohalf = 0
+    nrasym0 = 0
+    nr = np.zeros(len(params)-3)
+    nrasyminfty = 0
+
     # get offset and n(r) profiles, calculate rho
     if prof=='rho':
         scale = gp.rhohalf
@@ -41,53 +46,63 @@ def map_nr(pa, prof, pop, gp):
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    pa[0] = 10**((pa[0]*2.*width)-width+np.log10(scale))
+    rhohalf = 10**((params[0]*2.*width)-width+np.log10(scale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     if 1 <= iscale + 1:
-        pa[1] = (pa[1]**1)*2.0
+        nrasym0 = (params[1]**1)*min(maxrhoslope/2, 2.99)
     else:
-        pa[1] = (pa[1]**1)*2.999
+        nrasym0 = (params[1]**1)*2.99
 
     # offset for the integration of dn(r)/dlog(r) at smallest radius
     if 2 <= iscale + 1:
-        pa[2] = (pa[2]**1)*2.0
+        nr[0] = (params[2]**1)*min(maxrhoslope/2, 2.99)
     else:
-        pa[2] = (pa[2]**1)*maxrhoslope
+        nr[0] = (params[2]**1)*maxrhoslope
 
-    rdef = gp.xepol # [pc]
     for i in range(3, gp.nrho-1):
         # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
         # lie in between 0 and gp.maxrhoslope
+
+        deltalogr = (np.log(gp.xepol[i-2])-np.log(gp.xepol[i-3]))
+        # construct n(r_i+1) from n(r_i)+dn/dlogr*Delta log r, integration-like
         if monotonic:
             # only increase n(r), use pa[i]>=0 directly
-            pa[i] = pa[i-1]+pa[i]*nrscale*(np.log(rdef[i-2])-np.log(rdef[i-3]))
+            nr[i-2] = nr[i-3] + params[i] * nrscale * deltalogr
         else:
             # use pa => [-1, 1] for full interval
-            pa[i] = pa[i-1]+(pa[i]-0.5)*2. * nrscale * (np.log(rdef[i-2])-np.log(rdef[i-3]))
+            nr[i-2] = nr[i-3] + (params[i]-0.5)*2. * nrscale * deltalogr
 
-        pa[i] = max(0., pa[i])
+        # cut at zero: we do not want to have density rising outwards
+        nr[i] = max(0., nr[i])
+
+        # restrict n(r) at upper boundary
         if i <= iscale+1: # iscale: no. bins with xipol<Rscale[all]
-            pa[i] = min(2.0, pa[i])
+            nr[i] = min(2.0, nr[i])
         else:
-            pa[i] = min(maxrhoslope, pa[i])
+            nr[i] = min(maxrhoslope, nr[i])
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3
+    deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
     # to ensure we have a finite mass at all radii 0<r<=\infty
-    pa[gp.nrho-1] = pa[gp.nrho-1] * maxrhoslope
     if monotonic:
-        pa[gp.nrho-1] += pa[gp.nrho-2]
+        nrasyminfty = nr[-1]+params[gp.nrho-1] * nrscale * deltalogrlast
+    else:
+        nrasyminfty = nr[-1]+(params[gp.nrho-1]-0.5)*2 * nrscale * deltalogrlast
+
     # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
-    # pa[gp.nrho-1] = max(pa[gp.nrho-1], 3.)
-    return pa
-## \fn map_nr(pa, prof, pop, gp)
-# mapping nr and rho parameters from [0,1] to full parameter space
-# setting all n(r<r_{iscale})<=2.0
+    nrasyminfty = max(nrasyminfty, 3.001)
+
+    params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
+    return params
+## \fn map_nr(params, prof, pop, gp)
+# mapping rho parameters from [0,1] to full parameter space
+# setting all n(r<r_nrlim)<=2.0
 # and possibly a monotonically increasing function
 # first parameter is offset for rho_half
 # second parameter is asymptotic n(r to 0) value
-# @param pa cube [0,1]^ndim
+# @param params cube [0,1]^ndim
 # @param prof string nu, rho, rhostar
 # @param pop population int, 0 for rho*, 1,2,... for tracer densities
 # @param gp global parameters

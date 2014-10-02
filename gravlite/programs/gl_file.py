@@ -101,6 +101,8 @@ def get_binned_data(gp):
     gp.dat.read_sig(gp)
     if gp.usekappa:
         gp.dat.read_kappa(gp)
+    if gp.usezeta:
+        gp.dat.read_zeta(gp)
     return gp.dat
 ## \fn get_binned_data(gp)
 # read in binned data, store in a gl_data class

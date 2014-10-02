@@ -107,15 +107,14 @@ class Params():
                                   # calculated in gl_data
         self.rhospread = 1.       # with this spread, [dex] in log space
         self.nuspread = 1.0
-        self.iscale = self.nrho/2 # scale below which range of
-                                         # n(r)<2. instead of
-                                         # maxrhoslope; is adapted in
-                                         # gl_data.read_nu; if set to
-                                         # -1 here, use maxrhoslope
-                                         # everywhere
-        self.iscale_nu = -1
-        self.nrtol  = 1.8/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1.8/(8./self.nipol) # max change in dn(r)/d log(r)
+        self.rlimnr = 1 # scale below which range of
+                         # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
+                         # calculated to values in [pc] in gl_data.read_nu;
+                         # if set to -1 here, use maxrhoslope everywhere
+        self.rlimnr_nu = 1 # same for nu, using same rhalf
+
+        self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
+        self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxrhoslope_nu = 5
