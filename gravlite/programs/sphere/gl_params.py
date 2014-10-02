@@ -44,12 +44,16 @@ class Params():
 
         # data options
         # ----------------------------------------------------------------------
-        self.getnewdata = False     # get new data computed from
+        self.getnewdata = True     # get new data computed from
                                     # observations before burn-in
         self.getnewpos  = True      # read in the positions and v_LOS again
         if self.getnewdata == False: self.getnewpos = False
         self.binning    = 'consttr' # linspace, logspace, consttr
         self.metalpop   = False     # split metallicities with a separate MCMC
+        self.usekappa   = False # switch to turn on (True) or off the
+                                # calculation of kappa
+        self.usezeta    = False # switch to turn on (True) or off the
+                                # calculation of virial parameters zeta_a,b
         self.walker3D   = False     # for walker mock data: use 3D models
         self.hern_sim_pops = 1 # use hernquist model with 1 or 2 particle
                                # types. do not use second type (DM) as population
@@ -60,11 +64,11 @@ class Params():
 
         ########## MultiNest options
         # ----------------------------------------------------------------------
-        self.chi2_Sig_converged = True # set to False to first converge on Sig
-        self.chi2_switch = 10.
+        self.chi2_Sig_converged = False # set to False to first converge on Sig
+        self.chi2_switch = 10.          # if 10chi^2>chi2_switch, switch sig calc on
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.nipol = 25   # IF CHANGED => set getnewdata = True to run
+        self.nipol = 12   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
@@ -111,35 +115,29 @@ class Params():
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = 1 # same for nu, using same rhalf
 
-        self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxrhoslope_nu = 5
-        # following two parameters are not used anymore
-        self.maxlog10nu = -7     # direct sampling of nu: min value
-        self.minlog10nu = -10     # direct sampling of nu: max value
+        # prior (max +/- range) for dn(r)/dlog(r)
+        #   determine how far nr can wander with the max allowed nr slope
+        #    on from min(gp.xipol) to max(gp.xipol)
+        self.nrtol  = 2*self.maxrhoslope
+        self.nrtol_nu = 2*self.maxrhoslope_nu # same for nu profile
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
-                                  # of beta*
+                                  # of beta* in polynomial representation
         self.minbetastar = -0.99  # clipping for beta, default: -0.99
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00
         self.beta00prior = False  # prior beta(r=0) = 0
-        self.MtoLmin = 0.8
+        self.MtoLmin = 0.8        # boundaries for flat prior on constant mass-to-light ratio
         self.MtoLmax = 3.
+        self.monotonic = False    # monotonicity-prior on nr_rho(x)
+        self.monotonic_nu = False # monotonicity-prior on nr_nu(x)
 
-        self.monotonic = False    # mono-prior on rho(x)
-        self.monotonic_nu = False # mono-prior on nu(x)
 
-
-        ########## integration options
+        ########## debug options
         # ----------------------------------------------------------------------
-        self.usekappa   = False # switch to turn on (True) or off the
-                                # calculation of kappa
-        self.usezeta    = False # switch to turn on (True) or off the
-                                # calculation of virial parameters zeta_a,b
         self.checksig   = False  # check sigma calculation routine with 'walk'
         self.stopstep   = 1     # stop after step number ..., enter debugger
-
 
 
         # unitsXS

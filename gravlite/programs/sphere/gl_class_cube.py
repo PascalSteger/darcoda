@@ -19,10 +19,8 @@ import gl_helper as gh
 
 
 def map_nr(params, prof, pop, gp):
-    rhohalf = 0
-    nrasym0 = 0
-    nr = np.zeros(len(params)-3)
-    nrasyminfty = 0
+    gh.sanitize_vector(params, gp.nrho, 0, 1)
+    nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
 
     # get offset and n(r) profiles, calculate rho
     if prof=='rho':
@@ -31,7 +29,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.rhospread
         rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
-        nrscale = gp.nrtol
+        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
         rhoscale = gp.dat.nuhalf[pop]
@@ -39,7 +37,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.nuspread
         rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxrhoslope_nu
-        nrscale = gp.nrtol_nu
+        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
         raise Exception('wrong profile in gl_class_cube.map_nr')
@@ -57,41 +55,43 @@ def map_nr(params, prof, pop, gp):
     else:
         nrasym0 = (params[1]**1)*2.99
 
+    # work directly with the dn(r)/dlog(r) parameters here
+    dnrdlrparams = params[2:-1]
     # offset for the integration of dn(r)/dlog(r) at smallest radius
     if gp.xepol[1] <= rlimnr*Rscale:
-        nr[0] = (params[2]**1)*min(maxrhoslope/2, 2.99)
+        nr[0] = (dnrdlrparams[0]**1)*min(maxrhoslope/2, 2.99)
     else:
-        nr[0] = (params[2]**1)*maxrhoslope
+        nr[0] = (dnrdlrparams[0]**1)*maxrhoslope
 
-    for i in range(3, gp.nrho-1):
+    for k in range(1, gp.nepol):
         # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
         # lie in between 0 and gp.maxrhoslope
 
-        deltalogr = (np.log(gp.xepol[i-2])-np.log(gp.xepol[i-3]))
-        # construct n(r_i+1) from n(r_i)+dn/dlogr*Delta log r, integration-like
+        deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
+        # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
         if monotonic:
             # only increase n(r), use pa[i]>=0 directly
-            nr[i-2] = nr[i-3] + params[i] * nrscale * deltalogr
+            nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale * deltalogr
         else:
             # use pa => [-1, 1] for full interval
-            nr[i-2] = nr[i-3] + (params[i]-0.5)*2. * nrscale * deltalogr
+            nr[k] = nr[k-1] + (dnrdlrparams[k]-0.5)*2. * nrscale * deltalogr
 
         # cut at zero: we do not want to have density rising outwards
-        nr[i-2] = max(0., nr[i-2])
+        nr[k] = max(0., nr[k])
 
         # restrict n(r)
-        if gp.xepol[i-2] <= rlimnr*Rscale:
-            nr[i-2] = min(maxrhoslope/2, nr[i-2])
+        if gp.xepol[k] <= rlimnr*Rscale:
+            nr[k] = min(maxrhoslope/2, nr[k])
         else:
-            nr[i-2] = min(maxrhoslope, nr[i-2])
+            nr[k] = min(maxrhoslope, nr[k])
     # rho slope for asymptotically reaching r = \infty is given directly
-    # must lie below -3
+    # must lie below -3, thus n(r)>3
     deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
     # to ensure we have a finite mass at all radii 0<r<=\infty
     if monotonic:
-        nrasyminfty = nr[-1]+params[gp.nrho-1] * nrscale * deltalogrlast
+        nrasyminfty = nr[-1]+params[-1] * nrscale * deltalogrlast
     else:
-        nrasyminfty = nr[-1]+(params[gp.nrho-1]-0.5)*2 * nrscale * deltalogrlast
+        nrasyminfty = nr[-1]+(params[-1]-0.5)*2 * nrscale * deltalogrlast
 
     # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
     nrasyminfty = max(nrasyminfty, 3.001)
@@ -110,19 +110,8 @@ def map_nr(params, prof, pop, gp):
 # @param gp global parameters
 
 
-def map_nu_directly(params, gp):
+def map_betastar_poly(params, gp):
     # TODO sanitize
-    nu = np.zeros(gp.nepol)
-    for i in range(gp.nepol):
-        nu[i] = 10**(params[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
-    return nu
-## \fn map_nu_directly(params, gp)
-# map tracer densities, directly
-# @param params cube [0,1]^n
-# @param gp global parameters
-
-
-def map_betastar_old(params, gp):
     off_beta = 0
     # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
