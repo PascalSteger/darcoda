@@ -471,7 +471,6 @@ class Files:
         self.dir += timestamp + '/'
         self.massfiles.append(self.dir+'M/M_0.txt')
         self.Sigfiles.append(self.dir+'Sigma/Sigma_0.txt') # all comp.
-        # TODO nufiles
         self.nufiles.append(self.dir+'nu/nu_0.txt')
         self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')

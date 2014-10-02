@@ -33,7 +33,7 @@ class Params():
                                   #         challenge, 1 pop only
                                   # 'obs': real data from Fornax dwarf galaxy
         sanitize_investigate(self.investigate)
-        self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 3 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
         if self.investigate == 'hern':
@@ -88,8 +88,6 @@ class Params():
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
         self.nbeta = 4   # number of parameters for beta
-
-
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
         self.geom = 'sphere'
@@ -104,17 +102,15 @@ class Params():
 
         ########## spherical case and both cases
         # ----------------------------------------------------------------------
-        self.rhohalf = -1.    # prior density for rho at
-                                  # half-light radius of tracers
+        self.rhohalf = -1.        # prior density for rho at half-light radius of tracers
                                   # calculated in gl_data
         self.rhospread = 1.       # with this spread, [dex] in log space
-        self.nuspread = 1.0
+        self.nuspread = 1.0       # analog for nu profile
         self.rlimnr = 1 # scale below which range of
                          # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
                          # calculated to values in [pc] in gl_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = 1 # same for nu, using same rhalf
-
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxrhoslope_nu = 5
@@ -185,11 +181,11 @@ class Params():
         self.xfine = np.array([]) # [pc] radii for lookup tables,
                                   #      gp.nfine long
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
-        # in [Munit/pc^2], and totmass
+        # in [Munit/pc^2], and totmass_tracers
         # [Munit], and max(sigma_LOS) in [km/s]
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
-        self.totmass=[];       self.maxsiglos=[]
+        self.totmass_tracers=[];       self.maxsiglos=[]
         # for investigations without data:
         if self.investigate != 'walk' and\
            self.investigate != 'triax' and\
@@ -202,7 +198,7 @@ class Params():
             self.Xscale.append(1.);           self.Xscale.append(1.)
             self.nu0pc.append(1.);            self.nu0pc.append(1.)
             self.Sig0pc.append(1.);           self.Sig0pc.append(1.)
-            self.totmass.append(1.);          self.totmass.append(1.)
+            self.totmass_tracers.append(1.);          self.totmass_tracers.append(1.)
             self.maxsiglos.append(1.);        self.maxsiglos.append(1.)
 
     ## \fn __init__(self, timestamp = '')

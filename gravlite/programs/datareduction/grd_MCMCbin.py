@@ -56,13 +56,13 @@ def run(gp):
         print('Rmax [Rscale0] = ', Rmax)
         sel = (R * Rscalei <= Rmax * Rscale0)
         x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
-        totmass = float(len(x)) # [Munit], Munit = 1/star
+        totmass_tracers = float(len(x)) # [Munit], Munit = 1/star
 
         Rs = R                   # + possible starting offset, [Rscalei]
         vlos = v                 # + possible starting offset, [km/s]
 
         tr = open(gp.files.get_ntracer_file(pop),'w')
-        print(totmass, file=tr)
+        print(totmass_tracers, file=tr)
         tr.close()
 
         f_Sig, f_nu, f_mass, f_sig, f_kap = gf.write_headers_2D(gp, pop)
@@ -81,7 +81,7 @@ def run(gp):
                 ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
                                                   Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
                 tpb[i][k] = float(len(ind1)) #[1]
-                Density_kin[i][k] = float(len(ind1))*totmass/Vol[i]
+                Density_kin[i][k] = float(len(ind1))*totmass_tracers/Vol[i]
                 # [Munit/rscale**2]
 
                 if(len(ind1)<=1):
@@ -134,7 +134,7 @@ def run(gp):
 
         Dens0 = np.sum(Density_phot[0])/float(gpr.n) # [Munit/Rscale^2]
         Dens0pc = Dens0/Rscale0**2              # [munis/pc^2]
-        gf.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass)
+        gf.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass_tracers)
 
         tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(tpb0)       # [Munit/Rscale^2]
@@ -156,9 +156,9 @@ def run(gp):
             print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=f_Sig)
             # 3*[rscale], [dens0], [dens0]
             indr = (R<Binmax[b])
-            Menclosed = float(np.sum(indr))/totmass # for normalization to 1#[totmass]
-            Merr = Menclosed/np.sqrt(tpbb) # or artificial Menclosed/10 #[totmass]
-            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=f_mass) # [Rscale0], 2* [totmass]
+            Menclosed = float(np.sum(indr))/totmass_tracers # for normalization to 1#[totmass_tracers]
+            Merr = Menclosed/np.sqrt(tpbb) # or artificial Menclosed/10 #[totmass_tracers]
+            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=f_mass) # [Rscale0], 2* [totmass_tracers]
         f_Sig.close()
         f_mass.close()
 

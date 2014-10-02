@@ -40,7 +40,7 @@ def read_scale(basename, gp):
                        unpack=False, skiprows=1)
         gp.Xscale.append(A[0])  # [pc]
         gp.Sig0pc.append(A[1])  # [Munit/pc^2]
-        # totmass is A[2] # [Munit]
+        # totmass_tracers is A[2] # [Munit]
         gp.nu0pc.append(A[3])   # [Munit/pc^3]
         gp.maxsiglos.append(A[4]) # [km/s]
 ## \fn read_scale(basename, gp)

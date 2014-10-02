@@ -26,7 +26,7 @@ def run(gp):
     if gf.bufcount(gpr.get_com_file(0))<2:
         return
     x,y,vlos = np.loadtxt(gpr.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
-    totmass = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
+    totmass_tracers = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rscale]
 
     #set binning

@@ -87,7 +87,7 @@ def get_binned_data(gp):
         A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
         gp.Xscale.append(A[0])
         gp.Sig0pc.append(A[1])
-        gp.totmass.append(A[2])
+        gp.totmass_tracers.append(A[2])
         if gp.geom == 'sphere':
             gp.nu0pc.append(A[3])
             gp.maxsiglos.append(A[4])
@@ -95,7 +95,7 @@ def get_binned_data(gp):
             gp.maxsiglos.append(A[3])
     #if gp.investigate == "walk":
     #    for pop in range(gp.pops):
-    #        gp.ntracer[pop] = gp.totmass[pop+1]
+    #        gp.ntracer[pop] = gp.totmass_tracers[pop+1]
 
     gp.dat.read_Sig(gp)    # set gp.xipol in here
     gp.dat.read_sig(gp)
@@ -114,14 +114,17 @@ def get_rhohalfs(gp):
         # Wolf, Walker method for M_half, r_half
         # assuming isotropic Plummer profile:
         r_half = gp.dat.rhalf[0] # [pc] from overall rho*
-        sigv = np.median(gp.dat.sig[0]) # [km/s] from overall rho*
-        #M_half = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
+        sigv = max(gp.dat.sig[0]) # [km/s] from overall rho*
+        M_half_walk = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
 
         # other estimate: Wolf+2010,
-        M_half = 4*r_half*sigv**2/gp.G1;  r_half *= 4/3.
+        M_half_wolf = 4*r_half*sigv**2/gp.G1
+        r_half *= 4/3.
 
         # density at half-light radius of baryons
-        rhohalf = M_half/(4.*np.pi/3*r_half**3)
+
+        M_half = M_half_wolf
+        rhohalf = 3*M_half/(4.*np.pi*r_half**3) # max density possible assuming alpha=0
         gp.rhohalf = rhohalf
 
     elif gp.geom == 'disc':
@@ -242,26 +245,26 @@ def read_Xscale(filename):
 # @param filename string
 
 
-def write_tracer_file(filename, totmass):
+def write_tracer_file(filename, totmass_tracers):
     tr = open(filename, 'w')
-    print(totmass, file=tr)
+    print(totmass_tracers, file=tr)
     tr.close()
-## \fn write_tracer_file(filename, totmass)
+## \fn write_tracer_file(filename, totmass_tracers)
 # write tracer file
 # @param filename
-# @param totmass
+# @param totmass_tracers
 
 
-def write_Sig_scale(filename, Sig0pc, totmass):
+def write_Sig_scale(filename, Sig0pc, totmass_tracers):
     cdens = open(filename, 'a')
     print(Sig0pc, file=cdens)                      # [Munit/pc^2]
-    print(totmass, file=cdens)                      # [Munit]
+    print(totmass_tracers, file=cdens)                      # [Munit]
     cdens.close()
-## \fn write_Sig_scale(filename, Sig0pc, totmass)
+## \fn write_Sig_scale(filename, Sig0pc, totmass_tracers)
 # output density
 # @param filename string
 # @param Sig0pc central density [Munit/pc^2]
-# @param totmass total tracer density mass
+# @param totmass_tracers total tracer density mass
 
 
 def write_nu_scale(filename, nu0pc):
@@ -293,7 +296,7 @@ def write_data_output(filename, x, y, vz, Xscale):
 
 def write_Xscale(filename, Xscale):
     crscale = open(filename, 'w')
-    print('# Xscale in [pc], central surface density (Sig(0))in [Munit/pc^2], and totmass [Munit], and max(sigma_LOS) in [km/s], and central 3D tracer density nu(0) in [Munit/Xscale^3]', file=crscale)
+    print('# Xscale in [pc], central surface density (Sig(0))in [Munit/pc^2], and totmass_tracers [Munit], and max(sigma_LOS) in [km/s], and central 3D tracer density nu(0) in [Munit/Xscale^3]', file=crscale)
     print(Xscale, file=crscale)
     crscale.close()
     return

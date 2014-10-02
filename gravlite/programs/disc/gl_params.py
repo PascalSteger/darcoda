@@ -173,11 +173,11 @@ class Params():
                                   #      gp.nfine long
 
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
-        # in [Munit/pc^2], and totmass
+        # in [Munit/pc^2], and totmass_tracers
         # [Munit], and max(sigma_LOS) in [km/s]
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
-        self.totmass=[];       self.maxsiglos=[]
+        self.totmass_tracers=[];       self.maxsiglos=[]
 
         # for investigations without data:
         if self.investigate != 'discmock':
@@ -187,7 +187,7 @@ class Params():
             self.Xscale.append(1.);           self.Xscale.append(1.)
             self.nu0pc.append(1.);            self.nu0pc.append(1.)
             self.Sig0pc.append(1.);           self.Sig0pc.append(1.)
-            self.totmass.append(1.);          self.totmass.append(1.)
+            self.totmass_tracers.append(1.);          self.totmass_tracers.append(1.)
             self.maxsiglos.append(1.);        self.maxsiglos.append(1.)
 
     ## \fn __init__(self, timestamp = '')

@@ -23,21 +23,21 @@ import gl_project as glp
 
 
 def run(gp):
-    Rscale = []; Dens0Rscale = []; Dens0pc = []; Totmass = []; Maxsiglos = []
-    rscale = []; dens0Rscale = []; dens0pc = []; totmass = []; maxsiglos = []
+    Rscale = []; Dens0Rscale = []; Dens0pc = []; Totmass_Tracers = []; Maxsiglos = []
+    rscale = []; dens0Rscale = []; dens0pc = []; totmass_tracers = []; maxsiglos = []
 
     for pop in range(3):
         A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
         Rscale.append(A[0])
         Dens0Rscale.append(A[1])
         Dens0pc.append(A[2])
-        Totmass.append(A[3])
+        Totmass_Tracers.append(A[3])
 
         B = np.loadtxt(gp.files.get_scale_file(pop)+'_3D', unpack=False, skiprows=1)
         rscale.append(B[0])
         dens0Rscale.append(B[1])
         dens0pc.append(B[2])
-        totmass.append(B[3])
+        totmass_tracers.append(B[3])
 
         print('#######  working on component ',pop)
         print('input: ',gpr.get_com_file(pop)+'_3D')

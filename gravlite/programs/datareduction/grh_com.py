@@ -54,7 +54,7 @@ def run(gp):
     for pop in range(gp.pops+1):
         crscale = open(gp.files.get_scale_file(pop),'w')
         print('# Rscale in [pc],',' surfdens_central (=dens0) in [Munit/rscale**2],',\
-              ' and totmass [Munit],',\
+              ' and totmass_tracers [Munit],',\
               ' and max(sigma_LOS) in [km/s]', file=crscale)
         print(Rscale, file=crscale)
         crscale.close()

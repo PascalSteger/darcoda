@@ -74,12 +74,12 @@ def run(gp):
         print('rmax [pc] = ', rmax)
         sel = (r<=rmax)
         x = x[sel]; y = y[sel]; z = z[sel]; v = v[sel]; r = r[sel] # [rscale]
-        totmass = 1.*len(x) # [Munit], Munit = 1/star
+        totmass_tracers = 1.*len(x) # [Munit], Munit = 1/star
 
         rs = r                   # + possible starting offset, [rscale]
         vlos = v                 # + possible starting offset, [km/s]
 
-        gf.write_tracer_file(gp.files.get_ntracer_file(pop)+'_3D', totmass)
+        gf.write_tracer_file(gp.files.get_ntracer_file(pop)+'_3D', totmass_tracers)
         de, em = gf.write_headers_3D(gp, pop)
 
         # gpr.n=30 iterations for getting random picked radius values
@@ -90,7 +90,7 @@ def run(gp):
             vlosi = gpr.vrerr*np.random.randn(len(vlos)) + vlos # [km/s]
             for i in range(gp.nipol):
                 ind1 = np.argwhere(np.logical_and(rsi>=binmin[i], rsi<binmax[i])).flatten() # [1]
-                density[i][k] = (1.*len(ind1))/vol[i]*totmass # [Munit/rscale^2]
+                density[i][k] = (1.*len(ind1))/vol[i]*totmass_tracers # [Munit/rscale^2]
                 vlos1 = vlosi[ind1]                           # [km/s]
                 a[i][k] = 1.*len(ind1)                        # [1]
 
@@ -99,7 +99,7 @@ def run(gp):
         print('dens0 = ',dens0,' [Munit/rscale^3]')
 
         dens0pc = dens0/rscale0**3
-        gf.write_Sig_scale(gp.files.get_scale_file(pop)+'_3D', dens0pc, totmass)
+        gf.write_Sig_scale(gp.files.get_scale_file(pop)+'_3D', dens0pc, totmass_tracers)
 
         tpb0   = np.sum(a[0])/float(gpr.n)     # [1] tracers per bin
         denserr0 = dens0/np.sqrt(tpb0)       # [Munit/rscale^3]
@@ -120,18 +120,18 @@ def run(gp):
             print(rbin[b], binmin[b], binmax[b], p_dens[b], p_edens[b], file=de)
             # [rscale], 2*[dens0]
             indr = (r<binmax[b])
-            menclosed = float(np.sum(indr))/totmass # for normalization to 1
-            # [totmass]
-            merr = menclosed/np.sqrt(tpb) # artificial menclosed/10 # [totmass]
+            menclosed = float(np.sum(indr))/totmass_tracers # for normalization to 1
+            # [totmass_tracers]
+            merr = menclosed/np.sqrt(tpb) # artificial menclosed/10 # [totmass_tracers]
             print(rbin[b], binmin[b], binmax[b], menclosed, merr, file=em)
-            # [rscale], 2*[totmass]
+            # [rscale], 2*[totmass_tracers]
         de.close()
         em.close()
 
         if gpr.showplots:
             print('plotting for pop ', pop)
             #show_plots_dens(rbin, p_dens, p_edens, gp)
-            mf1 = 0.02 #1/totmass
+            mf1 = 0.02 #1/totmass_tracers
             mf2 = 0.02
             rho_dm, rho_star1, rho_star2 = ga.rho_walk(rbin*rscale0, gp, mf1, mf2)
 

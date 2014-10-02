@@ -111,7 +111,7 @@ def map_nr(params, prof, pop, gp):
 
 
 def map_betastar_poly(params, gp):
-    # TODO sanitize
+    gh.sanitize_vector(params, gp.nbeta, 0, 1)
     off_beta = 0
     # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]

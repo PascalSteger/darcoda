@@ -114,7 +114,7 @@ def run(gp):
 
         # print("x y z" on first line, to interprete data later on)
         crscale = open(gp.files.get_scale_file(pop)+'_3D','w')
-        print('# rscale in [pc], surfdens_central (=dens0) in [Munit/rscale0^2], and in [Munit/pc^2], and totmass [Munit], and max(sigma_LOS) in [km/s]', file=crscale)
+        print('# rscale in [pc], surfdens_central (=dens0) in [Munit/rscale0^2], and in [Munit/pc^2], and totmass_tracers [Munit], and max(sigma_LOS) in [km/s]', file=crscale)
         print(rscalei, file=crscale) # use 3 different half-light radii
         crscale.close()
 

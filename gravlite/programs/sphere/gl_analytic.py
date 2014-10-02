@@ -95,14 +95,8 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
     alpha_DM    = A[18]
     rho0        = A[19] # [Munit/pc^3]
 
-    #ntracer1 = gp.totmass[1]
-    # 1)
-    # rho0star1   = rho0/1.e6*ntracer1 #*10 * ntracer2 # too high, too low
-    # 2)
-    # rho0star1   = rho0/1.e6 #*gp.G1*np.pi*1.5 # *ntracer1/(ntracer1+ntracer2)
-    # rho0star2   = rho0/1.e6 #*gp.G1*np.pi/2. # *ntracer2/(ntracer1+ntracer2)
-    # 3)
-    rho0star1    = rho0*mf1#/1.e6*ntracer1 # TODO: Matt for factor 1e6
+    # attention: the stellar tracers in Walker's datasets do not have mass density profile!
+    rho0star1    = rho0*mf1
 
     # rho(r, rscale, rho0, alpha, beta, gamma):
     #  (2*[pc], or 2*[rcore]), [Munit/pc^3], 3*[1]
