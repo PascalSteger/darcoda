@@ -141,44 +141,44 @@ def beta2betastar(beta):
 # @param gp global parameters
 
 
-def betastar_4(r0, vec, gp):
-    gh.sanitize_vector(vec, gp.nbeta, -1, max(gp.xepol))
+def betastar_4(r0, params, gp):
+    gh.sanitize_vector(params, gp.nbeta, -1, max(gp.xepol))
 
-    s0 = np.log(r0/vec[3])
-    a0 = vec[0]
-    a1 = vec[1]
-    alpha = vec[2]
+    s0 = np.log(r0/np.exp(params[3])) # r_s=params[3] is given in log
+    a0 = params[0]
+    a1 = params[1]
+    alpha = params[2]
     betatmp = (a0-a1)/(1+np.exp(alpha*s0))+a1
 
     return betatmp
-## \fn betastar_4(r0, vec, gp)
+## \fn betastar_4(r0, params, gp)
 # calculate betastar from sigmoid with 4 parameters, using exp directly, with explicit meaning
 # @param r0 radii [pc]
-# @param vec 4 parameters: asymptote of beta at r->0, asymptote of beta at r->infty, speed of change, scale radius at which change takes place
+# @param params 4 parameters: asymptote of beta at r->0, asymptote of beta at r->infty, speed of change, scale radius at which change takes place
 # @param gp global parameters
 
 
-def betastar(r0, vec, gp):
-    bs = betastar_4(r0, vec, gp)
+def betastar(r0, params, gp):
+    bs = betastar_4(r0, params, gp)
     for k in range(len(r0)):
         if bs[k] < gp.minbetastar:
             bs[k] = gp.minbetastar
         if bs[k] > gp.maxbetastar:
             bs[k] = gp.maxbetastar
     return bs
-## \fn betastar(r0, vec, gp)
+## \fn betastar(r0, params, gp)
 # calculate betastar from 4 parameters
 # @param r0 radii [pc]
-# @param vec 4 parameters
+# @param params 4 parameters
 # @param gp global parameters
 
 
 
-def betastar_old(r0, r0turn, vec, gp):
+def betastar_old(r0, r0turn, params, gp):
     r0 = np.array([r0]).flatten()
     betatmp = np.zeros(len(r0))
-    for i in range(len(vec)):
-        betatmp += vec[i] * (r0/r0turn)**i
+    for i in range(len(params)):
+        betatmp += params[i] * (r0/r0turn)**i
     # clipping beta* to the range [-1,1]
     # thus not allowing any unphysical beta,
     # but still allowing parameters to go the the max. value
@@ -187,22 +187,22 @@ def betastar_old(r0, r0turn, vec, gp):
         betatmp[off] = min(gp.maxbetastar, betatmp[off])
         betatmp[off] = max(gp.minbetastar, betatmp[off])
     return betatmp
-## \fn betastar_old(r0, vec, gp)
+## \fn betastar_old(r0, params, gp)
 # map [0,1] to [-1,1] with a polynomial
 # NOT USED ANYMORE
 # @param r0 radii [pc]
-# @param vec normalized ai, s.t. abs(sum(ai)) = 1
+# @param params normalized ai, s.t. abs(sum(ai)) = 1
 # @param gp global parameters
 
 
-def beta(r0, vec, gp):
-    bstar = betastar(r0, vec, gp)
+def beta(r0, params, gp):
+    bstar = betastar(r0, params, gp)
     betatmp = betastar2beta(bstar)
     return betatmp, bstar
-## \fn beta(r0, vec, gp)
+## \fn beta(r0, params, gp)
 # beta and beta* from beta parameter array
 # @param r0 radii [pc]
-# @param vec float array, see gl_class_cube
+# @param params array, see gl_class_cube
 # @param gp global parameters
 
 

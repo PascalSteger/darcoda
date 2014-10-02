@@ -44,19 +44,17 @@ class Params():
 
         # data options
         # ----------------------------------------------------------------------
-        self.getnewdata = True # get new data computed from
-                                # observations before burn-in
-        self.getnewpos  = True # read in the positions and v_LOS again
+        self.getnewdata = False     # get new data computed from
+                                    # observations before burn-in
+        self.getnewpos  = True      # read in the positions and v_LOS again
+        if self.getnewdata == False: self.getnewpos = False
         self.binning    = 'consttr' # linspace, logspace, consttr
-        self.metalpop   = False # split metallicities with a separate
-                                # MCMC
-        self.walker3D = False # for walker mock data: use 3D models
+        self.metalpop   = False     # split metallicities with a separate MCMC
+        self.walker3D   = False     # for walker mock data: use 3D models
         self.hern_sim_pops = 1 # use hernquist model with 1 or 2 particle
-                     # types. do not use second type (DM) as
-                     # population
-        if self.pops == 1:
-            self.hern_sim_pops = 1
-        self.maxR = 5.            # [Xscale], max range in radial bins
+                               # types. do not use second type (DM) as population
+        if self.pops == 1: self.hern_sim_pops = 1
+        self.maxR       = 5.        # [Xscale], max range in radial bins
 
 
 
@@ -129,19 +127,9 @@ class Params():
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
-
-        ########## disc case
-        # ----------------------------------------------------------------------
-        # norm1 = 17.**2 # offset of sig[0]/nu[0], from int starting
-        # at zmin instead of 0 norm2 = 10.**2 # and for the second
-        # component, if there is one
-        self.quadratic = False    # linear or quad interpol.
         self.monotonic = False    # mono-prior on rho(x)
         self.monotonic_nu = False # mono-prior on nu(x)
-        self.adddarkdisc = False  # for disc mock case: add a dark disc?
-        self.baryonmodel = 'sim' # read in surface density from
-                                 # corresponding surfden file
-                                 # 'silvia', 'sim', 'simple'
+
 
         ########## integration options
         # ----------------------------------------------------------------------
@@ -149,7 +137,7 @@ class Params():
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
-        self.checksig   = True  # check sigma calculation routine with 'walk'
+        self.checksig   = False  # check sigma calculation routine with 'walk'
         self.stopstep   = 1     # stop after step number ..., enter debugger
 
 
@@ -164,7 +152,7 @@ class Params():
         self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
         # [pc msun^-1 (km/s)^2]
         if self.investigate == 'hern':
-            self.G1 = 1.
+            self.G1 = 1.            # as defined by Justin, so we can rescale model
             self.ana        = 1.    # scale radius of Hernquist profile in [pc]
             self.anM        = 1.    # total mass of Hernquist profile in [Msun]
 

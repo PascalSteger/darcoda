@@ -29,7 +29,7 @@ def map_nr(params, prof, pop, gp):
         rhoscale = gp.rhohalf
         Rscale = gp.Xscale[0]
         width = gp.rhospread
-        iscale = gp.iscale
+        rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
         nrscale = gp.nrtol
         monotonic = gp.monotonic
@@ -37,7 +37,7 @@ def map_nr(params, prof, pop, gp):
         rhoscale = gp.dat.nuhalf[pop]
         Rscale = gp.Xscale[pop]
         width = gp.nuspread
-        iscale = gp.iscale_nu
+        rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxrhoslope_nu
         nrscale = gp.nrtol_nu
         monotonic = gp.monotonic_nu
@@ -52,13 +52,13 @@ def map_nr(params, prof, pop, gp):
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    if gp.xepol[0] <= gp.rlimnr*Rscale:
+    if gp.xepol[0] <= rlimnr*Rscale:
         nrasym0 = (params[1]**1)*min(maxrhoslope/2, 2.99)
     else:
         nrasym0 = (params[1]**1)*2.99
 
     # offset for the integration of dn(r)/dlog(r) at smallest radius
-    if gp.xepol[1] <= gp.rlimnr*Rscale:
+    if gp.xepol[1] <= rlimnr*Rscale:
         nr[0] = (params[2]**1)*min(maxrhoslope/2, 2.99)
     else:
         nr[0] = (params[2]**1)*maxrhoslope
@@ -77,13 +77,13 @@ def map_nr(params, prof, pop, gp):
             nr[i-2] = nr[i-3] + (params[i]-0.5)*2. * nrscale * deltalogr
 
         # cut at zero: we do not want to have density rising outwards
-        nr[i] = max(0., nr[i])
+        nr[i-2] = max(0., nr[i-2])
 
-        # restrict n(r) at upper boundary
-        if i <= iscale+1: # iscale: no. bins with xipol<Rscale[all]
-            nr[i] = min(2.0, nr[i])
+        # restrict n(r)
+        if gp.xepol[i-2] <= rlimnr*Rscale:
+            nr[i-2] = min(maxrhoslope/2, nr[i-2])
         else:
-            nr[i] = min(maxrhoslope, nr[i])
+            nr[i-2] = min(maxrhoslope, nr[i-2])
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3
     deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
