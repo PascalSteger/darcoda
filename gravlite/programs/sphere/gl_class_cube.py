@@ -26,37 +26,39 @@ def map_nr(params, prof, pop, gp):
 
     # get offset and n(r) profiles, calculate rho
     if prof=='rho':
-        scale = gp.rhohalf
+        rhoscale = gp.rhohalf
+        Rscale = gp.Xscale[0]
         width = gp.rhospread
         iscale = gp.iscale
         maxrhoslope = gp.maxrhoslope
         nrscale = gp.nrtol
         monotonic = gp.monotonic
     elif prof=='nu':
-        scale = gp.dat.nuhalf[pop]
+        rhoscale = gp.dat.nuhalf[pop]
+        Rscale = gp.Xscale[pop]
         width = gp.nuspread
         iscale = gp.iscale_nu
         maxrhoslope = gp.maxrhoslope_nu
         nrscale = gp.nrtol_nu
         monotonic = gp.monotonic_nu
     else:
-        raise Exception('bad profile in gl_class_cube.map_nr')
+        raise Exception('wrong profile in gl_class_cube.map_nr')
 
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    rhohalf = 10**((params[0]*2.*width)-width+np.log10(scale))
+    rhohalf = 10**((params[0]*2.*width)-width+np.log10(rhoscale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    if 1 <= iscale + 1:
+    if gp.xepol[0] <= gp.rlimnr*Rscale:
         nrasym0 = (params[1]**1)*min(maxrhoslope/2, 2.99)
     else:
         nrasym0 = (params[1]**1)*2.99
 
     # offset for the integration of dn(r)/dlog(r) at smallest radius
-    if 2 <= iscale + 1:
+    if gp.xepol[1] <= gp.rlimnr*Rscale:
         nr[0] = (params[2]**1)*min(maxrhoslope/2, 2.99)
     else:
         nr[0] = (params[2]**1)*maxrhoslope
@@ -108,22 +110,24 @@ def map_nr(params, prof, pop, gp):
 # @param gp global parameters
 
 
-def map_nu_directly(pa, gp):
+def map_nu_directly(params, gp):
+    # TODO sanitize
+    nu = np.zeros(gp.nepol)
     for i in range(gp.nepol):
-        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
-    return pa
-## \fn map_nu_directly(pa, gp)
+        nu[i] = 10**(params[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
+    return nu
+## \fn map_nu_directly(params, gp)
 # map tracer densities, directly
-# @param pa cube [0,1]^n
+# @param params cube [0,1]^n
 # @param gp global parameters
 
 
-def map_betastar_old(pa, gp):
+def map_betastar_old(params, gp):
     off_beta = 0
     # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
     # cluster around 0, go symmetrically in both directions,
-    pa[0] = 1.98*(pa[0]-0.5)
+    params[0] = 1.98*(params[0]-0.5)
     # out to maxbetaslope
     # here we allow |beta_star,0| > 1, so that any models with
     # beta(<r_i) = 1, beta(>r_i) < 1
@@ -131,62 +135,65 @@ def map_betastar_old(pa, gp):
     # pa[0] = np.sign(tmp)*tmp**2 # between -1 and 1 for first parameter
     off_beta += 1
     for i in range(gp.nbeta-1):
-        pa[off_beta] = (2*(pa[off_beta]-0.5))*gp.maxbetaslope
+        params[off_beta] = (2*(params[off_beta]-0.5))*gp.maxbetaslope
         # rising beta prior would remove -0.5
         off_beta += 1
 
-    return pa
-## \fn map_betastar_old(pa, gp)
+    return params
+## \fn map_betastar_old(params, gp)
 # mapping beta parameters from [0,1] to full parameter space,
 # using consecutive polynomials
 # NOT USED ANYMORE
-# @param pa parameter array
+# @param params parameter array
 # @param gp global parameters
 
 
-def map_betastar_sigmoid(pa, gp):
-    gh.sanitize_vector(pa, gp.nbeta, 0, 1)
+def map_betastar_sigmoid(params, gp):
+    gh.sanitize_vector(params, gp.nbeta, 0, 1)
     # s0 = np.log(r0/r0turn)
     # kappa = (a0-a1)/(betastar(r_s) - a1)-1
     # beta = (a0-a1)/(1+kappa*exp(alpha*s0))
     bmin = gp.minbetastar
     bmax = gp.maxbetastar
     bdiff = bmax-bmin
-    pa[0] = pa[0]*bdiff + bmin  # a0
+    a0 = params[0]*bdiff + bmin  # a0
     if gp.beta00prior:
-        pa[0] = 0
-    pa[1] = pa[1]*bdiff + bmin  # a1
-    pa[2] = pa[2]*5             # alpha
-    pa[3] = pa[3]*max(gp.xepol) # r_s
-    return pa
+        params[0] = 0
+    a1 = params[1]*bdiff + bmin  # a1
+    alpha = params[2]*5             # alpha
+    # r_s, sampled in log space over all radii,
+    # as we want flat prior in log space
+    logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
+    return np.hstack([a0, a1, alpha, logrs])
 ## \fn map_betastar(pa, gp)
 # mapping beta parameters from [0,1] to full param space
 # @param pa parameter vector, size 4
 # @param gp global parameters
 
 
-def map_betastar_j(pa, gp):
-    gh.sanitize_vector(pa, 4, 0, 1)
+def map_betastar_j(params, gp):
+    gh.sanitize_vector(params, 4, 0, 1)
     # betastar = exp(-(r/r0)^n)*(a0-a1)+a1
-    pa[0] = pa[0]*1.98-1 # a_0, betastar(r=0), in between -0.99 and +0.99
-    pa[1] = pa[1]*1.98-1 # a_1, betastar(r->infty), same range
-    pa[2] = pa[2]*max(gp.xipol) # r_0, scale radius for transition from a0->a1
-    pa[3] = pa[3]*3 # n, rate of transition
-    return pa
-## \fn map_betastar(pa, gp)
+    a0 = params[0]*1.98-1 # a_0, betastar(r=0), in between -0.99 and +0.99
+    a1 = params[1]*1.98-1 # a_1, betastar(r->infty), same range
+    # r_0, scale radius for transition from a0->a1:
+    logrs = params[2]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
+    n0 = params[3]*3 # n, rate of transition
+    return np.hstack([a0, a1, logrs, n0])
+## \fn map_betastar(params, gp)
 # mapping beta parameters from [0,1] to full param space
-# @param pa parameter vector, size 4
+# @param params parameter vector, size 4
 # @param gp global parameters
 
 
-def map_MtoL(pa, gp):
-    gh.sanitize_scalar(pa, 0, 1)
+def map_MtoL(param, gp):
+    gh.sanitize_scalar(param, 0, 1)
     scale = gp.MtoLmax - gp.MtoLmin
-    pa = pa*scale+gp.MtoLmin
-    return pa
-## \fn map_MtoL(pa, gp)
+    MtoL = param*scale+gp.MtoLmin
+    return MtoL
+## \fn map_MtoL(param, gp)
 # map [0,1] to MtoL flat prior
-# @param pa scalar
+# @param param scalar
 # @param gp global parameters holding MtoL{min,max}
 
 
