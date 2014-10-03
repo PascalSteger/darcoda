@@ -26,7 +26,7 @@ def map_nr(params, prof, pop, gp):
     if prof=='rho':
         rhoscale = gp.rhohalf
         Rscale = gp.Xscale[0]
-        width = gp.rhospread
+        width = gp.log10rhospread
         rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
         nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
@@ -46,7 +46,7 @@ def map_nr(params, prof, pop, gp):
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    rhohalf = 10**((params[0]*2.*width)-width+np.log10(rhoscale))
+    rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass

@@ -124,8 +124,8 @@ def get_rhohalfs(gp):
         # density at half-light radius of baryons
 
         M_half = M_half_wolf
-        rhohalf = 3*M_half/(4.*np.pi*r_half**3) # max density possible assuming alpha=0
-        gp.rhohalf = rhohalf
+        rhohalf_approx = 3*M_half/(4.*np.pi*r_half**3) # max density possible assuming alpha=0
+        gp.rhohalf = rhohalf_approx
 
     elif gp.geom == 'disc':
         gp.rhohalf = np.average(gp.dat.nuhalf) #Assuming DM density negligible

@@ -25,7 +25,7 @@ def sanitize_investigate(inv):
 class Params():
     def __init__(self, timestamp = ''):
         # basic setup
-        # ----------------------------------------------------------------------
+        # -----------------------------------------------------------
         self.investigate  = 'gaia' # determine which data set to work on
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
@@ -43,7 +43,7 @@ class Params():
 
 
         # data options
-        # ----------------------------------------------------------------------
+        # ------------------------------------------------------------
         self.getnewdata = True     # get new data computed from
                                     # observations before burn-in
         self.getnewpos  = True      # read in the positions and v_LOS again
@@ -104,7 +104,7 @@ class Params():
         # ----------------------------------------------------------------------
         self.rhohalf = -1.        # prior density for rho at half-light radius of tracers
                                   # calculated in gl_data
-        self.rhospread = 1.       # with this spread, [dex] in log space
+        self.log10rhospread = 6.       # with this spread, [dex] in log space
         self.nuspread = 1.0       # analog for nu profile
         self.rlimnr = 1 # scale below which range of
                          # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.

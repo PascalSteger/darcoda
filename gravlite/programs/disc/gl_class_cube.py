@@ -58,7 +58,7 @@ def map_nr(params, prof, pop, gp):
     if prof=='rho':
         rhoscale = gp.rhohalf
         Rscale = gp.Xscale[0]
-        width = gp.rhospread
+        width = gp.log10rhospread
         rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
         nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
@@ -78,7 +78,7 @@ def map_nr(params, prof, pop, gp):
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    rhohalf = 10**((params[0]*2.*width)-width+np.log10(rhoscale))
+    rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
@@ -98,7 +98,6 @@ def map_nr(params, prof, pop, gp):
     for k in range(1, gp.nepol):
         # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
         # lie in between 0 and gp.maxrhoslope
-
         deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
         if monotonic:
@@ -107,10 +106,8 @@ def map_nr(params, prof, pop, gp):
         else:
             # use pa => [-1, 1] for full interval
             nr[k] = nr[k-1] + (dnrdlrparams[k]-0.5)*2. * nrscale * deltalogr
-
         # cut at zero: we do not want to have density rising outwards
         nr[k] = max(0., nr[k])
-
         # restrict n(r)
         if gp.xepol[k] <= rlimnr*Rscale:
             nr[k] = min(maxrhoslope/2, nr[k])
