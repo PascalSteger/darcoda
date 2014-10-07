@@ -42,10 +42,13 @@ def set_geometry(geom, machine):
         basepath = '/home/psteger/sci/darcoda/gravlite/programs/'
     elif machine == 'darkside':
         basepath = '/home/ast/read/user/psteger/software/darcoda/gravlite/programs/'
-    elif machine == 'lisa_HS':
+    elif machine == 'lisa_HS_login':
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/programs/'
-    elif machine == 'lisa_SS':
-        basebath = '/home/sofia/blah/darcoda/gravlite/programs/'
+    elif machine == 'lisa_SS_login':
+        basebath = '/home/sofia/????/darcoda/gravlite/programs/'
+    elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
+        scratch_space = os.getenv("TMPDIR")
+        basepath = scratch_space + '/darcoda/gravlite/programs/'
 
     insert_sys_path(basepath + 'datareduction/')
     insert_sys_path(basepath + geom)

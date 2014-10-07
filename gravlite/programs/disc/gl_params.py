@@ -24,10 +24,14 @@ class Params():
             self.machine = 'darkside'
         elif 'pstgnt332' in host_name:
             self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS'
-        elif ('lisa' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS'
+        elif ('lisa' in host_name) and ('login' in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS_login'
+        elif ('lisa' in host_name) and ('login' not in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS_batch'
+        elif ('lisa' in host_name) and ('login' in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS_login'
+        elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS_batch'
 
         self.geom = 'disc'
         self.investigate  = 'discmock' # determine which data set to work on
@@ -110,7 +114,12 @@ class Params():
         self.rhohalf = 10**-1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.rhospread = 1.       # with this spread, [dex] in log space
+        self.log10rhospread = 1.       # with this spread, [dex] in log space
+        self.rlimnr = -1 # scale below which range of
+                         # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
+                         # calculated to values in [pc] in gl_data.read_nu;
+                         # if set to -1 here, use maxrhoslope everywhere
+        self.rlimnr_nu = -1 # same for nu, using same rhalf
         self.nuspread = 0.5
         self.iscale = -1 # scale below which range of
                                          # n(r)<2. instead of
