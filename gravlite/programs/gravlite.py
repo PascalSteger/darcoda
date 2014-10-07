@@ -121,11 +121,11 @@ def run(gp):
                     log_zero = -1e500,    # points with log likelihood
                                           #< log_zero will be
                                           #neglected
-                    max_iter = 0,         # set to 0 for never
+                    max_iter = 100,         # set to 0 for never
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
-                    init_MPI = False,     # use MPI
+                    init_MPI = True,     # use MPI
                     dump_callback = None)
 
 

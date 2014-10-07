@@ -125,10 +125,13 @@ class Files:
             self.machine = '/home/ast/read/user/psteger/software/darcoda/gravlite/'
         elif machine == 'pstgnt332':
             self.machine = '/home/psteger/sci/darcoda/gravlite/'
-        elif machine == 'lisa_HS':
+        elif machine == 'lisa_HS_login':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
-        elif machine == 'lisa_SS':
+        elif machine == 'lisa_SS_login':
             self.machine = '/home/sofia/????/darcoda/gravlite/'
+        elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
+            scratch_space = os.getenv("TMPDIR")
+            self.machine = scratch_space + '/darcoda/gravlite/'
         self.progdir = self.machine + 'programs/'
         self.modedir = self.machine + 'DT' + inv + '/'
         self.shortdir = self.modedir + str(case) + '/'

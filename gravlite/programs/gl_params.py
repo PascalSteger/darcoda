@@ -1,1 +1,1 @@
-sphere/gl_params.py
+disc/gl_params.py
