@@ -16,6 +16,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 plt.ioff()
 
+from optparse import OptionParser
+
 calculate_anew = False
 
 def prepare_output_folder(basename):
@@ -98,8 +100,23 @@ def pcload_single_entries(basename):
 
 
 if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-i", "--investigation", dest="investigate",
+                      default="gaia", help="investigation to plot")
+    parser.add_option("-c", "--case", dest="case",
+                      default=3, help="case to plot")
+    parser.add_option("-l", "--latest", help='plot latest one', dest =
+                      'latest', default = True, action = 'store_true')
+    #parser.add_option("-t", "--timestamp", dest="timestamp",
+    #                  default=-1, help="timestamp of run to plot. Overrides -l")
+    #parser.add_option("-a", "--action", dest="action",
+    #                  default="p", help="action to take: p: print, k: kill")
+    (options, args) = parser.parse_args()
+
     import select_run as sr
-    timestamp, basename = sr.run()
+    timestamp, basename = sr.run(options.investigate, \
+                                 options.case,\
+                                 options.latest)
     prepare_output_folder(basename)
 
     # include runtime gl_params, but other files all from current directory
@@ -110,10 +127,10 @@ if __name__ == '__main__':
     import gl_params as glp
     ip.remove_first()
 
-    # uncomment following to use stored collection, loglike, and all other modules as well
+    # uncomment following to use stored collection, loglike, all other modules
     #ip.insert_sys_path(basename+'sphere')
     #import gl_collection as glc
-    ##ip.remove_first(); ip.remove_first() # uncomment to include most recent representation code from class_cube
+    ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
 
     gp = glp.Params(timestamp)
     import gl_file as glf
@@ -125,13 +142,14 @@ if __name__ == '__main__':
     read_scale(basename, gp) # store half-light radii in  gp.Xscale
     import gl_helper as gh
 
-    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0]) # [Xscale0], [Munit/Xscale0^2]
-    # we have verified that indeed the stored files in the run directory are used
+    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0])
+    # [Xscale0], [Munit/Xscale0^2]
+    # verified that indeed the stored files in the run directory are used
 
     gp.xipol = Radii * gp.Xscale[0]       # [pc]
     maxR = max(Radii)                     # [pc]
-    minR = min(Radii)
-    Radii = np.hstack([minR/8, minR/4, minR/2, Radii, 2*maxR, 4*maxR, 8*maxR]) # [pc]
+    minR = min(Radii)                     # [pc]
+    Radii = np.hstack([minR/8, minR/4, minR/2, Radii, 2*maxR, 4*maxR, 8*maxR])
     gp.xepol = Radii * gp.Xscale[0]       # [pc]
 
     pc = pcload_single_entries(basename)

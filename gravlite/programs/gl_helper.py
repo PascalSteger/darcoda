@@ -8,7 +8,7 @@
 import sys, traceback, ipdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
-from scipy.integrate import quad, romberg
+from scipy.integrate import quad, romberg, simps
 from pylab import *
 ion()
 import time
@@ -743,7 +743,15 @@ def Ntot(R0, Sigma, gp):
     xint = R0
     yint = Sigma*R0
     Ntot = quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
-    return Ntot
+
+    # new integration routine with cos(theta) substitution
+    R0min = min(R0)#/gp.rinfty
+    theta = np.arccos(R0min/R0)
+    cth = np.cos(theta)
+    sth = np.sin(theta)
+    yint = Sigma*R0min**2/cth**4*sth
+    Ntot_sub = simps( yint, theta)
+    return Ntot_sub
 ## \fn Ntot(R0, Sigma, gp)
 # return total number of stars
 # @param R0 radial bins [pc]

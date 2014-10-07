@@ -164,6 +164,7 @@ def run(gp):
 
                 Sigma = Sig_kin[:,k]
                 if gp.usezeta:
+                    ipdb.set_trace()
                     Ntot[k] = gh.Ntot(Rbin, Sigma, gp)
                     zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k], gp)
                     v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k], gp))**2
@@ -233,7 +234,7 @@ def run(gp):
 
 
         # calculate and output siglos
-        # --------------------------------------------------------------
+        # --------------------------------------------
         p_dvlos = np.zeros(gp.nipol)
         p_edvlos = np.zeros(gp.nipol)
         for b in range(gp.nipol):
@@ -262,7 +263,7 @@ def run(gp):
 
 
         # calculate and output kurtosis kappa
-        # --------------------------------------------------------------
+        # --------------------------------------------
         if gp.usekappa:
             p_kappa = np.zeros(gp.nipol) # needed for plotting later
             p_ekappa = np.zeros(gp.nipol)

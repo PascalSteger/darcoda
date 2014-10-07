@@ -82,43 +82,43 @@ def geom_loglike(cube, ndim, nparams, gp):
             gh.sanitize_vector(tmp_betastar, len(tmp_profs.x0), -1, 1)
             tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
 
-            try:
-                if gp.checksig:
-                    import gl_analytic as ga
-                    anrho = ga.rho(gp.xepol, gp)[0]
-                    rhopar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
-                    nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
-                    dlr = np.hstack([nr[0], nr, nr[-1]])
-                    if gp.investigate =='gaia':
-                        dlr[-1] = 4
-                    rhopar = np.hstack([rhopar_half, dlr])
+            #try:
+            if gp.checksig:
+                import gl_analytic as ga
+                anrho = ga.rho(gp.xepol, gp)[0]
+                rhopar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
+                nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
+                dlr = np.hstack([nr[0], nr, nr[-1]])
+                if gp.investigate =='gaia':
+                    dlr[-1] = 4
+                rhopar = np.hstack([rhopar_half, dlr])
 
-                    rhostarpar = 0.0*rhopar
-                    MtoL = 0.0
-                    if gp.investigate == 'gaia':
-                        if gp.case == 5:
-                            betapar = np.array([  4.24378376e-14,   1, 2, 1.41421356e+02])
-                        elif gp.case == 6:
-                            betapar = np.array([  5.82811566e-13,   1, 2, 3.53553391e+02])
-                        elif gp.case == 7:
-                            betapar = np.array([  8.31604545e-25,  -1.69605095e-29,   1, 1])
-                    elif gp.investigate == 'hern':
-                        betapar = np.array([0, 0, 2, max(gp.xipol)/2]) # for hern
-                    annu = ga.rho(gp.xepol, gp)[1]
-                    nupar_half = np.exp(splev(gp.Xscale[1], splrep(gp.xepol, np.log(annu))))
-                    nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
-                    dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
-                    if gp.investigate == 'gaia':
-                        dlrnu[-1] = 6
-                    nupar = np.hstack([nupar_half, dlrnu])
+                rhostarpar = 0.0*rhopar
+                MtoL = 0.0
+                if gp.investigate == 'gaia':
+                    if gp.case == 5:
+                        betapar = np.array([  4.24378376e-14,   1, 2, 1.41421356e+02])
+                    elif gp.case == 6:
+                        betapar = np.array([  5.82811566e-13,   1, 2, 3.53553391e+02])
+                    elif gp.case == 7:
+                        betapar = np.array([  8.31604545e-25,  -1.69605095e-29,   1, 1])
+                elif gp.investigate == 'hern':
+                    betapar = np.array([0, 0, 2, max(gp.xipol)/2]) # for hern
+                annu = ga.rho(gp.xepol, gp)[1]
+                nupar_half = np.exp(splev(gp.Xscale[1], splrep(gp.xepol, np.log(annu))))
+                nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
+                dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
+                if gp.investigate == 'gaia':
+                    dlrnu[-1] = 6
+                nupar = np.hstack([nupar_half, dlrnu])
 
-                sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
-                                                     rhostarpar, MtoL, \
-                                                     nupar, betapar, pop, gp)
-            except Exception as detail:
-                gh.LOG(1, 'sigma error')
-                tmp_profs.chi2 = gh.err(2., gp)
-                return tmp_profs
+            sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
+                                                 rhostarpar, MtoL, \
+                                                 nupar, betapar, pop, gp)
+            #except Exception as detail:
+            #    gh.LOG(1, 'sigma error')
+            #    tmp_profs.chi2 = gh.err(2., gp)
+            #    return tmp_profs
             tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
             tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
             tmp_profs.set_zeta(zetaa, zetab, pop)

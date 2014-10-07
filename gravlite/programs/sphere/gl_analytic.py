@@ -176,7 +176,7 @@ def M_gaia(rad, gp):
 
 def rhotot_gaia(rad, gp):
     rhodm, rhostar1 = rho_gaia(rad, gp)
-    return rhodm+rhostar1
+    return rhodm
 ## \fn rhotot_gaia(rad, gp)
 # return total mass density for Gaia challenge models
 # @param rad radii in [pc]

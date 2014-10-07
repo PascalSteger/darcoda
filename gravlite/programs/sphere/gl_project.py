@@ -14,8 +14,7 @@
 
 import numpy as np
 import ipdb
-from scipy.integrate import simps
-from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
+from scipy.integrate import cumtrapz, romberg, simps, quad
 from scipy.interpolate import splrep, splev, splint
 from pylab import *
 ion()
@@ -170,7 +169,8 @@ def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
     Sig = np.zeros(len(Rproj))
     for i in range(len(Rproj)):
         rq = Rproj[i]/cth
-        rhoq = np.interp(rq, Rproj, rhonu, left=0, right=0)#rhonu[-1]/1e10) # best for hern
+        rhoq = np.interp(rq, Rproj, rhonu, left=0, right=0)
+        #right=rhonu[-1]/1e10) # best for hern
         #rhoq = phys.rho(rq, rhopar, pop, gp)
         Sig[i] = 2.*Rproj[i]*simps(rhoq/cth2, theta)
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')

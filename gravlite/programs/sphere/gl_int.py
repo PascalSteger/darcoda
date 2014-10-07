@@ -393,10 +393,10 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     zetaa = -1; zetab = -1
     if gp.usezeta:
-        zetaa, zetab = zeta(r0fine[:-gp.nexp], nufine[:-gp.nexp], \
+        zetaa, zetab = zeta(r0fine, nufine, \
                             Sigfine,\
-                            Mrfine[:-gp.nexp], betafine[:-gp.nexp],\
-                            sigr2nu_model[:-gp.nexp], gp)
+                            Mrfine, betafine,\
+                            sigr2nu_model, gp)
 
     gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30)
     return siglos2_out, kapl4s_out, zetaa, zetab
@@ -420,26 +420,45 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     # common parameters
     N = gh.Ntot(r0fine, Sigfine, gp)
-    vr2 = sigr2nu
-    dPhidr = gp.G1*Mrfine/r0fine**2
+    # vr2 = sigr2nu
+    # dPhidr = gp.G1*Mrfine/r0fine**2
 
     # zetaa scalar
-    xint = r0fine
-    yint = nufine*(5-2*betafine)*vr2*dPhidr*r0fine**3
-    nom = gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
+    #xint = r0fine
+    #yint = nufine*(5-2*betafine)*vr2*dPhidr*r0fine**3
+    #nom = gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
 
-    yint = nufine*dPhidr*r0fine**3
-    denom = (gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False))**2
+    #yint = nufine*dPhidr*r0fine**3
+    #denom = (gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False))**2
 
+
+    theta = np.arccos(r0min/r0fine)
+    cth = np.cos(theta)
+    sth = np.sin(theta)
+    # TODO nuinterp, sigr2interp, Minterp, betainterp
+    yint = gp.G1*(5-2*betainterp)*sigr2
+    yint *= Minterp*rmin**2/cth**3*sth
+    nom = quad(theta, yint, 0, np.pi/2)
+
+    yint = gp.G1**2*nuinterp*Mrinterp
+    yint *= rmin**2/cth**3*sth
+    denom = quad(theta, yint, 0, np.pi/2)
     zetaa = 9*N/10. * nom/denom
 
     # zetab scalar
-    yint = nufine*(7-6*betafine)*vr2*dPhidr*r0fine**5
-    nom = gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
+    #------------------------------------------------------------
+    #yint = nufine*(7-6*betafine)*vr2*dPhidr*r0fine**5
+    #nom=gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
+
+    yint = gp.G1*nuinterp*(7-6*betainterp)*sigr2interp*Mrinterp
+    yint *= rmin**2/cth**3*sth
+    nom = quad(theta, yint, 0, np.pi/2)
 
     yint = Sigfine*r0fine**3
     denom *= gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
 
+    yint = Sigmainterp*Rmin**3/cth**6*sth
+    denom *= quad(theta, yint, 0, np.pi/2)
     zetab = 9*N**2/35 * nom / denom
 
     return zetaa, zetab

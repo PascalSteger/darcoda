@@ -164,7 +164,7 @@ class ProfileCollection():
         self.analytic.x0 = r0
         anbeta = []; annu = []; annrnu = []; anSig = []; ansig = []
         if gp.investigate == 'gaia':
-            anrho = ga.rhotot_gaia(r0, gp)
+            anrho = ga.rho_gaia(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_gaia(r0, gp)
             tmp_annu = ga.rho_gaia(r0, gp)[1]
