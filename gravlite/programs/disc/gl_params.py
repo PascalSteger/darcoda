@@ -24,10 +24,14 @@ class Params():
             self.machine = 'darkside'
         elif 'pstgnt332' in host_name:
             self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS'
-        elif ('lisa' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS'
+        elif ('lisa' in host_name) and ('login' in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS_login'
+        elif ('lisa' in host_name) and ('login' not in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS_batch'
+        elif ('lisa' in host_name) and ('login' in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS_login'
+        elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS_batch'
 
         self.geom = 'disc'
         self.investigate  = 'discmock' # determine which data set to work on
