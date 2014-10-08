@@ -120,7 +120,7 @@ class Params():
         # prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    on from min(gp.xipol) to max(gp.xipol)
-        self.nrtol  = 1*self.maxrhoslope
+        self.nrtol  = self.maxrhoslope/2
         self.nrtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta* in polynomial representation
@@ -131,22 +131,6 @@ class Params():
         self.MtoLmax = 3.
         self.monotonic = False    # monotonicity-prior on nr_rho(x)
         self.monotonic_nu = False # monotonicity-prior on nr_nu(x)
-
-
-
-        # unitsXS
-        # ----------------------------------------------------------------------
-        self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
-        self.pc_in_m  = 3.08567758e16              # [m]
-        self.msun= 1.981e30                   # [kg]
-        self.km_in_m  = 1000.                      # [m]
-        self.kpc = 1000.                      # [pc]
-        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
-        # [pc msun^-1 (km/s)^2]
-        if self.investigate == 'hern':
-            self.G1 = 1.            # as defined by Justin, so we can rescale model
-            self.ana        = 1.    # scale radius of Hernquist profile in [pc]
-            self.anM        = 1.    # total mass of Hernquist profile in [Msun]
 
 
         ########## filesystem-related

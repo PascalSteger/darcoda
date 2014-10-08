@@ -50,13 +50,6 @@ class Params():
         self.ntracer = [10000, 10000] # pop1, pop2, ..., pop_N (and
                                       # take sum for all tracers)
 
-        # unitsXS
-        self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
-        self.pc  = 3.08567758e16              # [m]
-        self.msun= 1.981e30                   # [kg]
-        self.km  = 1000.                      # [m]
-        self.G1  = self.G1*self.msun/self.km**2/self.pc # [pc msun^-1
-                                                        # (km/s)^2]
 
         ########## data options
         self.getnewdata = True  # get new data computed from
@@ -67,7 +60,6 @@ class Params():
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
         self.maxR = 5.            # [Xscale], max range in radial bins
-
 
 
         ########## MultiNest options

@@ -14,6 +14,7 @@ from scipy.integrate import simps,trapz
 from pylab import *
 ion()
 
+import gl_units as gu
 import gl_helper as gh
 import gr_params as gpr
 
@@ -233,7 +234,7 @@ def run(gp):
     renorm0 = max(nu_dat_bin0)
 
     xip = np.copy(z_dat_bin0)                        # [pc]
-    Mrdat0   = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gp.G1)
+    Mrdat0   = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gu.G1__pcMsun_1km2s_2)
     Mrerr0   = Mrdat0*nu_dat_err_bin0/nu_dat_bin0
 
     scales[0].append(D)  # [pc]

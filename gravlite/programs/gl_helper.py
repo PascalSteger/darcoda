@@ -54,9 +54,11 @@ def sanitize_vector(vec, length, mini, maxi):
 def sanitize_scalar(var, mini, maxi):
     if var < mini:
         LOG(1, 'var has too small value')
+        ipdb.set_trace()
         #raise Exception('var has too small value')
     if var > maxi:
         LOG(1, 'var has too high value')
+        ipdb.set_trace()
         #raise Exception('var has too high value')
     return
 ## \fn sanitize_scalar(var, mini, maxi)

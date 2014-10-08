@@ -8,12 +8,15 @@
 
 import numpy as np
 import random, ipdb
+
 import gr_params as gpr
+import gl_units as gu
+# TODO hernquist gp.G1 replacement in gu
 import gl_helper as gh
 from gl_centering import com_shrinkcircle_v
 
 def run(gp):
-    gp.G1 = 1.  # as per definition
+    gu.G1__pcMsun_1km2s_2 = 1.  # as per definition
     gp.anM = 1. #
     gp.ana = 1. #
 
@@ -42,7 +45,7 @@ def run(gp):
     xnew = (x-com_x) #*gp.ana      # [pc]
     ynew = (y-com_y) #*gp.ana      # [pc]
     znew = (z-com_z) # *gp.ana      # [pc]
-    vznew = (vz-com_vz) #*1e3*np.sqrt(gp.G1*gp.anM/gp.ana) # [km/s], from conversion from system with L=G=M=1
+    vznew = (vz-com_vz) #*1e3*np.sqrt(gu.G1__pcMsun_1km2s_2*gp.anM/gp.ana) # [km/s], from conversion from system with L=G=M=1
 
     R0 = np.sqrt(xnew**2+ynew**2)   # [pc]
     Rhalf = np.median(R0)           # [pc]

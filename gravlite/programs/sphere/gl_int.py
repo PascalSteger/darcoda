@@ -10,6 +10,8 @@ import numpy as np
 import ipdb, scipy, time
 from scipy.integrate import simps,trapz,quad,romberg
 from scipy.interpolate import splrep, splev, splint
+
+import gl_units as gu
 import gl_helper as gh
 import gl_analytic as ga
 import gl_physics as phys
@@ -251,14 +253,14 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     # --------------------------------------------------------------------------
     # (sigr2, 3D) * nu/exp(-intbetasfine)
     xint = r0fine                           # [pc]
-    yint = gp.G1 * Mrfine / r0fine**2         # [1/pc (km/s)^2]
+    yint = gu.G1__pcMsun_1km2s_2 * Mrfine / r0fine**2         # [1/pc (km/s)^2]
     yint *= nufine                          # [Munit/pc^4 (km/s)^2]
     yint *= np.exp(2*intbetasfine)                  # [Munit/pc^4 (km/s)^2]
     gh.checkpositive(yint, 'yint sigr2')
     if gp.checksig and gp.stopstep <= 7:
         clf()
         loglog(xint, yint, 'r.-', label='model')
-        loglog(xint, gp.G1 * anMr / r0fine**2 * annu * np.exp(2*anintbetasfine), 'b--', label='from analytic')
+        loglog(xint, gu.G1__pcMsun_1km2s_2 * anMr / r0fine**2 * annu * np.exp(2*anintbetasfine), 'b--', label='from analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
         axvline(gp.Xscale[0], lw=2)
@@ -289,10 +291,10 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         #      np.median(func_interp_after / func_interp_before))
 
         sigr2nu_model[k] =  np.exp(-2*intbetasfine[k])/r0fine[k] * \
-                            gp.G1*simps(func_interp_before*np.sin(theta), theta)
+                            gu.G1__pcMsun_1km2s_2*simps(func_interp_before*np.sin(theta), theta)
 
         sigr2nu_model_new[k] = np.exp(-2*intbetasfine[k])/r0fine[k] * \
-                               gp.G1*simps(func_interp_after*np.sin(theta), theta)
+                               gu.G1__pcMsun_1km2s_2*simps(func_interp_after*np.sin(theta), theta)
 
     # clean last value (which is always 0 by construction)
     sigr2nu_model[-1] = sigr2nu_model[-2]/10.
@@ -421,7 +423,7 @@ def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     # common parameters
     N = gh.Ntot(r0fine, Sigfine, gp)
     # vr2 = sigr2nu
-    # dPhidr = gp.G1*Mrfine/r0fine**2
+    # dPhidr = gu.G1__pcMsun_1km2s_2*Mrfine/r0fine**2
 
     # zetaa scalar
     #xint = r0fine
@@ -436,11 +438,11 @@ def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     cth = np.cos(theta)
     sth = np.sin(theta)
     # TODO nuinterp, sigr2interp, Minterp, betainterp
-    yint = gp.G1*(5-2*betainterp)*sigr2
+    yint = gu.G1__pcMsun_1km2s_2*(5-2*betainterp)*sigr2
     yint *= Minterp*rmin**2/cth**3*sth
     nom = quad(theta, yint, 0, np.pi/2)
 
-    yint = gp.G1**2*nuinterp*Mrinterp
+    yint = gu.G1__pcMsun_1km2s_2**2*nuinterp*Mrinterp
     yint *= rmin**2/cth**3*sth
     denom = quad(theta, yint, 0, np.pi/2)
     zetaa = 9*N/10. * nom/denom
@@ -450,7 +452,7 @@ def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     #yint = nufine*(7-6*betafine)*vr2*dPhidr*r0fine**5
     #nom=gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
 
-    yint = gp.G1*nuinterp*(7-6*betainterp)*sigr2interp*Mrinterp
+    yint = gu.G1__pcMsun_1km2s_2*nuinterp*(7-6*betainterp)*sigr2interp*Mrinterp
     yint *= rmin**2/cth**3*sth
     nom = quad(theta, yint, 0, np.pi/2)
 
@@ -479,7 +481,7 @@ def kappa(r0fine, Mrfine, nufine, sigr2nu, intbetasfine, gp):
     # kappa_r^4
     kapr4nu = np.ones(len(r0fine)-gp.nexp)
     xint  = r0fine                  # [pc]
-    yint  = gp.G1 * Mrfine/r0fine**2  # [1/pc (km/s)^2]
+    yint  = gu.G1__pcMsun_1km2s_2 * Mrfine/r0fine**2  # [1/pc (km/s)^2]
     yint *= nufine                  # [Munit/pc^4 (km/s)^2]
     yint *= sigr2nu               # [Munit/pc^4 (km/s)^4
     yint *= np.exp(intbetasfine)          # [Munit/pc^4 (km/s)^4]

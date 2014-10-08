@@ -10,6 +10,7 @@ import numpy as np
 import numpy.random as npr
 import ipdb
 
+import gl_units as gu
 import gl_helper as gh
 import physics_disc as phys
 from binsmooth import *
@@ -46,7 +47,7 @@ def disc_sim(gp):
 
         # total surface density
         Mmodel = surftot_dat_raw[selsusrf]        # [Munit/pc^2]
-        Kz_zstar = -Mmodel * (2.*np.pi*gp.G1)
+        Kz_zstar = -Mmodel * (2.*np.pi*gu.G1__pcMsun_1km2s_2)
 
         # should be kappa data (not sure whether this is necessary)
         gp.dat.densx     = z_surf_raw[selsusrf]*1000.         # [pc]
@@ -240,7 +241,7 @@ def disc_sim(gp):
 
         # total surface density (same z array as baryonic)
         Mmodel = sigusevis + sigusedm         # [Munit/pc^2]
-        Kz_zstar = -Mmodel * (2.*np.pi*gp.G1) # [1000/pc (km/s)^2]
+        Kz_zstar = -Mmodel * (2.*np.pi*gu.G1__pcMsun_1km2s_2) # [1000/pc (km/s)^2]
 
         # should be kappa data (not sure whether this is necessary)
         gp.dat.densx     = gp.xipol                       # [pc]
