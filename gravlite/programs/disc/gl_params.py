@@ -120,7 +120,7 @@ class Params():
                          # calculated to values in [pc] in gl_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = -1 # same for nu, using same rhalf
-        self.nuspread = 0.5
+        self.nuspread = 1.0
         self.iscale = -1 # scale below which range of
                                          # n(r)<2. instead of
                                          # maxrhoslope; is adapted in
@@ -134,7 +134,7 @@ class Params():
 
         self.maxrhoslope  = 0.5    # maximum slope (change if
                                   # monotonicity prior used) of rho
-        self.maxrhoslope_nu = 0.5
+        self.maxnuslope = 0.5
         self.maxlog10nu = 4.     # direct sampling of nu: min value
         self.minlog10nu = 0.     # direct sampling of nu: max value
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope

@@ -7,7 +7,7 @@
 
 # start off with plotting/ in front of path
 #import sys
-import ipdb, pickle, os
+import ipdb, pickle, os, sys
 import numpy as np
 import numpy.random as npr
 npr.seed(1989) # for random events that are reproducible
@@ -102,11 +102,11 @@ def pcload_single_entries(basename):
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-i", "--investigation", dest="investigate",
-                      default="gaia", help="investigation to plot")
+                      default="", help="investigation to plot")
     parser.add_option("-c", "--case", dest="case",
-                      default=3, help="case to plot")
+                      default=-1, help="case to plot")
     parser.add_option("-l", "--latest", help='plot latest one', dest =
-                      'latest', default = True, action = 'store_true')
+                      'latest', default = False, action = 'store_true')
     #parser.add_option("-t", "--timestamp", dest="timestamp",
     #                  default=-1, help="timestamp of run to plot. Overrides -l")
     #parser.add_option("-a", "--action", dest="action",
@@ -153,7 +153,9 @@ if __name__ == '__main__':
     gp.xepol = Radii * gp.Xscale[0]       # [pc]
 
     pc = pcload_single_entries(basename)
-
+    if len(pc.chis) == 0:
+        gh.LOG(1, 'no profiles found')
+        sys.exit(0)
     # first plot all chi^2 values in histogram
     pc.plot_profile(basename, 'chi2', 0, gp)
 

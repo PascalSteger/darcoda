@@ -116,12 +116,12 @@ class Params():
         self.rlimnr_nu = 1 # same for nu, using same rhalf
         self.maxrhoslope  = 4    # maximum slope (change if
                                  # monotonicity prior used) of rho
-        self.maxrhoslope_nu = 5
+        self.maxnuslope = 5
         # prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    on from min(gp.xipol) to max(gp.xipol)
         self.nrtol  = 1*self.maxrhoslope
-        self.nrtol_nu = 1*self.maxrhoslope_nu # same for nu profile
+        self.nrtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta* in polynomial representation
         self.minbetastar = -0.99  # clipping for beta, default: -0.99

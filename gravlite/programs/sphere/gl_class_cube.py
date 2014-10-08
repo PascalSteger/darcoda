@@ -36,7 +36,7 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[pop]
         width = gp.nuspread
         rlimnr = gp.rlimnr_nu
-        maxrhoslope = gp.maxrhoslope_nu
+        maxrhoslope = gp.maxnuslope
         nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:

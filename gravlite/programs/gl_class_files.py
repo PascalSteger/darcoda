@@ -205,28 +205,28 @@ class Files:
         beta_star1 = 5; r_DM = 1000
         if gp.case == 1:
             gamma_star1=0.1;
-            r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
+            r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064 # cusp
         elif gp.case == 2:
             gamma_star1=0.1;
-            r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
+            r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400 # core
         elif gp.case == 3:
             gamma_star1=0.1;
-            r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
+            r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064 # cusp
         elif gp.case == 4:
             gamma_star1=0.1;
-            r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
+            r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400 # core
         elif gp.case == 5:
             gamma_star1=1.0;
-            r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064
+            r_star1=100;  r_a1=100;    gamma_DM=1; rho0=0.064 # cusp
         elif gp.case == 6:
             gamma_star1=1.0;
-            r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400
+            r_star1=250;  r_a1=250;    gamma_DM=0; rho0=0.400 # core
         elif gp.case == 7:
             gamma_star1=1.0;
-            r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064
+            r_star1=250;  r_a1=np.inf; gamma_DM=1; rho0=0.064 # cusp
         elif gp.case == 8:
             gamma_star1=1.0;
-            r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400
+            r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400 # core
 
         elif gp.case == 9:
             gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
