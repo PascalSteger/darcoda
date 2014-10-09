@@ -128,7 +128,7 @@ class Files:
         elif machine == 'lisa_HS_login':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
         elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/????/darcoda/gravlite/'
+            self.machine = '/home/sofia/darcoda/gravlite/'
         elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
             scratch_space = os.getenv("TMPDIR")
             self.machine = scratch_space + '/darcoda/gravlite/'
