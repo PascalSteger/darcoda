@@ -125,7 +125,7 @@ def run(gp):
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
-                    init_MPI = False,     # use MPI
+                    init_MPI = True,     # use MPI
                     dump_callback = None)
 
 

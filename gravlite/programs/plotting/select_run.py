@@ -300,7 +300,7 @@ def run(investigate="", case=-1, latest=False):
     elif ('lisa' in host_name) and ('hsilverw' in user_name):
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
-        basebath = '/home/sofia/blah/darcoda/gravlite/'
+        basepath = '/home/sofia/blah/darcoda/gravlite/'
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
     if latest:
