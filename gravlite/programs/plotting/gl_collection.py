@@ -126,12 +126,15 @@ class ProfileCollection():
 
 
     def calculate_M(self, gp):
-        for i in range(len(self.profs)):
-            Mprof = glp.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 1))
-            self.profs[i].set_prof('M', Mprof, 1, gp)
-            if gp.pops == 2:
-                Mprof = glp.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 2))
-                self.profs[i].set_prof('M', Mprof, 2, gp)
+        if len(self.profs)>0:
+            for i in range(len(self.profs)):
+                Mprof = glp.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 1))
+                self.profs[i].set_prof('M', Mprof, 1, gp)
+                if gp.pops == 2:
+                    Mprof = glp.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 2))
+                    self.profs[i].set_prof('M', Mprof, 2, gp)
+        else:
+            gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.M')
         return
     ## \fn calculate_M(self, gp)
     # calculate M profiles from rho, as this has not been done prior to pc2.save
@@ -164,7 +167,7 @@ class ProfileCollection():
         self.analytic.x0 = r0
         anbeta = []; annu = []; annrnu = []; anSig = []; ansig = []
         if gp.investigate == 'gaia':
-            anrho = ga.rhotot_gaia(r0, gp)
+            anrho = ga.rho_gaia(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_gaia(r0, gp)
             tmp_annu = ga.rho_gaia(r0, gp)[1]
@@ -485,38 +488,40 @@ class ProfileCollection():
             ax.set_yscale('log')
 
         self.plot_labels(ax, prof, pop, gp)
+        if len(self.profs)>0:
+            if prof == 'chi2':
+                goodchi = []
+                for k in range(len(self.profs)):
+                    # do include all chi^2 values for plot
+                    goodchi.append(self.chis[k])
+                print('plotting profile chi for '+str(len(goodchi))+' models')
+                print('min, max, maxsubset found chi2: ', min(self.chis), max(self.chis), self.subset[1])
+                bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \
+                                           bins=max(6,np.sqrt(len(goodchi))),\
+                                           density=True)
+                ax.step(edges[1:], bins, where='pre')
+                plt.draw()
+                self.write_chi2(basename, edges, bins)
+                fig.savefig(basename+'/output/prof_chi2_0.png')
+                pp = PdfPages(basename+'/output/prof_chi2_0.pdf')
+                pp.savefig(fig)
+                pp.close()
+                return
 
-        if prof == 'chi2':
-            goodchi = []
-            for k in range(len(self.profs)):
-                # do include all chi^2 values for plot
-                goodchi.append(self.chis[k])
-            print('plotting profile chi for '+str(len(goodchi))+' models')
-            print('min, max, maxsubset found chi2: ', min(self.chis), max(self.chis), self.subset[1])
-            bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \
-                                       bins=max(6,np.sqrt(len(goodchi))),\
-                                       density=True)
-            ax.step(edges[1:], bins, where='pre')
+            self.fill_nice(ax, prof, pop, gp)
+            self.plot_N_samples(ax, prof, pop)
+            if prof == 'Sig' or prof=='nu' or prof == 'sig':
+                self.plot_data(ax, basename, prof, pop, gp)
+
+            if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
+               and (prof != 'Sig'):
+                r0 = self.analytic.x0
+                y0 = self.analytic.get_prof(prof, pop)
+                ax.plot(r0, y0, 'b--', lw=2)
+
             plt.draw()
-            self.write_chi2(basename, edges, bins)
-            fig.savefig(basename+'/output/prof_chi2_0.png')
-            pp = PdfPages(basename+'/output/prof_chi2_0.pdf')
-            pp.savefig(fig)
-            pp.close()
-            return
-
-        self.fill_nice(ax, prof, pop, gp)
-        self.plot_N_samples(ax, prof, pop)
-        if prof == 'Sig' or prof=='nu' or prof == 'sig':
-            self.plot_data(ax, basename, prof, pop, gp)
-
-        if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
-           and (prof != 'Sig'):
-            r0 = self.analytic.x0
-            y0 = self.analytic.get_prof(prof, pop)
-            ax.plot(r0, y0, 'b--', lw=2)
-
-        plt.draw()
+        else:
+            gh.LOG(1, 'empty self.profs')
         fig.savefig(basename+'/output/png/prof_'+prof+'_'+str(pop)+'.png')
         pp = PdfPages(basename+'/output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
         pp.savefig(fig)

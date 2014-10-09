@@ -76,6 +76,7 @@ class Datafile:
                 self.binmin = binmin * gp.Xscale[pop]           # [pc]
                 self.binmax = binmax * gp.Xscale[pop]           # [pc]
                 gp.xipol = self.rbin                            # [pc]
+
                 minr = min(self.rbin)                           # [pc]
                 maxr = max(self.rbin)                           # [pc]
                 gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
@@ -88,7 +89,7 @@ class Datafile:
             if gp.geom == 'sphere':
                 Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, \
                                                     Sigdat, Sigerr, gp.xfine)
-                dummy, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
+                dummyx, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
                                                                 Sigdatnu, Sigerrnu,\
                                                                 gp)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
@@ -112,7 +113,7 @@ class Datafile:
                 # [Munit/pc^3]
             else:
                 gh.LOG(1, 'working in disc symmetry: reading nu directly')
-                dum, dum, dum, nudat, nuerr = \
+                dummy1, dummy2, dummy3, nudat, nuerr = \
                         gh.readcol5(gp.files.nufiles[pop])
                 self.nuhalf.append(nudat[round(len(nudat)/2)]) #HS ToDo: check validity of this
 
@@ -128,7 +129,7 @@ class Datafile:
 
     def read_sig(self, gp):
         for pop in np.arange(gp.pops+1):
-            Dummy, Dummy, Dummy, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
+            Dummy1, Dummy2, Dummy3, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
             # 3*[Xscale], [maxsiglos], [maxsiglos]
 
             # change to km/s here
@@ -142,7 +143,7 @@ class Datafile:
 
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):
-            Dummy, Dummy, Dummy, kapdat, kaperr = gh.readcol5(gp.files.kappafiles[pop])
+            Dummy1, Dummy2, Dummy3, kapdat, kaperr = gh.readcol5(gp.files.kappafiles[pop])
             # 3*[Xscale], [1], [1]
 
             self.kap.append(kapdat) # [1]
@@ -155,11 +156,11 @@ class Datafile:
 
     def read_zeta(self, gp):
         for pop in np.arange(gp.pops+1):
-            D,D,D,zetaa,zetaaerr=gh.readcol5(gp.files.zetaafiles[pop])
+            D1,D2,D3,zetaa,zetaaerr=gh.readcol5(gp.files.zetaafiles[pop])
             self.zetaa.append(zetaa)
             self.zetaaerr.append(zetaaerr)
 
-            D,D,D,zetab,zetaberr=gh.readcol5(gp.files.zetabfiles[pop])
+            D1,D2,D3,zetab,zetaberr=gh.readcol5(gp.files.zetabfiles[pop])
             self.zetab.append(zetab)
             self.zetaberr.append(zetaberr)
         return

@@ -53,7 +53,7 @@ def nr(r0, dlr, pop, gp):
 
 def rho(r0, rhopar, pop, gp):
     # TODO reenable
-    #gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30)
+    #gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30, gp.debug)
     vec = 1.*rhopar # make a new copy so we do not overwrite rhopar
     rho_at_rhalf = vec[0]
     vec = vec[1:]
@@ -128,9 +128,8 @@ def beta2betastar(beta):
 
 
 # def betastar_sigmoid(r0, r0turn, vec, gp):
-#     gh.sanitize_vector(vec, 4, -1e6, 1e6)
-#     gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine))
-
+#     gh.sanitize_vector(vec, 4, -1e6, 1e6, gp.debug)
+#     gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine), gp.debug)
 #     s=np.log(r0/r0turn)
 #     betatmp = vec[0]/(1+np.exp(vec[1]*s+vec[2]))+vec[3]*np.ones(len(r0))
 #     return betatmp
@@ -142,8 +141,7 @@ def beta2betastar(beta):
 
 
 def betastar_4(r0, params, gp):
-    gh.sanitize_vector(params, gp.nbeta, -1, max(gp.xepol))
-
+    gh.sanitize_vector(params, gp.nbeta, -1, max(gp.xepol), gp.debug)
     s0 = np.log(r0/np.exp(params[3])) # r_s=params[3] is given in log
     a0 = params[0]
     a1 = params[1]

@@ -8,7 +8,7 @@
 import sys, traceback, ipdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
-from scipy.integrate import quad, romberg
+from scipy.integrate import quad, romberg, simps
 from pylab import *
 ion()
 import time
@@ -29,41 +29,55 @@ def LOG(level, message, var=''):
 # @param var variable (not mandatory)
 
 
-def sanitize_vector(vec, length, mini, maxi):
+def sanitize_vector(vec, length, mini, maxi, debug):
     if len(vec) != length:
         LOG(1, 'vec has wrong length')
-        ipdb.set_trace()
-        #raise Exception('vec has wrong length', len(vec))
+        if debug:
+            ipdb.set_trace()
+        else:
+            raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
-        ipdb.set_trace()
-        #raise Exception('vec has too small value', min(vec))
+        if debug:
+            ipdb.set_trace()
+        else:
+            raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
-        ipdb.set_trace()
-        #raise Exception('vec has too high value', max(vec))
+        if debug:
+            ipdb.set_trace()
+        else:
+            raise Exception('vec has too high value', max(vec))
     return
-## \fn sanitize_vector(vec, length, mini, maxi)
+## \fn sanitize_vector(vec, length, mini, maxi, debug)
 # sanitize input (vectors)
 # @param vec vector
 # @param length int
 # @param mini minimum allowed value
 # @param maxi maximum allowed value
+# @param debug bool
 
 
-def sanitize_scalar(var, mini, maxi):
+def sanitize_scalar(var, mini, maxi, debug):
     if var < mini:
         LOG(1, 'var has too small value')
-        #raise Exception('var has too small value')
+        if debug:
+            ipdb.set_trace()
+        else:
+            raise Exception('var has too small value')
     if var > maxi:
         LOG(1, 'var has too high value')
-        #raise Exception('var has too high value')
+        if debug:
+            ipdb.set_trace()
+        else:
+            raise Exception('var has too high value')
     return
-## \fn sanitize_scalar(var, mini, maxi)
+## \fn sanitize_scalar(var, mini, maxi, debug)
 # sanitize input (scalar)
 # @param var scalar, int or float or double
 # @param mini minimal value allowed
 # @param maxi maximum value allowed
+# @param debug
 
 
 def myfill(x, N=3):
@@ -743,7 +757,15 @@ def Ntot(R0, Sigma, gp):
     xint = R0
     yint = Sigma*R0
     Ntot = quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
-    return Ntot
+
+    # new integration routine with cos(theta) substitution
+    R0min = min(R0)#/gp.rinfty
+    theta = np.arccos(R0min/R0)
+    cth = np.cos(theta)
+    sth = np.sin(theta)
+    yint = Sigma*R0min**2/cth**4*sth
+    Ntot_sub = simps( yint, theta)
+    return Ntot_sub
 ## \fn Ntot(R0, Sigma, gp)
 # return total number of stars
 # @param R0 radial bins [pc]

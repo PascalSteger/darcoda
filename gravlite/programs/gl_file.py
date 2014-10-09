@@ -9,6 +9,7 @@
 import sys, ipdb
 import numpy as np
 
+import gl_units as gu
 import gl_analytic as ga
 import gl_physics as phys
 from gl_data import Datafile
@@ -115,10 +116,10 @@ def get_rhohalfs(gp):
         # assuming isotropic Plummer profile:
         r_half = gp.dat.rhalf[0] # [pc] from overall rho*
         sigv = max(gp.dat.sig[0]) # [km/s] from overall rho*
-        M_half_walk = 5.*r_half*sigv**2/(2.*gp.G1) # [Munit] Walker Penarrubia 2011
+        M_half_walk = 5.*r_half*sigv**2/(2.*gu.G1__pcMsun_1km2s_2) # [Munit] Walker Penarrubia 2011
 
         # other estimate: Wolf+2010,
-        M_half_wolf = 4*r_half*sigv**2/gp.G1
+        M_half_wolf = 4*r_half*sigv**2/gu.G1__pcMsun_1km2s_2
         r_half *= 4/3.
 
         # density at half-light radius of baryons

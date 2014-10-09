@@ -53,7 +53,7 @@ def map_tiltstar(pa, gp):
 
 
 def map_nr(params, prof, pop, gp):
-    gh.sanitize_vector(params, gp.nrho, 0, 1)
+    gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
 
     # get offset and n(r) profiles, calculate rho
@@ -70,7 +70,7 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[pop]
         width = gp.nuspread
         rlimnr = gp.rlimnr_nu
-        maxrhoslope = gp.maxrhoslope_nu
+        maxrhoslope = gp.maxnuslope
         nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:

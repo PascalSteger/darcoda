@@ -14,8 +14,7 @@
 
 import numpy as np
 import ipdb
-from scipy.integrate import simps
-from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
+from scipy.integrate import cumtrapz, romberg, simps, quad
 from scipy.interpolate import splrep, splev, splint
 from pylab import *
 ion()
@@ -129,7 +128,7 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     #gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
-    #                   max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)))
+    #                   max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)), gp.debug)
     xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
     r0nu = gp.xfine
 
@@ -161,7 +160,7 @@ def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
-                       max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)))
+                       max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)), gp.debug)
     bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
     cth = np.cos(theta)
@@ -170,7 +169,8 @@ def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
     Sig = np.zeros(len(Rproj))
     for i in range(len(Rproj)):
         rq = Rproj[i]/cth
-        rhoq = np.interp(rq, Rproj, rhonu, left=0, right=0)#rhonu[-1]/1e10) # best for hern
+        rhoq = np.interp(rq, Rproj, rhonu, left=0, right=0)
+        #right=rhonu[-1]/1e10) # best for hern
         #rhoq = phys.rho(rq, rhopar, pop, gp)
         Sig[i] = 2.*Rproj[i]*simps(rhoq/cth2, theta)
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')

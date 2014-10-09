@@ -285,14 +285,14 @@ def get_nbeta(basename):
 # @return integer number of beta* parameters
 
 
-def run():
-    action = 'k'
-    investigate = get_investigate()
-    case = get_case(investigate)
+def run(investigate="", case=-1, latest=False):
+    if investigate == "":
+        investigate = get_investigate()
+    if case == -1:
+        case = get_case(investigate)
 
     host_name = socket.gethostname()
     user_name = getpass.getuser()
-
     if 'pstgnt332' in host_name:
         basepath = '/home/psteger/sci/darcoda/gravlite/'
     elif 'darkside' in host_name:
@@ -301,28 +301,31 @@ def run():
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
         basebath = '/home/sofia/blah/darcoda/gravlite/'
-
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
-    # import import_path as ip
-    # ip.import_path(basedir+'/programs/gl_params.py')
-    while(action == 'k'):
-        fdl = list_files(basedir)
-        sel = get_run(len(fdl))
-        action = get_action()
-        if action == 'k':
-            import shutil
-            shutil.rmtree(fdl[sel])
+    if latest:
+        fdl=list_files(basedir)
+        sel=-1
+    else:
+        # import import_path as ip
+        # ip.import_path(basedir+'/programs/gl_params.py')
+        action = 'k'
+        while(action == 'k'):
+            fdl = list_files(basedir)
+            sel = get_run(len(fdl))
+            action = get_action()
+            if action == 'k':
+                import shutil
+                shutil.rmtree(fdl[sel])
 
-    #prof = get_prof()
     basename = fdl[sel] # full directory path, without '/'
     timestamp = basename.split('/')[-1] # extract last bit
-    #if prof == 'rho' or prof=='nr':
-    #    return timestamp, basename+'/', prof #, 0
-    # pop  = get_pop()
     return timestamp, basename+'/'#, prof #, pop
-## \fn run()
+## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one
+# @param investigate string of investigation case, hern, gaia, walk, discmock
+# @param case int for case
+# @param latest boolean if looking at latest only
 # @return basename, prof (string)
 
 if __name__ == '__main__':

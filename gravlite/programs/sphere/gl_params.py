@@ -3,7 +3,6 @@
 ##
 # @file
 # all parameters for the gravlite MCMC, gaia investigation
-
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
@@ -33,14 +32,12 @@ class Params():
                                   #         challenge, 1 pop only
                                   # 'obs': real data from Fornax dwarf galaxy
         sanitize_investigate(self.investigate)
-        self.case = 3 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+        self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
         if self.investigate == 'hern':
             self.pops = 1
         self.ntracer = [1e6] # number of tracer stars pop1 (Hernquist case), pop2, ...
-
-
 
         # data options
         # ------------------------------------------------------------
@@ -61,10 +58,17 @@ class Params():
         self.maxR       = 5.        # [Xscale], max range in radial bins
 
 
+        # debug options
+        # ----------------------------------------------------------------------
+        self.debug      = True  # debug sanitize messages
+        self.checksig   = False  # check sigma calculation routine with 'walk'
+        self.stopstep   = 1     # stop after step number ..., enter debugger
 
-        ########## MultiNest options
+
+        # MultiNest options
         # ----------------------------------------------------------------------
         self.chi2_Sig_converged = False # set to False to first converge on Sig
+        if self.checksig: self.chi2_Sig_converged = True
         self.chi2_switch = 10.          # if 10chi^2>chi2_switch, switch sig calc on
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
@@ -96,7 +100,7 @@ class Params():
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
-        self.nlive = 2*self.ndim
+        self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
 
@@ -104,21 +108,21 @@ class Params():
         # ----------------------------------------------------------------------
         self.rhohalf = -1.        # prior density for rho at half-light radius of tracers
                                   # calculated in gl_data
-        self.log10rhospread = 6.       # with this spread, [dex] in log space
+        self.log10rhospread = 1.       # with this spread, [dex] in log space
         self.nuspread = 1.0       # analog for nu profile
         self.rlimnr = 1 # scale below which range of
                          # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
                          # calculated to values in [pc] in gl_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = 1 # same for nu, using same rhalf
-        self.maxrhoslope  = 5    # maximum slope (change if
+        self.maxrhoslope  = 4    # maximum slope (change if
                                  # monotonicity prior used) of rho
-        self.maxrhoslope_nu = 5
+        self.maxnuslope = 5
         # prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    on from min(gp.xipol) to max(gp.xipol)
-        self.nrtol  = 2*self.maxrhoslope
-        self.nrtol_nu = 2*self.maxrhoslope_nu # same for nu profile
+        self.nrtol  = self.maxrhoslope/2
+        self.nrtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta* in polynomial representation
         self.minbetastar = -0.99  # clipping for beta, default: -0.99
@@ -128,27 +132,6 @@ class Params():
         self.MtoLmax = 3.
         self.monotonic = False    # monotonicity-prior on nr_rho(x)
         self.monotonic_nu = False # monotonicity-prior on nr_nu(x)
-
-
-        ########## debug options
-        # ----------------------------------------------------------------------
-        self.checksig   = False  # check sigma calculation routine with 'walk'
-        self.stopstep   = 1     # stop after step number ..., enter debugger
-
-
-        # unitsXS
-        # ----------------------------------------------------------------------
-        self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
-        self.pc_in_m  = 3.08567758e16              # [m]
-        self.msun= 1.981e30                   # [kg]
-        self.km_in_m  = 1000.                      # [m]
-        self.kpc = 1000.                      # [pc]
-        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
-        # [pc msun^-1 (km/s)^2]
-        if self.investigate == 'hern':
-            self.G1 = 1.            # as defined by Justin, so we can rescale model
-            self.ana        = 1.    # scale radius of Hernquist profile in [pc]
-            self.anM        = 1.    # total mass of Hernquist profile in [Msun]
 
 
         ########## filesystem-related

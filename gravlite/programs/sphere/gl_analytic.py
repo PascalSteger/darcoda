@@ -9,6 +9,8 @@
 
 import numpy as np
 import ipdb
+
+import gl_units as gu
 import gl_project as glp
 import gl_helper as gh
 
@@ -176,7 +178,7 @@ def M_gaia(rad, gp):
 
 def rhotot_gaia(rad, gp):
     rhodm, rhostar1 = rho_gaia(rad, gp)
-    return rhodm+rhostar1
+    return rhodm
 ## \fn rhotot_gaia(rad, gp)
 # return total mass density for Gaia challenge models
 # @param rad radii in [pc]
@@ -463,7 +465,7 @@ def Mabc_analytic(r):
     # read in rho0, alpha, beta, gamma
     alpha,beta,gamma,rho0,r_DM = read_abc()
 
-    return -Phi(r,alpha,beta,gamma,rho0)*r/gp.G1    # [Munit]
+    return -Phi(r,alpha,beta,gamma,rho0)*r/gu.G1__pcMsun_1km2s_2    # [Munit]
 ## \fn Mabc_analytic(r)
 # calculate enclosed mass
 
@@ -480,7 +482,7 @@ def PhiBeta(r,beta,C):
 def MBetaAnalytic(r):
     alpha,beta,gamma,rho0,r_DM = read_abc()
     r /= r_DM
-    return -PhiBeta(r,beta,rho0)*r/gp.G1 # [Munit]
+    return -PhiBeta(r,beta,rho0)*r/gu.G1__pcMsun_1km2s_2 # [Munit]
 ## \fn MBetaAnalytic(r)
 # MBetaAnalytic
 # @param r in [pc]
@@ -640,8 +642,9 @@ def Sigma(r0, gp):
 
 def sigr2_hern(r0, gp):
     s = np.array(r0)/gp.ana          # [pc/1000pc]
-    return gp.G1*gp.anM/gp.ana*s*(1+s)**3*np.log(1.+1./s)-\
-           gp.G1*gp.anM/(12.*gp.ana)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
+    G1 = 1
+    return G1*gp.anM/gp.ana*s*(1+s)**3*np.log(1.+1./s)-\
+           G1*gp.anM/(12.*gp.ana)*s/(s+1)*(25.+52.*s+42.*s**2+12.*s**3) # [(km/s)^2]
 ## \fn sigr2_hern(r0, gp)
 # sig_r^2, equation 10 of Hernquist 1990
 # @param r0 radius in [pc]
@@ -697,7 +700,8 @@ def Sig_sig_los_2_hern(r0, gp):
         gh.LOG(1, 'wrong investigation')
         ipdb.set_trace()
     s = r0/gp.ana                            # [1]
-    return gp.G1*gp.anM**2/(12.*np.pi*gp.ana**3)*(1./(2.*(1.-s**2)**3)\
+    G1 = 1
+    return G1*gp.anM**2/(12.*np.pi*gp.ana**3)*(1./(2.*(1.-s**2)**3)\
                                           *(-3.*s**2*X(s)\
                                           *(8.*s**6-28.*s**4+35.*s**2-20.)\
                                           -24.*s**6+68.*s**4-65.*s**2+6.)\

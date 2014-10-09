@@ -96,7 +96,7 @@ def volume_circular_ring(Binmin, Binmax, gp):
 
 
 def get_com_file(n):
-    gh.sanitize_scalar(n, 0, 2)
+    gh.sanitize_scalar(n, 0, 2, True)
     return gp.files.dir+'centeredpos_' + str(n) + '.txt'
 ## \fn get_com_file(n)
 # get filename of COM file

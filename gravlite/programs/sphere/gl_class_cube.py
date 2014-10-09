@@ -19,7 +19,7 @@ import gl_helper as gh
 
 
 def map_nr(params, prof, pop, gp):
-    gh.sanitize_vector(params, gp.nrho, 0, 1)
+    gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
 
     # get offset and n(r) profiles, calculate rho
@@ -36,7 +36,7 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[pop]
         width = gp.nuspread
         rlimnr = gp.rlimnr_nu
-        maxrhoslope = gp.maxrhoslope_nu
+        maxrhoslope = gp.maxnuslope
         nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
@@ -111,7 +111,7 @@ def map_nr(params, prof, pop, gp):
 
 
 def map_betastar_poly(params, gp):
-    gh.sanitize_vector(params, gp.nbeta, 0, 1)
+    gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
     off_beta = 0
     # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
@@ -138,7 +138,7 @@ def map_betastar_poly(params, gp):
 
 
 def map_betastar_sigmoid(params, gp):
-    gh.sanitize_vector(params, gp.nbeta, 0, 1)
+    gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
     # s0 = np.log(r0/r0turn)
     # kappa = (a0-a1)/(betastar(r_s) - a1)-1
     # beta = (a0-a1)/(1+kappa*exp(alpha*s0))
@@ -161,7 +161,7 @@ def map_betastar_sigmoid(params, gp):
 
 
 def map_betastar_j(params, gp):
-    gh.sanitize_vector(params, 4, 0, 1)
+    gh.sanitize_vector(params, 4, 0, 1, gp.debug)
     # betastar = exp(-(r/r0)^n)*(a0-a1)+a1
     a0 = params[0]*1.98-1 # a_0, betastar(r=0), in between -0.99 and +0.99
     a1 = params[1]*1.98-1 # a_1, betastar(r->infty), same range
@@ -176,7 +176,7 @@ def map_betastar_j(params, gp):
 
 
 def map_MtoL(param, gp):
-    gh.sanitize_scalar(param, 0, 1)
+    gh.sanitize_scalar(param, 0, 1, gp.debug)
     scale = gp.MtoLmax - gp.MtoLmin
     MtoL = param*scale+gp.MtoLmin
     return MtoL

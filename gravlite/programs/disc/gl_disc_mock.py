@@ -12,6 +12,7 @@ import numpy.random as npr
 import ipdb
 from scipy.integrate import simps,trapz
 
+import gl_units as gu
 import gl_helper as gh
 
 
@@ -147,7 +148,7 @@ def disc_mock(gp):
     maxr          = max(gp.dat.rbin)
     gp.xepol      = np.hstack([gp.dat.rbin, 2*maxr, 4*maxr, 8*maxr])
     gp.dat.binmax = binmax0
-    gp.dat.Mrdat   = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gp.G1)
+    gp.dat.Mrdat   = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gu.G1__pcMsun_1km2s_2)
     gp.dat.Mrerr   = gp.dat.Mrdat*nu_dat_err_bin/nu_dat_bin
 
     gp.dat.nu.append(nu_dat_bin0)        # [Msun/pc^3], normalized to 1 at center
