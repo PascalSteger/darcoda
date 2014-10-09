@@ -34,7 +34,7 @@ def p_plummer(R, rs):
 # @param rs scale radius, [pc]
 
 
-def p_gauss(X, Xmean, sigmaX, errorX):
+def lp_gauss(X, Xmean, sigmaX, errorX):
     prefactor = 1./np.sqrt(2.*np.pi*(sigmaX**2+errorX**2))
     exponent = -0.5*(X-Xmean)**2/(sigmaX**2+errorX**2)
     logev_gauss = np.log(prefactor)+exponent
@@ -78,11 +78,9 @@ def lpR(Rk, pop):
 # @param pop int for population (0: MW, 1: 1, ...)
 
 
-def lpV(Vk, k, pop):
+def lpV(Vk, Vm, sigV, epsV):
     gh.LOG(3,'pV')
-    # mean LOS velocity
-    Vmean = calc_Vmean(alpha_s[k], delta_s[k])
-    log_prob_V = p_gauss(Vk, Vmean, sigmaV[pop], Ve0[k])
+    log_prob_V = p_gauss(Vk, Vm, sigmaV, Ve0)
     return log_prob_V
 ## \fn lpV(Vk, pop)
 # eq. 9 Walker 2011, probability distribution of LOS velocities
@@ -131,7 +129,6 @@ def pjoint(R, k2, V, Verror, W, Werror, PM, k, pop):
 # @param pop int for population
 
 
-
 def myprior(cube, ndim, nparams):
     # convert to physical space
     off = 0
@@ -165,7 +162,6 @@ def myprior(cube, ndim, nparams):
 # stored with actual parameters
 
 
-
 def w(Rk):
     gh.sanitize_vector(Rk, Nsample, 0, 1e30, True)
     w_ipol = np.zeros(Nsample)
@@ -191,10 +187,10 @@ def int_wp(Rhalf):
 
 
 gh.LOG(2, 'calculate integrals in denominator')
-iiinteg = []
-integ.append(1)             # for pop 0, MW, want to divide by 1
-integ.append(int_wp(Rhalf_i[1]))     # for pop 1
-integ.append(int_wp(Rhalf_i[2]))   # for pop 2
+glob_intw = []
+glob_intw.append(1)             # for pop 0, MW, want to divide by 1
+glob_intw.append(int_wp(Rhalf_i[1]))     # for pop 1
+glob_intw.append(int_wp(Rhalf_i[2]))   # for pop 2
 
 def calc_Vmean(als, des):
     gh.sanitize_vector(als, Nsample, -1e6, 1e6)
@@ -267,25 +263,26 @@ def myloglike(cube, ndim, nparams):
         ipdb.set_trace()
 
 
-    p_R_1 = TODO
+    lpR1 = lpR(R0, Rhalf_i[1])
+    lpR2 = lpR(R0, Rhalf_i[2])
+    lpV1 = lp_gauss(V0, Vm, sigmaV[1], eV)
+    lpV2 = lp_gauss(V0, Vm, sigmaV[2], eV)
+    lpW1 = lp_gauss(W0, Wmean[1], sigmaW[1], eW)
+    lpW2 = lp_gauss(W0, Wmean[2], sigmaW[2], eW)
 
     gh.LOG(2,'starting logev evaluation')
     logev = 0.0
 
-        single0 = ftot[pop]*glob_w
-        single2 = pjoint(R0, Rhalf_i[pop]*np.ones(len(v0)), v0, Ve0,\
-                             W0, We0, PM0, k, pop)
+    term_MW = ftot[0]*glob_phat_r*glob_phat_v*glob_phat_w
+    term_pop1 = ftot[1]*glob_w*np.exp(lpR1+lpV1+lpW1)/glob_intw[1]
+    term_pop2 = ftot[2]*glob_w*np.exp(lpR2+lpV2+lpW2)/glob_intw[2]
 
+    ipdb.set_trace()
+    logterm14sum = np.log(term_MW+term_pop1+term_pop2)
+    logev = np.sum(logterm14sum)
+    gh.sanitize_scalar(logev, -1e30, 1e6, True)
 
-        if np.isnan(single):
-            ipdb.set_trace()
-        if single < -1e30:
-            ipdb.set_trace()
-        term += single
-
-
-        logev += np.log(term)
-        gh.LOG(1,' found log(likelihood) = ',logev)
+    gh.LOG(1,' found log(likelihood) = ',logev)
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
