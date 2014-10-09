@@ -43,6 +43,7 @@ class Params():
         self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         self.checksig = False # debug sig calculation?
+        self.debug = False # stop at wrong sanitazion?
 
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
