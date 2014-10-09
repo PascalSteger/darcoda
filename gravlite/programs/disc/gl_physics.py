@@ -254,11 +254,11 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
     nutmp = rho(zp, nupar, pop, gp)
     nu_z = nutmp/np.max(nutmp)  # normalized to [1]
     gh.checkpositive(nu_z)
-    rhotmp = rho(zp, rhopar, 0, gp) # rho in linearly spaced bins
-    gh.checkpositive(rhotmp)
+    rhodmtmp = rho(zp, rhopar, 0, gp) # rho_DM in linearly spaced bins
+    gh.checkpositive(rhodmtmp)
     rhostartmp = rho(zp, rhostarpar, 0, gp)
     gh.checkpositive(rhostartmp)
-    rhotmp += MtoL*rhostartmp # add baryons
+    rhotmp = rhodmtmp+MtoL*rhostartmp # add baryons
     kz_z = kz(zp, rhotmp, gp) # [(km/s)^2/pc]
 
     # add tilt correction [if required]:
@@ -373,7 +373,7 @@ def nu_SUM_Sig(binmin, binmax, nudat):
     if len(binmin) != len(nudat):
         raise Exception('incompatible sizes of binmin and nudat')
     counts = nudat*(binmax-binmin)
-    Sig = np.cumsum(counts)/binmax
+    Sig = np.cumsum(counts)
     return Sig
 ## \fn nu_SUM_Sig(binmin, binmax, nudat)
 # sum up nu to get surface density Sig

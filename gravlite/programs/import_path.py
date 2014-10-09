@@ -2,6 +2,7 @@
 
 ## @file
 # import file with full path specification, only once, setting back sys.path
+# you need to specify PYTHONPATH to include the gravlite/programs
 
 import os, sys, ipdb
 from imp import reload

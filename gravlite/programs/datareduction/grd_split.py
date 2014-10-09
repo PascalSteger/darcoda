@@ -3,12 +3,15 @@
 ## @file
 # split populations in observed dwarf galaxies
 # based on metallicity, Mg index, v_LOS, position
+# convention: pop = 0 is for MW population
+#                   1, 2 is for first, second component
 
 # (c) 2013 Pascal S.P. Steger
 
 import sys, ipdb
 import numpy as np
 
+from scipy.integrate import simps
 import pymultinest
 
 import gr_params as gpr
@@ -20,9 +23,10 @@ import gl_units as gu
 gh.DEBUGLEVEL = 1
 DEBUG = True
 
+
 def p_plummer(R, rs):
     logev_plummer = np.log(2.*R/rs**2/(1.+R**2/rs**2)**2)
-    gh.sanitize_scalar(logev_plummer, -1e30, 1e6, DEBUG)
+    gh.sanitize_vector(logev_plummer, -1, -1e30, 1e6, DEBUG)
     return logev_plummer
 ## \fn p_plummer(R, rh)
 # eq. 8 Walker 2011, likelihood that a tracer star is member of Plummer sphere
@@ -78,7 +82,7 @@ def lpV(Vk, k, pop):
     gh.LOG(3,'pV')
     # mean LOS velocity
     Vmean = calc_Vmean(alpha_s[k], delta_s[k])
-    log_prob_V = p_gauss(Vk, Vmean, sigmaV[pop], ve0[k])
+    log_prob_V = p_gauss(Vk, Vmean, sigmaV[pop], Ve0[k])
     return log_prob_V
 ## \fn lpV(Vk, pop)
 # eq. 9 Walker 2011, probability distribution of LOS velocities
@@ -127,40 +131,6 @@ def pjoint(R, k2, V, Verror, W, Werror, PM, k, pop):
 # @param pop int for population
 
 
-def calc_Vmean(als, des):
-    mu_alpha__as_per_century = mu_alpha / gu.arcsec__mas
-    mu_alpha__as_per_s = mu_alpha__as_per_century / gu.century__s
-    mu_alpha__rad_per_s = mu_alpha__as_per_s / gu.rad__arcsec
-    mu_delta__as_per_century = mu_delta / gu.arcsec__mas
-    mu_delta__as_per_s = mu_delta__as_per_century / gu.century__s
-    mu_delta__rad_per_s = mu_delta__as_per_s / gu.rad__arcsec
-    DL__km = DL * gu.pc__m / gu.km__m # [km]
-
-    term1 = np.cos(des)*np.sin(als)*(Vd*np.cos(dd)*np.sin(ad)+\
-                           DL__km*mu_alpha__rad_per_s*np.cos(dd)*np.cos(ad)-\
-                           DL__km*mu_delta__rad_per_s*np.sin(dd)*np.sin(ad))
-    term2 = np.cos(des)*np.cos(als)*(Vd*np.cos(dd)*np.cos(ad)\
-                           -DL__km*mu_delta__rad_per_s*np.sin(dd)*np.cos(ad)\
-                           -DL__km*mu_alpha__rad_per_s*np.cos(dd)*np.sin(ad))
-    term3 = np.sin(des)*(Vd*np.sin(dd)+DL__km*mu_delta__rad_per_s*np.cos(dd))
-    Vm = term1 + term2 + term3
-
-    gh.LOG(3,' Vmean =',Vm)
-    gh.sanitize_scalar(Vm, -1000, 1000, DEBUG)
-    return Vm
-## \fn calc_Vmean(als, des)
-# eq. 10 Walker 2011, dwarf spheroidal systemic HRF, [km/s]
-# @param als right ascension of star in [arcsec]
-# @param des declination of star in [arcsec]
-
-
-def w(Rk):
-    w_ipol = wpt[np.where(abs(Rk-Rpt) == min(abs(Rk-Rpt)))]
-    return w_ipol
-## \fn w(Rk)
-# return selection function as function of radius
-# @param Rk radius [pc]
-
 
 def myprior(cube, ndim, nparams):
     # convert to physical space
@@ -195,14 +165,85 @@ def myprior(cube, ndim, nparams):
 # stored with actual parameters
 
 
+
+def w(Rk):
+    gh.sanitize_vector(Rk, Nsample, 0, 1e30, True)
+    w_ipol = np.zeros(Nsample)
+    for k in range(Nsample):
+        w_ipol[k] = wpt[np.where(abs(Rk[k]-Rpt) == min(abs(Rk[k]-Rpt)))]
+    return w_ipol
+## \fn w(Rk)
+# return selection function as function of radius
+# take vector as input
+# @param Rk radius [pc]
+
+glob_w = w_pt(R0)
+
+
+def int_wp(Rhalf):
+    integral = simps(w(R0)*p_plummer(R0, Rhalf), R0)
+    gh.sanitize_scalar(integral, 0, 1e30, True)
+    return integral
+## \fn int_wp(pop, Rhalf)
+# calculate denominator integral for population pop=1,2 in eq. 14 Walker 2011
+# @param Rhalf half-light radius for Plummer spheres of pop 1 and pop 2
+# @param gp global parameters, for radii
+
+
+gh.LOG(2, 'calculate integrals in denominator')
+iiinteg = []
+integ.append(1)             # for pop 0, MW, want to divide by 1
+integ.append(int_wp(Rhalf_i[1]))     # for pop 1
+integ.append(int_wp(Rhalf_i[2]))   # for pop 2
+
+def calc_Vmean(als, des):
+    gh.sanitize_vector(als, Nsample, -1e6, 1e6)
+    gh.sanitize_vector(des, Nsample, -1e6, 1e6)
+    mu_alpha__ascentury_1 = mu_alpha / gu.arcsec__mas
+    mu_alpha__ass_1 = mu_alpha__ascentury_1 / gu.century__s
+    mu_alpha__rad_per_s = mu_alpha__ass_1 / gu.rad__arcsec
+    mu_delta__ascentury_1 = mu_delta / gu.arcsec__mas
+    mu_delta__ass_1 = mu_delta__ascentury_1 / gu.century__s
+    mu_delta__rad_per_s = mu_delta__ass_1 / gu.rad__arcsec
+    DL__km = DL * gu.pc__m / gu.km__m # [km]
+    term1 = np.cos(des)*np.sin(als)*(Vd*np.cos(dd)*np.sin(ad)+\
+                           DL__km*mu_alpha__rad_per_s*np.cos(dd)*np.cos(ad)-\
+                           DL__km*mu_delta__rad_per_s*np.sin(dd)*np.sin(ad))
+    term2 = np.cos(des)*np.cos(als)*(Vd*np.cos(dd)*np.cos(ad)\
+                           -DL__km*mu_delta__rad_per_s*np.sin(dd)*np.cos(ad)\
+                           -DL__km*mu_alpha__rad_per_s*np.cos(dd)*np.sin(ad))
+    term3 = np.sin(des)*(Vd*np.sin(dd)+DL__km*mu_delta__rad_per_s*np.cos(dd))
+    Vm = term1 + term2 + term3
+    gh.LOG(3,' Vmean =',Vm)
+    gh.sanitize_scalar(Vm, -1000, 1000, DEBUG)
+    return Vm
+## \fn calc_Vmean(als, des)
+# eq. 10 Walker 2011, dwarf spheroidal systemic HRF, [km/s]
+# @param als right ascension of star in [arcsec]
+# @param des declination of star in [arcsec]
+
+glob_Vm = calc_Vmean(alpha_s, delta_s)
+
+glob_sum_1_PM = np.sum(1-PM)
+glob_M_r = np.zeros((Nsample, Nsample)); glob_phat_r = np.zeros(Nsample)
+glob_M_v = np.zeros((Nsample, Nsample)); glob_phat_v = np.zeros(Nsample)
+glob_M_w = np.zeros((Nsample, Nsample)); glob_phat_w = np.zeros(Nsample)
+
+for i in range(Nsample):
+    prefac = (1-PM[i])/np.sqrt(2*np.pi)
+    glob_M_r[i,:] = prefac/k2*np.exp(-(R0[i]-R0)**2/(2*k2*k2))
+    glob_M_v[i,:] = prefac/epsv*np.exp(-(V0[i]-V0)**2/(2*Ve0*Ve0))
+    glob_M_w[i,:] = prefac/epsw*np.exp(-(W0[i]-W0)**2/(2*We0*We0))
+glob_phat_r = np.sum(glob_M_r, 0)/glob_sum_1_PM
+glob_phat_v = np.sum(glob_M_v, 0)/glob_sum_1_PM
+glob_phat_w = np.sum(glob_M_w, 0)/glob_sum_1_PM
+
 def myloglike(cube, ndim, nparams):
-    ev = 0.
     fmem = cube[0]
     fsub = cube[1]
     f1 = fmem*fsub
     f2 = fmem*(1-fsub)
     ftot = [1-f1-f2, f1, f2]
-    # TODO: calculate log likelihood of assigning stars to each population
     r_half = cube[2]
 
     global mu_alpha, mu_delta
@@ -225,22 +266,24 @@ def myloglike(cube, ndim, nparams):
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         ipdb.set_trace()
 
+
+    p_R_1 = TODO
+
     gh.LOG(2,'starting logev evaluation')
     logev = 0.0
-    for k in range(Nsample):
-        term = 0.0
-        for pop in range(gp.pops+1):
-            single0 = ftot[pop]
-            single1 = w(R0[k])
-            single2 = pjoint(R0, Rhalf_i[pop]*np.ones(len(v0)), v0, ve0,\
+
+        single0 = ftot[pop]*glob_w
+        single2 = pjoint(R0, Rhalf_i[pop]*np.ones(len(v0)), v0, Ve0,\
                              W0, We0, PM0, k, pop)
-            single = single0 * single1 * single2
-            if np.isnan(single):
-                ipdb.set_trace()
-            if single < -1e30:
-                ipdb.set_trace()
-            term += single
-            # TODO divide by integral
+
+
+        if np.isnan(single):
+            ipdb.set_trace()
+        if single < -1e30:
+            ipdb.set_trace()
+        term += single
+
+
         logev += np.log(term)
         gh.LOG(1,' found log(likelihood) = ',logev)
     return logev
@@ -252,7 +295,7 @@ def myloglike(cube, ndim, nparams):
 
 
 def run(gp):
-    global Nsample, R0, wpt, Rpt, v0, ve0, W0, We0, PM0
+    global Nsample, wpt, Rpt, V0, Ve0, W0, We0, PM0
     global Vmean, alpha_s, delta_s
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
@@ -297,7 +340,8 @@ def run(gp):
     dd = np.sum(delta_s * PM)/np.sum(PM) # [arcsec]
 
 
-    # determine distance to dwarf (TODO: reference)
+    # determine distance to dwarf
+### TODO reference
     global DL
     DL = {0: lambda x: x * (138),#+/- 8 for Fornax
           1: lambda x: x * (101),#+/- 5 for Carina
@@ -317,8 +361,10 @@ def run(gp):
     com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, VHel, PM) # [pc], [km/s]
 
     R0 = np.sqrt(x0**2+y0**2)
-    v0 = 1.*np.copy(VHel) # [km/s] not necessary to remove center LOS velocity
-    ve0 = 1.*e_VHel # velocity error
+    global R0, Rfine
+    Rfine = np.logspace(np.log10(min(R0)), np.log10(max(R0)), 100)
+    V0 = 1.*np.copy(VHel) # [km/s] not necessary to remove center LOS velocity
+    Ve0 = 1.*e_VHel # velocity error
 
     Nsample = len(PM)
 
@@ -344,7 +390,8 @@ def run(gp):
                     importance_nested_sampling = True, # INS enabled
                     multimodal = False,            # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
-                    n_live_points = 3, # TODO gp.nlive,
+                    n_live_points = 3,
+                    ### TODO gp.nlive,
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               #algorithm working
                                               #indefinitely
@@ -354,7 +401,8 @@ def run(gp):
                     n_iter_before_update = 1, # output after this many iterations
                     null_log_evidence = 1., # separate modes if
                                             #logevidence > this param.
-                    max_modes = 3, # TODO gp.nlive,   # preallocation of modes:
+                    max_modes = 3,
+                    ### TODO gp.nlive,   # preallocation of modes:
                                             #max. = number of live
                                             #points
                     mode_tolerance = -1.e60,   # mode tolerance in the
@@ -370,7 +418,8 @@ def run(gp):
                     log_zero = -999999,      # points with log likelihood
                                           #< log_zero will be
                                           #neglected
-                    max_iter = 1,         # TODO set to 0 for never
+                    max_iter = 1,
+                    ### TODO set to 0 for never
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
@@ -386,4 +435,4 @@ if __name__=='__main__':
 
 # works with investigation = 'obs', pops = 2, metalpop = True
 # profile with python3 -m cProfile grd_split.py
-# TODO output:
+### TODO output:

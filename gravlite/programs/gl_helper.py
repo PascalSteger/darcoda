@@ -30,7 +30,7 @@ def LOG(level, message, var=''):
 
 
 def sanitize_vector(vec, length, mini, maxi, debug):
-    if len(vec) != length:
+    if length > -1 and len(vec) != length:
         LOG(1, 'vec has wrong length')
         if debug:
             ipdb.set_trace()
