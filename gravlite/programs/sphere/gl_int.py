@@ -400,7 +400,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
                             Mrfine, betafine,\
                             sigr2nu_model, gp)
 
-    gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30)
+    gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30, gp.debug)
     return siglos2_out, kapl4s_out, zetaa, zetab
 ## \fn ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
 # calculate integral for sig_los^2 * surface density,

@@ -128,7 +128,7 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     #gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
-    #                   max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)))
+    #                   max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)), gp.debug)
     xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
     r0nu = gp.xfine
 
@@ -160,7 +160,7 @@ def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     gh.sanitize_vector(rhopar, gp.nrho, -gp.nrtol, \
-                       max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)))
+                       max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)), gp.debug)
     bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
     cth = np.cos(theta)

@@ -77,9 +77,9 @@ def geom_loglike(cube, ndim, nparams, gp):
                 gh.LOG(2, 'beta error')
                 tmp_profs.chi2 = gh.err(1., gp)
                 return tmp_profs
-            gh.sanitize_vector(tmp_beta, len(tmp_profs.x0), -200, 1)
+            gh.sanitize_vector(tmp_beta, len(tmp_profs.x0), -200, 1, gp.debug)
             tmp_profs.set_prof('beta', tmp_beta, pop, gp)
-            gh.sanitize_vector(tmp_betastar, len(tmp_profs.x0), -1, 1)
+            gh.sanitize_vector(tmp_betastar, len(tmp_profs.x0), -1, 1, gp.debug)
             tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
 
             #try:

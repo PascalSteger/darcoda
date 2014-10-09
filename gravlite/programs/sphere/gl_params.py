@@ -60,6 +60,7 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
+        self.debug      = True  # debug sanitize messages
         self.checksig   = False  # check sigma calculation routine with 'walk'
         self.stopstep   = 1     # stop after step number ..., enter debugger
 

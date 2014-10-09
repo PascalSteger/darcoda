@@ -18,10 +18,11 @@ import BiWeight as BW
 import gl_units as gu
 
 gh.DEBUGLEVEL = 1
+DEBUG = True
 
 def p_plummer(R, rs):
     logev_plummer = np.log(2.*R/rs**2/(1.+R**2/rs**2)**2)
-    gh.sanitize_scalar(logev_plummer, -1e30, 1e6)
+    gh.sanitize_scalar(logev_plummer, -1e30, 1e6, DEBUG)
     return logev_plummer
 ## \fn p_plummer(R, rh)
 # eq. 8 Walker 2011, likelihood that a tracer star is member of Plummer sphere
@@ -35,7 +36,7 @@ def p_gauss(X, Xmean, sigmaX, errorX):
     logev_gauss = np.log(prefactor)+exponent
     gh.LOG(3,'prefactor = ',prefactor)
     gh.LOG(3,'exponent = ',exponent)
-    gh.sanitize_scalar(logev_gauss, -1e30, 1e6)
+    gh.sanitize_scalar(logev_gauss, -1e30, 1e6, DEBUG)
     return logev_gauss
 ## \fn p_gauss(X, Xmean, sigmaX, errorX)
 # eq. 9, 11 Walker 2011, log likelihood based on generic Gauss function
@@ -52,7 +53,7 @@ def lp_MW(X, Xi, Xierror, PMi):
         nom += (1.-PMi[k])/np.sqrt(2.*np.pi*Xierror[k]**2)*np.exp(-0.5*(Xi[k]-X)**2/Xierror[k]**2)
         denom += (1.-PMi[k])
     prob_MW =  nom/denom
-    gh.sanitize_scalar(np.log(prob_MW), -1e30, 1e6)
+    gh.sanitize_scalar(np.log(prob_MW), -1e30, 1e6, DEBUG)
     return np.log(prob_MW)
 ## \fn lp_MW(X, Xi, Xierror, PMi, error)
 # eq. 12 generic Walker 2011, likelihood that star is MW foreground
@@ -111,7 +112,7 @@ def pjoint(R, k2, V, Verror, W, Werror, PM, k, pop):
         lpv = lpV(V[k], k, pop)
         lpw = lpW(W[k], k, pop)
         log_p_joint = lpr+lpv+lpw
-    gh.sanitize_scalar(log_p_joint, -1e30, 0)
+    gh.sanitize_scalar(log_p_joint, -1e30, 0, DEBUG)
     return np.exp(log_p_joint)
 ## \fn pjoint(R, k2, V, W, PM, k, pop)
 # eq. 13 Walker 2011, joint probability distributions
@@ -145,7 +146,7 @@ def calc_Vmean(als, des):
     Vm = term1 + term2 + term3
 
     gh.LOG(3,' Vmean =',Vm)
-    gh.sanitize_scalar(Vm, -1000, 1000)
+    gh.sanitize_scalar(Vm, -1000, 1000, DEBUG)
     return Vm
 ## \fn calc_Vmean(als, des)
 # eq. 10 Walker 2011, dwarf spheroidal systemic HRF, [km/s]

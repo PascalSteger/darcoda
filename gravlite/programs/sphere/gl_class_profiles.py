@@ -36,7 +36,7 @@ class Profiles:
 
 
     def set_prof(self, prof, vec, pop, gp):
-        gh.sanitize_vector(vec, len(self.x0), -200, 1e30)
+        gh.sanitize_vector(vec, len(self.x0), -200, 1e30, gp.debug)
         if prof == 'rho':
             self.rho = vec
         elif prof == 'nr':
