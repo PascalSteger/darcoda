@@ -45,7 +45,7 @@ def set_geometry(geom, machine):
     elif machine == 'lisa_HS_login':
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/programs/'
     elif machine == 'lisa_SS_login':
-        basebath = '/home/sofia/????/darcoda/gravlite/programs/'
+        basepath = '/home/sofia/darcoda/gravlite/programs/'
     elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
         scratch_space = os.getenv("TMPDIR")
         basepath = scratch_space + '/darcoda/gravlite/programs/'
