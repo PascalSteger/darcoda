@@ -171,8 +171,6 @@ if __name__ == '__main__':
     pc.sort_profiles(gp)
 
     pc.write_all(basename, gp)
-
-
     pc.plot_profile(basename, 'rho', 0, gp)
 
     if gp.investigate == 'obs':
@@ -181,7 +179,8 @@ if __name__ == '__main__':
         pc.plot_profile(basename, 'nrnu', 0, gp)
 
     pc.plot_profile(basename, 'nr', 0, gp)
-    pc.plot_profile(basename, 'M', 0, gp)
+    if gp.geom == 'sphere':
+        pc.plot_profile(basename, 'M', 0, gp)
 
     for pop in np.arange(1, gp.pops+1):
         pc.plot_profile(basename, 'betastar', pop, gp)

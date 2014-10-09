@@ -271,7 +271,8 @@ class ProfileCollection():
 
     def write_all(self, basename, gp):
         self.write_prof(basename, 'rho', 0, gp)
-        self.write_prof(basename, 'M', 0, gp)
+        if gp.geom == 'sphere':
+            self.write_prof(basename, 'M', 0, gp)
         self.write_prof(basename, 'Sig', 0, gp)
         self.write_prof(basename, 'nu', 0, gp)
         self.write_prof(basename, 'nrnu', 0, gp)
@@ -424,17 +425,17 @@ class ProfileCollection():
                     nuprof = nu1
                 elif pop == 1:
                     nuprof = nu2
-
-            Mprof = glp.rho_SUM_Mr(gp.xipol, nuprof)
-            Mmax = max(Mprof) # Mprof[-1]
-            ihalf = -1
-            for kk in range(len(Mprof)):
-                # half-light radius (3D) is where mass is more than half
-                # ihalf gives the index of where this happens
-                if Mprof[kk] >= Mmax/2 and ihalf <0:
-                    xx = (gp.xipol[kk-1]+gp.xipol[kk])/2
-                    ax.axvline(xx, color='green', lw=0.5, alpha=0.7)
-                    ihalf = kk
+            if gp.geom == 'sphere':
+                Mprof = glp.rho_SUM_Mr(gp.xipol, nuprof)
+                Mmaxi = max(Mprof) # Mprof[-1]
+                ihalf = -1
+                for kk in raniige(len(Mprof)):
+                    # half-light radius (3D) is where mass is more than half
+                    # ihalf gives the iindex of where this happens
+                    if Mprof[kk] >= Mmax/2 and ihalf <0:
+                        xx = (gp.xipol[kk-1]+gp.xipol[kk])/2
+                        ax.axvline(xx, color='green', lw=0.5, alpha=0.7)
+                        ihalf = kk
     ## \fn plot_Xscale_3D(ax, gp)
     # plot 3D half-light radii, based on median nu model
     # @param ax axis object
