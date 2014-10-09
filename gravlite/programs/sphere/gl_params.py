@@ -25,7 +25,7 @@ class Params():
     def __init__(self, timestamp = ''):
         # basic setup
         # -----------------------------------------------------------
-        self.investigate  = 'obs' # determine which data set to work on
+        self.investigate  = 'gaia' # determine which data set to work on
                                   # 'hern': check simple Hernquist prof. from simwiki
                                   # 'walk': check with full obs. cont. data from Walker
                                   # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -34,7 +34,7 @@ class Params():
         sanitize_investigate(self.investigate)
         self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                       # triax (1-4:core, 5-8:cusp)
-        self.pops = 2 # number of stellar tracer populations
+        self.pops = 1 # number of stellar tracer populations
         if self.investigate == 'hern':
             self.pops = 1
         self.ntracer = [1e6] # number of tracer stars pop1 (Hernquist case), pop2, ...
@@ -46,7 +46,7 @@ class Params():
         self.getnewpos  = True      # read in the positions and v_LOS again
         if self.getnewdata == False: self.getnewpos = False
         self.binning    = 'consttr' # linspace, logspace, consttr
-        self.metalpop   = True     # split metallicities with a separate MCMC
+        self.metalpop   = False     # split metallicities with a separate MCMC
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
@@ -60,7 +60,7 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
-        self.debug      = True  # debug sanitize messages
+        self.debug      = False  # debug sanitize messages
         self.checksig   = False  # check sigma calculation routine with 'walk'
         self.stopstep   = 1     # stop after step number ..., enter debugger
 

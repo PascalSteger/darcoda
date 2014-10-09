@@ -34,20 +34,20 @@ def sanitize_vector(vec, length, mini, maxi, debug):
         LOG(1, 'vec has wrong length')
         if debug:
             ipdb.set_trace()
-        else:
-            raise Exception('vec has wrong length', len(vec))
+        #else:
+        #    raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
         if debug:
             ipdb.set_trace()
-        else:
-            raise Exception('vec has too small value', min(vec))
+        #else:
+        #    raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
         if debug:
             ipdb.set_trace()
-        else:
-            raise Exception('vec has too high value', max(vec))
+        #else:
+        #    raise Exception('vec has too high value', max(vec))
     return
 ## \fn sanitize_vector(vec, length, mini, maxi, debug)
 # sanitize input (vectors)
@@ -63,14 +63,14 @@ def sanitize_scalar(var, mini, maxi, debug):
         LOG(1, 'var has too small value')
         if debug:
             ipdb.set_trace()
-        else:
-            raise Exception('var has too small value')
+        #else:
+        #    raise Exception('var has too small value')
     if var > maxi:
         LOG(1, 'var has too high value')
         if debug:
             ipdb.set_trace()
-        else:
-            raise Exception('var has too high value')
+        #else:
+        #    raise Exception('var has too high value')
     return
 ## \fn sanitize_scalar(var, mini, maxi, debug)
 # sanitize input (scalar)

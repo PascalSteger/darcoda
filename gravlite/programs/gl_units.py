@@ -1,5 +1,11 @@
 #!/usr/bin/env ipython3
 
+##
+# @file
+# unit definitions
+# unit1__unit2 gives unit1 in terms of unit2
+# naming convention: m^2/kg => m2kg_1
+
 import numpy as np
 
 day__hr = 24

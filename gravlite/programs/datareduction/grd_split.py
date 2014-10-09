@@ -24,13 +24,13 @@ gh.DEBUGLEVEL = 1
 DEBUG = True
 
 
-def p_plummer(R, rs):
-    logev_plummer = np.log(2.*R/rs**2/(1.+R**2/rs**2)**2)
+def lp_plummer(Rad, rs):
+    logev_plummer = np.log(2.*Rad/rs**2/(1.+Rad**2/rs**2)**2)
     gh.sanitize_vector(logev_plummer, -1, -1e30, 1e6, DEBUG)
     return logev_plummer
-## \fn p_plummer(R, rh)
+## \fn lp_plummer(Rad, rh)
 # eq. 8 Walker 2011, likelihood that a tracer star is member of Plummer sphere
-# @param R projected radius from center, [pc]
+# @param Rad projected radius from center, [pc]
 # @param rs scale radius, [pc]
 
 
@@ -40,7 +40,7 @@ def lp_gauss(X, Xmean, sigmaX, errorX):
     logev_gauss = np.log(prefactor)+exponent
     gh.LOG(3,'prefactor = ',prefactor)
     gh.LOG(3,'exponent = ',exponent)
-    gh.sanitize_scalar(logev_gauss, -1e30, 1e6, DEBUG)
+    gh.sanitize_vector(logev_gauss, Nsample, -1e30, 1e6, DEBUG)
     return logev_gauss
 ## \fn p_gauss(X, Xmean, sigmaX, errorX)
 # eq. 9, 11 Walker 2011, log likelihood based on generic Gauss function
@@ -66,16 +66,6 @@ def lp_MW(X, Xi, Xierror, PMi):
 # @param Xierror errors on these
 # @param PMi probability of membership
 # @param error observation error
-
-
-def lpR(Rk, pop):
-    gh.LOG(3,'pR')
-    log_prob_R = p_plummer(Rk, Rhalf_i[pop])
-    return log_prob_R
-## \fn lpR(Rk, pop)
-# eq. 8 Walker 2011, probability distribution of radii
-# @param Rk radius of stellar tracer k, [pc]
-# @param pop int for population (0: MW, 1: 1, ...)
 
 
 def lpV(Vk, Vm, sigV, epsV):
@@ -163,7 +153,7 @@ def myprior(cube, ndim, nparams):
 
 
 def w(Rk):
-    gh.sanitize_vector(Rk, Nsample, 0, 1e30, True)
+    gh.sanitize_vector(Rk, Nsample, 0, 1e30, DEBUG)
     w_ipol = np.zeros(Nsample)
     for k in range(Nsample):
         w_ipol[k] = wpt[np.where(abs(Rk[k]-Rpt) == min(abs(Rk[k]-Rpt)))]
@@ -173,12 +163,11 @@ def w(Rk):
 # take vector as input
 # @param Rk radius [pc]
 
-glob_w = w_pt(R0)
 
 
 def int_wp(Rhalf):
-    integral = simps(w(R0)*p_plummer(R0, Rhalf), R0)
-    gh.sanitize_scalar(integral, 0, 1e30, True)
+    integral = simps(glob_w*np.exp(lp_plummer(R0, Rhalf)), R0)
+    gh.sanitize_scalar(integral, 0, 1e30, DEBUG)
     return integral
 ## \fn int_wp(pop, Rhalf)
 # calculate denominator integral for population pop=1,2 in eq. 14 Walker 2011
@@ -186,15 +175,10 @@ def int_wp(Rhalf):
 # @param gp global parameters, for radii
 
 
-gh.LOG(2, 'calculate integrals in denominator')
-glob_intw = []
-glob_intw.append(1)             # for pop 0, MW, want to divide by 1
-glob_intw.append(int_wp(Rhalf_i[1]))     # for pop 1
-glob_intw.append(int_wp(Rhalf_i[2]))   # for pop 2
 
 def calc_Vmean(als, des):
-    gh.sanitize_vector(als, Nsample, -1e6, 1e6)
-    gh.sanitize_vector(des, Nsample, -1e6, 1e6)
+    gh.sanitize_vector(als, Nsample, -1e6, 1e6, DEBUG)
+    gh.sanitize_vector(des, Nsample, -1e6, 1e6, DEBUG)
     mu_alpha__ascentury_1 = mu_alpha / gu.arcsec__mas
     mu_alpha__ass_1 = mu_alpha__ascentury_1 / gu.century__s
     mu_alpha__rad_per_s = mu_alpha__ass_1 / gu.rad__arcsec
@@ -211,28 +195,13 @@ def calc_Vmean(als, des):
     term3 = np.sin(des)*(Vd*np.sin(dd)+DL__km*mu_delta__rad_per_s*np.cos(dd))
     Vm = term1 + term2 + term3
     gh.LOG(3,' Vmean =',Vm)
-    gh.sanitize_scalar(Vm, -1000, 1000, DEBUG)
+    gh.sanitize_vector(Vm, Nsample, -500, 500, DEBUG)
     return Vm
 ## \fn calc_Vmean(als, des)
 # eq. 10 Walker 2011, dwarf spheroidal systemic HRF, [km/s]
 # @param als right ascension of star in [arcsec]
 # @param des declination of star in [arcsec]
 
-glob_Vm = calc_Vmean(alpha_s, delta_s)
-
-glob_sum_1_PM = np.sum(1-PM)
-glob_M_r = np.zeros((Nsample, Nsample)); glob_phat_r = np.zeros(Nsample)
-glob_M_v = np.zeros((Nsample, Nsample)); glob_phat_v = np.zeros(Nsample)
-glob_M_w = np.zeros((Nsample, Nsample)); glob_phat_w = np.zeros(Nsample)
-
-for i in range(Nsample):
-    prefac = (1-PM[i])/np.sqrt(2*np.pi)
-    glob_M_r[i,:] = prefac/k2*np.exp(-(R0[i]-R0)**2/(2*k2*k2))
-    glob_M_v[i,:] = prefac/epsv*np.exp(-(V0[i]-V0)**2/(2*Ve0*Ve0))
-    glob_M_w[i,:] = prefac/epsw*np.exp(-(W0[i]-W0)**2/(2*We0*We0))
-glob_phat_r = np.sum(glob_M_r, 0)/glob_sum_1_PM
-glob_phat_v = np.sum(glob_M_v, 0)/glob_sum_1_PM
-glob_phat_w = np.sum(glob_M_w, 0)/glob_sum_1_PM
 
 def myloglike(cube, ndim, nparams):
     fmem = cube[0]
@@ -262,25 +231,27 @@ def myloglike(cube, ndim, nparams):
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         ipdb.set_trace()
 
+    gh.LOG(2, 'calculate integrals in denominator')
 
-    lpR1 = lpR(R0, Rhalf_i[1])
-    lpR2 = lpR(R0, Rhalf_i[2])
-    lpV1 = lp_gauss(V0, Vm, sigmaV[1], eV)
-    lpV2 = lp_gauss(V0, Vm, sigmaV[2], eV)
-    lpW1 = lp_gauss(W0, Wmean[1], sigmaW[1], eW)
-    lpW2 = lp_gauss(W0, Wmean[2], sigmaW[2], eW)
+    lpR1 = lp_plummer(R0, Rhalf_i[1])
+    lpR2 = lp_plummer(R0, Rhalf_i[2])
+    glob_Vm = calc_Vmean(alpha_s, delta_s)
+    lpV1 = lp_gauss(V0, glob_Vm, sigmaV[1], Ve0)
+    lpV2 = lp_gauss(V0, glob_Vm, sigmaV[2], Ve0)
+    lpW1 = lp_gauss(W0, Wmean[1], sigmaW[1], We0)
+    lpW2 = lp_gauss(W0, Wmean[2], sigmaW[2], We0)
 
     gh.LOG(2,'starting logev evaluation')
-    logev = 0.0
-
     term_MW = ftot[0]*glob_phat_r*glob_phat_v*glob_phat_w
-    term_pop1 = ftot[1]*glob_w*np.exp(lpR1+lpV1+lpW1)/glob_intw[1]
-    term_pop2 = ftot[2]*glob_w*np.exp(lpR2+lpV2+lpW2)/glob_intw[2]
+    glob_intw1 = int_wp(Rhalf_i[1])     # for pop 1
+    glob_intw2 = int_wp(Rhalf_i[2])   # for pop 2
+    term_pop1 = ftot[1]*glob_w*np.exp(lpR1+lpV1+lpW1)/glob_intw1
+    term_pop2 = ftot[2]*glob_w*np.exp(lpR2+lpV2+lpW2)/glob_intw2
 
     ipdb.set_trace()
     logterm14sum = np.log(term_MW+term_pop1+term_pop2)
     logev = np.sum(logterm14sum)
-    gh.sanitize_scalar(logev, -1e30, 1e6, True)
+    gh.sanitize_scalar(logev, -1e30, 1e6, DEBUG)
 
     gh.LOG(1,' found log(likelihood) = ',logev)
     return logev
@@ -292,40 +263,51 @@ def myloglike(cube, ndim, nparams):
 
 
 def run(gp):
-    global Nsample, wpt, Rpt, V0, Ve0, W0, We0, PM0
-    global Vmean, alpha_s, delta_s
+    global DL
+    DL = {0: lambda x: x * (138),#+/- 8 for Fornax
+          1: lambda x: x * (101),#+/- 5 for Carina
+          2: lambda x: x * (79),  #+/- 4 for Sculptor
+          3: lambda x: x * (86) #+/- 4 for Sextans
+      }[gp.case](gu.kpc__pc)
+
+    global k2 # in [pc] from Irwin,Hatzidimitriou1995
+    k2 = {0: lambda x: x * (339),#+/-36 for Fornax
+          1: lambda x: x * (137),#+/-22 for Carina
+          2: lambda x: x * (94), #+/-26 for Sculptor
+          3: lambda x: x * (294) #+/-38 for Sextans
+      }[gp.case](1)
+
+
+    global wpt, Rpt, V0, Ve0, W0, We0, PM0
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
-
-
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+    global Nsample
+    Nsample = len(PM)
+
     # use all stellar tracer particles from now on, independent on their probability of membership
-    W0 = SigMg
-    We0 = e_SigMg
+    V0 = 1.*np.copy(VHel) # [km/s] not necessary to remove center LOS velocity
+    Ve0 = 1.*e_VHel # velocity error
+    W0 = 1.*np.copy(SigMg)
+    We0 = 1.*np.copy(e_SigMg)
+    global alpha_s, delta_s
     sig = abs(RAh[0])/RAh[0]
-    gh.LOG(3,'RAh: signum = ',sig)
     RAh = RAh/sig
     # stellar position alpha_s, delta_s
     # 15degrees in 1 hour right ascension
-
     alpha_s = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec]
-
     sig = abs(DEd[0])/DEd[0]                # +/-
-    gh.LOG(3,'DEd: signum = ',sig)
     DEd = DEd/sig
     delta_s = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
-
     # unit conversion into a set of [pc], [km/s]
-    arcsec = 2.*np.pi/(360.*60.*60)      # [rad/arcsec]
-    kpc = 1000 # [pc]
-
-    alpha_s *= arcsec  # [rad]
-    delta_s *= arcsec  # [rad]
+    #arcsec = 2.*np.pi/(360.*60.*60)      # [rad/arcsec]
+    alpha_s /= gu.rad__arcsec  # [rad]
+    delta_s /= gu.rad__arcsec  # [rad]
 
     # instead of using other datasets for individual dSph,
     # determine Heliocentric-Rest-Frame Line-Of-Sight velocity of dwarf Vd
@@ -335,45 +317,52 @@ def run(gp):
     Vd = np.sum(VHel * PM)/np.sum(PM)    # [km/s]
     ad = np.sum(alpha_s * PM)/np.sum(PM) # [arcsec]
     dd = np.sum(delta_s * PM)/np.sum(PM) # [arcsec]
-
-
-    # determine distance to dwarf
-### TODO reference
-    global DL
-    DL = {0: lambda x: x * (138),#+/- 8 for Fornax
-          1: lambda x: x * (101),#+/- 5 for Carina
-          2: lambda x: x * (79),  #+/- 4 for Sculptor
-          3: lambda x: x * (86) #+/- 4 for Sextans
-      }[gp.case](kpc)
-
+    # determine distance to dwarf TODO reference
     xs = alpha_s*DL # [pc]
     ys = delta_s*DL # [pc]
 
     PM0 = 1.*np.copy(PM)
-
     x0 = 1.*np.copy(xs)
     y0 = 1.*np.copy(ys) # [pc]
 
     # remove center displacement, already change x0
     com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, VHel, PM) # [pc], [km/s]
-
+    global R0
     R0 = np.sqrt(x0**2+y0**2)
-    global R0, Rfine
-    Rfine = np.logspace(np.log10(min(R0)), np.log10(max(R0)), 100)
-    V0 = 1.*np.copy(VHel) # [km/s] not necessary to remove center LOS velocity
-    Ve0 = 1.*e_VHel # velocity error
-
-    Nsample = len(PM)
+    # sort by R0 so integral makes sense later
+    order = np.argsort(R0)
+    R0 = R0[order]; PM0 = PM0[order]
+    x0 = x0[order]; y0  = y0[order]
+    xs = xs[order]; ys  = ys[order]
+    alpha_s = alpha_s[order]; delta_s = delta_s[order]
+    V0 = V0[order]; Ve0 = Ve0[order]
+    W0 = W0[order]; We0 = We0[order]
+    # Rfine = np.logspace(np.log10(min(R0)), np.log10(max(R0)), 100)
 
     A = np.loadtxt(gp.files.dir+'w_2.0.dat')
     Rpt, wpt = A.T # [arcmin], [1]
-    arcmin = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
-    Rpt *= arcmin # [pc]
+    arcmin__pc = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
+    Rpt *= arcmin__pc # [pc]
+    global glob_w
+    glob_w = w(R0)
 
+    sum_1_PM = np.sum(1-PM)
+    glob_M_r = np.zeros((Nsample, Nsample))
+    glob_M_v = np.zeros((Nsample, Nsample))
+    glob_M_w = np.zeros((Nsample, Nsample))
 
-    n_dims = 5+(gp.pops+1)*4
+    for i in range(Nsample):
+        prefac = (1-PM[i])/np.sqrt(2*np.pi)
+        glob_M_r[i,:] = prefac/k2*np.exp(-(R0[i]-R0)**2/(2*k2*k2))
+        glob_M_v[i,:] = prefac/Ve0*np.exp(-(V0[i]-V0)**2/(2*Ve0*Ve0))
+        glob_M_w[i,:] = prefac/We0*np.exp(-(W0[i]-W0)**2/(2*We0*We0))
+    global glob_phat_r, glob_phat_v, glob_phat_w
+    glob_phat_r = np.sum(glob_M_r, 0)/sum_1_PM
+    glob_phat_v = np.sum(glob_M_v, 0)/sum_1_PM
+    glob_phat_w = np.sum(glob_M_w, 0)/sum_1_PM
 
     gh.LOG(1,'starting MultiNest run:')
+    n_dims = 5+(gp.pops+1)*4
     pymultinest.run(myloglike,   myprior,
                     n_dims,      n_params = n_dims+1, # None beforehands
                     n_clustering_params = n_dims, # separate modes on
