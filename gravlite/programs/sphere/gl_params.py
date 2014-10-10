@@ -120,8 +120,8 @@ class Params():
         self.maxnuslope = 5
         # prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
-        #    on from min(gp.xipol) to max(gp.xipol)
-        self.nrtol  = self.maxrhoslope/2
+        #    from min(gp.xipol) to max(gp.xipol)
+        self.nrtol  = self.maxrhoslope
         self.nrtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
                                   # of beta* in polynomial representation

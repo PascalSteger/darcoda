@@ -113,14 +113,15 @@ class Params():
                          # calculated to values in [pc] in gl_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = -1 # same for nu, using same rhalf
-        self.nuspread = 1.0
-
-        self.nrtol  = 1.5/(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1.5/(8./self.nipol)
-
+        self.log10nuspread = 1.0
         self.maxrhoslope  = 0.5    # maximum slope (change if
                                   # monotonicity prior used) of rho
         self.maxnuslope = 0.5
+        # nrtol: prior (max +/- range) for dn(r)/dlog(r)
+        #   determine how far nr can wander with the max allowed nr slope
+        #    from min(gp.xipol) to max(gp.xipol)
+        self.nrtol  = self.maxrhoslope
+        self.nrtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxlog10nu = 4.     # direct sampling of nu: min value
         self.minlog10nu = 0.     # direct sampling of nu: max value
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope

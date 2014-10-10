@@ -68,7 +68,7 @@ def map_nr(params, prof, pop, gp):
     elif prof=='nu':
         rhoscale = gp.dat.nuhalf[pop]
         Rscale = gp.Xscale[pop]
-        width = gp.nuspread
+        width = gp.log10nuspread
         rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxnuslope
         nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
