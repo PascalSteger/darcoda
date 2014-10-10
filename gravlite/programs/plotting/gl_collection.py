@@ -427,9 +427,9 @@ class ProfileCollection():
                     nuprof = nu2
             if gp.geom == 'sphere':
                 Mprof = glp.rho_SUM_Mr(gp.xipol, nuprof)
-                Mmaxi = max(Mprof) # Mprof[-1]
+                Mmax = max(Mprof) # Mprof[-1]
                 ihalf = -1
-                for kk in raniige(len(Mprof)):
+                for kk in range(len(Mprof)):
                     # half-light radius (3D) is where mass is more than half
                     # ihalf gives the iindex of where this happens
                     if Mprof[kk] >= Mmax/2 and ihalf <0:
@@ -457,7 +457,6 @@ class ProfileCollection():
         ax.plot(r0, M68lo, color='black', lw=0.4)
         ax.plot(r0, M68hi, color='black', lw=0.3)
         ax.plot(r0, Mmedi, 'r', lw=1)
-        ipdb.set_trace()
         if prof == 'Sig' or prof == 'sig':
             for pop in range(gp.pops):
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]

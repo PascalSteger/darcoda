@@ -13,7 +13,7 @@ import numpy.random as npr
 npr.seed(1989) # for random events that are reproducible
 
 import matplotlib
-matplotlib.use('pdf')
+#matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 plt.ioff()
 
