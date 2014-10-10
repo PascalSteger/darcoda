@@ -51,17 +51,17 @@ def map_nr(params, prof, pop, gp):
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     if gp.xepol[0] <= rlimnr*Rscale:
-        nrasym0 = (params[1]**1)*min(maxrhoslope/2, 2.99)
+        nrasym0 = params[1]*min(maxrhoslope/2, 2.99)
     else:
-        nrasym0 = (params[1]**1)*2.99
+        nrasym0 = params[1]*2.99
 
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[2:-1]
     # offset for the integration of dn(r)/dlog(r) at smallest radius
     if gp.xepol[1] <= rlimnr*Rscale:
-        nr[0] = (dnrdlrparams[0]**1)*min(maxrhoslope/2, 2.99)
+        nr[0] = dnrdlrparams[0]*min(maxrhoslope/2, 2.99)
     else:
-        nr[0] = (dnrdlrparams[0]**1)*maxrhoslope
+        nr[0] = dnrdlrparams[0]*maxrhoslope
 
     for k in range(1, gp.nepol):
         # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
