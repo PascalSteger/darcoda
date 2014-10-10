@@ -16,10 +16,9 @@ import gl_helper as gh
 
 def nr(z0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
-    znu = np.hstack([z0[0]/1e4, z0[0]/2., z0, gp.rinfty*z0[-1]])
+    znu = np.hstack([z0[0]/gp.rinfty, z0, gp.rinfty*z0[-1]])
     logznu = np.log(znu/gp.Xscale[pop])
-    dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
-    dlr *= -1.
+    dlr = -1.*dlr
 
     # use linear spline interpolation in r
     spline_n = splrep(logznu, dlr, k=1)
@@ -34,49 +33,36 @@ def nr(z0, dlr, pop, gp):
 # @param gp global parameters
 
 
-def nr_medium(dlr, pop, gp):
-    # extend asymptotes to 0, and high radius
-    z0 = gp.xepol
-    z0 = np.hstack([z0[0]/2, z0, gp.rinfty*z0[-1]])
-    logz0 = np.log(z0/gp.Xscale[pop])
-    # up: common radii z0, but different scale radius for each pop
-    dlr = np.hstack([dlr[0], dlr]) # dlr[-1]])
-    dlr *= -1.
-
-    # use linear spline interpolation in r
-    spline_n = splrep(logz0, dlr, k=1)
-
-    # evaluate spline at any points in between
-    return spline_n
-## \fn nr(dlogrhodlogr, pop, gp)
-# calculate n(r) at any given radius, as linear interpolation with two asymptotes
-# NOT USED ANYMORE
-# @param dlogrhodlogr : asymptote at 0, n(r) for all bins, asymptote at infinity
-# @param pop int for population (both, 1, 2, ...)
-# @param gp global parameters
-
-
-def rho(z0, vec, pop, gp):
-    rhoathalf = vec[0]
+def rho(z0, rhopar, pop, gp):
+    vec = rhopar
+    rho_at_rhalf = vec[0]
     vec = vec[1:]
-    # spline_n = nr_medium(vec, pop, gp) # extrapolate on gp.xepol, as this is where definition is on
-    spline_n = nr(z0, vec, pop, gp)
+    # get spline representation on gp.xepol, where rhopar are defined on
+    spline_n = nr(gp.xepol, vec, pop, gp)
 
+    # and apply it to these radii, which may be anything in between
     zs =  np.log(z0/gp.Xscale[pop]) # have to integrate in d log(r)
-    logrright = zs[(zs>=0.)]
-    logrleft  = zs[(zs<0.)]
-    logrleft  = logrleft[::-1]
-    logrhoright = []
+    logrright = []; logrleft = []
+    if np.rank(rs) == 0:
+        if rs>0:
+            logrright.append(rs)
+        else:
+            logrleft.append(rs)
+    else:
+        logrright = rs[(rs>=0.)]
+        logrleft  = rs[(rs<0.)]
+        logrleft  = logrleft[::-1] # inverse order
 
     # integrate to left and right of halflight radius
+    logrhoright = []
     for i in np.arange(0, len(logrright)):
-        logrhoright.append(np.log(rhoathalf) + \
+        logrhoright.append(np.log(rho_at_rhalf) + \
                            splint(0., logrright[i], spline_n))
                            # integration along dlog(r) instead of dr
 
     logrholeft = []
     for i in np.arange(0, len(logrleft)):
-        logrholeft.append(np.log(rhoathalf) + \
+        logrholeft.append(np.log(rho_at_rhalf) + \
                           splint(0., logrleft[i], spline_n))
 
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)

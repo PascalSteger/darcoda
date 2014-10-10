@@ -52,8 +52,7 @@ def nr(r0, dlr, pop, gp):
 
 
 def rho(r0, rhopar, pop, gp):
-    # TODO reenable
-    #gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30, gp.debug)
+    gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30, gp.debug)
     vec = 1.*rhopar # make a new copy so we do not overwrite rhopar
     rho_at_rhalf = vec[0]
     vec = vec[1:]
@@ -63,7 +62,6 @@ def rho(r0, rhopar, pop, gp):
 
     # and apply it to these radii, which may be anything in between
     rs =  np.log(r0/gp.Xscale[pop]) # have to integrate in d log(r)
-
     logrright = []; logrleft = []
     if np.rank(rs) == 0:
         if rs>0:
