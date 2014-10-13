@@ -8,7 +8,7 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys, ipdb
+import sys, pdb
 import numpy as np
 
 from scipy.integrate import simps
@@ -20,9 +20,8 @@ from gl_centering import com_shrinkcircle_v_2D
 import BiWeight as BW
 import gl_units as gu
 
-gh.DEBUGLEVEL = 1
+gh.DEBUGLEVEL = 3
 DEBUG = True
-
 
 def lp_plummer(Rad, rs):
     logev_plummer = np.log(2.*Rad/rs**2/(1.+Rad**2/rs**2)**2)
@@ -50,75 +49,6 @@ def lp_gauss(X, Xmean, sigmaX, errorX):
 # @param errorX observation error
 
 
-def lp_MW(X, Xi, Xierror, PMi):
-    nom = 0.
-    denom = 0.
-    for k in range(len(Xi)):
-        nom += (1.-PMi[k])/np.sqrt(2.*np.pi*Xierror[k]**2)*np.exp(-0.5*(Xi[k]-X)**2/Xierror[k]**2)
-        denom += (1.-PMi[k])
-    prob_MW =  nom/denom
-    gh.sanitize_scalar(np.log(prob_MW), -1e30, 1e6, DEBUG)
-    return np.log(prob_MW)
-## \fn lp_MW(X, Xi, Xierror, PMi, error)
-# eq. 12 generic Walker 2011, likelihood that star is MW foreground
-# @param X variable, property of one star
-# @param Xi properties of stellar tracers
-# @param Xierror errors on these
-# @param PMi probability of membership
-# @param error observation error
-
-
-def lpV(Vk, Vm, sigV, epsV):
-    gh.LOG(3,'pV')
-    log_prob_V = p_gauss(Vk, Vm, sigmaV, Ve0)
-    return log_prob_V
-## \fn lpV(Vk, pop)
-# eq. 9 Walker 2011, probability distribution of LOS velocities
-# @param Vk velocity of stellar tracer k, [km/s]
-# @param k ID of tracer star under investigation
-# @param pop int for population (0: MW, 1, 2..)
-
-
-def lpW(Wk, k, pop):
-    gh.LOG(3,'pW')
-    log_prob_W = p_gauss(Wk, Wmean[pop], sigmaW[pop], We0[k])
-    return log_prob_W
-## \fn lpW(Wk, k, pop)
-# eq. 11 Walker 2011, probability distribution of reduced magnesium index
-# @param Wk magnesium index, [Ang]
-# @param k ID for stellar tracer
-# @param pop int for population (0: MW, 1, 2..)
-
-
-def pjoint(R, k2, V, Verror, W, Werror, PM, k, pop):
-    gh.LOG(2,'pjoint for tracer star ', k)
-    gh.LOG(2,' of ', len(PM))
-    gh.LOG(2,' and pop ', pop)
-    if pop == 0:
-        lpr = lp_MW(R[k], R, k2, PM) # k2 is measured half-light radius of overall distro
-        lpv = lp_MW(V[k], V, Verror, PM)
-        lpw = lp_MW(W[k], W, Werror, PM)
-        log_p_joint = lpr+lpv+lpw
-    else:
-        lpr = lpR(R[k], pop)
-        lpv = lpV(V[k], k, pop)
-        lpw = lpW(W[k], k, pop)
-        log_p_joint = lpr+lpv+lpw
-    gh.sanitize_scalar(log_p_joint, -1e30, 0, DEBUG)
-    return np.exp(log_p_joint)
-## \fn pjoint(R, k2, V, W, PM, k, pop)
-# eq. 13 Walker 2011, joint probability distributions
-# @param R projected radius, [pc]
-# @param k2 smoothing scale = half-light radius of overall distro
-# @param V LOS velocity [km/s]
-# @param Verror error on V
-# @param W reduced magnesium index [Ang]
-# @param Werror error on W
-# @param PM probability of membership
-# @param k int ID of star under investigation
-# @param pop int for population
-
-
 def myprior(cube, ndim, nparams):
     # convert to physical space
     off = 0
@@ -143,7 +73,7 @@ def myprior(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myprior.cube')
-        ipdb.set_trace()
+        pdb.set_trace()
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -164,7 +94,6 @@ def w(Rk):
 # @param Rk radius [pc]
 
 
-
 def int_wp(Rhalf):
     integral = simps(glob_w*np.exp(lp_plummer(R0, Rhalf)), R0)
     gh.sanitize_scalar(integral, 0, 1e30, DEBUG)
@@ -173,7 +102,6 @@ def int_wp(Rhalf):
 # calculate denominator integral for population pop=1,2 in eq. 14 Walker 2011
 # @param Rhalf half-light radius for Plummer spheres of pop 1 and pop 2
 # @param gp global parameters, for radii
-
 
 
 def calc_Vmean(als, des):
@@ -229,7 +157,7 @@ def myloglike(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     gh.LOG(2, 'calculate integrals in denominator')
 
@@ -248,12 +176,14 @@ def myloglike(cube, ndim, nparams):
     term_pop1 = ftot[1]*glob_w*np.exp(lpR1+lpV1+lpW1)/glob_intw1
     term_pop2 = ftot[2]*glob_w*np.exp(lpR2+lpV2+lpW2)/glob_intw2
 
-    ipdb.set_trace()
-    logterm14sum = np.log(term_MW+term_pop1+term_pop2)
+    sumterms = term_MW+term_pop1+term_pop2
+    #print('f_MW,pop1,pop2=',np.median(term_MW/sumterms),\
+    #      np.median(term_pop1/sumterms), np.median(term_pop2/sumterms))
+    logterm14sum = np.log(sumterms)
     logev = np.sum(logterm14sum)
     gh.sanitize_scalar(logev, -1e30, 1e6, DEBUG)
 
-    gh.LOG(1,' found log(likelihood) = ',logev)
+    gh.LOG(1, 'logL:',logev)
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
@@ -266,11 +196,11 @@ def run(gp):
     global DL
     DL = {0: lambda x: x * (138),#+/- 8 for Fornax
           1: lambda x: x * (101),#+/- 5 for Carina
-          2: lambda x: x * (79),  #+/- 4 for Sculptor
-          3: lambda x: x * (86) #+/- 4 for Sextans
+          2: lambda x: x * (79), #+/- 4 for Sculptor
+          3: lambda x: x * (86)  #+/- 4 for Sextans
       }[gp.case](gu.kpc__pc)
 
-    global k2 # in [pc] from Irwin,Hatzidimitriou1995
+    global k2 # overall half-light radius in [pc] from Irwin,Hatzidimitriou1995
     k2 = {0: lambda x: x * (339),#+/-36 for Fornax
           1: lambda x: x * (137),#+/-22 for Carina
           2: lambda x: x * (94), #+/-26 for Sculptor
@@ -286,15 +216,25 @@ def run(gp):
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
-                                       usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+                                       usecols=tuple(range(2,17)), \
+                                       delimiter=delim, filling_values=-1)
+    # attention, we do not have Mg measurements for 501 stars in Fornax,
+    #  visible by missing SigMg values, set to -1
+    #   we exclude them from all further analysis
+    sel = (SigMg>-1)
+    RAh=RAh[sel]; RAm=RAm[sel]; RAs=RAs[sel]; DEd=DEd[sel]; DEm=DEm[sel]; DEs=DEs[sel]
+    Vmag=Vmag[sel]; VI=VI[sel]; VHel=VHel[sel]; e_VHel=e_VHel[sel]; PM=PM[sel]
+    SigMg=SigMg[sel]; e_SigMg=e_SigMg[sel]; SigFe=SigFe[sel]; e_SigFe=e_SigFe[sel]
+
     global Nsample
     Nsample = len(PM)
 
     # use all stellar tracer particles from now on, independent on their probability of membership
-    V0 = 1.*np.copy(VHel) # [km/s] not necessary to remove center LOS velocity
-    Ve0 = 1.*e_VHel # velocity error
+    V0 = 1.*np.copy(VHel)  # [km/s] not necessary to remove center LOS velocity
+    Ve0 = 1.*e_VHel        # velocity error
     W0 = 1.*np.copy(SigMg)
     We0 = 1.*np.copy(e_SigMg)
+
     global alpha_s, delta_s
     sig = abs(RAh[0])/RAh[0]
     RAh = RAh/sig
@@ -353,14 +293,18 @@ def run(gp):
 
     for i in range(Nsample):
         prefac = (1-PM[i])/np.sqrt(2*np.pi)
+        gh.sanitize_scalar(prefac, 0, 1/np.sqrt(2*np.pi), DEBUG)
         glob_M_r[i,:] = prefac/k2*np.exp(-(R0[i]-R0)**2/(2*k2*k2))
         glob_M_v[i,:] = prefac/Ve0*np.exp(-(V0[i]-V0)**2/(2*Ve0*Ve0))
         glob_M_w[i,:] = prefac/We0*np.exp(-(W0[i]-W0)**2/(2*We0*We0))
     global glob_phat_r, glob_phat_v, glob_phat_w
     glob_phat_r = np.sum(glob_M_r, 0)/sum_1_PM
+    gh.sanitize_vector(glob_phat_r, Nsample, 0, 1e30, DEBUG)
     glob_phat_v = np.sum(glob_M_v, 0)/sum_1_PM
+    gh.sanitize_vector(glob_phat_v, Nsample, 0, 1e30, DEBUG)
     glob_phat_w = np.sum(glob_M_w, 0)/sum_1_PM
-
+    gh.sanitize_vector(glob_phat_w, Nsample, 0, 1e30, DEBUG)
+    pdb.set_trace()
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 5+(gp.pops+1)*4
     pymultinest.run(myloglike,   myprior,
@@ -374,24 +318,18 @@ def run(gp):
                                                                      #wrap-around
                                                                      #parameters
                     importance_nested_sampling = True, # INS enabled
-                    multimodal = False,            # separate modes
+                    multimodal = True,            # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
-                    n_live_points = 3,
-                    ### TODO gp.nlive,
-                    evidence_tolerance = 0.0, # set to 0 to keep
-                                              #algorithm working
-                                              #indefinitely
+                    n_live_points = gp.nlive,
+                    evidence_tolerance = 0.0,   # 0 to keep working infinitely
                     sampling_efficiency = 0.05, # very low eff. in
                                                 #case of const efficiency mode,
                                                 #README
                     n_iter_before_update = 1, # output after this many iterations
                     null_log_evidence = 1., # separate modes if
                                             #logevidence > this param.
-                    max_modes = 3,
-                    ### TODO gp.nlive,   # preallocation of modes:
-                                            #max. = number of live
-                                            #points
-                    mode_tolerance = -1.e60,   # mode tolerance in the
+                    max_modes = gp.nlive,
+                    mode_tolerance = -1.e30,   # mode tolerance in the
                                                #case where no special
                                                #value exists: highly
                                                #negative
@@ -401,14 +339,9 @@ def run(gp):
                     resume = False,
                     context = 0,
                     write_output = True,
-                    log_zero = -999999,      # points with log likelihood
-                                          #< log_zero will be
-                                          #neglected
-                    max_iter = 1,
-                    ### TODO set to 0 for never
-                                          #reaching max_iter (no
-                                          #stopping criterium based on
-                                          #number of iterations)
+                    log_zero = -999999, # points with log L < log_zero will be
+                                          # neglected
+                    max_iter = 0,
                     init_MPI = True,     # use MPI
                     dump_callback = None)
 

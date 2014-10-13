@@ -8,7 +8,7 @@
 # (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
 
 from types import *
-import ipdb
+import pdb
 import numpy as np
 
 from gl_class_profiles import Profiles
@@ -59,7 +59,7 @@ def calc_chi2(profs, gp):
         chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nipol) # [1]
         if chi2_sig == np.inf:
             print('chi2_sig has become infinite')
-            ipdb.set_trace()
+            pdb.set_trace()
         chi2 += chi2_sig             # [1]
         gh.LOG(1, '  chi2_sig  = ', chi2_sig)
 

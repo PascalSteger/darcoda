@@ -10,7 +10,7 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys, ipdb
+import sys, pdb
 import numpy as np
 from scipy.stats import kurtosis
 from pylab import *
@@ -143,7 +143,7 @@ def run(gp):
                 loglog(rbin*rscale0, rho_star2, 'g.-', lw = 0.5)
 
             loglog(rbin*rscale0, dens0pc*p_dens, 'r.-')
-            ipdb.set_trace()
+            pdb.set_trace()
             clf()
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys, ipdb
+import sys, pdb
 from pylab import *
 ion()
 from random import shuffle

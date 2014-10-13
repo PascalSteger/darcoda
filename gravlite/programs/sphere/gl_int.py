@@ -7,7 +7,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import ipdb, scipy, time
+import pdb, scipy, time
 from scipy.integrate import simps,trapz,quad,romberg
 from scipy.interpolate import splrep, splev, splint
 
@@ -115,7 +115,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\rho(r)$')
         legend(loc='lower left')
         savefig('fit_rho_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     # add up tracer densities to get overall density profile
     # add rho* to take into account the baryonic addition
@@ -147,7 +147,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylim([-0.5, 1.0])
         legend(loc='lower right')
         savefig('fit_beta_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     # nu
     # ------------------------------------------------------------------------
@@ -170,7 +170,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\nu$')
         savefig('fit_nu_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
 
     # \Sigma
@@ -192,7 +192,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\Sigma$')
         legend(loc='lower left')
         savefig('fit_Sig_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
 
     # int beta(s)/s ds
@@ -217,7 +217,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\int ds \\beta(s)/s$')
         legend(loc='lower right')
         savefig('fit_intbeta_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
 
     # M(r)
@@ -246,7 +246,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$M(r)$')
         legend(loc='lower right')
         savefig('fit_M_hern_better.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
 
     # nu(r)\cdot\sigma_r^2(r) integrand
@@ -268,7 +268,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$yint$')
         legend(loc='lower left')
         savefig('fit_nu_sigmar2_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     # actual integration, gives \sigma_r^2 \nu
     sigr2nu_model = np.zeros(len(r0fine))
@@ -346,7 +346,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}^2 \Sigma$')
         legend(loc='lower left')
         savefig('fit_Sig_siglos2_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
 
     # sigma_LOS^2
@@ -365,7 +365,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}^2$')
         legend(loc='upper right')
         savefig('fit_siglos2_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     # derefine on radii of the input vector
     splpar_sig = splrep(r0fine, np.log(siglos2), k=3, s=0.)
@@ -386,7 +386,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_{\\rm{LOS}}$')
         legend(loc='upper right')
         savefig('fit_siglos_out_'+gp.investigate+'.png')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     if not gp.usekappa:
         kapl4s_out = np.ones(len(siglos2_out))

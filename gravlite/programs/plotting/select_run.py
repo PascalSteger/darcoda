@@ -6,7 +6,7 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
-import os, sys, time, glob, shutil, ipdb, socket, getpass
+import os, sys, time, glob, shutil, pdb, socket, getpass
 import numpy as np
 
 

@@ -8,7 +8,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import ipdb
+import pdb
 
 import gl_units as gu
 import gl_project as glp
@@ -341,7 +341,7 @@ def Sig_walk(rad, gp, mf1=1, mf2=1):
 def beta_walk(rad, gp):
     # Osipkov-Merritt anisotropy profile with r_a/r_* = 10^4 for isotropic models
     A = np.loadtxt(gp.files.analytic, unpack=False)
-    import ipdb
+    import pdb
     rars1  = A[10]
     rs1    = A[9] * 1000. # [pc]
     rbyrs1 = rad/rs1
@@ -539,7 +539,7 @@ def beta(rad, gp):
         return beta_walk(rad, gp)
     else:
         gh.LOG(1, 'ga.beta not defined')
-        ipdb.set_trace()
+        pdb.set_trace()
 ## \fn beta(rad, gp)
 # analytic profile for all investigations
 # @param rad radii in pc
@@ -580,7 +580,7 @@ def rho(r0, gp):
         return rho_walk(r0, gp)
     else:
         gh.LOG(1, 'ga.rho not defined')
-        ipdb.set_trace()
+        pdb.set_trace()
 ## \fn rho(rad, gp)
 # analytic total mass density profile for all investigations
 # @param rad radii in pc
@@ -605,7 +605,7 @@ def Mr(r0, gp):
         return M_gaia(r0, gp)
     else:
         gh.LOG(1, 'ga.Mr not defined')
-        ipdb.set_trace()
+        pdb.set_trace()
 ## \fn Mr(rad, gp)
 # analytic total mass profile for all investigations
 # @param rad radii in pc
@@ -632,7 +632,7 @@ def Sigma(r0, gp):
         return Sig_walk(r0, gp)
     else:
         gh.LOG(1, 'ga.Sigma not defined')
-        ipdb.set_trace()
+        pdb.set_trace()
 ## \fn Sigma(rad, gp)
 # analytic total mass surface density profile for all investigations
 # @param rad radii in pc
@@ -698,7 +698,7 @@ def Sig_sig_los_2_hern(r0, gp):
     # \sigma_p = \sigma_projected = \sigma_{LOS}
     if gp.investigate != 'hern':
         gh.LOG(1, 'wrong investigation')
-        ipdb.set_trace()
+        pdb.set_trace()
     s = r0/gp.ana                            # [1]
     G1 = 1
     return G1*gp.anM**2/(12.*np.pi*gp.ana**3)*(1./(2.*(1.-s**2)**3)\

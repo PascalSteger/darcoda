@@ -18,7 +18,10 @@
 #from mpi4py import MPI
 import subprocess
 import pymultinest
-import pickle, ipdb
+import pickle, pdb
+# increment NICEness of process by 1, CPU usage shall not block others
+# import os
+# os.nice(1)
 import gl_params
 
 

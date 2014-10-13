@@ -9,7 +9,7 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb
+import pdb
 from scipy.integrate import simps,trapz
 from pylab import *
 ion()
@@ -168,7 +168,7 @@ def run(gp):
         nuscaler = nu_dat_bin1[np.argmin(np.abs(zth-z0))]
         loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
 
-        ipdb.set_trace()
+        pdb.set_trace()
 
     Sig_dat_bin1, Sig_dat_err_bin1 = gh.bincount(z_dat1, z_dat_bin1)
     Mrdat1 = np.cumsum(Sig_dat_bin1)

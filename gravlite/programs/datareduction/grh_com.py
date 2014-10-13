@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ, Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import random, ipdb
+import random, pdb
 
 import gr_params as gpr
 import gl_units as gu
@@ -30,7 +30,7 @@ def run(gp):
     trace = random.sample(range(nall), nall)
     if gp.pops > 1:
         gh.LOG(1, 'implement more than 2 pops for hern')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     PM = [1. for i in trace] # [1]=const, no prob. of membership info in dataset
     x  = [ xall[i]    for i in trace ] # [gp.ana]

@@ -6,7 +6,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import sys, ipdb
+import sys, pdb
 import numpy as np
 
 import gl_units as gu

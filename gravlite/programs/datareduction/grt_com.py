@@ -8,7 +8,7 @@
 
 
 import numpy as np
-import sys, ipdb
+import sys, pdb
 from pylab import *
 ion()
 

@@ -5,7 +5,7 @@
 # all helper functions
 
 # (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
-import sys, traceback, ipdb
+import sys, traceback, pdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps
@@ -33,19 +33,19 @@ def sanitize_vector(vec, length, mini, maxi, debug):
     if length > -1 and len(vec) != length:
         LOG(1, 'vec has wrong length')
         if debug:
-            ipdb.set_trace()
+            pdb.set_trace()
         #else:
         #    raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
         if debug:
-            ipdb.set_trace()
+            pdb.set_trace()
         #else:
         #    raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
         if debug:
-            ipdb.set_trace()
+            pdb.set_trace()
         #else:
         #    raise Exception('vec has too high value', max(vec))
     return
@@ -62,13 +62,13 @@ def sanitize_scalar(var, mini, maxi, debug):
     if var < mini:
         LOG(1, 'var has too small value')
         if debug:
-            ipdb.set_trace()
+            pdb.set_trace()
         #else:
         #    raise Exception('var has too small value')
     if var > maxi:
         LOG(1, 'var has too high value')
         if debug:
-            ipdb.set_trace()
+            pdb.set_trace()
         #else:
         #    raise Exception('var has too high value')
     return
@@ -197,7 +197,7 @@ def quadinflog(x, y, A, B, stop = False):
     dropoffint = romberg(invexp, A, B, rtol=1e-3, divmax=15, vec_func=True)
     #elapsed = (time.time()-start)/N
     #print('one iteration romberg takes ', elapsed, 's')
-    #ipdb.set_trace()
+    #pdb.set_trace()
 
     return dropoffint
 ## \fn quadinflog(x, y, A, B)
@@ -711,7 +711,7 @@ def moments(data):
     n = len(data)
     if (n <= 1):
         LOG(1, "len(data) must be at least 2 in gh.moments")
-        ipdb.set_trace()
+        pdb.set_trace()
     s=0.0;
     # First pass to get the mean.
     for j in range(n):

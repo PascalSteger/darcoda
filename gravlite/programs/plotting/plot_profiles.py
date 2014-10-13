@@ -7,7 +7,7 @@
 
 # start off with plotting/ in front of path
 #import sys
-import ipdb, pickle, os, sys
+import pdb, pickle, os, sys
 import numpy as np
 import numpy.random as npr
 npr.seed(1989) # for random events that are reproducible

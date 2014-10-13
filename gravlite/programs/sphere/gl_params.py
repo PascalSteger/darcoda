@@ -6,7 +6,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, ipdb, logging, socket, getpass
+import os, pdb, logging, socket, getpass
 
 def sanitize_investigate(inv):
     if inv == 'walk':     return True

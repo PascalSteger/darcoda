@@ -5,7 +5,7 @@
 # spherical version
 
 import numpy as np
-import ipdb
+import pdb
 from pylab import *
 ion()
 from scipy.interpolate import splev, splrep
@@ -126,7 +126,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     if off != gp.ndim:
         gh.LOG(1, 'wrong subscripts in gl_loglike')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     # determine log likelihood
     chi2 = calc_chi2(tmp_profs, gp)

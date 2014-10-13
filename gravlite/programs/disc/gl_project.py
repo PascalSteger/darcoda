@@ -13,7 +13,7 @@
 # (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
 
 import numpy as np
-import ipdb
+import pdb
 from scipy.integrate import simps
 from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
 from scipy.interpolate import splrep, splev, splint

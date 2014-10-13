@@ -8,7 +8,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import ipdb
+import pdb
 import gl_project as glp
 
 asech = lambda x: np.arccosh(1./x)

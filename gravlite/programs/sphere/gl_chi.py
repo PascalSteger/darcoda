@@ -7,7 +7,7 @@
 # (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
 
 from types import *
-import ipdb
+import pdb
 import numpy as np
 import numpy.random as npr
 

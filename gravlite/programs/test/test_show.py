@@ -3,7 +3,7 @@
 from pylab import *
 ion()
 
-import ipdb
+import pdb
 import numpy as np
 
 x = np.linspace(0, 2*np.pi, 100)
@@ -11,6 +11,6 @@ y = np.sin(x)
 
 
 plot(x, y, label='sin')
-ipdb.set_trace()
+pdb.set_trace()
 
 print('too late')

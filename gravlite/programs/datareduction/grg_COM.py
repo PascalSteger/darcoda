@@ -8,7 +8,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys, ipdb
+import sys, pdb
 
 from pylab import *
 ion()

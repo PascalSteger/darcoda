@@ -8,7 +8,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys, ipdb
+import sys, pdb
 
 from pylab import *
 ion()
@@ -142,7 +142,7 @@ def run(gp):
             #gca().add_patch(circ_HL)
             #circ_DM=Circle((0,0), radius=gpr.r_DM, fc='None', ec='r', lw=1)
             #gca().add_patch(circ_DM)
-            ipdb.set_trace()
+            pdb.set_trace()
             gpr.show_part_pos(x, y, pmn, rscalei)
 
 

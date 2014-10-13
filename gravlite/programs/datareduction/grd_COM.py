@@ -8,7 +8,7 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys, ipdb
+import sys, pdb
 import gr_params as gpr
 import gl_helper as gh
 import gl_file as gf
