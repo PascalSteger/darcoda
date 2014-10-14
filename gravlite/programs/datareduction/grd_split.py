@@ -95,7 +95,7 @@ def w(Rk):
 
 
 def int_wp(Rhalf):
-    integral = simps(glob_w*np.exp(lp_plummer(R0, Rhalf)), R0)
+    integral = simps(gw*np.exp(lp_plummer(R0, Rhalf)), R0)
     gh.sanitize_scalar(integral, 0, 1e30, DEBUG)
     return integral
 ## \fn int_wp(pop, Rhalf)
@@ -163,25 +163,29 @@ def myloglike(cube, ndim, nparams):
 
     lpR1 = lp_plummer(R0, Rhalf_i[1])
     lpR2 = lp_plummer(R0, Rhalf_i[2])
-    glob_Vm = calc_Vmean(alpha_s, delta_s)
-    lpV1 = lp_gauss(V0, glob_Vm, sigmaV[1], Ve0)
-    lpV2 = lp_gauss(V0, glob_Vm, sigmaV[2], Ve0)
+    gVm = calc_Vmean(alpha_s, delta_s)
+    lpV1 = lp_gauss(V0, gVm, sigmaV[1], Ve0)
+    lpV2 = lp_gauss(V0, gVm, sigmaV[2], Ve0)
     lpW1 = lp_gauss(W0, Wmean[1], sigmaW[1], We0)
     lpW2 = lp_gauss(W0, Wmean[2], sigmaW[2], We0)
 
     gh.LOG(2,'starting logev evaluation')
-    term_MW = ftot[0]*glob_phat_r*glob_phat_v*glob_phat_w
-    glob_intw1 = int_wp(Rhalf_i[1])     # for pop 1
-    glob_intw2 = int_wp(Rhalf_i[2])   # for pop 2
-    term_pop1 = ftot[1]*glob_w*np.exp(lpR1+lpV1+lpW1)/glob_intw1
-    term_pop2 = ftot[2]*glob_w*np.exp(lpR2+lpV2+lpW2)/glob_intw2
+    term_MW = ftot[0]*gphat_r*gphat_v*gphat_w
+    gintw1 = int_wp(Rhalf_i[1])     # for pop 1
+    gintw2 = int_wp(Rhalf_i[2])   # for pop 2
+    term_pop1 = ftot[1]*gw*np.exp(lpR1+lpV1+lpW1)/gintw1
+    term_pop2 = ftot[2]*gw*np.exp(lpR2+lpV2+lpW2)/gintw2
 
     sumterms = term_MW+term_pop1+term_pop2
-    #print('f_MW,pop1,pop2=',np.median(term_MW/sumterms),\
-    #      np.median(term_pop1/sumterms), np.median(term_pop2/sumterms))
+    print('f_MW,pop1,pop2=',np.median(term_MW/sumterms),\
+          np.median(term_pop1/sumterms), np.median(term_pop2/sumterms))
+    pdb.set_trace()
     logterm14sum = np.log(sumterms)
     logev = np.sum(logterm14sum)
     gh.sanitize_scalar(logev, -1e30, 1e6, DEBUG)
+
+    # TODO write out probability of membership in MW, pop1, pop2
+
 
     gh.LOG(1, 'logL:',logev)
     return logev
@@ -283,27 +287,28 @@ def run(gp):
     Rpt, wpt = A.T # [arcmin], [1]
     arcmin__pc = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
     Rpt *= arcmin__pc # [pc]
-    global glob_w
-    glob_w = w(R0)
+    global gw
+    gw = w(R0)
 
     sum_1_PM = np.sum(1-PM)
-    glob_M_r = np.zeros((Nsample, Nsample))
-    glob_M_v = np.zeros((Nsample, Nsample))
-    glob_M_w = np.zeros((Nsample, Nsample))
+    gM_r = np.zeros((Nsample, Nsample))
+    gM_v = np.zeros((Nsample, Nsample))
+    gM_w = np.zeros((Nsample, Nsample))
 
+    # TODO check this is right
     for i in range(Nsample):
         prefac = (1-PM[i])/np.sqrt(2*np.pi)
         gh.sanitize_scalar(prefac, 0, 1/np.sqrt(2*np.pi), DEBUG)
-        glob_M_r[i,:] = prefac/k2*np.exp(-(R0[i]-R0)**2/(2*k2*k2))
-        glob_M_v[i,:] = prefac/Ve0*np.exp(-(V0[i]-V0)**2/(2*Ve0*Ve0))
-        glob_M_w[i,:] = prefac/We0*np.exp(-(W0[i]-W0)**2/(2*We0*We0))
-    global glob_phat_r, glob_phat_v, glob_phat_w
-    glob_phat_r = np.sum(glob_M_r, 0)/sum_1_PM
-    gh.sanitize_vector(glob_phat_r, Nsample, 0, 1e30, DEBUG)
-    glob_phat_v = np.sum(glob_M_v, 0)/sum_1_PM
-    gh.sanitize_vector(glob_phat_v, Nsample, 0, 1e30, DEBUG)
-    glob_phat_w = np.sum(glob_M_w, 0)/sum_1_PM
-    gh.sanitize_vector(glob_phat_w, Nsample, 0, 1e30, DEBUG)
+        gM_r[i,:] = prefac/np.abs(k2)*np.exp(-((R0[i]-R0)**2)/(2*k2*k2))
+        gM_v[i,:] = prefac/np.abs(Ve0)*np.exp(-((V0[i]-V0)**2)/(2*Ve0*Ve0))
+        gM_w[i,:] = prefac/np.abs(We0)*np.exp(-((W0[i]-W0)**2)/(2*We0*We0))
+    global gphat_r, gphat_v, gphat_w
+    gphat_r = np.sum(gM_r, 0)/sum_1_PM
+    gh.sanitize_vector(gphat_r, Nsample, 0, 1e30, DEBUG)
+    gphat_v = np.sum(gM_v, 0)/sum_1_PM
+    gh.sanitize_vector(gphat_v, Nsample, 0, 1e30, DEBUG)
+    gphat_w = np.sum(gM_w, 0)/sum_1_PM
+    gh.sanitize_vector(gphat_w, Nsample, 0, 1e30, DEBUG)
     pdb.set_trace()
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 5+(gp.pops+1)*4
