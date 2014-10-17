@@ -19,6 +19,8 @@ plt.ioff()
 
 from optparse import OptionParser
 
+import gl_helper as gh
+
 calculate_anew = False
 
 def prepare_output_folder(basename):
@@ -113,6 +115,8 @@ if __name__ == '__main__':
     #parser.add_option("-a", "--action", dest="action",
     #                  default="p", help="action to take: p: print, k: kill")
     (options, args) = parser.parse_args()
+
+    gh.LOG(1, 'plot_profiles '+options.investigate+' '+options.case+' '+str(options.latest))
 
     import select_run as sr
     timestamp, basename = sr.run(options.investigate, \

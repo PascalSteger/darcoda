@@ -477,6 +477,7 @@ class ProfileCollection():
 
 
     def plot_profile(self, basename, prof, pop, gp):
+        gh.LOG(1, 'plotting profile '+str(prof)+' for pop '+str(pop)+' in run '+basename)
         fig = plt.figure()
         ax  = fig.add_subplot(111)
 

@@ -14,7 +14,7 @@ ion()
 import time
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
-DEBUGLEVEL = 3 # 0: none, 1: some, 2: more, 3: all
+DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
 
 def LOG(level, message, var=''):
     if level > DEBUGLEVEL:

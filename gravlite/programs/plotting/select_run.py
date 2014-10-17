@@ -9,7 +9,6 @@
 import os, sys, time, glob, shutil, pdb, socket, getpass
 import numpy as np
 
-
 def bufcount(filename):
     f = open(filename)
     lines = 0
@@ -305,7 +304,7 @@ def run(investigate="", case=-1, latest=False):
 
     if latest:
         fdl=list_files(basedir)
-        sel=-3
+        sel=-5
     else:
         # import import_path as ip
         # ip.import_path(basedir+'/programs/gl_params.py')
