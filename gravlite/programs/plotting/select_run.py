@@ -178,7 +178,7 @@ def get_run(default):
 ## \fn get_run(default)
 # ask user for choice on run number
 # @param default default value: last one
-# @return selection-1 integer
+# @return selection integer
 
 
 def get_action():
@@ -305,7 +305,7 @@ def run(investigate="", case=-1, latest=False):
 
     if latest:
         fdl=list_files(basedir)
-        sel=-1
+        sel=-3
     else:
         # import import_path as ip
         # ip.import_path(basedir+'/programs/gl_params.py')

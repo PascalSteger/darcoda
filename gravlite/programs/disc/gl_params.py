@@ -42,6 +42,9 @@ class Params():
         self.case = 0 # used in spherical case
         self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
+
+        # debug options
+        # ----------------------------------------------------------------------
         self.checksig = False # debug sig calculation?
         self.debug = False # stop at wrong sanitazion?
 
