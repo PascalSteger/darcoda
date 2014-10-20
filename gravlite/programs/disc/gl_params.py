@@ -19,7 +19,6 @@ class Params():
     def __init__(self, timestamp = ''):
         host_name = socket.gethostname()
         user_name = getpass.getuser()
-
         if 'darkside' in host_name:
             self.machine = 'darkside'
         elif 'pstgnt332' in host_name:
@@ -32,13 +31,11 @@ class Params():
             self.machine = 'lisa_SS_login'
         elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
             self.machine = 'lisa_SS_batch'
-
         self.geom = 'disc'
         self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
         check_investigate(self.investigate)
-
         self.case = 0 # used in spherical case
         self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -54,24 +51,23 @@ class Params():
         self.ntracer = [10000, 10000] # pop1, pop2, ..., pop_N (and
                                       # take sum for all tracers)
 
-
-        ########## data options
+        # data options
+        # ----------------------------------------------------------------------
         self.getnewdata = True  # get new data computed from
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
-        self.consttr    = True  # set radial bin by constant number of
-                                # tracer particles
+        self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
         self.maxR = 5.            # [Xscale], max range in radial bins
 
 
-        ########## MultiNest options
+        # MultiNest options
+        # ----------------------------------------------------------------------
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_Sig_converged = False # first converge on Sig if set to False
         self.chi2_switch = 100. # if chi2<chi2_switch, add chi2_sig
-
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
@@ -93,20 +89,17 @@ class Params():
                           # is reached, must be >= 11
         self.nbeta = 1   # number of parameters for beta, in sum of
                          # polynomials
-
-
         # TODO: if not using rhostar, subtract gp.nrho:
         self.ndim = 1 + 2*self.nrho + 1 + self.pops*(self.nrho + self.nbeta)
         # +1 for norm, rho, rhostar, MtoL, [nu_i, tilt_i]
-
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
-        self.nlive = 2*self.ndim
-
+        self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
 
-        ########## spherical case
+        # parameter spaces
+        # ----------------------------------------------------------------------
         self.rhohalf = 10**-1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
@@ -134,7 +127,8 @@ class Params():
         self.MtoLmax = 3.
 
 
-        ########## disc case
+        # disc case
+        # ----------------------------------------------------------------------
         # norm1 = 17.**2 # offset of sig[0]/nu[0], from int starting
         # at zmin instead of 0 norm2 = 10.**2 # and for the second
         # component, if there is one
@@ -142,19 +136,20 @@ class Params():
         self.monotonic = False    # mono-prior on rho(z)
         self.monotonic_nu = False # mono-prior on nu(z)
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
-
         self.baryonmodel = 'sim' # read in surface density from
                                  # corresponding surfden file
                                  # 'silvia', 'sim', 'simple'
 
-        ########## integration options
+        # integration options
+        # ----------------------------------------------------------------------
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = False  # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
 
 
-        ########## filesystem-related
+        # filesystem-related
+        # ----------------------------------------------------------------------
         import import_path as ip
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version
@@ -165,19 +160,18 @@ class Params():
         self.dat = Datafile()
 
 
-        ########## global arrays
+        # global arrays
+        # ----------------------------------------------------------------------
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins
         self.xfine = np.array([]) # [pc] radii for lookup tables,
                                   #      gp.nfine long
-
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
         # in [Munit/pc^2], and totmass_tracers
         # [Munit], and max(sigma_LOS) in [km/s]
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
         self.totmass_tracers=[];       self.maxsiglos=[]
-
         # for investigations without data:
         if self.investigate != 'discmock':
             # each is set for all components and first component by
