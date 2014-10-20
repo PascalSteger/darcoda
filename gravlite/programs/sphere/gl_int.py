@@ -16,6 +16,9 @@ import gl_helper as gh
 import gl_analytic as ga
 import gl_physics as phys
 import gl_project as glp
+
+import matplotlib
+matplotlib.use('pdf')
 from pylab import *
 ion()
 
@@ -114,7 +117,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\rho(r)$')
         legend(loc='lower left')
-        savefig('fit_rho_'+gp.investigate+'.png')
+        savefig('fit_rho_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
     # add up tracer densities to get overall density profile
@@ -146,7 +149,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\beta$')
         ylim([-0.5, 1.0])
         legend(loc='lower right')
-        savefig('fit_beta_'+gp.investigate+'.png')
+        savefig('fit_beta_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
     # nu
@@ -169,7 +172,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\nu$')
-        savefig('fit_nu_'+gp.investigate+'.png')
+        savefig('fit_nu_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
 
@@ -191,7 +194,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\Sigma$')
         legend(loc='lower left')
-        savefig('fit_Sig_'+gp.investigate+'.png')
+        savefig('fit_Sig_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
 
@@ -216,7 +219,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\int ds \\beta(s)/s$')
         legend(loc='lower right')
-        savefig('fit_intbeta_'+gp.investigate+'.png')
+        savefig('fit_intbeta_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
 
@@ -245,7 +248,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$M(r)$')
         legend(loc='lower right')
-        savefig('fit_M_hern_better.png')
+        savefig('fit_M_hern_better.pdf')
         pdb.set_trace()
 
 
@@ -267,7 +270,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$xint/\\rm{pc}$')
         ylabel('$yint$')
         legend(loc='lower left')
-        savefig('fit_nu_sigmar2_'+gp.investigate+'.png')
+        savefig('fit_nu_sigmar2_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
     # actual integration, gives \sigma_r^2 \nu
@@ -313,7 +316,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_r^2(r)\\nu(r)$')
         legend(loc='lower right')
-        savefig('fit_sigr2_'+gp.investigate+'.png')
+        savefig('fit_sigr2_'+gp.investigate+'.pdf')
 
     sigr2nu_model = sigr2nu_model_new
 
@@ -345,7 +348,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2 \Sigma$')
         legend(loc='lower left')
-        savefig('fit_Sig_siglos2_'+gp.investigate+'.png')
+        savefig('fit_Sig_siglos2_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
 
@@ -364,7 +367,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}^2$')
         legend(loc='upper right')
-        savefig('fit_siglos2_'+gp.investigate+'.png')
+        savefig('fit_siglos2_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
     # derefine on radii of the input vector
@@ -385,7 +388,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}$')
         legend(loc='upper right')
-        savefig('fit_siglos_out_'+gp.investigate+'.png')
+        savefig('fit_siglos_out_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
     if not gp.usekappa:

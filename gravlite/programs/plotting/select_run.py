@@ -38,12 +38,12 @@ def remove_empty_folders(fdl):
             with open(x[0]+"/ev.dat"):
                 # delete any folder that has empty ev.dat
                 if bufcount(x[0]+'/ev.dat') <= 0:
-                    removeDir(x[0])
-                    print('empty '+x[0]+'/ev.dat, removed dir')
+                    #removeDir(x[0])
+                    print('empty '+x[0]+'/ev.dat, remove dir?')
                 continue
         except IOError:
-            removeDir(x[0])
-            print(x[0]+'/ev.dat does not exist, removed empty directory '+x[0])
+            # removeDir(x[0])
+            print(x[0]+'/ev.dat does not exist, removed empty directory '+x[0]+'?')
     return
 # \fn remove_empty_folders(fdl)
 # remove all folders in list fdl without any ev.dat file in it = where

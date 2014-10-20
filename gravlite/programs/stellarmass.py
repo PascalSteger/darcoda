@@ -40,7 +40,8 @@ DL= {
     }[dwarf](kpc)
 
 # print("DL = ",DL)
-
+import matplotlib
+matplotlib.use('pdf')
 from pylab import *
 ion();subplot(111)
 n,bins,rectangles = hist(PM, bins=20, normed=True)
@@ -48,7 +49,7 @@ axvline(x=0.95,color='r')
 xlabel(r'PM')
 ylabel(r'number')
 xlim([0,1])
-savefig(dir+dwarf+"/PM.png")
+savefig(dir+dwarf+"/PM.pdf")
 ioff();clf()
 
 # only use stars which are members of the dwarf
@@ -89,5 +90,5 @@ xlabel(r'$V-I$')
 ylabel(r'$M_V$')
 # legend(['\rho','\rho'],'lower left')
 # title('z=11.7')
-ioff();savefig(dir+dwarf+"/HRD.png")
+ioff();savefig(dir+dwarf+"/HRD.pdf")
 show();clf()

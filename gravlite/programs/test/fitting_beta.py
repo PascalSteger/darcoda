@@ -2,6 +2,8 @@
 
 import numpy as np
 from scipy.optimize import curve_fit
+import matplotlib
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import pdb
 import gl_params
@@ -93,11 +95,6 @@ ax2.plot(x, y-modelbeta4(x, *popt3), 'r.-', alpha=0.8)
 ax2.set_ylim([-0.001, 0.001])
 ax2.set_xlabel('$r\\,[{\\rm pc}]$')
 #ax.draw()
-plt.savefig('beta_fit_all.png')
-
-from matplotlib.backends.backend_pdf import PdfPages
-pp = PdfPages('beta_fit_all.pdf')
-pp.savefig(fig)
-pp.close()
+plt.savefig('beta_fit_all.pdf')
 
 pdb.set_trace()

@@ -106,6 +106,13 @@ class Params():
         self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
+
+        # automatic plotting options
+        # ----------------------------------------------------------------------
+        self.last_plot = -1    # timestamp of last automatic plot, set to -1
+        self.plot_after = 10*1 # 3600  # [s] to elapse before automatic plotting
+
+
         # spherical case and both cases
         # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at

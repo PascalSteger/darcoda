@@ -26,7 +26,6 @@ calculate_anew = False
 def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/data/')
     os.system('mkdir -p '+ basename + 'output/ascii/')
-    os.system('mkdir -p '+ basename + 'output/png/')
     os.system('mkdir -p '+ basename + 'output/pdf/')
     os.system('mkdir -p '+ basename + 'output/analytic/')
     return 0

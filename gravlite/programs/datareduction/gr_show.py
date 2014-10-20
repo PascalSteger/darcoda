@@ -3,7 +3,10 @@
 ##
 # @file
 # draw preprocessed data
+import matplotlib
+matplotlib.use('pdf')
 from pylab import *
+
 ion()
 
 def show_part_pos(x, y, pmn, Xscale):
@@ -31,7 +34,7 @@ def show_part_pos(x, y, pmn, Xscale):
     xlabel(r'$x [R_s]$')
     ylabel(r'$y [R_s]$')
     # title(fil)
-    savefig(gp.files.dir+'centeredpos_' + str(n) + '.png')
+    savefig(gp.files.dir+'centeredpos_' + str(n) + '.pdf')
     pdb.set_trace()
     return
 ## \fn show_part_pos(x, y, pmn, Xscale)
@@ -53,7 +56,7 @@ def show_plots_dens_3D(rbin, p_dens, p_edens, gp):
     ylim([np.min(lbound), np.max(ubound)])
     xlabel(r'$r [r_c]$')
     ylabel(r'$\nu(r)/\nu(0)$')
-    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
+    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.pdf')
     pdb.set_trace()
 ## \fn show_plots_dens_3D(Rbin, p_dens, p_edens, gp)
 # show density
@@ -75,7 +78,7 @@ def show_plots_dens_2D(Rbin, P_dens, P_edens, Dens0pc):
     yscale('log')
     xlabel(r'$R [R_c]$')
     ylabel(r'$\nu_{2D}(R) [\mathrm{Munit/pc/pc}]$')
-    savefig(gp.files.dir+'Sigma/Sig_' + str(n) + '.png')
+    savefig(gp.files.dir+'Sigma/Sig_' + str(n) + '.pdf')
     pdb.set_trace()
 ## \fn show_plots_dens_2D(Rbin, P_dens, P_edens, Dens0pc)
 # show density
@@ -92,7 +95,7 @@ def show_plots_sigma(Rbin, p_dvlos, p_edvlos):
     # [rscale],2*[km/s]
     xlabel(r'$R [\mathrm{Xscale}]$')
     ylabel(r'$\langle\sigma_{\mathrm{LOS}}\rangle [\mathrm{km/s}]$')
-    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
+    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.pdf')
     pdb.set_trace()
     return
 ## \fn show_plots_sigma(Rbin, p_dvlos, p_edvlos)
@@ -115,7 +118,7 @@ def show_plots_vlos(rbin, p_dvlos, p_edvlos):
     ylim([-5,30])
     # xscale('log')
     xlim([np.min(rbin),np.max(rbin)])
-    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.png')
+    savefig( gp.files.dir+'siglos/siglos_' + str(n) + '.pdf')
     pdb.set_trace()
 ## \fn show_plots_vlos(rbin, p_dvlos, p_edvlos)
 # show line-of-sight velocity profile with error bars
@@ -133,7 +136,7 @@ def show_plots_kappa(Rbin, p_kappa, p_ekappa):
     ylabel(r'$\langle\kappa_{\mathrm{LOS}}\rangle [1]$')
     ylim([0, 5.])
     # xlim([0, gp.maxR])
-    savefig( gp.files.dir+'kappalos/kappalos_' + str(n) + '.png')
+    savefig( gp.files.dir+'kappalos/kappalos_' + str(n) + '.pdf')
     pdb.set_trace()
     return
 ## \fn show_plots_kappa(Rbin, P_dens, P_edens, p_dvlos, p_edvlos, p_kappa, p_ekappa, Dens0pc)

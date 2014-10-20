@@ -11,7 +11,7 @@ ion()
 from scipy.interpolate import splev, splrep
 
 import gl_physics as phys
-
+import time
 from gl_class_profiles import Profiles
 from gl_priors import check_bprior, check_beta
 from gl_chi import calc_chi2
@@ -127,6 +127,13 @@ def geom_loglike(cube, ndim, nparams, gp):
     chi2 = calc_chi2(tmp_profs, gp)
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
+
+    # after some predefined wallclock time, plot all profiles
+    if time.time() - gp.last_plot >= gp.plot_after:
+        pdb.set_trace()
+        gp.last_plot = time.time()
+        os.system('./plot_profiles.py -i '+gp.investigate+' -c '+str(gp.case)+' -l &')
+
 
     return tmp_profs
 ## \fn geom_loglike(cube, ndim, nparams, gp)

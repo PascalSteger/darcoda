@@ -2,6 +2,8 @@
 
 import numpy as np
 from scipy.optimize import curve_fit
+import matplotlib
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import pdb
 import gl_params
@@ -57,7 +59,7 @@ popt, pcov = curve_fit(model_beta, x, y)
 
 ax.plot(x, model_beta(x, *popt), 'g')
 #ax.draw()
-plt.savefig('beta_fit.png')
+plt.savefig('beta_fit.pdf')
 
 print(popt)
 print(pcov)

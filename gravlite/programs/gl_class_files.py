@@ -70,7 +70,6 @@ class Files:
         self.kappafiles = []
         ## file for zeta_A, zeta_B parameters
         self.zetafiles = []
-
         ## [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
         self.params = []
         if gp.investigate == 'hern':
@@ -90,8 +89,6 @@ class Files:
         else:
             print(' wrong investigation in Files()')
             pdb.set_trace()
-
-
         ## directory and basename of all output files
         if timestamp == '':
             import datetime
@@ -100,11 +97,9 @@ class Files:
             bname = timestamp
         self.outdir = self.shortdir+bname+'/'
         self.outname = bname
-
         # shorter dir names in Multinest (bound to <= 100 total)
         #os.system('ln -sf '+ self.dir+' '+self.modedir + str(gp.case))
         os.system('mkdir -p '+self.outdir)
-
         newdir(self.dir + 'M/')
         newdir(self.dir + 'Sigma/')
         newdir(self.dir + 'siglos/')
@@ -114,7 +109,6 @@ class Files:
         if timestamp == '':
             with open(self.outdir+'pc2.save', 'wb') as fi:
                 pickle.dump(-1, fi) # dummy data, to get file written new
-
         return
     ## \fn __init__(self, gp)
     # constructor
@@ -178,16 +172,12 @@ class Files:
         self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_1.txt') # first comp.
         self.nufiles.append(self.dir+'nu/'+sim+'nu_0.txt') # all comp.
         self.nufiles.append(self.dir+'nu/'+sim+'nu_1.txt') # first comp.
-
         self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_0.txt') # all comp.
         self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_1.txt') # first comp.
-
         self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_0.txt') # all comp.
         self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_1.txt') # first comp.
-
         self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_0.txt')
         self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_1.txt')
-
         if gp.pops == 2:
             self.massfiles.append(self.dir+'M/'+sim+'M_2.txt')
             self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_2.txt')
@@ -195,7 +185,6 @@ class Files:
             self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_2.txt')
             self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_2.txt')
             self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_2.txt')
-
         return
     ## \fn set_hern(self, gp, timestamp)
     # set all filenames for Hernquist case
@@ -229,14 +218,12 @@ class Files:
         elif gp.case == 8:
             gamma_star1=1.0;
             r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400 # core
-
         elif gp.case == 9:
             gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
             r_DM = 2000 # [pc]
         elif gp.case == 10:
             gamma_star1=1.0; r_star1=1750; r_a1=np.inf; gamma_DM=0; rho0=3.021516e-2
             r_DM = 4000 # [pc]
-
         self.params = [beta_star1, \
                        r_DM, \
                        gamma_star1, \
@@ -244,8 +231,6 @@ class Files:
                        r_a1, \
                        gamma_DM, \
                        rho0]
-
-
         AAA = gh.myfill(100*gamma_star1)  # 100
         BBB = gh.myfill(10*beta_star1)    # 050
         CCC = gh.myfill(100*r_star1/r_DM) # 100
@@ -256,7 +241,6 @@ class Files:
         FFFF = gh.myfill(1000*rho0, 4)
         self.longdir = 'gs'+AAA+'_bs'+BBB+'_rcrs'+CCC+\
                        '_rarc'+DDD+'_'+EEEE+'_'+FFFF+'mpc3_df/'
-
         if gp.case == 9:
             self.longdir = 'data_h_rh2_rs05_gs10_ra0_b05n_10k/'
         elif gp.case == 10:
@@ -266,7 +250,6 @@ class Files:
         ## new variable to hold the .dat input file
         self.datafile = self.dir + 'dat'
         #self.analytic = self.dir + 'samplepars'
-
         for pop in np.arange(gp.pops+1):
             spop = str(pop)
             self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
@@ -275,7 +258,7 @@ class Files:
             self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
             self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
             self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
-
+        return
     ## \fn set_gaia(self, gp, timestamp)
     # derive filenames from gaia case
     # @param gp global parameters
@@ -291,7 +274,6 @@ class Files:
             r_a1        =   1.0;    r_a2        =   1.0
             gamma_DM    = 0 # 0 or 1
             rno         = 3
-
         elif gp.case == 1:
             gamma_star1 =   1.0;    gamma_star2 =   1.0 # 1. or 0.1
             beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
@@ -299,7 +281,6 @@ class Files:
             r_a1        =   1.0;    r_a2        =   1.0
             gamma_DM    = 0 # core
             rno         = 2
-
         elif gp.case == 2:
             gamma_star1 =   1.0;    gamma_star2 =   1.0 # 1. or 0.1
             beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
@@ -307,7 +288,6 @@ class Files:
             r_a1        =   1.0;    r_a2        =   1.0
             gamma_DM    = 1 # cusp
             rno         = 8
-
         elif gp.case == 4:
             gamma_star1 =   0.1;    gamma_star2 =   0.1 # 1. or 0.1
             beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
@@ -315,7 +295,6 @@ class Files:
             r_a1        =   1.0;    r_a2        =   1.0
             gamma_DM    = 1 # cusp
             rno         = 5
-
         elif gp.case == 5:
             gamma_star1 =   1.0;    gamma_star2 =   0.1 # 1. or 0.1
             beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
@@ -324,10 +303,8 @@ class Files:
             gamma_DM    = 0 # core
             rno         = 6
 
-
         alpha_DM    = 1;    beta_DM     = 3;
         r_DM        = 1000                    # fixed to 1000pc
-
         import gl_helper as gh
         AAA = gh.myfill(100*gamma_star1)     # 100
         BBB = gh.myfill(10*beta_star1)       # 050
@@ -342,16 +319,13 @@ class Files:
         III = gh.myfill(100*r_a2)            # 100
         JJJ = EEE                            # core
         NNN = gh.myfill(rno)                   # 003    # realization (1..10)
-
         self.longdir = "c1_"+AAA+"_"+BBB+"_"+CCC+"_"+DDD+"_"+EEE+"_c2_"+FFF+"_"+GGG+"_"+HHH+"_"+III+"_"+JJJ+"_"+NNN+"_6d/"
         self.dir = self.modedir + self.longdir
         self.dir += timestamp + '/'
-
         self.analytic = self.dir + 'samplepars'
         LINE = np.loadtxt(self.analytic, skiprows=0, unpack=False)
         rho0        = LINE[19] # read from the corresp. samplepars file
         self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
-
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             spop = str(pop)
             self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
@@ -371,11 +345,9 @@ class Files:
         if gp.pops == 2:
             print('IMPLEMENT 2 tracer populations for triaxial dataset')
             sys.exit(1)
-
         self.longdir = str(gp.case) + '/'
         self.dir = self.modedir + self.longdir
         self.dir += timestamp + '/'
-
         for pop in np.arange(gp.pops+1):
             spop = str(pop)
             self.massfiles.append(self.dir  + 'M/M_'+spop+'.txt')
@@ -384,7 +356,6 @@ class Files:
             self.sigfiles.append(self.dir   + 'siglos/siglos_'+spop+'.txt')
             self.kappafiles.append(self.dir + 'kappalos/kappalos_'+spop+'.txt')
             self.zetafiles.append(self.dir  + 'zeta/zeta_'+spop+'.txt')
-
         return
     ## \fn set_triax(self, gp, timestamp)
     # set all parameters for working on the triaxial data
@@ -413,7 +384,6 @@ class Files:
     def populate_output_dir(self, gp):
         # copy only after data is read in!
         os.system('mkdir -p '+self.outdir+'/programs')
-
         # rsync -r --exclude '.git' source target to exclude .git dir from copy
         os.system('rsync -rl --exclude ".git" --exclude "doc"'+\
                   ' --exclude "__pycache__" ' + \
@@ -422,7 +392,6 @@ class Files:
         # in Hernquist case: neglect simulation folder
         os.system('rsync -rl --exclude "201*" --exclude "simulation" ' + \
                   ' --exclude "cones" ' + self.dir + ' ' + self.outdir)
-
         return
     ## \fn populate_output_dir(self, gp)
     # copy data files to output directory, with timestamp
@@ -456,7 +425,6 @@ class Files:
         self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
         self.kappafiles.append(self.dir +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_stars.txt') # first comp.
         self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density
-
         if gp.pops ==2:
             self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
             self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
@@ -504,36 +472,6 @@ class Files:
     # get filename of COM file
     # @param n population
 
-
-    def get_outfiles(self):
-        pre = self.outdir # + self.outname + '.'
-        outplot = pre + 'png'
-        outdat  = pre + 'dat'
-        outtxt  = pre + 'txt'
-        return outplot, outdat, outtxt
-    ## \fn get_outfiles(self)
-    # get all output filenames
-
-
-    def get_outpng(self):
-        pre = self.outdir # + self.outname + '.'
-        return pre + 'png'
-    ## \fn get_outpng(self)
-    # get output filename for png picture
-
-
-    def get_outdat(self):
-        pre = self.outdir # + self.outname + '.'
-        return pre + 'dat'
-    ## \fn get_outdat(self)
-    # get output filename for data
-
-
-    def get_outtxt(self):
-        pre = self.outdir # + self.outname + '.'
-        return pre + 'txt'
-    ## \fn get_outtxt(self)
-    # get output filename for ASCII output
 
     def __repr__(self):
         return "Files: "+self.dir

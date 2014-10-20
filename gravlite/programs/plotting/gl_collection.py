@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython
+#!/usr/bin/env python3
 
 ## @file
 # collect profiles and perform actions on them
@@ -9,8 +9,9 @@ import numpy as np
 import numpy.random as npr
 import pdb, sys
 import matplotlib
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+# from matplotlib.backends.backend_pdf import PdfPages
 
 plt.ioff()
 
@@ -490,10 +491,7 @@ class ProfileCollection():
                 ax.step(edges[1:], bins, where='pre')
                 plt.draw()
                 self.write_chi2(basename, edges, bins)
-                fig.savefig(basename+'/output/prof_chi2_0.png')
-                pp = PdfPages(basename+'/output/prof_chi2_0.pdf')
-                pp.savefig(fig)
-                pp.close()
+                fig.savefig(basename+'/output/prof_chi2_0.pdf')
                 return
 
             self.fill_nice(ax, prof, pop, gp)
@@ -510,10 +508,7 @@ class ProfileCollection():
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')
-        fig.savefig(basename+'/output/png/prof_'+prof+'_'+str(pop)+'.png')
-        pp = PdfPages(basename+'/output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
-        pp.savefig(fig)
-        pp.close()
+        fig.savefig(basename+'/output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
         return
     ## \fn plot_profile(self, basename, prof, pop, gp)
     # plot single profile

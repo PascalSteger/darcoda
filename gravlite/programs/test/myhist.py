@@ -3,7 +3,7 @@
 import numpy as np
 import numpy.random as npr
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 plt.ioff()
 
@@ -19,4 +19,4 @@ bins, edges = np.histogram(x, range=[0.,220.], bins=30, density=True)
 ax.step(edges[1:], bins, where='pre')
 
 plt.show(block=True)
-plt.savefig('myhist.png')
+plt.savefig('myhist.pdf')

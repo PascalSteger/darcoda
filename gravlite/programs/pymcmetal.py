@@ -10,6 +10,8 @@
 import numpy as np
 import sys, pdb
 import pymc as mc
+import matplotlib
+matplotlib.use('pdf')
 from pylab import *
 ion()
 
@@ -201,7 +203,7 @@ def run(gp):
     plt.title( "Visualizing Clusters using posterior-mean parameters" );
 
     ioff()
-    savefig('data.png')
+    savefig('data.pdf')
 
     # ion()
     # mc.Matplot.plot(M)
