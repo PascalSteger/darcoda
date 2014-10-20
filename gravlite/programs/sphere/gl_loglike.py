@@ -116,7 +116,6 @@ def geom_loglike(cube, ndim, nparams, gp):
 
             except Exception as detail:
                 gh.LOG(1, 'sigma error')
-                pdb.set_trace()
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
         off += offstep # still do this even if gp.chi2_Sig_converged is False
