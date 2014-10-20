@@ -49,20 +49,10 @@ class Params():
                       # triax (1-4:core, 5-8:cusp)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
-
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
         # case 2
         self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N and sum
-
-        # unitsXS
-        self.G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
-        self.pc_in_m  = 3.08567758e16              # [m]
-        self.msun= 1.981e30                   # [kg]
-        self.km_in_m  = 1000.                      # [m]
-        self.kpc = 1000.                      # [pc]
-        self.G1  = self.G1*self.msun/self.km_in_m**2/self.pc_in_m
-        # [pc msun^-1 (km/s)^2]
 
         ########## data options
         self.getnewdata = False # get new data computed from
@@ -77,11 +67,14 @@ class Params():
                      # population
         self.maxR = 5.            # [Xscale], max range in radial bins
 
-
+        ### debug options
+        self.debug = False
+        self.checksig = False
+        self.stopstep = 1
 
         ########## MultiNest options
         self.chi2_Sig_converged = False # set to False to first converge on Sig
-        self.chi2_switch = 1000.
+        self.chi2_switch = 10.
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run
@@ -103,10 +96,9 @@ class Params():
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 5   # number of parameters for beta, in sum of
+        self.nbeta = 4    # number of parameters for beta, in sum of
                          # polynomials
         self.x0turn = -1 # [pc] pinch radius for beta polynomial, set in data readin
-
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
         self.geom = 'sphere'
@@ -115,39 +107,25 @@ class Params():
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
-
-        self.nlive = 2*self.ndim
+        self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
-
 
         ########## spherical case and both cases
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.rhospread = 1.       # with this spread, [dex] in log space
-        self.nuspread = 0.5
-        self.iscale = self.nrho/2 # scale below which range of
-                                         # n(r)<2. instead of
-                                         # maxrhoslope; is adapted in
-                                         # gl_data.read_nu; if set to
-                                         # -1 here, use maxrhoslope
-                                         # everywhere
-        self.iscale_nu = -1
-
+        self.log10rhospread = 1.       # with this spread, [dex] in log space
+        self.log10nuspread = 0.5
+        self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
+        self.rlimnr_nu = 1    # same for nrnu
         self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
         self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
-
         self.maxrhoslope  = 4    # maximum slope (change if
                                  # monotonicity prior used) of rho
-        self.maxrhoslope_nu = 5
-
-        # following two parameters are not used anymore
-        self.maxlog10nu = -7     # direct sampling of nu: min value
-        self.minlog10nu = -10     # direct sampling of nu: max value
-        self.maxbetaslope = 1.5   # linear (and 2nd..order) max slope
-                                  # of beta*
+        self.maxnuslope = 5      # same for nrnu
+        self.beta00prior = False  # beta(r=0)=0
         self.minbetastar = -0.99  # clipping for beta, default: -0.99
-        self.maxbetastar = 1.0    # clipping for beta, default:  1.00
+        self.maxbetastar = 0.99    # clipping for beta, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
@@ -172,9 +150,6 @@ class Params():
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
-        self.checksig   = True # check sigma calculation routine with 'walk'
-
-
 
         ########## filesystem-related
         import import_path as ip

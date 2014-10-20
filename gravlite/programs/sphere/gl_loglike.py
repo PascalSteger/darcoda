@@ -109,15 +109,14 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate == 'gaia':
                         dlrnu[-1] = 6
                     nupar = np.hstack([nupar_half, dlrnu])
-                    sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
-                                                         rhostarpar, MtoL, \
-                                                         nupar, betapar, pop, gp)
-                    tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
-                    tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
-                    tmp_profs.set_zeta(zetaa, zetab, pop)
+                sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
+                tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
+                tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
+                tmp_profs.set_zeta(zetaa, zetab, pop)
 
             except Exception as detail:
                 gh.LOG(1, 'sigma error')
+                pdb.set_trace()
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
         off += offstep # still do this even if gp.chi2_Sig_converged is False
