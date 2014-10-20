@@ -16,9 +16,6 @@ import numpy as np
 import pdb
 from scipy.integrate import cumtrapz, romberg, simps, quad
 from scipy.interpolate import splrep, splev, splint
-from pylab import *
-ion()
-
 import gl_helper as gh
 import gl_physics as phys
 

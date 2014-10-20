@@ -10,9 +10,8 @@ import numpy.random as npr
 import pdb, sys
 import matplotlib
 matplotlib.use('pdf')
-import matplotlib.pyplot as plt
-# from matplotlib.backends.backend_pdf import PdfPages
 
+import matplotlib.pyplot as plt
 plt.ioff()
 
 from gl_class_profiles import Profiles

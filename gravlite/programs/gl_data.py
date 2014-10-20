@@ -8,8 +8,6 @@
 
 import pdb
 import numpy as np
-from pylab import *
-ion()
 import gl_physics as phys
 import gl_helper as gh
 import gl_project as glp

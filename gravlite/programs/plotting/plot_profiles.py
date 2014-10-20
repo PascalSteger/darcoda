@@ -12,10 +12,6 @@ import numpy as np
 import numpy.random as npr
 import time
 npr.seed(int(time.time())) # 1989 for random events that are reproducible
-import matplotlib
-matplotlib.use('pdf')
-import matplotlib.pyplot as plt
-plt.ioff()
 from optparse import OptionParser
 import gl_helper as gh
 

@@ -144,7 +144,7 @@ def choose_obs(sel):
 
 
 def get_case(investigate):
-    default = 5
+    default = 1
     invalid = True
     while(invalid):
         try:

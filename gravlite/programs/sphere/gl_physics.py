@@ -12,11 +12,9 @@ import numpy as np
 from scipy.interpolate import splrep, splint, splev
 import gl_chi as gc
 import gl_helper as gh
-
 import gl_analytic as ga
 import gl_int as gi
-from pylab import *
-ion()
+
 
 def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
     return rho0*(r/r_DM)**(-gamma_DM)*\

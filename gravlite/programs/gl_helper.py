@@ -9,8 +9,6 @@ import sys, traceback, pdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps
-from pylab import *
-ion()
 import time
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
@@ -323,7 +321,7 @@ def checkpositive(vec, place=''):
 
 
 def expolpowerlaw(R0, Sigdat, Rnuright, minp = -2.001):
-    alpha = (np.log(Sigdat[-3])-log(Sigdat[-1]))/(np.log(R0[-3])-np.log(R0[-1]))
+    alpha = (np.log(Sigdat[-3])-np.log(Sigdat[-1]))/(np.log(R0[-3])-np.log(R0[-1]))
     alpha = min(alpha, minp) # assert finite mass
     Sig0  = Sigdat[-1]
     logSigdatright = np.log(Sig0)+alpha*(np.log(Rnuright)-np.log(R0[-1]))

@@ -303,7 +303,6 @@ class Files:
 
         alpha_DM    = 1;    beta_DM     = 3;
         r_DM        = 1000                    # fixed to 1000pc
-        import gl_helper as gh
         AAA = gh.myfill(100*gamma_star1)     # 100
         BBB = gh.myfill(10*beta_star1)       # 050
         CCC = gh.myfill(r_star1/10)          # 100
