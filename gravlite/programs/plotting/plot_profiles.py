@@ -13,7 +13,7 @@ import numpy.random as npr
 npr.seed(1989) # for random events that are reproducible
 
 import matplotlib
-#matplotlib.use('pdf')
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 plt.ioff()
 
@@ -115,8 +115,7 @@ if __name__ == '__main__':
     #parser.add_option("-a", "--action", dest="action",
     #                  default="p", help="action to take: p: print, k: kill")
     (options, args) = parser.parse_args()
-
-    gh.LOG(1, 'plot_profiles '+options.investigate+' '+options.case+' '+str(options.latest))
+    gh.LOG(1, 'plot_profiles '+str(options.investigate)+' '+str(options.case)+' '+str(options.latest))
 
     import select_run as sr
     timestamp, basename = sr.run(options.investigate, \

@@ -72,7 +72,6 @@ def geom_loglike(cube, ndim, nparams, gp):
         if gp.chi2_Sig_converged:
             betapar = np.array(cube[off:off+offstep])
             tmp_beta, tmp_betastar = phys.beta(gp.xipol, betapar, gp)
-
             if check_beta(tmp_beta, gp):
                 gh.LOG(2, 'beta error')
                 tmp_profs.chi2 = gh.err(1., gp)
@@ -92,7 +91,6 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate =='gaia':
                         dlr[-1] = 4
                     rhopar = np.hstack([rhopar_half, dlr])
-
                     rhostarpar = 0.0*rhopari
                     MtoL = 0.0
                     if gp.investigiiate == 'gaia':
@@ -111,19 +109,18 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate == 'gaia':
                         dlrnu[-1] = 6
                     nupar = np.hstack([nupar_half, dlrnu])
-
                     sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, \
                                                          rhostarpar, MtoL, \
                                                          nupar, betapar, pop, gp)
+                    tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
+                    tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
+                    tmp_profs.set_zeta(zetaa, zetab, pop)
+
             except Exception as detail:
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
-            tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
-            tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
-            tmp_profs.set_zeta(zetaa, zetab, pop)
         off += offstep # still do this even if gp.chi2_Sig_converged is False
-
     if off != gp.ndim:
         gh.LOG(1, 'wrong subscripts in gl_loglike')
         pdb.set_trace()

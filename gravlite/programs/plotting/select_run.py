@@ -304,7 +304,7 @@ def run(investigate="", case=-1, latest=False):
 
     if latest:
         fdl=list_files(basedir)
-        sel=-5
+        sel=-1
     else:
         # import import_path as ip
         # ip.import_path(basedir+'/programs/gl_params.py')

@@ -9,7 +9,6 @@ import numpy as np
 import numpy.random as npr
 import pdb, sys
 import matplotlib
-#matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -102,14 +101,11 @@ class ProfileCollection():
             if self.subset[0] <= self.chis[k] <= self.subset[1]:
                 self.goodprof.append(self.profs[k].get_prof(prof, pop))
                 self.goodchi.append(self.chis[k])
-
         tmp = gh.sort_profiles_binwise(np.array(self.goodprof).transpose()).transpose()
         ll = len(tmp)
-
         #norm = 1
         #if prof == 'Sig':
         #    norm = gh.ipol_rhalf_log(gp.xepol, tmp[ll/2], gp.Xscale[0])
-
         self.Mmin.set_prof(prof,  tmp[0],       pop, gp)
         self.M95lo.set_prof(prof, tmp[ll*0.05], pop, gp)
         self.M68lo.set_prof(prof, tmp[ll*0.32], pop, gp)
@@ -144,12 +140,10 @@ class ProfileCollection():
     def sort_profiles(self, gp):
         self.sort_prof('rho', 0, gp)
         self.sort_prof('M', 0, gp)
-
         self.sort_prof('Sig', 0, gp)
         self.sort_prof('nr', 0, gp)
         self.sort_prof('nrnu', 0, gp)
         self.sort_prof('nu', 0, gp)
-
         for pop in np.arange(1, gp.pops+1):
             self.sort_prof('betastar', pop, gp)
             self.sort_prof('beta', pop, gp)
@@ -179,7 +173,6 @@ class ProfileCollection():
                 nu = ga.rho_gaia(r0,gp)[pop]
                 annu.append(nu)
                 anSig.append(glp.rho_INT_Sig(r0, nu, gp))
-
         elif gp.investigate == 'walk':
             anrho = ga.rho_walk(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
@@ -193,7 +186,6 @@ class ProfileCollection():
                 nu = ga.rho_walk(r0, gp)[pop]
                 annu.append(nu)
                 anSig.append(glp.rho_INT_Sig(r0, nu, gp))
-
         elif gp.investigate == 'triax':
             anrho = ga.rho_triax(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
@@ -207,11 +199,9 @@ class ProfileCollection():
                 nu = ga.rho_triax(r0, gp)[pop]
                 annu.append(nu)
                 anSig.append( glp.rho_INT_Sig(r0, nu, gp))
-
         self.analytic.set_prof('rho', anrho, 0, gp)
         self.analytic.set_prof('M', anM, 0, gp)
         self.analytic.set_prof('nr', annr, 0, gp)
-
         self.analytic.set_prof('nu', annu[0], 0, gp)
         self.analytic.set_prof('nrnu', -gh.derivipol(np.log(annu[0]), np.log(r0)), 0, gp)
         self.analytic.set_prof('Sig', anSig[0], 0, gp)
@@ -223,7 +213,6 @@ class ProfileCollection():
             self.analytic.set_prof('nrnu', nrnu, pop, gp)
             self.analytic.set_prof('Sig', anSig[pop] , pop, gp)#/ Signorm, pop, gp)
             self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp) # TODO: find analytic profile
-
         return
     ## \fn set_analytic(x0, gp)
     # set analytic curves (later shown in blue)
@@ -241,7 +230,6 @@ class ProfileCollection():
         output.add('M 68% CL high '+ uni, self.M68hi.get_prof(prof, pop))
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
         output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
-
         if (gp.investigate =='walk' or gp.investigate=='gaia') \
            and (prof != 'Sig'):
             out_an = go.Output()
@@ -372,7 +360,6 @@ class ProfileCollection():
             ax.set_ylabel('frequency')
         else:
             ax.set_xlabel('$R\\quad[\\rm{pc}]$')
-
         if prof == 'rho':
             ax.set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
         elif prof == 'M':
