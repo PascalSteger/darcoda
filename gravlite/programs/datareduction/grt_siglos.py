@@ -22,10 +22,10 @@ from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
 
 def run(gp):
     # get radius, used for all binning
-    print('input: ', gpr.get_com_file(0))
-    if gf.bufcount(gpr.get_com_file(0))<2:
+    print('input: ', gp.files.get_com_file(0))
+    if gf.bufcount(gp.files.get_com_file(0))<2:
         return
-    x,y,vlos = np.loadtxt(gpr.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
+    x,y,vlos = np.loadtxt(gp.files.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
     totmass_tracers = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rscale]
 

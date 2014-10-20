@@ -73,7 +73,6 @@ class Files:
 
         ## [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
         self.params = []
-
         if gp.investigate == 'hern':
             self.set_hern(gp, timestamp)
         elif gp.investigate == 'walk':
@@ -88,6 +87,9 @@ class Files:
             self.set_discsim(gp, timestamp)
         elif gp.investigate == 'discmock':
             self.set_discmock(gp, timestamp)
+        else:
+            print(' wrong investigation in Files()')
+            pdb.set_trace()
 
 
         ## directory and basename of all output files
@@ -494,6 +496,14 @@ class Files:
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
+
+
+    def get_com_file(n):
+        gh.sanitize_scalar(n, 0, 2, True)
+        return self.dir+'centeredpos_' + str(n) + '.txt'
+    ## \fn get_com_file(n)
+    # get filename of COM file
+    # @param n population
 
 
     def get_outfiles(self):

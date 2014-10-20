@@ -161,7 +161,7 @@ def run(gp):
         R = np.sqrt(x*x+y*y)             # [pc]
         Rscalei = np.median(R)
         gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
-        gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
+        gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
 
         if gpr.showplots:
             gpr.show_part_pos(x, y, pmn, Rscale)

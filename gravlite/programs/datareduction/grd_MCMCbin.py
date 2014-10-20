@@ -23,7 +23,7 @@ from BiWeight import meanbiweight
 
 
 def run(gp):
-    xall,yall = np.loadtxt(gpr.get_com_file(0), skiprows=1, \
+    xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, \
                            usecols=(0,1), unpack=True)
     # 2*[Rscale0]
 
@@ -34,16 +34,16 @@ def run(gp):
     R = R[(R<Rmax)] # [Rscale0]
 
     Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
-    Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
+    Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
-        print('input: ', gpr.get_com_file(pop))
+        print('input: ', gp.files.get_com_file(pop))
         # start from data centered on COM already:
-        if gf.bufcount(gpr.get_com_file(pop))<2: continue
-        x,y,v = np.loadtxt(gpr.get_com_file(pop),\
+        if gf.bufcount(gp.files.get_com_file(pop))<2: continue
+        x,y,v = np.loadtxt(gp.files.get_com_file(pop),\
                            skiprows=1,usecols=(0,1,2),unpack=True)
                            # [Rscalei], [Rscalei], [km/s]
 

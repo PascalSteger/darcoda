@@ -58,6 +58,21 @@ def sanitize_vector(vec, length, mini, maxi, debug):
 # @param debug bool
 
 
+
+
+def volume_circular_ring(Binmin, Binmax, gp):
+    Vol = np.zeros(gp.nipol)
+    for k in range(gp.nipol):
+        Vol[k] = np.pi*(Binmax[k]**2-Binmin[k]**2) # [Rscale^2] or [pc^2]
+    return Vol
+## \fn volume_circular_ring(Binmin, Binmax, gp)
+# volume of a circular ring from binmin to binmax, in [Rscale^2] or [pc^2]
+# @param Binmin in [Rscale] or [pc]
+# @param Binmax in [Rscale] or [pc]
+# @param gp global parameters
+
+
+
 def sanitize_scalar(var, mini, maxi, debug):
     if var < mini:
         LOG(1, 'var has too small value')

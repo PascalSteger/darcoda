@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -22,13 +22,22 @@ import pickle, pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
+
+
+# optionally start with -i and -c switches, to batch start gaia and walk runs
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-i", "--investigation", dest="investigation",
+                      default="", help="investigation to run: gaia, walk, hern, triax, discmock")
+parser.add_option("-c", "--case", dest="case",
+                      default=-1, help="case: 1, 2, ..")
+(options, args) = parser.parse_args()
+print('gravlite.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
-
-
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
-
-gp = gl_params.Params()
+ts = '' # empty timestamp means: create new timestamp with folder
+gp = gl_params.Params(ts, options.investigation, int(options.case))
 
 import gl_file as gf
 

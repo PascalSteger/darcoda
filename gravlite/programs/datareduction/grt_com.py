@@ -12,13 +12,13 @@ import sys, pdb
 from pylab import *
 ion()
 
-import gr_params as gpr
-from gl_helper import expDtofloat
 from gl_class_files import *
 from gl_centering import *
-import gl_file as gf
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
+
     print('input: ', gpr.fil)
     x0,y0,vlos = np.genfromtxt(gpr.fil, skiprows=0, unpack =  True,
                                usecols = (0,1,5))
@@ -40,6 +40,7 @@ def run(gp):
     y0 -= com_y # [pc]
     vlos -= com_vz #[km/s]
 
+    import gl_file as gf
     for pop in range(2):
         Rc = np.sqrt(x0**2+y0**2) # [pc]
         Rhalf = np.median(Rc) # [pc]
@@ -59,7 +60,7 @@ def run(gp):
 
         gf.write_Xscale(gp.files.get_scale_file(pop), np.median(R))
 
-        c = open(gpr.get_com_file(pop), 'w')
+        c = open(gp.files.get_com_file(pop), 'w')
         print('# x [Xscale],','y [Xscale],','vLOS [km/s],','Xscale = ', \
               Rscale, ' pc', file=c)
         for k in range(len(x)):

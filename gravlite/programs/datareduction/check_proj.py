@@ -42,9 +42,9 @@ def run():
         totmass_tracers.append(B[3])
 
         print('#######  working on component ',comp)
-        print('input: ',gpr.get_com_file(comp)+'_3D')
+        print('input: ',gp.files.get_com_file(comp)+'_3D')
         # start from data centered on COM already:
-        if gf.bufcount(gpr.get_com_file(comp)+'_3D')<2: continue
+        if gf.bufcount(gp.files.get_com_file(comp)+'_3D')<2: continue
 
 
 

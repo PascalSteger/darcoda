@@ -62,8 +62,8 @@ def run(gp):
         print(Rscale, file=crscale)
         crscale.close()
 
-        gh.LOG(2, 'grh_com: output: ', gpr.get_com_file(pop))
-        filepos = open(gpr.get_com_file(pop), 'w')
+        gh.LOG(2, 'grh_com: output: ', gp.files.get_com_file(pop))
+        filepos = open(gp.files.get_com_file(pop), 'w')
         print('# x [Rscale]','y [Rscale]','vLOS [km/s]', file=filepos)
         for k in range(ndm):
             print(xnew[k]/Rscale, ynew[k]/Rscale, vznew[k], file=filepos)

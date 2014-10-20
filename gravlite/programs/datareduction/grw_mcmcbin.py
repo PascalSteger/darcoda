@@ -35,7 +35,7 @@ def volume_spherical_shell(binmin, binmax, gp):
 
 
 def run(gp):
-    xall,yall,zall = np.loadtxt(gpr.get_com_file(0),skiprows=1,\
+    xall,yall,zall = np.loadtxt(gp.files.get_com_file(0),skiprows=1,\
                                 usecols=(0,1,2),unpack=True) # 2*[rscale0]
     rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)+'_3D')
     xall *= rscale0
@@ -56,10 +56,10 @@ def run(gp):
 
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
-        print('input: ',gpr.get_com_file(pop)+'_3D')
+        print('input: ',gp.files.get_com_file(pop)+'_3D')
         # start from data centered on COM already:
-        if gf.bufcount(gpr.get_com_file(pop)+'_3D')<2: continue
-        x,y,z,v = np.loadtxt(gpr.get_com_file(pop)+'_3D',\
+        if gf.bufcount(gp.files.get_com_file(pop)+'_3D')<2: continue
+        x,y,z,v = np.loadtxt(gp.files.get_com_file(pop)+'_3D',\
                            skiprows=1,usecols=(0,1,2,3),unpack=True)
         # 3*[rscale], [km/s]
         rscalei = gf.read_Xscale(gp.files.get_scale_file(pop)) # [pc]

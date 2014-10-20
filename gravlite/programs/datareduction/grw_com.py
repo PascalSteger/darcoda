@@ -119,8 +119,8 @@ def run(gp):
         crscale.close()
 
         # store recentered positions and velocity
-        print('output: ',gpr.get_com_file(pop)+'_3D')
-        c = open(gpr.get_com_file(pop)+'_3D','w')
+        print('output: ',gp.files.get_com_file(pop)+'_3D')
+        c = open(gp.files.get_com_file(pop)+'_3D','w')
         print('# x [rscale],','y [rscale],', 'z [rscale]','vLOS [km/s],','rscale = ',rscalei,' pc', file=c)
         for k in range(len(x)):
             print(x[k]/rscalei, y[k]/rscalei, z[k]/rscalei, vz[k], file=c) # 3* [pc], [km/s]

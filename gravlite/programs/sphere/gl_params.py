@@ -23,29 +23,25 @@ def check_investigate(inv):
 
 
 class Params():
-    def __init__(self, timestamp = ''):
-
-        host_name = socket.gethostname()
-        user_name = getpass.getuser()
-
-        if 'darkside' in host_name:
-            self.machine = 'darkside'
-        elif 'pstgnt332' in host_name:
-            self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS'
-        elif ('lisa' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS'
-
-        self.investigate  = 'gaia' # determine which data set to work on
-                                  # 'hern': check simple Hernquist prof. from simwiki
-                                  # 'walk': check with full obs. cont. data from Walker
-                                  # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
-                                  #         challenge, 1 pop only
-                                  # 'obs': real data from Fornax dwarf galaxy
+    def __init__(self, timestamp = '', investigate = '', case = -1):
+        pdb.set_trace()
+        if investigate != '':
+            self.investigate = investigate
+        else:
+            self.investigate  = 'gaia' # determine which data set to work on
+                                       # 'hern': check simple Hernquist prof. from simwiki
+                                       # 'walk': check with full obs. cont. data from Walker
+                                       # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
+                                       #         challenge, 1 pop only
+                                       # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
-        self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
-                      # triax (1-4:core, 5-8:cusp)
+        print(' investigation : ', self.investigate)
+        if case != -1:
+            self.case = case
+        else:
+            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+                          # triax (1-4:core, 5-8:cusp)
+        print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
@@ -156,6 +152,16 @@ class Params():
 
         # filesystem-related
         # ----------------------------------------------------------------------
+        host_name = socket.gethostname()
+        user_name = getpass.getuser()
+        if 'darkside' in host_name:
+            self.machine = 'darkside'
+        elif 'pstgnt332' in host_name:
+            self.machine = 'pstgnt332'
+        elif ('lisa' in host_name) and ('hsilverw' in user_name):
+            self.machine = 'lisa_HS'
+        elif ('lisa' in host_name) and ('sofia' in user_name):
+            self.machine = 'lisa_SS'
         import import_path as ip
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version

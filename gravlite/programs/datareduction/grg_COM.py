@@ -10,13 +10,6 @@
 import numpy as np
 import sys, pdb
 
-from pylab import *
-ion()
-
-import gr_params as gpr
-import gl_helper as gh
-import gl_centering as glc
-import gl_file as gf
 
 def select_pm(x, y, z, vz, pm):
     return x[pm], y[pm], z[pm], vz[pm]
@@ -30,6 +23,9 @@ def select_pm(x, y, z, vz, pm):
 
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
+
     print('input:',gpr.fil)
     x0, y0, z0, vx, vy, vz = np.transpose(np.loadtxt(gpr.fil))
     # for purely tangential beta=-0.5 models, have units of kpc instead of pc
@@ -40,10 +36,12 @@ def run(gp):
 
     # cutting pm_i to a maximum of ntracers particles:
     from random import shuffle
+    import gl_helper as gh
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
     x0, y0, z0, vz0 = select_pm(x0, y0, z0, vz, ind1)
 
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
+    import gl_centering as glc
     com_x, com_y, com_z, com_vz = glc.com_shrinkcircle_v(x0, y0, z0, vz, PM)
 
     # from now on, work with 2D data only;
@@ -55,6 +53,7 @@ def run(gp):
     R0 = np.sqrt(x0*x0+y0*y0) # [pc]
     Rscale = np.median(R0) # [pc]
 
+    import gl_file as gf
     for pop in range(gp.pops+1):      # gp.pops +1 for all components together
         pmr = (R0<(gp.maxR*Rscale))
         m = np.ones(len(R0))
@@ -64,7 +63,7 @@ def run(gp):
         Rscalei = np.median(R)
         # print("x y z" on first line, to interprete data later on)
         gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
-        gf.write_data_output(gpr.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
+        gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
 
         if gpr.showplots:
             gpr.show_part_pos(x, y, pmn, Rscale)

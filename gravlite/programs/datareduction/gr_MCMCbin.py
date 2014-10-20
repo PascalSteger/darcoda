@@ -64,7 +64,7 @@ def obs_Sig_phot(Binmin, Binmax, Sig_kin, gp):
 
 
 def run(gp):
-    xall,yall = np.loadtxt(gpr.get_com_file(0), skiprows=1, \
+    xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, \
                            usecols=(0,1), unpack=True)
     # 2*[Rscale0]
 
@@ -81,20 +81,20 @@ def run(gp):
     gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
                           Rbin, \
                           2*maxr, 4*maxr, 8*maxr]) # [pc]
-    Vol = gpr.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
+    Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
 
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
-        print('input: ', gpr.get_com_file(pop))
+        print('input: ', gp.files.get_com_file(pop))
         # start from data centered on COM already:
-        if gf.bufcount(gpr.get_com_file(pop))<2:
+        if gf.bufcount(gp.files.get_com_file(pop))<2:
             continue
 
         # only read in data if needed: pops = 1: reuse data from pop=0 part
         if (gp.pops == 1 and pop < 1 or gp.pops == 2):
-            x,y,v = np.loadtxt(gpr.get_com_file(pop),\
+            x,y,v = np.loadtxt(gp.files.get_com_file(pop),\
                                skiprows=1,usecols=(0,1,2),unpack=True)
             # [Rscalei], [Rscalei], [km/s]
 

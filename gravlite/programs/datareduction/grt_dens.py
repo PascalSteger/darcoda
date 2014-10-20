@@ -18,9 +18,9 @@ import gl_project as glp
 
 def run(gp):
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
-    print('input: ',gpr.get_com_file(0))
+    print('input: ',gp.files.get_com_file(0))
     # start from data centered on COM already:
-    x,y,v = np.loadtxt(gpr.get_com_file(0),\
+    x,y,v = np.loadtxt(gp.files.get_com_file(0),\
                        skiprows=1,usecols=(0,1,2),unpack=True) #[Rscalei], [Rscalei], [km/s]
 
     for pop in range(2):
@@ -35,7 +35,7 @@ def run(gp):
         totmass_tracers = 1.*len(x) #[munit], munit = 1/star
 
         Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
-        Vol = gpr.volume_circular_ring(Binmin, Binmax, gp)
+        Vol = gh.volume_circular_ring(Binmin, Binmax, gp)
 
         # rs = gpr.Rerr*np.random.randn(len(r))+r
         Rs = R  # [Rscale] # if no initial offset is whished
