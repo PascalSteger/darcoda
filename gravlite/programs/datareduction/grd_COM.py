@@ -9,7 +9,6 @@
 
 import numpy as np
 import sys, pdb
-import gr_params as gpr
 import gl_helper as gh
 import gl_file as gf
 from gl_centering import com_shrinkcircle_v_2D
@@ -47,6 +46,8 @@ def select_pm(x, y, vz, Mg, PM, pm):
 # @param pm
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\

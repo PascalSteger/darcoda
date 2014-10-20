@@ -14,7 +14,6 @@ import numpy as np
 from scipy.integrate import simps
 import pymultinest
 
-import gr_params as gpr
 import gl_helper as gh
 from gl_centering import com_shrinkcircle_v_2D
 import BiWeight as BW
@@ -197,6 +196,9 @@ def myloglike(cube, ndim, nparams):
 
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
+
     global DL
     DL = {0: lambda x: x * (138),#+/- 8 for Fornax
           1: lambda x: x * (101),#+/- 5 for Carina

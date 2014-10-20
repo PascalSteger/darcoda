@@ -13,7 +13,6 @@ from pylab import *
 ion()
 from random import shuffle
 
-import gr_params as gpr
 import gl_helper as gh
 import gl_file as gf
 from gl_helper import expDtofloat
@@ -82,6 +81,8 @@ def read_data(filename):
 
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     print('input: ', gpr.fil)
     x0,y0,z0,vb0,vz0,Mg0,PM0,comp0 = read_data(gpr.fil)
     # [pc], [km/s], [1]

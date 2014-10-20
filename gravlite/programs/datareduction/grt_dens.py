@@ -11,12 +11,13 @@
 
 import sys, pdb
 import numpy as np
-import gr_params as gpr
 import gl_file as gf
 import gl_helper as gh
 import gl_project as glp
 
 def run(gp):
+    import gr_params
+    gpr = gr_parmas.Params(gp)
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     print('input: ',gp.files.get_com_file(0))
     # start from data centered on COM already:
@@ -34,7 +35,7 @@ def run(gp):
         x = x[sel]; y = y[sel]; v = v[sel] #[rscale]
         totmass_tracers = 1.*len(x) #[munit], munit = 1/star
 
-        Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
+        Binmin, Binmax, Rbin = gh.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
         Vol = gh.volume_circular_ring(Binmin, Binmax, gp)
 
         # rs = gpr.Rerr*np.random.randn(len(r))+r

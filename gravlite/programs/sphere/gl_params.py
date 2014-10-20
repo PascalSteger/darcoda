@@ -24,7 +24,6 @@ def check_investigate(inv):
 
 class Params():
     def __init__(self, timestamp = '', investigate = '', case = -1):
-        pdb.set_trace()
         if investigate != '':
             self.investigate = investigate
         else:

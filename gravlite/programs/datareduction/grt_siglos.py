@@ -15,12 +15,13 @@ import sys
 import math
 
 from BiWeight import meanbiweight
-import gr_params as gpr
 import gl_file as gf
 from gl_class_files import *
 from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     # get radius, used for all binning
     print('input: ', gp.files.get_com_file(0))
     if gf.bufcount(gp.files.get_com_file(0))<2:
@@ -34,7 +35,7 @@ def run(gp):
     rmin = 0.                                       # [rscale]
     rmax = max(r) if gp.maxR < 0 else 1.0*gp.maxR # [rscale]
 
-    binmin, binmax, rbin = gpr.determine_radius(r, rmin, rmax, gp) # [rscale0]
+    binmin, binmax, rbin = gh.determine_radius(r, rmin, rmax, gp) # [rscale0]
 
     # offset from the start!
     rs = gpr.Rerr*np.random.randn(len(r))+r #[rscale]

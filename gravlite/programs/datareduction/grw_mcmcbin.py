@@ -16,7 +16,6 @@ from scipy.stats import kurtosis
 from pylab import *
 ion()
 
-import gr_params as gpr
 import gl_file as gf
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from gl_class_files import *
@@ -35,6 +34,8 @@ def volume_spherical_shell(binmin, binmax, gp):
 
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     xall,yall,zall = np.loadtxt(gp.files.get_com_file(0),skiprows=1,\
                                 usecols=(0,1,2),unpack=True) # 2*[rscale0]
     rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)+'_3D')
@@ -51,7 +52,7 @@ def run(gp):
     print('rmax [rscale] = ', rmax)
     r = r[(r<rmax)] # [pc]
 
-    binmin, binmax, rbin = gpr.determine_radius(r, rmin, rmax, gp) # [pc]
+    binmin, binmax, rbin = gh.determine_radius(r, rmin, rmax, gp) # [pc]
     vol = volume_spherical_shell(binmin, binmax, gp) # [pc^3]
 
     for pop in range(gp.pops+1):

@@ -58,6 +58,27 @@ def sanitize_vector(vec, length, mini, maxi, debug):
 # @param debug bool
 
 
+def determine_radius(R, Rmin, Rmax, gp):
+    if gp.binning == 'linspace':
+        LOG(2, ' bins in linear spacings: ', gp.nipol)
+        return bin_r_linear(Rmin, Rmax, gp.nipol)
+    elif gp.binning == 'logspace':
+        LOG(2, ' bins in log spacings: ', gp.nipol)
+        return bin_r_log(Rmax/gp.nipol, Rmax, gp.nipol)
+    elif gp.binning == 'consttr':
+        LOG(2, ' particles per bin: ', len(R)/gp.nipol)
+        return bin_r_const_tracers(R, gp.nipol)
+    else:
+        LOG(1, 'unknown gp.binning in gpr.determine_radius')
+        pdb.set_trace()
+## \fn determine_radius(R, Rmin, Rmax, gp)
+# determine bin radii once and for all. this must not be changed between
+# readout and gravlite run. if you wish to change: set gp.getnewdata =
+# True in gl_params.py
+# @param R radii of all tracer particles
+# @param Rmin float
+# @param Rmax float
+# @param gp global parameters
 
 
 def volume_circular_ring(Binmin, Binmax, gp):

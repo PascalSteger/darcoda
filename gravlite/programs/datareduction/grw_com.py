@@ -12,12 +12,13 @@ import sys, pdb
 
 from pylab import *
 ion()
-import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 from gl_centering import *
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     ## read input measurements
     print('input: ', gpr.fil)
     x0,y0,z0,vb0,vz0,Mg0,PM0,comp0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\

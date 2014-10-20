@@ -490,7 +490,6 @@ class Files:
             self.nufiles.append(self.dir+'nu/nu_2.txt')
             self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
             self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
-
         return
     ## \fn set_discmock(self, gp, timestamp='')
     # set all properties if looking at simple disc
@@ -498,7 +497,7 @@ class Files:
     # @param timestamp string YYYYMMDDhhmm
 
 
-    def get_com_file(n):
+    def get_com_file(self, n):
         gh.sanitize_scalar(n, 0, 2, True)
         return self.dir+'centeredpos_' + str(n) + '.txt'
     ## \fn get_com_file(n)

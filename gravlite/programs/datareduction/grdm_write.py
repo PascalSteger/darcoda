@@ -16,7 +16,6 @@ ion()
 
 import gl_units as gu
 import gl_helper as gh
-import gr_params as gpr
 
 def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp):
     for pop in range(gp.pops+1):
@@ -162,6 +161,8 @@ def run(gp):
     nu_dat_bin1 /= (binmax1-binmin1)
     nu_dat_err_bin1 = np.sqrt(nu_dat_bin1)
 
+    import gr_params
+    gpr = gr_params.Params(gp)
     if gpr.showplots:
         nuscaleb = nu_zth[np.argmin(np.abs(zth-z0))]
         loglog(zth, nu_zth/nuscaleb, 'b.-')

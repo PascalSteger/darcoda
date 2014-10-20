@@ -16,7 +16,6 @@ ion()
 
 import gl_params
 gp = gl_params.Params()
-import gr_params as gpr
 import gl_file as gf
 from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
 from gl_class_files import *

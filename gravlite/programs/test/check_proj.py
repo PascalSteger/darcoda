@@ -16,7 +16,6 @@ import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/datareduction')
 
 import gl_params as gp
-import gr_params as gpr
 import gl_file as gf
 import gl_helper as gp
 import gl_project as glp

@@ -13,7 +13,6 @@ import pymc as mc
 from pylab import *
 ion()
 
-import gr_params as gpr
 from gl_helper import expDtofloat
 from gl_class_files import *
 from scipy.stats import norm
@@ -136,7 +135,9 @@ def bimodal_gauss(data):
 # @return M MCMC object
 
 
-def run():
+def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     x0,y0,z0,vz0,vb0,Mg0,PM0,pop0=np.genfromtxt(gpr.fil,skiprows=0,unpack=True,\
                                     usecols=(0, 1, 2, 5, 12, 13, 19, 20),\
                                     dtype="d17",\

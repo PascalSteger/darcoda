@@ -15,7 +15,6 @@ from scipy.stats import kurtosis
 from pylab import *
 ion()
 
-import gr_params as gpr
 import gl_file as gf
 import gl_helper as gh
 import gl_project as glp
@@ -23,6 +22,8 @@ from BiWeight import meanbiweight
 
 
 def run(gp):
+    import gr_params
+    gpr = gr_params.Params(gp)
     xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, \
                            usecols=(0,1), unpack=True)
     # 2*[Rscale0]
@@ -33,7 +34,7 @@ def run(gp):
     Rmax = max(R) if gp.maxR < 0 else 1.0*gp.maxR # [Rscale0]
     R = R[(R<Rmax)] # [Rscale0]
 
-    Binmin, Binmax, Rbin = gpr.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
+    Binmin, Binmax, Rbin = gh.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
