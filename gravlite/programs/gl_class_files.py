@@ -36,7 +36,6 @@ def newdir(bname):
 
 
 class Files:
-    # massfile[], nufile[], sigfile[], outname = Files(investigate)
     # we have the convention to use
     # pop==0 for all tracer populations together
     # pop==1 for first tracer population
@@ -51,7 +50,7 @@ class Files:
         ## relative path to the 'programs' directory
         self.progdir = ''
         self.modedir = ''
-        self.set_dir(gp.machine, gp.case, gp.investigate)
+        self.set_dir(gp.machine, gp.case, gp.investigate) # changes self.shortdir
         ## file with 2D summed masses
         self.massfiles = []
         ## file with analytic values for Walker models
@@ -92,11 +91,10 @@ class Files:
         ## directory and basename of all output files
         if timestamp == '':
             import datetime
-            bname = datetime.datetime.now().strftime("%Y%m%d%H%M")
+            self.timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
         else:
-            bname = timestamp
-        self.outdir = self.shortdir+bname+'/'
-        self.outname = bname
+            self.timestamp = timestamp
+        self.outdir = self.shortdir+self.timestamp+'/'
         # shorter dir names in Multinest (bound to <= 100 total)
         #os.system('ln -sf '+ self.dir+' '+self.modedir + str(gp.case))
         os.system('mkdir -p '+self.outdir)

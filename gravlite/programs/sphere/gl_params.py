@@ -110,10 +110,10 @@ class Params():
         # automatic plotting options
         # ----------------------------------------------------------------------
         self.last_plot = -1    # timestamp of last automatic plot, set to -1
-        self.plot_after = 10*1 # 3600  # [s] to elapse before automatic plotting
+        self.plot_after = 5*3600  # [s] to elapse before automatic plotting
 
 
-        # spherical case and both cases
+        # parameter spaces
         # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
@@ -133,24 +133,11 @@ class Params():
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
 
-
-        # disc case
-        # ----------------------------------------------------------------------
-        # norm1 = 17.**2 # offset of sig[0]/nu[0], from int starting
-        # at zmin instead of 0 norm2 = 10.**2 # and for the second
-        # component, if there is one
-        self.quadratic = False    # linear or quad interpol.
         self.monotonic = False    # mono-prior on rho(x)
         self.monotonic_nu = False # mono-prior on nu(x)
-        self.adddarkdisc = False  # for disc mock case: add a dark disc?
-        self.baryonmodel = 'sim' # read in surface density from
-                                 # corresponding surfden file
-                                 # 'silvia', 'sim', 'simple'
 
         # integration options
         # ----------------------------------------------------------------------
-        self.even = 'avg' # for simps integration (everywhere): 'avg',
-                          # 'first', 'last'
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the

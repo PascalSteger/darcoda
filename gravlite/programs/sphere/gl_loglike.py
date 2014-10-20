@@ -5,15 +5,12 @@
 # spherical version
 
 import numpy as np
-import pdb
-from pylab import *
-ion()
+import pdb, os, time
 from scipy.interpolate import splev, splrep
 
 import gl_physics as phys
-import time
 from gl_class_profiles import Profiles
-from gl_priors import check_bprior, check_beta
+from gl_priors import check_beta
 from gl_chi import calc_chi2
 import gl_helper as gh
 import gl_project as glp
@@ -130,11 +127,12 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     # after some predefined wallclock time, plot all profiles
     if time.time() - gp.last_plot >= gp.plot_after:
-        pdb.set_trace()
         gp.last_plot = time.time()
-        os.system('./plot_profiles.py -i '+gp.investigate+' -c '+str(gp.case)+' -l &')
-
-
+        try:
+            import plotting.plot_profiles
+            plotting.plot_profiles.run(gp.files.timestamp, gp.files.outdir, gp)
+        except:
+            print('plotting error in gl_loglike!')
     return tmp_profs
 ## \fn geom_loglike(cube, ndim, nparams, gp)
 # define log likelihood function to be called by pyMultinest and plot_profiles

@@ -27,7 +27,7 @@ def bufcount(filename):
 def removeDir(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
-# \fn removeDir(path)
+## \fn removeDir(path)
 # delete directory recursively, if it exists
 # @param path path to directory
 
@@ -38,14 +38,14 @@ def remove_empty_folders(fdl):
             with open(x[0]+"/ev.dat"):
                 # delete any folder that has empty ev.dat
                 if bufcount(x[0]+'/ev.dat') <= 0:
-                    #removeDir(x[0])
+                    removeDir(x[0])
                     print('empty '+x[0]+'/ev.dat, remove dir?')
                 continue
         except IOError:
-            # removeDir(x[0])
-            print(x[0]+'/ev.dat does not exist, removed empty directory '+x[0]+'?')
+            removeDir(x[0])
+            print(x[0]+'/ev.dat does not exist, remove empty directory '+x[0]+'?')
     return
-# \fn remove_empty_folders(fdl)
+## \fn remove_empty_folders(fdl)
 # remove all folders in list fdl without any ev.dat file in it = where
 # no iterations of the MultiNest algorithm were stored
 # @param fdl [(name, datestamp)] of all dirs in current mode
@@ -56,20 +56,29 @@ def list_files(basedir):
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
 
     from datetime import datetime
-    # delete all folders without or with empty ev.dat inside!
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
                                  '%Y%m%d%H%M')) for x in dirs]
     remove_empty_folders(fdl)
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
-    fdl = [(x,\
-            datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M'),\
-            bufcount(x+'/ev.dat')) for x in dirs]
+    fdl = []
+    for x in dirs:
+        ts = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
+        try:
+            co = bufcount(x+'/ev.dat')
+        except FileNotFoundError:
+            print('file not found')
+            co = 0
+        fdl.append((x, ts, co ))
 
     fdl.sort(key=lambda x: x[1])
 
     for i in range(len(fdl)):
-        fil = open(fdl[i][0]+'/programs/gl_params.py','r')
-        pops = 0                          # default: 0 populations, error
+        try:
+            fil = open(fdl[i][0]+'/programs/gl_params.py','r')
+        except FileNotFoundError:
+            print('missing '+fdl[i][0]+'/programs/gl_params.py')
+            continue
+        pops = 0                # default: 0 populations, error
         nipol = 0
         nbeta = 0
         for line in fil:
@@ -89,7 +98,8 @@ def list_files(basedir):
               "%5d"%fdl[i][2], 'its,', \
               pops, 'pops,',\
               nipol, 'bins,', 'nbeta=', nbeta, 'mono=', mono)
-    return np.transpose(np.array(fdl))[:][0]
+    out = np.transpose(np.array(fdl))[:][0]
+    return out
 ## \fn list_files(basedir)
 # return all working or completed MCMC run directories
 # @param basedir string of directory
@@ -300,11 +310,12 @@ def run(investigate="", case=-1, latest=False):
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
         basepath = '/home/sofia/blah/darcoda/gravlite/'
+
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
     if latest:
-        fdl=list_files(basedir)
-        sel=-1
+        fdl = list_files(basedir)
+        sel = -1
     else:
         # import import_path as ip
         # ip.import_path(basedir+'/programs/gl_params.py')

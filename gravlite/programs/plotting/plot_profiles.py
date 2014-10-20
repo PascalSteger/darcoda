@@ -3,25 +3,21 @@
 ## @file
 # plot all profiles of a given run
 
-# (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
 # start off with plotting/ in front of path
 #import sys
 import pdb, pickle, os, sys
 import numpy as np
 import numpy.random as npr
-npr.seed(1989) # for random events that are reproducible
-
+import time
+npr.seed(int(time.time())) # 1989 for random events that are reproducible
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 plt.ioff()
-
 from optparse import OptionParser
-
 import gl_helper as gh
-
-calculate_anew = False
 
 def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/data/')
@@ -84,7 +80,7 @@ def read_models(basename):
 # @param basename string
 
 
-def pcload_single_entries(basename):
+def pcload_single_entries(basename, gp):
     import gl_collection as glc
     pc = glc.ProfileCollection(gp.pops, gp.nipol)
     with open(basename+'pc2.save', 'rb') as fi:
@@ -96,9 +92,61 @@ def pcload_single_entries(basename):
             except EOFError:
                 break
     return pc
-## \fn pcload_single_entries(basename)
+## \fn pcload_single_entries(basename, gp)
 # load all data into [chi^2, profiles] pairs, and add to a profile collection
 # @param basename string
+# @param gp global parameters
+
+
+def run(timestamp, basename, gp):
+    prepare_output_folder(basename)
+    import gl_file as glf
+    gp.dat = glf.get_binned_data(gp)
+    read_scale(basename, gp) # store half-light radii in  gp.Xscale
+    import gl_helper as gh
+    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0])
+    # [Xscale0], [Munit/Xscale0^2]
+    # verified that indeed the stored files in the run directory are used
+    gp.xipol = Radii * gp.Xscale[0]       # [pc]
+    maxR = max(Radii)                     # [pc]
+    minR = min(Radii)                     # [pc]
+    Radii = np.hstack([minR/8, minR/4, minR/2, Radii, 2*maxR, 4*maxR, 8*maxR])
+    gp.xepol = Radii * gp.Xscale[0]       # [pc]
+    pc = pcload_single_entries(basename, gp)
+    if len(pc.chis) == 0:
+        gh.LOG(1, 'no profiles found for plotting')
+        return
+    # first plot all chi^2 values in histogram
+    pc.plot_profile(basename, 'chi2', 0, gp)
+    # then select only the best models for plotting the profiles
+    pc.cut_subset()
+    pc.set_x0(gp.xipol) # [pc]
+    if gp.investigate =='walk' or gp.investigate=='gaia':
+        r0analytic = np.logspace(np.log10(1.),\
+                                 np.log10(max(gp.xepol)), 100)
+        pc.set_analytic(r0analytic, gp)
+    pc.sort_profiles(gp)
+    pc.write_all(basename, gp)
+    pc.plot_profile(basename, 'rho', 0, gp)
+    if gp.investigate == 'obs':
+        pc.plot_profile(basename, 'Sig', 0, gp)
+        pc.plot_profile(basename, 'nu', 0, gp)
+        pc.plot_profile(basename, 'nrnu', 0, gp)
+    pc.plot_profile(basename, 'nr', 0, gp)
+    if gp.geom == 'sphere':
+        pc.plot_profile(basename, 'M', 0, gp)
+    for pop in np.arange(1, gp.pops+1):
+        pc.plot_profile(basename, 'betastar', pop, gp)
+        pc.plot_profile(basename, 'beta', pop, gp)
+        pc.plot_profile(basename, 'Sig', pop, gp)
+        pc.plot_profile(basename, 'nu', pop, gp)
+        pc.plot_profile(basename, 'nrnu', pop, gp)
+        pc.plot_profile(basename, 'sig', pop, gp)
+## \fn run(timestamp, basename, gp)
+# call all model read-in, and profile-plotting routines
+# @param timestamp string
+# @param basename string
+# @param gp global parameters
 
 
 if __name__ == '__main__':
@@ -115,82 +163,21 @@ if __name__ == '__main__':
     #                  default="p", help="action to take: p: print, k: kill")
     (options, args) = parser.parse_args()
     gh.LOG(1, 'plot_profiles '+str(options.investigate)+' '+str(options.case)+' '+str(options.latest))
-
     import select_run as sr
     timestamp, basename = sr.run(options.investigate, \
                                  options.case,\
                                  options.latest)
-    prepare_output_folder(basename)
-
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
-
     # load stored parameters
     ip.insert_sys_path(basename+'programs/')
     import gl_params as glp
     ip.remove_first()
-
     # uncomment following to use stored collection, loglike, all other modules
     #ip.insert_sys_path(basename+'sphere')
     #import gl_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
-
     gp = glp.Params(timestamp)
-    import gl_file as glf
-    gp.dat = glf.get_binned_data(gp)
-
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
-
-    read_scale(basename, gp) # store half-light radii in  gp.Xscale
-    import gl_helper as gh
-
-    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0])
-    # [Xscale0], [Munit/Xscale0^2]
-    # verified that indeed the stored files in the run directory are used
-
-    gp.xipol = Radii * gp.Xscale[0]       # [pc]
-    maxR = max(Radii)                     # [pc]
-    minR = min(Radii)                     # [pc]
-    Radii = np.hstack([minR/8, minR/4, minR/2, Radii, 2*maxR, 4*maxR, 8*maxR])
-    gp.xepol = Radii * gp.Xscale[0]       # [pc]
-
-    pc = pcload_single_entries(basename)
-    if len(pc.chis) == 0:
-        gh.LOG(1, 'no profiles found')
-        sys.exit(0)
-    # first plot all chi^2 values in histogram
-    pc.plot_profile(basename, 'chi2', 0, gp)
-
-    # then select only the best models for plotting the profiles
-    pc.cut_subset()
-    pc.set_x0(gp.xipol) # [pc]
-
-    if gp.investigate =='walk' or gp.investigate=='gaia':
-        r0analytic = np.logspace(np.log10(1.),\
-                                 np.log10(max(gp.xepol)), 100)
-        pc.set_analytic(r0analytic, gp)
-
-    pc.sort_profiles(gp)
-
-    pc.write_all(basename, gp)
-    pc.plot_profile(basename, 'rho', 0, gp)
-
-    if gp.investigate == 'obs':
-        pc.plot_profile(basename, 'Sig', 0, gp)
-        pc.plot_profile(basename, 'nu', 0, gp)
-        pc.plot_profile(basename, 'nrnu', 0, gp)
-
-    pc.plot_profile(basename, 'nr', 0, gp)
-    if gp.geom == 'sphere':
-        pc.plot_profile(basename, 'M', 0, gp)
-
-    for pop in np.arange(1, gp.pops+1):
-        pc.plot_profile(basename, 'betastar', pop, gp)
-        pc.plot_profile(basename, 'beta', pop, gp)
-        pc.plot_profile(basename, 'Sig', pop, gp)
-        pc.plot_profile(basename, 'nu', pop, gp)
-        pc.plot_profile(basename, 'nrnu', pop, gp)
-        pc.plot_profile(basename, 'sig', pop, gp)
-
-    # pc.plot_overview(basename, gp)
+    run(timestamp, basename, gp)

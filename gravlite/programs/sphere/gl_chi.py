@@ -82,7 +82,7 @@ def calc_chi2(profs, gp):
             chi2 += (chi2_zetaa + chi2_zetab)
 
     if not gp.chi2_Sig_converged:
-        chi2 *= 10
+        chi2 *= 10 # overamplify chi2 to get better models after switch
         if chi2 < gp.chi2_switch:
             gh.LOG(1, 'Sig finished burn-in, switching on sigma!')
             gp.chi2_Sig_converged = True

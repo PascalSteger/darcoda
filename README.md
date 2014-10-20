@@ -25,9 +25,24 @@ Following packets need to be installed on your system:
  * scipy
  * ipdb
 
-Unzip the file gravlite.zip, and run
+> git clone https://github.com/PascalSteger/darcoda $DARCODA_DIR
+> cd $DARCODA_DIR
 
-> ipython3 gravlite.py;
+or unzip the file darcoda.zip to $DARCODA_DIR . Then set the environment variables
+
+> export PYTHONPATH=$PYTHONPATH:$DARCODA_DIR/gravlite/programs/
+> export PYTHONPATH=$PYTHONPATH:$DARCODA_DIR/gravlite/programs/plotting/
+
+Adapt the path specifications to your needs in
+
+gl_params.py
+gl_class_files.py
+import_path.py
+
+and run
+
+> python3 gravlite.py
+
 
 
 Parameter files: Main configuration
