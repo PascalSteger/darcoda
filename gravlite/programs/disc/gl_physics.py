@@ -43,14 +43,14 @@ def rho(z0, rhopar, pop, gp):
     # and apply it to these radii, which may be anything in between
     zs =  np.log(z0/gp.Xscale[pop]) # have to integrate in d log(r)
     logrright = []; logrleft = []
-    if np.rank(rs) == 0:
-        if rs>0:
-            logrright.append(rs)
+    if np.rank(zs) == 0:
+        if zs>0:
+            logrright.append(zs)
         else:
-            logrleft.append(rs)
+            logrleft.append(zs)
     else:
-        logrright = rs[(rs>=0.)]
-        logrleft  = rs[(rs<0.)]
+        logrright = zs[(zs>=0.)]
+        logrleft  = zs[(zs<0.)]
         logrleft  = logrleft[::-1] # inverse order
 
     # integrate to left and right of halflight radius
