@@ -23,8 +23,6 @@ def get_case(cas):
 #             ntracer = 3e4              # case 2
 # @param cas case number: 0 (3000 tracers, 10k tracers)
 
-
-import os
 import os.path
 def newdir(bname):
     if not os.path.exists(bname):
