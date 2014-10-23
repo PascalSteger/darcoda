@@ -5,7 +5,7 @@
 # disc version
 
 import numpy as np
-import pdb
+import ipdb
 import gl_helper as gh
 from gl_class_profiles import Profiles
 from gl_priors import check_bprior, check_tilt
@@ -52,10 +52,10 @@ def geom_loglike(cube, ndim, nparams, gp):
         off += offstep
 
         if gp.checksig:
-            pdb.set_trace()
+            ipdb.set_trace()
 
         offstep = gp.nbeta
-        if gp.chi2_Sig_converged:
+        if gp.chi2_nu_converged:
             tiltpar = np.array(cube[off:off+offstep])
             tmp_tilt = phys.tilt(gp.xipol, tiltpar, gp)
             if check_tilt(tmp_tilt, gp):
