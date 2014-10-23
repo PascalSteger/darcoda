@@ -6,6 +6,7 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
+
 import os, pdb, sys, pickle
 import numpy as np
 import gl_helper as gh
@@ -24,7 +25,6 @@ def get_case(cas):
 # @param cas case number: 0 (3000 tracers, 10k tracers)
 
 
-import os
 import os.path
 def newdir(bname):
     if not os.path.exists(bname):
