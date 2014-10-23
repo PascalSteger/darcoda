@@ -16,7 +16,10 @@ def check_investigate(inv):
     return False
 
 class Params():
-    def __init__(self, timestamp = ''):
+    def __init__(self, timestamp = '', investigate = '', case = -1):
+
+        # Set machine and user variables
+        # ----------------------------------------------------------------------
         host_name = socket.gethostname()
         user_name = getpass.getuser()
         if 'darkside' in host_name:
@@ -31,10 +34,16 @@ class Params():
             self.machine = 'lisa_SS_login'
         elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
             self.machine = 'lisa_SS_batch'
-        self.geom = 'disc'
-        self.investigate  = 'discmock' # determine which data set to work on
+
+        # Set investigation and geometry
+        if investigate != '':
+            self.investigate = investigate
+        else:
+            self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
+            self.geom = 'disc'
+
         check_investigate(self.investigate)
         self.case = 0 # used in spherical case
         self.pops = 2 # number of stellar tracer populations
