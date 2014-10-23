@@ -41,7 +41,6 @@ def calc_chi2(profs, gp):
     gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
     chi2 +=chi2_nu
 
-
     for pop in np.arange(1,gp.pops+1): # look at pops 1, 2, ...
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]
@@ -50,7 +49,7 @@ def calc_chi2(profs, gp):
         gh.LOG(1, ' chi2_nu[pop] = ', chi2_nu)
         chi2 +=chi2_nu
 
-        if not gp.chi2_Sig_converged:
+        if not gp.chi2_nu_converged:
             continue # with pop loop
 
         sigdat  = gp.dat.sig[pop]    # [km/s]
@@ -59,7 +58,7 @@ def calc_chi2(profs, gp):
         chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nipol) # [1]
         if chi2_sig == np.inf:
             print('chi2_sig has become infinite')
-            pdb.set_trace()
+            ipdb.set_trace()
         chi2 += chi2_sig             # [1]
         gh.LOG(1, '  chi2_sig  = ', chi2_sig)
 
@@ -70,11 +69,11 @@ def calc_chi2(profs, gp):
             chi2 += chi2_kap                                     # [1]
 
     # switch to chi2_sig calculation too, if converged on Sig
-    if not gp.chi2_Sig_converged:
+    if not gp.chi2_nu_converged:
         chi2 *= 10
         if chi2 < gp.chi2_switch:
-            gh.LOG(1, 'Sig burn-in finished, switching on sigma')
-            gp.chi2_Sig_converged = True
+            gh.LOG(1, 'nu burn-in finished, switching on sigma')
+            gp.chi2_nu_converged = True
 
     return chi2
 ## \fn calc_chi2(profs)
