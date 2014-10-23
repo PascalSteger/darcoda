@@ -9,7 +9,7 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb
+import ipdb
 from scipy.integrate import simps,trapz
 from pylab import *
 ion()
@@ -157,9 +157,9 @@ def run(gp):
                                                                      zmin, zmax, gp.nipol, 0.)
     sig_dat_err_bin1 = np.sqrt(sig_dat_bin1) # Poisson errors
 
-    nu_dat_bin1, dum = gh.bincount(z_dat1, binmax1)
+    nu_dat_bin1, nu_dat_err_bin1 = gh.bincount(z_dat1, binmax1)
     nu_dat_bin1 /= (binmax1-binmin1)
-    nu_dat_err_bin1 = np.sqrt(nu_dat_bin1)
+    nu_dat_err_bin1 /= (binmax1-binmin1)
 
     import gr_params
     gpr = gr_params.Params(gp)
@@ -169,9 +169,10 @@ def run(gp):
         nuscaler = nu_dat_bin1[np.argmin(np.abs(zth-z0))]
         loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
 
-        pdb.set_trace()
+        ipdb.set_trace()
 
-    Sig_dat_bin1, Sig_dat_err_bin1 = gh.bincount(z_dat1, z_dat_bin1)
+    Sig_dat_bin1 = np.cumsum(nu_dat_bin1)
+    Sig_dat_err_bin1 = np.sqrt(Sig_dat_bin1)
     Mrdat1 = np.cumsum(Sig_dat_bin1)
     Mrerr1 = Mrdat1*Sig_dat_err_bin1/Sig_dat_bin1
 
@@ -203,11 +204,12 @@ def run(gp):
                                                                               zmin, zmax, gp.nipol, 0.)
         sig_dat_err_bin2 = np.sqrt(sig_dat_bin2) # Poissonian errors
 
-        nu_dat_bin2, dum = gh.bincount(z_dat2, binmax2)
+        nu_dat_bin2, nu_dat_err_bin2 = gh.bincount(z_dat2, binmax2)
         nu_dat_bin2 /= (binmax2-binmin2)
-        nu_dat_err_bin2 = np.sqrt(nu_dat_bin2)
+        nu_dat_err_bin2 /= (binmax2-binmin2)
 
-        Sig_dat_bin2, Sig_dat_err_bin2 = gh.bincount(z_dat2, z_dat_bin2)
+        Sig_dat_bin2 = np.cumsum(nu_dat_bin2)
+        Sig_dat_err_bin2 = np.sqrt(Sig_dat_bin2)
         Mrdat2 = np.cumsum(nu_dat_bin2)
         Mrerr2 = np.sqrt(Mrdat2)
 
@@ -227,11 +229,12 @@ def run(gp):
     sig_dat_err_bin0 = sig_dat_bin0 / np.sqrt(count_bin0)
     # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
 
-    nu_dat_bin0, dum = gh.bincount(z_dat0, binmax0)
+    nu_dat_bin0, nu_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
     nu_dat_bin0 /= (binmax0-binmin0)
-    nu_dat_err_bin0 = np.sqrt(nu_dat_bin0)
+    nu_dat_err_bin0 /= (binmax0-binmin0)
 
-    Sig_dat_bin0, Sig_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
+    Sig_dat_bin0 = np.cumsum(nu_dat_bin0)
+    Sig_dat_err_bin0 = np.sqrt(Sig_dat_bin0)
     renorm0 = max(nu_dat_bin0)
 
     xip = np.copy(z_dat_bin0)                        # [pc]
@@ -251,16 +254,16 @@ def run(gp):
     # store parameters for output
     # normalized by scale values
     nudat = []
-    nudat.append(nu_dat_bin0/scales[0][1])       # [Msun/pc^3]
-    nudat.append(nu_dat_bin1/scales[1][1])
+    nudat.append(nu_dat_bin0/scales[0][3])       # [Msun/pc^3]
+    nudat.append(nu_dat_bin1/scales[1][3])
     if gp.pops == 2:
-        nudat.append(nu_dat_bin2/scales[2][1])
+        nudat.append(nu_dat_bin2/scales[2][3])
 
     nuerr = []
-    nuerr.append(nu_dat_err_bin0/scales[0][1])   # [Msun/pc^3]
-    nuerr.append(nu_dat_err_bin1/scales[1][1])
+    nuerr.append(nu_dat_err_bin0/scales[0][3])   # [Msun/pc^3]
+    nuerr.append(nu_dat_err_bin1/scales[1][3])
     if gp.pops == 2:
-        nuerr.append(nu_dat_err_bin2/scales[2][1])
+        nuerr.append(nu_dat_err_bin2/scales[2][3])
 
     Mrdat = []
     Mrdat.append(Mrdat0/scales[0][2])            # [Msun]
@@ -275,28 +278,28 @@ def run(gp):
         Mrerr.append(Mrerr2/scales[2][2])
 
     Sigdat = []
-    Sigdat.append(Sig_dat_bin0/scales[0][3])
-    Sigdat.append(Sig_dat_bin1/scales[1][3])
+    Sigdat.append(Sig_dat_bin0/scales[0][1])
+    Sigdat.append(Sig_dat_bin1/scales[1][1])
     if gp.pops == 2:
-        Sigdat.append(Sig_dat_bin2/scales[2][3])
+        Sigdat.append(Sig_dat_bin2/scales[2][1])
 
     Sigerr = []
-    Sigerr.append(Sig_dat_bin0/np.sqrt(len(Sig_dat_bin0)))
-    Sigerr.append(Sig_dat_bin1/np.sqrt(len(Sig_dat_bin1)))
+    Sigerr.append(Sig_dat_err_bin0/scales[0][1])
+    Sigerr.append(Sig_dat_err_bin1/scales[1][1])
     if gp.pops == 2:
-        Sigerr.append(Sig_dat_bin1/np.sqrt(len(Sig_dat_bin1)))
+        Sigerr.append(Sig_dat_err_bin2/scales[2][1])
 
     sigdat = []
-    sigdat.append(sig_dat_bin0/scales[0][3])     # [km/s]
-    sigdat.append(sig_dat_bin1/scales[1][3])
+    sigdat.append(sig_dat_bin0/scales[0][4])     # [km/s]
+    sigdat.append(sig_dat_bin1/scales[1][4])
     if gp.pops == 2:
-        sigdat.append(sig_dat_bin2/scales[2][3])
+        sigdat.append(sig_dat_bin2/scales[2][4])
 
     sigerr = []
-    sigerr.append(sig_dat_err_bin0/scales[0][3]) # [km/s]
-    sigerr.append(sig_dat_err_bin1/scales[1][3])
+    sigerr.append(sig_dat_err_bin0/scales[0][4]) # [km/s]
+    sigerr.append(sig_dat_err_bin1/scales[1][4])
     if gp.pops == 2:
-        sigerr.append(sig_dat_err_bin2/scales[2][3])
+        sigerr.append(sig_dat_err_bin2/scales[2][4])
 
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\
