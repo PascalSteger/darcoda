@@ -6,6 +6,7 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
+
 import os, pdb, sys, pickle
 import numpy as np
 import gl_helper as gh
@@ -22,6 +23,7 @@ def get_case(cas):
 # want to set ntracer = 3e3              # case 1
 #             ntracer = 3e4              # case 2
 # @param cas case number: 0 (3000 tracers, 10k tracers)
+
 
 import os.path
 def newdir(bname):
