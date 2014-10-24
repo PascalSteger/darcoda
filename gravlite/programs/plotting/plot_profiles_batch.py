@@ -2,6 +2,7 @@
 
 ## @file
 # plot all profiles of a given run
+# modified by Hamish Silverwood for batch running, 24 October 2014
 
 # (c) 2014 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
@@ -14,6 +15,9 @@ import time
 npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
 import gl_helper as gh
+
+import matplotlib
+matplotlib.use('Agg')
 
 def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/data/')
@@ -146,24 +150,12 @@ def run(timestamp, basename, gp):
 
 
 if __name__ == '__main__':
-    parser = OptionParser()
-    parser.add_option("-i", "--investigation", dest="investigate",
-                      default="", help="investigation to plot")
-    parser.add_option("-c", "--case", dest="case",
-                      default=-1, help="case to plot")
-    parser.add_option("-l", "--latest", help='plot latest one', dest =
-                      'latest', default = False, action = 'store_true')
-    #parser.add_option("-t", "--timestamp", dest="timestamp",
-    #                  default=-1, help="timestamp of run to plot. Overrides -l")
-    #parser.add_option("-a", "--action", dest="action",
-    #                  default="p", help="action to take: p: print, k: kill")
-    (options, args) = parser.parse_args()
-    gh.LOG(1, 'plot_profiles '+str(options.investigate)+' '+str(options.case)+' '+str(options.latest))
+    print(sys.argv)
+    basename = sys.argv[1]
+    timestamp = sys.argv[1][-13:-1]
+
     import select_run as sr
-    timestamp, basename = sr.run(options.investigate, \
-                                 options.case,\
-                                 options.latest)
-    ipdb.set_trace()
+
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
     # load stored parameters
