@@ -16,7 +16,7 @@
 
 # SS testing (7 october 2014)
 
-import pdb
+import ipdb
 import numpy as np
 import numpy.random as npr
 import gl_helper as gh
@@ -80,6 +80,7 @@ def map_nr(params, prof, pop, gp):
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
+    ipdb.set_trace()
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly

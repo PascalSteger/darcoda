@@ -9,7 +9,7 @@ import numpy as np
 import numpy.random as npr
 import pdb, sys
 import matplotlib
-matplotlib.use('pdf')
+#matplotlib.use('pdf')
 
 import matplotlib.pyplot as plt
 plt.ioff()
