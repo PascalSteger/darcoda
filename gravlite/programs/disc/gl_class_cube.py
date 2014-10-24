@@ -66,8 +66,8 @@ def map_nr(params, prof, pop, gp):
         nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
-        rhoscale = gp.dat.nuhalf[pop]
-        Rscale = gp.Xscale[pop]
+        rhoscale = gp.dat.nuhalf[pop] 
+        Rscale = gp.Xscale[pop]   #SS half light radius for each pop?
         width = gp.nuspread
         rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxnuslope

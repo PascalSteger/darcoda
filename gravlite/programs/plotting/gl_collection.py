@@ -340,6 +340,7 @@ class ProfileCollection():
             ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)])
+            ipdb.set_trace()
         elif prof == 'sig':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
@@ -457,7 +458,6 @@ class ProfileCollection():
         ax.plot(r0, M68lo, color='black', lw=0.4)
         ax.plot(r0, M68hi, color='black', lw=0.3)
         ax.plot(r0, Mmedi, 'r', lw=1)
-        ipdb.set_trace()
         if prof == 'Sig' or prof == 'sig':
             for pop in range(gp.pops):
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
