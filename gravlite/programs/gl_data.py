@@ -6,7 +6,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 import gl_physics as phys
 import gl_helper as gh
@@ -67,8 +67,6 @@ class Datafile:
             Sigx    = Sigx[:]    * gp.Xscale[pop]         # [pc]
             Sigdat  = Sigdat[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
             Sigerr  = Sigerr[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
-
-            ipdb.set_trace()
 
             # take the overall bins for rbin, binmin, binmax vals
             if pop == 0:

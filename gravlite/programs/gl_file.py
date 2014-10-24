@@ -6,7 +6,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import sys, pdb
+import sys, ipdb
 import numpy as np
 
 import gl_units as gu
@@ -93,7 +93,6 @@ def get_binned_data(gp):
             gp.maxsiglos.append(A[4])
         else:
             gp.maxsiglos.append(A[3])
-        ipdb.set_trace()
     #if gp.investigate == "walk":
     #    for pop in range(gp.pops):
     #        gp.ntracer[pop] = gp.totmass_tracers[pop+1]
