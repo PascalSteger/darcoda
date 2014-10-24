@@ -83,7 +83,6 @@ def bin_data(gp):
 
 
 def get_binned_data(gp):
-    gp.dat = Datafile()
     for pop in range(gp.pops+1):
         A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
         gp.Xscale.append(A[0])
@@ -94,6 +93,7 @@ def get_binned_data(gp):
             gp.maxsiglos.append(A[4])
         else:
             gp.maxsiglos.append(A[3])
+        ipdb.set_trace()
     #if gp.investigate == "walk":
     #    for pop in range(gp.pops):
     #        gp.ntracer[pop] = gp.totmass_tracers[pop+1]

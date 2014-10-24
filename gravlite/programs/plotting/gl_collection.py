@@ -328,6 +328,7 @@ class ProfileCollection():
             ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)])
+            ipdb.set_trace()
         elif prof == 'sig':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))

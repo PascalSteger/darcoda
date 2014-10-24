@@ -326,6 +326,7 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
 # calculate z velocity dispersion
 # @param zp vertical coordinate [pc]
 # @param rhopar rho to be integrated to give force K_z
+#SS No, rhotmp (=rhodmtmp+MtoL*rhostartmp) integrated to give K_z
 # @param rhostarpar overall baryonic light profile [Lsun]
 # @param MtoL mass-to-light ratio [Msun/Lsun]
 # @param nupar parameters for tracer density falloff

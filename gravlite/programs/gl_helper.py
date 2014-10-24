@@ -736,6 +736,8 @@ def bincount(r, rmax):
     return arrayout, std
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
+#SS: count the number of elements of r which falls in the bins whose upper
+#SS: range is given på the array rmax.
 # @param r array of floats
 # @param rmax upper bound of bins
 # @return arrrayout, std
