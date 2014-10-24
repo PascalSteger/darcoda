@@ -180,7 +180,7 @@ def run(gp):
     scales[1].append(z0) # [pc]
     scales[1].append(Sig_dat_bin1[0])
     scales[1].append(Mrdat1[-1])
-    scales[1].append(nu_dat_bin1[np.argmin(np.abs(zth-z0))])
+    scales[1].append(nu_dat_bin1[0])
     scales[1].append(max(sig_dat_bin1))
 
     # start analysis of "all stars" with only component 1,
@@ -226,7 +226,7 @@ def run(gp):
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin0, binmax0, z_dat_bin0, sig_dat_bin0, count_bin0 = gh.binsmooth(z_dat0, vz_dat0, \
                                                                           zmin, zmax, gp.nipol, 0.)
-    sig_dat_err_bin0 = sig_dat_bin0 / np.sqrt(count_bin0)
+    sig_dat_err_bin0 = np.sqrt(sig_dat_bin0)
     # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
 
     nu_dat_bin0, nu_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
