@@ -83,6 +83,8 @@ def map_nr(params, prof, pop, gp):
     ipdb.set_trace()
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
 
+    ipdb.set_trace()
+
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     if gp.xepol[0] <= rlimnr*Rscale:

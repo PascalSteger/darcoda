@@ -87,7 +87,7 @@ class Files:
             self.set_discmock(gp, timestamp)
         else:
             print(' wrong investigation in Files()')
-            pdb.set_trace()
+            ipdb.set_trace()
         ## directory and basename of all output files
         if timestamp == '':
             import datetime

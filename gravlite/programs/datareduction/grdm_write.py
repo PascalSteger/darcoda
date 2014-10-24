@@ -307,6 +307,7 @@ def run(gp):
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\
                             sigdat, sigerr, scales, gp)
+
     return gp.dat
 
 ## \fn run(gp)
