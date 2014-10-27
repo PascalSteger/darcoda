@@ -9,11 +9,9 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys, pdb
+import pdb
 import numpy as np
 from scipy.stats import kurtosis
-from pylab import *
-ion()
 
 import gl_file as gf
 import gl_helper as gh
@@ -21,7 +19,8 @@ import gl_project as glp
 from BiWeight import meanbiweight
 
 
-def obs_Sig_phot(Binmin, Binmax, Sig_kin, gp):
+def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
+    Sig_phot   = np.zeros((gp.nipol, gpr.n))
     # output density
     for kbin in range(gp.nipol):
         Rw = (Binmax[kbin]-Binmin[kbin])*Rscale0 # [pc]
@@ -53,11 +52,12 @@ def obs_Sig_phot(Binmin, Binmax, Sig_kin, gp):
         # gh.ipol(Rpt, wpt, Rw) # all radii in [pc]
         Sig_phot[kbin] = Sig_kin[kbin] / w_ipol
     return Sig_phot
-## \fn obs_Sig_phot(Binmin, Binmax, Sig_kin, gp)
+## \fn obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp)
 # return photometric surface density for observations with selection function w
 # only in 'obs' investigation
 # @param Binmin [pc]
 # @param Binmax [pc]
+# @param Rscale0 [pc]
 # @param Sig_kin [Msun/pc^2]
 # @param gp global parameters
 
@@ -177,7 +177,7 @@ def run(gp):
 
 
             if gp.investigate == 'obs':
-                Sig_phot = obs_Sig_phot(Binmin, Binmax, Sig_kin, gp)
+                Sig_phot = obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr)
             else:
                 Sig_phot = Sig_kin
 
@@ -190,8 +190,8 @@ def run(gp):
 
         # calculate density and mass profile, store it
         # ----------------------------------------------------------------------
-        tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
-        Sigerr0 = Sig0/np.sqrt(tpb0)       # [Munit/Rscale^2]
+        #tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
+        #Sigerr0 = Sig0/np.sqrt(tpb0)       # [Munit/Rscale^2]
         P_dens  = np.zeros(gp.nipol)
         P_edens = np.zeros(gp.nipol)
         for b in range(gp.nipol):
@@ -219,7 +219,7 @@ def run(gp):
 
         # deproject Sig to get nu
         numedi = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
-        numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
+        #numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
         numax  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens+P_edens), gp)
 
         nu0pc  = numedi[0]

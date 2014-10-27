@@ -9,9 +9,7 @@
 
 # TODO: run with mpirun -np <N> gravlite.py
 # where <N> is an integer <= number of processors
-
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
-
 
 ### imports
 # from __future__ import absolute_import, unicode_literals, print_function
@@ -22,7 +20,6 @@ import pickle, pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
-
 
 # optionally start with -i and -c switches, to batch start gaia and walk runs
 from optparse import OptionParser
