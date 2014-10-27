@@ -51,7 +51,7 @@ class Params():
 
         # data options
         # ----------------------------------------------------------------------
-        self.getnewdata = False # get new data computed from observations before burn-in
+        self.getnewdata = True # get new data computed from observations before burn-in
         self.getnewpos  = True # get new positions of particles, important for Hernquist runs
         if self.getnewdata == False: self.getnewpos = False
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
