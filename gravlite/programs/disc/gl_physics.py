@@ -9,7 +9,6 @@
 
 import pdb
 import numpy as np
-import scipy
 from scipy.interpolate import splrep, splint
 import gl_helper as gh
 
