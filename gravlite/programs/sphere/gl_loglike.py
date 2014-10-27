@@ -43,7 +43,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('nu', rhostar[gp.nexp:-gp.nexp], 0, gp)
         off += offstep
 
-        Signu = glp.rho_param_INT_Sig(gp.xepol, rhostar, 0, gp) # [Munit/pc^2]
+        Signu = glp.rho_param_INT_Sig(gp.xepol, rhostarpar, 0, gp) # [Munit/pc^2]
         Sig = gh.linipollog(gp.xepol, Signu, gp.xipol)
         tmp_profs.set_prof('Sig', Sig, 0, gp)
 
@@ -58,7 +58,6 @@ def geom_loglike(cube, ndim, nparams, gp):
         nupar = np.array(cube[off:off+offstep])
         tmp_nrnu = 1.*nupar[1+1+gp.nexp:-gp.nexp-1]
         tmp_profs.set_prof('nrnu', tmp_nrnu, pop, gp)
-        pdb.set_trace()
         tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)
         tmp_profs.set_prof('nu', tmp_nu[gp.nexp:-gp.nexp], pop, gp)
         tmp_Signu = glp.rho_param_INT_Sig(gp.xepol, nupar, pop, gp) # [Munit/pc^2]

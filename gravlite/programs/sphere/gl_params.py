@@ -27,7 +27,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'obs' # determine which data set to work on
+            self.investigate  = 'gaia' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -39,7 +39,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 0 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -51,7 +51,7 @@ class Params():
 
         # data options
         # ----------------------------------------------------------------------
-        self.getnewdata = False # get new data computed from observations before burn-in
+        self.getnewdata = True # get new data computed from observations before burn-in
         self.getnewpos  = True # get new positions of particles, important for Hernquist runs
         if self.getnewdata == False: self.getnewpos = False
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -65,7 +65,7 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
-        self.debug = True
+        self.debug = False
         self.checksig = False
         self.stopstep = 1
 
