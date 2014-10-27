@@ -33,9 +33,11 @@ def read_data(gp):
         import grt_com
         grt_com.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM, grd_split
+        import grd_COM
         grd_COM.run(gp)
-        grd_split.run(gp)
+        if gp.pops > 1:
+            import grd_split
+            grd_split.run(gp)
 ## \fn read_data(gp)
 # read in files with differing file formats, write out to common x, y, vz file
 # @param gp global parameters
@@ -66,9 +68,11 @@ def bin_data(gp):
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM, grd_split, gr_MCMCbin
+        import grd_COM, gr_MCMCbin
         grd_COM.run(gp)
-        grd_split.run(gp)
+        if gp.pops > 1:
+            import grd_split
+            grd_split.run(gp)
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'discmock':
         import grdm_write

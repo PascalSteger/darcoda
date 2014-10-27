@@ -9,10 +9,8 @@
 import pdb
 import numpy as np
 
-from scipy.interpolate import splrep, splint, splev
-import gl_chi as gc
+from scipy.interpolate import splrep, splint
 import gl_helper as gh
-import gl_analytic as ga
 import gl_int as gi
 
 

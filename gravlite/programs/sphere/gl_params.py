@@ -37,9 +37,10 @@ class Params():
         print(' investigation : ', self.investigate)
         if case != -1:
             self.case = case
+            #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
             self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
-                          # triax (1-4:core, 5-8:cusp)
+                          # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -52,6 +53,7 @@ class Params():
         # ----------------------------------------------------------------------
         self.getnewdata = True # get new data computed from observations before burn-in
         self.getnewpos  = True # get new positions of particles, important for Hernquist runs
+        if self.getnewdata == False: self.getnewpos = False
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
@@ -106,12 +108,10 @@ class Params():
         self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
-
         # automatic plotting options
         # ----------------------------------------------------------------------
         self.last_plot = -1    # timestamp of last automatic plot, set to -1
         self.plot_after = 5*3600  # [s] to elapse before automatic plotting
-
 
         # parameter spaces
         # ----------------------------------------------------------------------
@@ -132,7 +132,6 @@ class Params():
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-
         self.monotonic = False    # mono-prior on rho(x)
         self.monotonic_nu = False # mono-prior on nu(x)
 
@@ -163,7 +162,6 @@ class Params():
         self.files = gl_class_files.Files(self, timestamp)
         from gl_data import Datafile
         self.dat = Datafile()
-
 
         # global arrays
         # ----------------------------------------------------------------------
