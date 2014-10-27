@@ -6,7 +6,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 import gl_physics as phys
 import gl_helper as gh

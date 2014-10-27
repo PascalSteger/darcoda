@@ -16,7 +16,7 @@
 #from mpi4py import MPI
 import subprocess
 import pymultinest
-import pickle, pdb
+import pickle, ipdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
@@ -63,7 +63,7 @@ def myloglike(cube, ndim, nparams):
     # TODO: with parallel version, need to append to CPU-based output name
 
     # we only store models after the initial Sigma burn-in
-    if gp.chi2_Sig_converged:
+    if gp.chi2_nu_converged:
         with open(gp.files.outdir+'pc2.save', 'ab') as fi:
             pickle.dump(tmp_profs, fi)
             # convention: use chi^2 directly, not log likelihood

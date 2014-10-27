@@ -7,9 +7,9 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb, sys
+import ipdb, sys
 import matplotlib
-matplotlib.use('pdf')
+#matplotlib.use('pdf')
 
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -430,13 +430,16 @@ class ProfileCollection():
 
 
     def fill_nice(self, ax, prof, pop, gp):
-        M95lo = self.M95lo.get_prof(prof, pop)
-        M68lo = self.M68lo.get_prof(prof, pop)
-        Mmedi = self.Mmedi.get_prof(prof, pop)
+        scaleHS = 1.0
+        if prof == 'nu':
+            scaleHS = gp.nu0pc[pop]
+        ipdb.set_trace()
+        M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
+        M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
+        Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS
         r0    = self.Mmedi.x0
-        M68hi = self.M68hi.get_prof(prof, pop)
-        M95hi = self.M95hi.get_prof(prof, pop)
-
+        M68hi = self.M68hi.get_prof(prof, pop)*scaleHS
+        M95hi = self.M95hi.get_prof(prof, pop)*scaleHS
         ax.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
         ax.plot(r0, M95lo, color='black', lw=0.4)
         ax.plot(r0, M95hi, color='black', lw=0.3)

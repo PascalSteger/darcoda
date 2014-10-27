@@ -5,7 +5,7 @@
 # all helper functions
 
 # (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
-import sys, traceback, pdb
+import sys, traceback, ipdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps
@@ -31,19 +31,19 @@ def sanitize_vector(vec, length, mini, maxi, debug):
     if length > -1 and len(vec) != length:
         LOG(1, 'vec has wrong length')
         if debug:
-            pdb.set_trace()
+            ipdb.set_trace()
         #else:
         #    raise Exception('vec has wrong length', len(vec))
     if min(vec) < mini:
         LOG(2, 'vec has too small value')
         if debug:
-            pdb.set_trace()
+            ipdb.set_trace()
         #else:
         #    raise Exception('vec has too small value', min(vec))
     if max(vec) > maxi:
         LOG(2, 'vec has too high value')
         if debug:
-            pdb.set_trace()
+            ipdb.set_trace()
         #else:
         #    raise Exception('vec has too high value', max(vec))
     return
@@ -68,7 +68,7 @@ def determine_radius(R, Rmin, Rmax, gp):
         return bin_r_const_tracers(R, gp.nipol)
     else:
         LOG(1, 'unknown gp.binning in gpr.determine_radius')
-        pdb.set_trace()
+        ipdb.set_trace()
 ## \fn determine_radius(R, Rmin, Rmax, gp)
 # determine bin radii once and for all. this must not be changed between
 # readout and gravlite run. if you wish to change: set gp.getnewdata =
@@ -96,13 +96,13 @@ def sanitize_scalar(var, mini, maxi, debug):
     if var < mini:
         LOG(1, 'var has too small value')
         if debug:
-            pdb.set_trace()
+            ipdb.set_trace()
         #else:
         #    raise Exception('var has too small value')
     if var > maxi:
         LOG(1, 'var has too high value')
         if debug:
-            pdb.set_trace()
+            ipdb.set_trace()
         #else:
         #    raise Exception('var has too high value')
     return
@@ -231,7 +231,7 @@ def quadinflog(x, y, A, B, stop = False):
     dropoffint = romberg(invexp, A, B, rtol=1e-3, divmax=15, vec_func=True)
     #elapsed = (time.time()-start)/N
     #print('one iteration romberg takes ', elapsed, 's')
-    #pdb.set_trace()
+    #ipdb.set_trace()
 
     return dropoffint
 ## \fn quadinflog(x, y, A, B)
@@ -736,6 +736,8 @@ def bincount(r, rmax):
     return arrayout, std
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
+#SS: count the number of elements of r which falls in the bins whose upper
+#SS: range is given på the array rmax.
 # @param r array of floats
 # @param rmax upper bound of bins
 # @return arrrayout, std
@@ -745,7 +747,7 @@ def moments(data):
     n = len(data)
     if (n <= 1):
         LOG(1, "len(data) must be at least 2 in gh.moments")
-        pdb.set_trace()
+        ipdb.set_trace()
     s=0.0;
     # First pass to get the mean.
     for j in range(n):

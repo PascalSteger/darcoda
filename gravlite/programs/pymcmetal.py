@@ -8,7 +8,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys, pdb
+import sys, ipdb
 import pymc as mc
 import matplotlib
 matplotlib.use('pdf')

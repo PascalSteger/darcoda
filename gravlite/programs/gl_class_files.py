@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
 
-import os, pdb, sys, pickle
+import os, ipdb, sys, pickle
 import numpy as np
 import gl_helper as gh
 
@@ -87,7 +87,7 @@ class Files:
             self.set_discmock(gp, timestamp)
         else:
             print(' wrong investigation in Files()')
-            pdb.set_trace()
+            ipdb.set_trace()
         ## directory and basename of all output files
         if timestamp == '':
             import datetime
@@ -122,7 +122,7 @@ class Files:
         elif machine == 'lisa_HS_login':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
         elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/????/darcoda/gravlite/'
+            self.machine = '/home/sofia/darcoda/gravlite/'
         elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
             scratch_space = os.getenv("TMPDIR")
             self.machine = scratch_space + '/darcoda/gravlite/'

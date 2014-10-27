@@ -6,7 +6,7 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import sys, pdb
+import sys, ipdb
 import numpy as np
 
 import gl_units as gu
@@ -87,7 +87,6 @@ def bin_data(gp):
 
 
 def get_binned_data(gp):
-    gp.dat = Datafile()
     for pop in range(gp.pops+1):
         A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
         gp.Xscale.append(A[0])
