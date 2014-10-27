@@ -163,7 +163,7 @@ if __name__ == '__main__':
     timestamp, basename = sr.run(options.investigate, \
                                  options.case,\
                                  options.latest)
-    ipdb.set_trace()
+
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
     # load stored parameters
