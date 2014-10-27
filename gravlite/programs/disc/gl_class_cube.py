@@ -80,10 +80,9 @@ def map_nr(params, prof, pop, gp):
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    ipdb.set_trace()
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
 
-    ipdb.set_trace()
+#    ipdb.set_trace()
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
@@ -122,6 +121,7 @@ def map_nr(params, prof, pop, gp):
     # must lie below -3, thus n(r)>3
     deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
     # to ensure we have a finite mass at all radii 0<r<=\infty
+    ipdb.set_trace()
     if monotonic:
         nrasyminfty = nr[-1]+params[-1] * nrscale * deltalogrlast
     else:
