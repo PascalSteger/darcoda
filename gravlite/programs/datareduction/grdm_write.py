@@ -88,7 +88,9 @@ def run(gp):
     zmax = 1300.                              # [pc], last bin center
     # get Stuetzpunkte for theoretical profiles (not yet stars, finer spacing in real space)
     nth = gp.nipol                            # [1] number of bins
+
     zth = 1.* np.arange(nth) * (zmax-zmin)/(nth-1.) + zmin # [pc] bin centers
+
     z0  = 240.                                # [pc], scaleheight of first population
     z02 = 200.                                # [pc], scaleheight of second population
     D   = 250.                                # [pc], scaleheight of all stellar tracers
@@ -120,7 +122,7 @@ def run(gp):
     # > 0 ((IDL, Justin)) stellar velocity dispersion
 
     # assign [0,1] * maxsig
-    ran2 = npr.normal(size=int(gp.ntracer[2-1]))  # [1]
+    ran2 = npr.normal(size=int(gp.ntracer[1-1]))  # [1]
     vzstar = ran2 * sigzstar                      # [km/s]
 
     # Add second population [thick-disc like]:
