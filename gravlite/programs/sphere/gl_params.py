@@ -122,8 +122,8 @@ class Params():
         self.log10nuspread = 0.5
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
-        self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
+        self.nxtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
+        self.nxtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
         self.maxrhoslope  = 4    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxnuslope = 5      # same for nrnu

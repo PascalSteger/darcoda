@@ -63,7 +63,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.log10rhospread
         rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
-        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        nrscale = gp.nxtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
         rhoscale = gp.dat.nuhalf[pop]
@@ -71,7 +71,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.log10nuspread
         rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxnuslope
-        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        nrscale = gp.nxtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
         raise Exception('wrong profile in gl_class_cube.map_nr')

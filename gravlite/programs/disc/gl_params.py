@@ -125,11 +125,11 @@ class Params():
         self.maxrhoslope  = 5.    # maximum slope (change if
                                   # monotonicity prior used) of rho
         self.maxnuslope = 5.
-        # nrtol: prior (max +/- range) for dn(r)/dlog(r)
+        # nxtol: prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    from min(gp.xipol) to max(gp.xipol)
-        self.nrtol  = self.maxrhoslope
-        self.nrtol_nu = 2*self.maxnuslope # same for nu profile
+        self.nxtol  = self.maxrhoslope
+        self.nxtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
         self.beta00prior = False  # prior beta(r=0) = 0
