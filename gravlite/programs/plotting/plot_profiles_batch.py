@@ -8,7 +8,10 @@
 
 # start off with plotting/ in front of path
 #import sys
-import ipdb, pickle, os, sys
+import pdb
+import pickle
+import os
+import sys
 import numpy as np
 import numpy.random as npr
 import time

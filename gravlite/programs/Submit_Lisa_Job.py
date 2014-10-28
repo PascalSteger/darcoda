@@ -13,7 +13,7 @@
 from numpy import *
 import os, datetime, shutil
 from subprocess import call
-import ipdb
+import pdb
 
 nodes=1
 cores=16
@@ -62,6 +62,6 @@ pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
 #Submit PDB file
-ipdb.set_trace()
+pdb.set_trace()
 os.chdir(holding_stack_path + holding_number + '/programs/')
 os.system('qsub ' + pbs_filename)

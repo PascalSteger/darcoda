@@ -16,7 +16,8 @@
 #from mpi4py import MPI
 import subprocess
 import pymultinest
-import pickle, ipdb
+import pickle
+import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
@@ -112,7 +113,7 @@ def run(gp):
                     sampling_efficiency = 0.05, # very low eff. in
                                                 # case of const efficiency mode,
                                                 # according to MultiNest README
-                    n_iter_before_update = 10, # output after this many iterations
+                    n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
                                             #max. = number of live

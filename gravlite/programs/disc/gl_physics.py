@@ -114,7 +114,6 @@ def kappa(xipol, Kz):
 
 def nu_decrease(zpars, pars, gp):
     parsu = abs(pars)                        # Mirror prior
-
     if gp.monotonic:
         rnuz_z = np.zeros(len(zpars))
         rnuz_z[0] = parsu[0]
@@ -149,9 +148,9 @@ def nu_decrease(zpars, pars, gp):
             intquad = (a - b*z0 + c*z0*z1)*z1d + (b/2. - c/2.*(z0+z1))*z2d + c/3.*z3d
             norm_nu = norm_nu + intquad
 
-            sel  = (z > z0 and z < z2)
-            zcut = z[sel]
-            tcut = testy[sel]
+            #sel  = (z > z0 and z < z2)
+            #zcut = z[sel]
+            #tcut = testy[sel]
 
     fun /= norm_nu
 
@@ -202,7 +201,7 @@ def kz(zpars, kzpar, gp):
             z3d = z1**3.-z0**3.
             intbit = (a-b*z0+c*z0*z1)*z1d+(b/2.-c/2.*(z0+z1))*z2d+c/3.*z3d
             kz_z[i] = kz_z[i-1] + intbit
-            if i == n_elements(zpars)-2:
+            if i == len(zpars)-2:
                 # Deal with very last bin:
                 z1d = z2-z1; z2d = z2**2.-z1**2.; z3d = z2**3.-z1**3.
 

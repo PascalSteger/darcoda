@@ -16,9 +16,8 @@
 
 # SS testing (7 october 2014)
 
-import ipdb
+import pdb
 import numpy as np
-import numpy.random as npr
 import gl_helper as gh
 
 def map_tilt_slope(vec, gp):
@@ -141,15 +140,19 @@ def map_nr(params, prof, pop, gp):
 # @param gp global parameters
 
 
-def map_nu(pa, gp):
-    # TODO: assertion len(pa)=gp.nepol
-    for i in range(len(pa)):
-        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
-    return pa
-## \fn map_nu(pa, gp)
-# map tracer densities, directly
-# @param pa cube [0,1]^n
-# @param gp global parameters
+#def map_nu(pa, gp):
+#    # TODO: assertion len(pa)=gp.nepol
+#    for i in range(len(pa)):
+#        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
+#    return pa
+### \fn map_nu(pa, gp)
+## map tracer densities, directly
+## if used, put
+##         self.maxlog10nu = 4.     # direct sampling of nu: min value
+##        self.minlog10nu = 0.     # direct sampling of nu: max value
+## in gl_params
+## @param pa cube [0,1]^n
+## @param gp global parameters
 
 
 def map_MtoL(pa, gp):

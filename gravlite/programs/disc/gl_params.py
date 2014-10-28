@@ -7,7 +7,9 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, ipdb, logging, socket, getpass
+import pdb
+import socket
+import getpass
 
 def check_investigate(inv):
     if inv == 'discmock': return True
@@ -103,7 +105,7 @@ class Params():
         # +1 for norm, rho, rhostar, MtoL, [nu_i, tilt_i]
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
-        self.nlive = 10*self.ndim
+        self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
 
@@ -112,23 +114,21 @@ class Params():
         self.rhohalf = 10**-1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.log10rhospread = 1.       # with this spread, [dex] in log space
+        self.log10rhospread = 2.       # with this spread, [dex] in log space
         self.rlimnr = -1 # scale below which range of
                          # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
                          # calculated to values in [pc] in gl_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = -1 # same for nu, using same rhalf
-        self.log10nuspread = 1.0
-        self.maxrhoslope  = 0.5    # maximum slope (change if
+        self.log10nuspread = 2.
+        self.maxrhoslope  = 5.    # maximum slope (change if
                                   # monotonicity prior used) of rho
-        self.maxnuslope = 0.5
+        self.maxnuslope = 5.
         # nrtol: prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    from min(gp.xipol) to max(gp.xipol)
         self.nrtol  = self.maxrhoslope
         self.nrtol_nu = 2*self.maxnuslope # same for nu profile
-        self.maxlog10nu = 4.     # direct sampling of nu: min value
-        self.minlog10nu = 0.     # direct sampling of nu: max value
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
         self.beta00prior = False  # prior beta(r=0) = 0

@@ -7,9 +7,7 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb, sys
-import matplotlib
-#matplotlib.use('pdf')
+import pdb
 
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -433,7 +431,7 @@ class ProfileCollection():
         scaleHS = 1.0
         if prof == 'nu':
             scaleHS = gp.nu0pc[pop]
-        ipdb.set_trace()
+        pdb.set_trace()
         M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
         M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
         Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS

@@ -10,8 +10,8 @@
 
 import pdb
 import numpy as np
-
 from scipy.integrate import simps
+import matplotlib as plt
 import pymultinest
 
 import gl_helper as gh
@@ -165,8 +165,8 @@ def myloglike(cube, ndim, nparams):
     gVm = calc_Vmean(alpha_s, delta_s)
     lpV1 = lp_gauss(V0, gVm, sigmaV[1], Ve0)
     lpV2 = lp_gauss(V0, gVm, sigmaV[2], Ve0)
-    lpW1 = lp_gauss(W0, Wmean[1], sigmaW[1], We0)
-    lpW2 = lp_gauss(W0, Wmean[2], sigmaW[2], We0)
+    lpW1 = lp_gauss(W0, Wmean[1], sigmaW[1], Mge0)
+    lpW2 = lp_gauss(W0, Wmean[2], sigmaW[2], Mge0)
 
     gh.LOG(2,'starting logev evaluation')
     term_MW = ftot[0]*gphat_r*gphat_v*gphat_w
@@ -214,11 +214,11 @@ def run(gp):
       }[gp.case](1)
 
 
-    global wpt, Rpt, V0, Ve0, W0, We0, PM0
+    global wpt, Rpt, V0, Ve0, Mg0, Mge0, PM0
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-    ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
-                       usecols=(0,1),delimiter=delim)
+    #ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
+    # usecols=(0,1),delimiter=delim)
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
@@ -238,8 +238,10 @@ def run(gp):
     # use all stellar tracer particles from now on, independent on their probability of membership
     V0 = 1.*np.copy(VHel)  # [km/s] not necessary to remove center LOS velocity
     Ve0 = 1.*e_VHel        # velocity error
-    W0 = 1.*np.copy(SigMg)
-    We0 = 1.*np.copy(e_SigMg)
+    Mg0 = 1.*np.copy(SigMg)
+    Mge0 = 1.*np.copy(e_SigMg)
+    F0 = 1.*np.copy(SigFe)
+    Fe0 = 1.*np.copy(e_SigFe)
 
     global alpha_s, delta_s
     sig = abs(RAh[0])/RAh[0]
@@ -282,8 +284,8 @@ def run(gp):
     xs = xs[order]; ys  = ys[order]
     alpha_s = alpha_s[order]; delta_s = delta_s[order]
     V0 = V0[order]; Ve0 = Ve0[order]
-    W0 = W0[order]; We0 = We0[order]
-    # Rfine = np.logspace(np.log10(min(R0)), np.log10(max(R0)), 100)
+    Mg0 = Mg0[order]; Mge0 = Mge0[order]
+    F0 = F0[order]; Fe0 = Fe0[order]
 
     A = np.loadtxt(gp.files.dir+'w_2.0.dat')
     Rpt, wpt = A.T # [arcmin], [1]
@@ -292,26 +294,10 @@ def run(gp):
     global gw
     gw = w(R0)
 
-    sum_1_PM = np.sum(1-PM)
-    gM_r = np.zeros((Nsample, Nsample))
-    gM_v = np.zeros((Nsample, Nsample))
-    gM_w = np.zeros((Nsample, Nsample))
 
-    # TODO check this is right
-    for i in range(Nsample):
-        prefac = (1-PM[i])/np.sqrt(2*np.pi)
-        gh.sanitize_scalar(prefac, 0, 1/np.sqrt(2*np.pi), DEBUG)
-        gM_r[i,:] = prefac/np.abs(k2)*np.exp(-((R0[i]-R0)**2)/(2*k2*k2))
-        gM_v[i,:] = prefac/np.abs(Ve0)*np.exp(-((V0[i]-V0)**2)/(2*Ve0*Ve0))
-        gM_w[i,:] = prefac/np.abs(We0)*np.exp(-((W0[i]-W0)**2)/(2*We0*We0))
-    global gphat_r, gphat_v, gphat_w
-    gphat_r = np.sum(gM_r, 0)/sum_1_PM
-    gh.sanitize_vector(gphat_r, Nsample, 0, 1e30, DEBUG)
-    gphat_v = np.sum(gM_v, 0)/sum_1_PM
-    gh.sanitize_vector(gphat_v, Nsample, 0, 1e30, DEBUG)
-    gphat_w = np.sum(gM_w, 0)/sum_1_PM
-    gh.sanitize_vector(gphat_w, Nsample, 0, 1e30, DEBUG)
     pdb.set_trace()
+    plt.scatter(F0, Mg0)
+
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 5+(gp.pops+1)*4
     pymultinest.run(myloglike,   myprior,
@@ -332,7 +318,7 @@ def run(gp):
                     sampling_efficiency = 0.05, # very low eff. in
                                                 #case of const efficiency mode,
                                                 #README
-                    n_iter_before_update = 1, # output after this many iterations
+                    n_iter_before_update = 10, # output after this many iterations
                     null_log_evidence = 1., # separate modes if
                                             #logevidence > this param.
                     max_modes = gp.nlive,

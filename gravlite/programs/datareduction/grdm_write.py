@@ -9,16 +9,14 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb
-from scipy.integrate import simps,trapz
-from pylab import *
-ion()
+import pdb
+from scipy.integrate import simps
 
 import gl_units as gu
 import gl_helper as gh
 
 def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp):
-#    ipdb.set_trace()
+#    pdb.set_trace()
     for pop in range(gp.pops+1):
         # write scales
         crscale = open(gp.files.get_scale_file(pop), 'w')
@@ -136,7 +134,7 @@ def run(gp):
         sigzth2 = np.sqrt((inti + C) / nu_zth2) # same integration constant
         ran = npr.uniform(-1., 1., gp.ntracer[2-1])            # [1]
         zstar2 = -z02 * np.log(1.0 - ran)                      # [pc]
-        zstarobs = np.hstack([zstar, zstar2]) # concat pop1, pop2 for all stars
+        #zstarobs = np.hstack([zstar, zstar2]) # concat pop1, pop2 for all stars
         sigzstar2 = gh.ipol(zth, sigzth2, zstar2)
         ran2 = npr.normal(-1., 1, gp.ntracer[2-1])        # [1]
         vzstar2 = ran2 * sigzstar2                        # [(km/2)^2]
@@ -166,11 +164,10 @@ def run(gp):
     gpr = gr_params.Params(gp)
     if gpr.showplots:
         nuscaleb = nu_zth[np.argmin(np.abs(zth-z0))]
-        loglog(zth, nu_zth/nuscaleb, 'b.-')
+        plt.loglog(zth, nu_zth/nuscaleb, 'b.-')
         nuscaler = nu_dat_bin1[np.argmin(np.abs(zth-z0))]
-        loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
-
-#        ipdb.set_trace()
+        plt.loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
+        # pdb.set_trace()
 
     Sig_dat_bin1 = np.cumsum(nu_dat_bin1)
     Sig_dat_err_bin1 = np.sqrt(Sig_dat_bin1)
@@ -236,7 +233,7 @@ def run(gp):
 
     Sig_dat_bin0 = np.cumsum(nu_dat_bin0)
     Sig_dat_err_bin0 = np.sqrt(Sig_dat_bin0)
-    renorm0 = max(nu_dat_bin0)
+    #renorm0 = max(nu_dat_bin0)
 
     xip = np.copy(z_dat_bin0)                        # [pc]
     Mrdat0   = K*xip/np.sqrt(xip**2.+D**2.) / (2.0*np.pi*gu.G1__pcMsun_1km2s_2)
@@ -302,7 +299,7 @@ def run(gp):
     if gp.pops == 2:
         sigerr.append(sig_dat_err_bin2/scales[2][4])
 
-#    ipdb.set_trace()
+#    pdb.set_trace()
 
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\
