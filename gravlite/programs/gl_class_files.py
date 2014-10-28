@@ -190,7 +190,7 @@ class Files:
     # @param timestamp for analysis
 
 
-    def set_gaia(self, gp, timestamp=''):
+    def set_gaiaTB(self, gp, timestamp=''):
         beta_star1 = 5; r_DM = 1000
         if gp.case == 1:
             gamma_star1=0.1;
@@ -217,9 +217,32 @@ class Files:
             gamma_star1=1.0;
             r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400 # core
         elif gp.case == 9:
+            alpha_DM=1.0
+            beta_DM=4.0
+            gamma_DM=1.0
+            r_DM=2000. # [pc]
+            rho_h=2.387329E+07 #Msun/kpc^3
+            alpha_star1=0.5
+            gamma_star1=0.1
+            r_star1=500.
+            #gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
+            #r_DM = 2000 # [pc]
+        elif gp.case == 10:
+            alpha_DM=1.0
+            beta_DM=4.0
+            gamma_DM=0.0
+            r_DM=4000. #pc
+            rho0=3.021516E+07 #Msun/kpc^3
+            alpha_star1=0.5
+            beta_star1=5.0
+            gamma_star1=0.1
+            r_s=1.75 # kpc
+            #gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
+            #r_DM = 2000 # [pc]
+        elif gp.case == 11:
             gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
             r_DM = 2000 # [pc]
-        elif gp.case == 10:
+        elif gp.case == 12:
             gamma_star1=1.0; r_star1=1750; r_a1=np.inf; gamma_DM=0; rho0=3.021516e-2
             r_DM = 4000 # [pc]
         self.params = [beta_star1, \
