@@ -45,7 +45,7 @@ def calc_chi2(profs, gp):
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nipol)
         gh.LOG(2, ' chi2_nu['+str(pop)+'] = ', chi2_nu)
         chi2 +=chi2_nu
-        pdb.set_trace()
+        #pdb.set_trace()
         if not gp.chi2_nu_converged:
             continue # with pop loop
 
