@@ -302,7 +302,7 @@ def run(gp):
     if gp.pops == 2:
         sigerr.append(sig_dat_err_bin2/scales[2][4])
 
-#    ipdb.set_trace()
+    ipdb.set_trace()
 
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\

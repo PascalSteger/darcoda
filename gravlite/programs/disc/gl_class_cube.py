@@ -119,7 +119,6 @@ def map_nr(params, prof, pop, gp):
     # must lie below -3, thus n(r)>3
     deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
     # to ensure we have a finite mass at all radii 0<r<=\infty
-    ipdb.set_trace()
     if monotonic:
         nrasyminfty = nr[-1]+params[-1] * nrscale * deltalogrlast
     else:
@@ -129,6 +128,7 @@ def map_nr(params, prof, pop, gp):
     nrasyminfty = max(nrasyminfty, 3.001)
 
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
+    ipdb.set_trace()
     return params
 ## \fn map_nr(params, prof, pop, gp)
 # mapping rho parameters from [0,1] to full parameter space
