@@ -35,6 +35,7 @@ def map_tilt_slope(vec, gp):
 
 
 def map_tiltstar(pa, gp):
+    #pdb.set_trace()
     off = 0
     # tilt parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
@@ -206,12 +207,13 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp[i]
             off += offstep
-
-            offstep = gp.nbeta
-            tmp = map_tiltstar(pc[off:off+offstep], gp)
-            for i in range(offstep):
-                pc[off+i] = tmp[i]
-            off += offstep
+            #pdb.set_trace()
+            if gp.nbeta!=0:
+                offstep = gp.nbeta
+                tmp = map_tiltstar(pc[off:off+offstep], gp)
+                for i in range(offstep):
+                    pc[off+i] = tmp[i]
+                off += offstep
 
         if off != gp.ndim:
             gh.LOG(1,'wrong subscripts in gl_class_cube')

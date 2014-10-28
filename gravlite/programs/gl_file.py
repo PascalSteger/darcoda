@@ -80,6 +80,8 @@ def bin_data(gp):
     elif gp.investigate == 'discsim':
         import grds_write
         grds_write.run(gp)
+    elif gp.investigate == 'simplenu':
+        grsimplenu_write.run(gp)
     return
 ## \fn bin_data(gp)
 # get data, bin it anew (e.g. if gp.nbin changed)
