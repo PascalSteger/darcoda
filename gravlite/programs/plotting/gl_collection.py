@@ -71,10 +71,31 @@ class ProfileCollection():
     # @param prof Profile to add
 
 
+
     def cut_subset(self):
         minchi = min(self.chis)
-        maxchi = max(self.chis)
-        self.subset = [0., 30.*minchi]
+        maxchi = 30*minchi # max(self.chis)
+        counts, bins = np.histogram(self.chis, bins=np.sqrt(len(self.chis)))
+        mincounts = -1
+        found_max = False; found_min = False
+        for k in range(len(counts)):
+            # flag if we found the first max peak in the chi2 distribution
+            if counts[k] < mincounts and not found_max:
+                found_max = True
+
+            # if still on rising part, store actual entry as new maximum
+            # and set starting minimum chi2 at highest value, to be changed later on
+            if counts[k] >= mincounts and not found_max:
+                mincounts = counts[k]
+                maxcounts = counts[k]
+            # if on decreasing branch, continue to set down border
+            if counts[k] < maxcounts and found_max and not found_min:
+                mincounts = counts[k]
+            if counts[k] >= maxcounts and found_max:
+                found_min = True
+                break
+        maxchi = bins[k+1]
+        self.subset = [minchi, maxchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -431,7 +452,6 @@ class ProfileCollection():
         scaleHS = 1.0
         if prof == 'nu':
             scaleHS = gp.nu0pc[pop]
-        pdb.set_trace()
         M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
         M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
         Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS
