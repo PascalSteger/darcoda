@@ -448,6 +448,7 @@ class ProfileCollection():
     # @param gp global parameters
 
 
+
     def fill_nice(self, ax, prof, pop, gp):
         scaleHS = 1.0
         if prof == 'nu':
@@ -478,6 +479,37 @@ class ProfileCollection():
         return
     ## \fn fill_nice(self, ax, prof, pop, gp)
     # plot filled region for 1sigma and 2sigma confidence interval
+    # @param ax axis object to plot into
+    # @param prof string
+    # @param pop int
+    # @param gp
+
+
+    def plot_full_distro(self, ax, prof, pop, gp):
+        scaleHS = 1.0
+        if prof == 'nu':
+            scaleHS = gp.nu0pc[pop]
+        pdb.set_trace()
+
+        countinbinx, xbins = np.histogram(x, Nbin)
+        ybins = np.linspace(min(y), max(y), num=30)
+
+        H, xedges, yedges = np.histogram2d(x, y, bins=[xbins, ybins])
+        fig, ax = plt.subplots(figsize=(8, 8), dpi=80, facecolor='w', edgecolor='k')
+
+        ax.set_xlim([r0[0]/2,r0[-1]*1.5])
+
+        extent = [min(xbins), max(xbins), min(ybins), max(ybins)]
+        im = ax.imshow(H.T, extent=extent, aspect='auto', interpolation='nearest', cmap=plt.cm.binary) #plt.cm.Blues)
+        fig.colorbar(im)
+        if prof == 'Sig' or prof == 'sig':
+            for pop in range(gp.pops):
+                ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
+        else:
+            self.plot_Xscale_3D(ax, gp)
+        return
+    ## \fn plot_full_distro(self, ax, prof, pop, gp)
+    # plot filled region with grayscale propto # models in log bin
     # @param ax axis object to plot into
     # @param prof string
     # @param pop int
