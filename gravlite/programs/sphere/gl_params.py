@@ -7,7 +7,7 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, pdb, logging, socket, getpass
+import os, pdb, socket, getpass
 
 def check_investigate(inv):
     if inv == 'walk':     return True
@@ -27,7 +27,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'gaia' # determine which data set to work on
+            self.investigate  = 'obs' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -122,11 +122,11 @@ class Params():
         self.log10nuspread = 0.5
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
-        self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
         self.maxrhoslope  = 4    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxnuslope = 5      # same for nrnu
+        self.nrtol  = 2*self.maxrhoslope # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
+        self.nrtol_nu = 2*self.maxnuslope # max change in dn(r)/d log(r)
         self.beta00prior = False  # beta(r=0)=0
         self.minbetastar = -0.99  # clipping for beta, default: -0.99
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00

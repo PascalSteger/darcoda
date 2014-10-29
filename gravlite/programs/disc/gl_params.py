@@ -78,7 +78,7 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100. # if chi2<chi2_switch, add chi2_sig
+        self.chi2_switch = 10. # if chi2<chi2_switch, add chi2_sig
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax

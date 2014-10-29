@@ -17,8 +17,8 @@ class Params():
         self.showplots = False
 
         self.n = 3 # number of iterations in gr_MCMCbin
-        self.Rerr  = 0. #0.01      # distance error in [Xscale]
-        self.vrerr = 0. #2.0      # [km/s] 0.01 # velocity error. only raises sig_los
+        self.Rerr  = 0. # 0.01      # distance error in [Xscale]
+        self.vrerr = 2.0 # [km/s] 0.01 # velocity error. only raises sig_los
 
         if gp.investigate == 'hern':
             self.repr  = 1     # choose simulation representation
@@ -28,11 +28,11 @@ class Params():
 
             self.simname = gp.files.get_sim_name(gp) # dir+'simulation/'+prename+'unit_hern_%i' %(repr)
             if gp.pops == 1:
-                self.simpos = gp.files.dir+'simulation/'+simname+'pos.txt'
-                self.simvel = gp.files.dir+'simulation/'+simname+'vel.txt'
+                self.simpos = gp.files.dir+'simulation/'+self.simname+'pos.txt'
+                self.simvel = gp.files.dir+'simulation/'+self.simname+'vel.txt'
             elif gp.pops == 2:
-                self.simpos = gp.files.dir+'simulation/'+simname+'stars_pos.txt'
-                self.simvel = gp.files.dir+'simulation/'+simname+'stars_vel.txt'
+                self.simpos = gp.files.dir+'simulation/'+self.simname+'stars_pos.txt'
+                self.simvel = gp.files.dir+'simulation/'+self.simname+'stars_vel.txt'
             else:
                 gh.LOG(0, 'get data for more than 2 pops in Hernquist profile')
                 pdb.set_trace()
@@ -41,6 +41,7 @@ class Params():
             self.r_DM  = 1000.
 
             def rhodm(r):
+                # TODO beta_DM: define up here somewhere
                 exp = ((1.*gamma_DM-beta_DM)/alpha_DM)
                 rho = rho0*(r/r_DM)**(-gamma_DM)*(1.+(r/r_DM)**alpha_DM)**exp
                 return rho
