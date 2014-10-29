@@ -7,9 +7,7 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb, sys
-import matplotlib
-#matplotlib.use('pdf')
+import pdb
 
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -76,7 +74,8 @@ class ProfileCollection():
     def cut_subset(self):
         minchi = min(self.chis)
         maxchi = max(self.chis)
-        self.subset = [0., 30.*minchi]
+        #self.subset = [0., 30.*minchi]
+        self.subset = [0., 10000.*minchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -279,13 +278,16 @@ class ProfileCollection():
     # @param gp global parameters
 
 
-    def plot_N_samples(self, ax, prof, pop):
+    def plot_N_samples(self, ax, prof, pop, gp):
+        scaleHS = 1.0
+        if prof == 'nu':
+            scaleHS = gp.nu0pc[pop]
         k=0
         while k<100:
             ind = npr.randint(len(self.profs))
             if self.subset[0] <= self.chis[ind] <= self.subset[1]:
                 lp  = self.profs[ind]
-                ax.plot(self.Mmedi.x0, lp.get_prof(prof, pop), color='black', alpha=0.1, lw=0.25)
+                ax.plot(self.Mmedi.x0, lp.get_prof(prof, pop)*scaleHS, color='black', alpha=0.1, lw=0.25)
                 k += 1
         return
     ## \fn plot_N_samples(self, ax, prof, pop)
@@ -433,7 +435,7 @@ class ProfileCollection():
         scaleHS = 1.0
         if prof == 'nu':
             scaleHS = gp.nu0pc[pop]
-        ipdb.set_trace()
+        pdb.set_trace()
         M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
         M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
         Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS
@@ -497,7 +499,7 @@ class ProfileCollection():
                 return
 
             self.fill_nice(ax, prof, pop, gp)
-            self.plot_N_samples(ax, prof, pop)
+            self.plot_N_samples(ax, prof, pop, gp)
             if prof == 'Sig' or prof=='nu' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
 

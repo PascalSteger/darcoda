@@ -5,7 +5,7 @@
 # disc version
 
 import numpy as np
-import ipdb
+import pdb
 import gl_helper as gh
 from gl_class_profiles import Profiles
 from gl_priors import check_bprior, check_tilt
@@ -49,10 +49,10 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('nu', tmp_nu, pop, gp) # [Munit/pc^3]
         tmp_Sig = phys.nu_SUM_Sig(gp.dat.binmin, gp.dat.binmax, tmp_nu) # [Munit/pc^2]
         tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
-        off += offstep 
+        off += offstep
 
         if gp.checksig:
-            ipdb.set_trace()
+            pdb.set_trace()
 
         offstep = gp.nbeta
         if gp.chi2_nu_converged:
@@ -62,7 +62,8 @@ def geom_loglike(cube, ndim, nparams, gp):
                 gh.LOG(1, 'tilt error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
-            tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
+            if gp.nbeta!=0:
+                tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
             sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
             tmp_profs.set_prof('sig', sig, pop, gp)
             # tmp_profs.set_prof('kap', kap, pop, gp)

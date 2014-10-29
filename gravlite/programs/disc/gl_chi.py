@@ -7,11 +7,9 @@
 
 # (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
 
-from types import *
-import ipdb
+#from types import *
+import pdb
 import numpy as np
-
-from gl_class_profiles import Profiles
 import gl_helper as gh
 
 def chi2red(model, data, sig, dof):
@@ -31,14 +29,13 @@ def chi2red(model, data, sig, dof):
 
 def calc_chi2(profs, gp):
     chi2 = 0.
-    off = 0
 
     # include rho* in chi^2 calculation
     nudat    = gp.dat.nu[0]
     nuerr    = gp.dat.nuerr[0]
     numodel  = profs.get_prof('nu', 0)
     chi2_nu = chi2red(numodel, nudat, nuerr, gp.nipol)
-    gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
+    gh.LOG(2, ' chi2_nu0 = ', chi2_nu)
     chi2 +=chi2_nu
 
     for pop in np.arange(1,gp.pops+1): # look at pops 1, 2, ...
@@ -46,9 +43,9 @@ def calc_chi2(profs, gp):
         nuerr    = gp.dat.nuerr[pop]
         numodel  = profs.get_prof('nu', pop)
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nipol)
-        gh.LOG(1, ' chi2_nu[pop] = ', chi2_nu)
+        gh.LOG(2, ' chi2_nu['+str(pop)+'] = ', chi2_nu)
         chi2 +=chi2_nu
-
+        #pdb.set_trace()
         if not gp.chi2_nu_converged:
             continue # with pop loop
 
@@ -58,14 +55,14 @@ def calc_chi2(profs, gp):
         chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nipol) # [1]
         if chi2_sig == np.inf:
             print('chi2_sig has become infinite')
-            ipdb.set_trace()
+            pdb.set_trace()
         chi2 += chi2_sig             # [1]
         gh.LOG(1, '  chi2_sig  = ', chi2_sig)
 
         if gp.usekappa:
             kapdat  = gp.dat.kap[pop]       # [1]
             kaperr  = gp.dat.kaperr[pop]    # [1]
-            chi2_kap = chi2red(profs.get_kap(pop), kap, kaperr, gp.nipol) # [1]
+            chi2_kap = chi2red(profs.get_kap(pop), kapdat, kaperr, gp.nipol) # [1]
             chi2 += chi2_kap                                     # [1]
 
     # switch to chi2_sig calculation too, if converged on Sig

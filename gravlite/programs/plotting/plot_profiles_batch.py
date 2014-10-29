@@ -8,7 +8,10 @@
 
 # start off with plotting/ in front of path
 #import sys
-import ipdb, pickle, os, sys
+import pdb
+import pickle
+import os
+import sys
 import numpy as np
 import numpy.random as npr
 import time
@@ -153,6 +156,7 @@ if __name__ == '__main__':
     print(sys.argv)
     basename = sys.argv[1]
     timestamp = sys.argv[1][-13:-1]
+    print('Timestamp = ', timestamp)
 
     import select_run as sr
 

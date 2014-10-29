@@ -83,73 +83,15 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
 
 def run(gp):
     global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
-    # Set up simple population here using analytic formulae:
-    zmin = 100.                               # [pc], first bin center
-    zmax = 1300.                              # [pc], last bin center
-    # get Stuetzpunkte for theoretical profiles (not yet stars, finer spacing in real space)
-    nth = gp.nipol                            # [1] number of bins
-    zth = 1.* np.arange(nth) * (zmax-zmin)/(nth-1.) + zmin # [pc] bin centers
-    z0  = 240.                                # [pc], scaleheight of first population
-    z02 = 200.                                # [pc], scaleheight of second population
-    D   = 250.                                # [pc], scaleheight of all stellar tracers
-    K   = 1.65                                # [TODO]
-    F   = 1.65e-4                             # [TODO]
-    C   = 17.**2.                             # [km/s] integration constant in sig
 
-    # Draw mock data from exponential disk:
-    nu_zth = np.exp(-zth/z0)                                 # [nu0] = [Msun/A/pc] 3D tracer density
-    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
+    external_file='/home/hsilverw/LoDaM/darcoda/gravlite/simplenu/simplenu_sigz_raw.dat'
+    external_data = np.loadtxt(external_file)
+    z_data = external_data[:, 0]
+    v_data = abs(external_data[:, 1])
 
-    if gp.adddarkdisc:
-        DD = 600                                         # [pc] scaleheight of dark disc
-        KD = 0.15 * 1.650                                # [TODO]
-        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.) # [TODO]
 
-    # calculate sig_z^2
-    inti = np.zeros(nth)
-    for i in range(1, nth):
-        inti[i] = simps(Kz_zth[:i]*nu_zth[:i], zth[:i])
 
-    sigzth = np.sqrt((inti + C) / nu_zth)
 
-    # project back to positions of stars
-    ran = npr.uniform(size=int(gp.ntracer[1-1]))                 # [1]
-    zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions, exponential falloff
-
-    sigzstar = gh.ipol(zth, sigzth, zstar)
-    # > 0 ((IDL, Justin)) stellar velocity dispersion
-
-    # assign [0,1] * maxsig
-    ran2 = npr.normal(size=int(gp.ntracer[2-1]))  # [1]
-    vzstar = ran2 * sigzstar                      # [km/s]
-
-    # Add second population [thick-disc like]:
-    if gp.pops == 2:
-        nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02)
-        # [nu0,2] = [Msun/A/pc], 3D tracer density, exponentially falling
-        # no normalization to 1 done here
-        inti    = np.zeros(nth)
-        for i in range(1, nth):
-            inti[i] = simps(Kz_zth[:i]*nu_zth2[:i], zth[:i])
-        sigzth2 = np.sqrt((inti + C) / nu_zth2) # same integration constant
-        ran = npr.uniform(-1., 1., gp.ntracer[2-1])            # [1]
-        zstar2 = -z02 * np.log(1.0 - ran)                      # [pc]
-        #zstarobs = np.hstack([zstar, zstar2]) # concat pop1, pop2 for all stars
-        sigzstar2 = gh.ipol(zth, sigzth2, zstar2)
-        ran2 = npr.normal(-1., 1, gp.ntracer[2-1])        # [1]
-        vzstar2 = ran2 * sigzstar2                        # [(km/2)^2]
-
-    # enforce observational cut on zmax:
-    sel = (zstar < zmax)
-    print('fraction of z<zmax selected elements: ', 1.*sum(sel)/(1.*len(sel)))
-    z_dat1  = zstar[sel]
-    vz_dat1 = vzstar[sel]
-
-    # throw away velocities of value zero (unstable?):
-    sel = (abs(vz_dat1) > 0)
-    print('fraction of vz_dat>0 selected elements: ', 1.*sum(sel)/(1.*len(sel)))
-    z_dat1  = z_dat1[sel]
-    vz_dat1 = vz_dat1[sel]
 
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin1, binmax1, z_dat_bin1, sig_dat_bin1, count_bin1 = gh.binsmooth(z_dat1, vz_dat1, \
@@ -299,8 +241,7 @@ def run(gp):
     if gp.pops == 2:
         sigerr.append(sig_dat_err_bin2/scales[2][4])
 
-
-    #pdb.set_trace()
+#    pdb.set_trace()
 
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\

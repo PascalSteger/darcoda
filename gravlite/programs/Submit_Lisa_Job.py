@@ -13,12 +13,12 @@
 from numpy import *
 import os, datetime, shutil
 from subprocess import call
-import ipdb
+import pdb
 
 nodes=1
-cores=16
-ppn=16
-walltime='00:00:15:00'
+cores='any'
+ppn=1
+walltime='00:16:00:00'
 
 gravlite_path = os.path.abspath('../')
 holding_stack_path = gravlite_path + '/holding_stack/'
@@ -39,19 +39,22 @@ pbs_filename = holding_stack_path + holding_number + '/programs/PBS_LisaSubmit_'
 pbs_file = open(pbs_filename, 'w')
 pbs_file.writelines('#!/bin/bash'+'\n')
 pbs_file.writelines('#PBS -S /bin/bash'+'\n')
-pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':cores' + str(cores) + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
+if cores == 'any':
+    pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
+else:
+    pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':cores' + str(cores) + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
 pbs_file.writelines('# Copying program files to scratch'+'\n')
 pbs_file.writelines('#module load openmpi/intel'+'\n')
 pbs_file.writelines('export RUNDIR=$TMPDIR'+'\n')
 pbs_file.writelines('cd $TMPDIR'+'\n')
 pbs_file.writelines('mkdir -p $TMPDIR/darcoda/gravlite/programs'+'\n')
-pbs_file.writelines('mkdir $TMPDIR/darcoda/gravlite/programs/HoldingNumberWas_' + holding_number)
+pbs_file.writelines('mkdir $TMPDIR/darcoda/gravlite/programs/HoldingNumberWas_' + holding_number + '\n')
 pbs_file.writelines('cp -r $HOME/LoDaM/darcoda/gravlite/holding_stack/' + str(holding_number) +'/programs/* $TMPDIR/darcoda/gravlite/programs/'+'\n')
 pbs_file.writelines('cd $TMPDIR/darcoda/gravlite/programs'+'\n')
 pbs_file.writelines('# Calculate run time for gravlite, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
 pbs_file.writelines('echo PBS_WALLTIME = $PBS_WALLTIME'+'\n')
-pbs_file.writelines('transft=180'+'\n')
+pbs_file.writelines('transft=1200'+'\n')
 pbs_file.writelines('echo Transfer time = $transft'+'\n')
 pbs_file.writelines('runtime=$(expr $PBS_WALLTIME - $transft)'+'\n')
 pbs_file.writelines('echo gravlite runtime = $runtime'+'\n')
@@ -62,6 +65,6 @@ pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
 #Submit PDB file
-ipdb.set_trace()
+pdb.set_trace()
 os.chdir(holding_stack_path + holding_number + '/programs/')
 os.system('qsub ' + pbs_filename)

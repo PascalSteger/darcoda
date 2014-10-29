@@ -16,9 +16,8 @@
 
 # SS testing (7 october 2014)
 
-import ipdb
+import pdb
 import numpy as np
-import numpy.random as npr
 import gl_helper as gh
 
 def map_tilt_slope(vec, gp):
@@ -36,6 +35,7 @@ def map_tilt_slope(vec, gp):
 
 
 def map_tiltstar(pa, gp):
+    #pdb.set_trace()
     off = 0
     # tilt parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
@@ -63,7 +63,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.log10rhospread
         rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
-        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        nrscale = gp.nxtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
         rhoscale = gp.dat.nuhalf[pop]
@@ -71,7 +71,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.log10nuspread
         rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxnuslope
-        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        nrscale = gp.nxtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
         raise Exception('wrong profile in gl_class_cube.map_nr')
@@ -142,15 +142,19 @@ def map_nr(params, prof, pop, gp):
 # @param gp global parameters
 
 
-def map_nu(pa, gp):
-    # TODO: assertion len(pa)=gp.nepol
-    for i in range(len(pa)):
-        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
-    return pa
-## \fn map_nu(pa, gp)
-# map tracer densities, directly
-# @param pa cube [0,1]^n
-# @param gp global parameters
+#def map_nu(pa, gp):
+#    # TODO: assertion len(pa)=gp.nepol
+#    for i in range(len(pa)):
+#        pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
+#    return pa
+### \fn map_nu(pa, gp)
+## map tracer densities, directly
+## if used, put
+##         self.maxlog10nu = 4.     # direct sampling of nu: min value
+##        self.minlog10nu = 0.     # direct sampling of nu: max value
+## in gl_params
+## @param pa cube [0,1]^n
+## @param gp global parameters
 
 
 def map_MtoL(pa, gp):
@@ -204,12 +208,13 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp[i]
             off += offstep
-
-            offstep = gp.nbeta
-            tmp = map_tiltstar(pc[off:off+offstep], gp)
-            for i in range(offstep):
-                pc[off+i] = tmp[i]
-            off += offstep
+            #pdb.set_trace()
+            if gp.nbeta!=0:
+                offstep = gp.nbeta
+                tmp = map_tiltstar(pc[off:off+offstep], gp)
+                for i in range(offstep):
+                    pc[off+i] = tmp[i]
+                off += offstep
 
         if off != gp.ndim:
             gh.LOG(1,'wrong subscripts in gl_class_cube')

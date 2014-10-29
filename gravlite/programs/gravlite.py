@@ -9,26 +9,24 @@
 
 # TODO: run with mpirun -np <N> gravlite.py
 # where <N> is an integer <= number of processors
-
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
-
 
 ### imports
 # from __future__ import absolute_import, unicode_literals, print_function
 #from mpi4py import MPI
 import subprocess
 import pymultinest
-import pickle, ipdb
+import pickle
+import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
-
 
 # optionally start with -i and -c switches, to batch start gaia and walk runs
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-i", "--investigation", dest="investigation",
-                      default="", help="investigation to run: gaia, walk, hern, triax, discmock")
+                      default="", help="investigation to run: gaia, walk, hern, triax, discmock, simplenu")
 parser.add_option("-c", "--case", dest="case",
                       default=-1, help="case: 1, 2, ..")
 (options, args) = parser.parse_args()
@@ -115,7 +113,7 @@ def run(gp):
                     sampling_efficiency = 0.05, # very low eff. in
                                                 # case of const efficiency mode,
                                                 # according to MultiNest README
-                    n_iter_before_update = 10, # output after this many iterations
+                    n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
                                             #max. = number of live
