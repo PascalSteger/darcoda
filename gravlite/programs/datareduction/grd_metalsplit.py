@@ -24,7 +24,8 @@ def myprior(cube, ndim, nparams):
     off = 0
     cube[off] = cube[off] # fraction of particles in part 1
     off +=1
-    for pop in range(0, gp.pops+1): # no. of pops goes in here, first MW, then 1,2,..
+    for pop in range(gp.pops): # no. of pops goes in here, first MW, then 1,2,..
+        # TODO: determine spread of these parameters
         cube[off] = cube[off] # Fe_mu
         off += 1
         cube[off] = cube[off] # Fe_sig
@@ -39,7 +40,7 @@ def myprior(cube, ndim, nparams):
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
-# @param ndim number of dimensions, 2*npop*nipol + nipol
+# @param ndim number of dimensions
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
@@ -76,8 +77,14 @@ def myloglike(cube, ndim, nparams):
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
     p2_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[1]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[1])**2/(2*np.sqrt(Fe_sig[1]**2+Fe_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
-    logev = np.sum(np.log(frac*PM*p1_Fe*p1_Mg + (1-frac)*PM*p2_Fe*p2_Mg))
+    p1 = frac*PM*p1_Fe*p1_Mg
+    p2 = (1-frac)*PM*p2_Fe*p2_Mg
+    pcom = p1+p2
+    lpcom = np.log(pcom)
+    logev = np.sum(lpcom)
     gh.LOG(1, 'logL:',logev)
+    if logev < -1e300:
+        pdb.set_trace()
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
@@ -102,13 +109,13 @@ def run(gp):
           3: lambda x: x * (294) #+/-38 for Sextans
       }[gp.case](1)
 
-    global wpt, Rpt, V0, Ve0, Mg0, Mge0, PM0
+    global wpt, Rpt, V0, Ve0, Mg, Mg_err, Fe, Fe_err,PM
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     #ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
     # usecols=(0,1),delimiter=delim)
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
-      VHel,e_VHel,Fe,Fe_err,\
+      Vhel,Vhel_err,Fe,Fe_err,\
       Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), \
                                        delimiter=delim, filling_values=-1)
@@ -119,18 +126,24 @@ def run(gp):
     Nsample = len(PM)
 
     # where no Fe or Mg is measured, set the corresponding error to infinity
+    pdb.set_trace()
+    Fe_mean = np.mean(Fe[Fe>-1])
+    Mg_mean = np.mean(Mg[Mg>-1])
     for i in range(Nsample):
-        if Fe[i] < 0:
-            Fe_err[i] = np.inf
-        elif Mg[i] < 0:
-            Mg_err[i] = np.inf
+        if Fe[i] == -1:
+            Fe[i] = Fe_mean
+            Fe_err[i] = 20
+        elif Mg[i] == -1:
+            Mg[i] = Mg_mean
+            Mg_err[i] = 20
 
     # use all stellar tracer particles from now on, independent on their probability of membership
-    scatter(Fe, Mg)
-    xlabel('Fe')
-    ylabel('Mg')
-    show()
-    pdb.set_trace()
+    #scatter(Fe, Mg)
+    # TODO show ellipses with errors, and alpha
+    #xlabel('Fe')
+    #ylabel('Mg')
+    #show()
+    #pdb.set_trace()
 
     global alpha_s, delta_s
     sig = abs(RAh[0])/RAh[0]
@@ -151,7 +164,7 @@ def run(gp):
     # and position of dwarf (ad, dd)
     # from probability-of-membership weighted means directly
     global Vd, ad, dd
-    Vd = np.sum(VHel * PM)/np.sum(PM)    # [km/s]
+    Vd = np.sum(Vhel * PM)/np.sum(PM)    # [km/s]
     ad = np.sum(alpha_s * PM)/np.sum(PM) # [arcsec]
     dd = np.sum(delta_s * PM)/np.sum(PM) # [arcsec]
     # determine distance to dwarf TODO reference
@@ -162,7 +175,7 @@ def run(gp):
     y0 = 1.*np.copy(ys) # [pc]
 
     # remove center displacement, already change x0
-    com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, VHel, PM) # [pc], [km/s]
+    com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, Vhel, PM) # [pc], [km/s]
     global R0
     R0 = np.sqrt(x0**2+y0**2)
     # sort by R0 so integral makes sense later
@@ -171,7 +184,7 @@ def run(gp):
     x0 = x0[order]; y0  = y0[order]
     xs = xs[order]; ys  = ys[order]
     alpha_s = alpha_s[order]; delta_s = delta_s[order]
-    V0 = V0[order]; Ve0 = Ve0[order]
+    Vhel = Vhel[order]; Vhel_err = Vhel_err[order]
     Fe = Fe[order]; Fe_err = Fe_err[order]
     Mg = Mg[order]; Mg_err = Mg_err[order]
 
@@ -185,7 +198,7 @@ def run(gp):
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 1+gp.pops*4
     pymultinest.run(myloglike,   myprior,
-                    n_dims,      n_params = n_dims+1, # None beforehands
+                    n_dims,      n_params = n_dims, # None beforehands
                     n_clustering_params = n_dims, # separate modes on
                                                   # the rho parameters
                                                   # only (gp.nrho in
