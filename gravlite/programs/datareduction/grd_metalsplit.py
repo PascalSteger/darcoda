@@ -16,7 +16,7 @@ import gl_helper as gh
 from gl_centering import com_shrinkcircle_v_2D
 import gl_units as gu
 
-gh.DEBUGLEVEL = 3
+gh.DEBUGLEVEL = 1
 DEBUG = True
 
 def myprior(cube, ndim, nparams):
@@ -119,6 +119,12 @@ def run(gp):
       Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), \
                                        delimiter=delim, filling_values=-1)
+    # exclude 0 probability of memory models, so we can weight by PM later on
+    sel = (PM>0)
+    RAh=RAh[sel]; RAm=RAm[sel]; RAs=RAs[sel]; DEd=DEd[sel]; DEm=DEm[sel]; DEs=DEs[sel]
+    Vmag=Vmag[sel]; VI=VI[sel]; Vhel=Vhel[sel]; Vhel_err=Vhel_err[sel]
+    Fe=Fe[sel]; Fe_err=Fe_err[sel]; Mg=Mg[sel]; Mg_err=Mg_err[sel]; PM=PM[sel]
+
     # attention, we do not have Mg measurements for 501 stars in Fornax,
     #  visible by missing SigMg values, set to -1
     #   we exclude them from all further analysis
@@ -126,16 +132,20 @@ def run(gp):
     Nsample = len(PM)
 
     # where no Fe or Mg is measured, set the corresponding error to infinity
-    pdb.set_trace()
     Fe_mean = np.mean(Fe[Fe>-1])
     Mg_mean = np.mean(Mg[Mg>-1])
+    penalty_err = 10
     for i in range(Nsample):
         if Fe[i] == -1:
             Fe[i] = Fe_mean
-            Fe_err[i] = 20
-        elif Mg[i] == -1:
+            Fe_err[i] = penalty_err
+        if Mg[i] == -1:
             Mg[i] = Mg_mean
-            Mg_err[i] = 20
+            Mg_err[i] = penalty_err
+        if Fe_err[i] == -1:
+            Fe_err[i] = penalty_err
+        if Mg_err[i] == -1:
+            Mg_err[i] = penalty_err
 
     # use all stellar tracer particles from now on, independent on their probability of membership
     #scatter(Fe, Mg)
