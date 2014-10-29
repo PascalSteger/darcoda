@@ -22,6 +22,8 @@ DEBUG = True
 def myprior(cube, ndim, nparams):
     # convert to physical space
     off = 0
+    cube[off] = cube[off] # fraction of particles in part 1
+    off +=1
     for pop in range(0, gp.pops+1): # no. of pops goes in here, first MW, then 1,2,..
         cube[off] = cube[off] # Fe_mu
         off += 1
@@ -41,7 +43,6 @@ def myprior(cube, ndim, nparams):
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
-
 def w(Rk):
     gh.sanitize_vector(Rk, Nsample, 0, 1e30, DEBUG)
     w_ipol = np.zeros(Nsample)
@@ -53,10 +54,11 @@ def w(Rk):
 # take vector as input
 # @param Rk radius [pc]
 
-
 def myloglike(cube, ndim, nparams):
     off = 0
     Fe_mu = []; Fe_sig = []; Mg_mu = []; Mg_sig = []
+    frac = cube[off]
+    off += 1
     for pop in range(gp.pops):
         Fe_mu.append(cube[off])
         off += 1
@@ -69,13 +71,12 @@ def myloglike(cube, ndim, nparams):
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         pdb.set_trace()
-
     gh.LOG(2,'starting logev evaluation')
     p1_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[0]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[0])**2/(2*np.sqrt(Fe_sig[0]**2+Fe_err**2)))
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
     p2_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[1]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[1])**2/(2*np.sqrt(Fe_sig[1]**2+Fe_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
-    logev = np.sum(np.log(p1_Fe*p1_Mg + p2_Fe*p2_Mg))
+    logev = np.sum(np.log(frac*PM*p1_Fe*p1_Mg + (1-frac)*PM*p2_Fe*p2_Mg))
     gh.LOG(1, 'logL:',logev)
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
@@ -182,7 +183,7 @@ def run(gp):
     gw = w(R0)
 
     gh.LOG(1,'starting MultiNest run:')
-    n_dims = gp.pops*4
+    n_dims = 1+gp.pops*4
     pymultinest.run(myloglike,   myprior,
                     n_dims,      n_params = n_dims+1, # None beforehands
                     n_clustering_params = n_dims, # separate modes on
