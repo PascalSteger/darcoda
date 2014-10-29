@@ -452,6 +452,12 @@ class ProfileCollection():
         if prof == 'nu':
             scaleHS = gp.nu0pc[pop]
         pdb.set_trace()
+<<<<<<< HEAD
+=======
+        M68hi = self.M68hi.get_prof(prof, pop)*scaleHS
+        M95hi = self.M95hi.get_prof(prof, pop)*scaleHS
+
+>>>>>>> 22f97af2fa18af0baa22b8fb73b6950f25cdd936
 
         countinbinx, xbins = np.histogram(x, Nbin)
         ybins = np.linspace(min(y), max(y), num=30)
