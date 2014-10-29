@@ -277,7 +277,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     sigr2nu_model = np.zeros(len(r0fine))
     sigr2nu_model_new = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
-        theta_old = np.linspace(0, np.arccos(r0fine[k]/(gp.rinfty*max(gp.xepol))), gp.nfine)
+        #theta_old = np.linspace(0, np.arccos(r0fine[k]/(gp.rinfty*max(gp.xepol))), gp.nfine)
         theta = np.arccos(r0fine[k]/r0fine[k:])
         rq = r0fine[k]/np.cos(theta)
 

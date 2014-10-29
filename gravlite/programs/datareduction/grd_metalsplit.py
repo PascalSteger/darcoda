@@ -266,13 +266,11 @@ def run(gp):
     Rpt, wpt = A.T # [arcmin], [1]
     arcmin__pc = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
     Rpt *= arcmin__pc # [pc]
-    global gw
-    gw = w(R0)
 
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 1+gp.pops*4
     pymultinest.run(myloglike,   myprior,
-                    n_dims,      n_params = n_dims, # None beforehands
+                    n_dims,      n_params = n_dims,
                     n_clustering_params = n_dims, # separate modes on
                                                   # the rho parameters
                                                   # only (gp.nrho in
@@ -289,7 +287,7 @@ def run(gp):
                     sampling_efficiency = 0.05, # very low eff. in
                                                 #case of const efficiency mode,
                                                 #README
-                    n_iter_before_update = 10, # output after this many iterations
+                    n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = 1., # separate modes if
                                             #logevidence > this param.
                     max_modes = Nsample,

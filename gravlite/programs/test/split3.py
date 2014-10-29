@@ -11,7 +11,6 @@ x = np.random.uniform(0,2000,Npoints)
 y*=np.log(x+1)
 
 Nbin = 12
-
 countinbinx, xbins = np.histogram(x, Nbin)
 ybins = np.linspace(min(y), max(y), num=30)
 
