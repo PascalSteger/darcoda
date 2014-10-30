@@ -19,7 +19,6 @@ import gl_project as glp
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
-
     offstep = gp.nrho
     if gp.chi2_Sig_converged:
         rhopar = np.array(cube[off:off+offstep])
@@ -42,11 +41,9 @@ def geom_loglike(cube, ndim, nparams, gp):
         rhostar = phys.rho(gp.xepol, rhostarpar, 0, gp)
         tmp_profs.set_prof('nu', rhostar[gp.nexp:-gp.nexp], 0, gp)
         off += offstep
-
         Signu = glp.rho_param_INT_Sig(gp.xepol, rhostarpar, 0, gp) # [Munit/pc^2]
         Sig = gh.linipollog(gp.xepol, Signu, gp.xipol)
         tmp_profs.set_prof('Sig', Sig, 0, gp)
-
         MtoL = cube[off]
         off += 1
     else:
@@ -64,7 +61,6 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_Sig = gh.linipollog(gp.xepol, tmp_Signu, gp.xipol)
         tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
         off += offstep
-
         offstep = gp.nbeta
         if gp.chi2_Sig_converged:
             betapar = np.array(cube[off:off+offstep])
@@ -77,7 +73,6 @@ def geom_loglike(cube, ndim, nparams, gp):
             tmp_profs.set_prof('beta', tmp_beta, pop, gp)
             gh.sanitize_vector(tmp_betastar, len(tmp_profs.x0), -1, 1, gp.debug)
             tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
-
             try:
                 if gp.checksig:
                     import gl_analytic as ga
@@ -110,7 +105,6 @@ def geom_loglike(cube, ndim, nparams, gp):
                 tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
                 tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
                 tmp_profs.set_zeta(zetaa, zetab, pop)
-
             except Exception as detail:
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)
@@ -124,7 +118,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     chi2 = calc_chi2(tmp_profs, gp)
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
-
     # after some predefined wallclock time, plot all profiles
     if time.time() - gp.last_plot >= gp.plot_after:
         gp.last_plot = time.time()

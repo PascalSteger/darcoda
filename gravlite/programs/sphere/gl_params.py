@@ -65,9 +65,9 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
-        self.debug = False
-        self.checksig = False
-        self.stopstep = 1
+        self.debug = True # enable calling debug routines during run. Turn off for production runs!
+        self.checksig = False # check sigma_LOS calculation steps in gl_int
+        self.stopstep = 1 # step to stop at by default
 
         # MultiNest options
         # ----------------------------------------------------------------------
@@ -105,7 +105,7 @@ class Params():
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
-        self.nlive = 10*self.ndim
+        self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
         # automatic plotting options
@@ -118,13 +118,13 @@ class Params():
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.log10rhospread = 1.       # with this spread, [dex] in log space
-        self.log10nuspread = 0.5
+        self.log10rhospread = 2.5       # with this spread, [dex] in log space
+        self.log10nuspread = 2.5  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
         self.maxrhoslope  = 4    # maximum slope (change if
                                  # monotonicity prior used) of rho
-        self.maxnuslope = 5      # same for nrnu
+        self.maxnuslope = 6      # same for nrnu
         self.nrtol  = 2*self.maxrhoslope # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
         self.nrtol_nu = 2*self.maxnuslope # max change in dn(r)/d log(r)
         self.beta00prior = False  # beta(r=0)=0

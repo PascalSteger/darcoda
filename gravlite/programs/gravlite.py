@@ -17,6 +17,7 @@
 import subprocess
 import pymultinest
 import pickle
+import numpy as np
 import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
@@ -45,7 +46,6 @@ def show(filepath):
 ## \fn show(filepath) open the output (pdf) file for the user @param
 # filepath filename with full path
 
-
 def myprior(cube, ndim, nparams):
     mycube = Cube(gp)
     mycube.copy(cube)
@@ -57,18 +57,17 @@ def myprior(cube, ndim, nparams):
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
-
 def myloglike(cube, ndim, nparams):
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
-
     # we only store models after the initial Sigma burn-in
     if gp.chi2_nu_converged:
+        tmp_profs.x0 = gp.xipol
+        tmp_profs.xbins = np.hstack([gp.binmin, gp.binmax[-1]])
         with open(gp.files.outdir+'pc2.save', 'ab') as fi:
             pickle.dump(tmp_profs, fi)
             # convention: use chi^2 directly, not log likelihood
-
     # for output:
     # from   likelihood L = exp(-\chi^2/2), want log of that
     return -tmp_profs.chi2/2.
@@ -77,7 +76,6 @@ def myloglike(cube, ndim, nparams):
 # @param ndim number of dimensions, 2*npop*nipol + nipol
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
-
 
 def prepare_data(gp):
     if gp.getnewdata:

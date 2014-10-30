@@ -112,7 +112,6 @@ def get_binned_data(gp):
 # read in binned data, store in a gl_data class
 # @param gp global parameters
 
-
 def get_rhohalfs(gp):
     if gp.geom == 'sphere':
         # Wolf, Walker method for M_half, r_half
@@ -120,20 +119,16 @@ def get_rhohalfs(gp):
         r_half = gp.dat.rhalf[0] # [pc] from overall rho*
         sigv = max(gp.dat.sig[0]) # [km/s] from overall rho*
         M_half_walk = 5.*r_half*sigv**2/(2.*gu.G1__pcMsun_1km2s_2) # [Munit] Walker Penarrubia 2011
-
+        r_half_walk = r_half
         # other estimate: Wolf+2010,
         M_half_wolf = 4*r_half*sigv**2/gu.G1__pcMsun_1km2s_2
-        r_half *= 4/3.
+        r_half_wolf = 4/3. * r_half
 
         # density at half-light radius of baryons
-
-        M_half = M_half_wolf
-        rhohalf_approx = 3*M_half/(4.*np.pi*r_half**3) # max density possible assuming alpha=0
+        rhohalf_approx = 3*M_half_walk/(4.*np.pi*r_half_walk**3) # max density possible assuming alpha=0
         gp.rhohalf = rhohalf_approx
-
     elif gp.geom == 'disc':
         gp.rhohalf = np.average(gp.dat.nuhalf) #Assuming DM density negligible
-
     return
 ## \fn get_rhohalfs(gp)
 # get informed priors on 3D densities at half-light radius

@@ -51,6 +51,8 @@ class ProfileCollection():
         self.profs = []
         self.subset = [0., np.inf]
         self.x0 = np.array([])
+        self.binmin = np.array([])
+        self.binmax = np.array([])
         self.Mmin  = Profiles(pops, nipol)
         self.M95lo = Profiles(pops, nipol)
         self.M68lo = Profiles(pops, nipol)
@@ -458,9 +460,9 @@ class ProfileCollection():
         x = self.x0
         y = self.sort_prof(prof, pop, gp) # gives [Nmodels, Nbin] shape matrix
         pdb.set_trace()
-        Nvertbin = np.sqrt(len(y[0]))
-        countinbinx, xbins = np.histogram(x, Nvertbin)
-        ybins = np.linspace(min(y), max(y), num=30)
+        Nvertbin = np.sqrt(len(y[:,0]))
+        xbins = np.hstack([self.binmin, self.binmax[-1]])
+        ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
 
         H, xedges, yedges = np.histogram2d(x, y, bins=[xbins, ybins])
         fig, ax = plt.subplots(figsize=(8, 8), dpi=80, facecolor='w', edgecolor='k')
@@ -542,9 +544,8 @@ class ProfileCollection():
                 fig.savefig(basename+'/output/prof_chi2_0.pdf')
                 return
             # replaced with full distribution plot
-            self.fill_nice(ax, prof, pop, gp)
-            #self.plot_full_distro(ax, prof, pop, gp)
-
+            #self.fill_nice(ax, prof, pop, gp)
+            self.plot_full_distro(ax, prof, pop, gp)
             self.plot_N_samples(ax, prof, pop)
             if prof == 'Sig' or prof=='nu' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
