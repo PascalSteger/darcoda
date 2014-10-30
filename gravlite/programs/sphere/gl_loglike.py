@@ -22,6 +22,9 @@ def geom_loglike(cube, ndim, nparams, gp):
     offstep = gp.nrho
     if gp.chi2_Sig_converged:
         rhopar = np.array(cube[off:off+offstep])
+        # TODO: check whether prior can go in,
+        # namely that rho yields a valid distribution function after Eddington reversion formula
+
         tmp_profs.set_prof('nr', 1.*rhopar[1+1+gp.nexp:-gp.nexp-1], 0, gp)
         tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
         # rhopar hold [rho(rhalf), nr to be used for integration

@@ -18,7 +18,7 @@ class Params():
 
         self.n = 3 # number of iterations in gr_MCMCbin
         self.Rerr  = 0. # 0.01      # distance error in [Xscale]
-        self.vrerr = 2.0 # [km/s] 0.01 # velocity error. only raises sig_los
+        self.vrerr = 2.0 # [km/s] 0.01 # velocity error. raises sig_los, errors in it
 
         if gp.investigate == 'hern':
             self.repr  = 1     # choose simulation representation
