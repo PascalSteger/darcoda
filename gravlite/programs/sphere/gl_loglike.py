@@ -5,7 +5,7 @@
 # spherical version
 
 import numpy as np
-import pdb, os, time
+import pdb, time
 from scipy.interpolate import splev, splrep
 
 import gl_physics as phys
@@ -86,7 +86,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate =='gaia':
                         dlr[-1] = 4
                     rhopar = np.hstack([rhopar_half, dlr])
-                    rhostarpar = 0.0*rhopari
+                    rhostarpar = 0.0*rhopar
                     MtoL = 0.0
                     if gp.investigiiate == 'gaia':
                         if gp.case == 5:
@@ -108,7 +108,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                 tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
                 tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
                 tmp_profs.set_zeta(zetaa, zetab, pop)
-            except Exception as detail:
+            except Exception:
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs

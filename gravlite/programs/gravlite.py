@@ -37,7 +37,6 @@ import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
 ts = '' # empty timestamp means: create new timestamp with folder
 gp = gl_params.Params(ts, options.investigation, int(options.case))
-
 import gl_file as gf
 
 def show(filepath):
@@ -82,15 +81,12 @@ def prepare_data(gp):
         if gp.getnewpos:
             gf.read_data(gp)
         gf.bin_data(gp)
-
     gf.get_binned_data(gp)
     gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
-
-
 def run(gp):
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
@@ -108,9 +104,7 @@ def run(gp):
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.05, # very low eff. in
-                                                # case of const efficiency mode,
-                                                # according to MultiNest README
+                    sampling_efficiency = 0.95,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -135,7 +129,6 @@ def run(gp):
                                           #number of iterations)
                     init_MPI = True,     # use MPI
                     dump_callback = None)
-
 
 if __name__=="__main__":
     global Cube, geom_loglike

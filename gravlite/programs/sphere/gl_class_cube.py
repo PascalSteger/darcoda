@@ -17,6 +17,13 @@ import numpy as np
 import pdb
 import gl_helper as gh
 
+def ginv(x, mu, sig):
+    # TODO
+    return x
+## \fn ginv(x, mu, sig)
+# take range [0,1] and return [-inf, inf]
+# sampled with a normal distribution
+
 
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
@@ -28,7 +35,7 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[0]
         width = gp.log10rhospread
         rlimnr = gp.rlimnr
-        maxrhoslope = gp.maxrhoslope
+        innerslope = gp.innerslope
         nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
@@ -36,7 +43,7 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[pop]
         width = gp.log10nuspread
         rlimnr = gp.rlimnr_nu
-        maxrhoslope = gp.maxnuslope
+        innerslope = gp.innerslope
         nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
@@ -50,28 +57,19 @@ def map_nr(params, prof, pop, gp):
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    if gp.xepol[0] <= rlimnr*Rscale:
-        nrasym0 = params[1]*min(maxrhoslope/2, 2.99)
-    else:
-        nrasym0 = params[1]*2.99
+    nrasym0 = params[1]*innerslope
 
     # work directly with the dn(r)/dlog(r) parameters here
-    dnrdlrparams = params[2:-1]
+    dnrdlrparams = params[2:]
     # offset for the integration of dn(r)/dlog(r) at smallest radius
-    if gp.xepol[1] <= rlimnr*Rscale:
-        nr[0] = dnrdlrparams[0]*min(maxrhoslope/2, 2.99)
-    else:
-        nr[0] = dnrdlrparams[0]*maxrhoslope
+    nr[0] = dnrdlrparams[0]*innerslope
 
     for k in range(1, gp.nepol):
-        # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
-        # lie in between 0 and gp.maxrhoslope
-
         deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
         if monotonic:
             # only increase n(r), use pa[i]>=0 directly
-            nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale * deltalogr
+            nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale/2. * deltalogr
         else:
             # use pa => [-1, 1] for full interval
             nr[k] = nr[k-1] + (dnrdlrparams[k]-0.5)*2. * nrscale * deltalogr
@@ -89,7 +87,7 @@ def map_nr(params, prof, pop, gp):
     deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
     # to ensure we have a finite mass at all radii 0<r<=\infty
     if monotonic:
-        nrasyminfty = nr[-1]+params[-1] * nrscale * deltalogrlast
+        nrasyminfty = nr[-1]+params[-1] * nrscale/2. * deltalogrlast
     else:
         nrasyminfty = nr[-1]+(params[-1]-0.5)*2 * nrscale * deltalogrlast
 
