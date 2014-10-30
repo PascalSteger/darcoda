@@ -38,13 +38,14 @@ class Params():
             self.machine = 'lisa_SS_batch'
 
         # Set investigation and geometry
+        pdb.set_trace()
         if investigate != '':
             self.investigate = investigate
         else:
             self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
-            self.geom = 'disc'
+        self.geom = 'disc'
 
         check_investigate(self.investigate)
         self.case = 0 # used in spherical case
@@ -78,7 +79,7 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100000. # if chi2<chi2_switch, add chi2_sig
+        self.chi2_switch = 10000. # if chi2<chi2_switch, add chi2_sig
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
@@ -98,7 +99,7 @@ class Params():
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 1   # number of parameters for beta, in sum of
+        self.nbeta = 0   # number of parameters for beta, in sum of
                          # polynomials
         # TODO: if not using rhostar, subtract gp.nrho:
         self.ndim = 1 + 2*self.nrho + 1 + self.pops*(self.nrho + self.nbeta)

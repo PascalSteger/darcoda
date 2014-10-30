@@ -62,7 +62,8 @@ def geom_loglike(cube, ndim, nparams, gp):
                 gh.LOG(1, 'tilt error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
-            tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
+            if gp.nbeta!=0:
+                tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
             sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
             tmp_profs.set_prof('sig', sig, pop, gp)
             # tmp_profs.set_prof('kap', kap, pop, gp)

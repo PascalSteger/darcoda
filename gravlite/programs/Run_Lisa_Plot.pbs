@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -S /bin/bash
-#PBS -lnodes=1:ppn=1,walltime=00:00:10:00
+#PBS -lnodes=1:ppn=1,walltime=00:00:60:00
 
 # Copying program and data files to scratch
 
-PlotFolder=/DTdiscmock/0/201410220354/
+PlotFolder=/DTdiscmock/0/201410270754/
 
 export RUNDIR=$TMPDIR
 
@@ -22,16 +22,25 @@ cd $TMPDIR/darcoda/gravlite/$PlotFolder/output/
 ls -l
 
 cd $TMPDIR/darcoda/gravlite/programs/plotting
+echo Plotting directory is:
+echo $TMPDIR/darcoda/gravlite/$PlotFolder
 python3 plot_profiles_batch.py $TMPDIR/darcoda/gravlite/$PlotFolder
 
+echo Plotfolder contains
 cd $TMPDIR/darcoda/gravlite/$PlotFolder/
 ls -l
 
+echo Output contains
 cd $TMPDIR/darcoda/gravlite/$PlotFolder/output/
 ls -l
 
-mkdir $TMPDIR/darcoda/gravlite/$PlotFolder/output/PlottedWithLisa
+echo Output/pdf contains
+cd $TMPDIR/darcoda/gravlite/$PlotFolder/output/pdf/
+ls -l
+
+# mkdir $TMPDIR/darcoda/gravlite/$PlotFolder/output/PlottedWithLisa$(date+%s)
 
 cp -r $TMPDIR/darcoda/gravlite/$PlotFolder/output $HOME/LoDaM/darcoda/gravlite/$PlotFolder/
+cp -r $TMPDIR/darcoda/gravlite/$PlotFolder/output/* $HOME/LoDaM/darcoda/gravlite/$PlotFolder/output/
 
 echo Plots made and copied, job finished

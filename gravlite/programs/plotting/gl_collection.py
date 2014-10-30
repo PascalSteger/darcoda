@@ -74,6 +74,7 @@ class ProfileCollection():
 
     def cut_subset(self):
         minchi = min(self.chis)
+<<<<<<< HEAD
         maxchi = 30*minchi # max(self.chis)
         counts, bins = np.histogram(self.chis, bins=np.sqrt(len(self.chis)))
         mincounts = -1
@@ -96,6 +97,11 @@ class ProfileCollection():
                 break
         maxchi = bins[k+1]
         self.subset = [minchi, maxchi]
+=======
+        maxchi = max(self.chis)
+        #self.subset = [0., 30.*minchi]
+        self.subset = [0., 10000.*minchi]
+>>>>>>> d282dc816ab6b2b26be9517406e77b7072358d5d
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -298,13 +304,16 @@ class ProfileCollection():
     # @param gp global parameters
 
 
-    def plot_N_samples(self, ax, prof, pop):
+    def plot_N_samples(self, ax, prof, pop, gp):
+        scaleHS = 1.0
+        if prof == 'nu':
+            scaleHS = gp.nu0pc[pop]
         k=0
         while k<100:
             ind = npr.randint(len(self.profs))
             if self.subset[0] <= self.chis[ind] <= self.subset[1]:
                 lp  = self.profs[ind]
-                ax.plot(self.Mmedi.x0, lp.get_prof(prof, pop), color='black', alpha=0.1, lw=0.25)
+                ax.plot(self.Mmedi.x0, lp.get_prof(prof, pop)*scaleHS, color='black', alpha=0.1, lw=0.25)
                 k += 1
         return
     ## \fn plot_N_samples(self, ax, prof, pop)
@@ -547,7 +556,7 @@ class ProfileCollection():
                 return
 
             self.fill_nice(ax, prof, pop, gp)
-            self.plot_N_samples(ax, prof, pop)
+            self.plot_N_samples(ax, prof, pop, gp)
             if prof == 'Sig' or prof=='nu' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
 
