@@ -27,22 +27,15 @@ def chi2red(model, data, sig, dof):
 # @param sig spread
 # @param dof Degrees Of Freedom
 
-
 def calc_chi2(profs, gp):
     chi2 = 0.
-
     # calc chi^2 from overall baryonic tracers
-    if gp.investigate == 'obs':
-        Sigdat = gp.dat.Sig[0]              # [Munit/pc^2] from rho*
-        Sigerr = gp.dat.Sigerr[0]           # [Munit/pc^2]
-        Sigmodel = profs.get_prof('Sig', 0)
-        chi2_Sigstar = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
-        chi2 += chi2_Sigstar
-        gh.LOG(1, 'chi2_Sigstar  = ', chi2_Sigstar)
+    # is not needed, as photometric data has very small errors,
+    # and the corresponding M/L uncertainty is automatically
+    # penalized from wrong sigma_LOS
 
     # now run through the stellar tracers
     for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]
-
         Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
         Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]
         Sigmodel = profs.get_prof('Sig', pop)

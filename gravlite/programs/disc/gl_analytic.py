@@ -32,7 +32,7 @@ def get_prof(prof, pop, gp):
 
     # Draw mock data from exponential disk:
     nu_zth = np.exp(-zth/z0)                                 # [nu0] = [Msun/A/pc] 3D tracer density
-    if prof == 'nu' and pop == 1:
+    if prof == 'nu' and pop==1:
         return zth, nu_zth
     Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
 
@@ -81,6 +81,7 @@ def get_prof(prof, pop, gp):
         vzstar2 = ran2 * sigzstar2                        # [(km/2)^2]
 ## \fn get_prof(prof, pop, gp)
 # get analytic profile prof for global parameters gp
-# @param prof profile string, rho, nu, Sig, sig
-# @param pop population int 0 (both), 1, 2
+# @param prof profile string, rho, nu, sig
+# @param pop population int 1, 2
 # @param gp global parameters
+# @return z, profile

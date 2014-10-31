@@ -18,6 +18,7 @@ import gl_helper as gh
 import gl_analytic as ga
 import gl_project as glp
 
+USE_ALL = True
 
 def unit(prof):
     if prof == 'rho' or prof == 'nu':
@@ -49,6 +50,9 @@ class ProfileCollection():
         self.goodprof = [] # will contain the corresponding profiles
         self.profs = []
         self.subset = [0., np.inf]
+        self.x0 = np.array([])
+        self.binmin = np.array([])
+        self.binmax = np.array([])
         self.Mmin  = Profiles(pops, nipol)
         self.M95lo = Profiles(pops, nipol)
         self.M68lo = Profiles(pops, nipol)
@@ -62,10 +66,12 @@ class ProfileCollection():
     # @param pops number of populations
     # @param nipol number of bins
 
-
     def add(self, prof):
+        if np.isnan(prof.chi2):
+            return
         self.chis.append(prof.chi2)
         self.profs.append(prof)
+        return
     ## \fn add(self, prof)
     # add a profile
     # @param prof Profile to add
@@ -73,40 +79,38 @@ class ProfileCollection():
 
 
     def cut_subset(self):
+        self.chis = np.array(self.chis) # better to work with numpy arrays for subsections
         minchi = min(self.chis)
-<<<<<<< HEAD
-        maxchi = 30*minchi # max(self.chis)
-        counts, bins = np.histogram(self.chis, bins=np.sqrt(len(self.chis)))
-        mincounts = -1
-        found_max = False; found_min = False
-        for k in range(len(counts)):
-            # flag if we found the first max peak in the chi2 distribution
-            if counts[k] < mincounts and not found_max:
-                found_max = True
+        if USE_ALL:
+            maxchi = max(self.chis)
+        else:
+            counts, bins = np.histogram(np.log10(self.chis), bins=np.sqrt(len(self.chis)))
+            mincounts = -1
+            found_max = False; found_min = False
+            for k in range(len(counts)):
+                # flag if we found the first max peak in the chi2 distribution
+                if counts[k] < mincounts and not found_max:
+                    found_max = True
 
-            # if still on rising part, store actual entry as new maximum
-            # and set starting minimum chi2 at highest value, to be changed later on
-            if counts[k] >= mincounts and not found_max:
-                mincounts = counts[k]
-                maxcounts = counts[k]
-            # if on decreasing branch, continue to set down border
-            if counts[k] < maxcounts and found_max and not found_min:
-                mincounts = counts[k]
-            if counts[k] >= maxcounts and found_max:
-                found_min = True
-                break
-        maxchi = bins[k+1]
+                # if still on rising part, store actual entry as new maximum
+                # and set starting minimum chi2 at highest value, to be changed later on
+                if counts[k] >= mincounts and not found_max:
+                    mincounts = counts[k]
+                    maxcounts = counts[k]
+                # if on decreasing branch, continue to set down border
+                if counts[k] < maxcounts and found_max and not found_min:
+                    mincounts = counts[k]
+                if counts[k] >= maxcounts and found_max:
+                    found_min = True
+                    break
+            maxchi = 10**(bins[k+1])
         self.subset = [minchi, maxchi]
-=======
-        maxchi = max(self.chis)
-        #self.subset = [0., 30.*minchi]
-        self.subset = [0., 10000.*minchi]
->>>>>>> d282dc816ab6b2b26be9517406e77b7072358d5d
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
 
     def set_x0(self, x0):
+        self.x0 = x0
         self.Mmin.x0  = x0
         self.M95lo.x0 = x0
         self.M68lo.x0 = x0
@@ -138,13 +142,13 @@ class ProfileCollection():
         self.M68hi.set_prof(prof, tmp[ll*0.68], pop, gp)
         self.M95hi.set_prof(prof, tmp[ll*0.95], pop, gp)
         self.Mmax.set_prof(prof,  tmp[-1],      pop, gp)
-
+        return tmp
     ## \fn sort_prof(self, prof, pop, gp)
     # sort the list of prof-profiles, and store the {1,2}sigma, min, medi, max in the appropriate place
     # @param prof profile identifier, 'rho', 'beta', ...
     # @param pop population identifier
     # @param gp global parameters
-
+    # @return tmp profiles sorted binwise
 
     def calculate_M(self, gp):
         if len(self.profs)>0:
@@ -184,7 +188,7 @@ class ProfileCollection():
     def set_analytic(self, x0, gp):
         r0 = x0 # [pc], spherical case
         self.analytic.x0 = r0
-        anbeta = []; annu = []; annrnu = []; anSig = []; ansig = []
+        anbeta = []; annu = [];  anSig = []
         if gp.investigate == 'gaia':
             anrho = ga.rho_gaia(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
@@ -304,16 +308,13 @@ class ProfileCollection():
     # @param gp global parameters
 
 
-    def plot_N_samples(self, ax, prof, pop, gp):
-        scaleHS = 1.0
-        if prof == 'nu':
-            scaleHS = gp.nu0pc[pop]
+    def plot_N_samples(self, ax, prof, pop):
         k=0
         while k<100:
             ind = npr.randint(len(self.profs))
             if self.subset[0] <= self.chis[ind] <= self.subset[1]:
                 lp  = self.profs[ind]
-                ax.plot(self.Mmedi.x0, lp.get_prof(prof, pop)*scaleHS, color='black', alpha=0.1, lw=0.25)
+                ax.plot(self.Mmedi.x0, lp.get_prof(prof, pop), color='black', alpha=0.1, lw=0.25)
                 k += 1
         return
     ## \fn plot_N_samples(self, ax, prof, pop)
@@ -379,7 +380,6 @@ class ProfileCollection():
     # @param prof string of profile
     # @param pop which population to analyze: 0 (all), 1, 2, ...
     # @param gp global parameters
-
 
 
     def plot_labels(self, ax, prof, pop, gp):
@@ -495,18 +495,17 @@ class ProfileCollection():
 
 
     def plot_full_distro(self, ax, prof, pop, gp):
-        scaleHS = 1.0
-        if prof == 'nu':
-            scaleHS = gp.nu0pc[pop]
+        x = self.x0
+        y = self.sort_prof(prof, pop, gp) # gives [Nmodels, Nbin] shape matrix
         pdb.set_trace()
-
-        countinbinx, xbins = np.histogram(x, Nbin)
-        ybins = np.linspace(min(y), max(y), num=30)
+        Nvertbin = np.sqrt(len(y[:,0]))
+        xbins = np.hstack([self.binmin, self.binmax[-1]])
+        ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
 
         H, xedges, yedges = np.histogram2d(x, y, bins=[xbins, ybins])
         fig, ax = plt.subplots(figsize=(8, 8), dpi=80, facecolor='w', edgecolor='k')
 
-        ax.set_xlim([r0[0]/2,r0[-1]*1.5])
+        ax.set_xlim([self.x[0]/2,self.x0[-1]*1.5])
 
         extent = [min(xbins), max(xbins), min(ybins), max(ybins)]
         im = ax.imshow(H.T, extent=extent, aspect='auto', interpolation='nearest', cmap=plt.cm.binary) #plt.cm.Blues)
@@ -516,6 +515,7 @@ class ProfileCollection():
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
         else:
             self.plot_Xscale_3D(ax, gp)
+
         return
     ## \fn plot_full_distro(self, ax, prof, pop, gp)
     # plot filled region with grayscale propto # models in log bin

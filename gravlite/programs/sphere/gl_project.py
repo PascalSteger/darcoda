@@ -121,15 +121,15 @@ def rho_INT_Sig(r0, rho, gp):
 # @param gp global parameters
 
 
-def rho_param_INT_Sig(r0, rhopar, pop, gp):
+def rho_param_INT_Sig(r0, rhodmpar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
-    #gh.sanitize_vector(rhopar, gp.nrho, -gp.nxtol, \
+    #gh.sanitize_vector(rhodmpar, gp.nrho, -gp.nrtol, \
     #                   max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)), gp.debug)
     xmin = gp.xfine[0]/15. # needed, if not: loose on first 4 bins
     r0nu = gp.xfine
 
-    rhonu = phys.rho(r0nu, rhopar, pop, gp)
+    rhonu = phys.rho(r0nu, rhodmpar, pop, gp)
     Sig = np.zeros(len(r0nu)-gp.nexp)
     for i in range(len(r0nu)-gp.nexp):
         xnew = np.sqrt(r0nu[i:]**2-r0nu[i]**2)         # [lunit]
@@ -145,30 +145,30 @@ def rho_param_INT_Sig(r0, rhopar, pop, gp):
     tck1 = splrep(np.log(gp.xfine[:-gp.nexp]), np.log(Sig))
     Sigout = np.exp(splev(np.log(r0), tck1))
     return Sigout
-## \fn rho_param_INT_Sig(r0, rhopar, pop, gp)
+## \fn rho_param_INT_Sig(r0, rhodmpar, pop, gp)
 # take 3D density parameters, calculate projected surface density
 # @param r0 radii of bins, [pc]
-# @param rhopar 3D density, (nrho entries) [Munit/pc^3]
+# @param rhodmpar 3D density, (nrho entries) [Munit/pc^3]
 # @param pop int population to take halflight radius from (0 both, 1, 2)
 # @param gp global parameters
 
 
-def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
+def rho_param_INT_Sig_theta(Rproj, rhodmpar, pop, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
-    gh.sanitize_vector(rhopar, gp.nrho, -gp.nxtol, \
+    gh.sanitize_vector(rhodmpar, gp.nrho, -gp.nrtol, \
                        max(gp.maxrhoslope, 10**(np.log10(gp.rhohalf)+gp.log10rhospread)), gp.debug)
     bit = 1.e-6
     theta = np.linspace(0, np.pi/2-bit, gp.nfine)
     cth = np.cos(theta)
     cth2 = cth*cth
-    rhonu = phys.rho(Rproj, rhopar, pop, gp)
+    rhonu = phys.rho(Rproj, rhodmpar, pop, gp)
     Sig = np.zeros(len(Rproj))
     for i in range(len(Rproj)):
         rq = Rproj[i]/cth
         rhoq = np.interp(rq, Rproj, rhonu, left=0, right=0)
         #right=rhonu[-1]/1e10) # best for hern
-        #rhoq = phys.rho(rq, rhopar, pop, gp)
+        #rhoq = phys.rho(rq, rhodmpar, pop, gp)
         Sig[i] = 2.*Rproj[i]*simps(rhoq/cth2, theta)
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig')
 
@@ -176,10 +176,10 @@ def rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp):
     #tck1 = splrep(np.log(gp.xfine), np.log(Sig))
     #Sigout = np.exp(splev(np.log(r0), tck1))
     return Sig
-## \fn rho_param_INT_Sig_theta(Rproj, rhopar, pop, gp)
+## \fn rho_param_INT_Sig_theta(Rproj, rhodmpar, pop, gp)
 # take 3D density parameters, calculate projected surface density with theta substitution
 # @param Rproj radii of 2D bins, [pc]
-# @param rhopar 3D density parameters, (nrho entries) [Munit/pc^3]
+# @param rhodmpar 3D density parameters, (nrho entries) [Munit/pc^3]
 # @param pop int population to take halflight radius from (0 both, 1, 2)
 # @param gp global parameters
 

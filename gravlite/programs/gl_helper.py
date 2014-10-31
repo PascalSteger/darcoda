@@ -435,6 +435,12 @@ def expDtofloat(strun):
 # @param s string
 # @return s in 'xxxExx' format
 
+def floattoint(strun):
+    return int(strun.decode('utf-8').replace('D','E'))
+## \fn floattoint(s)
+# replace D floats with E floats, then convert to integer values
+# @param s string
+# @return s in 'xxxExx' format
 
 def extend_radii(r0):
     r0ext = np.array([r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
@@ -446,7 +452,6 @@ def extend_radii(r0):
 # insert equally spaced points at 1/4, 1/2, and 3/4 of a bin span
 # @param r0 original bin centers
 
-
 def readcol3(filena):
     a,b,c = np.loadtxt(filena,skiprows=1,unpack=True)
     return a,b,c
@@ -454,7 +459,6 @@ def readcol3(filena):
 # read in 3 columns of data
 # @param filena filename
 # @return a,b,c: columns of a 3-column file
-
 
 def readcol5(filena):
     a,b,c,d,e = np.loadtxt(filena,skiprows=1,unpack=True)
@@ -464,14 +468,12 @@ def readcol5(filena):
 # @param filena filename
 # @return 5 columns
 
-
 def readcoln(filena):
     return np.loadtxt(filena,skiprows=1,unpack=True)
 ## \fn readcoln(filena)
 # read in n columns of data
 # @param filena filename
 # @return array
-
 
 def pretty(vec,dig=3):
     return ("%."+str(dig)+"f")%vec
@@ -480,8 +482,7 @@ def pretty(vec,dig=3):
 # @param vec array of floats
 # @param dig number of digits, default is 3
 
-
-from scipy.interpolate import Rbf, InterpolatedUnivariateSpline
+from scipy.interpolate import Rbf
 def ipol(xin,yin,xout,smooth=1.e-9):
     if np.isnan(np.sum(yin)):
         LOG(1, 'NaN found in interpolation! Go check where it occured!')
@@ -494,12 +495,10 @@ def ipol(xin,yin,xout,smooth=1.e-9):
 # @param xout interpolation points
 # @param smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
 
-
 def ipollog(xin, yin, xout, smooth=1.e-9):
     if min(yin)<0.:
         LOG(1, 'negative value encountered in ipollog, working with ipol now')
         return ipol(xin,yin,xout,smooth)
-
     rbf = Rbf(xin, np.log10(yin), smooth=smooth)
     return 10**(rbf(xout))
 ## \fn ipollog(xin, yin, xout, smooth=1.e-9)
@@ -508,7 +507,6 @@ def ipollog(xin, yin, xout, smooth=1.e-9):
 # @param yin dependent array
 # @param xout interpolation points
 # @param smooth smoothing number. very small as a default. can be enhanced for smaller derivatives
-
 
 def linipollog(xin, yin, xout):
     if len(xin) != len(yin):
@@ -528,7 +526,6 @@ def linipollog(xin, yin, xout):
 # @param yin input function in linear space
 # @param xout output positions in linear space
 
-
 def expol(xin, yin, xout, fn='multiquadric'):
     rbf = Rbf(xin, yin, function=fn)
     return rbf(xout)
@@ -539,13 +536,11 @@ def expol(xin, yin, xout, fn='multiquadric'):
 # @param xout interpolation points
 # @param fn function of interpolation, see http://docs.scipy.org/doc/scipy-0.7.x/reference/generated/scipy.interpolate.Rbf.html
 
-
 def wait():
     input("Press Enter to continue...")
     return
 ## \fn wait()
 # wait for key press
-
 
 def bin_r_linear(rmin, rmax, nbin):
     binlength = (rmax - rmin)/(1.*nbin) #[rscale]
@@ -564,7 +559,6 @@ def bin_r_linear(rmin, rmax, nbin):
 # @param nbin number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
-
 def bin_r_log(rmin, rmax, nbin):
     bins   = np.logspace(np.log10(rmin), np.log10(rmax), nbin+1, endpoint=True)
     binmin = bins[:-1]
@@ -580,7 +574,6 @@ def bin_r_log(rmin, rmax, nbin):
 # @param nbin number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
-
 def bin_r_const_tracers(x0, nbin):
     # procedure: get all particles in bin i
     #            get minimum, maximum radius. get radius of min/max before/after bin i
@@ -588,7 +581,6 @@ def bin_r_const_tracers(x0, nbin):
     # make sure array is sorted in ascending order
     order = np.argsort(x0)
     x0 = np.array(x0)[order]
-
     # generate indices for all entries
     ind = np.arange(len(x0))
 

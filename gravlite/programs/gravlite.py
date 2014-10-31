@@ -17,6 +17,7 @@
 import subprocess
 import pymultinest
 import pickle
+import numpy as np
 import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
@@ -36,7 +37,6 @@ import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
 ts = '' # empty timestamp means: create new timestamp with folder
 gp = gl_params.Params(ts, options.investigation, int(options.case))
-
 import gl_file as gf
 
 def show(filepath):
@@ -44,7 +44,6 @@ def show(filepath):
     return
 ## \fn show(filepath) open the output (pdf) file for the user @param
 # filepath filename with full path
-
 
 def myprior(cube, ndim, nparams):
     mycube = Cube(gp)
@@ -57,18 +56,17 @@ def myprior(cube, ndim, nparams):
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
-
 def myloglike(cube, ndim, nparams):
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
-
     # we only store models after the initial Sigma burn-in
     if gp.chi2_nu_converged:
+        tmp_profs.x0 = gp.xipol
+        tmp_profs.xbins = np.hstack([gp.binmin, gp.binmax[-1]])
         with open(gp.files.outdir+'pc2.save', 'ab') as fi:
             pickle.dump(tmp_profs, fi)
             # convention: use chi^2 directly, not log likelihood
-
     # for output:
     # from   likelihood L = exp(-\chi^2/2), want log of that
     return -tmp_profs.chi2/2.
@@ -78,21 +76,17 @@ def myloglike(cube, ndim, nparams):
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
-
 def prepare_data(gp):
     if gp.getnewdata:
         if gp.getnewpos:
             gf.read_data(gp)
         gf.bin_data(gp)
-
     gf.get_binned_data(gp)
     gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
-
-
 def run(gp):
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
@@ -110,9 +104,7 @@ def run(gp):
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.05, # very low eff. in
-                                                # case of const efficiency mode,
-                                                # according to MultiNest README
+                    sampling_efficiency = 0.95,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -137,7 +129,6 @@ def run(gp):
                                           #number of iterations)
                     init_MPI = True,     # use MPI
                     dump_callback = None)
-
 
 if __name__=="__main__":
     global Cube, geom_loglike
