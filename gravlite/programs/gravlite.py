@@ -49,7 +49,11 @@ def show(filepath):
 def myprior(cube, ndim, nparams):
     mycube = Cube(gp)
     mycube.copy(cube)
-    cube = mycube.convert_to_parameter_space(gp)
+    try:
+        cube = mycube.convert_to_parameter_space(gp)
+    except Exception:
+        gh.LOG(1, 'parameters not fulfilling prior requirements')
+        
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -59,6 +63,8 @@ def myprior(cube, ndim, nparams):
 
 
 def myloglike(cube, ndim, nparams):
+    if min(cube) == -9999:  # parameters not fulfilling prior requirements,
+        return -1e300       #      return very large chi2
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name

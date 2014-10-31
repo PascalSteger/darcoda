@@ -62,7 +62,6 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[0]
         width = gp.log10rhospread
         rlimnr = gp.rlimnr
-        maxrhoslope = gp.maxrhoslope
         nrscale = gp.nxtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
@@ -70,72 +69,58 @@ def map_nr(params, prof, pop, gp):
         Rscale = gp.Xscale[pop]
         width = gp.log10nuspread
         rlimnr = gp.rlimnr_nu
-        maxrhoslope = gp.maxnuslope
         nrscale = gp.nxtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
         raise Exception('wrong profile in gl_class_cube.map_nr')
 
-    # first parameter gives half-light radius value of rho directly
+    # zeroth parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
-    # should be smaller than -3 to exclude infinite enclosed mass
-    if gp.xepol[0] <= rlimnr*Rscale:
-        nrasym0 = params[1]*min(maxrhoslope/2, 2.99)
-    else:
-        nrasym0 = params[1]*2.99
+    # should be smaller than -1 to exclude infinite enclosed mass
+    nrasym0 = params[1]*0.99 
 
     # work directly with the dn(r)/dlog(r) parameters here
-    dnrdlrparams = params[2:-1]
-    # offset for the integration of dn(r)/dlog(r) at smallest radius
-    if gp.xepol[1] <= rlimnr*Rscale:
-        nr[0] = dnrdlrparams[0]*min(maxrhoslope/2, 2.99)
-    else:
-        nr[0] = dnrdlrparams[0]*maxrhoslope
-
-    for k in range(1, gp.nepol):
-        # all -dlog(rho)/dlog(r) at data points and 2,4,8rmax can
-        # lie in between 0 and gp.maxrhoslope
+    dnrdlrparams = params[2:]
+    for k in range(0, gp.nepol):
         deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
         if monotonic:
             # only increase n(r), use pa[i]>=0 directly
-            nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale * deltalogr
+            nr[k] = nr[k-1] + dnrdlrparams[k-1] * nrscale * deltalogr
         else:
             # use pa => [-1, 1] for full interval
-            nr[k] = nr[k-1] + (dnrdlrparams[k]-0.5)*2. * nrscale * deltalogr
+            nr[k] = nr[k-1] + (dnrdlrparams[k-1]-0.5)*2. * nrscale * deltalogr
         # cut at zero: we do not want to have density rising outwards
         nr[k] = max(0., nr[k])
-        # restrict n(r)
-        if gp.xepol[k] <= rlimnr*Rscale:
-            nr[k] = min(maxrhoslope/2, nr[k])
-        else:
-            nr[k] = min(maxrhoslope, nr[k])
     # rho slope for asymptotically reaching r = \infty is given directly
-    # must lie below -3, thus n(r)>3
+    # must lie below -1, thus n(r)>1, to ensure finite total mass
     deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
-    # to ensure we have a finite mass at all radii 0<r<=\infty
     if monotonic:
-        nrasyminfty = nr[-1]+params[-1] * nrscale * deltalogrlast
+        nrasyminfty = nr[-1]+dnrdlrparams[-1] * nrscale * deltalogrlast
     else:
-        nrasyminfty = nr[-1]+(params[-1]-0.5)*2 * nrscale * deltalogrlast
+        nrasyminfty = nr[-1]+(dnrdlrparams[-1]-0.5)*2 * nrscale * deltalogrlast
 
-    # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
-    nrasyminfty = max(nrasyminfty, 3.001)
+    # finite mass prior: nrasyminfty must be > 1:
+    if nrasyminfty < 1.001:
+        if nr[-1]+1*nrscale*deltalogrlast > 1.001:
+            nrasyminfty = (nr[-1]+1*nrscale*deltalogrlast-1.001)*dnrdlrrarams[-1]+1.001
+        else:
+            nrasyminfty = -9999
+            raise Exception('too low asymptotic n(r)')
 
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
-    ipdb.set_trace()
     return params
 ## \fn map_nr(params, prof, pop, gp)
 # mapping rho parameters from [0,1] to full parameter space
-# setting all n(r<r_nrlim)<=2.0
+# prior on dn/dlnr: < nrscale
 # and possibly a monotonically increasing function
-# first parameter is offset for rho_half
-# second parameter is asymptotic n(r to 0) value
+# zeroth parameter is offset for rho_half
+# first parameter is asymptotic n(r to 0) value
 # @param params cube [0,1]^ndim
 # @param prof string nu, rho, rhostar
 # @param pop population int, 0 for rho*, 1,2,... for tracer densities

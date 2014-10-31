@@ -34,7 +34,7 @@ def nr(r0, dlr, pop, gp):
     logrnu = np.log(rnu/gp.Xscale[pop])
     dlrnu = -1.*dlr
 
-    # use linear spline interpolation for dn/dlogr (logr)
+    # use linear spline interpolation for n(logr)
     spline_n = splrep(logrnu, dlrnu, k=1)
 
     # evaluate spline at any points in between
