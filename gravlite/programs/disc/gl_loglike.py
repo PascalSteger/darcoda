@@ -22,8 +22,8 @@ def geom_loglike(cube, ndim, nparams, gp):
     off += offstep
 
     offstep = gp.nrho
-    rhopar = np.array(cube[off:off+offstep])  #SS cube[1:1+nrho]
-    tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
+    rhodmpar = np.array(cube[off:off+offstep])  #SS cube[1:1+nrho]
+    tmp_rho = phys.rho(gp.xepol, rhodmpar, 0, gp)
     tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
     off += offstep
 
@@ -32,8 +32,8 @@ def geom_loglike(cube, ndim, nparams, gp):
     # tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
 
     offstep = gp.nrho
-    rhostarpar = np.array(cube[off:off+offstep]) #SS cube[1+nrho:1+2*nrho]
-    tmp_rhostar = phys.rho(gp.xepol, rhostarpar, 0, gp)[gp.nexp:-gp.nexp]
+    lbaryonpar = np.array(cube[off:off+offstep]) #SS cube[1+nrho:1+2*nrho]
+    tmp_rhostar = phys.rho(gp.xepol, lbaryonpar, 0, gp)[gp.nexp:-gp.nexp]
     tmp_profs.set_prof('nu', tmp_rhostar, 0, gp) # [Munit/pc^3]
     Sigstar = phys.nu_SUM_Sig(gp.dat.binmin, gp.dat.binmax, tmp_rhostar) # [Munit/pc^2]
     tmp_profs.set_prof('Sig', Sigstar, 0, gp)
@@ -63,7 +63,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
             tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
-            sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
+            sig = phys.sigz(gp.xepol, rhodmpar, lbaryonpar, MtoL, nupar, norm, tiltpar, pop, gp)
             tmp_profs.set_prof('sig', sig, pop, gp)
             # tmp_profs.set_prof('kap', kap, pop, gp)
         off += offstep # add also in case Sig has not yet converged

@@ -20,8 +20,8 @@ from BiWeight import meanbiweight
 
 
 def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
+    # TODO ask Mark Wilkinson for photometric profile for Fornax (and Sculptor, Carina, Sextans, Draco, UMi)
     Sig_phot   = np.zeros((gp.nipol, gpr.n))
-    # output density
     for kbin in range(gp.nipol):
         Rw = (Binmax[kbin]-Binmin[kbin])*Rscale0 # [pc]
         kpc = 1000 # [pc]
@@ -43,7 +43,6 @@ def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
             wsize_ipol = '10.0'
 
         A = np.loadtxt(gp.files.dir+'w_'+wsize_ipol+'.dat')
-
         Rpt, wpt = A.T # [arcmin], [1]
         Rpt *= arcmin # [pc]
         w_ipol = wpt[np.where(abs(Rw-Rpt) == min(abs(Rw-Rpt)))]
@@ -174,7 +173,6 @@ def run(gp):
                     zetab[k] = gh.starred(Rbin, v4[:,k]*Rbin**2, Sigma, Ntot[k], gp)
                     zetab[k] /= v2denom
                     zetab[k] /= (gh.starred(Rbin, Rbin, Sigma, Ntot[k], gp))**2
-
 
             if gp.investigate == 'obs':
                 Sig_phot = obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr)
