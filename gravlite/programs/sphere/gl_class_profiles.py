@@ -8,7 +8,6 @@
 
 import pdb
 import numpy as np
-import gl_physics as phys
 import gl_helper as gh
 
 class Profiles:
@@ -16,6 +15,7 @@ class Profiles:
         self.pops = pops
         self.nipol= nipol
         self.x0   = np.zeros(nipol)
+        self.xbins = np.zeros(nipol)
         self.chi2 = 0.0
         self.rho  = np.zeros(nipol)
         self.nr   = np.zeros(nipol)

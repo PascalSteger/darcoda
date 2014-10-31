@@ -5,7 +5,7 @@
 # spherical version
 
 import numpy as np
-import pdb, os, time
+import pdb, time
 from scipy.interpolate import splev, splrep
 
 import gl_physics as phys
@@ -19,38 +19,36 @@ import gl_project as glp
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
-
     offstep = gp.nrho
     if gp.chi2_Sig_converged:
-        rhopar = np.array(cube[off:off+offstep])
-        tmp_profs.set_prof('nr', 1.*rhopar[1+1+gp.nexp:-gp.nexp-1], 0, gp)
-        tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
-        # rhopar hold [rho(rhalf), nr to be used for integration
+        rhodmpar = np.array(cube[off:off+offstep])
+
+        tmp_profs.set_prof('nr', 1.*rhodmpar[1+1+gp.nexp:-gp.nexp-1], 0, gp)
+        tmp_rho = phys.rho(gp.xepol, rhodmpar, 0, gp)
+        # rhodmpar hold [rho(rhalf), nr to be used for integration
         # from halflight radius, defined on gp.xepol]
         tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
         # (only calculate) M, check
         tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
         tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
     else:
-        rhopar = np.zeros(gp.nrho)
+        rhodmpar = np.zeros(gp.nrho)
     off += offstep # anyhow, even if Sig not yet converged
 
     # get profile for rho*
     if gp.investigate == 'obs':
         offstep = gp.nrho
-        rhostarpar = np.array(cube[off:off+offstep])
-        rhostar = phys.rho(gp.xepol, rhostarpar, 0, gp)
+        lbaryonpar = np.array(cube[off:off+offstep])
+        rhostar = phys.rho(gp.xepol, lbaryonpar, 0, gp)
         tmp_profs.set_prof('nu', rhostar[gp.nexp:-gp.nexp], 0, gp)
         off += offstep
-
-        Signu = glp.rho_param_INT_Sig(gp.xepol, rhostarpar, 0, gp) # [Munit/pc^2]
+        Signu = glp.rho_param_INT_Sig(gp.xepol, lbaryonpar, 0, gp) # [Munit/pc^2]
         Sig = gh.linipollog(gp.xepol, Signu, gp.xipol)
         tmp_profs.set_prof('Sig', Sig, 0, gp)
-
         MtoL = cube[off]
         off += 1
     else:
-        rhostarpar = np.zeros(gp.nrho)
+        lbaryonpar = np.zeros(gp.nrho)
         MtoL = 0.
 
     for pop in np.arange(1, gp.pops+1):  # [1, 2, ..., gp.pops]
@@ -64,7 +62,6 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_Sig = gh.linipollog(gp.xepol, tmp_Signu, gp.xipol)
         tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
         off += offstep
-
         offstep = gp.nbeta
         if gp.chi2_Sig_converged:
             betapar = np.array(cube[off:off+offstep])
@@ -77,18 +74,17 @@ def geom_loglike(cube, ndim, nparams, gp):
             tmp_profs.set_prof('beta', tmp_beta, pop, gp)
             gh.sanitize_vector(tmp_betastar, len(tmp_profs.x0), -1, 1, gp.debug)
             tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
-
             try:
                 if gp.checksig:
                     import gl_analytic as ga
                     anrho = ga.rho(gp.xepol, gp)[0]
-                    rhopar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
+                    rhodmpar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
                     nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
                     dlr = np.hstack([nr[0], nr, nr[-1]])
                     if gp.investigate =='gaia':
                         dlr[-1] = 4
-                    rhopar = np.hstack([rhopar_half, dlr])
-                    rhostarpar = 0.0*rhopari
+                    rhodmpar = np.hstack([rhodmpar_half, dlr])
+                    lbaryonpar = 0.0*rhodmpar
                     MtoL = 0.0
                     if gp.investigiiate == 'gaia':
                         if gp.case == 5:
@@ -106,12 +102,11 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate == 'gaia':
                         dlrnu[-1] = 6
                     nupar = np.hstack([nupar_half, dlrnu])
-                sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
+                sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
                 tmp_profs.set_prof('sig', sig[gp.nexp:-gp.nexp], pop, gp)
                 tmp_profs.set_prof('kap', kap[gp.nexp:-gp.nexp], pop, gp)
                 tmp_profs.set_zeta(zetaa, zetab, pop)
-
-            except Exception as detail:
+            except Exception:
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
@@ -124,7 +119,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     chi2 = calc_chi2(tmp_profs, gp)
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
-
     # after some predefined wallclock time, plot all profiles
     if time.time() - gp.last_plot >= gp.plot_after:
         gp.last_plot = time.time()

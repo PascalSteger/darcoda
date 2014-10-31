@@ -47,13 +47,13 @@ def nr(r0, dlr, pop, gp):
 # @param gp global parameters
 
 
-def rho(r0, rhopar, pop, gp):
-    gh.sanitize_vector(rhopar, len(gp.xepol)+3, 0, 1e30, gp.debug)
-    vec = 1.*rhopar # make a new copy so we do not overwrite rhopar
+def rho(r0, rhodmpar, pop, gp):
+    gh.sanitize_vector(rhodmpar, len(gp.xepol)+3, 0, 1e30, gp.debug)
+    vec = 1.*rhodmpar # make a new copy so we do not overwrite rhodmpar
     rho_at_rhalf = vec[0]
     vec = vec[1:]
 
-    # get spline representation on gp.xepol, where rhopar are defined on
+    # get spline representation on gp.xepol, where rhodmpar are defined on
     spline_n = nr(gp.xepol, vec, pop, gp)
 
     # and apply it to these radii, which may be anything in between
@@ -83,10 +83,10 @@ def rho(r0, rhopar, pop, gp):
     tmp = np.exp(np.hstack([logrholeft[::-1], logrhoright])) # still defined on log(r)
     gh.checkpositive(tmp, 'rho()')
     return tmp
-## \fn rho(r0, rhopar, pop, gp)
+## \fn rho(r0, rhodmpar, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
-# @param rhopar: rho(rstarhalf), asymptote nr 0, nr(xipol), asymptote nr infty
+# @param rhodmpar: rho(rstarhalf), asymptote nr 0, nr(xipol), asymptote nr infty
 # @param r0 radii to calculate density for, in physical units (pc)
 # @param pop int for population, 0 all or DM, 1, 2, ...
 # @param gp global parameters
@@ -232,8 +232,8 @@ def calculate_surfdens(r, M):
 # @param M 3D mass profile
 
 
-def sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
-    siglos2, kaplos4, zetaa, zetab = gi.ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
+def sig_kap_zet(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
+    siglos2, kaplos4, zetaa, zetab = gi.ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
     siglos  = np.sqrt(siglos2)           # [km/s]
 
     if gp.usekappa:
@@ -246,12 +246,12 @@ def sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
         kaplos = 3.*np.ones(len(siglos))
 
     return siglos, kaplos, zetaa, zetab  # [km/s], [1]
-## \fn sig_kap_zet(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
+## \fn sig_kap_zet(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
 # General function to calculate sig_los
 # with analytic integral over fitting polynomial'
 # @param r0 radius [pc]
-# @param rhopar [1]
-# @param rhostarpar [1]
+# @param rhodmpar [1]
+# @param lbaryonpar [1]
 # @param MtoL mass-to-light ratio [Msun/Lsun]
 # @param nupar 1D array 3D tracer density parameters [1]
 # @param betapar 1D array 3D velocity anisotropy parameters [1]
