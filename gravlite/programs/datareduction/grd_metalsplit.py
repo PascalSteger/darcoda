@@ -26,10 +26,10 @@ def myprior(cube, ndim, nparams):
     off +=1
     for pop in range(gp.pops): # no. of pops goes in here, first MW, then 1,2,..
         # TODO: add up differences from 0
-        cube[off] = cube[off]*(Fe_max-Fe_min)+Fe_min # Fe_mu
-        off += 1
-        cube[off] = cube[off]*(Fe_max-Fe_min) # Fe_sig
-        off += 1
+        #cube[off] = cube[off]*(Fe_max-Fe_min)+Fe_min # Fe_mu
+        #off += 1
+        #cube[off] = cube[off]*(Fe_max-Fe_min) # Fe_sig
+        #off += 1
         cube[off] = cube[off]*(Mg_max-Mg_min)+Mg_min # Mg_mu
         off += 1
         cube[off] = cube[off]*(Mg_max-Mg_min) # Mg_sig
@@ -61,10 +61,10 @@ def myloglike(cube, ndim, nparams):
     frac = cube[off]
     off += 1
     for pop in range(gp.pops):
-        Fe_mu.append(cube[off])
-        off += 1
-        Fe_sig.append(cube[off])
-        off += 1
+        #Fe_mu.append(cube[off])
+        #off += 1
+        #Fe_sig.append(cube[off])
+        #off += 1
         Mg_mu.append(cube[off])
         off += 1
         Mg_sig.append(cube[off])
@@ -73,12 +73,12 @@ def myloglike(cube, ndim, nparams):
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         pdb.set_trace()
     gh.LOG(2,'starting logev evaluation')
-    p1_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[0]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[0])**2/(2*np.sqrt(Fe_sig[0]**2+Fe_err**2)))
+    #p1_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[0]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[0])**2/(2*np.sqrt(Fe_sig[0]**2+Fe_err**2)))
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
-    p2_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[1]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[1])**2/(2*np.sqrt(Fe_sig[1]**2+Fe_err**2)))
+    #p2_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[1]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[1])**2/(2*np.sqrt(Fe_sig[1]**2+Fe_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
-    p1 = frac*PM*p1_Fe*p1_Mg
-    p2 = (1-frac)*PM*p2_Fe*p2_Mg
+    p1 = frac*PM*p1_Mg # *p1_Fe
+    p2 = (1-frac)*PM*p2_Mg # *p2_Fe
     pcom = p1+p2
     lpcom = np.log(pcom)
     logev = np.sum(lpcom)
@@ -92,7 +92,7 @@ def myloglike(cube, ndim, nparams):
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
-def show_metallicity(Fe, Fe_err, Mg, Mg_err):
+def show_Fe_Mg_2D(Fe, Fe_err, Mg, Mg_err):
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.stats import kde
@@ -147,12 +147,20 @@ def show_metallicity(Fe, Fe_err, Mg, Mg_err):
     ax.set_xlim(-1, 1.5)
     ax.set_ylim(-1, 1.5)
     show()
-## \fn show_metallicity(Fe, Fe_err, Mg, Mg_err)
+## \fn show_Fe_Mg_2D(Fe, Fe_err, Mg, Mg_err)
 # show ellipses with error bars for each star's Fe and Mg
 # @param Fe iron abundance
 # @param Fe_err error on it
 # @param Mg Magnesium abundance
 # @param Mg_err error on it
+
+def show_Mg(Mg, Mg_err):
+    hist(Mg, np.sqrt(Nsample))
+    return
+## \fn show_Mg(Mg, Mg_err)
+# show histogram of Magnesium indices
+# @param Mg vector, indices
+# @prama Mg_err vector, corresponding errors
 
 def run(gp):
     import gr_params
@@ -212,12 +220,16 @@ def run(gp):
 
     # use all stellar tracer particles from now on, independent on their probability of membership
     #scatter(Fe, Mg)
-    show_metallicity(Fe, Fe_err, Mg, Mg_err)
+    #show_Fe_Mg_2D(Fe, Fe_err, Mg, Mg_err)
     # TODO show ellipses with errors, and alpha
     #xlabel('Fe')
     #ylabel('Mg')
     #show()
     #pdb.set_trace()
+
+    show_Mg(Mg, Mg_err)
+    show()
+    pdb.set_trace()
 
     global alpha_s, delta_s
     sig = abs(RAh[0])/RAh[0]
@@ -268,7 +280,7 @@ def run(gp):
     Rpt *= arcmin__pc # [pc]
 
     gh.LOG(1,'starting MultiNest run:')
-    n_dims = 1+gp.pops*4
+    n_dims = 1+gp.pops*2 # 4 if using Fe too
     pymultinest.run(myloglike,   myprior,
                     n_dims,      n_params = n_dims,
                     n_clustering_params = n_dims, # separate modes on
