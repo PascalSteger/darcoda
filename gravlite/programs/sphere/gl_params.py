@@ -7,7 +7,9 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, pdb, socket, getpass
+import pdb
+import socket
+import getpass
 
 def check_investigate(inv):
     if inv == 'walk':     return True
@@ -21,17 +23,17 @@ def check_investigate(inv):
 # check whether there is a valid investigation chosen
 # @param inv string
 
-
 class Params():
     def __init__(self, timestamp = '', investigate = '', case = -1):
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'obs' # determine which data set to work on
+            self.investigate  = 'coll' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
                                        #         challenge, 1 pop only
+                                       # 'coll': collisional system
                                        # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
         print(' investigation : ', self.investigate)

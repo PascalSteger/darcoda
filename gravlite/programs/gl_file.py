@@ -29,6 +29,10 @@ def read_data(gp):
         if gp.walker3D:
             import grw_com
             grw_com.run()
+    elif gp.investigate == 'coll':
+        import grc_COM
+        grc_COM.run(gp)
+        # run for 3D models as well if model is set (needed in rhotot_walk)
     elif gp.investigate == 'triax':
         import grt_com
         grt_com.run(gp)

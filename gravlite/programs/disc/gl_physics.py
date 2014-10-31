@@ -233,14 +233,14 @@ def kz(zpars, kzpar, gp):
 # @param gp global parameters
 
 
-def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
+def sigz(zp, rhopar, lbaryonpar, MtoL, nupar, norm, tpar, pop, gp):
     # calculate density and Kz force:
     nutmp = rho(zp, nupar, pop, gp)
     nu_z = nutmp/np.max(nutmp)  # normalized to [1]
     gh.checkpositive(nu_z)
     rhodmtmp = rho(zp, rhopar, 0, gp) # rho_DM in linearly spaced bins
     gh.checkpositive(rhodmtmp)
-    rhostartmp = rho(zp, rhostarpar, 0, gp)
+    rhostartmp = rho(zp, lbaryonpar, 0, gp)
     gh.checkpositive(rhostartmp)
     rhotmp = rhodmtmp+MtoL*rhostartmp # add baryons
     kz_z = kz(zp, rhotmp, gp) # [(km/s)^2/pc]
@@ -320,19 +320,18 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
                 sigint[i+1] = sigint[i] + intbit
     sig_z_t2 = 1.0/nu_z * (sigint + norm)
     return  np.sqrt(sig_z_t2[3:-3])
-## \fn sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpars, pop, gp)
+## \fn sigz(zp, rhopar, lbaryonpar, MtoL, nupar, norm, tpars, pop, gp)
 # calculate z velocity dispersion
 # @param zp vertical coordinate [pc]
 # @param rhopar rho to be integrated to give force K_z
 #SS No, rhotmp (=rhodmtmp+MtoL*rhostartmp) integrated to give K_z
-# @param rhostarpar overall baryonic light profile [Lsun]
+# @param lbaryonpar overall baryonic light profile [Lsun]
 # @param MtoL mass-to-light ratio [Msun/Lsun]
 # @param nupar parameters for tracer density falloff
 # @param norm value C, corresponds to integration from 0 to rmin
 # @param tpars tilt parameters
 # @param pop int for population (diff. halflight-radius)
 # @param gp global parameters
-
 
 def sig_rz(z, zpars, tpars):
     # Mirror prior

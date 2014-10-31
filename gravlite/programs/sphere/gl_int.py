@@ -98,15 +98,14 @@ def varepsilon(r0, betapar, gp):
 # @param betapar [1] coefficients of beta representation
 # @param gp global parameters
 
-
-def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
+def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     rmin = np.log10(min(r0))
     rmax = np.log10(max(r0)*gp.rinfty)
     r0fine = np.logspace(rmin, rmax, gp.nfine)
 
     # rho
     # --------------------------------------------------------------------------
-    rhofine  = phys.rho(r0fine,  rhopar, 0, gp) # DM mass profile (first)
+    rhofine  = phys.rho(r0fine,  rhodmpar, 0, gp) # DM mass profile (first)
     if gp.checksig and gp.stopstep <= 1:
         clf()
         loglog(r0fine, rhofine, 'r.-', label='rederived from dn/dlogr params')
@@ -127,7 +126,7 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
     # need a M/L parameter)
     # only if we work on real data, add up total baryonic contribution
     if gp.investigate == 'obs':
-        nu_baryons = MtoL*phys.nu(r0fine, rhostarpar, pop, gp)
+        nu_baryons = MtoL*phys.nu(r0fine, lbaryonpar, pop, gp)
         rhofine += nu_baryons
     # TODO: check influence of wrong beta
     # betapar[3] -= 0.1
@@ -405,15 +404,15 @@ def ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp):
 
     gh.sanitize_vector(siglos2_out, len(r0), 0, 1e30, gp.debug)
     return siglos2_out, kapl4s_out, zetaa, zetab
-## \fn ant_sigkaplos(r0, rhopar, rhostarpar, MtoL, nupar, betapar, pop, gp)
+## \fn ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
 # calculate integral for sig_los^2 * surface density,
 # correspondingly for 4th order kappa,
 # and virial parameters from Richardson,Fairbairn 2014
 # all on gp.nfine logarithmically spaced radii,
 # and store outcome on lookup table
 # @param r0 array, radial bin positions, in [pc]
-# @param rhopar overall 3D density profile in [Munit/pc^3]
-# @param rhostarpar rho* light profile from baryons
+# @param rhodmpar overall 3D density profile in [Munit/pc^3]
+# @param lbaryonpar rho* light profile from baryons
 # @param MtoL mass-to-light ratio in [Msun/Lsun]
 # @param nupar tracer density in [Munit/pc^3]
 # @param betapar velocity anisotropy in [1]
