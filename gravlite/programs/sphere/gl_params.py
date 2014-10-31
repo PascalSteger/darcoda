@@ -4,7 +4,7 @@
 # @file
 # all parameters for the gravlite MCMC, gaia investigation
 
-# (c) 2013 ETHZ Pascal S.P. Steger
+# (c) 2014 ETHZ Pascal S.P. Steger
 
 import numpy as np
 import pdb
