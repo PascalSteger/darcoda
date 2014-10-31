@@ -38,13 +38,14 @@ class Params():
             self.machine = 'lisa_SS_batch'
 
         # Set investigation and geometry
+        pdb.set_trace()
         if investigate != '':
             self.investigate = investigate
         else:
             self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
-            self.geom = 'disc'
+        self.geom = 'disc'
 
         check_investigate(self.investigate)
         self.case = 0 # used in spherical case
@@ -78,7 +79,7 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100. # if chi2<chi2_switch, add chi2_sig
+        self.chi2_switch = 10000. # if chi2<chi2_switch, add chi2_sig
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
@@ -98,7 +99,7 @@ class Params():
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 1   # number of parameters for beta, in sum of
+        self.nbeta = 0   # number of parameters for beta, in sum of
                          # polynomials
         # TODO: if not using rhostar, subtract gp.nrho:
         self.ndim = 1 + 2*self.nrho + 1 + self.pops*(self.nrho + self.nbeta)
@@ -124,11 +125,11 @@ class Params():
         self.maxrhoslope  = 5.    # maximum slope (change if
                                   # monotonicity prior used) of rho
         self.maxnuslope = 5.
-        # nrtol: prior (max +/- range) for dn(r)/dlog(r)
+        # nxtol: prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    from min(gp.xipol) to max(gp.xipol)
-        self.nrtol  = self.maxrhoslope
-        self.nrtol_nu = 2*self.maxnuslope # same for nu profile
+        self.nxtol  = self.maxrhoslope
+        self.nxtol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
         self.beta00prior = False  # prior beta(r=0) = 0

@@ -156,6 +156,7 @@ if __name__ == '__main__':
     print(sys.argv)
     basename = sys.argv[1]
     timestamp = sys.argv[1][-13:-1]
+    print('Timestamp = ', timestamp)
 
     import select_run as sr
 

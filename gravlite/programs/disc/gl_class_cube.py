@@ -35,6 +35,7 @@ def map_tilt_slope(vec, gp):
 
 
 def map_tiltstar(pa, gp):
+    #pdb.set_trace()
     off = 0
     # tilt parameters : [0,1] ->  some range, e.g. [-1,1]
     # starting offset in range [-1,1]
@@ -62,7 +63,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.log10rhospread
         rlimnr = gp.rlimnr
         maxrhoslope = gp.maxrhoslope
-        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        nrscale = gp.nxtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
         rhoscale = gp.dat.nuhalf[pop]
@@ -70,7 +71,7 @@ def map_nr(params, prof, pop, gp):
         width = gp.log10nuspread
         rlimnr = gp.rlimnr_nu
         maxrhoslope = gp.maxnuslope
-        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        nrscale = gp.nxtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
         raise Exception('wrong profile in gl_class_cube.map_nr')
@@ -206,12 +207,13 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp[i]
             off += offstep
-
-            offstep = gp.nbeta
-            tmp = map_tiltstar(pc[off:off+offstep], gp)
-            for i in range(offstep):
-                pc[off+i] = tmp[i]
-            off += offstep
+            #pdb.set_trace()
+            if gp.nbeta!=0:
+                offstep = gp.nbeta
+                tmp = map_tiltstar(pc[off:off+offstep], gp)
+                for i in range(offstep):
+                    pc[off+i] = tmp[i]
+                off += offstep
 
         if off != gp.ndim:
             gh.LOG(1,'wrong subscripts in gl_class_cube')
