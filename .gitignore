@@ -12,3 +12,7 @@ backup
 *.png
 *~
 *.orig
+RunJob*
+*DS_Store*
+__pycache__
+*.pyc
