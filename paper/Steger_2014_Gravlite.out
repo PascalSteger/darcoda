@@ -1,0 +1,21 @@
+\BOOKMARK [1][]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][]{section.4}{Method}{}% 2
+\BOOKMARK [2][]{subsection.5}{Derivation of the key equations}{section.4}% 3
+\BOOKMARK [2][]{subsection.13}{The mass distribution}{section.4}% 4
+\BOOKMARK [2][]{subsection.17}{The tracer density profile}{section.4}% 5
+\BOOKMARK [2][]{subsection.19}{The velocity anisotropy}{section.4}% 6
+\BOOKMARK [2][]{subsection.23}{Comparison with data}{section.4}% 7
+\BOOKMARK [2][]{subsection.25}{Priors}{section.4}% 8
+\BOOKMARK [2][]{subsection.28}{Parameter Space Sampling}{section.4}% 9
+\BOOKMARK [1][]{section.30}{Mock data}{}% 10
+\BOOKMARK [1][]{section.38}{Results}{}% 11
+\BOOKMARK [2][]{subsection.39}{Single tracer population}{section.38}% 12
+\BOOKMARK [2][]{subsection.42}{Two tracer populations}{section.38}% 13
+\BOOKMARK [2][]{subsection.44}{Triaxial mock data}{section.38}% 14
+\BOOKMARK [2][]{subsection.48}{Data quality}{section.38}% 15
+\BOOKMARK [1][]{section.50}{Conclusions}{}% 16
+\BOOKMARK [1][]{section.51}{Acknowledgements}{}% 17
+\BOOKMARK [1][]{appendix.52}{Appendix}{}% 18
+\BOOKMARK [2][]{subsection.53}{Effects of turning off priors on n\(r\) and n'\(r\)}{appendix.52}% 19
+\BOOKMARK [2][]{subsection.54}{Convergence of the MultiNest model ensemble}{appendix.52}% 20
+\BOOKMARK [2][]{subsection.56}{The choice of binning}{appendix.52}% 21

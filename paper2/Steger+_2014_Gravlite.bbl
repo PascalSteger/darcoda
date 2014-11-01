@@ -1,0 +1,7 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{{Walker} \& {Pe{\~n}arrubia}(2011)}]{WalkerPenarrubia2011}
+{Walker} M.~G., {Pe{\~n}arrubia} J., 2011, \apj, 742, 20
+
+\end{thebibliography}

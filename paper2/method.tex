@@ -1,0 +1,188 @@
+\section{Method}\label{sec:method}
+We employ the non-parametric mass modelling described in
+\citep{Steger+2014}:
+
+The total mass density is given in bins by
+
+\begin{equation}
+    \rho_{\text tot} = TODO
+\end{equation}
+
+
+\subsection{Splitting Populations}\label{sec:metals}
+Observations of the abundances of metals and chemical species in the
+stellar atmospheres show that the ensemble of stars in a dwarf galaxy
+or globular cluster can be split into populations.
+
+The first approach by \cite{WalkerPenarrubia2011} showed that if the
+population of e.g. Fornax is split into two populations, and each of
+their half-light radius and mass are determined, restrictions on the
+overall potential can be drawn. Using this approach, they prefer a
+cored DM profile for Fornax.
+
+For real data, we will use a splitting based on metallicity. This is
+achieved by using a separate Markov Chain Monte Carlo method. The
+overall metallicity distribution is represented by a sum of two
+Gaussians with means $\mu_{1,2}$ and widths $\sigma_{1,2}$, and each
+stellar tracer with metallicity $M$ is assigned a population based on
+the likelihood of its metallicity belonging to said population. The
+process is repeated to marginalize over the means and widths of the
+metallicity distributions. A sample splitting result is shown in
+fig. ~\ref{fig:pymcmetal}.
+
+\begin{figure}
+    \begin{center}
+        %\hspace{-7mm}
+        \includegraphics[width=0.5\textwidth]{fig/pymcmetals}
+        \caption{Reconstruction of two populations from mock data. The
+          underlying metallicity distributions are shown as red and
+          blue histograms. The retrieved centers of the Gaussians are
+          shown as vertical lines, and the reconstructed metallicity
+          distribution is depicted as black line.}
+        \label{fig:pymcmetal}
+    \end{center}
+\end{figure}
+
+In our test suite there are dwarf galaxies with different scale radii
+and small differences in the mean of the metallicity for the two
+populations of stars. In order to reproduce the underlying populations
+we use an inset MCMC with assumptions that
+
+\begin{enumerate}
+\item Foreground stars are younger than most of the dSph member
+  stars. Therefore, they show a high metallicity and can be removed
+  from the dataset with a single cut in metallicity;
+\item the remaining stellar components are divided into two
+  populations;
+\item the fraction of stars in population 1 is sampled in a uniform
+  way in the range $[0.2,0.8]$;
+\item both populations show a normal distribution in metallicity with
+  the same width;
+\item the initial values of the means are set to half and twice the
+  mean metallicity, to allow for a reasonable difference between the
+  means. This difference is then subsequently sampled assuming a
+  normal distribution;
+\item 40000 iterations for burn-in and 10000 iterations for subsequent
+  parameter estimates are used, with a thinning by factor 10 to reduce
+  correlations between subsequent models. This procedure converges in
+  all tested cases.
+\end{enumerate}
+
+To test whether the assignment into populations is a valid one, we
+want to check whether the population is in equilibrium with the
+overall potential.
+
+\begin{figure*}
+  \begin{center}
+    \hspace{-7mm}
+    \includegraphics[width=0.5\textwidth]{fig/pymcmetals.png}
+    \caption{Distribution function of two populations (filled histograms) and the reproduced overall distribution.}
+    \label{fig:pops}
+  \end{center}
+\end{figure*}
+
+The routine then assigns each particle to one of the two populations,
+based on its Mg metallicity. $75\pm4\%$ of all stars are assigned to
+the correct underlying distribution. This in turn changes the
+half-light radius by $110$pc and $-62$pc for initial 390 pc, 730 pc
+half light radii. These changes are rather high, but the two
+populations still show distinct half-light radii.
+
+
+We explicitly assume two populations of stellar tracers in dwarf
+galaxies, each with Gaussian distributions in metallicity with means
+$\mu_1,\mu_2$. Without requiring a minimum distance $\delta
+\mu=\mu_2-\mu_1$ between them, a representation with $\mu_1 \approx
+\mu_2$ can be found. This model shows a higher $\chi^2$ than other
+models and is thus disfavoured, but cannot be rejected from a
+Kolmogorov-Smirnov test on a $p<0.05$ basis.
+
+Here we show the influence of setting a prior minimal
+$\delta\mu_{\min}$ on the goodness of fit, and the allowed range of
+$\delta \mu$. We work on the metallicity distribution of one of the
+mock dwarfs with cusped density profiles described earlier on, setting
+
+\begin{equation}
+\mu_1\in[-1.0,2.0];\quad \delta \mu \in [ \delta\mu_{\min}, 5.0];\quad
+\end{equation}
+
+with $\delta\mu_{\min}$ varying from $0.0$ to $0.4$. We let the MCMC
+run for a) 10k iterations with 8k burn-in/discarded models; b) 50k
+iterations with 40k burn-in. From the accepted models, we compute the
+mean Gaussian distributions and compare the corresponding overall
+bimodal distribution to the actual metallicity distribution from the
+data with a 2 component Kolmogorov-Smirnov test, and take the
+two-tailed statistics $p_{\text KS}$ from 30 drawings. If $p_{\text KS}>0.05$, then we
+cannot reject the hypothesis that the distributions of the two samples
+are the same.
+
+Results for varying the minimal distance between the two Gaussians
+between $0.0$ and $0.4$ are shown in fig ~\ref{fig:kit}.
+
+\begin{figure*}
+    \begin{center}
+        \hspace{-7mm}
+        \includegraphics[width=0.5\textwidth]{fig/10kit.pdf}
+        \includegraphics[width=0.5\textwidth]{fig/50kit.pdf}
+        \caption{Kolmogorov-Smirnov test statistic $p_{\text KS}$ for
+          correspondance between models with $\delta\mu>\delta\mu_{\min}$ as
+          described in the text.}
+        \label{fig:kit}
+    \end{center}
+\end{figure*}
+
+
+All models with $p>0.05$ give a reasonable fit, with a maximum for 10k
+iterations at around $\delta \mu = 0.1$. Models with $\delta \mu>0.2$
+give no good fit anymore after 10k iterations.
+
+The goodness of fit is enhanced if we take more iterations, so in the
+plot for 50k iterations, there is a maximum $p=0.79$ compared to
+$p=0.4$ from 10k iterations only. The whole curve is shifted to higher
+$\delta \mu$ values. The models with $\delta \mu>0.3$ are
+rejected. The restriction of $\delta \mu>0.4$ (last point to the
+right) is well-fitting again, but this is due to the fact that the
+fraction of particles for population 2 was found to be smaller than 10
+percent, thus mainly fitting the metallicity distribution with one
+Gaussian only, plus some skewing from an almost negligible stellar
+component. Although this model cannot be rejected, it lies above the
+rejected models at $\delta\mu_{\min}=0.4$. Furthermore, it does not
+yield a second component with a scale length distinctly different from
+the main component, rendering the additional gain from two components
+obsolete. Thus, we will restrict the MCMC search of the population
+fraction to the range $f\in[0.3,0.7]$.
+
+% TODO: put in appendix
+%\subsection{Effect of Wrong Assignment of Populations}
+
+
+% priors used
+
+% metallicity splitting procedure
+
+%
+\section{Data}
+
+\subsection{Fornax}
+\TODO{ref} find evidence for three populations.
+
+\subsection{Sculptor}
+
+\subsection{Carina}
+
+\subsection{Sextans}
+
+\subsection{Draco}
+
+\subsection{Photometric Tracer Densities}
+selection function as function of smoothing scale as given in Walker
+2009
+
+photometric data = 1/w * kinematic sample
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "Steger+_2014_Gravlite"
+%%% End:
