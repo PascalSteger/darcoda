@@ -12,3 +12,10 @@ backup
 *.png
 *~
 *.orig
+
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
