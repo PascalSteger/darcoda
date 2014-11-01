@@ -1,0 +1,21 @@
+*********************
+*       hints       *
+*********************
+
+Resources:
+==========
+* ask to use fatboy (16 CPU, 70GB RAM) for consuming calculations
+* backups are on teutates
+* data are on achtland
+
+* write program code with english keyboard map
+* all features in a graph that are no more visible if a finger is put over
+  them cannot be trust; trends do tell more
+
+MATLAB:
+=======
+* use emacs key bindings in MATLAB
+* use x-y plotting for trend and additional color for possible correlation
+	scatter(X,Y,size,color,'.')
+* check dimensionality of different matrices before continuing
+* preallocate memory for arrays with zeros(dim1,dim2,dim3...)

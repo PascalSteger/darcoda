@@ -1,0 +1,305 @@
+\hypertarget{SystemCharacteristics_8h}{
+\section{SystemCharacteristics.h File Reference}
+\label{SystemCharacteristics_8h}\index{SystemCharacteristics.h@{SystemCharacteristics.h}}
+}
+All publicly known functions from \hyperlink{SystemCharacteristics_8cpp}{SystemCharacteristics.cpp}. 
+
+{\tt \#include $<$string$>$}\par
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef float \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{SystemCharacteristics_8h_f14ce9adc079d3106f6fe5ed977660a9}{RunCommand} (std::string command)
+\item 
+void \hyperlink{SystemCharacteristics_8h_add6ff8eac457116cc843c4b98bc0636}{write} (std::string text)
+\item 
+void \hyperlink{SystemCharacteristics_8h_865c3c98145e9535ae7575ff0161119d}{writedebug} (bool DebugLevelActivated, std::string text)
+\item 
+void \hyperlink{SystemCharacteristics_8h_37de7b6ae4852c4084f30507d58eb906}{writeln} (std::string text)
+\item 
+void \hyperlink{SystemCharacteristics_8h_5b25522225f9cc3d16b32059a125a93e}{writelndebug} (bool DebugLevelActivated, std::string text)
+\item 
+void \hyperlink{SystemCharacteristics_8h_90a26977d0e79592478299043e94091e}{writedone} (void)
+\item 
+void \hyperlink{SystemCharacteristics_8h_6ea51689681a48365e4852a63687b8e6}{writelndone} (void)
+\item 
+void \hyperlink{SystemCharacteristics_8h_537260c4c4c2057809ee9ca92cf460c7}{donedebug} (bool DebugLevelActivated)
+\item 
+std::string \hyperlink{SystemCharacteristics_8h_3d2b4d4a9d8d164a3fdea80bfc1ea93d}{IntToString} (int intValue)
+\item 
+std::string \hyperlink{SystemCharacteristics_8h_d3867aaa410297f271cb4a5f443f368c}{Folder} (std::string where)
+\item 
+std::string \hyperlink{SystemCharacteristics_8h_b95a6a07eed667f94b0951a15f1a9b0e}{Snaps} (unsigned SnapNo)
+\item 
+unsigned \hyperlink{SystemCharacteristics_8h_5cf7528ff238e0f7be1d86289650f04e}{GetLineNumber} (std::string filename)
+\item 
+void \hyperlink{SystemCharacteristics_8h_51dd29892ba6b6ec3e4075d2016d796a}{printMinMaxValues} (void)
+\begin{CompactList}\small\item\em print characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double \item\end{CompactList}\item 
+\hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} \hyperlink{SystemCharacteristics_8h_a92971b06497e2333e4bc532a86297cb}{fbmod} (\hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} x, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} y)
+\item 
+{\footnotesize template$<$typename real\_\-t$>$ }\\real\_\-t \hyperlink{SystemCharacteristics_8h_0cb8e9ba7bd0b1861c15a42aa799dcd4}{SPHK3D} (const real\_\-t r, const real\_\-t \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_a6e8e201edf24007dc075bfef6e8210c}{h})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const bool \hyperlink{SystemCharacteristics_8h_9c4ab189c2f018bc7ccc8ba4f6e04b9d}{DEBUG} = true
+\item 
+const double \hyperlink{SystemCharacteristics_8h_952eac791b596a61bba0a133a3bb439f}{PI} = 3.14159265358979323846264338327950288419716939937510582
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+All publicly known functions from \hyperlink{SystemCharacteristics_8cpp}{SystemCharacteristics.cpp}. 
+
+
+
+Definition in file \hyperlink{SystemCharacteristics_8h-source}{SystemCharacteristics.h}.
+
+\subsection{Typedef Documentation}
+\hypertarget{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!real@{real}}
+\index{real@{real}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[real]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf real}}}
+\label{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}
+
+
+
+
+Definition at line 34 of file SystemCharacteristics.h.
+
+\subsection{Function Documentation}
+\hypertarget{SystemCharacteristics_8h_537260c4c4c2057809ee9ca92cf460c7}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!donedebug@{donedebug}}
+\index{donedebug@{donedebug}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[donedebug]{\setlength{\rightskip}{0pt plus 5cm}void donedebug (bool {\em DebugLevelActivated})}}
+\label{SystemCharacteristics_8h_537260c4c4c2057809ee9ca92cf460c7}
+
+
+
+
+Definition at line 128 of file SystemCharacteristics.cpp.
+
+References writelndone().
+
+Referenced by CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().\hypertarget{SystemCharacteristics_8h_a92971b06497e2333e4bc532a86297cb}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!fbmod@{fbmod}}
+\index{fbmod@{fbmod}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[fbmod]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} fbmod ({\bf real} {\em x}, \/  {\bf real} {\em y})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{SystemCharacteristics_8h_a92971b06497e2333e4bc532a86297cb}
+
+
+
+
+Definition at line 28 of file HaloProperties.h.\hypertarget{SystemCharacteristics_8h_d3867aaa410297f271cb4a5f443f368c}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!Folder@{Folder}}
+\index{Folder@{Folder}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[Folder]{\setlength{\rightskip}{0pt plus 5cm}std::string Folder (std::string {\em where})}}
+\label{SystemCharacteristics_8h_d3867aaa410297f271cb4a5f443f368c}
+
+
+Returns the paths to all important folders. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em where,:}]which folder? allowed: amd, snap, amateur, output, parameters \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]std::string full path \end{Desc}
+
+
+Definition at line 247 of file SystemCharacteristics.cpp.
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), RunOwnMergerTree(), Storeahf(), SubhaloMatch(), TidalField(), and WrapperParticleNumbers().\hypertarget{SystemCharacteristics_8h_5cf7528ff238e0f7be1d86289650f04e}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!GetLineNumber@{GetLineNumber}}
+\index{GetLineNumber@{GetLineNumber}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[GetLineNumber]{\setlength{\rightskip}{0pt plus 5cm}unsigned GetLineNumber (std::string {\em filename})}}
+\label{SystemCharacteristics_8h_5cf7528ff238e0f7be1d86289650f04e}
+
+
+count the lines of a given file \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename,:}]path to the file \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]unsigned number of lines \end{Desc}
+
+
+Definition at line 169 of file SystemCharacteristics.cpp.
+
+Referenced by SubhaloMatch().\hypertarget{SystemCharacteristics_8h_3d2b4d4a9d8d164a3fdea80bfc1ea93d}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!IntToString@{IntToString}}
+\index{IntToString@{IntToString}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[IntToString]{\setlength{\rightskip}{0pt plus 5cm}std::string IntToString (int {\em intValue})}}
+\label{SystemCharacteristics_8h_3d2b4d4a9d8d164a3fdea80bfc1ea93d}
+
+
+Convert an integer into a string. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em intValue,:}]integer to be converted \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]std::string of that integer value \end{Desc}
+
+
+Definition at line 228 of file SystemCharacteristics.cpp.
+
+References itoa().
+
+Referenced by TidalField().\hypertarget{SystemCharacteristics_8h_51dd29892ba6b6ec3e4075d2016d796a}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!printMinMaxValues@{printMinMaxValues}}
+\index{printMinMaxValues@{printMinMaxValues}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[printMinMaxValues]{\setlength{\rightskip}{0pt plus 5cm}void printMinMaxValues (void)}}
+\label{SystemCharacteristics_8h_51dd29892ba6b6ec3e4075d2016d796a}
+
+
+print characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double 
+
+\begin{Desc}
+\item[Returns:]: void \end{Desc}
+
+
+Definition at line 40 of file SystemCharacteristics.cpp.
+
+Referenced by HelpUser().\hypertarget{SystemCharacteristics_8h_f14ce9adc079d3106f6fe5ed977660a9}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!RunCommand@{RunCommand}}
+\index{RunCommand@{RunCommand}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[RunCommand]{\setlength{\rightskip}{0pt plus 5cm}void RunCommand (std::string {\em command})}}
+\label{SystemCharacteristics_8h_f14ce9adc079d3106f6fe5ed977660a9}
+
+
+
+
+Definition at line 159 of file SystemCharacteristics.cpp.
+
+Referenced by ExtractSnap(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RunAHFstep(), RunHaloTracker(), and RunMergerTree().\hypertarget{SystemCharacteristics_8h_b95a6a07eed667f94b0951a15f1a9b0e}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!Snaps@{Snaps}}
+\index{Snaps@{Snaps}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[Snaps]{\setlength{\rightskip}{0pt plus 5cm}std::string Snaps (unsigned {\em SnapNo})}}
+\label{SystemCharacteristics_8h_b95a6a07eed667f94b0951a15f1a9b0e}
+
+
+Returns the full path to an AMATEUR snapshot \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em SnapNo,:}]ID of snapshot \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]std::string full\_\-path \end{Desc}
+
+
+Definition at line 276 of file SystemCharacteristics.cpp.
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), HelpUser(), main(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), Storeahf(), SubhaloMatch(), TidalField(), and WrapperParticleNumbers().\hypertarget{SystemCharacteristics_8h_0cb8e9ba7bd0b1861c15a42aa799dcd4}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!SPHK3D@{SPHK3D}}
+\index{SPHK3D@{SPHK3D}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[SPHK3D]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename real\_\-t$>$ real\_\-t SPHK3D (const real\_\-t {\em r}, \/  const real\_\-t {\em h})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{SystemCharacteristics_8h_0cb8e9ba7bd0b1861c15a42aa799dcd4}
+
+
+
+
+Definition at line 34 of file HaloProperties.h.
+
+References PI.
+
+Referenced by HaloProperties::AverageVel().\hypertarget{SystemCharacteristics_8h_add6ff8eac457116cc843c4b98bc0636}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!write@{write}}
+\index{write@{write}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[write]{\setlength{\rightskip}{0pt plus 5cm}void write (std::string {\em text})}}
+\label{SystemCharacteristics_8h_add6ff8eac457116cc843c4b98bc0636}
+
+
+
+
+Definition at line 95 of file SystemCharacteristics.cpp.
+
+Referenced by TidalField(), and writedebug().\hypertarget{SystemCharacteristics_8h_865c3c98145e9535ae7575ff0161119d}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!writedebug@{writedebug}}
+\index{writedebug@{writedebug}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[writedebug]{\setlength{\rightskip}{0pt plus 5cm}void writedebug (bool {\em DebugLevelActivated}, \/  std::string {\em text})}}
+\label{SystemCharacteristics_8h_865c3c98145e9535ae7575ff0161119d}
+
+
+
+
+Definition at line 139 of file SystemCharacteristics.cpp.
+
+References write().
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().\hypertarget{SystemCharacteristics_8h_90a26977d0e79592478299043e94091e}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!writedone@{writedone}}
+\index{writedone@{writedone}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[writedone]{\setlength{\rightskip}{0pt plus 5cm}void writedone (void)}}
+\label{SystemCharacteristics_8h_90a26977d0e79592478299043e94091e}
+
+
+
+
+Definition at line 112 of file SystemCharacteristics.cpp.
+
+Referenced by CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), and TidalField().\hypertarget{SystemCharacteristics_8h_37de7b6ae4852c4084f30507d58eb906}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!writeln@{writeln}}
+\index{writeln@{writeln}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[writeln]{\setlength{\rightskip}{0pt plus 5cm}void writeln (std::string {\em text})}}
+\label{SystemCharacteristics_8h_37de7b6ae4852c4084f30507d58eb906}
+
+
+
+
+Definition at line 104 of file SystemCharacteristics.cpp.
+
+Referenced by AnalyzeSnap(), ExtractSnap(), HelpUser(), main(), TidalField(), and writelndebug().\hypertarget{SystemCharacteristics_8h_5b25522225f9cc3d16b32059a125a93e}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!writelndebug@{writelndebug}}
+\index{writelndebug@{writelndebug}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[writelndebug]{\setlength{\rightskip}{0pt plus 5cm}void writelndebug (bool {\em DebugLevelActivated}, \/  std::string {\em text})}}
+\label{SystemCharacteristics_8h_5b25522225f9cc3d16b32059a125a93e}
+
+
+
+
+Definition at line 150 of file SystemCharacteristics.cpp.
+
+References writeln().
+
+Referenced by AnalyzeSnap(), ExtractSnap(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), and RunOwnMergerTree().\hypertarget{SystemCharacteristics_8h_6ea51689681a48365e4852a63687b8e6}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!writelndone@{writelndone}}
+\index{writelndone@{writelndone}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[writelndone]{\setlength{\rightskip}{0pt plus 5cm}void writelndone (void)}}
+\label{SystemCharacteristics_8h_6ea51689681a48365e4852a63687b8e6}
+
+
+
+
+Definition at line 120 of file SystemCharacteristics.cpp.
+
+Referenced by donedebug().
+
+\subsection{Variable Documentation}
+\hypertarget{SystemCharacteristics_8h_9c4ab189c2f018bc7ccc8ba4f6e04b9d}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!DEBUG@{DEBUG}}
+\index{DEBUG@{DEBUG}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[DEBUG]{\setlength{\rightskip}{0pt plus 5cm}const bool {\bf DEBUG} = true}}
+\label{SystemCharacteristics_8h_9c4ab189c2f018bc7ccc8ba4f6e04b9d}
+
+
+
+
+Definition at line 31 of file SystemCharacteristics.h.
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().\hypertarget{SystemCharacteristics_8h_952eac791b596a61bba0a133a3bb439f}{
+\index{SystemCharacteristics.h@{SystemCharacteristics.h}!PI@{PI}}
+\index{PI@{PI}!SystemCharacteristics.h@{SystemCharacteristics.h}}
+\subsubsection[PI]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf PI} = 3.14159265358979323846264338327950288419716939937510582}}
+\label{SystemCharacteristics_8h_952eac791b596a61bba0a133a3bb439f}
+
+
+
+
+Definition at line 32 of file SystemCharacteristics.h.
+
+Referenced by SPHK3D().

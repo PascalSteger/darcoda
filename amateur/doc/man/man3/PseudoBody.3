@@ -1,0 +1,261 @@
+.TH "PseudoBody" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PseudoBody \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <OctTree.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPseudoBody\fP (void)"
+.br
+.ti -1c
+.RI "\fBPseudoBody\fP (\fBreal\fP mass_, \fBreal\fP x_, \fBreal\fP y_, \fBreal\fP z_)"
+.br
+.ti -1c
+.RI "\fBPseudoBody\fP (const std::vector< \fBPseudoBody\fP > &Bodies)"
+.br
+.ti -1c
+.RI "\fBPseudoBody\fP (const \fBPseudoBody\fP &b)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetx\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgety\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetz\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetmass\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetxx\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetyy\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetzz\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetxy\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetyx\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetxz\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetzx\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetyz\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetzy\fP (void) const "
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBreal\fP \fBmass\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBx\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBy\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBz\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBxx\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fByy\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBzz\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBxy\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBxz\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fByz\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 122 of file OctTree.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PseudoBody::PseudoBody (void)\fC [inline]\fP"
+.PP
+Definition at line 130 of file OctTree.h.
+.SS "PseudoBody::PseudoBody (\fBreal\fP mass_, \fBreal\fP x_, \fBreal\fP y_, \fBreal\fP z_)\fC [inline]\fP"
+.PP
+Definition at line 133 of file OctTree.h.
+.SS "PseudoBody::PseudoBody (const std::vector< \fBPseudoBody\fP > & Bodies)\fC [inline]\fP"
+.PP
+Definition at line 137 of file OctTree.h.
+.PP
+References mass, x, xx, xy, xz, y, yy, yz, z, and zz.
+.SS "PseudoBody::PseudoBody (const \fBPseudoBody\fP & b)\fC [inline]\fP"
+.PP
+Definition at line 174 of file OctTree.h.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBreal\fP PseudoBody::getmass (void) const\fC [inline]\fP"
+.PP
+Definition at line 190 of file OctTree.h.
+.PP
+References mass.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getx (void) const\fC [inline]\fP"
+.PP
+Definition at line 180 of file OctTree.h.
+.PP
+References x.
+.PP
+Referenced by kDTreeNode::partition(), OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getxx (void) const\fC [inline]\fP"
+.PP
+Definition at line 194 of file OctTree.h.
+.PP
+References xx.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getxy (void) const\fC [inline]\fP"
+.PP
+Definition at line 203 of file OctTree.h.
+.PP
+References xy.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getxz (void) const\fC [inline]\fP"
+.PP
+Definition at line 209 of file OctTree.h.
+.PP
+References xz.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::gety (void) const\fC [inline]\fP"
+.PP
+Definition at line 183 of file OctTree.h.
+.PP
+References y.
+.PP
+Referenced by kDTreeNode::partition(), OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getyx (void) const\fC [inline]\fP"
+.PP
+Definition at line 206 of file OctTree.h.
+.PP
+References xy.
+.SS "\fBreal\fP PseudoBody::getyy (void) const\fC [inline]\fP"
+.PP
+Definition at line 197 of file OctTree.h.
+.PP
+References yy.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getyz (void) const\fC [inline]\fP"
+.PP
+Definition at line 215 of file OctTree.h.
+.PP
+References yz.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getz (void) const\fC [inline]\fP"
+.PP
+Definition at line 186 of file OctTree.h.
+.PP
+References z.
+.PP
+Referenced by kDTreeNode::partition(), OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SS "\fBreal\fP PseudoBody::getzx (void) const\fC [inline]\fP"
+.PP
+Definition at line 212 of file OctTree.h.
+.PP
+References xz.
+.SS "\fBreal\fP PseudoBody::getzy (void) const\fC [inline]\fP"
+.PP
+Definition at line 218 of file OctTree.h.
+.PP
+References yz.
+.SS "\fBreal\fP PseudoBody::getzz (void) const\fC [inline]\fP"
+.PP
+Definition at line 200 of file OctTree.h.
+.PP
+References zz.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SH "Field Documentation"
+.PP 
+.SS "\fBreal\fP \fBPseudoBody::mass\fP\fC [protected]\fP"
+.PP
+Definition at line 124 of file OctTree.h.
+.PP
+Referenced by getmass(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::x\fP\fC [protected]\fP"
+.PP
+Definition at line 125 of file OctTree.h.
+.PP
+Referenced by getx(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::xx\fP\fC [protected]\fP"
+.PP
+Definition at line 127 of file OctTree.h.
+.PP
+Referenced by getxx(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::xy\fP\fC [protected]\fP"
+.PP
+Definition at line 127 of file OctTree.h.
+.PP
+Referenced by getxy(), getyx(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::xz\fP\fC [protected]\fP"
+.PP
+Definition at line 127 of file OctTree.h.
+.PP
+Referenced by getxz(), getzx(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::y\fP\fC [protected]\fP"
+.PP
+Definition at line 125 of file OctTree.h.
+.PP
+Referenced by gety(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::yy\fP\fC [protected]\fP"
+.PP
+Definition at line 127 of file OctTree.h.
+.PP
+Referenced by getyy(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::yz\fP\fC [protected]\fP"
+.PP
+Definition at line 127 of file OctTree.h.
+.PP
+Referenced by getyz(), getzy(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::z\fP\fC [protected]\fP"
+.PP
+Definition at line 125 of file OctTree.h.
+.PP
+Referenced by getz(), and PseudoBody().
+.SS "\fBreal\fP \fBPseudoBody::zz\fP\fC [protected]\fP"
+.PP
+Definition at line 127 of file OctTree.h.
+.PP
+Referenced by getzz(), and PseudoBody().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

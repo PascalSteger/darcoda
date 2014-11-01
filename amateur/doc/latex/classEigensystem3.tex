@@ -1,0 +1,174 @@
+\section{Eigensystem3 Class Reference}
+\label{classEigensystem3}\index{Eigensystem3@{Eigensystem3}}
+
+
+{\ttfamily \#include $<$Eigensystem3.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classEigensystem3_a31ab53ba1ff2c9d3e03d14775954b770}{Eigensystem3} ()
+\item 
+\hyperlink{classEigensystem3_a94eb6dfdeee381ed3992e5dbb21320d3}{Eigensystem3} (\hyperlink{classMatrix33}{Matrix33} M)
+\item 
+\hyperlink{classEigensystem3_ae70fe46879986f1116a9388c44195d8c}{Eigensystem3} (const \hyperlink{classEigensystem3}{Eigensystem3} \&E)
+\item 
+\hyperlink{classEigensystem3_ac8b891bd1c9a91f970fbec6ee984f26a}{Eigensystem3} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ Eval, std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ Evec)
+\item 
+bool \hyperlink{classEigensystem3_af65d8d9d661b4ba74f2553227bfc16fb}{getEigen} ()
+\item 
+std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \hyperlink{classEigensystem3_a5f76eedf7a13ebb22f59104fe31f808c}{getEval} () const 
+\item 
+void \hyperlink{classEigensystem3_a059896de8f00f94f929019a87253ef28}{setEval} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ Eval)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classEigensystem3_a81e7fd6be94263e763437c9be028c660}{getEval} (int index) const 
+\item 
+std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ \hyperlink{classEigensystem3_a66bba9e069680e1fd2bbe66220fc13c8}{getEvec} () const 
+\item 
+void \hyperlink{classEigensystem3_ad15598642fbd83f34cad73a301b43b89}{setEvec} (std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ Evec)
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classEigensystem3_ad3be2903d6b0f1c3513d2e920f08faae}{getEvec} (int index) const 
+\item 
+void \hyperlink{classEigensystem3_adc1e3e6fdbe879e34fa403468eb0800f}{calcEV} ()
+\item 
+void \hyperlink{classEigensystem3_abae2814e44087582c68ea7511f5fd07d}{normalize} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} factor)
+\item 
+std::string \hyperlink{classEigensystem3_a1e3d57b18699eacbf3de9e07fdfacd1f}{toString} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 35 of file Eigensystem3.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{Eigensystem3}]{\setlength{\rightskip}{0pt plus 5cm}Eigensystem3::Eigensystem3 ()}\label{classEigensystem3_a31ab53ba1ff2c9d3e03d14775954b770}
+
+
+Definition at line 34 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{Eigensystem3}]{\setlength{\rightskip}{0pt plus 5cm}Eigensystem3::Eigensystem3 ({\bf Matrix33} {\em M})}\label{classEigensystem3_a94eb6dfdeee381ed3992e5dbb21320d3}
+
+
+Definition at line 38 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{Eigensystem3}]{\setlength{\rightskip}{0pt plus 5cm}Eigensystem3::Eigensystem3 (const {\bf Eigensystem3} \& {\em E})}\label{classEigensystem3_ae70fe46879986f1116a9388c44195d8c}
+
+
+Definition at line 47 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\index{Eigensystem3@{Eigensystem3}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{Eigensystem3}]{\setlength{\rightskip}{0pt plus 5cm}Eigensystem3::Eigensystem3 (std::vector$<$ {\bf real} $>$ {\em Eval}, \/  std::vector$<$ {\bf Vector3} $>$ {\em Evec})}\label{classEigensystem3_ac8b891bd1c9a91f970fbec6ee984f26a}
+
+
+Definition at line 51 of file Eigensystem3.cpp.
+
+
+
+\subsection{Member Function Documentation}
+\index{Eigensystem3@{Eigensystem3}!calcEV@{calcEV}}
+\index{calcEV@{calcEV}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{calcEV}]{\setlength{\rightskip}{0pt plus 5cm}void Eigensystem3::calcEV ()}\label{classEigensystem3_adc1e3e6fdbe879e34fa403468eb0800f}
+
+
+Definition at line 58 of file Eigensystem3.cpp.
+
+
+
+References Matrix33::Eigen().
+
+
+
+Referenced by Halo::calcShape().
+
+\index{Eigensystem3@{Eigensystem3}!getEigen@{getEigen}}
+\index{getEigen@{getEigen}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{getEigen}]{\setlength{\rightskip}{0pt plus 5cm}bool Eigensystem3::getEigen ()}\label{classEigensystem3_af65d8d9d661b4ba74f2553227bfc16fb}
+\index{Eigensystem3@{Eigensystem3}!getEval@{getEval}}
+\index{getEval@{getEval}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{getEval}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Eigensystem3::getEval (int {\em index}) const}\label{classEigensystem3_a81e7fd6be94263e763437c9be028c660}
+
+
+Definition at line 76 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!getEval@{getEval}}
+\index{getEval@{getEval}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{getEval}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ {\bf real} $>$ Eigensystem3::getEval () const}\label{classEigensystem3_a5f76eedf7a13ebb22f59104fe31f808c}
+
+
+Definition at line 70 of file Eigensystem3.cpp.
+
+
+
+Referenced by AnalyzeSnap(), and StoreTensorField().
+
+\index{Eigensystem3@{Eigensystem3}!getEvec@{getEvec}}
+\index{getEvec@{getEvec}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{getEvec}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Eigensystem3::getEvec (int {\em index}) const}\label{classEigensystem3_ad3be2903d6b0f1c3513d2e920f08faae}
+
+
+Definition at line 93 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!getEvec@{getEvec}}
+\index{getEvec@{getEvec}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{getEvec}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ {\bf Vector3} $>$ Eigensystem3::getEvec () const}\label{classEigensystem3_a66bba9e069680e1fd2bbe66220fc13c8}
+
+
+Definition at line 87 of file Eigensystem3.cpp.
+
+
+
+Referenced by StoreTensorField().
+
+\index{Eigensystem3@{Eigensystem3}!normalize@{normalize}}
+\index{normalize@{normalize}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{normalize}]{\setlength{\rightskip}{0pt plus 5cm}void Eigensystem3::normalize ({\bf real} {\em factor})}\label{classEigensystem3_abae2814e44087582c68ea7511f5fd07d}
+
+
+Definition at line 104 of file Eigensystem3.cpp.
+
+
+
+Referenced by Halo::calcShape().
+
+\index{Eigensystem3@{Eigensystem3}!setEval@{setEval}}
+\index{setEval@{setEval}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{setEval}]{\setlength{\rightskip}{0pt plus 5cm}void Eigensystem3::setEval (std::vector$<$ {\bf real} $>$ {\em Eval})}\label{classEigensystem3_a059896de8f00f94f929019a87253ef28}
+
+
+Definition at line 82 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!setEvec@{setEvec}}
+\index{setEvec@{setEvec}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{setEvec}]{\setlength{\rightskip}{0pt plus 5cm}void Eigensystem3::setEvec (std::vector$<$ {\bf Vector3} $>$ {\em Evec})}\label{classEigensystem3_ad15598642fbd83f34cad73a301b43b89}
+
+
+Definition at line 99 of file Eigensystem3.cpp.
+
+\index{Eigensystem3@{Eigensystem3}!toString@{toString}}
+\index{toString@{toString}!Eigensystem3@{Eigensystem3}}
+\subsubsection[{toString}]{\setlength{\rightskip}{0pt plus 5cm}std::string Eigensystem3::toString (void)}\label{classEigensystem3_a1e3d57b18699eacbf3de9e07fdfacd1f}
+
+
+Definition at line 120 of file Eigensystem3.cpp.
+
+
+
+Referenced by HResults::toString(), and AResults::toString().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Eigensystem3_8h}{Eigensystem3.h}\item 
+\hyperlink{Eigensystem3_8cpp}{Eigensystem3.cpp}\end{DoxyCompactItemize}

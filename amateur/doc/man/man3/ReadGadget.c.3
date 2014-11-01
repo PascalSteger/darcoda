@@ -1,0 +1,246 @@
+.TH "ReadGadget.c" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ReadGadget.c \- 
+.PP
+sample input file from Gadget2, modified for use with AMATEUR  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <iostream>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <string.h>\fP
+.br
+\fC#include <cstdlib>\fP
+.br
+\fC#include <stdio.h>\fP
+.br
+\fC#include <stdlib.h>\fP
+.br
+
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSKIP\fP   {my_fread(&\fBblksize\fP,sizeof(int),1,fd); swap_Nbyte((char*)&\fBblksize\fP,1,sizeof(int));}"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "size_t \fBmy_fread\fP (void *ptr, size_t size, size_t nmemb, FILE *stream)"
+.br
+.ti -1c
+.RI "void \fBswap_Nbyte\fP (char *data, unsigned n, unsigned m)"
+.br
+.ti -1c
+.RI "int \fBfind_block\fP (FILE *fd, std::string label)"
+.br
+.ti -1c
+.RI "int \fBread_gadget_head\fP (unsigned *npart, double *Massarr, double *time, double *redshift, int *FlagSfr, int *FlagFeedback, unsigned *Nall, int *FlagCooling, int *NumFiles, double *BoxSize, FILE *fd)"
+.br
+.ti -1c
+.RI "template<typename T > int \fBread_gadget_1\fP (T *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "template<typename T > int \fBread_gadget_3\fP (T *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "void \fBget_particle_number\fP (std::string filename, unsigned *id_min, unsigned *id_max, double *masses, unsigned *npart, unsigned &ntot, double &redshift, double &boxsize)"
+.br
+.ti -1c
+.RI "template int \fBread_gadget_1< float >\fP (float *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "template int \fBread_gadget_1< unsigned >\fP (unsigned *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "template int \fBread_gadget_1< int >\fP (int *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "template int \fBread_gadget_3< float >\fP (float *data, std::string label, FILE *fd)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBblksize\fP"
+.br
+.ti -1c
+.RI "int \fBswap_rg\fP = 0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+sample input file from Gadget2, modified for use with AMATEUR 
+
+
+.PP
+Definition in file \fBReadGadget.c\fP.
+.SH "Define Documentation"
+.PP 
+.SS "#define SKIP   {my_fread(&\fBblksize\fP,sizeof(int),1,fd); swap_Nbyte((char*)&\fBblksize\fP,1,sizeof(int));}"
+.PP
+Definition at line 20 of file ReadGadget.c.
+.PP
+Referenced by find_block(), read_gadget_1(), read_gadget_3(), and read_gadget_head().
+.SH "Function Documentation"
+.PP 
+.SS "int find_block (FILE * fd, std::string label)"find a block in snapshot file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfd\fP 
+.br
+\fIlabel\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 66 of file ReadGadget.c.
+.PP
+References blksize, my_fread(), SKIP, swap_Nbyte(), and swap_rg.
+.PP
+Referenced by read_gadget_1(), read_gadget_3(), and read_gadget_head().
+.SS "void get_particle_number (std::string filename, unsigned * id_min, unsigned * id_max, double * masses, unsigned * npart, unsigned & ntot, double & redshift, double & boxsize)"
+.PP
+Definition at line 220 of file ReadGadget.c.
+.PP
+References read_gadget_1(), and read_gadget_head().
+.PP
+Referenced by AnalyzeSnap(), and ExtractSnap().
+.SS "size_t my_fread (void * ptr, size_t size, size_t nmemb, FILE * stream)"
+.PP
+Definition at line 31 of file ReadGadget.c.
+.PP
+Referenced by find_block(), read_gadget_1(), read_gadget_3(), and read_gadget_head().
+.SS "template<typename T > int read_gadget_1 (T * data, std::string label, FILE * fd)\fC [inline]\fP"read a 1D array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP 
+.br
+\fIlabel\fP 
+.br
+\fIfd\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 161 of file ReadGadget.c.
+.PP
+References find_block(), my_fread(), SKIP, and swap_Nbyte().
+.PP
+Referenced by ExtractSnap(), get_particle_number(), and readDataBlocks().
+.SS "template int read_gadget_1< float > (float * data, std::string label, FILE * fd)"
+.SS "template int read_gadget_1< int > (int * data, std::string label, FILE * fd)"
+.SS "template int read_gadget_1< unsigned > (unsigned * data, std::string label, FILE * fd)"
+.SS "template<typename T > int read_gadget_3 (T * data, std::string label, FILE * fd)\fC [inline]\fP"read a 3D array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP 
+.br
+\fIlabel\fP 
+.br
+\fIfd\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 190 of file ReadGadget.c.
+.PP
+References find_block(), my_fread(), SKIP, and swap_Nbyte().
+.PP
+Referenced by ExtractSnap(), and readDataBlocks().
+.SS "template int read_gadget_3< float > (float * data, std::string label, FILE * fd)"
+.SS "int read_gadget_head (unsigned * npart, double * Massarr, double * time, double * redshift, int * FlagSfr, int * FlagFeedback, unsigned * Nall, int * FlagCooling, int * NumFiles, double * BoxSize, FILE * fd)"read gadget header info 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInpart\fP 
+.br
+\fIMassarr\fP 
+.br
+\fItime\fP 
+.br
+\fIredshift\fP 
+.br
+\fIFlagSfr\fP 
+.br
+\fIFlagFeedback\fP 
+.br
+\fINall\fP 
+.br
+\fIFlagCooling\fP 
+.br
+\fINumFiles\fP 
+.br
+\fIBoxSize\fP 
+.br
+\fIfd\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+size of header block 
+.RE
+.PP
+
+.PP
+Definition at line 115 of file ReadGadget.c.
+.PP
+References find_block(), my_fread(), SKIP, and swap_Nbyte().
+.PP
+Referenced by get_particle_number().
+.SS "void swap_Nbyte (char * data, unsigned n, unsigned m)"swap endian 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP 
+.br
+\fIn\fP how many entries do we have in array? 
+.br
+\fIm\fP how many bytes are there for a bigger number type 
+.RE
+.PP
+
+.PP
+Definition at line 47 of file ReadGadget.c.
+.PP
+References swap_rg.
+.PP
+Referenced by find_block(), read_gadget_1(), read_gadget_3(), and read_gadget_head().
+.SH "Variable Documentation"
+.PP 
+.SS "int \fBblksize\fP"
+.PP
+Definition at line 19 of file ReadGadget.c.
+.PP
+Referenced by find_block().
+.SS "int \fBswap_rg\fP = 0"
+.PP
+Definition at line 19 of file ReadGadget.c.
+.PP
+Referenced by find_block(), and swap_Nbyte().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

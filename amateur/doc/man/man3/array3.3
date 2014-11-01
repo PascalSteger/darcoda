@@ -1,0 +1,209 @@
+.TH "Array3" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Array3 \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Array3.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBArray3\fP (void)"
+.br
+.ti -1c
+.RI "\fBArray3\fP (float *dataptr, int nx, int ny, int nz)"
+.br
+.ti -1c
+.RI "\fBArray3\fP (int nx, int ny, int nz)"
+.br
+.ti -1c
+.RI "\fB~Array3\fP ()"
+.br
+.ti -1c
+.RI "\fBArray3\fP * \fBoperator=\fP (\fBArray3\fP *a)"
+.br
+.ti -1c
+.RI "int \fBgetNx\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetNy\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetNz\fP ()"
+.br
+.ti -1c
+.RI "float * \fBgetData\fP ()"
+.br
+.ti -1c
+.RI "bool \fBgetRealContainer\fP ()"
+.br
+.ti -1c
+.RI "float \fBgetValue\fP (int ix, int iy, int iz)"
+.br
+.ti -1c
+.RI "void \fBsetValue\fP (int ix, int iy, int iz, float val)"
+.br
+.ti -1c
+.RI "void \fBaddValue\fP (int ix, int iy, int iz, float val)"
+.br
+.ti -1c
+.RI "int \fBget_size\fP (void)"
+.br
+.ti -1c
+.RI "void \fBrecreate\fP (int nx, int ny, int nz)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "float * \fBdata_\fP"
+.br
+.ti -1c
+.RI "int \fBnx_\fP"
+.br
+.ti -1c
+.RI "int \fBny_\fP"
+.br
+.ti -1c
+.RI "int \fBnz_\fP"
+.br
+.ti -1c
+.RI "bool \fBRealContainer_\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 31 of file Array3.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Array3::Array3 (void)"
+.PP
+Definition at line 30 of file Array3.cpp.
+.PP
+References data_, nx_, ny_, nz_, and RealContainer_.
+.SS "Array3::Array3 (float * dataptr, int nx, int ny, int nz)"
+.PP
+Definition at line 38 of file Array3.cpp.
+.PP
+References data_, nx_, ny_, nz_, and RealContainer_.
+.SS "Array3::Array3 (int nx, int ny, int nz)"
+.PP
+Definition at line 47 of file Array3.cpp.
+.PP
+References data_, nx_, ny_, nz_, and RealContainer_.
+.SS "Array3::~Array3 ()"
+.PP
+Definition at line 59 of file Array3.cpp.
+.PP
+References data_, and RealContainer_.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Array3::addValue (int ix, int iy, int iz, float val)"
+.PP
+Definition at line 93 of file Array3.cpp.
+.PP
+References data_, ny_, and nz_.
+.PP
+Referenced by ScalarField::put_CIC().
+.SS "int Array3::get_size (void)"
+.PP
+Definition at line 99 of file Array3.cpp.
+.PP
+References nx_, ny_, and nz_.
+.SS "float* Array3::getData ()\fC [inline]\fP"
+.PP
+Definition at line 49 of file Array3.h.
+.PP
+References data_.
+.PP
+Referenced by operator=().
+.SS "int Array3::getNx ()\fC [inline]\fP"
+.PP
+Definition at line 46 of file Array3.h.
+.PP
+References nx_.
+.PP
+Referenced by operator=().
+.SS "int Array3::getNy ()\fC [inline]\fP"
+.PP
+Definition at line 47 of file Array3.h.
+.PP
+References ny_.
+.PP
+Referenced by operator=().
+.SS "int Array3::getNz ()\fC [inline]\fP"
+.PP
+Definition at line 48 of file Array3.h.
+.PP
+References nz_.
+.PP
+Referenced by operator=().
+.SS "bool Array3::getRealContainer ()\fC [inline]\fP"
+.PP
+Definition at line 50 of file Array3.h.
+.PP
+References RealContainer_.
+.PP
+Referenced by operator=().
+.SS "float Array3::getValue (int ix, int iy, int iz)"
+.PP
+Definition at line 82 of file Array3.cpp.
+.PP
+References data_, ny_, and nz_.
+.PP
+Referenced by ScalarField::getValue(), and main().
+.SS "\fBArray3\fP * Array3::operator= (\fBArray3\fP * a)"
+.PP
+Definition at line 66 of file Array3.cpp.
+.PP
+References data_, getData(), getNx(), getNy(), getNz(), getRealContainer(), nx_, ny_, nz_, and RealContainer_.
+.SS "void Array3::recreate (int nx, int ny, int nz)"
+.PP
+Definition at line 104 of file Array3.cpp.
+.PP
+References data_, nx_, ny_, nz_, and RealContainer_.
+.PP
+Referenced by ScalarField::recreate().
+.SS "void Array3::setValue (int ix, int iy, int iz, float val)"
+.PP
+Definition at line 87 of file Array3.cpp.
+.PP
+References data_, ny_, and nz_.
+.PP
+Referenced by main(), ScalarField::put_CIC(), ScalarField::setValue(), and ScalarField::test().
+.SH "Field Documentation"
+.PP 
+.SS "float* \fBArray3::data_\fP\fC [protected]\fP"
+.PP
+Definition at line 33 of file Array3.h.
+.PP
+Referenced by addValue(), Array3(), getData(), getValue(), operator=(), recreate(), setValue(), and ~Array3().
+.SS "int \fBArray3::nx_\fP\fC [protected]\fP"
+.PP
+Definition at line 34 of file Array3.h.
+.PP
+Referenced by Array3(), get_size(), getNx(), operator=(), and recreate().
+.SS "int \fBArray3::ny_\fP\fC [protected]\fP"
+.PP
+Definition at line 34 of file Array3.h.
+.PP
+Referenced by addValue(), Array3(), get_size(), getNy(), getValue(), operator=(), recreate(), and setValue().
+.SS "int \fBArray3::nz_\fP\fC [protected]\fP"
+.PP
+Definition at line 34 of file Array3.h.
+.PP
+Referenced by addValue(), Array3(), get_size(), getNz(), getValue(), operator=(), recreate(), and setValue().
+.SS "bool \fBArray3::RealContainer_\fP\fC [protected]\fP"
+.PP
+Definition at line 35 of file Array3.h.
+.PP
+Referenced by Array3(), getRealContainer(), operator=(), recreate(), and ~Array3().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

@@ -1,0 +1,153 @@
+.TH "AHFrun.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AHFrun.cpp \- 
+.PP
+Call AHFstep from AMIGA.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBCreateAHFParameterFile\fP (unsigned isnap)"
+.br
+.RI "\fICreates the parameter file for AHFstep Creates the parameter file for AHFstep in output directory. \fP"
+.ti -1c
+.RI "void \fBRunAHFstep\fP (unsigned isnap)"
+.br
+.RI "\fIcalls AHFstep runs AHFstep parameterfile \fP"
+.ti -1c
+.RI "void \fBMoveAHFout\fP (unsigned isnap)"
+.br
+.RI "\fImove output files of AHFstep Moves output files from current directory to output/[snap-string] \fP"
+.ti -1c
+.RI "void \fBRenameAHFout\fP (unsigned isnap)"
+.br
+.RI "\fIRenames AHFstep output files Renames output files of AHFstep using regexpressions with bash. \fP"
+.ti -1c
+.RI "void \fBAHFrun\fP (unsigned isnap)"
+.br
+.RI "\fIControls execution of AHFstep. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Call AHFstep from AMIGA. 
+
+
+.PP
+Definition in file \fBAHFrun.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void AHFrun (unsigned isnap)"
+.PP
+Controls execution of AHFstep. Creates the parameter file, invokes AHFstep, moves output files and renames them 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIisnap\fP snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 139 of file AHFrun.cpp.
+.PP
+References CreateAHFParameterFile(), MoveAHFout(), RenameAHFout(), and RunAHFstep().
+.PP
+Referenced by main().
+.SS "void CreateAHFParameterFile (unsigned isnap)"
+.PP
+Creates the parameter file for AHFstep Creates the parameter file for AHFstep in output directory. \fBParameters:\fP
+.RS 4
+\fIisnap\fP snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 39 of file AHFrun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), Snaps(), and writedebug().
+.PP
+Referenced by AHFrun().
+.SS "void MoveAHFout (unsigned isnap)"
+.PP
+move output files of AHFstep Moves output files from current directory to output/[snap-string] \fBParameters:\fP
+.RS 4
+\fIisnap\fP snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 86 of file AHFrun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+.PP
+Referenced by AHFrun().
+.SS "void RenameAHFout (unsigned isnap)"
+.PP
+Renames AHFstep output files Renames output files of AHFstep using regexpressions with bash. \fBParameters:\fP
+.RS 4
+\fIisnap\fP snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 104 of file AHFrun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+.PP
+Referenced by AHFrun().
+.SS "void RunAHFstep (unsigned isnap)"
+.PP
+calls AHFstep runs AHFstep parameterfile \fBParameters:\fP
+.RS 4
+\fIisnap\fP snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 71 of file AHFrun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writelndebug().
+.PP
+Referenced by AHFrun().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

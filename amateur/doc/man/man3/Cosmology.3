@@ -1,0 +1,135 @@
+.TH "Cosmology" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Cosmology \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Cosmology.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCosmology\fP ()"
+.br
+.ti -1c
+.RI "\fBCosmology\fP (\fBreal\fP H0)"
+.br
+.ti -1c
+.RI "\fBCosmology\fP (\fBreal\fP OmegaM, \fBreal\fP OmegaR, \fBreal\fP OmegaL)"
+.br
+.ti -1c
+.RI "\fBCosmology\fP (\fBreal\fP H0, \fBreal\fP OmegaM, \fBreal\fP OmegaR, \fBreal\fP OmegaL)"
+.br
+.ti -1c
+.RI "void \fBsetH0\fP (\fBreal\fP H0)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetH0\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetG\fP (\fBreal\fP G)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetG\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetTarkinOmega\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetOmegaL\fP (\fBreal\fP OmegaL)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaL\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetOmegaM\fP (\fBreal\fP OmegaM)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaM\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetOmegaR\fP (\fBreal\fP OmegaR)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaR\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaK\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 11 of file Cosmology.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Cosmology::Cosmology ()"
+.PP
+Definition at line 4 of file Cosmology.cpp.
+.SS "Cosmology::Cosmology (\fBreal\fP H0)"
+.PP
+Definition at line 10 of file Cosmology.cpp.
+.SS "Cosmology::Cosmology (\fBreal\fP OmegaM, \fBreal\fP OmegaR, \fBreal\fP OmegaL)"
+.PP
+Definition at line 16 of file Cosmology.cpp.
+.SS "Cosmology::Cosmology (\fBreal\fP H0, \fBreal\fP OmegaM, \fBreal\fP OmegaR, \fBreal\fP OmegaL)"
+.PP
+Definition at line 25 of file Cosmology.cpp.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBreal\fP Cosmology::getG ()"
+.PP
+Definition at line 81 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::getG().
+.SS "\fBreal\fP Cosmology::getH0 ()"
+.PP
+Definition at line 71 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::getH0().
+.SS "\fBreal\fP Cosmology::getOmegaK ()"
+.PP
+Definition at line 119 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::getOmegaK().
+.SS "\fBreal\fP Cosmology::getOmegaL ()"
+.PP
+Definition at line 92 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::getOmegaL().
+.SS "\fBreal\fP Cosmology::getOmegaM ()"
+.PP
+Definition at line 103 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::getOmegaM().
+.SS "\fBreal\fP Cosmology::getOmegaR ()"
+.PP
+Definition at line 114 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::getOmegaR().
+.SS "void Cosmology::setG (\fBreal\fP G)"
+.PP
+Definition at line 76 of file Cosmology.cpp.
+.SS "void Cosmology::setH0 (\fBreal\fP H0)"
+.PP
+Definition at line 66 of file Cosmology.cpp.
+.SS "void Cosmology::setOmegaL (\fBreal\fP OmegaL)"
+.PP
+Definition at line 86 of file Cosmology.cpp.
+.SS "void Cosmology::setOmegaM (\fBreal\fP OmegaM)"
+.PP
+Definition at line 97 of file Cosmology.cpp.
+.SS "void Cosmology::setOmegaR (\fBreal\fP OmegaR)"
+.PP
+Definition at line 108 of file Cosmology.cpp.
+.SS "void Cosmology::setTarkinOmega ()"
+.PP
+Definition at line 53 of file Cosmology.cpp.
+.PP
+Referenced by Simulation::setTarkinOmega().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

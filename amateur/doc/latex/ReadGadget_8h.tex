@@ -1,0 +1,112 @@
+\section{ReadGadget.h File Reference}
+\label{ReadGadget_8h}\index{ReadGadget.h@{ReadGadget.h}}
+
+
+All publicly known functions from \hyperlink{ReadGadget_8c}{ReadGadget.c} and template instantiations.  
+
+
+{\ttfamily \#include $<$string$>$}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{ReadGadget_8h_a5521647d705d1b38d62f6c497d6ce8dc}{swap\_\-Nbyte} (char $\ast$data, int n, int m)
+\item 
+size\_\-t \hyperlink{ReadGadget_8h_a1609620c03f6b0068601735c42e3c660}{my\_\-fread} (void $\ast$ptr, size\_\-t size, size\_\-t nmemb, FILE $\ast$stream)
+\item 
+int \hyperlink{ReadGadget_8h_ac8dbc7568a52801fefe47be7fb92c69c}{find\_\-block} (FILE $\ast$fd, char $\ast$label)
+\item 
+{\footnotesize template$<$typename T $>$ }\\int \hyperlink{ReadGadget_8h_a82dcfc276c58b845497a7ac210b79fa4}{read\_\-gadget\_\-1} (T $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+{\footnotesize template$<$typename T $>$ }\\int \hyperlink{ReadGadget_8h_ad94fb9be5ec96b09a94fa083db81463c}{read\_\-gadget\_\-3} (T $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+int \hyperlink{ReadGadget_8h_acbadd26f5dfcab3e523db042f0b01209}{read\_\-gadget\_\-head} (int $\ast$npart, double $\ast$massarr, double $\ast$time, double $\ast$redshift, FILE $\ast$fd)
+\item 
+void \hyperlink{ReadGadget_8h_a275b45dee34efc2ef2f3bb402ca17993}{get\_\-particle\_\-number} (std::string filename, unsigned $\ast$id\_\-min, unsigned $\ast$id\_\-max, double $\ast$masses, unsigned $\ast$npart, unsigned \&ntot, double \&redshift, double \&boxsize)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+All publicly known functions from \hyperlink{ReadGadget_8c}{ReadGadget.c} and template instantiations. 
+
+Definition in file \hyperlink{ReadGadget_8h_source}{ReadGadget.h}.
+
+
+
+\subsection{Function Documentation}
+\index{ReadGadget.h@{ReadGadget.h}!find\_\-block@{find\_\-block}}
+\index{find\_\-block@{find\_\-block}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{find\_\-block}]{\setlength{\rightskip}{0pt plus 5cm}int find\_\-block (FILE $\ast$ {\em fd}, \/  char $\ast$ {\em label})}\label{ReadGadget_8h_ac8dbc7568a52801fefe47be7fb92c69c}
+\index{ReadGadget.h@{ReadGadget.h}!get\_\-particle\_\-number@{get\_\-particle\_\-number}}
+\index{get\_\-particle\_\-number@{get\_\-particle\_\-number}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{get\_\-particle\_\-number}]{\setlength{\rightskip}{0pt plus 5cm}void get\_\-particle\_\-number (std::string {\em filename}, \/  unsigned $\ast$ {\em id\_\-min}, \/  unsigned $\ast$ {\em id\_\-max}, \/  double $\ast$ {\em masses}, \/  unsigned $\ast$ {\em npart}, \/  unsigned \& {\em ntot}, \/  double \& {\em redshift}, \/  double \& {\em boxsize})}\label{ReadGadget_8h_a275b45dee34efc2ef2f3bb402ca17993}
+
+
+Definition at line 220 of file ReadGadget.c.
+
+
+
+References read\_\-gadget\_\-1(), and read\_\-gadget\_\-head().
+
+
+
+Referenced by AnalyzeSnap(), and ExtractSnap().
+
+\index{ReadGadget.h@{ReadGadget.h}!my\_\-fread@{my\_\-fread}}
+\index{my\_\-fread@{my\_\-fread}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{my\_\-fread}]{\setlength{\rightskip}{0pt plus 5cm}size\_\-t my\_\-fread (void $\ast$ {\em ptr}, \/  size\_\-t {\em size}, \/  size\_\-t {\em nmemb}, \/  FILE $\ast$ {\em stream})}\label{ReadGadget_8h_a1609620c03f6b0068601735c42e3c660}
+
+
+Definition at line 31 of file ReadGadget.c.
+
+
+
+Referenced by find\_\-block(), read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), and read\_\-gadget\_\-head().
+
+\index{ReadGadget.h@{ReadGadget.h}!read\_\-gadget\_\-1@{read\_\-gadget\_\-1}}
+\index{read\_\-gadget\_\-1@{read\_\-gadget\_\-1}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{read\_\-gadget\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ int read\_\-gadget\_\-1 (T $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{ReadGadget_8h_a82dcfc276c58b845497a7ac210b79fa4}
+read a 1D array 
+\begin{DoxyParams}{Parameters}
+\item[{\em data}]\item[{\em label}]\item[{\em fd}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 161 of file ReadGadget.c.
+
+
+
+References find\_\-block(), my\_\-fread(), SKIP, and swap\_\-Nbyte().
+
+
+
+Referenced by ExtractSnap(), get\_\-particle\_\-number(), and readDataBlocks().
+
+\index{ReadGadget.h@{ReadGadget.h}!read\_\-gadget\_\-3@{read\_\-gadget\_\-3}}
+\index{read\_\-gadget\_\-3@{read\_\-gadget\_\-3}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{read\_\-gadget\_\-3}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ int read\_\-gadget\_\-3 (T $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{ReadGadget_8h_ad94fb9be5ec96b09a94fa083db81463c}
+read a 3D array 
+\begin{DoxyParams}{Parameters}
+\item[{\em data}]\item[{\em label}]\item[{\em fd}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 190 of file ReadGadget.c.
+
+
+
+References find\_\-block(), my\_\-fread(), SKIP, and swap\_\-Nbyte().
+
+
+
+Referenced by ExtractSnap(), and readDataBlocks().
+
+\index{ReadGadget.h@{ReadGadget.h}!read\_\-gadget\_\-head@{read\_\-gadget\_\-head}}
+\index{read\_\-gadget\_\-head@{read\_\-gadget\_\-head}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{read\_\-gadget\_\-head}]{\setlength{\rightskip}{0pt plus 5cm}int read\_\-gadget\_\-head (int $\ast$ {\em npart}, \/  double $\ast$ {\em massarr}, \/  double $\ast$ {\em time}, \/  double $\ast$ {\em redshift}, \/  FILE $\ast$ {\em fd})}\label{ReadGadget_8h_acbadd26f5dfcab3e523db042f0b01209}
+\index{ReadGadget.h@{ReadGadget.h}!swap\_\-Nbyte@{swap\_\-Nbyte}}
+\index{swap\_\-Nbyte@{swap\_\-Nbyte}!ReadGadget.h@{ReadGadget.h}}
+\subsubsection[{swap\_\-Nbyte}]{\setlength{\rightskip}{0pt plus 5cm}void swap\_\-Nbyte (char $\ast$ {\em data}, \/  int {\em n}, \/  int {\em m})}\label{ReadGadget_8h_a5521647d705d1b38d62f6c497d6ce8dc}

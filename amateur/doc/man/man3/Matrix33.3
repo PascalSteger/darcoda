@@ -1,0 +1,189 @@
+.TH "Matrix33" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Matrix33 \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Matrix33.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMatrix33\fP ()"
+.br
+.ti -1c
+.RI "\fBMatrix33\fP (const \fBMatrix33\fP &m)"
+.br
+.ti -1c
+.RI "\fB~Matrix33\fP ()"
+.br
+.ti -1c
+.RI "double & \fBoperator()\fP (int row, int col)"
+.br
+.ti -1c
+.RI "double \fBoperator()\fP (int row, int col) const "
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator()\fP (int col) const "
+.br
+.ti -1c
+.RI "\fBMatrix33\fP & \fBoperator=\fP (\fBMatrix33\fP const &M)"
+.br
+.ti -1c
+.RI "\fBMatrix33\fP & \fBoperator=\fP (const double &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator[]\fP (int col) const "
+.br
+.ti -1c
+.RI "\fBMatrix33\fP & \fBoperator+=\fP (const \fBMatrix33\fP &m)"
+.br
+.ti -1c
+.RI "\fBMatrix33\fP & \fBoperator-=\fP (const \fBMatrix33\fP &m)"
+.br
+.ti -1c
+.RI "\fBMatrix33\fP \fBoperator*\fP (const double &x) const "
+.br
+.ti -1c
+.RI "\fBMatrix33\fP \fBoperator/\fP (const double &x) const "
+.br
+.ti -1c
+.RI "void \fBset_diag\fP (\fBVector3\fP diag)"
+.br
+.ti -1c
+.RI "void \fBJacobi\fP (std::vector< \fBreal\fP > &Eval, std::vector< \fBVector3\fP > &Evec, int &nrot)"
+.br
+.ti -1c
+.RI "void \fBEigen\fP (std::vector< \fBreal\fP > &Eval, std::vector< \fBVector3\fP > &Evec) const "
+.br
+.ti -1c
+.RI "double \fBdet\fP (void) const "
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBget_invariants\fP (std::vector< \fBVector3\fP > Evec) const "
+.br
+.ti -1c
+.RI "std::vector< \fBVector3\fP > \fBtoVecVector3\fP () const "
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "double * \fBdata_\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 45 of file Matrix33.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Matrix33::Matrix33 ()"
+.PP
+Definition at line 41 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "Matrix33::Matrix33 (const \fBMatrix33\fP & m)"
+.PP
+Definition at line 45 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "Matrix33::~Matrix33 ()"
+.PP
+Definition at line 51 of file Matrix33.cpp.
+.PP
+References data_.
+.SH "Member Function Documentation"
+.PP 
+.SS "double Matrix33::det (void) const"
+.PP
+Definition at line 172 of file Matrix33.cpp.
+.PP
+References Eigen().
+.SS "void Matrix33::Eigen (std::vector< \fBreal\fP > & Eval, std::vector< \fBVector3\fP > & Evec) const"
+.PP
+Definition at line 148 of file Matrix33.cpp.
+.PP
+References data_.
+.PP
+Referenced by Eigensystem3::calcEV(), HaloProperties::ComputeMajorAxes(), HaloProperties::ComputeMajorAxesReduced(), det(), and get_invariants().
+.SS "\fBVector3\fP Matrix33::get_invariants (std::vector< \fBVector3\fP > Evec) const"
+.PP
+Definition at line 183 of file Matrix33.cpp.
+.PP
+References Eigen().
+.SS "void Matrix33::Jacobi (std::vector< \fBreal\fP > & Eval, std::vector< \fBVector3\fP > & Evec, int & nrot)"
+.PP
+Definition at line 215 of file Matrix33.cpp.
+.PP
+References ROTATE().
+.SS "\fBVector3\fP Matrix33::operator() (int col) const"
+.PP
+Definition at line 69 of file Matrix33.cpp.
+.SS "double Matrix33::operator() (int row, int col) const"
+.PP
+Definition at line 63 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "double & Matrix33::operator() (int row, int col)"
+.PP
+Definition at line 57 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBMatrix33\fP Matrix33::operator* (const double & x) const"
+.PP
+Definition at line 121 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBMatrix33\fP & Matrix33::operator+= (const \fBMatrix33\fP & m)"
+.PP
+Definition at line 105 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBMatrix33\fP & Matrix33::operator-= (const \fBMatrix33\fP & m)"
+.PP
+Definition at line 113 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBMatrix33\fP Matrix33::operator/ (const double & x) const"
+.PP
+Definition at line 130 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBMatrix33\fP & Matrix33::operator= (const double & x)"
+.PP
+Definition at line 87 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBMatrix33\fP & Matrix33::operator= (\fBMatrix33\fP const & M)"
+.PP
+Definition at line 78 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP Matrix33::operator[] (int col) const"
+.PP
+Definition at line 96 of file Matrix33.cpp.
+.PP
+References data_.
+.SS "void Matrix33::set_diag (\fBVector3\fP diag)"
+.PP
+Definition at line 140 of file Matrix33.cpp.
+.PP
+Referenced by Halo::calcShape().
+.SS "std::vector< \fBVector3\fP > Matrix33::toVecVector3 () const"
+.PP
+Definition at line 301 of file Matrix33.cpp.
+.SH "Field Documentation"
+.PP 
+.SS "double* \fBMatrix33::data_\fP\fC [protected]\fP"
+.PP
+Definition at line 47 of file Matrix33.h.
+.PP
+Referenced by Eigen(), Matrix33(), operator()(), operator*(), operator+=(), operator-=(), operator/(), operator=(), operator[](), and ~Matrix33().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

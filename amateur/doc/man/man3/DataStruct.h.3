@@ -1,0 +1,121 @@
+.TH "DataStruct.h" 3 "17 Feb 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DataStruct.h \- All publicly known functions of \fBDataStruct.cpp\fP DataStruct presents \fBVector3\fP and \fBMatrix33\fP. 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <math.h>\fP
+.br
+\fC#include <iterator>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <iomanip>\fP
+.br
+\fC#include <list>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <cassert>\fP
+.br
+\fC#include <gsl/gsl_math.h>\fP
+.br
+\fC#include <gsl/gsl_eigen.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBVector3\fP"
+.br
+.ti -1c
+.RI "class \fBMatrix33\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHDF_UINT\fP   H5T_NATIVE_UINT"
+.br
+.ti -1c
+.RI "#define \fBMPI_UINT\fP   MPI_UNSIGNED"
+.br
+.ti -1c
+.RI "#define \fBHDF_FLOAT\fP   H5T_NATIVE_FLOAT"
+.br
+.ti -1c
+.RI "#define \fBFIX\fP(x)   (\fBIdentifier\fP)(x+0.5)"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef unsigned \fBIdentifier\fP"
+.br
+.ti -1c
+.RI "typedef unsigned \fBSize\fP"
+.br
+.ti -1c
+.RI "typedef float \fBScalar\fP"
+.br
+.ti -1c
+.RI "typedef float \fBWeight\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "std::ostream & \fBoperator<<\fP (std::ostream &s, \fBVector3\fP v)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+All publicly known functions of \fBDataStruct.cpp\fP DataStruct presents \fBVector3\fP and \fBMatrix33\fP. 
+
+
+.PP
+Definition in file \fBDataStruct.h\fP.
+.SH "Define Documentation"
+.PP 
+.SS "#define FIX(x)   (\fBIdentifier\fP)(x+0.5)"
+.PP
+Definition at line 59 of file DataStruct.h.
+.SS "#define HDF_FLOAT   H5T_NATIVE_FLOAT"
+.PP
+Definition at line 55 of file DataStruct.h.
+.SS "#define HDF_UINT   H5T_NATIVE_UINT"
+.PP
+Definition at line 52 of file DataStruct.h.
+.SS "#define MPI_UINT   MPI_UNSIGNED"
+.PP
+Definition at line 53 of file DataStruct.h.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef unsigned \fBIdentifier\fP"
+.PP
+Definition at line 50 of file DataStruct.h.
+.SS "typedef float \fBScalar\fP"
+.PP
+Definition at line 56 of file DataStruct.h.
+.SS "typedef unsigned \fBSize\fP"
+.PP
+Definition at line 51 of file DataStruct.h.
+.SS "typedef float \fBWeight\fP"
+.PP
+Definition at line 57 of file DataStruct.h.
+.SH "Function Documentation"
+.PP 
+.SS "std::ostream& operator<< (std::ostream & s, \fBVector3\fP v)"
+.PP
+Definition at line 245 of file DataStruct.cpp.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

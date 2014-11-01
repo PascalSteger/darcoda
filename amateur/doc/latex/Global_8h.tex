@@ -1,0 +1,320 @@
+\section{Global.h File Reference}
+\label{Global_8h}\index{Global.h@{Global.h}}
+
+
+All publicly known functions from \hyperlink{Global_8cpp}{Global.cpp}.  
+
+
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef float \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{Global_8h_af14ce9adc079d3106f6fe5ed977660a9}{RunCommand} (std::string command)
+\item 
+void \hyperlink{Global_8h_aadd6ff8eac457116cc843c4b98bc0636}{write} (std::string text)
+\item 
+void \hyperlink{Global_8h_a865c3c98145e9535ae7575ff0161119d}{writedebug} (bool DebugLevelActivated, std::string text)
+\item 
+void \hyperlink{Global_8h_a37de7b6ae4852c4084f30507d58eb906}{writeln} (std::string text)
+\item 
+void \hyperlink{Global_8h_a5b25522225f9cc3d16b32059a125a93e}{writelndebug} (bool DebugLevelActivated, std::string text)
+\item 
+void \hyperlink{Global_8h_a90a26977d0e79592478299043e94091e}{writedone} (void)
+\item 
+void \hyperlink{Global_8h_a6ea51689681a48365e4852a63687b8e6}{writelndone} (void)
+\item 
+void \hyperlink{Global_8h_a537260c4c4c2057809ee9ca92cf460c7}{donedebug} (bool DebugLevelActivated)
+\item 
+std::string \hyperlink{Global_8h_a3d2b4d4a9d8d164a3fdea80bfc1ea93d}{IntToString} (int intValue)
+\item 
+std::string \hyperlink{Global_8h_ad3867aaa410297f271cb4a5f443f368c}{Folder} (std::string where)
+\item 
+std::string \hyperlink{Global_8h_ab95a6a07eed667f94b0951a15f1a9b0e}{Snaps} (unsigned SnapNo)
+\item 
+bool \hyperlink{Global_8h_a1c4c7d9ff8a31be4d5076c817d1297e3}{DoesFileExist} (char $\ast$filename)
+\item 
+unsigned \hyperlink{Global_8h_a5cf7528ff238e0f7be1d86289650f04e}{GetLineNumber} (std::string filename)
+\item 
+void \hyperlink{Global_8h_a51dd29892ba6b6ec3e4075d2016d796a}{printMinMaxValues} (void)
+\begin{DoxyCompactList}\small\item\em print characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double \item\end{DoxyCompactList}\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{Global_8h_aa92971b06497e2333e4bc532a86297cb}{fbmod} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} x, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} y)
+\item 
+{\footnotesize template$<$typename real\_\-t $>$ }\\real\_\-t \hyperlink{Global_8h_a0cb8e9ba7bd0b1861c15a42aa799dcd4}{SPHK3D} (const real\_\-t r, const real\_\-t h)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const bool \hyperlink{Global_8h_a9c4ab189c2f018bc7ccc8ba4f6e04b9d}{DEBUG} = true
+\item 
+const double \hyperlink{Global_8h_a952eac791b596a61bba0a133a3bb439f}{PI} = 3.14159265358979323846264338327950288419716939937510582
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+All publicly known functions from \hyperlink{Global_8cpp}{Global.cpp}. 
+
+Definition in file \hyperlink{Global_8h_source}{Global.h}.
+
+
+
+\subsection{Typedef Documentation}
+\index{Global.h@{Global.h}!real@{real}}
+\index{real@{real}!Global.h@{Global.h}}
+\subsubsection[{real}]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf real}}\label{Global_8h_a031f8951175b43076c2084a6c2173410}
+
+
+Definition at line 40 of file Global.h.
+
+
+
+\subsection{Function Documentation}
+\index{Global.h@{Global.h}!DoesFileExist@{DoesFileExist}}
+\index{DoesFileExist@{DoesFileExist}!Global.h@{Global.h}}
+\subsubsection[{DoesFileExist}]{\setlength{\rightskip}{0pt plus 5cm}bool DoesFileExist (char $\ast$ {\em filename})}\label{Global_8h_a1c4c7d9ff8a31be4d5076c817d1297e3}
+
+
+Definition at line 40 of file Global.cpp.
+
+
+
+Referenced by AssertFileOpen().
+
+\index{Global.h@{Global.h}!donedebug@{donedebug}}
+\index{donedebug@{donedebug}!Global.h@{Global.h}}
+\subsubsection[{donedebug}]{\setlength{\rightskip}{0pt plus 5cm}void donedebug (bool {\em DebugLevelActivated})}\label{Global_8h_a537260c4c4c2057809ee9ca92cf460c7}
+
+
+Definition at line 143 of file Global.cpp.
+
+
+
+References writelndone().
+
+
+
+Referenced by CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+
+\index{Global.h@{Global.h}!fbmod@{fbmod}}
+\index{fbmod@{fbmod}!Global.h@{Global.h}}
+\subsubsection[{fbmod}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} fbmod ({\bf real} {\em x}, \/  {\bf real} {\em y})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{Global_8h_aa92971b06497e2333e4bc532a86297cb}
+
+
+Definition at line 319 of file Global.cpp.
+
+\index{Global.h@{Global.h}!Folder@{Folder}}
+\index{Folder@{Folder}!Global.h@{Global.h}}
+\subsubsection[{Folder}]{\setlength{\rightskip}{0pt plus 5cm}std::string Folder (std::string {\em where})}\label{Global_8h_ad3867aaa410297f271cb4a5f443f368c}
+Returns the paths to all important folders. 
+\begin{DoxyParams}{Parameters}
+\item[{\em where,:}]which folder? allowed: amd, snap, amateur, output, parameters \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std::string full path 
+\end{DoxyReturn}
+
+
+Definition at line 262 of file Global.cpp.
+
+
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), Output::getAR(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), readDataBlocks(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), RunOwnMergerTree(), SubhaloMatch(), TidalField(), WrapperParticleNumbers(), Output::writeAR(), Output::writeHR(), and Output::writeHRstripped().
+
+\index{Global.h@{Global.h}!GetLineNumber@{GetLineNumber}}
+\index{GetLineNumber@{GetLineNumber}!Global.h@{Global.h}}
+\subsubsection[{GetLineNumber}]{\setlength{\rightskip}{0pt plus 5cm}unsigned GetLineNumber (std::string {\em filename})}\label{Global_8h_a5cf7528ff238e0f7be1d86289650f04e}
+count the lines of a given file 
+\begin{DoxyParams}{Parameters}
+\item[{\em filename,:}]path to the file \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+unsigned number of lines 
+\end{DoxyReturn}
+
+
+Definition at line 184 of file Global.cpp.
+
+
+
+Referenced by SubhaloMatch().
+
+\index{Global.h@{Global.h}!IntToString@{IntToString}}
+\index{IntToString@{IntToString}!Global.h@{Global.h}}
+\subsubsection[{IntToString}]{\setlength{\rightskip}{0pt plus 5cm}std::string IntToString (int {\em intValue})}\label{Global_8h_a3d2b4d4a9d8d164a3fdea80bfc1ea93d}
+Convert an integer into a string. 
+\begin{DoxyParams}{Parameters}
+\item[{\em intValue,:}]integer to be converted \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std::string of that integer value 
+\end{DoxyReturn}
+
+
+Definition at line 243 of file Global.cpp.
+
+
+
+References itoa().
+
+
+
+Referenced by TidalField().
+
+\index{Global.h@{Global.h}!printMinMaxValues@{printMinMaxValues}}
+\index{printMinMaxValues@{printMinMaxValues}!Global.h@{Global.h}}
+\subsubsection[{printMinMaxValues}]{\setlength{\rightskip}{0pt plus 5cm}void printMinMaxValues (void)}\label{Global_8h_a51dd29892ba6b6ec3e4075d2016d796a}
+
+
+print characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double 
+
+\begin{DoxyReturn}{Returns}
+: void 
+\end{DoxyReturn}
+
+
+Definition at line 55 of file Global.cpp.
+
+\index{Global.h@{Global.h}!RunCommand@{RunCommand}}
+\index{RunCommand@{RunCommand}!Global.h@{Global.h}}
+\subsubsection[{RunCommand}]{\setlength{\rightskip}{0pt plus 5cm}void RunCommand (std::string {\em command})}\label{Global_8h_af14ce9adc079d3106f6fe5ed977660a9}
+
+
+Definition at line 174 of file Global.cpp.
+
+
+
+Referenced by ExtractSnap(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RunAHFstep(), RunHaloTracker(), and RunMergerTree().
+
+\index{Global.h@{Global.h}!Snaps@{Snaps}}
+\index{Snaps@{Snaps}!Global.h@{Global.h}}
+\subsubsection[{Snaps}]{\setlength{\rightskip}{0pt plus 5cm}std::string Snaps (unsigned {\em SnapNo})}\label{Global_8h_ab95a6a07eed667f94b0951a15f1a9b0e}
+Returns the full path to an AMATEUR snapshot 
+\begin{DoxyParams}{Parameters}
+\item[{\em SnapNo,:}]ID of snapshot \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std::string full\_\-path 
+\end{DoxyReturn}
+
+
+Definition at line 291 of file Global.cpp.
+
+
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), Output::getAR(), HelpUser(), main(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), readDataBlocks(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), SubhaloMatch(), TidalField(), WrapperParticleNumbers(), Output::writeAR(), Output::writeHR(), and Output::writeHRstripped().
+
+\index{Global.h@{Global.h}!SPHK3D@{SPHK3D}}
+\index{SPHK3D@{SPHK3D}!Global.h@{Global.h}}
+\subsubsection[{SPHK3D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename real\_\-t $>$ real\_\-t SPHK3D (const real\_\-t {\em r}, \/  const real\_\-t {\em h})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{Global_8h_a0cb8e9ba7bd0b1861c15a42aa799dcd4}
+
+
+Definition at line 325 of file Global.cpp.
+
+
+
+References PI.
+
+
+
+Referenced by HaloProperties::AverageVel().
+
+\index{Global.h@{Global.h}!write@{write}}
+\index{write@{write}!Global.h@{Global.h}}
+\subsubsection[{write}]{\setlength{\rightskip}{0pt plus 5cm}void write (std::string {\em text})}\label{Global_8h_aadd6ff8eac457116cc843c4b98bc0636}
+
+
+Definition at line 110 of file Global.cpp.
+
+
+
+Referenced by TidalField(), and writedebug().
+
+\index{Global.h@{Global.h}!writedebug@{writedebug}}
+\index{writedebug@{writedebug}!Global.h@{Global.h}}
+\subsubsection[{writedebug}]{\setlength{\rightskip}{0pt plus 5cm}void writedebug (bool {\em DebugLevelActivated}, \/  std::string {\em text})}\label{Global_8h_a865c3c98145e9535ae7575ff0161119d}
+
+
+Definition at line 154 of file Global.cpp.
+
+
+
+References write().
+
+
+
+Referenced by CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+
+\index{Global.h@{Global.h}!writedone@{writedone}}
+\index{writedone@{writedone}!Global.h@{Global.h}}
+\subsubsection[{writedone}]{\setlength{\rightskip}{0pt plus 5cm}void writedone (void)}\label{Global_8h_a90a26977d0e79592478299043e94091e}
+
+
+Definition at line 127 of file Global.cpp.
+
+
+
+Referenced by CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), and TidalField().
+
+\index{Global.h@{Global.h}!writeln@{writeln}}
+\index{writeln@{writeln}!Global.h@{Global.h}}
+\subsubsection[{writeln}]{\setlength{\rightskip}{0pt plus 5cm}void writeln (std::string {\em text})}\label{Global_8h_a37de7b6ae4852c4084f30507d58eb906}
+
+
+Definition at line 119 of file Global.cpp.
+
+
+
+Referenced by AnalyzeSnap(), ExtractSnap(), HelpUser(), main(), and writelndebug().
+
+\index{Global.h@{Global.h}!writelndebug@{writelndebug}}
+\index{writelndebug@{writelndebug}!Global.h@{Global.h}}
+\subsubsection[{writelndebug}]{\setlength{\rightskip}{0pt plus 5cm}void writelndebug (bool {\em DebugLevelActivated}, \/  std::string {\em text})}\label{Global_8h_a5b25522225f9cc3d16b32059a125a93e}
+
+
+Definition at line 165 of file Global.cpp.
+
+
+
+References writeln().
+
+
+
+Referenced by AnalyzeSnap(), ExtractSnap(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), and RunOwnMergerTree().
+
+\index{Global.h@{Global.h}!writelndone@{writelndone}}
+\index{writelndone@{writelndone}!Global.h@{Global.h}}
+\subsubsection[{writelndone}]{\setlength{\rightskip}{0pt plus 5cm}void writelndone (void)}\label{Global_8h_a6ea51689681a48365e4852a63687b8e6}
+
+
+Definition at line 135 of file Global.cpp.
+
+
+
+Referenced by donedebug(), and TidalField().
+
+
+
+\subsection{Variable Documentation}
+\index{Global.h@{Global.h}!DEBUG@{DEBUG}}
+\index{DEBUG@{DEBUG}!Global.h@{Global.h}}
+\subsubsection[{DEBUG}]{\setlength{\rightskip}{0pt plus 5cm}const bool {\bf DEBUG} = true}\label{Global_8h_a9c4ab189c2f018bc7ccc8ba4f6e04b9d}
+
+
+Definition at line 36 of file Global.h.
+
+
+
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+
+\index{Global.h@{Global.h}!PI@{PI}}
+\index{PI@{PI}!Global.h@{Global.h}}
+\subsubsection[{PI}]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf PI} = 3.14159265358979323846264338327950288419716939937510582}\label{Global_8h_a952eac791b596a61bba0a133a3bb439f}
+
+
+Definition at line 37 of file Global.h.
+
+
+
+Referenced by SPHK3D().
+

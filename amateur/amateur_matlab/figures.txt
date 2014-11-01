@@ -1,0 +1,81 @@
+List of Figures
+===============
+
+no	snap	(sub)halos	plotted										version
+------------------------------------------------------------------------------------------------------------------------
+0100	008	all		particle types									20080509
+0101	008	all		position of all type 3 particles, concentrated towards walls
+0103	008	all		positions of subhalos, size <=> mass						20080514
+0104	008	all		lambda' (not for gas), for subhalo masses 1e10..1e11				20080514
+0105	008	all		lambda' (not for gas), for subhalo masses 1e11..1e12				20080514
+0106	008	all		lambda' (gas), for subhalo masses 1e10..1e11					20080514
+0107	008	all		lambda' (gas), for subhalo masses 1e11..1e12					20080514
+0108	008	all		log10(mvir/msun)								20080514
+0109	008	all		log10(mvir,gas/msun), if subhalo has gas particles				20080514
+0110	008	all		log10(mgas/mvir [msun]), if subhalo has gas particles				20080514
+0111	008	all		cos(<r, L>) for all (sub)halos							20080514
+0112	008	all		cos(<r, L_gas>) for all (sub)halos						20080514
+
+0114	302	all		position of tidal field evaluations (COM subhalos)				20080523
+0115	009	all		tidal field (density and first EV)						20080523
+0116	302	all		subhalo mass function (cf. van den Bosch fig. 1, attention: dn too high)	20080528
+0117	302	all		velocity versus distance, for Francesco						20080528
+0118	009	all		fig. 10 from Croft 2008								20080528
+0119	302	all		fig. 4 from Pereira 2008, with several mass ranges				20080530
+0120	???	all		same for EVmax instead of L							20080602
+0121	???	all		lambda/lambda_E									20080603
+0122	???	all		halo mass as function of halo number (!gas is mass in internal units, actually)	20080603
+0123	???	all		fig. 4/Pereira 2008, with relation to host halo instead of halo 0		20080604
+0124	302	sub		same as 0119, but with axis rescaled to r_vir of host halo			20080605
+0125	302	sub		0119, but with acos(cos(angle)), between r and L				20080605
+0126	302	sub		0116, but with exact mass bndry log10((max-min)/m(1))				20080605
+0127	302	sub		0125 between r and Imax								20080605
+0128	302	sub		correlation between third eigenvector of tidalfield with a.m., dep. on r	20080605
+0129	302	sub		
+0130	302	all		correlation between major axis of tidal field and radius vector from big halo	20080606
+...
+0135	302	all		lambda of different halo types, search for any differences (little shift?)	20080609
+0136	302	all		from AHF: gas peaks a little more to the right					20080609
+0137	302	gaseous		correlation between L_gas, L_total for gaseous halos				20080610
+0138	302	all		
+0139	302	all		distribution of fraction of lowres particles inside halo			20080610
+
+
+
+no.	simid	sub2ho		plotted is									creation date
+-----------------------------------------------------------------------------------------------------------------------------
+100	03	no		angle distribution between L_{gas} and L_{DM} for all (sub)halos with gas	20080611
+101	03	no		abs(angle) distribution between L_{gas} and L_{DM} with more bins		20080611
+102	03	no		angle distribution between r and I_{DM} for all (sub)halos			20080611
+103	03	no		between r and I_{gas}								20080611
+104	03	no		abs(angle) between r and I_{DM}							20080611
+105	03	no		abs(angle) between r and I_{gas}						20080611
+106	03	no		abs(angle) between r and I_{DM}							20080611
+107	03	no		scatter plot of ahf_e's								20080611
+108	03	no		problematic scatter3 of hp_e's, fixed 200806121712				20080611
+109	03	no		scatter of l(x,y,z), looks fine							20080611
+110	302er	no		fig. 3 of Bosch2002 / fig. 10 Croft, distr. angle between L_DM and L_gas	20080612
+111	03	no		fig. 10 Croft with hp_ instead of ahf_ variables				20080612
+112	03	no		correlation between hp_l and ahf_l - trust both					20080612
+113	302er	no		lambda' from ahf for DM and gas							20080612
+114	302er	no		lambda' from hp  for DM, (very little) gas and stars halo components		20080612
+115	03	no		angle distribution between L_DM, L_gas, L_stars in different combinations	20080612
+116	03	yes		alignment of DM spin with radial vector						20080612
+117	03	yes		alignment of DM spin with radial vector						20080612
+118	03	no		alignment of DM spin with radial vector						20080612
+119	302	no		alignment of DM main axis with radial vector					20080612
+120	03	no		alignment of DM main axis with radial vector					20080612
+121	18	no		alignment of DM main axis with radial vector					20080613
+122	302er	yes		alignment of DM main axis with radial vector as function of radius		20080617
+...
+124	302er	yes		cosphiauto(1,..,9)								20080901
+126	302er	no		r,t up to high distances as fct of r, for scale 1				20080617
+127	302er	no		r,t "near" for third eigenvector						20080617
+128	302er	no/yes		t,l as function of distance from center						20080617
+129	302	no		t,l as hist. of cos phi l,t							20080617
+130	302	yes		cosphilt as fct of radius							20080901
+131	302	yes		cosphilt as fct of density							20080901
+132	302	yes		cosauto as fct of radius							20081002
+
+140	302	n/a		gas fraction as fct of Uint or T						20081021
+141	302	n/a		split of hp_mvir vs. ahf_mvir							20081022

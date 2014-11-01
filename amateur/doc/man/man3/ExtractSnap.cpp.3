@@ -1,0 +1,66 @@
+.TH "ExtractSnap.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExtractSnap.cpp \- 
+.PP
+Reads out a Gadget2 snapshot file and stores the values in HDF5.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <numeric>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include 'HDFIO.h'\fP
+.br
+\fC#include 'ReadGadget.h'\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBExtractSnap\fP (unsigned isnap)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Reads out a Gadget2 snapshot file and stores the values in HDF5. 
+
+
+.PP
+Definition in file \fBExtractSnap.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void ExtractSnap (unsigned isnap)"analysis of one single snapshot file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIisnap\fP ID of snapshot formatted as a string of the form 'XXX' 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+error code 
+.RE
+.PP
+
+.PP
+Definition at line 42 of file ExtractSnap.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), get_particle_number(), HDFCreateFile(), HDFCreateGroup(), HDFWriteDataset(), HDFWriteDatasetVector(), HDFWriteGroupAttribute(), read_gadget_1(), read_gadget_3(), RunCommand(), Snaps(), writedebug(), writedone(), writeln(), and writelndebug().
+.PP
+Referenced by main().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

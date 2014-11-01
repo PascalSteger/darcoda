@@ -1,0 +1,11 @@
+an_corr		:	all possible correlations
+an_lambdaprime	:	spin parameter distribution
+an_subhalmassfct:	subhalo mass functions
+an_vis_j	:	visualizations of spin
+an_vis_pos	:	visualizations of position vectors
+an_vis_tf	:	visualizations of tidal field
+funcs		:	helper functions
+preparation	:	reading of files and preparation for main files
+unsorted	:	old figures, see ../doc/figures.txt
+
+README		:	figure naming conventions

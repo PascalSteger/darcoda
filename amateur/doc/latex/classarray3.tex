@@ -1,0 +1,330 @@
+\section{Array3 Class Reference}
+\label{classArray3}\index{Array3@{Array3}}
+
+
+{\ttfamily \#include $<$Array3.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classArray3_a4ee25bec9b5a58da143533e55bd5f1af}{Array3} (void)
+\item 
+\hyperlink{classArray3_a91525ed4449aa68d02727ab646f53d1f}{Array3} (float $\ast$dataptr, int nx, int ny, int nz)
+\item 
+\hyperlink{classArray3_a5eaf94a79b17fa9d4254267edf6bed63}{Array3} (int nx, int ny, int nz)
+\item 
+\hyperlink{classArray3_a2efbbb3070df605bb7a71c65771b0d46}{$\sim$Array3} ()
+\item 
+\hyperlink{classArray3}{Array3} $\ast$ \hyperlink{classArray3_a94c897c53a7dd53b61d9cc89dfa0d708}{operator=} (\hyperlink{classArray3}{Array3} $\ast$a)
+\item 
+int \hyperlink{classArray3_aadb24645a52627aba3cc36b6378df78c}{getNx} ()
+\item 
+int \hyperlink{classArray3_af29d2eab1f67d70a5430c438d54026f2}{getNy} ()
+\item 
+int \hyperlink{classArray3_ab4eecc4fa31e18f0ce10ea7848e5b814}{getNz} ()
+\item 
+float $\ast$ \hyperlink{classArray3_a246734002eb950cfce43b63cf9b1ec4f}{getData} ()
+\item 
+bool \hyperlink{classArray3_a38b29b4540631fbdeba40c44bc97a0b7}{getRealContainer} ()
+\item 
+float \hyperlink{classArray3_a7cf0475d19ea0f88976694dd61ae9f85}{getValue} (int ix, int iy, int iz)
+\item 
+void \hyperlink{classArray3_ac07bb97510a09e2dc5121ee9ed36af3c}{setValue} (int ix, int iy, int iz, float val)
+\item 
+void \hyperlink{classArray3_a3693476b41ac4fccd86c2acfa7960053}{addValue} (int ix, int iy, int iz, float val)
+\item 
+int \hyperlink{classArray3_a7b1da51445317025d5727927b1cd853d}{get\_\-size} (void)
+\item 
+void \hyperlink{classArray3_a089a93d07ebfdc31376291dd1475e800}{recreate} (int nx, int ny, int nz)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float $\ast$ \hyperlink{classArray3_af704629bb93bda9e842fa627c81d98b2}{data\_\-}
+\item 
+int \hyperlink{classArray3_add3e47ecef09b38350ea9b45928d068c}{nx\_\-}
+\item 
+int \hyperlink{classArray3_a5dad0675c57a85ab9f0a5cdc514b04cb}{ny\_\-}
+\item 
+int \hyperlink{classArray3_a4ccb3e4d630c2bfa4c0ef929c6932c54}{nz\_\-}
+\item 
+bool \hyperlink{classArray3_af3a70b601302d0219c86118ec831b858}{RealContainer\_\-}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 31 of file Array3.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Array3@{Array3}!Array3@{Array3}}
+\index{Array3@{Array3}!Array3@{Array3}}
+\subsubsection[{Array3}]{\setlength{\rightskip}{0pt plus 5cm}Array3::Array3 (void)}\label{classArray3_a4ee25bec9b5a58da143533e55bd5f1af}
+
+
+Definition at line 30 of file Array3.cpp.
+
+
+
+References data\_\-, nx\_\-, ny\_\-, nz\_\-, and RealContainer\_\-.
+
+\index{Array3@{Array3}!Array3@{Array3}}
+\index{Array3@{Array3}!Array3@{Array3}}
+\subsubsection[{Array3}]{\setlength{\rightskip}{0pt plus 5cm}Array3::Array3 (float $\ast$ {\em dataptr}, \/  int {\em nx}, \/  int {\em ny}, \/  int {\em nz})}\label{classArray3_a91525ed4449aa68d02727ab646f53d1f}
+
+
+Definition at line 38 of file Array3.cpp.
+
+
+
+References data\_\-, nx\_\-, ny\_\-, nz\_\-, and RealContainer\_\-.
+
+\index{Array3@{Array3}!Array3@{Array3}}
+\index{Array3@{Array3}!Array3@{Array3}}
+\subsubsection[{Array3}]{\setlength{\rightskip}{0pt plus 5cm}Array3::Array3 (int {\em nx}, \/  int {\em ny}, \/  int {\em nz})}\label{classArray3_a5eaf94a79b17fa9d4254267edf6bed63}
+
+
+Definition at line 47 of file Array3.cpp.
+
+
+
+References data\_\-, nx\_\-, ny\_\-, nz\_\-, and RealContainer\_\-.
+
+\index{Array3@{Array3}!$\sim$Array3@{$\sim$Array3}}
+\index{$\sim$Array3@{$\sim$Array3}!Array3@{Array3}}
+\subsubsection[{$\sim$Array3}]{\setlength{\rightskip}{0pt plus 5cm}Array3::$\sim$Array3 ()}\label{classArray3_a2efbbb3070df605bb7a71c65771b0d46}
+
+
+Definition at line 59 of file Array3.cpp.
+
+
+
+References data\_\-, and RealContainer\_\-.
+
+
+
+\subsection{Member Function Documentation}
+\index{Array3@{Array3}!addValue@{addValue}}
+\index{addValue@{addValue}!Array3@{Array3}}
+\subsubsection[{addValue}]{\setlength{\rightskip}{0pt plus 5cm}void Array3::addValue (int {\em ix}, \/  int {\em iy}, \/  int {\em iz}, \/  float {\em val})}\label{classArray3_a3693476b41ac4fccd86c2acfa7960053}
+
+
+Definition at line 93 of file Array3.cpp.
+
+
+
+References data\_\-, ny\_\-, and nz\_\-.
+
+
+
+Referenced by ScalarField::put\_\-CIC().
+
+\index{Array3@{Array3}!get\_\-size@{get\_\-size}}
+\index{get\_\-size@{get\_\-size}!Array3@{Array3}}
+\subsubsection[{get\_\-size}]{\setlength{\rightskip}{0pt plus 5cm}int Array3::get\_\-size (void)}\label{classArray3_a7b1da51445317025d5727927b1cd853d}
+
+
+Definition at line 99 of file Array3.cpp.
+
+
+
+References nx\_\-, ny\_\-, and nz\_\-.
+
+\index{Array3@{Array3}!getData@{getData}}
+\index{getData@{getData}!Array3@{Array3}}
+\subsubsection[{getData}]{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ Array3::getData ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classArray3_a246734002eb950cfce43b63cf9b1ec4f}
+
+
+Definition at line 49 of file Array3.h.
+
+
+
+References data\_\-.
+
+
+
+Referenced by operator=().
+
+\index{Array3@{Array3}!getNx@{getNx}}
+\index{getNx@{getNx}!Array3@{Array3}}
+\subsubsection[{getNx}]{\setlength{\rightskip}{0pt plus 5cm}int Array3::getNx ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classArray3_aadb24645a52627aba3cc36b6378df78c}
+
+
+Definition at line 46 of file Array3.h.
+
+
+
+References nx\_\-.
+
+
+
+Referenced by operator=().
+
+\index{Array3@{Array3}!getNy@{getNy}}
+\index{getNy@{getNy}!Array3@{Array3}}
+\subsubsection[{getNy}]{\setlength{\rightskip}{0pt plus 5cm}int Array3::getNy ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classArray3_af29d2eab1f67d70a5430c438d54026f2}
+
+
+Definition at line 47 of file Array3.h.
+
+
+
+References ny\_\-.
+
+
+
+Referenced by operator=().
+
+\index{Array3@{Array3}!getNz@{getNz}}
+\index{getNz@{getNz}!Array3@{Array3}}
+\subsubsection[{getNz}]{\setlength{\rightskip}{0pt plus 5cm}int Array3::getNz ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classArray3_ab4eecc4fa31e18f0ce10ea7848e5b814}
+
+
+Definition at line 48 of file Array3.h.
+
+
+
+References nz\_\-.
+
+
+
+Referenced by operator=().
+
+\index{Array3@{Array3}!getRealContainer@{getRealContainer}}
+\index{getRealContainer@{getRealContainer}!Array3@{Array3}}
+\subsubsection[{getRealContainer}]{\setlength{\rightskip}{0pt plus 5cm}bool Array3::getRealContainer ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classArray3_a38b29b4540631fbdeba40c44bc97a0b7}
+
+
+Definition at line 50 of file Array3.h.
+
+
+
+References RealContainer\_\-.
+
+
+
+Referenced by operator=().
+
+\index{Array3@{Array3}!getValue@{getValue}}
+\index{getValue@{getValue}!Array3@{Array3}}
+\subsubsection[{getValue}]{\setlength{\rightskip}{0pt plus 5cm}float Array3::getValue (int {\em ix}, \/  int {\em iy}, \/  int {\em iz})}\label{classArray3_a7cf0475d19ea0f88976694dd61ae9f85}
+
+
+Definition at line 82 of file Array3.cpp.
+
+
+
+References data\_\-, ny\_\-, and nz\_\-.
+
+
+
+Referenced by ScalarField::getValue(), and main().
+
+\index{Array3@{Array3}!operator=@{operator=}}
+\index{operator=@{operator=}!Array3@{Array3}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Array3} $\ast$ Array3::operator= ({\bf Array3} $\ast$ {\em a})}\label{classArray3_a94c897c53a7dd53b61d9cc89dfa0d708}
+
+
+Definition at line 66 of file Array3.cpp.
+
+
+
+References data\_\-, getData(), getNx(), getNy(), getNz(), getRealContainer(), nx\_\-, ny\_\-, nz\_\-, and RealContainer\_\-.
+
+\index{Array3@{Array3}!recreate@{recreate}}
+\index{recreate@{recreate}!Array3@{Array3}}
+\subsubsection[{recreate}]{\setlength{\rightskip}{0pt plus 5cm}void Array3::recreate (int {\em nx}, \/  int {\em ny}, \/  int {\em nz})}\label{classArray3_a089a93d07ebfdc31376291dd1475e800}
+
+
+Definition at line 104 of file Array3.cpp.
+
+
+
+References data\_\-, nx\_\-, ny\_\-, nz\_\-, and RealContainer\_\-.
+
+
+
+Referenced by ScalarField::recreate().
+
+\index{Array3@{Array3}!setValue@{setValue}}
+\index{setValue@{setValue}!Array3@{Array3}}
+\subsubsection[{setValue}]{\setlength{\rightskip}{0pt plus 5cm}void Array3::setValue (int {\em ix}, \/  int {\em iy}, \/  int {\em iz}, \/  float {\em val})}\label{classArray3_ac07bb97510a09e2dc5121ee9ed36af3c}
+
+
+Definition at line 87 of file Array3.cpp.
+
+
+
+References data\_\-, ny\_\-, and nz\_\-.
+
+
+
+Referenced by main(), ScalarField::put\_\-CIC(), ScalarField::setValue(), and ScalarField::test().
+
+
+
+\subsection{Field Documentation}
+\index{Array3@{Array3}!data\_\-@{data\_\-}}
+\index{data\_\-@{data\_\-}!Array3@{Array3}}
+\subsubsection[{data\_\-}]{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ {\bf Array3::data\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classArray3_af704629bb93bda9e842fa627c81d98b2}
+
+
+Definition at line 33 of file Array3.h.
+
+
+
+Referenced by addValue(), Array3(), getData(), getValue(), operator=(), recreate(), setValue(), and $\sim$Array3().
+
+\index{Array3@{Array3}!nx\_\-@{nx\_\-}}
+\index{nx\_\-@{nx\_\-}!Array3@{Array3}}
+\subsubsection[{nx\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Array3::nx\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classArray3_add3e47ecef09b38350ea9b45928d068c}
+
+
+Definition at line 34 of file Array3.h.
+
+
+
+Referenced by Array3(), get\_\-size(), getNx(), operator=(), and recreate().
+
+\index{Array3@{Array3}!ny\_\-@{ny\_\-}}
+\index{ny\_\-@{ny\_\-}!Array3@{Array3}}
+\subsubsection[{ny\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Array3::ny\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classArray3_a5dad0675c57a85ab9f0a5cdc514b04cb}
+
+
+Definition at line 34 of file Array3.h.
+
+
+
+Referenced by addValue(), Array3(), get\_\-size(), getNy(), getValue(), operator=(), recreate(), and setValue().
+
+\index{Array3@{Array3}!nz\_\-@{nz\_\-}}
+\index{nz\_\-@{nz\_\-}!Array3@{Array3}}
+\subsubsection[{nz\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Array3::nz\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classArray3_a4ccb3e4d630c2bfa4c0ef929c6932c54}
+
+
+Definition at line 34 of file Array3.h.
+
+
+
+Referenced by addValue(), Array3(), get\_\-size(), getNz(), getValue(), operator=(), recreate(), and setValue().
+
+\index{Array3@{Array3}!RealContainer\_\-@{RealContainer\_\-}}
+\index{RealContainer\_\-@{RealContainer\_\-}!Array3@{Array3}}
+\subsubsection[{RealContainer\_\-}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Array3::RealContainer\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classArray3_af3a70b601302d0219c86118ec831b858}
+
+
+Definition at line 35 of file Array3.h.
+
+
+
+Referenced by Array3(), getRealContainer(), operator=(), recreate(), and $\sim$Array3().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Array3_8h}{Array3.h}\item 
+\hyperlink{Array3_8cpp}{Array3.cpp}\end{DoxyCompactItemize}

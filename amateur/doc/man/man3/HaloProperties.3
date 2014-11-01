@@ -1,0 +1,718 @@
+.TH "HaloProperties" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HaloProperties \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <HaloProperties.h>\fP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBCosm\fP"
+.br
+.ti -1c
+.RI "class \fBDistance\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHaloProperties\fP (\fBreal\fP *pPos, \fBreal\fP *pVel, \fBreal\fP *pMass, unsigned nPart, \fBreal\fP zsnap)"
+.br
+.ti -1c
+.RI "void \fBSetCosmology\fP (\fBreal\fP OmegaM0, \fBreal\fP OmegaL0, \fBreal\fP H0, \fBreal\fP G)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputeTotalMass\fP (void)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputeTotalMassExc\fP (std::vector< bool > excluded)"
+.br
+.ti -1c
+.RI "void \fBComputeCM\fP (\fBreal\fP Boxlength, \fBVector3\fP &xcm)"
+.br
+.ti -1c
+.RI "void \fBComputeCMExc\fP (\fBreal\fP Boxlength, \fBVector3\fP &xcm, std::vector< bool > excluded)"
+.br
+.ti -1c
+.RI "void \fBComputeMB\fP (\fBreal\fP Boxlength, \fBVector3\fP &xmb)"
+.br
+.ti -1c
+.RI "void \fBComputeMBExc\fP (\fBreal\fP Boxlength, \fBVector3\fP &xmb, std::vector< bool > excluded)"
+.br
+.ti -1c
+.RI "void \fBCenterOnCM\fP (\fBreal\fP Boxlength)"
+.br
+.ti -1c
+.RI "void \fBCenterOnCMExc\fP (\fBreal\fP Boxlength, std::vector< bool > excluded)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBCenterOnMB\fP (\fBreal\fP Boxlength)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBCenterOnMB\fP (\fBreal\fP Boxlength, \fBreal\fP &rmbcm, \fBreal\fP &alpha)"
+.br
+.ti -1c
+.RI "void \fBCenterOnCoord\fP (\fBreal\fP *xc, \fBreal\fP Boxlength)"
+.br
+.ti -1c
+.RI "void \fBAverageVel\fP (const unsigned n, const \fBreal\fP eps=0.0)"
+.br
+.ti -1c
+.RI "void \fBComputeCenterVel\fP (\fBVector3\fP &vcm)"
+.br
+.ti -1c
+.RI "void \fBComputeCenterVelExc\fP (\fBVector3\fP &vcm, std::vector< bool > excluded)"
+.br
+.ti -1c
+.RI "void \fBCenterVel\fP (void)"
+.br
+.ti -1c
+.RI "void \fBCenterVelOn\fP (\fBreal\fP *vc)"
+.br
+.ti -1c
+.RI "void \fBCenterVelExc\fP (std::vector< bool > excluded)"
+.br
+.ti -1c
+.RI "void \fBComputeAngularMomentum\fP (\fBreal\fP &Jtot)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputeAngularMomentum\fP (\fBVector3\fP &J) const "
+.br
+.ti -1c
+.RI "void \fBComputeVelocityDispersion\fP (\fBreal\fP &Sigma)"
+.br
+.ti -1c
+.RI "void \fBGetSortedDistances\fP (std::vector< \fBDistance\fP > &dvec) const "
+.br
+.ti -1c
+.RI "void \fBComputeMajorAxes\fP (\fBVector3\fP &Eigenvalues, std::vector< \fBVector3\fP > &Eigenvectors) const "
+.br
+.ti -1c
+.RI "void \fBComputeMajorAxesReduced\fP (\fBVector3\fP &Eigenvalues, std::vector< \fBVector3\fP > &Eigenvectors) const "
+.br
+.ti -1c
+.RI "void \fBComputeShapeParameters\fP (\fBreal\fP &T, \fBreal\fP &S) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties200\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties200\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir, \fBreal\fP &Vcmax) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties200\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir, std::vector< \fBDistance\fP > &dvec) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties200\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir, \fBreal\fP &Vcmax, std::vector< \fBDistance\fP > &dvec) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir, \fBreal\fP &Vcmax) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir, std::vector< \fBDistance\fP > &dvec) const "
+.br
+.ti -1c
+.RI "void \fBComputeVirialProperties\fP (\fBreal\fP rhobox, \fBreal\fP &Mvir, \fBreal\fP &Rvir, \fBreal\fP &Vcmax, std::vector< \fBDistance\fP > &dvec) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputePoormanConcentration\fP (\fBreal\fP rhobox, \fBreal\fP &R20, \fBreal\fP &R80)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputePoormanConcentration\fP (\fBreal\fP rhobox)"
+.br
+.ti -1c
+.RI "void \fBComputeLambdaPrime\fP (\fBreal\fP &lambda, \fBreal\fP Mvir, \fBreal\fP Rvir)"
+.br
+.RI "\fIcomputes the simplified spin parameter lambda prime computes the lambda prime (Bullock et al. 2001). ASSUMES THAT COORDINATES AND VELOCITIES ARE CENTERED ON REFERENCE POINT. so center on center of mass or something. \fP"
+.ti -1c
+.RI "\fBreal\fP \fBComputeKineticEnergy\fP (std::vector< \fBreal\fP > &kin) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputeKineticEnergyNoHubble\fP (std::vector< \fBreal\fP > &kin) const "
+.br
+.ti -1c
+.RI "void \fBComputeKineticEnergyNoHubbleExc\fP (std::vector< \fBreal\fP > &kin, std::vector< bool > excluded) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputePotentialDirect\fP (\fBreal\fP plumsoft, std::vector< \fBreal\fP > &phi) const "
+.br
+.ti -1c
+.RI "void \fBComputePotentialDirectExc\fP (\fBreal\fP plumsoft, std::vector< \fBreal\fP > &phi, std::vector< bool > excluded) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBComputePotentialTree\fP (\fBreal\fP theta, \fBreal\fP plumsoft, std::vector< \fBreal\fP > &phi) const "
+.br
+.ti -1c
+.RI "void \fBComputePotentialTreeExc\fP (\fBreal\fP theta, \fBreal\fP plumsoft, std::vector< \fBreal\fP > &phi, std::vector< bool > excluded) const "
+.br
+.ti -1c
+.RI "std::vector< bool > \fBCleanUnbound\fP (\fBreal\fP boxsize)"
+.br
+.ti -1c
+.RI "void \fBCleanUnboundExc\fP (\fBreal\fP boxsize, std::vector< bool > &excluded)"
+.br
+.ti -1c
+.RI "void \fBCleanUnboundSimple\fP (\fBreal\fP boxsize, std::vector< bool > &excluded)"
+.br
+.ti -1c
+.RI "int \fBComputeDensityProfile\fP (\fBreal\fP rhobox, unsigned n, std::vector< \fBreal\fP > &r, std::vector< \fBreal\fP > &rho, std::vector< \fBreal\fP > &sigma_rho) const "
+.br
+.ti -1c
+.RI "int \fBFitNFWProfile2\fP (\fBreal\fP rhobox, unsigned n, \fBreal\fP &fdeltac, \fBreal\fP &fedeltac, \fBreal\fP &frs, \fBreal\fP &fers) const "
+.br
+.ti -1c
+.RI "int \fBFitNFWProfile1\fP (\fBreal\fP rhobox, unsigned n, \fBreal\fP &frs, \fBreal\fP &fers) const "
+.br
+.ti -1c
+.RI "int \fBFitNFWProfile200\fP (\fBreal\fP rhobox, unsigned n, \fBreal\fP &frs, \fBreal\fP &fers) const "
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBreal\fP \fBm_xcm\fP [3]"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_xmb\fP [3]"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_vcm\fP [3]"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_vmb\fP [3]"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_rmbcm\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP * \fBm_pPos\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP * \fBm_pVel\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP * \fBm_pMass\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_mtot\fP"
+.br
+.ti -1c
+.RI "unsigned \fBm_nPart\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_alpha\fP"
+.br
+.ti -1c
+.RI "unsigned \fBm_imostbound\fP"
+.br
+.ti -1c
+.RI "\fBCosm\fP \fBm_Cosm\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 47 of file HaloProperties.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HaloProperties::HaloProperties (\fBreal\fP * pPos, \fBreal\fP * pVel, \fBreal\fP * pMass, unsigned nPart, \fBreal\fP zsnap)"
+.PP
+Definition at line 15 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, HaloProperties::Cosm::H0, m_Cosm, m_imostbound, m_mtot, m_nPart, m_pMass, m_pPos, m_pVel, m_vcm, m_vmb, m_xcm, m_xmb, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+.SH "Member Function Documentation"
+.PP 
+.SS "void HaloProperties::AverageVel (const unsigned n, const \fBreal\fP eps = \fC0.0\fP)"average the velocities of particles using ANN 
+.PP
+Definition at line 325 of file HaloProperties.cpp.
+.PP
+References m_nPart, m_pMass, m_pPos, m_pVel, and SPHK3D().
+.SS "void HaloProperties::CenterOnCM (\fBreal\fP Boxlength)"centers on the CM obeying periodic boundary conditions. REQUIRES THAT THE EXTENSION OF THE OBJECT DO NOT EXCEED 0.25 OF THE BOX LENGTH. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIBoxlength\fP the length of the simulation box 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+nothing, centers the coordinates on the CM and stores the CM 
+.RE
+.PP
+
+.PP
+Definition at line 125 of file HaloProperties.cpp.
+.PP
+References m_mtot, m_nPart, m_pMass, m_pPos, and m_xcm.
+.PP
+Referenced by CleanUnboundSimple().
+.SS "void HaloProperties::CenterOnCMExc (\fBreal\fP Boxlength, std::vector< bool > excluded)"
+.PP
+Definition at line 157 of file HaloProperties.cpp.
+.PP
+References m_nPart, m_pMass, m_pPos, and m_xcm.
+.PP
+Referenced by CleanUnboundExc().
+.SS "void HaloProperties::CenterOnCoord (\fBreal\fP * xc, \fBreal\fP Boxlength)"centers all coordinates on specified point 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIxc\fP pointer to an array of three reals contain the point to be centered on 
+.br
+\fIBoxlength\fP size of simulation (cubic) box 
+.RE
+.PP
+
+.PP
+Definition at line 314 of file HaloProperties.cpp.
+.PP
+References m_nPart, and m_pPos.
+.PP
+Referenced by CenterOnMB().
+.SS "\fBreal\fP HaloProperties::CenterOnMB (\fBreal\fP Boxlength, \fBreal\fP & rmbcm, \fBreal\fP & alpha)"Center on Most Bound particle. CenterOnCM( Boxlength ); \fBCenterVel()\fP; is needed before invoking CenterOnMB 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIBoxlength\fP 
+.br
+\fIrmbcm\fP 
+.br
+\fIalpha\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 270 of file HaloProperties.cpp.
+.PP
+References CenterOnCoord(), ComputeKineticEnergyNoHubble(), ComputePotentialDirect(), ComputePotentialTree(), FORCE_DIRECT_TREE_SPLIT, m_alpha, m_imostbound, m_nPart, m_pPos, m_rmbcm, and m_xmb.
+.SS "\fBreal\fP HaloProperties::CenterOnMB (\fBreal\fP Boxlength)"centers all coordinates on the MB obeying periodic boundary conditions ... centers on the MB obeying periodic boundary conditions. REQUIRES THAT THE EXTENSION OF THE OBJECT DOES NOT EXCEED 0.25 * BOX LENGTH. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIBoxlength\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+distance of mb from cm, centers the coordinates on the MB and stores the MB 
+.RE
+.PP
+
+.PP
+Definition at line 257 of file HaloProperties.cpp.
+.SS "void HaloProperties::CenterVel (void)"
+.PP
+Definition at line 429 of file HaloProperties.cpp.
+.PP
+References m_mtot, m_nPart, m_pMass, m_pVel, and m_vcm.
+.PP
+Referenced by CleanUnboundSimple().
+.SS "void HaloProperties::CenterVelExc (std::vector< bool > excluded)"
+.PP
+Definition at line 459 of file HaloProperties.cpp.
+.PP
+References m_nPart, m_pMass, m_pVel, and m_vcm.
+.PP
+Referenced by CleanUnboundExc().
+.SS "void HaloProperties::CenterVelOn (\fBreal\fP * vc)"
+.PP
+Definition at line 451 of file HaloProperties.cpp.
+.PP
+References m_nPart, m_pVel, and m_vcm.
+.SS "std::vector< bool > HaloProperties::CleanUnbound (\fBreal\fP boxsize)"
+.PP
+Definition at line 1098 of file HaloProperties.cpp.
+.PP
+References CleanUnboundExc(), and m_nPart.
+.SS "void HaloProperties::CleanUnboundExc (\fBreal\fP boxsize, std::vector< bool > & excluded)"
+.PP
+Definition at line 1106 of file HaloProperties.cpp.
+.PP
+References CenterOnCMExc(), CenterVelExc(), ComputeKineticEnergyNoHubbleExc(), ComputePotentialTreeExc(), and m_nPart.
+.PP
+Referenced by CleanUnbound().
+.SS "void HaloProperties::CleanUnboundSimple (\fBreal\fP boxsize, std::vector< bool > & excluded)"
+.PP
+Definition at line 1170 of file HaloProperties.cpp.
+.PP
+References CenterOnCM(), CenterVel(), ComputeKineticEnergyNoHubbleExc(), ComputePotentialDirectExc(), and m_nPart.
+.SS "\fBreal\fP HaloProperties::ComputeAngularMomentum (\fBVector3\fP & J) const"computes the angular momentum in internal units. assumes that coordinates and velocities are centered on a reference point 
+.PP
+\fBReturns:\fP
+.RS 4
+real Jtot, total angular momentum 
+.RE
+.PP
+
+.PP
+Definition at line 517 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, m_Cosm, m_nPart, m_pMass, m_pPos, m_pVel, and Vector3::norm().
+.SS "void HaloProperties::ComputeAngularMomentum (\fBreal\fP & Jtot)"computes the angular momentum in internal units. assumes that coordinates and velocities are centered on a reference point 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIJtot\fP total angular momentum 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 492 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, m_Cosm, m_nPart, m_pMass, m_pPos, and m_pVel.
+.SS "void HaloProperties::ComputeCenterVel (\fBVector3\fP & vcm)"
+.PP
+Definition at line 392 of file HaloProperties.cpp.
+.PP
+References m_mtot, m_nPart, m_pMass, m_pVel, and m_vcm.
+.SS "void HaloProperties::ComputeCenterVelExc (\fBVector3\fP & vcm, std::vector< bool > excluded)"
+.PP
+Definition at line 408 of file HaloProperties.cpp.
+.PP
+References m_nPart, m_pMass, and m_pVel.
+.SS "void HaloProperties::ComputeCM (\fBreal\fP Boxlength, \fBVector3\fP & xcm)"
+.PP
+Definition at line 68 of file HaloProperties.cpp.
+.PP
+References m_mtot, m_nPart, m_pMass, and m_pPos.
+.SS "void HaloProperties::ComputeCMExc (\fBreal\fP Boxlength, \fBVector3\fP & xcm, std::vector< bool > excluded)"
+.PP
+Definition at line 93 of file HaloProperties.cpp.
+.PP
+References m_nPart, m_pMass, and m_pPos.
+.SS "int HaloProperties::ComputeDensityProfile (\fBreal\fP rhobox, unsigned n, std::vector< \fBreal\fP > & r, std::vector< \fBreal\fP > & rho, std::vector< \fBreal\fP > & sigma_rho) const"
+.PP
+Definition at line 1202 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, ComputeVirialProperties(), m_Cosm, m_nPart, and m_pMass.
+.PP
+Referenced by FitNFWProfile1(), FitNFWProfile2(), and FitNFWProfile200().
+.SS "\fBreal\fP HaloProperties::ComputeKineticEnergy (std::vector< \fBreal\fP > & kin) const"Compute the kinetic energies for all particles 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkin\fP vector to be filled with kin. energies 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total kinetic energy 
+.RE
+.PP
+
+.PP
+Definition at line 846 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::H0, m_Cosm, m_nPart, m_pMass, m_pPos, m_pVel, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+.SS "\fBreal\fP HaloProperties::ComputeKineticEnergyNoHubble (std::vector< \fBreal\fP > & kin) const"Computes the kinetic energy of all particles without Hubble flow. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkin\fP vector with kinetic energies 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total kinetic energy 
+.RE
+.PP
+
+.PP
+Definition at line 887 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, m_Cosm, m_nPart, m_pMass, and m_pVel.
+.PP
+Referenced by CenterOnMB(), ComputeMB(), and ComputeMBExc().
+.SS "void HaloProperties::ComputeKineticEnergyNoHubbleExc (std::vector< \fBreal\fP > & kin, std::vector< bool > excluded) const"
+.PP
+Definition at line 924 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, m_Cosm, m_nPart, m_pMass, and m_pVel.
+.PP
+Referenced by CleanUnboundExc(), and CleanUnboundSimple().
+.SS "void HaloProperties::ComputeLambdaPrime (\fBreal\fP & lambda, \fBreal\fP Mvir, \fBreal\fP Rvir)"
+.PP
+computes the simplified spin parameter lambda prime computes the lambda prime (Bullock et al. 2001). ASSUMES THAT COORDINATES AND VELOCITIES ARE CENTERED ON REFERENCE POINT. so center on center of mass or something. \fBParameters:\fP
+.RS 4
+\fIlambda\fP storage for halo spin parameter 
+.br
+\fIMvir\fP the virial mass is returned here 
+.br
+\fIRvir\fP the virial radius is returned here 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 805 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, GetSortedDistances(), m_Cosm, m_nPart, m_pMass, m_pPos, m_pVel, and Vector3::norm().
+.SS "void HaloProperties::ComputeMajorAxes (\fBVector3\fP & Eigenvalues, std::vector< \fBVector3\fP > & Eigenvectors) const"
+.PP
+Definition at line 583 of file HaloProperties.cpp.
+.PP
+References Matrix33::Eigen(), m_mtot, m_nPart, m_pMass, and m_pPos.
+.PP
+Referenced by ComputeShapeParameters().
+.SS "void HaloProperties::ComputeMajorAxesReduced (\fBVector3\fP & Eigenvalues, std::vector< \fBVector3\fP > & Eigenvectors) const"
+.PP
+Definition at line 618 of file HaloProperties.cpp.
+.PP
+References Matrix33::Eigen(), m_imostbound, m_nPart, m_pMass, and m_pPos.
+.SS "void HaloProperties::ComputeMB (\fBreal\fP Boxlength, \fBVector3\fP & xmb)"
+.PP
+Definition at line 197 of file HaloProperties.cpp.
+.PP
+References ComputeKineticEnergyNoHubble(), ComputePotentialDirect(), ComputePotentialTree(), FORCE_DIRECT_TREE_SPLIT, m_nPart, and m_pPos.
+.SS "void HaloProperties::ComputeMBExc (\fBreal\fP Boxlength, \fBVector3\fP & xmb, std::vector< bool > excluded)"
+.PP
+Definition at line 224 of file HaloProperties.cpp.
+.PP
+References ComputeKineticEnergyNoHubble(), ComputePotentialDirect(), ComputePotentialTree(), FORCE_DIRECT_TREE_SPLIT, m_nPart, and m_pPos.
+.SS "\fBreal\fP HaloProperties::ComputePoormanConcentration (\fBreal\fP rhobox)"
+.PP
+Definition at line 789 of file HaloProperties.cpp.
+.PP
+References ComputePoormanConcentration().
+.SS "\fBreal\fP HaloProperties::ComputePoormanConcentration (\fBreal\fP rhobox, \fBreal\fP & R20, \fBreal\fP & R80)"
+.PP
+Definition at line 778 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, ComputeVirialProperties(), and m_Cosm.
+.PP
+Referenced by ComputePoormanConcentration().
+.SS "\fBreal\fP HaloProperties::ComputePotentialDirect (\fBreal\fP plumsoft, std::vector< \fBreal\fP > & phi) const"Computes the potential directly from particle positions and masses. Center on CM before invoking this routine 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIplumsoft\fP smoothing length 
+.br
+\fIphi\fP potential 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total potential energy 
+.RE
+.PP
+
+.PP
+Definition at line 940 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m_Cosm, m_nPart, m_pMass, and m_pPos.
+.PP
+Referenced by CenterOnMB(), ComputeMB(), and ComputeMBExc().
+.SS "void HaloProperties::ComputePotentialDirectExc (\fBreal\fP plumsoft, std::vector< \fBreal\fP > & phi, std::vector< bool > excluded) const"
+.PP
+Definition at line 966 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m_Cosm, m_nPart, m_pMass, and m_pPos.
+.PP
+Referenced by CleanUnboundSimple().
+.SS "\fBreal\fP HaloProperties::ComputePotentialTree (\fBreal\fP theta, \fBreal\fP plumsoft, std::vector< \fBreal\fP > & phi) const"
+.PP
+Definition at line 995 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m_Cosm, m_nPart, m_pMass, m_pPos, and OctTreeNode::traverse().
+.PP
+Referenced by CenterOnMB(), ComputeMB(), and ComputeMBExc().
+.SS "void HaloProperties::ComputePotentialTreeExc (\fBreal\fP theta, \fBreal\fP plumsoft, std::vector< \fBreal\fP > & phi, std::vector< bool > excluded) const"
+.PP
+Definition at line 1049 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m_Cosm, m_nPart, m_pMass, m_pPos, and OctTreeNode::traverse().
+.PP
+Referenced by CleanUnboundExc().
+.SS "void HaloProperties::ComputeShapeParameters (\fBreal\fP & T, \fBreal\fP & S) const"
+.PP
+Definition at line 658 of file HaloProperties.cpp.
+.PP
+References ComputeMajorAxes().
+.SS "\fBreal\fP HaloProperties::ComputeTotalMass (void)"
+.PP
+Definition at line 54 of file HaloProperties.cpp.
+.PP
+References m_mtot.
+.SS "\fBreal\fP HaloProperties::ComputeTotalMassExc (std::vector< bool > excluded)"
+.PP
+Definition at line 59 of file HaloProperties.cpp.
+.PP
+References m_nPart, and m_pMass.
+.SS "void HaloProperties::ComputeVelocityDispersion (\fBreal\fP & Sigma)"computes the velocity dispersion (sigma) in internal units assumes that pos and vel be centered 
+.PP
+Definition at line 546 of file HaloProperties.cpp.
+.PP
+References m_nPart, and m_pVel.
+.SS "void HaloProperties::ComputeVirialProperties (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir, \fBreal\fP & Vcmax, std::vector< \fBDistance\fP > & dvec) const"
+.PP
+Definition at line 728 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, GetSortedDistances(), m_Cosm, and m_pMass.
+.SS "void HaloProperties::ComputeVirialProperties (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir, std::vector< \fBDistance\fP > & dvec) const"
+.PP
+Definition at line 761 of file HaloProperties.cpp.
+.PP
+References ComputeVirialProperties().
+.SS "void HaloProperties::ComputeVirialProperties (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir, \fBreal\fP & Vcmax) const"
+.PP
+Definition at line 766 of file HaloProperties.cpp.
+.PP
+References ComputeVirialProperties().
+.SS "void HaloProperties::ComputeVirialProperties (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir) const"
+.PP
+Definition at line 771 of file HaloProperties.cpp.
+.PP
+Referenced by ComputeDensityProfile(), ComputePoormanConcentration(), ComputeVirialProperties(), and FitNFWProfile1().
+.SS "void HaloProperties::ComputeVirialProperties200 (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir, \fBreal\fP & Vcmax, std::vector< \fBDistance\fP > & dvec) const"
+.PP
+Definition at line 668 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, GetSortedDistances(), m_Cosm, m_pMass, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+.SS "void HaloProperties::ComputeVirialProperties200 (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir, std::vector< \fBDistance\fP > & dvec) const"
+.PP
+Definition at line 715 of file HaloProperties.cpp.
+.PP
+References ComputeVirialProperties200().
+.SS "void HaloProperties::ComputeVirialProperties200 (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir, \fBreal\fP & Vcmax) const"
+.PP
+Definition at line 710 of file HaloProperties.cpp.
+.PP
+References ComputeVirialProperties200().
+.SS "void HaloProperties::ComputeVirialProperties200 (\fBreal\fP rhobox, \fBreal\fP & Mvir, \fBreal\fP & Rvir) const"
+.PP
+Definition at line 720 of file HaloProperties.cpp.
+.PP
+Referenced by ComputeVirialProperties200(), and FitNFWProfile200().
+.SS "int HaloProperties::FitNFWProfile1 (\fBreal\fP rhobox, unsigned n, \fBreal\fP & frs, \fBreal\fP & fers) const"
+.PP
+Definition at line 1345 of file HaloProperties.cpp.
+.PP
+References ComputeDensityProfile(), ComputeVirialProperties(), and NFW_fix_fit().
+.SS "int HaloProperties::FitNFWProfile2 (\fBreal\fP rhobox, unsigned n, \fBreal\fP & fdeltac, \fBreal\fP & fedeltac, \fBreal\fP & frs, \fBreal\fP & fers) const"
+.PP
+Definition at line 1317 of file HaloProperties.cpp.
+.PP
+References ComputeDensityProfile(), and NFW_fit().
+.SS "int HaloProperties::FitNFWProfile200 (\fBreal\fP rhobox, unsigned n, \fBreal\fP & frs, \fBreal\fP & fers) const"
+.PP
+Definition at line 1368 of file HaloProperties.cpp.
+.PP
+References ComputeDensityProfile(), ComputeVirialProperties200(), and NFW_fix_fit().
+.SS "void HaloProperties::GetSortedDistances (std::vector< \fBDistance\fP > & dvec) const"
+.PP
+Definition at line 568 of file HaloProperties.cpp.
+.PP
+References m_nPart, and m_pPos.
+.PP
+Referenced by ComputeLambdaPrime(), ComputeVirialProperties(), and ComputeVirialProperties200().
+.SS "void HaloProperties::SetCosmology (\fBreal\fP OmegaM0, \fBreal\fP OmegaL0, \fBreal\fP H0, \fBreal\fP G = \fC43011.7902\fP)"Set internal units and values for cosmological constants 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIOmegaM0\fP fraction of mass density and critical density 
+.br
+\fIOmegaL0\fP fraction of false vacuum density and critical density 
+.br
+\fIH0\fP present day Hubble constant 
+.br
+\fIG\fP gravitation constant, in internal units 
+.RE
+.PP
+
+.PP
+Definition at line 46 of file HaloProperties.cpp.
+.PP
+References HaloProperties::Cosm::G, HaloProperties::Cosm::H0, m_Cosm, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+.SH "Field Documentation"
+.PP 
+.SS "\fBreal\fP \fBHaloProperties::m_alpha\fP\fC [protected]\fP"
+.PP
+Definition at line 55 of file HaloProperties.h.
+.PP
+Referenced by CenterOnMB().
+.SS "\fBCosm\fP \fBHaloProperties::m_Cosm\fP\fC [protected]\fP"
+.PP
+Definition at line 62 of file HaloProperties.h.
+.PP
+Referenced by ComputeAngularMomentum(), ComputeDensityProfile(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputePoormanConcentration(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), ComputeVirialProperties(), ComputeVirialProperties200(), HaloProperties(), and SetCosmology().
+.SS "unsigned \fBHaloProperties::m_imostbound\fP\fC [protected]\fP"
+.PP
+Definition at line 56 of file HaloProperties.h.
+.PP
+Referenced by CenterOnMB(), ComputeMajorAxesReduced(), and HaloProperties().
+.SS "\fBreal\fP \fBHaloProperties::m_mtot\fP\fC [protected]\fP"
+.PP
+Definition at line 52 of file HaloProperties.h.
+.PP
+Referenced by CenterOnCM(), CenterVel(), ComputeCenterVel(), ComputeCM(), ComputeMajorAxes(), ComputeTotalMass(), and HaloProperties().
+.SS "unsigned \fBHaloProperties::m_nPart\fP\fC [protected]\fP"
+.PP
+Definition at line 53 of file HaloProperties.h.
+.PP
+Referenced by AverageVel(), CenterOnCM(), CenterOnCMExc(), CenterOnCoord(), CenterOnMB(), CenterVel(), CenterVelExc(), CenterVelOn(), CleanUnbound(), CleanUnboundExc(), CleanUnboundSimple(), ComputeAngularMomentum(), ComputeCenterVel(), ComputeCenterVelExc(), ComputeCM(), ComputeCMExc(), ComputeDensityProfile(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputeMajorAxes(), ComputeMajorAxesReduced(), ComputeMB(), ComputeMBExc(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), ComputeTotalMassExc(), ComputeVelocityDispersion(), GetSortedDistances(), and HaloProperties().
+.SS "\fBreal\fP * \fBHaloProperties::m_pMass\fP\fC [protected]\fP"
+.PP
+Definition at line 51 of file HaloProperties.h.
+.PP
+Referenced by AverageVel(), CenterOnCM(), CenterOnCMExc(), CenterVel(), CenterVelExc(), ComputeAngularMomentum(), ComputeCenterVel(), ComputeCenterVelExc(), ComputeCM(), ComputeCMExc(), ComputeDensityProfile(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputeMajorAxes(), ComputeMajorAxesReduced(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), ComputeTotalMassExc(), ComputeVirialProperties(), ComputeVirialProperties200(), and HaloProperties().
+.SS "\fBreal\fP* \fBHaloProperties::m_pPos\fP\fC [protected]\fP"
+.PP
+Definition at line 51 of file HaloProperties.h.
+.PP
+Referenced by AverageVel(), CenterOnCM(), CenterOnCMExc(), CenterOnCoord(), CenterOnMB(), ComputeAngularMomentum(), ComputeCM(), ComputeCMExc(), ComputeKineticEnergy(), ComputeLambdaPrime(), ComputeMajorAxes(), ComputeMajorAxesReduced(), ComputeMB(), ComputeMBExc(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), GetSortedDistances(), and HaloProperties().
+.SS "\fBreal\fP * \fBHaloProperties::m_pVel\fP\fC [protected]\fP"
+.PP
+Definition at line 51 of file HaloProperties.h.
+.PP
+Referenced by AverageVel(), CenterVel(), CenterVelExc(), CenterVelOn(), ComputeAngularMomentum(), ComputeCenterVel(), ComputeCenterVelExc(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputeVelocityDispersion(), and HaloProperties().
+.SS "\fBreal\fP \fBHaloProperties::m_rmbcm\fP\fC [protected]\fP"
+.PP
+Definition at line 50 of file HaloProperties.h.
+.PP
+Referenced by CenterOnMB().
+.SS "\fBreal\fP \fBHaloProperties::m_vcm\fP[3]\fC [protected]\fP"
+.PP
+Definition at line 49 of file HaloProperties.h.
+.PP
+Referenced by CenterVel(), CenterVelExc(), CenterVelOn(), ComputeCenterVel(), and HaloProperties().
+.SS "\fBreal\fP \fBHaloProperties::m_vmb\fP[3]\fC [protected]\fP"
+.PP
+Definition at line 49 of file HaloProperties.h.
+.PP
+Referenced by HaloProperties().
+.SS "\fBreal\fP \fBHaloProperties::m_xcm\fP[3]\fC [protected]\fP"
+.PP
+Definition at line 49 of file HaloProperties.h.
+.PP
+Referenced by CenterOnCM(), CenterOnCMExc(), and HaloProperties().
+.SS "\fBreal\fP \fBHaloProperties::m_xmb\fP[3]\fC [protected]\fP"
+.PP
+Definition at line 49 of file HaloProperties.h.
+.PP
+Referenced by CenterOnMB(), and HaloProperties().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

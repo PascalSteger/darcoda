@@ -1,0 +1,173 @@
+.TH "HDFIO_new.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HDFIO_new.h \- 
+.PP
+Some templated C++ HDF5 front-end functions, for new HDF5 versions.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <stdexcept>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <sstream>\fP
+.br
+\fC#include <typeinfo>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include 'hdf5.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBHDFException\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename T > hid_t \fBGetDataType\fP (void)"
+.br
+.ti -1c
+.RI "bool \fBDoesFileExist\fP (std::string Filename)"
+.br
+.ti -1c
+.RI "void \fBAssertFileOpen\fP (std::string Filename)"
+.br
+.ti -1c
+.RI "void \fBHDFCreateFile\fP (std::string Filename)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadVector\fP (const std::string Filename, const std::string ObjName, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "void \fBHDFGetDatasetExtent\fP (const std::string Filename, const std::string ObjName, std::vector< int > &Extent)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadDataset\fP (const std::string Filename, const std::string ObjName, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadSelect\fP (const std::string Filename, const std::string ObjName, const std::vector< unsigned > &ii, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadVectorSelect\fP (const std::string Filename, const std::string ObjName, const std::vector< unsigned > &ii, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadVectorSlab\fP (const std::string Filename, const std::string ObjName, unsigned nStart, unsigned nCount, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadDatasetSlab\fP (const std::string Filename, const std::string ObjName, unsigned nStart, unsigned nCount, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadGroupAttribute\fP (const std::string Filename, const std::string GroupName, const std::string ObjName, T &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFReadGroupAttribute\fP (const std::string Filename, const std::string GroupName, const std::string ObjName, std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFWriteDataset\fP (const std::string Filename, const std::string ObjName, const std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFWriteDataset2D\fP (const std::string Filename, const std::string ObjName, const std::vector< std::vector< T > > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFWriteDatasetVector\fP (const std::string Filename, const std::string ObjName, const std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "void \fBHDFCreateGroup\fP (const std::string Filename, const std::string GroupName)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFWriteGroupAttribute\fP (const std::string Filename, const std::string GroupName, const std::string ObjName, const std::vector< T > &Data)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBHDFWriteGroupAttribute\fP (const std::string Filename, const std::string GroupName, const std::string ObjName, T Data)"
+.br
+.ti -1c
+.RI "template<> void \fBHDFWriteGroupAttribute< std::string >\fP (const std::string Filename, const std::string GroupName, const std::string ObjName, std::string Data)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Some templated C++ HDF5 front-end functions, for new HDF5 versions. 
+
+
+.PP
+Definition in file \fBHDFIO_new.h\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void AssertFileOpen (std::string Filename)\fC [inline]\fP"
+.PP
+Definition at line 72 of file HDFIO_new.h.
+.PP
+References DoesFileExist().
+.SS "bool DoesFileExist (std::string Filename)\fC [inline]\fP"
+.PP
+Definition at line 62 of file HDFIO_new.h.
+.SS "template<typename T > hid_t GetDataType (void)\fC [inline]\fP"
+.PP
+Definition at line 38 of file HDFIO_new.h.
+.SS "void HDFCreateFile (std::string Filename)\fC [inline]\fP"
+.PP
+Definition at line 80 of file HDFIO_new.h.
+.SS "void HDFCreateGroup (const std::string Filename, const std::string GroupName)\fC [inline]\fP"
+.PP
+Definition at line 709 of file HDFIO_new.h.
+.SS "void HDFGetDatasetExtent (const std::string Filename, const std::string ObjName, std::vector< int > & Extent)\fC [inline]\fP"
+.PP
+Definition at line 94 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadDataset (const std::string Filename, const std::string ObjName, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 143 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadDatasetSlab (const std::string Filename, const std::string ObjName, unsigned nStart, unsigned nCount, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 432 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadGroupAttribute (const std::string Filename, const std::string GroupName, const std::string ObjName, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 544 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadGroupAttribute (const std::string Filename, const std::string GroupName, const std::string ObjName, T & Data)\fC [inline]\fP"
+.PP
+Definition at line 500 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadSelect (const std::string Filename, const std::string ObjName, const std::vector< unsigned > & ii, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 216 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadVector (const std::string Filename, const std::string ObjName, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 88 of file HDFIO_new.h.
+.PP
+References HDFReadDataset().
+.SS "template<typename T > void HDFReadVectorSelect (const std::string Filename, const std::string ObjName, const std::vector< unsigned > & ii, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 277 of file HDFIO_new.h.
+.SS "template<typename T > void HDFReadVectorSlab (const std::string Filename, const std::string ObjName, unsigned nStart, unsigned nCount, std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 367 of file HDFIO_new.h.
+.SS "template<typename T > void HDFWriteDataset (const std::string Filename, const std::string ObjName, const std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 605 of file HDFIO_new.h.
+.SS "template<typename T > void HDFWriteDataset2D (const std::string Filename, const std::string ObjName, const std::vector< std::vector< T > > & Data)\fC [inline]\fP"
+.PP
+Definition at line 633 of file HDFIO_new.h.
+.SS "template<typename T > void HDFWriteDatasetVector (const std::string Filename, const std::string ObjName, const std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 674 of file HDFIO_new.h.
+.SS "template<typename T > void HDFWriteGroupAttribute (const std::string Filename, const std::string GroupName, const std::string ObjName, T Data)\fC [inline]\fP"
+.PP
+Definition at line 750 of file HDFIO_new.h.
+.SS "template<typename T > void HDFWriteGroupAttribute (const std::string Filename, const std::string GroupName, const std::string ObjName, const std::vector< T > & Data)\fC [inline]\fP"
+.PP
+Definition at line 721 of file HDFIO_new.h.
+.SS "template<> void HDFWriteGroupAttribute< std::string > (const std::string Filename, const std::string GroupName, const std::string ObjName, std::string Data)\fC [inline]\fP"
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

@@ -1,0 +1,111 @@
+\section{MergerTreeRun.cpp File Reference}
+\label{MergerTreeRun_8cpp}\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+
+
+Rewrite of MergerTree of AMIGA, implements -\/m of amateur.  
+
+
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+{\ttfamily \#include $<$map$>$}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{MergerTreeRun_8cpp_a23cf6a553f869f6aaa2805d8a6c6dd1b}{RewriteParticleNumbers} (unsigned isnap)
+\item 
+void \hyperlink{MergerTreeRun_8cpp_a1f0b0ef934eb143911f6c3b24a51dd8c}{CreateMergeParameterFile} (unsigned isnap)
+\item 
+void \hyperlink{MergerTreeRun_8cpp_a249560c73bf9e02187d6acad63254713}{RunMergerTree} (void)
+\item 
+void \hyperlink{MergerTreeRun_8cpp_abf85a822012ed8b72d6fb3e7a7f12b09}{RunOwnMergerTree} (int isnap)
+\item 
+void \hyperlink{MergerTreeRun_8cpp_ac3ed79fc9e96ec7f92c032854e2f0e05}{MoveMergeOut} (unsigned isnap)
+\item 
+void \hyperlink{MergerTreeRun_8cpp_a7fd5b46e681f15aaa5ca850f51d1fee4}{MergerTreeRun} (unsigned isnap)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Rewrite of MergerTree of AMIGA, implements -\/m of amateur. 
+
+Definition in file \hyperlink{MergerTreeRun_8cpp_source}{MergerTreeRun.cpp}.
+
+
+
+\subsection{Function Documentation}
+\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}!CreateMergeParameterFile@{CreateMergeParameterFile}}
+\index{CreateMergeParameterFile@{CreateMergeParameterFile}!MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+\subsubsection[{CreateMergeParameterFile}]{\setlength{\rightskip}{0pt plus 5cm}void CreateMergeParameterFile (unsigned {\em isnap})}\label{MergerTreeRun_8cpp_a1f0b0ef934eb143911f6c3b24a51dd8c}
+
+
+Definition at line 65 of file MergerTreeRun.cpp.
+
+
+
+References Folder(), Snaps(), and writedone().
+
+\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}!MergerTreeRun@{MergerTreeRun}}
+\index{MergerTreeRun@{MergerTreeRun}!MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+\subsubsection[{MergerTreeRun}]{\setlength{\rightskip}{0pt plus 5cm}void MergerTreeRun (unsigned {\em isnap})}\label{MergerTreeRun_8cpp_a7fd5b46e681f15aaa5ca850f51d1fee4}
+
+
+Definition at line 192 of file MergerTreeRun.cpp.
+
+
+
+References RunOwnMergerTree().
+
+
+
+Referenced by main().
+
+\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}!MoveMergeOut@{MoveMergeOut}}
+\index{MoveMergeOut@{MoveMergeOut}!MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+\subsubsection[{MoveMergeOut}]{\setlength{\rightskip}{0pt plus 5cm}void MoveMergeOut (unsigned {\em isnap})}\label{MergerTreeRun_8cpp_ac3ed79fc9e96ec7f92c032854e2f0e05}
+
+
+Definition at line 184 of file MergerTreeRun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+
+\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}!RewriteParticleNumbers@{RewriteParticleNumbers}}
+\index{RewriteParticleNumbers@{RewriteParticleNumbers}!MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+\subsubsection[{RewriteParticleNumbers}]{\setlength{\rightskip}{0pt plus 5cm}void RewriteParticleNumbers (unsigned {\em isnap})}\label{MergerTreeRun_8cpp_a23cf6a553f869f6aaa2805d8a6c6dd1b}
+
+
+Definition at line 31 of file MergerTreeRun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), Snaps(), and writedebug().
+
+\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}!RunMergerTree@{RunMergerTree}}
+\index{RunMergerTree@{RunMergerTree}!MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+\subsubsection[{RunMergerTree}]{\setlength{\rightskip}{0pt plus 5cm}void RunMergerTree (void)}\label{MergerTreeRun_8cpp_a249560c73bf9e02187d6acad63254713}
+
+
+Definition at line 85 of file MergerTreeRun.cpp.
+
+
+
+References DEBUG, Folder(), RunCommand(), and writelndebug().
+
+\index{MergerTreeRun.cpp@{MergerTreeRun.cpp}!RunOwnMergerTree@{RunOwnMergerTree}}
+\index{RunOwnMergerTree@{RunOwnMergerTree}!MergerTreeRun.cpp@{MergerTreeRun.cpp}}
+\subsubsection[{RunOwnMergerTree}]{\setlength{\rightskip}{0pt plus 5cm}void RunOwnMergerTree (int {\em isnap})}\label{MergerTreeRun_8cpp_abf85a822012ed8b72d6fb3e7a7f12b09}
+
+
+Definition at line 97 of file MergerTreeRun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), Snaps(), writedebug(), and writelndebug().
+
+
+
+Referenced by MergerTreeRun().
+

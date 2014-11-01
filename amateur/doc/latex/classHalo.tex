@@ -1,0 +1,310 @@
+\section{Halo Class Reference}
+\label{classHalo}\index{Halo@{Halo}}
+
+
+{\ttfamily \#include $<$Halo.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHalo_aace30bc2c9c3b1fe479550ec854f76b2}{Halo} ()
+\item 
+\hyperlink{classHalo_af14b14344802b6c82d9099f49b74b004}{$\sim$Halo} ()
+\item 
+\hyperlink{classHalo_abfcf58fb0b55aea69bbc18f0053f4bce}{Halo} (\hyperlink{classSimulation}{Simulation} sim, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$pos, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$vel, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$mass, int $\ast$type, unsigned npart)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_aace4451e5de161d6aa8707c5ee394f21}{getMtot} ()
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_acc4fef152c532108d09973848f460c14}{getRtot} ()
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_a4800137e9fe233e1cdb439e34b4dc723}{getMvir} ()
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_ab5a35a75689e2bc0ddb683e83e8be49b}{getRvir} ()
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classHalo_aaa531bfdbdff8f5f6aea7f82e260fcaf}{getXCM} ()
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classHalo_a2783350477ec2fede9d9e2fb891d35fc}{getVCM} ()
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classHalo_a7f3f8b61f172eb1af5a57721a8a9abae}{getXMB} ()
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classHalo_a77899ddb0f14ad408d0ca3372e0ca50d}{getVMB} ()
+\item 
+int \hyperlink{classHalo_a5d30d6d529d114af2c3a1710d95e6014}{calcNpart} (int htype)
+\begin{DoxyCompactList}\small\item\em return number of particles of a given halo type \item\end{DoxyCompactList}\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_a24bcfddbfc2697c470c3b38c0c7fb80a}{calcMpart} (int htype)
+\begin{DoxyCompactList}\small\item\em return mass of particles of a given halo type \item\end{DoxyCompactList}\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_a766603cf49235de1ba704f9b894a529d}{calcSigma} (int htype)
+\begin{DoxyCompactList}\small\item\em calculate velocity dispersion sigma$^\wedge$2 = mean(v$^\wedge$2) -\/ mean(v)$^\wedge$2 \item\end{DoxyCompactList}\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHalo_a5b2122f298d378a4f480df2da1c20e98}{calcLambda} (int htype)
+\begin{DoxyCompactList}\small\item\em computes the simplified spin parameter lambda prime computes the halo spin parameter lambda' (Bullock et al. 2001). assumption: POS AND VEL CENTERED ON REFERENCE POINT (centerCM, centerMB) \item\end{DoxyCompactList}\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classHalo_a09e095503613f4fe221f305773d9892d}{calcJ} (int htype)
+\begin{DoxyCompactList}\small\item\em calculate angular momentum Angular momentum without considering Hubble flow (ASS: too short scales) \item\end{DoxyCompactList}\item 
+\hyperlink{classEigensystem3}{Eigensystem3} \hyperlink{classHalo_a14c7d35c10f92e4635365cf6ce20248c}{calcShape} (int htype)
+\begin{DoxyCompactList}\small\item\em calculate halo shape determine inertia tensor of all particles of a given type, search eigensystem \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 26 of file Halo.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Halo@{Halo}!Halo@{Halo}}
+\index{Halo@{Halo}!Halo@{Halo}}
+\subsubsection[{Halo}]{\setlength{\rightskip}{0pt plus 5cm}Halo::Halo ()}\label{classHalo_aace30bc2c9c3b1fe479550ec854f76b2}
+
+
+Definition at line 36 of file Halo.cpp.
+
+\index{Halo@{Halo}!$\sim$Halo@{$\sim$Halo}}
+\index{$\sim$Halo@{$\sim$Halo}!Halo@{Halo}}
+\subsubsection[{$\sim$Halo}]{\setlength{\rightskip}{0pt plus 5cm}Halo::$\sim$Halo ()}\label{classHalo_af14b14344802b6c82d9099f49b74b004}
+
+
+Definition at line 40 of file Halo.cpp.
+
+\index{Halo@{Halo}!Halo@{Halo}}
+\index{Halo@{Halo}!Halo@{Halo}}
+\subsubsection[{Halo}]{\setlength{\rightskip}{0pt plus 5cm}Halo::Halo ({\bf Simulation} {\em sim}, \/  {\bf real} $\ast$ {\em pos}, \/  {\bf real} $\ast$ {\em vel}, \/  {\bf real} $\ast$ {\em mass}, \/  int $\ast$ {\em type}, \/  unsigned {\em npart})}\label{classHalo_abfcf58fb0b55aea69bbc18f0053f4bce}
+
+
+Definition at line 44 of file Halo.cpp.
+
+
+
+References Simulation::getRhobox().
+
+
+
+\subsection{Member Function Documentation}
+\index{Halo@{Halo}!calcJ@{calcJ}}
+\index{calcJ@{calcJ}!Halo@{Halo}}
+\subsubsection[{calcJ}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Halo::calcJ (int {\em htype})}\label{classHalo_a09e095503613f4fe221f305773d9892d}
+
+
+calculate angular momentum Angular momentum without considering Hubble flow (ASS: too short scales) 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em htype,:}]int \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+J: \hyperlink{classVector3}{Vector3} 
+\end{DoxyReturn}
+
+
+Definition at line 659 of file Halo.cpp.
+
+
+
+References Simulation::getAsnap().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!calcLambda@{calcLambda}}
+\index{calcLambda@{calcLambda}!Halo@{Halo}}
+\subsubsection[{calcLambda}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::calcLambda (int {\em htype})}\label{classHalo_a5b2122f298d378a4f480df2da1c20e98}
+
+
+computes the simplified spin parameter lambda prime computes the halo spin parameter lambda' (Bullock et al. 2001). assumption: POS AND VEL CENTERED ON REFERENCE POINT (centerCM, centerMB) 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em htype,:}]int \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+lambda' 
+\end{DoxyReturn}
+
+
+Definition at line 609 of file Halo.cpp.
+
+
+
+References Simulation::getAsnap(), Simulation::getG(), and Vector3::norm().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!calcMpart@{calcMpart}}
+\index{calcMpart@{calcMpart}!Halo@{Halo}}
+\subsubsection[{calcMpart}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::calcMpart (int {\em htype})}\label{classHalo_a24bcfddbfc2697c470c3b38c0c7fb80a}
+
+
+return mass of particles of a given halo type 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em htype,:}]int \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+total mass of htype particles 
+\end{DoxyReturn}
+
+
+Definition at line 542 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!calcNpart@{calcNpart}}
+\index{calcNpart@{calcNpart}!Halo@{Halo}}
+\subsubsection[{calcNpart}]{\setlength{\rightskip}{0pt plus 5cm}int Halo::calcNpart (int {\em htype})}\label{classHalo_a5d30d6d529d114af2c3a1710d95e6014}
+
+
+return number of particles of a given halo type 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em htype,:}]int \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+total number of htype particles 
+\end{DoxyReturn}
+
+
+Definition at line 526 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!calcShape@{calcShape}}
+\index{calcShape@{calcShape}!Halo@{Halo}}
+\subsubsection[{calcShape}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Eigensystem3} Halo::calcShape (int {\em htype})}\label{classHalo_a14c7d35c10f92e4635365cf6ce20248c}
+
+
+calculate halo shape determine inertia tensor of all particles of a given type, search eigensystem 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em htype,:}]int \end{DoxyParams}
+
+
+Definition at line 692 of file Halo.cpp.
+
+
+
+References Eigensystem3::calcEV(), Eigensystem3::normalize(), and Matrix33::set\_\-diag().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!calcSigma@{calcSigma}}
+\index{calcSigma@{calcSigma}!Halo@{Halo}}
+\subsubsection[{calcSigma}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::calcSigma (int {\em htype})}\label{classHalo_a766603cf49235de1ba704f9b894a529d}
+
+
+calculate velocity dispersion sigma$^\wedge$2 = mean(v$^\wedge$2) -\/ mean(v)$^\wedge$2 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em htype,:}]int \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+sigma: real 
+\end{DoxyReturn}
+
+
+Definition at line 560 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getMtot@{getMtot}}
+\index{getMtot@{getMtot}!Halo@{Halo}}
+\subsubsection[{getMtot}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::getMtot ()}\label{classHalo_aace4451e5de161d6aa8707c5ee394f21}
+
+
+Definition at line 279 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getMvir@{getMvir}}
+\index{getMvir@{getMvir}!Halo@{Halo}}
+\subsubsection[{getMvir}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::getMvir ()}\label{classHalo_a4800137e9fe233e1cdb439e34b4dc723}
+
+
+Definition at line 289 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getRtot@{getRtot}}
+\index{getRtot@{getRtot}!Halo@{Halo}}
+\subsubsection[{getRtot}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::getRtot ()}\label{classHalo_acc4fef152c532108d09973848f460c14}
+
+
+Definition at line 284 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getRvir@{getRvir}}
+\index{getRvir@{getRvir}!Halo@{Halo}}
+\subsubsection[{getRvir}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Halo::getRvir ()}\label{classHalo_ab5a35a75689e2bc0ddb683e83e8be49b}
+
+
+Definition at line 294 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getVCM@{getVCM}}
+\index{getVCM@{getVCM}!Halo@{Halo}}
+\subsubsection[{getVCM}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Halo::getVCM ()}\label{classHalo_a2783350477ec2fede9d9e2fb891d35fc}
+
+
+Definition at line 304 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getVMB@{getVMB}}
+\index{getVMB@{getVMB}!Halo@{Halo}}
+\subsubsection[{getVMB}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Halo::getVMB ()}\label{classHalo_a77899ddb0f14ad408d0ca3372e0ca50d}
+
+
+Definition at line 314 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getXCM@{getXCM}}
+\index{getXCM@{getXCM}!Halo@{Halo}}
+\subsubsection[{getXCM}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Halo::getXCM ()}\label{classHalo_aaa531bfdbdff8f5f6aea7f82e260fcaf}
+
+
+Definition at line 299 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Halo@{Halo}!getXMB@{getXMB}}
+\index{getXMB@{getXMB}!Halo@{Halo}}
+\subsubsection[{getXMB}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Halo::getXMB ()}\label{classHalo_a7f3f8b61f172eb1af5a57721a8a9abae}
+
+
+Definition at line 309 of file Halo.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Halo_8h}{Halo.h}\item 
+\hyperlink{Halo_8cpp}{Halo.cpp}\end{DoxyCompactItemize}

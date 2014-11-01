@@ -1,0 +1,126 @@
+\section{Vector3.cpp File Reference}
+\label{Vector3_8cpp}\index{Vector3.cpp@{Vector3.cpp}}
+
+
+\hyperlink{classVector3}{Vector3} implementations.  
+
+
+{\ttfamily \#include $<$math.h$>$}\par
+{\ttfamily \#include $<$iterator$>$}\par
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$sstream$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$iomanip$>$}\par
+{\ttfamily \#include $<$list$>$}\par
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include $<$cassert$>$}\par
+{\ttfamily \#include $<$gsl/gsl\_\-math.h$>$}\par
+{\ttfamily \#include $<$gsl/gsl\_\-eigen.h$>$}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Vector3.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{Vector3_8cpp_ac366362734c04742f3c0777e399648af}{HDF\_\-UINT}~H5T\_\-NATIVE\_\-UINT
+\item 
+\#define \hyperlink{Vector3_8cpp_a36f55c7359c730c7b6be07a113c6af7b}{MPI\_\-UINT}~MPI\_\-UNSIGNED
+\item 
+\#define \hyperlink{Vector3_8cpp_a669eec24b7fa0bce364dc2d08724da7b}{HDF\_\-FLOAT}~H5T\_\-NATIVE\_\-FLOAT
+\item 
+\#define \hyperlink{Vector3_8cpp_a740431a9a1d25e39e670cd5f48454ce4}{FIX}(x)~(\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier})(x+0.5)
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef unsigned \hyperlink{Vector3_8cpp_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier}
+\item 
+typedef unsigned \hyperlink{Vector3_8cpp_a772b762114e74538c967388931c4a5e9}{Size}
+\item 
+typedef float \hyperlink{Vector3_8cpp_aacf5954d048aaaaef04620896706921d}{Scalar}
+\item 
+typedef float \hyperlink{Vector3_8cpp_ad8909b856fa70c7731c787994276fb03}{Weight}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::ostream \& \hyperlink{Vector3_8cpp_a751d7222f22f7264709359319164fdcd}{operator$<$$<$} (std::ostream \&s, \hyperlink{classVector3}{Vector3} v)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classVector3}{Vector3} implementations. 
+
+Definition in file \hyperlink{Vector3_8cpp_source}{Vector3.cpp}.
+
+
+
+\subsection{Define Documentation}
+\index{Vector3.cpp@{Vector3.cpp}!FIX@{FIX}}
+\index{FIX@{FIX}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{FIX}]{\setlength{\rightskip}{0pt plus 5cm}\#define FIX(x)~({\bf Identifier})(x+0.5)}\label{Vector3_8cpp_a740431a9a1d25e39e670cd5f48454ce4}
+
+
+Definition at line 59 of file Vector3.cpp.
+
+\index{Vector3.cpp@{Vector3.cpp}!HDF\_\-FLOAT@{HDF\_\-FLOAT}}
+\index{HDF\_\-FLOAT@{HDF\_\-FLOAT}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{HDF\_\-FLOAT}]{\setlength{\rightskip}{0pt plus 5cm}\#define HDF\_\-FLOAT~H5T\_\-NATIVE\_\-FLOAT}\label{Vector3_8cpp_a669eec24b7fa0bce364dc2d08724da7b}
+
+
+Definition at line 55 of file Vector3.cpp.
+
+\index{Vector3.cpp@{Vector3.cpp}!HDF\_\-UINT@{HDF\_\-UINT}}
+\index{HDF\_\-UINT@{HDF\_\-UINT}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{HDF\_\-UINT}]{\setlength{\rightskip}{0pt plus 5cm}\#define HDF\_\-UINT~H5T\_\-NATIVE\_\-UINT}\label{Vector3_8cpp_ac366362734c04742f3c0777e399648af}
+
+
+Definition at line 52 of file Vector3.cpp.
+
+\index{Vector3.cpp@{Vector3.cpp}!MPI\_\-UINT@{MPI\_\-UINT}}
+\index{MPI\_\-UINT@{MPI\_\-UINT}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{MPI\_\-UINT}]{\setlength{\rightskip}{0pt plus 5cm}\#define MPI\_\-UINT~MPI\_\-UNSIGNED}\label{Vector3_8cpp_a36f55c7359c730c7b6be07a113c6af7b}
+
+
+Definition at line 53 of file Vector3.cpp.
+
+
+
+\subsection{Typedef Documentation}
+\index{Vector3.cpp@{Vector3.cpp}!Identifier@{Identifier}}
+\index{Identifier@{Identifier}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{Identifier}]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned {\bf Identifier}}\label{Vector3_8cpp_a25e0b8ddd193bb84ebf6c0eeff6b1c82}
+
+
+Definition at line 50 of file Vector3.cpp.
+
+\index{Vector3.cpp@{Vector3.cpp}!Scalar@{Scalar}}
+\index{Scalar@{Scalar}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{Scalar}]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Scalar}}\label{Vector3_8cpp_aacf5954d048aaaaef04620896706921d}
+
+
+Definition at line 56 of file Vector3.cpp.
+
+\index{Vector3.cpp@{Vector3.cpp}!Size@{Size}}
+\index{Size@{Size}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{Size}]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned {\bf Size}}\label{Vector3_8cpp_a772b762114e74538c967388931c4a5e9}
+
+
+Definition at line 51 of file Vector3.cpp.
+
+\index{Vector3.cpp@{Vector3.cpp}!Weight@{Weight}}
+\index{Weight@{Weight}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{Weight}]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Weight}}\label{Vector3_8cpp_ad8909b856fa70c7731c787994276fb03}
+
+
+Definition at line 57 of file Vector3.cpp.
+
+
+
+\subsection{Function Documentation}
+\index{Vector3.cpp@{Vector3.cpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!Vector3.cpp@{Vector3.cpp}}
+\subsubsection[{operator$<$$<$}]{\setlength{\rightskip}{0pt plus 5cm}std::ostream\& operator$<$$<$ (std::ostream \& {\em s}, \/  {\bf Vector3} {\em v})}\label{Vector3_8cpp_a751d7222f22f7264709359319164fdcd}
+
+
+Definition at line 257 of file Vector3.cpp.
+

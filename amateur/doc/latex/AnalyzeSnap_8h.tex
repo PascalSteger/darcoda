@@ -1,0 +1,51 @@
+\section{AnalyzeSnap.h File Reference}
+\label{AnalyzeSnap_8h}\index{AnalyzeSnap.h@{AnalyzeSnap.h}}
+
+
+All publicly known functions of \hyperlink{AnalyzeSnap_8cpp}{AnalyzeSnap.cpp}.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{AnalyzeSnap_8h_a6516204219d1a28db3f597b008102243}{AnalyzeSnap} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em Analysis of one single snapshot file Analyzes a single snapshot file. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+All publicly known functions of \hyperlink{AnalyzeSnap_8cpp}{AnalyzeSnap.cpp}. 
+
+Definition in file \hyperlink{AnalyzeSnap_8h_source}{AnalyzeSnap.h}.
+
+
+
+\subsection{Function Documentation}
+\index{AnalyzeSnap.h@{AnalyzeSnap.h}!AnalyzeSnap@{AnalyzeSnap}}
+\index{AnalyzeSnap@{AnalyzeSnap}!AnalyzeSnap.h@{AnalyzeSnap.h}}
+\subsubsection[{AnalyzeSnap}]{\setlength{\rightskip}{0pt plus 5cm}int AnalyzeSnap (unsigned {\em isnap})}\label{AnalyzeSnap_8h_a6516204219d1a28db3f597b008102243}
+
+
+Analysis of one single snapshot file Analyzes a single snapshot file. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]unsigned snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+properties depending on halo type all: 1 1 1 1 15 dec dm: 0 0 1 1 3 dec gas: 0 1 0 0 4 dec stars: 1 0 0 0 8 dec bary: 1 1 0 0 12 dec
+
+
+
+Definition at line 240 of file AnalyzeSnap.cpp.
+
+
+
+References Output::appendHR(), Halo::calcJ(), Halo::calcLambda(), Halo::calcMpart(), Halo::calcNpart(), Halo::calcShape(), Halo::calcSigma(), DEBUG, Output::fillHRglobal(), Output::fillHRtype(), Folder(), GenerateDIM(), GenerateHalo(), get\_\-particle\_\-number(), Eigensystem3::getEval(), Halo::getMtot(), Halo::getMvir(), Halo::getRtot(), Halo::getRvir(), Halo::getVCM(), Halo::getVMB(), Halo::getXCM(), Halo::getXMB(), openParticlesFile(), ParticleTypeTotal, readDataBlocks(), Simulation::setBoxlength(), Simulation::setIsnap(), Simulation::setMass(), Simulation::setNhalo(), Simulation::setTarkinOmega(), Simulation::setZsnap(), Snaps(), Output::writeHR(), Output::writeHRstripped(), writeln(), and writelndebug().
+
+
+
+Referenced by main().
+

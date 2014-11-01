@@ -1,0 +1,184 @@
+\section{NFWFit.h File Reference}
+\label{NFWFit_8h}\index{NFWFit.h@{NFWFit.h}}
+
+
+Fit of a Navarro-\/Frenk-\/White potential.  
+
+
+{\ttfamily \#include $<$cassert$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include $<$gsl/gsl\_\-vector.h$>$}\par
+{\ttfamily \#include $<$gsl/gsl\_\-blas.h$>$}\par
+{\ttfamily \#include $<$gsl/gsl\_\-multifit\_\-nlin.h$>$}\par
+{\ttfamily \#include $<$gsl/gsl\_\-errno.h$>$}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structfitdata}{fitdata}
+\item 
+struct \hyperlink{structfitdata__fix}{fitdata\_\-fix}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{NFWFit_8h_aecabecd9aa15722cb046d129e06cd8f1}{print\_\-state} (size\_\-t iter, gsl\_\-multifit\_\-fdfsolver $\ast$s)
+\item 
+int \hyperlink{NFWFit_8h_a1ac3fd28f4c33bbdd041f20032d550ab}{NFW\_\-f} (const gsl\_\-vector $\ast$p, void $\ast$data, gsl\_\-vector $\ast$f)
+\item 
+int \hyperlink{NFWFit_8h_ae5a00852fa31030c15f761db6c0fffaf}{NFW\_\-fix\_\-f} (const gsl\_\-vector $\ast$p, void $\ast$data, gsl\_\-vector $\ast$f)
+\item 
+int \hyperlink{NFWFit_8h_af063c71a242be61173b55045d393d7d3}{NFW\_\-df} (const gsl\_\-vector $\ast$p, void $\ast$data, gsl\_\-matrix $\ast$J)
+\item 
+int \hyperlink{NFWFit_8h_aa2cccd6dba4f92be1466604b59ed62c3}{NFW\_\-fix\_\-df} (const gsl\_\-vector $\ast$p, void $\ast$data, gsl\_\-matrix $\ast$J)
+\item 
+int \hyperlink{NFWFit_8h_aa0c7a0983feb99926dac2c9a1782b548}{NFW\_\-fdf} (const gsl\_\-vector $\ast$x, void $\ast$data, gsl\_\-vector $\ast$f, gsl\_\-matrix $\ast$J)
+\item 
+int \hyperlink{NFWFit_8h_a32530cff0769cee40ebf88d4b49722db}{NFW\_\-fix\_\-fdf} (const gsl\_\-vector $\ast$x, void $\ast$data, gsl\_\-vector $\ast$f, gsl\_\-matrix $\ast$J)
+\item 
+int \hyperlink{NFWFit_8h_a29002cac08d9dde704e3e08ebdadb2da}{NFW\_\-fit} (const std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&r, const std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&rho, const std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&sigma\_\-rho, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} deltac0, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rs0, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&deltac, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&edeltac, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&rs, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&ers)
+\item 
+int \hyperlink{NFWFit_8h_aa91c4fd9ac027504e75d7f3c44dced86}{NFW\_\-fix\_\-fit} (const std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&r, const std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&rho, const std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&sigma\_\-rho, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rs0, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&rs, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&ers)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Fit of a Navarro-\/Frenk-\/White potential. 
+
+Definition in file \hyperlink{NFWFit_8h_source}{NFWFit.h}.
+
+
+
+\subsection{Function Documentation}
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-df@{NFW\_\-df}}
+\index{NFW\_\-df@{NFW\_\-df}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-df}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-df (const gsl\_\-vector $\ast$ {\em p}, \/  void $\ast$ {\em data}, \/  gsl\_\-matrix $\ast$ {\em J})}\label{NFWFit_8h_af063c71a242be61173b55045d393d7d3}
+
+
+Definition at line 118 of file NFWFit.h.
+
+
+
+References fitdata::n, fitdata::sigma, and fitdata::x.
+
+
+
+Referenced by NFW\_\-fdf(), and NFW\_\-fit().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-f@{NFW\_\-f}}
+\index{NFW\_\-f@{NFW\_\-f}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-f}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-f (const gsl\_\-vector $\ast$ {\em p}, \/  void $\ast$ {\em data}, \/  gsl\_\-vector $\ast$ {\em f})}\label{NFWFit_8h_a1ac3fd28f4c33bbdd041f20032d550ab}
+
+
+Definition at line 74 of file NFWFit.h.
+
+
+
+References fitdata::n, fitdata::sigma, fitdata::x, and fitdata::y.
+
+
+
+Referenced by NFW\_\-fdf(), and NFW\_\-fit().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-fdf@{NFW\_\-fdf}}
+\index{NFW\_\-fdf@{NFW\_\-fdf}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-fdf}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-fdf (const gsl\_\-vector $\ast$ {\em x}, \/  void $\ast$ {\em data}, \/  gsl\_\-vector $\ast$ {\em f}, \/  gsl\_\-matrix $\ast$ {\em J})}\label{NFWFit_8h_aa0c7a0983feb99926dac2c9a1782b548}
+
+
+Definition at line 195 of file NFWFit.h.
+
+
+
+References NFW\_\-df(), and NFW\_\-f().
+
+
+
+Referenced by NFW\_\-fit().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-fit@{NFW\_\-fit}}
+\index{NFW\_\-fit@{NFW\_\-fit}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-fit}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-fit (const std::vector$<$ {\bf real} $>$ \& {\em r}, \/  const std::vector$<$ {\bf real} $>$ \& {\em rho}, \/  const std::vector$<$ {\bf real} $>$ \& {\em sigma\_\-rho}, \/  {\bf real} {\em deltac0}, \/  {\bf real} {\em rs0}, \/  {\bf real} \& {\em deltac}, \/  {\bf real} \& {\em edeltac}, \/  {\bf real} \& {\em rs}, \/  {\bf real} \& {\em ers})}\label{NFWFit_8h_a29002cac08d9dde704e3e08ebdadb2da}
+
+
+Definition at line 209 of file NFWFit.h.
+
+
+
+References fitdata\_\-fix::n, NFW\_\-df(), NFW\_\-f(), NFW\_\-fdf(), print\_\-state(), and fitdata::x.
+
+
+
+Referenced by HaloProperties::FitNFWProfile2().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-fix\_\-df@{NFW\_\-fix\_\-df}}
+\index{NFW\_\-fix\_\-df@{NFW\_\-fix\_\-df}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-fix\_\-df}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-fix\_\-df (const gsl\_\-vector $\ast$ {\em p}, \/  void $\ast$ {\em data}, \/  gsl\_\-matrix $\ast$ {\em J})}\label{NFWFit_8h_aa2cccd6dba4f92be1466604b59ed62c3}
+
+
+Definition at line 172 of file NFWFit.h.
+
+
+
+References fitdata\_\-fix::mvir, fitdata\_\-fix::n, fitdata\_\-fix::rvir, fitdata\_\-fix::sigma, and fitdata\_\-fix::x.
+
+
+
+Referenced by NFW\_\-fix\_\-fdf(), and NFW\_\-fix\_\-fit().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-fix\_\-f@{NFW\_\-fix\_\-f}}
+\index{NFW\_\-fix\_\-f@{NFW\_\-fix\_\-f}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-fix\_\-f}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-fix\_\-f (const gsl\_\-vector $\ast$ {\em p}, \/  void $\ast$ {\em data}, \/  gsl\_\-vector $\ast$ {\em f})}\label{NFWFit_8h_ae5a00852fa31030c15f761db6c0fffaf}
+
+
+Definition at line 94 of file NFWFit.h.
+
+
+
+References fitdata\_\-fix::mvir, fitdata\_\-fix::n, fitdata\_\-fix::rvir, fitdata\_\-fix::sigma, fitdata\_\-fix::x, and fitdata\_\-fix::y.
+
+
+
+Referenced by NFW\_\-fix\_\-fdf(), and NFW\_\-fix\_\-fit().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-fix\_\-fdf@{NFW\_\-fix\_\-fdf}}
+\index{NFW\_\-fix\_\-fdf@{NFW\_\-fix\_\-fdf}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-fix\_\-fdf}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-fix\_\-fdf (const gsl\_\-vector $\ast$ {\em x}, \/  void $\ast$ {\em data}, \/  gsl\_\-vector $\ast$ {\em f}, \/  gsl\_\-matrix $\ast$ {\em J})}\label{NFWFit_8h_a32530cff0769cee40ebf88d4b49722db}
+
+
+Definition at line 202 of file NFWFit.h.
+
+
+
+References NFW\_\-fix\_\-df(), and NFW\_\-fix\_\-f().
+
+
+
+Referenced by NFW\_\-fix\_\-fit().
+
+\index{NFWFit.h@{NFWFit.h}!NFW\_\-fix\_\-fit@{NFW\_\-fix\_\-fit}}
+\index{NFW\_\-fix\_\-fit@{NFW\_\-fix\_\-fit}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{NFW\_\-fix\_\-fit}]{\setlength{\rightskip}{0pt plus 5cm}int NFW\_\-fix\_\-fit (const std::vector$<$ {\bf real} $>$ \& {\em r}, \/  const std::vector$<$ {\bf real} $>$ \& {\em rho}, \/  const std::vector$<$ {\bf real} $>$ \& {\em sigma\_\-rho}, \/  {\bf real} {\em rvir}, \/  {\bf real} {\em mvir}, \/  {\bf real} {\em rs0}, \/  {\bf real} \& {\em rs}, \/  {\bf real} \& {\em ers})}\label{NFWFit_8h_aa91c4fd9ac027504e75d7f3c44dced86}
+
+
+Definition at line 289 of file NFWFit.h.
+
+
+
+References fitdata::n, NFW\_\-fix\_\-df(), NFW\_\-fix\_\-f(), NFW\_\-fix\_\-fdf(), print\_\-state(), and fitdata\_\-fix::x.
+
+
+
+Referenced by HaloProperties::FitNFWProfile1(), and HaloProperties::FitNFWProfile200().
+
+\index{NFWFit.h@{NFWFit.h}!print\_\-state@{print\_\-state}}
+\index{print\_\-state@{print\_\-state}!NFWFit.h@{NFWFit.h}}
+\subsubsection[{print\_\-state}]{\setlength{\rightskip}{0pt plus 5cm}void print\_\-state (size\_\-t {\em iter}, \/  gsl\_\-multifit\_\-fdfsolver $\ast$ {\em s})}\label{NFWFit_8h_aecabecd9aa15722cb046d129e06cd8f1}
+
+
+Definition at line 68 of file NFWFit.h.
+
+
+
+Referenced by NFW\_\-fit(), and NFW\_\-fix\_\-fit().
+

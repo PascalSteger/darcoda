@@ -1,0 +1,363 @@
+\section{Vector3 Class Reference}
+\label{classVector3}\index{Vector3@{Vector3}}
+
+
+{\ttfamily \#include $<$Vector3.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classVector3_a020d62af9911f9f174a3f2adbace2270}{Vector3} (void)
+\item 
+\hyperlink{classVector3_a22b934b48fd08329bde8985a9ba21951}{Vector3} (const \hyperlink{classVector3}{Vector3} \&v)
+\item 
+\hyperlink{classVector3_aa441f00157da1718c8d766223d82bc90}{Vector3} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} x)
+\item 
+\hyperlink{classVector3_a1988729343351dc199b041cc89a796e1}{Vector3} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} x, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} y, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} z)
+\item 
+{\footnotesize template$<$typename real\_\-t $>$ }\\\hyperlink{classVector3_aefe96fed8ce3fa3849f5730d953db4c3}{Vector3} (const real\_\-t $\ast$x0)
+\item 
+\hyperlink{classVector3_a5545e13e2e2861ece8f14b12a6a8101f}{$\sim$Vector3} ()
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_ada7bacb389008b819afcb61621b21c84}{operator=} (const \hyperlink{classVector3}{Vector3} \&b)
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_a13f0d115108c851d2f1bc244538e0687}{operator=} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_a59a714eaecbb762e374be1e97aaa7b78}{operator-\/} (void)
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classVector3_a8148b32df1f3e85dfdbd360c8832a060}{operator+} (const \hyperlink{classVector3}{Vector3} \&x) const 
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classVector3_a5ee2524456ce751c6da5d6e05adb53f9}{operator-\/} (const \hyperlink{classVector3}{Vector3} \&x) const 
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classVector3_ae3dce9c6ce9eb2c7cc0cac441b117070}{operator$\ast$} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classVector3_aaeec54dedd1e7c460beb3437bc3de44b}{operator/} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_a0c96d7fefbb7bb0b62d51094e53e6b62}{operator+=} (const \hyperlink{classVector3}{Vector3} \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_ad083727f119bc00233c6c1adba1d080b}{operator-\/=} (const \hyperlink{classVector3}{Vector3} \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_a6050e2dbdfe59ac8738390a37e4b705c}{operator$\ast$=} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_a08119e6da7d8f016353fb75afff686a1}{operator/=} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \& \hyperlink{classVector3_ab82f293f33397e921c38259b1045cf18}{operator()} (const unsigned i)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classVector3_abd1ce86e44c16023a8e5527b1ab58c4c}{operator$\ast$} (const \hyperlink{classVector3}{Vector3} \&vb) const 
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classVector3_a1e8229da8ceab6b2c04173ca97dfea34}{operator$^\wedge$} (const \hyperlink{classVector3}{Vector3} \&vb) const 
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classVector3_a8eacbf2e984bf2dc389a9b74136af839}{norm} (void) const 
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classVector3_a37503304451b4709760b16bd03bc6cdf}{norm2} (void) const 
+\item 
+\hyperlink{classVector3}{Vector3} \& \hyperlink{classVector3_a29306c8a59642a807872a3239b92af65}{normalize} (void)
+\item 
+std::string \hyperlink{classVector3_a5e8931f972f8768480d28a9e9ed44b5f}{toString} (void)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$ \hyperlink{classVector3_acb3d1e96d07b66586a7f78a79d9a8996}{data\_\-}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 63 of file Vector3.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\subsubsection[{Vector3}]{\setlength{\rightskip}{0pt plus 5cm}Vector3::Vector3 (void)}\label{classVector3_a020d62af9911f9f174a3f2adbace2270}
+
+
+Definition at line 61 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\subsubsection[{Vector3}]{\setlength{\rightskip}{0pt plus 5cm}Vector3::Vector3 (const {\bf Vector3} \& {\em v})}\label{classVector3_a22b934b48fd08329bde8985a9ba21951}
+
+
+Definition at line 67 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\subsubsection[{Vector3}]{\setlength{\rightskip}{0pt plus 5cm}Vector3::Vector3 ({\bf real} {\em x})}\label{classVector3_aa441f00157da1718c8d766223d82bc90}
+
+
+Definition at line 73 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\subsubsection[{Vector3}]{\setlength{\rightskip}{0pt plus 5cm}Vector3::Vector3 ({\bf real} {\em x}, \/  {\bf real} {\em y}, \/  {\bf real} {\em z})}\label{classVector3_a1988729343351dc199b041cc89a796e1}
+
+
+Definition at line 79 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\index{Vector3@{Vector3}!Vector3@{Vector3}}
+\subsubsection[{Vector3}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename real\_\-t $>$ Vector3::Vector3 (const real\_\-t $\ast$ {\em x0})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classVector3_aefe96fed8ce3fa3849f5730d953db4c3}
+
+
+Definition at line 87 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!$\sim$Vector3@{$\sim$Vector3}}
+\index{$\sim$Vector3@{$\sim$Vector3}!Vector3@{Vector3}}
+\subsubsection[{$\sim$Vector3}]{\setlength{\rightskip}{0pt plus 5cm}Vector3::$\sim$Vector3 ()}\label{classVector3_a5545e13e2e2861ece8f14b12a6a8101f}
+
+
+Definition at line 93 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+
+
+\subsection{Member Function Documentation}
+\index{Vector3@{Vector3}!norm@{norm}}
+\index{norm@{norm}!Vector3@{Vector3}}
+\subsubsection[{norm}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Vector3::norm (void) const}\label{classVector3_a8eacbf2e984bf2dc389a9b74136af839}
+
+
+Definition at line 220 of file Vector3.cpp.
+
+
+
+Referenced by Halo::calcLambda(), HaloProperties::ComputeAngularMomentum(), HaloProperties::ComputeLambdaPrime(), and normalize().
+
+\index{Vector3@{Vector3}!norm2@{norm2}}
+\index{norm2@{norm2}!Vector3@{Vector3}}
+\subsubsection[{norm2}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Vector3::norm2 (void) const}\label{classVector3_a37503304451b4709760b16bd03bc6cdf}
+
+
+Definition at line 226 of file Vector3.cpp.
+
+
+
+Referenced by normalize().
+
+\index{Vector3@{Vector3}!normalize@{normalize}}
+\index{normalize@{normalize}!Vector3@{Vector3}}
+\subsubsection[{normalize}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::normalize (void)}\label{classVector3_a29306c8a59642a807872a3239b92af65}
+
+
+Definition at line 232 of file Vector3.cpp.
+
+
+
+References norm(), and norm2().
+
+\index{Vector3@{Vector3}!operator()@{operator()}}
+\index{operator()@{operator()}!Vector3@{Vector3}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} \& Vector3::operator() (const unsigned {\em i})}\label{classVector3_ab82f293f33397e921c38259b1045cf18}
+
+
+Definition at line 191 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Vector3@{Vector3}}
+\subsubsection[{operator$\ast$}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Vector3::operator$\ast$ (const {\bf Vector3} \& {\em vb}) const}\label{classVector3_abd1ce86e44c16023a8e5527b1ab58c4c}
+
+
+Definition at line 198 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Vector3@{Vector3}}
+\subsubsection[{operator$\ast$}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Vector3::operator$\ast$ (const {\bf real} \& {\em x})}\label{classVector3_ae3dce9c6ce9eb2c7cc0cac441b117070}
+
+
+Definition at line 141 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!Vector3@{Vector3}}
+\subsubsection[{operator$\ast$=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator$\ast$= (const {\bf real} \& {\em x})}\label{classVector3_a6050e2dbdfe59ac8738390a37e4b705c}
+
+
+Definition at line 175 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator+@{operator+}}
+\index{operator+@{operator+}!Vector3@{Vector3}}
+\subsubsection[{operator+}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Vector3::operator+ (const {\bf Vector3} \& {\em x}) const}\label{classVector3_a8148b32df1f3e85dfdbd360c8832a060}
+
+
+Definition at line 123 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!Vector3@{Vector3}}
+\subsubsection[{operator+=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator+= (const {\bf Vector3} \& {\em x})}\label{classVector3_a0c96d7fefbb7bb0b62d51094e53e6b62}
+
+
+Definition at line 159 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Vector3@{Vector3}}
+\subsubsection[{operator-\/}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Vector3::operator-\/ (const {\bf Vector3} \& {\em x}) const}\label{classVector3_a5ee2524456ce751c6da5d6e05adb53f9}
+
+
+Definition at line 132 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Vector3@{Vector3}}
+\subsubsection[{operator-\/}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator-\/ (void)}\label{classVector3_a59a714eaecbb762e374be1e97aaa7b78}
+
+
+Definition at line 115 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!Vector3@{Vector3}}
+\subsubsection[{operator-\/=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator-\/= (const {\bf Vector3} \& {\em x})}\label{classVector3_ad083727f119bc00233c6c1adba1d080b}
+
+
+Definition at line 167 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator/@{operator/}}
+\index{operator/@{operator/}!Vector3@{Vector3}}
+\subsubsection[{operator/}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Vector3::operator/ (const {\bf real} \& {\em x})}\label{classVector3_aaeec54dedd1e7c460beb3437bc3de44b}
+
+
+Definition at line 150 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator/=@{operator/=}}
+\index{operator/=@{operator/=}!Vector3@{Vector3}}
+\subsubsection[{operator/=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator/= (const {\bf real} \& {\em x})}\label{classVector3_a08119e6da7d8f016353fb75afff686a1}
+
+
+Definition at line 183 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator=@{operator=}}
+\index{operator=@{operator=}!Vector3@{Vector3}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator= (const {\bf real} \& {\em x})}\label{classVector3_a13f0d115108c851d2f1bc244538e0687}
+
+
+Definition at line 107 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator=@{operator=}}
+\index{operator=@{operator=}!Vector3@{Vector3}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} \& Vector3::operator= (const {\bf Vector3} \& {\em b})}\label{classVector3_ada7bacb389008b819afcb61621b21c84}
+
+
+Definition at line 99 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!operator$^\wedge$@{operator$^\wedge$}}
+\index{operator$^\wedge$@{operator$^\wedge$}!Vector3@{Vector3}}
+\subsubsection[{operator$^\wedge$}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Vector3::operator$^\wedge$ (const {\bf Vector3} \& {\em vb}) const}\label{classVector3_a1e8229da8ceab6b2c04173ca97dfea34}
+
+
+Definition at line 208 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+\index{Vector3@{Vector3}!toString@{toString}}
+\index{toString@{toString}!Vector3@{Vector3}}
+\subsubsection[{toString}]{\setlength{\rightskip}{0pt plus 5cm}std::string Vector3::toString (void)}\label{classVector3_a5e8931f972f8768480d28a9e9ed44b5f}
+
+
+Definition at line 247 of file Vector3.cpp.
+
+
+
+References data\_\-.
+
+
+
+Referenced by HResults::toString(), and AResults::toString().
+
+
+
+\subsection{Field Documentation}
+\index{Vector3@{Vector3}!data\_\-@{data\_\-}}
+\index{data\_\-@{data\_\-}!Vector3@{Vector3}}
+\subsubsection[{data\_\-}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real}$\ast$ {\bf Vector3::data\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classVector3_acb3d1e96d07b66586a7f78a79d9a8996}
+
+
+Definition at line 65 of file Vector3.h.
+
+
+
+Referenced by operator()(), operator$\ast$(), operator$\ast$=(), operator+(), operator+=(), operator-\/(), operator-\/=(), operator/(), operator/=(), operator=(), operator$^\wedge$(), toString(), Vector3(), and $\sim$Vector3().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Vector3_8h}{Vector3.h}\item 
+\hyperlink{Vector3_8cpp}{Vector3.cpp}\end{DoxyCompactItemize}

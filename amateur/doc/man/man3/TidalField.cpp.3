@@ -1,0 +1,121 @@
+.TH "TidalField.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TidalField.cpp \- 
+.PP
+Implements -t option: Computation of the tidal field.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <unistd.h>\fP
+.br
+\fC#include <sstream>\fP
+.br
+\fC#include 'TidalField.h'\fP
+.br
+\fC#include 'HDFIO.h'\fP
+.br
+\fC#include 'PoissonSolver.h'\fP
+.br
+\fC#include 'Eigensystem3.h'\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBTidalField\fP (unsigned isnap, int N, double Radius)"
+.br
+.ti -1c
+.RI "void \fBTidalField\fP (std::string snaphdf5, unsigned N, double Radius, std::string extra, std::string tensorhdf5)"
+.br
+.RI "\fIComputes the tidal field from a given mass distribution. \fP"
+.ti -1c
+.RI "void \fBStoreTensorField\fP (std::string filename, unsigned nPoints, const std::vector< float > &coordinates, const std::vector< \fBMatrix33\fP > &aTensorField, float SmoothingMassScale)"
+.br
+.RI "\fIStore tensor field. store tensor field to HDF5. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const float \fBG_const\fP = 43011.7902"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implements -t option: Computation of the tidal field. 
+
+
+.PP
+Definition in file \fBTidalField.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void StoreTensorField (std::string filename, unsigned nPoints, const std::vector< float > & coordinates, const std::vector< \fBMatrix33\fP > & aTensorField, float SmoothingMassScale)"
+.PP
+Store tensor field. store tensor field to HDF5. \fBParameters:\fP
+.RS 4
+\fIfilename,:\fP path to output file 
+.br
+\fInPoints,:\fP number of points 
+.br
+\fIcoordinates,:\fP evaluation points 
+.br
+\fIaTensorField,:\fP tensor field that should be evaluated 
+.br
+\fISmoothingMassScale,:\fP smoothing scale 
+.RE
+.PP
+
+.PP
+Definition at line 217 of file TidalField.cpp.
+.PP
+References Eigensystem3::getEval(), Eigensystem3::getEvec(), HDFWriteDataset2D(), and HDFWriteDatasetVector().
+.PP
+Referenced by TidalField().
+.SS "void TidalField (std::string snaphdf5, unsigned N, double Radius, std::string extra, std::string tensorhdf5)"
+.PP
+Computes the tidal field from a given mass distribution. \fBParameters:\fP
+.RS 4
+\fIsnaphdf5,:\fP a snapshot file, converted by AnalyzeSnap 
+.br
+\fIN,:\fP the length of the density mesh 
+.br
+\fIRadius,:\fP the length scale used for smoothing 
+.br
+\fIextra,:\fP file containing the -z output of the halos (used for npart, COM) 
+.br
+\fItensorhdf5,:\fP output file for the tensor components 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 49 of file TidalField.cpp.
+.PP
+References ScalarField::diff2atCIC(), G_const, ScalarField::get_CIC(), HDFCreateFile(), HDFReadDataset(), HDFReadGroupAttribute(), HDFReadVector(), HDFWriteDataset(), ScalarField::put_CIC(), PoissonSolver< nstencil >::solve(), StoreTensorField(), write(), writedone(), and writelndone().
+.SS "void TidalField (unsigned isnap, int N, double Radius)"
+.PP
+Definition at line 25 of file TidalField.cpp.
+.PP
+References Folder(), IntToString(), Snaps(), and TidalField().
+.PP
+Referenced by main(), and TidalField().
+.SH "Variable Documentation"
+.PP 
+.SS "const float \fBG_const\fP = 43011.7902"
+.PP
+Definition at line 22 of file TidalField.cpp.
+.PP
+Referenced by TidalField().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

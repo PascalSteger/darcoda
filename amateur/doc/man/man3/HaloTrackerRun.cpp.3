@@ -1,0 +1,84 @@
+.TH "HaloTrackerRun.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HaloTrackerRun.cpp \- 
+.PP
+Implementation of -h, EXPERIMENTAL!  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBWrapperParticleNumbers\fP (unsigned isnap)"
+.br
+.ti -1c
+.RI "void \fBCreateHaloTrackerParameterFile\fP (unsigned isnap)"
+.br
+.ti -1c
+.RI "void \fBRunHaloTracker\fP (void)"
+.br
+.ti -1c
+.RI "void \fBMoveHaloTrackerOutput\fP (unsigned isnap)"
+.br
+.ti -1c
+.RI "void \fBHaloTrackerRun\fP (unsigned isnap)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implementation of -h, EXPERIMENTAL! 
+
+
+.PP
+Definition in file \fBHaloTrackerRun.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void CreateHaloTrackerParameterFile (unsigned isnap)"
+.PP
+Definition at line 63 of file HaloTrackerRun.cpp.
+.PP
+References Folder(), Snaps(), and writedone().
+.PP
+Referenced by HaloTrackerRun().
+.SS "void HaloTrackerRun (unsigned isnap)"
+.PP
+Definition at line 95 of file HaloTrackerRun.cpp.
+.PP
+References CreateHaloTrackerParameterFile(), MoveHaloTrackerOutput(), RunHaloTracker(), and WrapperParticleNumbers().
+.SS "void MoveHaloTrackerOutput (unsigned isnap)"
+.PP
+Definition at line 87 of file HaloTrackerRun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+.PP
+Referenced by HaloTrackerRun().
+.SS "void RunHaloTracker (void)"
+.PP
+Definition at line 78 of file HaloTrackerRun.cpp.
+.PP
+References DEBUG, Folder(), RunCommand(), and writelndebug().
+.PP
+Referenced by HaloTrackerRun().
+.SS "void WrapperParticleNumbers (unsigned isnap)"
+.PP
+Definition at line 32 of file HaloTrackerRun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), Snaps(), and writedebug().
+.PP
+Referenced by HaloTrackerRun().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

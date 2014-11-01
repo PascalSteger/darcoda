@@ -1,0 +1,51 @@
+\section{ExtractSnap.cpp File Reference}
+\label{ExtractSnap_8cpp}\index{ExtractSnap.cpp@{ExtractSnap.cpp}}
+
+
+Reads out a Gadget2 snapshot file and stores the values in HDF5.  
+
+
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$numeric$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include \char`\"{}HDFIO.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}ReadGadget.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{ExtractSnap_8cpp_a153efd2d127e586a6fbb2a050f440c06}{ExtractSnap} (unsigned isnap)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Reads out a Gadget2 snapshot file and stores the values in HDF5. 
+
+Definition in file \hyperlink{ExtractSnap_8cpp_source}{ExtractSnap.cpp}.
+
+
+
+\subsection{Function Documentation}
+\index{ExtractSnap.cpp@{ExtractSnap.cpp}!ExtractSnap@{ExtractSnap}}
+\index{ExtractSnap@{ExtractSnap}!ExtractSnap.cpp@{ExtractSnap.cpp}}
+\subsubsection[{ExtractSnap}]{\setlength{\rightskip}{0pt plus 5cm}void ExtractSnap (unsigned {\em isnap})}\label{ExtractSnap_8cpp_a153efd2d127e586a6fbb2a050f440c06}
+analysis of one single snapshot file 
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]ID of snapshot formatted as a string of the form \char`\"{}XXX\char`\"{} \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+error code 
+\end{DoxyReturn}
+
+
+Definition at line 42 of file ExtractSnap.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), get\_\-particle\_\-number(), HDFCreateFile(), HDFCreateGroup(), HDFWriteDataset(), HDFWriteDatasetVector(), HDFWriteGroupAttribute(), read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), RunCommand(), Snaps(), writedebug(), writedone(), writeln(), and writelndebug().
+
+
+
+Referenced by main().
+

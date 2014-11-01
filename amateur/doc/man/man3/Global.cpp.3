@@ -1,0 +1,274 @@
+.TH "Global.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Global.cpp \- 
+.PP
+Implementation of all system-wide properties that all parts of the program should know.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <string.h>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <stdlib.h>\fP
+.br
+\fC#include <limits>\fP
+.br
+\fC#include <math.h>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBDoesFileExist\fP (char *filename)"
+.br
+.ti -1c
+.RI "void \fBprintMinMaxValues\fP ()"
+.br
+.RI "\fIprint characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double \fP"
+.ti -1c
+.RI "void \fBwrite\fP (std::string text)"
+.br
+.ti -1c
+.RI "void \fBwriteln\fP (std::string text)"
+.br
+.ti -1c
+.RI "void \fBwritedone\fP (void)"
+.br
+.ti -1c
+.RI "void \fBwritelndone\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdonedebug\fP (bool DebugLevelActivated)"
+.br
+.ti -1c
+.RI "void \fBwritedebug\fP (bool DebugLevelActivated, std::string text)"
+.br
+.ti -1c
+.RI "void \fBwritelndebug\fP (bool DebugLevelActivated, std::string text)"
+.br
+.ti -1c
+.RI "void \fBRunCommand\fP (std::string command)"
+.br
+.ti -1c
+.RI "unsigned \fBGetLineNumber\fP (std::string filename)"
+.br
+.ti -1c
+.RI "void \fBreverse\fP (char s[])"
+.br
+.ti -1c
+.RI "void \fBitoa\fP (int n, char s[])"
+.br
+.ti -1c
+.RI "std::string \fBIntToString\fP (int intValue)"
+.br
+.ti -1c
+.RI "std::string \fBFolder\fP (std::string where)"
+.br
+.ti -1c
+.RI "std::string \fBSnaps\fP (unsigned SnapNo)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBfbmod\fP (\fBreal\fP x, \fBreal\fP m)"
+.br
+.ti -1c
+.RI "template<typename real_t > real_t \fBSPHK3D\fP (const real_t r, const real_t h)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implementation of all system-wide properties that all parts of the program should know. 
+
+
+.PP
+Definition in file \fBGlobal.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "bool DoesFileExist (char * filename)"
+.PP
+Definition at line 40 of file Global.cpp.
+.PP
+Referenced by AssertFileOpen().
+.SS "void donedebug (bool DebugLevelActivated)"
+.PP
+Definition at line 143 of file Global.cpp.
+.PP
+References writelndone().
+.PP
+Referenced by CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+.SS "\fBreal\fP fbmod (\fBreal\fP x, \fBreal\fP m)"
+.PP
+Definition at line 319 of file Global.cpp.
+.SS "std::string Folder (std::string where)"Returns the paths to all important folders. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwhere,:\fP which folder? allowed: amd, snap, amateur, output, parameters 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+std::string full path 
+.RE
+.PP
+
+.PP
+Definition at line 262 of file Global.cpp.
+.PP
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), Output::getAR(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), readDataBlocks(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), RunOwnMergerTree(), SubhaloMatch(), TidalField(), WrapperParticleNumbers(), Output::writeAR(), Output::writeHR(), and Output::writeHRstripped().
+.SS "unsigned GetLineNumber (std::string filename)"count the lines of a given file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename,:\fP path to the file 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+unsigned number of lines 
+.RE
+.PP
+
+.PP
+Definition at line 184 of file Global.cpp.
+.PP
+Referenced by SubhaloMatch().
+.SS "std::string IntToString (int intValue)"Convert an integer into a string. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIintValue,:\fP integer to be converted 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+std::string of that integer value 
+.RE
+.PP
+
+.PP
+Definition at line 243 of file Global.cpp.
+.PP
+References itoa().
+.PP
+Referenced by TidalField().
+.SS "void itoa (int n, char s[])"Converts an integer into a char[ ]. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIn,:\fP integer that should be printed as a character array 
+.br
+\fIs,:\fP char array that should hold the number 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 221 of file Global.cpp.
+.PP
+References reverse().
+.PP
+Referenced by IntToString().
+.SS "void printMinMaxValues (void)"
+.PP
+print characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double \fBReturns:\fP
+.RS 4
+: void 
+.RE
+.PP
+
+.PP
+Definition at line 55 of file Global.cpp.
+.SS "void reverse (char s[])"Reverse the order of characters in a string 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs,:\fP array of chars (<=> string) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 203 of file Global.cpp.
+.PP
+Referenced by itoa().
+.SS "void RunCommand (std::string command)"
+.PP
+Definition at line 174 of file Global.cpp.
+.PP
+Referenced by ExtractSnap(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RunAHFstep(), RunHaloTracker(), and RunMergerTree().
+.SS "std::string Snaps (unsigned SnapNo)"Returns the full path to an AMATEUR snapshot 
+.PP
+\fBParameters:\fP
+.RS 4
+\fISnapNo,:\fP ID of snapshot 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+std::string full_path 
+.RE
+.PP
+
+.PP
+Definition at line 291 of file Global.cpp.
+.PP
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), Output::getAR(), HelpUser(), main(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), readDataBlocks(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), SubhaloMatch(), TidalField(), WrapperParticleNumbers(), Output::writeAR(), Output::writeHR(), and Output::writeHRstripped().
+.SS "template<typename real_t > real_t SPHK3D (const real_t r, const real_t h)\fC [inline]\fP"
+.PP
+Definition at line 325 of file Global.cpp.
+.PP
+Referenced by HaloProperties::AverageVel().
+.SS "void write (std::string text)"
+.PP
+Definition at line 110 of file Global.cpp.
+.PP
+Referenced by TidalField(), and writedebug().
+.SS "void writedebug (bool DebugLevelActivated, std::string text)"
+.PP
+Definition at line 154 of file Global.cpp.
+.PP
+References write().
+.PP
+Referenced by CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+.SS "void writedone (void)"
+.PP
+Definition at line 127 of file Global.cpp.
+.PP
+Referenced by CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), and TidalField().
+.SS "void writeln (std::string text)"
+.PP
+Definition at line 119 of file Global.cpp.
+.PP
+Referenced by AnalyzeSnap(), ExtractSnap(), HelpUser(), main(), and writelndebug().
+.SS "void writelndebug (bool DebugLevelActivated, std::string text)"
+.PP
+Definition at line 165 of file Global.cpp.
+.PP
+References writeln().
+.PP
+Referenced by AnalyzeSnap(), ExtractSnap(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), and RunOwnMergerTree().
+.SS "void writelndone (void)"
+.PP
+Definition at line 135 of file Global.cpp.
+.PP
+Referenced by donedebug(), and TidalField().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

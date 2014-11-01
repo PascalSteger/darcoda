@@ -1,0 +1,75 @@
+.TH "PoissonSolver_new.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PoissonSolver_new.h \- 
+.PP
+Functions to solve the Poisson problem for rho The _new suffix means that the new fftw3.h is used.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <iostream>\fP
+.br
+\fC#include 'fftw3/fftw3.h'\fP
+.br
+\fC#include 'TidalField.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBPoissonSolver< nstencil >\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPOSdouble\fP(ix, iy, iz)   (((ix)*(ny) + (iy)) * (2*((nz)/2+1)) + (iz))"
+.br
+.ti -1c
+.RI "#define \fBACC_R\fP(ix, iy, iz)   (((ix)*(ny) + (iy)) * ((nz) + (iz)))"
+.br
+.ti -1c
+.RI "#define \fBACC_C\fP(ix, iy, iz)   (((ix)*(ny) + (iy)) * (((nz)/2+1) + (iz)))"
+.br
+.ti -1c
+.RI "#define \fBc_re\fP(c)   ((c)[0])"
+.br
+.ti -1c
+.RI "#define \fBc_im\fP(c)   ((c)[1])"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to solve the Poisson problem for rho The _new suffix means that the new fftw3.h is used. 
+
+
+.PP
+Definition in file \fBPoissonSolver_new.h\fP.
+.SH "Define Documentation"
+.PP 
+.SS "#define ACC_C(ix, iy, iz)   (((ix)*(ny) + (iy)) * (((nz)/2+1) + (iz)))"
+.PP
+Definition at line 36 of file PoissonSolver_new.h.
+.SS "#define ACC_R(ix, iy, iz)   (((ix)*(ny) + (iy)) * ((nz) + (iz)))"
+.PP
+Definition at line 35 of file PoissonSolver_new.h.
+.SS "#define c_im(c)   ((c)[1])"
+.PP
+Definition at line 42 of file PoissonSolver_new.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "#define c_re(c)   ((c)[0])"
+.PP
+Definition at line 41 of file PoissonSolver_new.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "#define POSdouble(ix, iy, iz)   (((ix)*(ny) + (iy)) * (2*((nz)/2+1)) + (iz))"
+.PP
+Definition at line 34 of file PoissonSolver_new.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

@@ -1,0 +1,110 @@
+\section{TidalField.cpp File Reference}
+\label{TidalField_8cpp}\index{TidalField.cpp@{TidalField.cpp}}
+
+
+Implements -\/t option: Computation of the tidal field.  
+
+
+{\ttfamily \#include $<$unistd.h$>$}\par
+{\ttfamily \#include $<$sstream$>$}\par
+{\ttfamily \#include \char`\"{}TidalField.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}HDFIO.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}PoissonSolver.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Eigensystem3.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{TidalField_8cpp_ad67677b74fe6123a6f5403a9610aba03}{TidalField} (unsigned isnap, int N, double Radius)
+\item 
+void \hyperlink{TidalField_8cpp_abb7805a812bc26fb645ef7cc1790a8d0}{TidalField} (std::string snaphdf5, unsigned N, double Radius, std::string extra, std::string tensorhdf5)
+\begin{DoxyCompactList}\small\item\em Computes the tidal field from a given mass distribution. \item\end{DoxyCompactList}\item 
+void \hyperlink{TidalField_8cpp_a4148c344aade56863506eafe83d9161e}{StoreTensorField} (std::string filename, unsigned nPoints, const std::vector$<$ float $>$ \&coordinates, const std::vector$<$ \hyperlink{classMatrix33}{Matrix33} $>$ \&aTensorField, float SmoothingMassScale)
+\begin{DoxyCompactList}\small\item\em Store tensor field. store tensor field to HDF5. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const float \hyperlink{TidalField_8cpp_a7b345eb0c3df6f6ba79154edea08afa6}{G\_\-const} = 43011.7902
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implements -\/t option: Computation of the tidal field. 
+
+Definition in file \hyperlink{TidalField_8cpp_source}{TidalField.cpp}.
+
+
+
+\subsection{Function Documentation}
+\index{TidalField.cpp@{TidalField.cpp}!StoreTensorField@{StoreTensorField}}
+\index{StoreTensorField@{StoreTensorField}!TidalField.cpp@{TidalField.cpp}}
+\subsubsection[{StoreTensorField}]{\setlength{\rightskip}{0pt plus 5cm}void StoreTensorField (std::string {\em filename}, \/  unsigned {\em nPoints}, \/  const std::vector$<$ float $>$ \& {\em coordinates}, \/  const std::vector$<$ {\bf Matrix33} $>$ \& {\em aTensorField}, \/  float {\em SmoothingMassScale})}\label{TidalField_8cpp_a4148c344aade56863506eafe83d9161e}
+
+
+Store tensor field. store tensor field to HDF5. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em filename,:}]path to output file \item[{\em nPoints,:}]number of points \item[{\em coordinates,:}]evaluation points \item[{\em aTensorField,:}]tensor field that should be evaluated \item[{\em SmoothingMassScale,:}]smoothing scale \end{DoxyParams}
+
+
+Definition at line 217 of file TidalField.cpp.
+
+
+
+References Eigensystem3::getEval(), Eigensystem3::getEvec(), HDFWriteDataset2D(), and HDFWriteDatasetVector().
+
+
+
+Referenced by TidalField().
+
+\index{TidalField.cpp@{TidalField.cpp}!TidalField@{TidalField}}
+\index{TidalField@{TidalField}!TidalField.cpp@{TidalField.cpp}}
+\subsubsection[{TidalField}]{\setlength{\rightskip}{0pt plus 5cm}void TidalField (std::string {\em snaphdf5}, \/  unsigned {\em N}, \/  double {\em Radius}, \/  std::string {\em extra}, \/  std::string {\em tensorhdf5})}\label{TidalField_8cpp_abb7805a812bc26fb645ef7cc1790a8d0}
+
+
+Computes the tidal field from a given mass distribution. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em snaphdf5,:}]a snapshot file, converted by AnalyzeSnap \item[{\em N,:}]the length of the density mesh \item[{\em Radius,:}]the length scale used for smoothing \item[{\em extra,:}]file containing the -\/z output of the halos (used for npart, COM) \item[{\em tensorhdf5,:}]output file for the tensor components \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 49 of file TidalField.cpp.
+
+
+
+References ScalarField::diff2atCIC(), G\_\-const, ScalarField::get\_\-CIC(), HDFCreateFile(), HDFReadDataset(), HDFReadGroupAttribute(), HDFReadVector(), HDFWriteDataset(), ScalarField::put\_\-CIC(), PoissonSolver$<$ nstencil $>$::solve(), StoreTensorField(), write(), writedone(), and writelndone().
+
+\index{TidalField.cpp@{TidalField.cpp}!TidalField@{TidalField}}
+\index{TidalField@{TidalField}!TidalField.cpp@{TidalField.cpp}}
+\subsubsection[{TidalField}]{\setlength{\rightskip}{0pt plus 5cm}void TidalField (unsigned {\em isnap}, \/  int {\em N}, \/  double {\em Radius})}\label{TidalField_8cpp_ad67677b74fe6123a6f5403a9610aba03}
+
+
+Definition at line 25 of file TidalField.cpp.
+
+
+
+References Folder(), IntToString(), Snaps(), and TidalField().
+
+
+
+Referenced by main(), and TidalField().
+
+
+
+\subsection{Variable Documentation}
+\index{TidalField.cpp@{TidalField.cpp}!G\_\-const@{G\_\-const}}
+\index{G\_\-const@{G\_\-const}!TidalField.cpp@{TidalField.cpp}}
+\subsubsection[{G\_\-const}]{\setlength{\rightskip}{0pt plus 5cm}const float {\bf G\_\-const} = 43011.7902}\label{TidalField_8cpp_a7b345eb0c3df6f6ba79154edea08afa6}
+
+
+Definition at line 22 of file TidalField.cpp.
+
+
+
+Referenced by TidalField().
+

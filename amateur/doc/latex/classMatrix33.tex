@@ -1,0 +1,290 @@
+\section{Matrix33 Class Reference}
+\label{classMatrix33}\index{Matrix33@{Matrix33}}
+
+
+{\ttfamily \#include $<$Matrix33.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMatrix33_a70acb6647b172d017cc4265a29a7d263}{Matrix33} ()
+\item 
+\hyperlink{classMatrix33_a1eafb2bf90a35223f076b2d404edc99e}{Matrix33} (const \hyperlink{classMatrix33}{Matrix33} \&m)
+\item 
+\hyperlink{classMatrix33_a5b1c63abd514549038c8156027d6c490}{$\sim$Matrix33} ()
+\item 
+double \& \hyperlink{classMatrix33_ab921fd61eae77695c74779bb8680580c}{operator()} (int row, int col)
+\item 
+double \hyperlink{classMatrix33_a8f0502ab1277c6bb2c95e04046e1ce70}{operator()} (int row, int col) const 
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classMatrix33_a862f4adceda842d6dcf2caefe18e42fe}{operator()} (int col) const 
+\item 
+\hyperlink{classMatrix33}{Matrix33} \& \hyperlink{classMatrix33_a8ccac0dc2c3d499ee0a1dded37f2e013}{operator=} (\hyperlink{classMatrix33}{Matrix33} const \&M)
+\item 
+\hyperlink{classMatrix33}{Matrix33} \& \hyperlink{classMatrix33_a3e31a5aca7eec3b0ff5cd288f59b4b2e}{operator=} (const double \&x)
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classMatrix33_abe2e16fd1847f3fd356d3c498fc1002b}{operator\mbox{[}$\,$\mbox{]}} (int col) const 
+\item 
+\hyperlink{classMatrix33}{Matrix33} \& \hyperlink{classMatrix33_a2f478995122658b96e587c48796eddfc}{operator+=} (const \hyperlink{classMatrix33}{Matrix33} \&m)
+\item 
+\hyperlink{classMatrix33}{Matrix33} \& \hyperlink{classMatrix33_ac00458342245fbc74a35c8b486e4bdce}{operator-\/=} (const \hyperlink{classMatrix33}{Matrix33} \&m)
+\item 
+\hyperlink{classMatrix33}{Matrix33} \hyperlink{classMatrix33_af1ac3200903b2c90ef89344ab6dff516}{operator$\ast$} (const double \&x) const 
+\item 
+\hyperlink{classMatrix33}{Matrix33} \hyperlink{classMatrix33_a637a80860f3d39dcc8b7d7110891d5b4}{operator/} (const double \&x) const 
+\item 
+void \hyperlink{classMatrix33_a2038be8fa888552ec7b1bf0ab1b12feb}{set\_\-diag} (\hyperlink{classVector3}{Vector3} diag)
+\item 
+void \hyperlink{classMatrix33_a564dc34febb2c4c76718c60ff7eb5e19}{Jacobi} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&Eval, std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ \&Evec, int \&nrot)
+\item 
+void \hyperlink{classMatrix33_ae7c3a2bd71ef8d0024d2d122de4a6f0b}{Eigen} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&Eval, std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ \&Evec) const 
+\item 
+double \hyperlink{classMatrix33_ad1bf7e69a69d1643a014cfdaa41e1493}{det} (void) const 
+\item 
+\hyperlink{classVector3}{Vector3} \hyperlink{classMatrix33_a9aa967ea6edb9d1f4084d81600be8f38}{get\_\-invariants} (std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ Evec) const 
+\item 
+std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ \hyperlink{classMatrix33_a55757dc718226a9326e8866e38fd20fe}{toVecVector3} () const 
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double $\ast$ \hyperlink{classMatrix33_a65ba09e71156f079fa39e4ce7991648c}{data\_\-}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 45 of file Matrix33.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Matrix33@{Matrix33}!Matrix33@{Matrix33}}
+\index{Matrix33@{Matrix33}!Matrix33@{Matrix33}}
+\subsubsection[{Matrix33}]{\setlength{\rightskip}{0pt plus 5cm}Matrix33::Matrix33 ()}\label{classMatrix33_a70acb6647b172d017cc4265a29a7d263}
+
+
+Definition at line 41 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!Matrix33@{Matrix33}}
+\index{Matrix33@{Matrix33}!Matrix33@{Matrix33}}
+\subsubsection[{Matrix33}]{\setlength{\rightskip}{0pt plus 5cm}Matrix33::Matrix33 (const {\bf Matrix33} \& {\em m})}\label{classMatrix33_a1eafb2bf90a35223f076b2d404edc99e}
+
+
+Definition at line 45 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!$\sim$Matrix33@{$\sim$Matrix33}}
+\index{$\sim$Matrix33@{$\sim$Matrix33}!Matrix33@{Matrix33}}
+\subsubsection[{$\sim$Matrix33}]{\setlength{\rightskip}{0pt plus 5cm}Matrix33::$\sim$Matrix33 ()}\label{classMatrix33_a5b1c63abd514549038c8156027d6c490}
+
+
+Definition at line 51 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+
+
+\subsection{Member Function Documentation}
+\index{Matrix33@{Matrix33}!det@{det}}
+\index{det@{det}!Matrix33@{Matrix33}}
+\subsubsection[{det}]{\setlength{\rightskip}{0pt plus 5cm}double Matrix33::det (void) const}\label{classMatrix33_ad1bf7e69a69d1643a014cfdaa41e1493}
+
+
+Definition at line 172 of file Matrix33.cpp.
+
+
+
+References Eigen().
+
+\index{Matrix33@{Matrix33}!Eigen@{Eigen}}
+\index{Eigen@{Eigen}!Matrix33@{Matrix33}}
+\subsubsection[{Eigen}]{\setlength{\rightskip}{0pt plus 5cm}void Matrix33::Eigen (std::vector$<$ {\bf real} $>$ \& {\em Eval}, \/  std::vector$<$ {\bf Vector3} $>$ \& {\em Evec}) const}\label{classMatrix33_ae7c3a2bd71ef8d0024d2d122de4a6f0b}
+
+
+Definition at line 148 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+
+
+Referenced by Eigensystem3::calcEV(), HaloProperties::ComputeMajorAxes(), HaloProperties::ComputeMajorAxesReduced(), det(), and get\_\-invariants().
+
+\index{Matrix33@{Matrix33}!get\_\-invariants@{get\_\-invariants}}
+\index{get\_\-invariants@{get\_\-invariants}!Matrix33@{Matrix33}}
+\subsubsection[{get\_\-invariants}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Matrix33::get\_\-invariants (std::vector$<$ {\bf Vector3} $>$ {\em Evec}) const}\label{classMatrix33_a9aa967ea6edb9d1f4084d81600be8f38}
+
+
+Definition at line 183 of file Matrix33.cpp.
+
+
+
+References Eigen().
+
+\index{Matrix33@{Matrix33}!Jacobi@{Jacobi}}
+\index{Jacobi@{Jacobi}!Matrix33@{Matrix33}}
+\subsubsection[{Jacobi}]{\setlength{\rightskip}{0pt plus 5cm}void Matrix33::Jacobi (std::vector$<$ {\bf real} $>$ \& {\em Eval}, \/  std::vector$<$ {\bf Vector3} $>$ \& {\em Evec}, \/  int \& {\em nrot})}\label{classMatrix33_a564dc34febb2c4c76718c60ff7eb5e19}
+
+
+Definition at line 215 of file Matrix33.cpp.
+
+
+
+References ROTATE().
+
+\index{Matrix33@{Matrix33}!operator()@{operator()}}
+\index{operator()@{operator()}!Matrix33@{Matrix33}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Matrix33::operator() (int {\em col}) const}\label{classMatrix33_a862f4adceda842d6dcf2caefe18e42fe}
+
+
+Definition at line 69 of file Matrix33.cpp.
+
+\index{Matrix33@{Matrix33}!operator()@{operator()}}
+\index{operator()@{operator()}!Matrix33@{Matrix33}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}double Matrix33::operator() (int {\em row}, \/  int {\em col}) const}\label{classMatrix33_a8f0502ab1277c6bb2c95e04046e1ce70}
+
+
+Definition at line 63 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator()@{operator()}}
+\index{operator()@{operator()}!Matrix33@{Matrix33}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}double \& Matrix33::operator() (int {\em row}, \/  int {\em col})}\label{classMatrix33_ab921fd61eae77695c74779bb8680580c}
+
+
+Definition at line 57 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Matrix33@{Matrix33}}
+\subsubsection[{operator$\ast$}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Matrix33} Matrix33::operator$\ast$ (const double \& {\em x}) const}\label{classMatrix33_af1ac3200903b2c90ef89344ab6dff516}
+
+
+Definition at line 121 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!Matrix33@{Matrix33}}
+\subsubsection[{operator+=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Matrix33} \& Matrix33::operator+= (const {\bf Matrix33} \& {\em m})}\label{classMatrix33_a2f478995122658b96e587c48796eddfc}
+
+
+Definition at line 105 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!Matrix33@{Matrix33}}
+\subsubsection[{operator-\/=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Matrix33} \& Matrix33::operator-\/= (const {\bf Matrix33} \& {\em m})}\label{classMatrix33_ac00458342245fbc74a35c8b486e4bdce}
+
+
+Definition at line 113 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator/@{operator/}}
+\index{operator/@{operator/}!Matrix33@{Matrix33}}
+\subsubsection[{operator/}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Matrix33} Matrix33::operator/ (const double \& {\em x}) const}\label{classMatrix33_a637a80860f3d39dcc8b7d7110891d5b4}
+
+
+Definition at line 130 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator=@{operator=}}
+\index{operator=@{operator=}!Matrix33@{Matrix33}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Matrix33} \& Matrix33::operator= (const double \& {\em x})}\label{classMatrix33_a3e31a5aca7eec3b0ff5cd288f59b4b2e}
+
+
+Definition at line 87 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator=@{operator=}}
+\index{operator=@{operator=}!Matrix33@{Matrix33}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Matrix33} \& Matrix33::operator= ({\bf Matrix33} const \& {\em M})}\label{classMatrix33_a8ccac0dc2c3d499ee0a1dded37f2e013}
+
+
+Definition at line 78 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!operator\mbox{[}\mbox{]}@{operator[]}}
+\index{operator\mbox{[}\mbox{]}@{operator[]}!Matrix33@{Matrix33}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector3} Matrix33::operator\mbox{[}$\,$\mbox{]} (int {\em col}) const}\label{classMatrix33_abe2e16fd1847f3fd356d3c498fc1002b}
+
+
+Definition at line 96 of file Matrix33.cpp.
+
+
+
+References data\_\-.
+
+\index{Matrix33@{Matrix33}!set\_\-diag@{set\_\-diag}}
+\index{set\_\-diag@{set\_\-diag}!Matrix33@{Matrix33}}
+\subsubsection[{set\_\-diag}]{\setlength{\rightskip}{0pt plus 5cm}void Matrix33::set\_\-diag ({\bf Vector3} {\em diag})}\label{classMatrix33_a2038be8fa888552ec7b1bf0ab1b12feb}
+
+
+Definition at line 140 of file Matrix33.cpp.
+
+
+
+Referenced by Halo::calcShape().
+
+\index{Matrix33@{Matrix33}!toVecVector3@{toVecVector3}}
+\index{toVecVector3@{toVecVector3}!Matrix33@{Matrix33}}
+\subsubsection[{toVecVector3}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ {\bf Vector3} $>$ Matrix33::toVecVector3 () const}\label{classMatrix33_a55757dc718226a9326e8866e38fd20fe}
+
+
+Definition at line 301 of file Matrix33.cpp.
+
+
+
+\subsection{Field Documentation}
+\index{Matrix33@{Matrix33}!data\_\-@{data\_\-}}
+\index{data\_\-@{data\_\-}!Matrix33@{Matrix33}}
+\subsubsection[{data\_\-}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ {\bf Matrix33::data\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classMatrix33_a65ba09e71156f079fa39e4ce7991648c}
+
+
+Definition at line 47 of file Matrix33.h.
+
+
+
+Referenced by Eigen(), Matrix33(), operator()(), operator$\ast$(), operator+=(), operator-\/=(), operator/(), operator=(), operator\mbox{[}$\,$\mbox{]}(), and $\sim$Matrix33().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Matrix33_8h}{Matrix33.h}\item 
+\hyperlink{Matrix33_8cpp}{Matrix33.cpp}\end{DoxyCompactItemize}

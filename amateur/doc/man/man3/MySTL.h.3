@@ -1,0 +1,75 @@
+.TH "MySTL.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MySTL.h \- 
+.PP
+Customized STL functions.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cstdlib>\fP
+.br
+\fC#include <list>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <iterator>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBarray< T >\fP"
+.br
+.ti -1c
+.RI "class \fBlist< T >\fP"
+.br
+.ti -1c
+.RI "struct \fBlist< T >::Node\fP"
+.br
+.ti -1c
+.RI "class \fBlist< T >::iterator\fP"
+.br
+.ti -1c
+.RI "class \fBlist< T >::const_iterator\fP"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef unsigned \fBIdentifier\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class T > void \fBconvertlists\fP (std::list< T > &listto, \fBlist\fP< T > &listfrom)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Customized STL functions. 
+
+
+.PP
+Definition in file \fBMySTL.h\fP.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef unsigned \fBIdentifier\fP"
+.PP
+Definition at line 15 of file MySTL.h.
+.SH "Function Documentation"
+.PP 
+.SS "template<class T > void convertlists (std::list< T > & listto, \fBlist\fP< T > & listfrom)\fC [inline]\fP"
+.PP
+Definition at line 363 of file MySTL.h.
+.PP
+References list< T >::begin(), and list< T >::end().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

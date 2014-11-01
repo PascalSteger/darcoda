@@ -1,0 +1,24 @@
+\section{Exceptions.h File Reference}
+\label{Exceptions_8h}\index{Exceptions.h@{Exceptions.h}}
+
+
+Contains the possible Exceptions that can be thrown.  
+
+
+{\ttfamily \#include $<$stdexcept$>$}\par
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classErrNoHalosFound}{ErrNoHalosFound}
+\begin{DoxyCompactList}\small\item\em Exception: No halo distribution computed or found This exception is called if operations are attempted on the halo distribution, but no such halo distribution has been calculated (through FindHalos()) or loaded (not yet available). \item\end{DoxyCompactList}\item 
+class \hyperlink{classMaxProgenitorsExceed}{MaxProgenitorsExceed}
+\begin{DoxyCompactList}\small\item\em Exception: Maximum number of halo progenitors exceeded This exception is called if a progenitor halo is added to a given halo but that halo already possesses the maximum allowed number of progenitor haloes (standard 25). This happens for memory reasons and means you have to increase the number of allowed progenitors. \item\end{DoxyCompactList}\item 
+class \hyperlink{classCrossProductWrongDimension}{CrossProductWrongDimension}
+\begin{DoxyCompactList}\small\item\em Exception: Wrong dimension (n!=3) in cross product computatoin This exception is called whenever a vector has a wrong dimension when it should be used in a cross product computation. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Contains the possible Exceptions that can be thrown. 
+
+Definition in file \hyperlink{Exceptions_8h_source}{Exceptions.h}.
+

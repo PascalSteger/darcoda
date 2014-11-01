@@ -1,0 +1,110 @@
+.TH "ReadGadget.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ReadGadget.h \- 
+.PP
+All publicly known functions from \fBReadGadget.c\fP and template instantiations.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <string>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBswap_Nbyte\fP (char *data, int n, int m)"
+.br
+.ti -1c
+.RI "size_t \fBmy_fread\fP (void *ptr, size_t size, size_t nmemb, FILE *stream)"
+.br
+.ti -1c
+.RI "int \fBfind_block\fP (FILE *fd, char *label)"
+.br
+.ti -1c
+.RI "template<typename T > int \fBread_gadget_1\fP (T *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "template<typename T > int \fBread_gadget_3\fP (T *data, std::string label, FILE *fd)"
+.br
+.ti -1c
+.RI "int \fBread_gadget_head\fP (int *npart, double *massarr, double *time, double *redshift, FILE *fd)"
+.br
+.ti -1c
+.RI "void \fBget_particle_number\fP (std::string filename, unsigned *id_min, unsigned *id_max, double *masses, unsigned *npart, unsigned &ntot, double &redshift, double &boxsize)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+All publicly known functions from \fBReadGadget.c\fP and template instantiations. 
+
+
+.PP
+Definition in file \fBReadGadget.h\fP.
+.SH "Function Documentation"
+.PP 
+.SS "int find_block (FILE * fd, char * label)"
+.SS "void get_particle_number (std::string filename, unsigned * id_min, unsigned * id_max, double * masses, unsigned * npart, unsigned & ntot, double & redshift, double & boxsize)"
+.PP
+Definition at line 220 of file ReadGadget.c.
+.PP
+References read_gadget_1(), and read_gadget_head().
+.PP
+Referenced by AnalyzeSnap(), and ExtractSnap().
+.SS "size_t my_fread (void * ptr, size_t size, size_t nmemb, FILE * stream)"
+.PP
+Definition at line 31 of file ReadGadget.c.
+.PP
+Referenced by find_block(), read_gadget_1(), read_gadget_3(), and read_gadget_head().
+.SS "template<typename T > int read_gadget_1 (T * data, std::string label, FILE * fd)\fC [inline]\fP"read a 1D array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP 
+.br
+\fIlabel\fP 
+.br
+\fIfd\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 161 of file ReadGadget.c.
+.PP
+References find_block(), my_fread(), SKIP, and swap_Nbyte().
+.PP
+Referenced by ExtractSnap(), get_particle_number(), and readDataBlocks().
+.SS "template<typename T > int read_gadget_3 (T * data, std::string label, FILE * fd)\fC [inline]\fP"read a 3D array 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP 
+.br
+\fIlabel\fP 
+.br
+\fIfd\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 190 of file ReadGadget.c.
+.PP
+References find_block(), my_fread(), SKIP, and swap_Nbyte().
+.PP
+Referenced by ExtractSnap(), and readDataBlocks().
+.SS "int read_gadget_head (int * npart, double * massarr, double * time, double * redshift, FILE * fd)"
+.SS "void swap_Nbyte (char * data, int n, int m)"
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

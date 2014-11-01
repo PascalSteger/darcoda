@@ -1,0 +1,226 @@
+.TH "list" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+list \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <MySTL.h>\fP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBconst_iterator\fP"
+.br
+.ti -1c
+.RI "class \fBiterator\fP"
+.br
+.ti -1c
+.RI "struct \fBNode\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBlist\fP ()"
+.br
+.ti -1c
+.RI "\fBlist\fP (const \fBlist\fP &L)"
+.br
+.ti -1c
+.RI "void \fBreverse\fP ()"
+.br
+.ti -1c
+.RI "void \fBswap\fP (\fBlist\fP &x)"
+.br
+.ti -1c
+.RI "\fBlist\fP & \fBoperator=\fP (const \fBlist\fP &x)"
+.br
+.ti -1c
+.RI "\fB~list\fP ()"
+.br
+.ti -1c
+.RI "void \fBclear\fP ()"
+.br
+.ti -1c
+.RI "void \fBpush_front\fP (const T &x)"
+.br
+.ti -1c
+.RI "void \fBpush_back\fP (const T &x)"
+.br
+.ti -1c
+.RI "void \fBpop_front\fP ()"
+.br
+.ti -1c
+.RI "bool \fBempty\fP ()"
+.br
+.ti -1c
+.RI "T & \fBfront\fP ()"
+.br
+.ti -1c
+.RI "const T & \fBfront\fP () const "
+.br
+.ti -1c
+.RI "T & \fBback\fP ()"
+.br
+.ti -1c
+.RI "const T & \fBback\fP () const "
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBbegin\fP ()"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBend\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBbegin\fP () const "
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBend\fP () const "
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBerase\fP (\fBiterator\fP x)"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBinsert\fP (\fBiterator\fP x, const T &y)"
+.br
+.ti -1c
+.RI "void \fBrotate\fP (\fBiterator\fP x)"
+.br
+.ti -1c
+.RI "void \fBsplice\fP (\fBlist\fP< T > &other)"
+.br
+.ti -1c
+.RI "\fBIdentifier\fP \fBsize\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<class T> class list< T >"
+
+.PP
+Definition at line 95 of file MySTL.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<class T> \fBlist\fP< T >::\fBlist\fP ()\fC [inline]\fP"
+.PP
+Definition at line 196 of file MySTL.h.
+.SS "template<class T> \fBlist\fP< T >::\fBlist\fP (const \fBlist\fP< T > & L)\fC [inline]\fP"
+.PP
+Definition at line 198 of file MySTL.h.
+.PP
+References list< T >::begin(), list< T >::end(), list< T >::push_front(), and list< T >::reverse().
+.SS "template<class T> \fBlist\fP< T >::~\fBlist\fP ()\fC [inline]\fP"
+.PP
+Definition at line 236 of file MySTL.h.
+.PP
+References list< T >::clear().
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class T> const T& \fBlist\fP< T >::back () const\fC [inline]\fP"
+.PP
+Definition at line 272 of file MySTL.h.
+.SS "template<class T> T& \fBlist\fP< T >::back ()\fC [inline]\fP"
+.PP
+Definition at line 271 of file MySTL.h.
+.SS "template<class T> \fBconst_iterator\fP \fBlist\fP< T >::begin () const\fC [inline]\fP"
+.PP
+Definition at line 278 of file MySTL.h.
+.SS "template<class T> \fBiterator\fP \fBlist\fP< T >::begin ()\fC [inline]\fP"
+.PP
+Definition at line 274 of file MySTL.h.
+.PP
+Referenced by convertlists(), list< T >::front(), list< T >::list(), list< T >::pop_front(), and list< T >::push_front().
+.SS "template<class T> void \fBlist\fP< T >::clear (void)\fC [inline]\fP"
+.PP
+Definition at line 238 of file MySTL.h.
+.PP
+Referenced by list< T >::~list().
+.SS "template<class T> bool \fBlist\fP< T >::empty ()\fC [inline]\fP"
+.PP
+Definition at line 267 of file MySTL.h.
+.PP
+Referenced by list< T >::reverse().
+.SS "template<class T> \fBconst_iterator\fP \fBlist\fP< T >::end () const\fC [inline]\fP"
+.PP
+Definition at line 282 of file MySTL.h.
+.SS "template<class T> \fBiterator\fP \fBlist\fP< T >::end ()\fC [inline]\fP"
+.PP
+Definition at line 276 of file MySTL.h.
+.PP
+Referenced by convertlists(), list< T >::erase(), list< T >::list(), list< T >::push_back(), and list< T >::rotate().
+.SS "template<class T> \fBiterator\fP \fBlist\fP< T >::erase (\fBiterator\fP x)\fC [inline]\fP"
+.PP
+Definition at line 287 of file MySTL.h.
+.PP
+References list< T >::end().
+.PP
+Referenced by list< T >::pop_front().
+.SS "template<class T> const T& \fBlist\fP< T >::front () const\fC [inline]\fP"
+.PP
+Definition at line 270 of file MySTL.h.
+.PP
+References list< T >::begin().
+.SS "template<class T> T& \fBlist\fP< T >::front ()\fC [inline]\fP"
+.PP
+Definition at line 269 of file MySTL.h.
+.PP
+References list< T >::begin().
+.SS "template<class T> \fBiterator\fP \fBlist\fP< T >::insert (\fBiterator\fP x, const T & y)\fC [inline]\fP"
+.PP
+Definition at line 301 of file MySTL.h.
+.PP
+Referenced by list< T >::push_back(), and list< T >::push_front().
+.SS "template<class T> \fBlist\fP& \fBlist\fP< T >::operator= (const \fBlist\fP< T > & x)\fC [inline]\fP"
+.PP
+Definition at line 229 of file MySTL.h.
+.PP
+References list< T >::swap().
+.SS "template<class T> void \fBlist\fP< T >::pop_front ()\fC [inline]\fP"
+.PP
+Definition at line 262 of file MySTL.h.
+.PP
+References list< T >::begin(), and list< T >::erase().
+.SS "template<class T> void \fBlist\fP< T >::push_back (const T & x)\fC [inline]\fP"
+.PP
+Definition at line 258 of file MySTL.h.
+.PP
+References list< T >::end(), and list< T >::insert().
+.SS "template<class T> void \fBlist\fP< T >::push_front (const T & x)\fC [inline]\fP"
+.PP
+Definition at line 254 of file MySTL.h.
+.PP
+References list< T >::begin(), and list< T >::insert().
+.PP
+Referenced by list< T >::list().
+.SS "template<class T> void \fBlist\fP< T >::reverse ()\fC [inline]\fP"
+.PP
+Definition at line 207 of file MySTL.h.
+.PP
+References list< T >::empty().
+.PP
+Referenced by list< T >::list().
+.SS "template<class T> void \fBlist\fP< T >::rotate (\fBiterator\fP x)\fC [inline]\fP"
+.PP
+Definition at line 312 of file MySTL.h.
+.PP
+References list< T >::end().
+.SS "template<class T> \fBIdentifier\fP \fBlist\fP< T >::size (void)\fC [inline]\fP"
+.PP
+Definition at line 354 of file MySTL.h.
+.SS "template<class T> void \fBlist\fP< T >::splice (\fBlist\fP< T > & other)\fC [inline]\fP"
+.PP
+Definition at line 337 of file MySTL.h.
+.SS "template<class T> void \fBlist\fP< T >::swap (\fBlist\fP< T > & x)\fC [inline]\fP"
+.PP
+Definition at line 223 of file MySTL.h.
+.PP
+Referenced by list< T >::operator=().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

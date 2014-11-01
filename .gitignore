@@ -19,3 +19,9 @@ backup
 *.dvi
 *.log
 *.out
+
+*.svn
+amiga
+
+CVS
+*.o

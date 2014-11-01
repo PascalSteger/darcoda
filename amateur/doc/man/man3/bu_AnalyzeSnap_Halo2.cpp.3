@@ -1,0 +1,479 @@
+.TH "bu_AnalyzeSnap_Halo2.cpp" 3 "22 Mar 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+bu_AnalyzeSnap_Halo2.cpp \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cassert>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <limits>\fP
+.br
+\fC#include <map>\fP
+.br
+\fC#include <numeric>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include 'SystemCharacteristics.h'\fP
+.br
+\fC#include 'Vector3.h'\fP
+.br
+\fC#include 'Matrix33.h'\fP
+.br
+\fC#include 'ReadGadget.h'\fP
+.br
+\fC#include 'Simulation.h'\fP
+.br
+\fC#include 'Halo.h'\fP
+.br
+\fC#include 'HDFIO.h'\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef std::vector< double > \fBVecDouble\fP"
+.br
+.ti -1c
+.RI "typedef std::vector< std::vector< double > > \fBVecVecDouble\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_Mass\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_LambdaPrime\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_Sigma\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_J\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_EVa\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_EVb\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_EVc\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "\fBVecVecDouble\fP \fBVhp_Eigenvalues\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "std::vector< std::vector< unsigned > > \fBVhp_HaloParticlesTypesCount\fP (\fBHaloTypeTotal\fP)"
+.br
+.ti -1c
+.RI "template<typename T> T \fBbyteorder\fP (T v)"
+.br
+.ti -1c
+.RI "void \fBStoreahf\fP (int isnap)"
+.br
+.ti -1c
+.RI "void \fBWriteHDF5\fP (std::string filename, double Boxsize, double Redshift, double HaloTotCount)"
+.br
+.RI "\fIwrite all calculated properties into a HDF5 file This function takes all publicly known variables and writes them to disk \fP"
+.ti -1c
+.RI "void \fBGetOffsets\fP (unsigned *ParticleIDOffsets, unsigned *npart)"
+.br
+.RI "\fIReturn offsets of particle types inside snapshot. \fP"
+.ti -1c
+.RI "void \fBReadDataBlocks\fP (std::string SnapshotFilename, int TotalNOParticles, int *&id, \fBreal\fP *&pos, \fBreal\fP *&vel, \fBreal\fP *&mass)"
+.br
+.RI "\fIRead snapshot data. \fP"
+.ti -1c
+.RI "void \fBopenParticlesFile\fP (unsigned isnap, std::ifstream &SnapshotParticles)"
+.br
+.RI "\fIOpen the ahf_out_particles file take ifstream and open particles file with it. \fP"
+.ti -1c
+.RI "void \fBPushBackHPoutput\fP (unsigned HaloTypeIterator, \fBVector3\fP J, std::vector< \fBVector3\fP > Eigenvectors, \fBVector3\fP Eigenvalues, double lambda, double Mtot, double Sigma)"
+.br
+.RI "\fIPush back all HP outputs for the different halos Push back onto the Vhp_ vectors the respective values. \fP"
+.ti -1c
+.RI "void \fBReadSnapParticlesBunch\fP (std::ifstream &SnapshotParticles, unsigned HaloPopulation, unsigned *&ParticleIndexID, int *&ParticleIndexType)"
+.br
+.RI "\fIRead a halo full of snapshot particles from ahf_out_particles Read in a slab of HaloPopulation particles. \fP"
+.ti -1c
+.RI "void \fBGenerateHalo2\fP (unsigned HaloPopulation, std::ifstream &SnapshotParticles, const std::map< int, unsigned > &DoubleIndexMapi, unsigned *&ParticleCounter, unsigned *&ParticleOffset, \fBreal\fP *&pos, \fBreal\fP *&vel, \fBreal\fP *&mass, \fBreal\fP *&pos2, \fBreal\fP *&vel2, \fBreal\fP *&mass2)"
+.br
+.RI "\fIpreparing halo2 change position of values in pos, vel, mass according to particle type, should go into \fBHalo\fP as SubhaloCreation \fP"
+.ti -1c
+.RI "void \fBAnalyzeSnap\fP (unsigned isnap)"
+.br
+.RI "\fIAnalysis of one single snapshot file Analyzes a single snapshot file. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const int \fBHaloTypeTotal\fP = 4"
+.br
+.ti -1c
+.RI "const int \fBParticleTypeTotal\fP = 6"
+.br
+.ti -1c
+.RI "const double \fBOmega_M\fP = 0.3"
+.br
+.ti -1c
+.RI "const double \fBh\fP = 0.7"
+.br
+.ti -1c
+.RI "double \fBrhobox\fP = 0.0"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVhp_PosCM\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVhp_PosMB\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVhp_VelCM\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVhp_Rvir\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVhp_Mvir\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBVhp_HaloParticlesCount\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_npart\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_nvpart\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_ovdens\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_sigV\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_J\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_EW\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_EVa\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_EVb\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_EVc\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_Ekin\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_Epot\fP"
+.br
+.ti -1c
+.RI "\fBVecDouble\fP \fBVahf_xc\fP"
+.br
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef std::vector<double> \fBVecDouble\fP"
+.PP
+Definition at line 51 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "typedef std::vector<std::vector <double> > \fBVecVecDouble\fP"
+.PP
+Definition at line 52 of file bu_AnalyzeSnap_Halo2.cpp.
+.SH "Function Documentation"
+.PP 
+.SS "void AnalyzeSnap (unsigned isnap)"
+.PP
+Analysis of one single snapshot file Analyzes a single snapshot file. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIisnap\fP unsigned snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 391 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References Halo::calcABC(), Halo::calcEV(), Halo::calcJ(), Halo::calcLambda(), Halo::calcSigma(), DEBUG, Folder(), GenerateHalo(), GenerateHalo2(), get_particle_number(), Halo::getMtot(), Halo::getMvir(), GetOffsets(), Halo::getRvir(), Halo::getVCM(), Halo::getXCM(), Halo::getXMB(), HaloTypeTotal, openParticlesFile(), ParticleTypeTotal, PushBackHPoutput(), ReadDataBlocks(), Simulation::setZsnap(), Snaps(), Storeahf(), Matrix33::toVecVector3(), Vhp_HaloParticlesCount, Vhp_Mvir, Vhp_PosCM, Vhp_PosMB, Vhp_Rvir, Vhp_VelCM, writedebug(), WriteHDF5(), writeln(), and writelndebug().
+.SS "template<typename T> T byteorder (T v)\fC [inline]\fP"
+.PP
+conversion between little/big endian 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIv\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+.RE
+.PP
+
+.PP
+Definition at line 85 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "void GenerateHalo2 (unsigned HaloPopulation, std::ifstream & SnapshotParticles, const std::map< int, unsigned > & DoubleIndexMapi, unsigned *& ParticleCounter, unsigned *& ParticleOffset, \fBreal\fP *& pos, \fBreal\fP *& vel, \fBreal\fP *& mass, \fBreal\fP *& pos2, \fBreal\fP *& vel2, \fBreal\fP *& mass2)"
+.PP
+preparing halo2 change position of values in pos, vel, mass according to particle type, should go into \fBHalo\fP as SubhaloCreation 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIHaloPopulation,:\fP unsigned particles total 
+.br
+\fISnapshotParticles,:\fP std::ifstream of ahf_out_particles 
+.br
+\fIDoubleIndexMap,:\fP map with reverse lookup possibility 
+.br
+\fIparticleCounter,:\fP unsigned *&, holds of particles per type 
+.br
+\fIParticleOffset,:\fP unsigned *&, holds relevant parts of accumulated particleCounter 
+.br
+\fIpos,vel,mass,:\fP const double *&, original data 
+.br
+\fIpos2,vel2,mass2,:\fP double *&, data for this halo, sorted by particle type 
+.RE
+.PP
+
+.PP
+Definition at line 331 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References HaloTypeTotal, ParticleTypeTotal, ReadSnapParticlesBunch(), and Vhp_HaloParticlesTypesCount().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void GetOffsets (unsigned * ParticleIDOffsets, unsigned * npart)"
+.PP
+Return offsets of particle types inside snapshot. 
+.PP
+Definition at line 208 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References ParticleTypeTotal.
+.SS "void openParticlesFile (unsigned isnap, std::ifstream & SnapshotParticles)"
+.PP
+Open the ahf_out_particles file take ifstream and open particles file with it. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIisnap,:\fP unsigned of which snapshot, see SystemCharacteristics 
+.br
+\fISnapshotParticles,:\fP ifstream by ref 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 263 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References Folder(), and Snaps().
+.SS "void PushBackHPoutput (unsigned HaloTypeIterator, \fBVector3\fP J, std::vector< \fBVector3\fP > Eigenvectors, \fBVector3\fP Eigenvalues, double lambda, double Mtot, double Sigma)"
+.PP
+Push back all HP outputs for the different halos Push back onto the Vhp_ vectors the respective values. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIHaloTypeIterator,:\fP particle type in halo 
+.br
+\fIJ,:\fP angular momentum 
+.br
+\fIEigenvectors\fP 
+.br
+\fIEigenvalues\fP 
+.br
+\fIlambda,:\fP dimensionless spin parameter, between 0 (no ordered rotation) to 0.425 (razor-thin, cold, exponential disk) 
+.br
+\fIMtot,:\fP total mass 
+.br
+\fISigma,:\fP velocity dispersion 
+.RE
+.PP
+
+.PP
+Definition at line 283 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References Vhp_Eigenvalues(), Vhp_EVa(), Vhp_EVb(), Vhp_EVc(), Vhp_J(), Vhp_LambdaPrime(), Vhp_Mass(), and Vhp_Sigma().
+.SS "void ReadDataBlocks (std::string SnapshotFilename, int TotalNOParticles, int *& id, \fBreal\fP *& pos, \fBreal\fP *& vel, \fBreal\fP *& mass)"
+.PP
+Read snapshot data. 
+.PP
+Fill in all information from snapshot data file (id, pos, vel, mass) 
+.PP
+\fBParameters:\fP
+.RS 4
+\fISnapshotFilename\fP is string 
+.br
+\fIid\fP is int & 
+.br
+\fIpos\fP is double & (3d) 
+.br
+\fIvel\fP is double & (3d) 
+.br
+\fImass\fP is double & (1d) 
+.RE
+.PP
+
+.PP
+Definition at line 230 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References read_gadget_1(), and read_gadget_3().
+.SS "void ReadSnapParticlesBunch (std::ifstream & SnapshotParticles, unsigned HaloPopulation, unsigned *& ParticleIndexID, int *& ParticleIndexType)"
+.PP
+Read a halo full of snapshot particles from ahf_out_particles Read in a slab of HaloPopulation particles. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fISnapshotParticles,:\fP ifstream of ahf_out_particles 
+.br
+\fIHaloPopulation,:\fP int of particles in this halo 
+.br
+\fIParticleIndexID,:\fP holds the output, all identifiers 
+.br
+\fIParticleIndexType,:\fP holds the output, all types, in accordance with ParticleIndexID 
+.RE
+.PP
+
+.PP
+Definition at line 306 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+Referenced by GenerateHalo2().
+.SS "void Storeahf (int isnap)"
+.PP
+Definition at line 103 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References Folder(), Snaps(), Vahf_Ekin, Vahf_Epot, Vahf_EVa, Vahf_EVb, Vahf_EVc, Vahf_EW, Vahf_J, Vahf_npart, Vahf_nvpart, Vahf_ovdens, Vahf_sigV, and Vahf_xc.
+.SS "\fBVecVecDouble\fP Vhp_Eigenvalues (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_EVa (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_EVb (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_EVc (\fBHaloTypeTotal\fP)"
+.PP
+.SS "std::vector< std::vector < unsigned > > Vhp_HaloParticlesTypesCount (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_J (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_LambdaPrime (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_Mass (\fBHaloTypeTotal\fP)"
+.PP
+.SS "\fBVecVecDouble\fP Vhp_Sigma (\fBHaloTypeTotal\fP)"
+.PP
+.SS "void WriteHDF5 (std::string filename, double Boxsize, double Redshift, double HaloTotCount)"
+.PP
+write all calculated properties into a HDF5 file This function takes all publicly known variables and writes them to disk 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP string of the HDF5 output file 
+.br
+\fIBoxsize\fP boxsize of simulation volume in Mpc/h 
+.br
+\fIRedshift\fP simulation snapshot redshift 
+.br
+\fIHaloTotCount\fP total number of halos 
+.RE
+.PP
+
+.PP
+Definition at line 159 of file bu_AnalyzeSnap_Halo2.cpp.
+.PP
+References HaloTypeTotal, HDFCreateFile(), HDFCreateGroup(), HDFWriteDataset(), HDFWriteDatasetVector(), HDFWriteGroupAttribute(), Vahf_Ekin, Vahf_Epot, Vahf_EVa, Vahf_EVb, Vahf_EVc, Vahf_EW, Vahf_J, Vahf_npart, Vahf_nvpart, Vahf_ovdens, Vahf_sigV, Vahf_xc, Vhp_Eigenvalues(), Vhp_EVa(), Vhp_EVb(), Vhp_EVc(), Vhp_HaloParticlesCount, Vhp_HaloParticlesTypesCount(), Vhp_J(), Vhp_LambdaPrime(), Vhp_Mass(), Vhp_Mvir, Vhp_PosCM, Vhp_PosMB, Vhp_Rvir, Vhp_Sigma(), and Vhp_VelCM.
+.SH "Variable Documentation"
+.PP 
+.SS "const double \fBh\fP = 0.7"
+.PP
+Definition at line 58 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "const int \fBHaloTypeTotal\fP = 4"
+.PP
+Definition at line 54 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "const double \fBOmega_M\fP = 0.3"
+.PP
+Definition at line 57 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "const int \fBParticleTypeTotal\fP = 6"
+.PP
+Definition at line 55 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "double \fBrhobox\fP = 0.0"
+.PP
+Definition at line 61 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_Ekin\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_Epot\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_EVa\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_EVb\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_EVc\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_EW\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_J\fP"
+.PP
+Definition at line 75 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_npart\fP"
+.PP
+Definition at line 75 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_nvpart\fP"
+.PP
+Definition at line 75 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_ovdens\fP"
+.PP
+Definition at line 75 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_sigV\fP"
+.PP
+Definition at line 75 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVahf_xc\fP"
+.PP
+Definition at line 76 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "std::vector< unsigned > \fBVhp_HaloParticlesCount\fP"
+.PP
+Definition at line 72 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVhp_Mvir\fP"
+.PP
+Definition at line 67 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVhp_PosCM\fP"
+.PP
+Definition at line 67 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVhp_PosMB\fP"
+.PP
+Definition at line 67 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVhp_Rvir\fP"
+.PP
+Definition at line 67 of file bu_AnalyzeSnap_Halo2.cpp.
+.SS "\fBVecDouble\fP \fBVhp_VelCM\fP"
+.PP
+Definition at line 67 of file bu_AnalyzeSnap_Halo2.cpp.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

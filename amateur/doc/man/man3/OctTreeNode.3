@@ -1,0 +1,145 @@
+.TH "OctTreeNode" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OctTreeNode \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <OctTree.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBOctTreeNode\fP (std::vector< \fBPseudoBody\fP > *Bodies)"
+.br
+.ti -1c
+.RI "\fBOctTreeNode\fP (std::vector< \fBPseudoBody\fP > &Bodies, \fBreal\fP min_size)"
+.br
+.ti -1c
+.RI "\fB~OctTreeNode\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBtraverse\fP (const \fBreal\fP &x, const \fBreal\fP &y, const \fBreal\fP &z, const \fBreal\fP &theta, const \fBreal\fP &plumsoft)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBpartition\fP (const std::vector< \fBPseudoBody\fP > &All, std::vector< \fBPseudoBody\fP > ***Bodies)"
+.br
+.ti -1c
+.RI "void \fBgetBoundingBox\fP (const std::vector< \fBPseudoBody\fP > &bodies, \fBreal\fP &xc, \fBreal\fP &yc, \fBreal\fP &zc, \fBreal\fP &l)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBOctTreeNode\fP ** \fBm_subnodes\fP"
+.br
+.ti -1c
+.RI "\fBPseudoBody\fP \fBm_body\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_xc\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_yc\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_zc\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_l\fP"
+.br
+.ti -1c
+.RI "bool \fBm_bleaf\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 476 of file OctTree.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "OctTreeNode::OctTreeNode (std::vector< \fBPseudoBody\fP > * Bodies)\fC [inline]\fP"
+.PP
+Definition at line 544 of file OctTree.h.
+.PP
+References getBoundingBox(), m_l, m_xc, m_yc, and m_zc.
+.PP
+Referenced by OctTreeNode().
+.SS "OctTreeNode::OctTreeNode (std::vector< \fBPseudoBody\fP > & Bodies, \fBreal\fP min_size)\fC [inline]\fP"
+.PP
+Definition at line 554 of file OctTree.h.
+.PP
+References getBoundingBox(), m_bleaf, m_l, m_subnodes, m_xc, m_yc, m_zc, OctTreeNode(), and partition().
+.SS "OctTreeNode::~OctTreeNode ()\fC [inline]\fP"
+.PP
+Definition at line 614 of file OctTree.h.
+.PP
+References m_subnodes.
+.SH "Member Function Documentation"
+.PP 
+.SS "void OctTreeNode::getBoundingBox (const std::vector< \fBPseudoBody\fP > & bodies, \fBreal\fP & xc, \fBreal\fP & yc, \fBreal\fP & zc, \fBreal\fP & l)\fC [inline, protected]\fP"
+.PP
+Definition at line 512 of file OctTree.h.
+.PP
+Referenced by OctTreeNode().
+.SS "void OctTreeNode::partition (const std::vector< \fBPseudoBody\fP > & All, std::vector< \fBPseudoBody\fP > *** Bodies)\fC [inline, protected]\fP"
+.PP
+Definition at line 488 of file OctTree.h.
+.PP
+References m_xc, m_yc, and m_zc.
+.PP
+Referenced by OctTreeNode().
+.SS "\fBreal\fP OctTreeNode::traverse (const \fBreal\fP & x, const \fBreal\fP & y, const \fBreal\fP & z, const \fBreal\fP & theta, const \fBreal\fP & plumsoft)\fC [inline]\fP"
+.PP
+Definition at line 626 of file OctTree.h.
+.PP
+References EPS, PseudoBody::getmass(), PseudoBody::getx(), PseudoBody::getxx(), PseudoBody::getxy(), PseudoBody::getxz(), PseudoBody::gety(), PseudoBody::getyy(), PseudoBody::getyz(), PseudoBody::getz(), PseudoBody::getzz(), m_bleaf, m_body, m_l, m_subnodes, and SPLINEQ().
+.PP
+Referenced by HaloProperties::ComputePotentialTree(), and HaloProperties::ComputePotentialTreeExc().
+.SH "Field Documentation"
+.PP 
+.SS "bool \fBOctTreeNode::m_bleaf\fP\fC [protected]\fP"
+.PP
+Definition at line 486 of file OctTree.h.
+.PP
+Referenced by OctTreeNode(), and traverse().
+.SS "\fBPseudoBody\fP \fBOctTreeNode::m_body\fP\fC [protected]\fP"
+.PP
+Definition at line 481 of file OctTree.h.
+.PP
+Referenced by traverse().
+.SS "\fBreal\fP \fBOctTreeNode::m_l\fP\fC [protected]\fP"
+.PP
+Definition at line 485 of file OctTree.h.
+.PP
+Referenced by OctTreeNode(), and traverse().
+.SS "\fBOctTreeNode\fP** \fBOctTreeNode::m_subnodes\fP\fC [protected]\fP"
+.PP
+Definition at line 479 of file OctTree.h.
+.PP
+Referenced by OctTreeNode(), traverse(), and ~OctTreeNode().
+.SS "\fBreal\fP \fBOctTreeNode::m_xc\fP\fC [protected]\fP"
+.PP
+Definition at line 484 of file OctTree.h.
+.PP
+Referenced by OctTreeNode(), and partition().
+.SS "\fBreal\fP \fBOctTreeNode::m_yc\fP\fC [protected]\fP"
+.PP
+Definition at line 484 of file OctTree.h.
+.PP
+Referenced by OctTreeNode(), and partition().
+.SS "\fBreal\fP \fBOctTreeNode::m_zc\fP\fC [protected]\fP"
+.PP
+Definition at line 484 of file OctTree.h.
+.PP
+Referenced by OctTreeNode(), and partition().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

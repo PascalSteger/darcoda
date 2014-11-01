@@ -1,0 +1,71 @@
+.TH "PoissonSolver.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PoissonSolver.h \- 
+.PP
+Functions to solve the Poisson problem for rho.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'fftw3.h'\fP
+.br
+\fC#include 'TidalField.h'\fP
+.br
+\fC#include 'ScalarField.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBPoissonSolver< nstencil >\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBfftw_real\fP   double"
+.br
+.ti -1c
+.RI "#define \fBPOSdouble\fP(ix, iy, iz)   (((ix)*(ny) + (iy)) * (2*((nz)/2+1)) + (iz))"
+.br
+.ti -1c
+.RI "#define \fBACC_R\fP(ix, iy, iz)   (( (ix) * (ny) + (iy) ) * (nz) + (iz) )"
+.br
+.ti -1c
+.RI "#define \fBACC_C\fP(ix, iy, iz)   (( (ix) * (ny) + (iy) ) * ((nz)/2+1) + (iz))"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Functions to solve the Poisson problem for rho. 
+
+
+.PP
+Definition in file \fBPoissonSolver.h\fP.
+.SH "Define Documentation"
+.PP 
+.SS "#define ACC_C(ix, iy, iz)   (( (ix) * (ny) + (iy) ) * ((nz)/2+1) + (iz))"
+.PP
+Definition at line 38 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "#define ACC_R(ix, iy, iz)   (( (ix) * (ny) + (iy) ) * (nz) + (iz) )"
+.PP
+Definition at line 37 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "#define fftw_real   double"
+.PP
+Definition at line 35 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "#define POSdouble(ix, iy, iz)   (((ix)*(ny) + (iy)) * (2*((nz)/2+1)) + (iz))"
+.PP
+Definition at line 36 of file PoissonSolver.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

@@ -1,0 +1,62 @@
+\begin{DoxyAuthor}{Author}
+Pascal S. P. Steger \par
+ Department of Physics \par
+ Institute of Astronomy \par
+ ETH Zurich \par
+ Switzerland \par
+ \href{mailto:psteger@phys.ethz.ch}{\tt psteger@phys.ethz.ch} \par
+
+
+Oliver J. Hahn \par
+ Department of Physics \par
+ Institute of Astronomy \par
+ ETH Zurich \par
+ Switzerland \par
+ \href{mailto:ohahn@phys.ethz.ch}{\tt ohahn@phys.ethz.ch} \par
+ \par
+
+\end{DoxyAuthor}
+\hypertarget{index_prelim}{}\section{Getting started}\label{index_prelim}
+{\bfseries AMATEUR} is a collection of tools to analyze snapshots from cosmological simulations performed with GADGET-\/2. It uses AHFstep from AMIGA to isolate halos and subhalos, \hyperlink{classHalo}{Halo} to extract properties for custom halos out of only one particle type, and stores all output in HDF5 or plain text files.\hypertarget{index_install}{}\section{Compilation}\label{index_install}
+{\bfseries AMATEUR} needs following non-\/standard packages to be installed on the system:
+
+
+\begin{DoxyItemize}
+\item {\bfseries GSL} -\/ the {\itshape GNU scientific library\/}. This open-\/source package can be obtained at \href{http://www.gnu.org/software/gsl.}{\tt http://www.gnu.org/software/gsl.}
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item {\bfseries HDF5} -\/ the {\itshape Hierarchical Data Format\/}. This library has been developed by NCSA and can be obtained at \href{http://hdf.ncsa.uiuc.edu/HDF5}{\tt http://hdf.ncsa.uiuc.edu/HDF5} .
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item {\bfseries FFTW} -\/ the {\itshape Fastest Fourier Transform in the West\/}. This open-\/source package can be obtained at \href{http://www.fftw.org.}{\tt http://www.fftw.org.}
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item {\bfseries AMIGA} -\/ the halo finder developed by A. Knebe.
+\end{DoxyItemize}
+
+The provided makefile is compatible with GNU-\/make, i.e. typing {\bfseries make} should build the executable {\bfseries amateur}. If your site does not have GNU-\/make, get it, or write your own Makefile.\hypertarget{index_howtorun}{}\section{Running the code}\label{index_howtorun}
+{\bfseries AMATEUR} is invoked using the following syntax
+
+{\bfseries  ./amateur ID -\/\{xamszht\}} or {\bfseries  ./amateur ID }
+
+where ID describes a snapshot given in Global and xamszt invoke the different commands
+
+
+\begin{DoxyItemize}
+\item {\bfseries x} -\/ Extract snapshot data into a HDF5 file
+\item {\bfseries a} -\/ Analyze the given snapshot using AHFstep from AMIGA
+\item {\bfseries o} -\/ wrap AHF output files for use in MATLAB
+\item {\bfseries m} -\/ Run MergerTree
+\item {\bfseries s} -\/ Match subhalos with their hosthalo.
+\item {\bfseries z} -\/ Analyze the given snapshot using \hyperlink{classHalo}{Halo}
+\item {\bfseries t} -\/ Compute the tidal field of the mass distribution
+\item {\bfseries h} -\/ Run HaloTracker from AMIGA. This is a planned feature and not implemented yet.
+\end{DoxyItemize}
+
+If only the snapshot ID is given as input parameter to {\bfseries amateur}, it will run through the commands in the order listed above. 

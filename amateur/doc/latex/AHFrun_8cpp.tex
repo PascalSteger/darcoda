@@ -1,0 +1,159 @@
+\section{AHFrun.cpp File Reference}
+\label{AHFrun_8cpp}\index{AHFrun.cpp@{AHFrun.cpp}}
+
+
+Call AHFstep from AMIGA.  
+
+
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{AHFrun_8cpp_a498c71a5b2c0c5e91a49eefbec7bde28}{CreateAHFParameterFile} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em Creates the parameter file for AHFstep Creates the parameter file for AHFstep in output directory. \item\end{DoxyCompactList}\item 
+void \hyperlink{AHFrun_8cpp_a18d1ee9bcd4bd82bd3723ad782f96baa}{RunAHFstep} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em calls AHFstep runs AHFstep parameterfile \item\end{DoxyCompactList}\item 
+void \hyperlink{AHFrun_8cpp_a0c1b81f14fbaf2f91b492b88c22048f2}{MoveAHFout} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em move output files of AHFstep Moves output files from current directory to output/\mbox{[}snap-\/string\mbox{]} \item\end{DoxyCompactList}\item 
+void \hyperlink{AHFrun_8cpp_aa08053728ff6ed1133954df327e4fb7a}{RenameAHFout} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em Renames AHFstep output files Renames output files of AHFstep using regexpressions with bash. \item\end{DoxyCompactList}\item 
+void \hyperlink{AHFrun_8cpp_a4dfcaa53f6208d77814e562b7dab7d94}{AHFrun} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em Controls execution of AHFstep. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Call AHFstep from AMIGA. 
+
+Definition in file \hyperlink{AHFrun_8cpp_source}{AHFrun.cpp}.
+
+
+
+\subsection{Function Documentation}
+\index{AHFrun.cpp@{AHFrun.cpp}!AHFrun@{AHFrun}}
+\index{AHFrun@{AHFrun}!AHFrun.cpp@{AHFrun.cpp}}
+\subsubsection[{AHFrun}]{\setlength{\rightskip}{0pt plus 5cm}void AHFrun (unsigned {\em isnap})}\label{AHFrun_8cpp_a4dfcaa53f6208d77814e562b7dab7d94}
+
+
+Controls execution of AHFstep. 
+
+Creates the parameter file, invokes AHFstep, moves output files and renames them 
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 139 of file AHFrun.cpp.
+
+
+
+References CreateAHFParameterFile(), MoveAHFout(), RenameAHFout(), and RunAHFstep().
+
+
+
+Referenced by main().
+
+\index{AHFrun.cpp@{AHFrun.cpp}!CreateAHFParameterFile@{CreateAHFParameterFile}}
+\index{CreateAHFParameterFile@{CreateAHFParameterFile}!AHFrun.cpp@{AHFrun.cpp}}
+\subsubsection[{CreateAHFParameterFile}]{\setlength{\rightskip}{0pt plus 5cm}void CreateAHFParameterFile (unsigned {\em isnap})}\label{AHFrun_8cpp_a498c71a5b2c0c5e91a49eefbec7bde28}
+
+
+Creates the parameter file for AHFstep Creates the parameter file for AHFstep in output directory. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 39 of file AHFrun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), Snaps(), and writedebug().
+
+
+
+Referenced by AHFrun().
+
+\index{AHFrun.cpp@{AHFrun.cpp}!MoveAHFout@{MoveAHFout}}
+\index{MoveAHFout@{MoveAHFout}!AHFrun.cpp@{AHFrun.cpp}}
+\subsubsection[{MoveAHFout}]{\setlength{\rightskip}{0pt plus 5cm}void MoveAHFout (unsigned {\em isnap})}\label{AHFrun_8cpp_a0c1b81f14fbaf2f91b492b88c22048f2}
+
+
+move output files of AHFstep Moves output files from current directory to output/\mbox{[}snap-\/string\mbox{]} 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 86 of file AHFrun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+
+
+
+Referenced by AHFrun().
+
+\index{AHFrun.cpp@{AHFrun.cpp}!RenameAHFout@{RenameAHFout}}
+\index{RenameAHFout@{RenameAHFout}!AHFrun.cpp@{AHFrun.cpp}}
+\subsubsection[{RenameAHFout}]{\setlength{\rightskip}{0pt plus 5cm}void RenameAHFout (unsigned {\em isnap})}\label{AHFrun_8cpp_aa08053728ff6ed1133954df327e4fb7a}
+
+
+Renames AHFstep output files Renames output files of AHFstep using regexpressions with bash. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 104 of file AHFrun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+
+
+
+Referenced by AHFrun().
+
+\index{AHFrun.cpp@{AHFrun.cpp}!RunAHFstep@{RunAHFstep}}
+\index{RunAHFstep@{RunAHFstep}!AHFrun.cpp@{AHFrun.cpp}}
+\subsubsection[{RunAHFstep}]{\setlength{\rightskip}{0pt plus 5cm}void RunAHFstep (unsigned {\em isnap})}\label{AHFrun_8cpp_a18d1ee9bcd4bd82bd3723ad782f96baa}
+
+
+calls AHFstep runs AHFstep parameterfile 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 71 of file AHFrun.cpp.
+
+
+
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writelndebug().
+
+
+
+Referenced by AHFrun().
+

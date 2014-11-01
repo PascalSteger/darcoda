@@ -1,0 +1,137 @@
+.TH "list::const_iterator" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+list::const_iterator \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <MySTL.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef T \fBvalue_type\fP"
+.br
+.ti -1c
+.RI "typedef T & \fBreference\fP"
+.br
+.ti -1c
+.RI "typedef T * \fBpointer\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBconst_iterator\fP (const Node *x=0)"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP (const \fBconst_iterator\fP &x)"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP (const \fBiterator\fP &x)"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP & \fBoperator=\fP (const \fBconst_iterator\fP &x)"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP & \fBoperator=\fP (const \fBiterator\fP &x)"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP & \fBoperator++\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBoperator++\fP (int)"
+.br
+.ti -1c
+.RI "\fBreference\fP \fBoperator*\fP () const "
+.br
+.ti -1c
+.RI "\fBpointer\fP \fBoperator->\fP () const "
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBconst_iterator\fP &x) const "
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBconst_iterator\fP &x) const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBlist\fP"
+.br
+.ti -1c
+.RI "class \fBiterator\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<class T> class list< T >::const_iterator"
+
+.PP
+Definition at line 151 of file MySTL.h.
+.SH "Member Typedef Documentation"
+.PP 
+.SS "template<class T> typedef T* \fBlist\fP< T >::\fBconst_iterator::pointer\fP"
+.PP
+Definition at line 160 of file MySTL.h.
+.SS "template<class T> typedef T& \fBlist\fP< T >::\fBconst_iterator::reference\fP"
+.PP
+Definition at line 159 of file MySTL.h.
+.SS "template<class T> typedef T \fBlist\fP< T >::\fBconst_iterator::value_type\fP"
+.PP
+Definition at line 158 of file MySTL.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<class T> \fBlist\fP< T >::const_iterator::const_iterator (const Node * x = \fC0\fP)\fC [inline]\fP"
+.PP
+Definition at line 161 of file MySTL.h.
+.SS "template<class T> \fBlist\fP< T >::const_iterator::const_iterator (const \fBconst_iterator\fP & x)\fC [inline]\fP"
+.PP
+Definition at line 162 of file MySTL.h.
+.SS "template<class T> \fBlist\fP< T >::const_iterator::const_iterator (const \fBiterator\fP & x)\fC [inline]\fP"
+.PP
+Definition at line 163 of file MySTL.h.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class T> bool \fBlist\fP< T >::const_iterator::operator!= (const \fBconst_iterator\fP & x) const\fC [inline]\fP"
+.PP
+Definition at line 186 of file MySTL.h.
+.SS "template<class T> \fBreference\fP \fBlist\fP< T >::const_iterator::operator* () const\fC [inline]\fP"
+.PP
+Definition at line 180 of file MySTL.h.
+.SS "template<class T> \fBconst_iterator\fP \fBlist\fP< T >::const_iterator::operator++ (int)\fC [inline]\fP"
+.PP
+Definition at line 176 of file MySTL.h.
+.SS "template<class T> \fBconst_iterator\fP& \fBlist\fP< T >::const_iterator::operator++ ()\fC [inline]\fP"
+.PP
+Definition at line 172 of file MySTL.h.
+.SS "template<class T> \fBpointer\fP \fBlist\fP< T >::const_iterator::operator-> () const\fC [inline]\fP"
+.PP
+Definition at line 181 of file MySTL.h.
+.SS "template<class T> \fBconst_iterator\fP& \fBlist\fP< T >::const_iterator::operator= (const \fBiterator\fP & x)\fC [inline]\fP"
+.PP
+Definition at line 168 of file MySTL.h.
+.SS "template<class T> \fBconst_iterator\fP& \fBlist\fP< T >::const_iterator::operator= (const \fBconst_iterator\fP & x)\fC [inline]\fP"
+.PP
+Definition at line 164 of file MySTL.h.
+.SS "template<class T> bool \fBlist\fP< T >::const_iterator::operator== (const \fBconst_iterator\fP & x) const\fC [inline]\fP"
+.PP
+Definition at line 182 of file MySTL.h.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "template<class T> friend class \fBiterator\fP\fC [friend]\fP"
+.PP
+Definition at line 157 of file MySTL.h.
+.SS "template<class T> friend class \fBlist\fP\fC [friend]\fP"
+.PP
+Definition at line 156 of file MySTL.h.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

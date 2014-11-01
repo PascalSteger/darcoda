@@ -1,0 +1,204 @@
+\section{kDTreeNode Class Reference}
+\label{classkDTreeNode}\index{kDTreeNode@{kDTreeNode}}
+
+
+{\ttfamily \#include $<$OctTree.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classkDTreeNode_a706c34017d693b46a0c6d453ddd5fc81}{$\sim$kDTreeNode} ()
+\item 
+\hyperlink{classkDTreeNode_a9e4e0d3ada0dd2672cfc4fda7dae104f}{kDTreeNode} (std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ $\ast$Bodies)
+\item 
+\hyperlink{classkDTreeNode_a6a6c9d567a3f17d080b6ba020ca4eb57}{kDTreeNode} (std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ \&Bodies)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classkDTreeNode_aac65d3b4c401b238b2c4dd9947264ccf}{traverse} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&y, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&z, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&theta, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&plumsoft)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classkDTreeNode_a1080dd5e0ea2ec9adb350c42d1866105}{partition} (std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ \&All, std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ $\ast$$\ast$bleft, std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ $\ast$$\ast$bright)
+\item 
+void \hyperlink{classkDTreeNode_ae7a307cd022026795d9a0b1edd0aeeaf}{getBoundingBox} (const std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ \&bodies)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classkDTreeNode}{kDTreeNode} $\ast$ \hyperlink{classkDTreeNode_ab0cafffecfa5a07a12a2857fd9f6a381}{m\_\-nleft}
+\item 
+\hyperlink{classkDTreeNode}{kDTreeNode} $\ast$ \hyperlink{classkDTreeNode_a57b5154c42c5fee9bddfa634ed9fc33c}{m\_\-nright}
+\item 
+\hyperlink{classPseudoBody}{PseudoBody} \hyperlink{classkDTreeNode_a61e1abf39597793e6fdb10504220f364}{m\_\-body}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classkDTreeNode_af16fa1bae226ae88071f476e1f61f93a}{m\_\-l}
+\item 
+bool \hyperlink{classkDTreeNode_a2ce766b2fc937514794f97c1eceb8f01}{m\_\-bleaf}
+\item 
+int \hyperlink{classkDTreeNode_af322d17aef0eabe2e151bf23f8aba132}{m\_\-axis}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 224 of file OctTree.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{kDTreeNode@{kDTreeNode}!$\sim$kDTreeNode@{$\sim$kDTreeNode}}
+\index{$\sim$kDTreeNode@{$\sim$kDTreeNode}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{$\sim$kDTreeNode}]{\setlength{\rightskip}{0pt plus 5cm}kDTreeNode::$\sim$kDTreeNode ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classkDTreeNode_a706c34017d693b46a0c6d453ddd5fc81}
+
+
+Definition at line 303 of file OctTree.h.
+
+
+
+References m\_\-nleft, and m\_\-nright.
+
+\index{kDTreeNode@{kDTreeNode}!kDTreeNode@{kDTreeNode}}
+\index{kDTreeNode@{kDTreeNode}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{kDTreeNode}]{\setlength{\rightskip}{0pt plus 5cm}kDTreeNode::kDTreeNode (std::vector$<$ {\bf PseudoBody} $>$ $\ast$ {\em Bodies})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classkDTreeNode_a9e4e0d3ada0dd2672cfc4fda7dae104f}
+
+
+Definition at line 310 of file OctTree.h.
+
+
+
+References getBoundingBox().
+
+
+
+Referenced by kDTreeNode().
+
+\index{kDTreeNode@{kDTreeNode}!kDTreeNode@{kDTreeNode}}
+\index{kDTreeNode@{kDTreeNode}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{kDTreeNode}]{\setlength{\rightskip}{0pt plus 5cm}kDTreeNode::kDTreeNode (std::vector$<$ {\bf PseudoBody} $>$ \& {\em Bodies})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classkDTreeNode_a6a6c9d567a3f17d080b6ba020ca4eb57}
+
+
+Definition at line 323 of file OctTree.h.
+
+
+
+References getBoundingBox(), kDTreeNode(), m\_\-axis, m\_\-bleaf, m\_\-nleft, m\_\-nright, and partition().
+
+
+
+\subsection{Member Function Documentation}
+\index{kDTreeNode@{kDTreeNode}!getBoundingBox@{getBoundingBox}}
+\index{getBoundingBox@{getBoundingBox}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{getBoundingBox}]{\setlength{\rightskip}{0pt plus 5cm}void kDTreeNode::getBoundingBox (const std::vector$<$ {\bf PseudoBody} $>$ \& {\em bodies})\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}\label{classkDTreeNode_ae7a307cd022026795d9a0b1edd0aeeaf}
+
+
+Definition at line 266 of file OctTree.h.
+
+
+
+References m\_\-l.
+
+
+
+Referenced by kDTreeNode().
+
+\index{kDTreeNode@{kDTreeNode}!partition@{partition}}
+\index{partition@{partition}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{partition}]{\setlength{\rightskip}{0pt plus 5cm}void kDTreeNode::partition (std::vector$<$ {\bf PseudoBody} $>$ \& {\em All}, \/  std::vector$<$ {\bf PseudoBody} $>$ $\ast$$\ast$ {\em bleft}, \/  std::vector$<$ {\bf PseudoBody} $>$ $\ast$$\ast$ {\em bright})\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}\label{classkDTreeNode_a1080dd5e0ea2ec9adb350c42d1866105}
+
+
+Definition at line 235 of file OctTree.h.
+
+
+
+References PseudoBody::getx(), PseudoBody::gety(), PseudoBody::getz(), m\_\-axis, and m\_\-body.
+
+
+
+Referenced by kDTreeNode().
+
+\index{kDTreeNode@{kDTreeNode}!traverse@{traverse}}
+\index{traverse@{traverse}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{traverse}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} kDTreeNode::traverse (const {\bf real} \& {\em x}, \/  const {\bf real} \& {\em y}, \/  const {\bf real} \& {\em z}, \/  const {\bf real} \& {\em theta}, \/  const {\bf real} \& {\em plumsoft})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classkDTreeNode_aac65d3b4c401b238b2c4dd9947264ccf}
+
+
+Definition at line 385 of file OctTree.h.
+
+
+
+References EPS, PseudoBody::getmass(), PseudoBody::getx(), PseudoBody::getxx(), PseudoBody::getxy(), PseudoBody::getxz(), PseudoBody::gety(), PseudoBody::getyy(), PseudoBody::getyz(), PseudoBody::getz(), PseudoBody::getzz(), m\_\-bleaf, m\_\-body, m\_\-l, m\_\-nleft, m\_\-nright, and SPLINEQ().
+
+
+
+\subsection{Field Documentation}
+\index{kDTreeNode@{kDTreeNode}!m\_\-axis@{m\_\-axis}}
+\index{m\_\-axis@{m\_\-axis}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{m\_\-axis}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf kDTreeNode::m\_\-axis}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classkDTreeNode_af322d17aef0eabe2e151bf23f8aba132}
+
+
+Definition at line 233 of file OctTree.h.
+
+
+
+Referenced by kDTreeNode(), and partition().
+
+\index{kDTreeNode@{kDTreeNode}!m\_\-bleaf@{m\_\-bleaf}}
+\index{m\_\-bleaf@{m\_\-bleaf}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{m\_\-bleaf}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf kDTreeNode::m\_\-bleaf}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classkDTreeNode_a2ce766b2fc937514794f97c1eceb8f01}
+
+
+Definition at line 232 of file OctTree.h.
+
+
+
+Referenced by kDTreeNode(), and traverse().
+
+\index{kDTreeNode@{kDTreeNode}!m\_\-body@{m\_\-body}}
+\index{m\_\-body@{m\_\-body}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{m\_\-body}]{\setlength{\rightskip}{0pt plus 5cm}{\bf PseudoBody} {\bf kDTreeNode::m\_\-body}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classkDTreeNode_a61e1abf39597793e6fdb10504220f364}
+
+
+Definition at line 228 of file OctTree.h.
+
+
+
+Referenced by partition(), and traverse().
+
+\index{kDTreeNode@{kDTreeNode}!m\_\-l@{m\_\-l}}
+\index{m\_\-l@{m\_\-l}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{m\_\-l}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf kDTreeNode::m\_\-l}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classkDTreeNode_af16fa1bae226ae88071f476e1f61f93a}
+
+
+Definition at line 230 of file OctTree.h.
+
+
+
+Referenced by getBoundingBox(), and traverse().
+
+\index{kDTreeNode@{kDTreeNode}!m\_\-nleft@{m\_\-nleft}}
+\index{m\_\-nleft@{m\_\-nleft}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{m\_\-nleft}]{\setlength{\rightskip}{0pt plus 5cm}{\bf kDTreeNode}$\ast$ {\bf kDTreeNode::m\_\-nleft}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classkDTreeNode_ab0cafffecfa5a07a12a2857fd9f6a381}
+
+
+Definition at line 226 of file OctTree.h.
+
+
+
+Referenced by kDTreeNode(), traverse(), and $\sim$kDTreeNode().
+
+\index{kDTreeNode@{kDTreeNode}!m\_\-nright@{m\_\-nright}}
+\index{m\_\-nright@{m\_\-nright}!kDTreeNode@{kDTreeNode}}
+\subsubsection[{m\_\-nright}]{\setlength{\rightskip}{0pt plus 5cm}{\bf kDTreeNode} $\ast$ {\bf kDTreeNode::m\_\-nright}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classkDTreeNode_a57b5154c42c5fee9bddfa634ed9fc33c}
+
+
+Definition at line 226 of file OctTree.h.
+
+
+
+Referenced by kDTreeNode(), traverse(), and $\sim$kDTreeNode().
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{OctTree_8h}{OctTree.h}\end{DoxyCompactItemize}

@@ -1,0 +1,81 @@
+\section{PoissonSolver\_\-new.h File Reference}
+\label{PoissonSolver__new_8h}\index{PoissonSolver\_\-new.h@{PoissonSolver\_\-new.h}}
+
+
+Functions to solve the Poisson problem for rho The \_\-new suffix means that the new fftw3.h is used.  
+
+
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include \char`\"{}fftw3/fftw3.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}TidalField.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classPoissonSolver}{PoissonSolver$<$ nstencil $>$}
+\end{DoxyCompactItemize}
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{PoissonSolver__new_8h_a57c2f618d21bf58344c3d10ce4eb0425}{POSdouble}(ix, iy, iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ (2$\ast$((nz)/2+1)) + (iz))
+\item 
+\#define \hyperlink{PoissonSolver__new_8h_a2893f2854bb6eb4f81510181ef7da98d}{ACC\_\-R}(ix, iy, iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ ((nz) + (iz)))
+\item 
+\#define \hyperlink{PoissonSolver__new_8h_aa0ec3c1fa56accaf6945ccf59d19ec4a}{ACC\_\-C}(ix, iy, iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ (((nz)/2+1) + (iz)))
+\item 
+\#define \hyperlink{PoissonSolver__new_8h_a2dd4d4bcc83b191ea626047687be5d08}{c\_\-re}(c)~((c)\mbox{[}0\mbox{]})
+\item 
+\#define \hyperlink{PoissonSolver__new_8h_a9a1e7710dc40249339b87ca5321cdb9a}{c\_\-im}(c)~((c)\mbox{[}1\mbox{]})
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Functions to solve the Poisson problem for rho The \_\-new suffix means that the new fftw3.h is used. 
+
+Definition in file \hyperlink{PoissonSolver__new_8h_source}{PoissonSolver\_\-new.h}.
+
+
+
+\subsection{Define Documentation}
+\index{PoissonSolver\_\-new.h@{PoissonSolver\_\-new.h}!ACC\_\-C@{ACC\_\-C}}
+\index{ACC\_\-C@{ACC\_\-C}!PoissonSolver_new.h@{PoissonSolver\_\-new.h}}
+\subsubsection[{ACC\_\-C}]{\setlength{\rightskip}{0pt plus 5cm}\#define ACC\_\-C(ix, \/  iy, \/  iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ (((nz)/2+1) + (iz)))}\label{PoissonSolver__new_8h_aa0ec3c1fa56accaf6945ccf59d19ec4a}
+
+
+Definition at line 36 of file PoissonSolver\_\-new.h.
+
+\index{PoissonSolver\_\-new.h@{PoissonSolver\_\-new.h}!ACC\_\-R@{ACC\_\-R}}
+\index{ACC\_\-R@{ACC\_\-R}!PoissonSolver_new.h@{PoissonSolver\_\-new.h}}
+\subsubsection[{ACC\_\-R}]{\setlength{\rightskip}{0pt plus 5cm}\#define ACC\_\-R(ix, \/  iy, \/  iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ ((nz) + (iz)))}\label{PoissonSolver__new_8h_a2893f2854bb6eb4f81510181ef7da98d}
+
+
+Definition at line 35 of file PoissonSolver\_\-new.h.
+
+\index{PoissonSolver\_\-new.h@{PoissonSolver\_\-new.h}!c\_\-im@{c\_\-im}}
+\index{c\_\-im@{c\_\-im}!PoissonSolver_new.h@{PoissonSolver\_\-new.h}}
+\subsubsection[{c\_\-im}]{\setlength{\rightskip}{0pt plus 5cm}\#define c\_\-im(c)~((c)\mbox{[}1\mbox{]})}\label{PoissonSolver__new_8h_a9a1e7710dc40249339b87ca5321cdb9a}
+
+
+Definition at line 42 of file PoissonSolver\_\-new.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver\_\-new.h@{PoissonSolver\_\-new.h}!c\_\-re@{c\_\-re}}
+\index{c\_\-re@{c\_\-re}!PoissonSolver_new.h@{PoissonSolver\_\-new.h}}
+\subsubsection[{c\_\-re}]{\setlength{\rightskip}{0pt plus 5cm}\#define c\_\-re(c)~((c)\mbox{[}0\mbox{]})}\label{PoissonSolver__new_8h_a2dd4d4bcc83b191ea626047687be5d08}
+
+
+Definition at line 41 of file PoissonSolver\_\-new.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver\_\-new.h@{PoissonSolver\_\-new.h}!POSdouble@{POSdouble}}
+\index{POSdouble@{POSdouble}!PoissonSolver_new.h@{PoissonSolver\_\-new.h}}
+\subsubsection[{POSdouble}]{\setlength{\rightskip}{0pt plus 5cm}\#define POSdouble(ix, \/  iy, \/  iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ (2$\ast$((nz)/2+1)) + (iz))}\label{PoissonSolver__new_8h_a57c2f618d21bf58344c3d10ce4eb0425}
+
+
+Definition at line 34 of file PoissonSolver\_\-new.h.
+

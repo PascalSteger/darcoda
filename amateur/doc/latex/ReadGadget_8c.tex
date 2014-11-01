@@ -1,0 +1,239 @@
+\section{ReadGadget.c File Reference}
+\label{ReadGadget_8c}\index{ReadGadget.c@{ReadGadget.c}}
+
+
+sample input file from Gadget2, modified for use with AMATEUR  
+
+
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$string.h$>$}\par
+{\ttfamily \#include $<$cstdlib$>$}\par
+{\ttfamily \#include $<$stdio.h$>$}\par
+{\ttfamily \#include $<$stdlib.h$>$}\par
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{ReadGadget_8c_a688a4adbb87520a2b68681bd6bfb199e}{SKIP}~\{my\_\-fread(\&\hyperlink{ReadGadget_8c_a5db008489406de834c7b5598d3b90f40}{blksize},sizeof(int),1,fd); swap\_\-Nbyte((char$\ast$)\&\hyperlink{ReadGadget_8c_a5db008489406de834c7b5598d3b90f40}{blksize},1,sizeof(int));\}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+size\_\-t \hyperlink{ReadGadget_8c_a1609620c03f6b0068601735c42e3c660}{my\_\-fread} (void $\ast$ptr, size\_\-t size, size\_\-t nmemb, FILE $\ast$stream)
+\item 
+void \hyperlink{ReadGadget_8c_a972ae715f1bbaf7462f7c87b18e290a8}{swap\_\-Nbyte} (char $\ast$data, unsigned n, unsigned m)
+\item 
+int \hyperlink{ReadGadget_8c_acd254afd3ef5345fbda710dc1e9fc3b8}{find\_\-block} (FILE $\ast$fd, std::string label)
+\item 
+int \hyperlink{ReadGadget_8c_ad9d50e7b7a2074ee223624fca3096827}{read\_\-gadget\_\-head} (unsigned $\ast$npart, double $\ast$Massarr, double $\ast$time, double $\ast$redshift, int $\ast$FlagSfr, int $\ast$FlagFeedback, unsigned $\ast$Nall, int $\ast$FlagCooling, int $\ast$NumFiles, double $\ast$BoxSize, FILE $\ast$fd)
+\item 
+{\footnotesize template$<$typename T $>$ }\\int \hyperlink{ReadGadget_8c_a82dcfc276c58b845497a7ac210b79fa4}{read\_\-gadget\_\-1} (T $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+{\footnotesize template$<$typename T $>$ }\\int \hyperlink{ReadGadget_8c_ad94fb9be5ec96b09a94fa083db81463c}{read\_\-gadget\_\-3} (T $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+void \hyperlink{ReadGadget_8c_a275b45dee34efc2ef2f3bb402ca17993}{get\_\-particle\_\-number} (std::string filename, unsigned $\ast$id\_\-min, unsigned $\ast$id\_\-max, double $\ast$masses, unsigned $\ast$npart, unsigned \&ntot, double \&redshift, double \&boxsize)
+\item 
+template int \hyperlink{ReadGadget_8c_a96e0e7ef9404aff1c1d5268061c22d71}{read\_\-gadget\_\-1$<$ float $>$} (float $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+template int \hyperlink{ReadGadget_8c_a4b28139a89375c3cfd883bc092a94155}{read\_\-gadget\_\-1$<$ unsigned $>$} (unsigned $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+template int \hyperlink{ReadGadget_8c_a25edfa812b5ae7d4d1fd1b722cef6711}{read\_\-gadget\_\-1$<$ int $>$} (int $\ast$data, std::string label, FILE $\ast$fd)
+\item 
+template int \hyperlink{ReadGadget_8c_a6f380edaefe7fe279c4e23234e0ec413}{read\_\-gadget\_\-3$<$ float $>$} (float $\ast$data, std::string label, FILE $\ast$fd)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{ReadGadget_8c_a5db008489406de834c7b5598d3b90f40}{blksize}
+\item 
+int \hyperlink{ReadGadget_8c_ae70144953948473460e0504c93802402}{swap\_\-rg} = 0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+sample input file from Gadget2, modified for use with AMATEUR 
+
+Definition in file \hyperlink{ReadGadget_8c_source}{ReadGadget.c}.
+
+
+
+\subsection{Define Documentation}
+\index{ReadGadget.c@{ReadGadget.c}!SKIP@{SKIP}}
+\index{SKIP@{SKIP}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{SKIP}]{\setlength{\rightskip}{0pt plus 5cm}\#define SKIP~\{my\_\-fread(\&{\bf blksize},sizeof(int),1,fd); swap\_\-Nbyte((char$\ast$)\&{\bf blksize},1,sizeof(int));\}}\label{ReadGadget_8c_a688a4adbb87520a2b68681bd6bfb199e}
+
+
+Definition at line 20 of file ReadGadget.c.
+
+
+
+Referenced by find\_\-block(), read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), and read\_\-gadget\_\-head().
+
+
+
+\subsection{Function Documentation}
+\index{ReadGadget.c@{ReadGadget.c}!find\_\-block@{find\_\-block}}
+\index{find\_\-block@{find\_\-block}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{find\_\-block}]{\setlength{\rightskip}{0pt plus 5cm}int find\_\-block (FILE $\ast$ {\em fd}, \/  std::string {\em label})}\label{ReadGadget_8c_acd254afd3ef5345fbda710dc1e9fc3b8}
+find a block in snapshot file 
+\begin{DoxyParams}{Parameters}
+\item[{\em fd}]\item[{\em label}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 66 of file ReadGadget.c.
+
+
+
+References blksize, my\_\-fread(), SKIP, swap\_\-Nbyte(), and swap\_\-rg.
+
+
+
+Referenced by read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), and read\_\-gadget\_\-head().
+
+\index{ReadGadget.c@{ReadGadget.c}!get\_\-particle\_\-number@{get\_\-particle\_\-number}}
+\index{get\_\-particle\_\-number@{get\_\-particle\_\-number}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{get\_\-particle\_\-number}]{\setlength{\rightskip}{0pt plus 5cm}void get\_\-particle\_\-number (std::string {\em filename}, \/  unsigned $\ast$ {\em id\_\-min}, \/  unsigned $\ast$ {\em id\_\-max}, \/  double $\ast$ {\em masses}, \/  unsigned $\ast$ {\em npart}, \/  unsigned \& {\em ntot}, \/  double \& {\em redshift}, \/  double \& {\em boxsize})}\label{ReadGadget_8c_a275b45dee34efc2ef2f3bb402ca17993}
+
+
+Definition at line 220 of file ReadGadget.c.
+
+
+
+References read\_\-gadget\_\-1(), and read\_\-gadget\_\-head().
+
+
+
+Referenced by AnalyzeSnap(), and ExtractSnap().
+
+\index{ReadGadget.c@{ReadGadget.c}!my\_\-fread@{my\_\-fread}}
+\index{my\_\-fread@{my\_\-fread}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{my\_\-fread}]{\setlength{\rightskip}{0pt plus 5cm}size\_\-t my\_\-fread (void $\ast$ {\em ptr}, \/  size\_\-t {\em size}, \/  size\_\-t {\em nmemb}, \/  FILE $\ast$ {\em stream})}\label{ReadGadget_8c_a1609620c03f6b0068601735c42e3c660}
+
+
+Definition at line 31 of file ReadGadget.c.
+
+
+
+Referenced by find\_\-block(), read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), and read\_\-gadget\_\-head().
+
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-1@{read\_\-gadget\_\-1}}
+\index{read\_\-gadget\_\-1@{read\_\-gadget\_\-1}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-1}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ int read\_\-gadget\_\-1 (T $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{ReadGadget_8c_a82dcfc276c58b845497a7ac210b79fa4}
+read a 1D array 
+\begin{DoxyParams}{Parameters}
+\item[{\em data}]\item[{\em label}]\item[{\em fd}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 161 of file ReadGadget.c.
+
+
+
+References find\_\-block(), my\_\-fread(), SKIP, and swap\_\-Nbyte().
+
+
+
+Referenced by ExtractSnap(), get\_\-particle\_\-number(), and readDataBlocks().
+
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-1$<$ float $>$@{read\_\-gadget\_\-1$<$ float $>$}}
+\index{read\_\-gadget\_\-1$<$ float $>$@{read\_\-gadget\_\-1$<$ float $>$}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-1$<$ float $>$}]{\setlength{\rightskip}{0pt plus 5cm}template int read\_\-gadget\_\-1$<$ float $>$ (float $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})}\label{ReadGadget_8c_a96e0e7ef9404aff1c1d5268061c22d71}
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-1$<$ int $>$@{read\_\-gadget\_\-1$<$ int $>$}}
+\index{read\_\-gadget\_\-1$<$ int $>$@{read\_\-gadget\_\-1$<$ int $>$}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-1$<$ int $>$}]{\setlength{\rightskip}{0pt plus 5cm}template int read\_\-gadget\_\-1$<$ int $>$ (int $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})}\label{ReadGadget_8c_a25edfa812b5ae7d4d1fd1b722cef6711}
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-1$<$ unsigned $>$@{read\_\-gadget\_\-1$<$ unsigned $>$}}
+\index{read\_\-gadget\_\-1$<$ unsigned $>$@{read\_\-gadget\_\-1$<$ unsigned $>$}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-1$<$ unsigned $>$}]{\setlength{\rightskip}{0pt plus 5cm}template int read\_\-gadget\_\-1$<$ unsigned $>$ (unsigned $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})}\label{ReadGadget_8c_a4b28139a89375c3cfd883bc092a94155}
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-3@{read\_\-gadget\_\-3}}
+\index{read\_\-gadget\_\-3@{read\_\-gadget\_\-3}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-3}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ int read\_\-gadget\_\-3 (T $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{ReadGadget_8c_ad94fb9be5ec96b09a94fa083db81463c}
+read a 3D array 
+\begin{DoxyParams}{Parameters}
+\item[{\em data}]\item[{\em label}]\item[{\em fd}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 190 of file ReadGadget.c.
+
+
+
+References find\_\-block(), my\_\-fread(), SKIP, and swap\_\-Nbyte().
+
+
+
+Referenced by ExtractSnap(), and readDataBlocks().
+
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-3$<$ float $>$@{read\_\-gadget\_\-3$<$ float $>$}}
+\index{read\_\-gadget\_\-3$<$ float $>$@{read\_\-gadget\_\-3$<$ float $>$}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-3$<$ float $>$}]{\setlength{\rightskip}{0pt plus 5cm}template int read\_\-gadget\_\-3$<$ float $>$ (float $\ast$ {\em data}, \/  std::string {\em label}, \/  FILE $\ast$ {\em fd})}\label{ReadGadget_8c_a6f380edaefe7fe279c4e23234e0ec413}
+\index{ReadGadget.c@{ReadGadget.c}!read\_\-gadget\_\-head@{read\_\-gadget\_\-head}}
+\index{read\_\-gadget\_\-head@{read\_\-gadget\_\-head}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{read\_\-gadget\_\-head}]{\setlength{\rightskip}{0pt plus 5cm}int read\_\-gadget\_\-head (unsigned $\ast$ {\em npart}, \/  double $\ast$ {\em Massarr}, \/  double $\ast$ {\em time}, \/  double $\ast$ {\em redshift}, \/  int $\ast$ {\em FlagSfr}, \/  int $\ast$ {\em FlagFeedback}, \/  unsigned $\ast$ {\em Nall}, \/  int $\ast$ {\em FlagCooling}, \/  int $\ast$ {\em NumFiles}, \/  double $\ast$ {\em BoxSize}, \/  FILE $\ast$ {\em fd})}\label{ReadGadget_8c_ad9d50e7b7a2074ee223624fca3096827}
+read gadget header info 
+\begin{DoxyParams}{Parameters}
+\item[{\em npart}]\item[{\em Massarr}]\item[{\em time}]\item[{\em redshift}]\item[{\em FlagSfr}]\item[{\em FlagFeedback}]\item[{\em Nall}]\item[{\em FlagCooling}]\item[{\em NumFiles}]\item[{\em BoxSize}]\item[{\em fd}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+size of header block 
+\end{DoxyReturn}
+
+
+Definition at line 115 of file ReadGadget.c.
+
+
+
+References find\_\-block(), my\_\-fread(), SKIP, and swap\_\-Nbyte().
+
+
+
+Referenced by get\_\-particle\_\-number().
+
+\index{ReadGadget.c@{ReadGadget.c}!swap\_\-Nbyte@{swap\_\-Nbyte}}
+\index{swap\_\-Nbyte@{swap\_\-Nbyte}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{swap\_\-Nbyte}]{\setlength{\rightskip}{0pt plus 5cm}void swap\_\-Nbyte (char $\ast$ {\em data}, \/  unsigned {\em n}, \/  unsigned {\em m})}\label{ReadGadget_8c_a972ae715f1bbaf7462f7c87b18e290a8}
+swap endian 
+\begin{DoxyParams}{Parameters}
+\item[{\em data}]\item[{\em n}]how many entries do we have in array? \item[{\em m}]how many bytes are there for a bigger number type \end{DoxyParams}
+
+
+Definition at line 47 of file ReadGadget.c.
+
+
+
+References swap\_\-rg.
+
+
+
+Referenced by find\_\-block(), read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), and read\_\-gadget\_\-head().
+
+
+
+\subsection{Variable Documentation}
+\index{ReadGadget.c@{ReadGadget.c}!blksize@{blksize}}
+\index{blksize@{blksize}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{blksize}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf blksize}}\label{ReadGadget_8c_a5db008489406de834c7b5598d3b90f40}
+
+
+Definition at line 19 of file ReadGadget.c.
+
+
+
+Referenced by find\_\-block().
+
+\index{ReadGadget.c@{ReadGadget.c}!swap\_\-rg@{swap\_\-rg}}
+\index{swap\_\-rg@{swap\_\-rg}!ReadGadget.c@{ReadGadget.c}}
+\subsubsection[{swap\_\-rg}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf swap\_\-rg} = 0}\label{ReadGadget_8c_ae70144953948473460e0504c93802402}
+
+
+Definition at line 19 of file ReadGadget.c.
+
+
+
+Referenced by find\_\-block(), and swap\_\-Nbyte().
+
