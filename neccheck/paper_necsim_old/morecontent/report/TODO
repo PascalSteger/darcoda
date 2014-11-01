@@ -1,0 +1,123 @@
+
+Procedure until completion of Semesterarbeit on May 30, 2010
+============================================================
+
+Scientific goals
+================
+[#] mass bin function of single halos in the outskirts
+        split between single/subhalos/hosts not considered anymore, plot scraped
+	mass bin function similar to overall halos, more small masses
+[#] search correlation between j_stars and j_dm, 
+    as it is important to be able 
+    to track the dm halo properties by the stars
+[#] galaxy rotationally supported? random motion?
+	to be discussed, especially difference from R_vir
+	seems to depend on algorithm used (on few% level)
+
+Coding goals
+============
+[#] variable names the same in Halo, TidalField, AnalyzeSnap, Matlab
+[#] check of bndry handling
+	clusters lie in center of 192Mpc/h, with maximally 50Mpc/h width
+[#] additional variable: percentage of low resolution particles
+	not used, fraction 0.0007 from ahf, already excluded, mentioned
+
+to be checked
+=============
+[#] stars have smallest lambda' (true, see old fit)
+[#] gas have smallest velocity dispersion
+	true indeed, but also broadest distribution of \Sigma/V
+	dm has a characteristic ~1% contributions for higher \Sigma/V
+	stars are approximately symmetric around 1, falling off rapidly
+
+problems
+========
+[#] halos with 200000 particles have no stars? no gas?
+  	readjusted read-in of particle output files of new Amiga
+[#] ahf_pcx and hp_xcm(:,1) lie on a 1:1 relation up to boxlength/2, then jump
+ 	no more, problem was erroneous correction for position
+	higher than boxlength/2
+[#] distance from center of simulation box is not ahf/hp = const
+  	same solution as above
+[#] new names and dimensionalities in MATLAB scripts
+      	trivial, but took some time :o). consistent now
+[#] no proper input from Hprop.txt
+     	output function in HResult changed
+[#] tidal field output only for first three halos
+  	new input routine more dummy inputs from Hprop
+[ ] eigensystems all 0 in output
+        using old plots for t correlation, until problem solved
+[#] only small halos in jcorr_dgs_(m/r)
+        changed < to > for consideration of massive halos
+[#] check that r/rvir is indeed used where written on axes
+
+
+
+Final steps for amd report
+==========================
+[ ] add info: field/single halos have too little gas
+    to be included appropriately in the analysis
+	only distance to host is important, single halos: no problem
+[#] cos(J_dm,J_gas) as fct of #particles, split between single/subhalos
+	as function of mass not showing any significant correlation
+	split not useful
+	J_dm, J_star works better
+[#] stars: a/c vs n_particles: numerical effect? for all galaxies/subhalos
+	no numerical effects found after exclusion of <(200,10,10) halos
+[#] 4 panels for (Jgas,Jdm) correlation as fct of radius; check statistics
+    	1 panel was enough, plotted both high and low mass sample
+[#] 4 panels for (r,ea) (massbins, dm/gas)
+    	rea for dm, gas, stars in two plots with mass <>10^11M_sun/h
+[#] change title according to main points
+[#] explain graphs
+[#] check with previews "we will" from introduction
+[ ] summary / conclusions
+	should be extended with further conclusions,
+	ask Oliver which are valid
+[#] include misalignment angles in main body text
+[ ] include fitting formulas for alignments tea, tj
+
+Figures
+=======
+[#] use SM to generate plots
+    [#] introduction and first plots
+    [#] export files from matlab as vectors in files
+    [#] determine which properties to plot in same panel!
+    [#] include .eps files in report
+    [ ]	use dashed/dotted lines for b/w printer output
+    [ ] search for rectangular plots
+[#] use big plots in draft versions of article
+
+[#] visualization of a snapshot, scale
+[#] differential subhalo mass function
+[#] inverse sphericity for ahf and hp
+[#] lambda': all components
+[#] Sigma/V for all components
+[#] r-e_a as fct radius: two panels by mass split, each with all components
+[#] J_bary-J_dm, 
+        [ ] split by single/subhalo
+[#] J_d(g/s) as fct m
+[#] J_d(g/s) as fct r/r_vir
+[#] t-e1 for all components
+[#] t-J  for all components
+[#] fit for lambda'
+
+
+possible errors in pipeline
+===========================
+o simulation parameters
+o initial conditions
+o overcooling
+o angular momentum alignment to grid
+o output during snapshot
+o reading values from AHF
+o inconsistent types in HP
+o discreteness / little particles inside halos
+o MATLAB: NaN
+o outliers from division by small numbers
+o statistics
+o wrong physical units, not comoving
+
+
+for final draft
+===============

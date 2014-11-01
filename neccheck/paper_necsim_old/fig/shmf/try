@@ -1,0 +1,17 @@
+tri	set x=0,10,2
+	set y=x*3+4*sin(x)/3
+
+	device postencap "out.eps"
+	erase
+	window 1 1 1 1
+	limits x y
+	ticksize 1 1 1 1
+	ctype black
+	box
+
+	con x y
+	poi x y
+	sel x
+	sel y
+	lsq x y x yf
+	con x yf

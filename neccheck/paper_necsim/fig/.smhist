@@ -1,0 +1,16 @@
+quit
+set x=0,3*pi,pi/30
+set c=cos(x) set s=sin(x)
+limits x c
+box
+ctype red   connect x c
+ctype blue  connect x s
+ctype default
+set s=reverse(s) set rx=reverse(x)
+angle 90
+shade 500 (x concat rx) (c concat s)
+angle 360
+ylabel \Theta
+angle 0
+xlabel x
+QUIT

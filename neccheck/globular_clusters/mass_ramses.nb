@@ -1,0 +1,210 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      5743,        200]
+NotebookOptionsPosition[      4703,        158]
+NotebookOutlinePosition[      5039,        173]
+CellTagsIndexPosition[      4996,        170]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"NSolve", "[", 
+  RowBox[{
+   RowBox[{"3.9992793*^-7", "\[Equal]", 
+    RowBox[{
+     RowBox[{"1", "/", 
+      RowBox[{"(", 
+       RowBox[{"2", "^", 
+        RowBox[{"(", 
+         RowBox[{"3", "*", "level"}], ")"}]}], ")"}]}], "*", "0.83272"}]}], 
+   ",", "level"}], "]"}]], "Input",
+ CellChangeTimes->{{3.553829321768852*^9, 3.55382939686961*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"NSolve", "::", "ifun"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"Inverse functions are being used by \[NoBreak]\\!\\(NSolve\
+\\)\[NoBreak], so some solutions may not be found; use Reduce for complete \
+solution information. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/NSolve\\\", ButtonNote -> \\\"NSolve::ifun\\\"]\\)\
+\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.553829398858846*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"level", "\[Rule]", "6.996553334961226`"}], "}"}], "}"}]], "Output",\
+
+ CellChangeTimes->{3.553829398873452*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"NSolve", "[", 
+  RowBox[{
+   RowBox[{"2.347083*^-12", "\[Equal]", 
+    RowBox[{"1", "/", 
+     RowBox[{"(", 
+      RowBox[{"2", "^", 
+       RowBox[{"(", 
+        RowBox[{"3", "*", "level"}], ")"}]}], ")"}]}]}], ",", "level"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.553829658209605*^9, 3.553829687549605*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"NSolve", "::", "ifun"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"Inverse functions are being used by \[NoBreak]\\!\\(NSolve\
+\\)\[NoBreak], so some solutions may not be found; use Reduce for complete \
+solution information. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/NSolve\\\", ButtonNote -> \\\"NSolve::ifun\\\"]\\)\
+\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{{3.553829674886426*^9, 3.553829688587765*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"level", "\[Rule]", "12.87742275926553`"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"level", "\[Rule]", 
+     RowBox[{"12.87742275926553`", "\[VeryThinSpace]", "-", 
+      RowBox[{"3.0215734278847957`", " ", "\[ImaginaryI]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"level", "\[Rule]", 
+     RowBox[{"12.87742275926553`", "\[VeryThinSpace]", "+", 
+      RowBox[{"3.0215734278847957`", " ", "\[ImaginaryI]"}]}]}], "}"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.55382967488808*^9, 3.553829688590552*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"2", "^", "12."}]], "Input",
+ CellChangeTimes->{{3.553829704317178*^9, 3.553829715659559*^9}}],
+
+Cell[BoxData["4096.`"], "Output",
+ CellChangeTimes->{{3.553829711908249*^9, 3.553829716443709*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"0.351917*^-26", "*", 
+  RowBox[{
+   RowBox[{"(", "0.39586*^24", ")"}], "^", "3"}]}]], "Input",
+ CellChangeTimes->{{3.553832368856059*^9, 3.553832395819102*^9}, {
+  3.553832661668411*^9, 3.553832695781396*^9}}],
+
+Cell[BoxData["2.183057162622906`*^44"], "Output",
+ CellChangeTimes->{
+  3.553832397507564*^9, {3.553832676215535*^9, 3.553832696786613*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"52333.4061", "/", 
+  RowBox[{"(", 
+   RowBox[{"2", "^", 
+    RowBox[{"(", 
+     RowBox[{"16", "-", "7"}], ")"}]}], ")"}]}]], "Input",
+ CellChangeTimes->{{3.553832831884325*^9, 3.553832905155817*^9}}],
+
+Cell[BoxData["102.2136837890625`"], "Output",
+ CellChangeTimes->{{3.553832835106912*^9, 3.553832905885101*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"2", "^", "16"}]], "Input",
+ CellChangeTimes->{{3.553832915180121*^9, 3.553832916826114*^9}}],
+
+Cell[BoxData["65536"], "Output",
+ CellChangeTimes->{3.553832917773231*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"2.347*^-12", "*", "1.09751*^11"}]], "Input",
+ CellChangeTimes->{{3.553833336497654*^9, 3.553833356465313*^9}}],
+
+Cell[BoxData["0.257585597`"], "Output",
+ CellChangeTimes->{3.553833357925397*^9}]
+}, Open  ]]
+},
+WindowSize->{956, 1175},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"8.0 for Linux x86 (32-bit) (February 23, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 373, 11, 30, "Input"],
+Cell[955, 35, 522, 11, 40, "Message"],
+Cell[1480, 48, 168, 5, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1685, 58, 337, 10, 30, "Input"],
+Cell[2025, 70, 546, 11, 40, "Message"],
+Cell[2574, 83, 585, 14, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3196, 102, 117, 2, 30, "Input"],
+Cell[3316, 106, 99, 1, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3452, 112, 233, 5, 30, "Input"],
+Cell[3688, 119, 140, 2, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3865, 126, 223, 6, 30, "Input"],
+Cell[4091, 134, 111, 1, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4239, 140, 116, 2, 30, "Input"],
+Cell[4358, 144, 74, 1, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4469, 150, 134, 2, 30, "Input"],
+Cell[4606, 154, 81, 1, 30, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

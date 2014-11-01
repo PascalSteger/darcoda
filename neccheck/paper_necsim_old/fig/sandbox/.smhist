@@ -1,0 +1,67 @@
+device x11
+data mydata
+quit
+device postencap "file.ps"
+macro read script.sm
+sincos
+device postencap "file.ps"
+!gv file.ps
+macro read script.sm
+sincos
+!gv file.ps
+sincos
+!gv file.ps
+!rm file.ps
+sincos
+!rm file.ps
+sincos
+!gv file.ps
+macro read script.sm
+sincos
+!gv file.ps
+macro read example1.sm
+example1
+macro read example1.sm
+example1
+!gv example1.sm
+set x=0,10,0.1
+set y=x**(2/3)
+device postencap "./example1.ps"
+erase
+!gv example1.ps
+macro read example1.sm
+example1
+!gv example1.ps
+example1
+!gv example1.ps
+example1
+!gv example1.ps
+quit
+macro read example2.sm
+example2
+!gv example2
+!gv example2.ps
+!ls
+macro read example2.sm
+example2
+!ls
+!gv example2.ps
+macro read example2.sm
+example2
+!gv example2.ps
+example2
+!gv example2.ps
+macro read example2.sm
+example2
+!gv example2.ps
+example2
+!gv example2.ps
+erase
+example2
+erase
+macro read example2.sm
+example2
+!gv example2.ps
+example2
+!gv example2.ps
+quit

@@ -1,0 +1,50 @@
+make
+	#define the data
+	data "d_smallm.dat"
+	read {xdmsmall 1 ydmsmall 2 edmsmall 3}
+	data "g_smallm.dat"
+	read {xgassmall 1 ygassmall 2 egassmall 3}
+	data "s_smallm.dat"
+	read {xstarsmall 1 ystarsmall 2 estarsmall 3}
+
+	#set the plot area
+	device postencap "outsmall.eps"
+	erase
+
+	# small mass
+	window 1 1 1 1
+	limits 0 3 0 1
+	ticksize 0.5 0.5 0.1 0.1
+	ctype black
+	box
+
+	# isotropic distribution
+	set isox=0,3
+	set isoy=isox/isox/2
+	set isoy[0] = (0.5)
+	con isox isoy
+
+	ctype blue
+	ltype 0
+	connect xdmsmall ydmsmall
+	error_y xdmsmall ydmsmall edmsmall
+
+	ctype red
+	ltype 2
+	connect xgassmall ygassmall
+	ltype 0
+	error_y xgassmall ygassmall egassmall
+
+	ctype green
+	ltype 4
+	connect xstarsmall ystarsmall
+	ltype 0
+	error_y xstarsmall ystarsmall estarsmall
+
+	#labels
+	define TeX_strings 1
+	expand 1.001
+	ctype black
+	#toplabel Example 1
+	xlabel r/r_{vir}
+	ylabel \phi(r,e_1)

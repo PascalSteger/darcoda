@@ -1,0 +1,119 @@
+Dark Matter in Dwarf Galaxies
+=============================
+Pascal S.P. Steger
+Prof. Dr. Justin I. Read
+%
+%
+\section{Introduction}
+TODO: overview
+show: know what I am doing
+show: know field
+show: know how to do
+\subsection{DM}
+TODO: overview
+\subsubsection{Evidence for Dark Matter}
+TODO: formulation
+TODO: references
+* rotation curves of galaxies
+* velocity dispersion in clusters of galaxies
+* bullet cluster
+\subsubsection{Models}
+TODO: overview
+TODO: references
+* MACHOs
+* WIMPs
+* HDM, WDM, CDM, LCDM
+\subsubsection{Possibilities for Detection}
+TODO: references
+* direct:
+  - annihilation
+  - interaction with detector material
+  - 
+* indirect
+  - mechanics
+  - 
+\subsection{Dwarf Galaxies}
+TODO: overview
+\subsubsection{Defining Properties}
+TODO: ref
+least massive galaxies in universe, mass: TODO
+%
+\subsubsection{Observations}
+TODO: all
+\subsubsection{Working out the DM Distribution}
+TODO: all
+\subsection{Simulations}
+TODO: overview
+\subsubsection{ideas}
+TODO: all
+\subsubsection{scopes}
+TODO: all
+\subsubsection{paradigmae}
+TODO: all
+*P3M
+*PM
+
+*SPH
+*AMR
+%
+\subsubsection{codes}
+TODO: overview, references
+*GADGET
+*RAMSES
+*ENZO, GASOLINE,...
+%		
+\subsection{Overview this work}
+TODO: all
+\subsubsection{TOC}
+TODO: all
+\subsubsection{Novelties}
+TODO: all
+%
+\section{data}
+TODO: overview
+\subsection{Our Simulation}
+TODO: overview
+\subsubsection{Cosmological Parameters}
+TODO: all, acc. ref
+\subsubsection{Initial Conditions}
+TODO: all
+\subsubsection{Stepping, motivation for stop @ z=10}
+TODO: all
+\subsubsection{Black Holes}
+TODO: all
+\subsection{Higher Resolution}
+TODO: all
+%
+%
+\section{Methods}
+TODO: ov
+\subsection{Definitions}
+TODO: all
+\subsection{Halo Finding}
+TODO: all
+%
+%	
+\section{Results}
+TODO: ov
+\subsection{DM density profile}
+TODO: all
+\subsection{Gas Density Profile}
+TODO: all
+\subsection{Temporal Evolution}
+TODO: all
+%
+%
+\section{Conclusions}
+TODO: overview
+\subsection{Impacts on Formation History}
+TODO: all
+\subsection{Further Evolution down to z=0}
+TODO: all
+\subsection{Local DM Density}
+TODO: all
+%
+%
+\section{Bibliography}
+	all references from reading list
+	+both Oh2010
+

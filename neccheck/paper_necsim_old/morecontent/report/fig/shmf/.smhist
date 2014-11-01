@@ -1,0 +1,66 @@
+macro shmf
+macro read shmf
+macro read shmf.sm
+shmf
+quit
+macro read shmf
+macro read shmf.sm
+shmf
+macro read shmf.sm
+shmf
+macro read shmf.sm
+shmf
+macro read shmf.sm
+shmf
+!gv out.eps
+shmf
+!gv out.eps
+macro read shmf.sm
+shmf
+!gv out.eps
+macro read shmf.sm
+shmf
+!gv out.eps
+macro read shmf.sm
+shmf
+!gv out.eps
+macro read shmf.sm
+shmf
+!gv out.eps
+macro read shmf.sm
+shmf
+!gv out.eps
+quit
+macro read shmf.sm
+shmf
+!gv out.eps
+quit
+macro read make.sm
+make
+!gv out.eps
+macro read make.sm
+make
+macro read make.sm
+make
+macro read make.sm
+make
+!gv out.eps
+macro read make.sm
+make
+!gv out.eps
+quit
+macro read make
+make
+!gv out.eps
+macro read make
+make
+!gv out.eps
+macro read make
+make
+!gv out.eps
+macro read make
+make
+macro read make
+make
+!gv out.eps
+quit

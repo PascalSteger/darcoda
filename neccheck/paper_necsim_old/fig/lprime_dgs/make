@@ -1,0 +1,62 @@
+make
+	#define the data
+	data "out.dat"
+	read {xdm 1 ydm 2 edm 3 xgas 4 ygas 5 egas 6 xstar 7 ystar 8 estar 9 xfdm 10 yfdm 11 xfgas 12 yfgas 13 xfstar 14 yfstar 15}
+
+	set subset = 1,7
+	set xgasc = xgas  if (subset < 7)
+	set ygasc = ygas  if (subset < 7)
+	set egasc = egas  if (subset < 7)
+	set xfgasc= xfgas if (subset < 7)
+	set yfgasc= yfgas if (subset < 7)
+
+	#set the plot area
+	device postencap "out.eps"
+	erase
+	window 1 1 1 1
+	#limits x y
+	limits -2.5 0 -2.5 0
+	ticksize -1 10 -1 10
+	ctype black
+	box
+
+	#dm
+	ctype blue
+	ltype 0
+	points xdm ydm
+	error_y xdm ydm edm
+	connect xfdm yfdm
+
+	#gas
+	ctype red
+	points xgasc ygasc
+	ltype 2
+	connect xfgasc yfgasc
+	ltype 0
+	error_y xgasc ygasc egasc
+
+
+	#star
+	ctype green
+	points xstar ystar
+	ltype 4
+	connect xfstar yfstar
+	ltype 0
+	error_y xstar ystar estar
+
+	#labels
+	define TeX_strings 1
+	expand 1.001
+	ctype black
+	#toplabel Example 1
+	xlabel \lambda'
+	ylabel p(\lambda')
+	#ctype red
+	#relocate 8 2
+	#draw 9 2
+	#relocate 8.5 2
+	#dot
+	#relocate 8 2.25
+	#ctype black
+	#label y=x^{2/3}
+

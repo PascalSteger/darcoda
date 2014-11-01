@@ -1,0 +1,33 @@
+<h1>Pascal S.P. Steger</h1>
+
+<div align="center">
+<a href="http://www.phys.ethz.ch/~psteger"><img src="me.jpg" alt="photo"></a>
+</div>
+
+<h2>education</h2>
+<table border="1px" align="center">
+<tr><td>2005</td><td>&nbsp;-&nbsp;</td><td>2008</td><td>BSc Physics ETH Zurich</td></tr>
+<tr><td>2008</td><td>&nbsp;-&nbsp;</td><td>2011</td><td>MSc Physics ETH Zurich</td></tr>
+<tr><td>2011</td><td>&nbsp;-&nbsp;</td><td>present</td><td>PhD at Institute for Astronomy, ETH Zurich</td></tr>
+</table>
+
+<h2>employment</h2>
+<table border="1px" align="center">
+<tr><td>2008</td><td>&nbsp;-&nbsp;</td><td>2011</td><td>Teaching Assistant, ETH Zurich</td></tr>
+</table>
+
+<h2>research interests</h2>
+I'm intersted in galaxy formation. My main research area is on dark matter with methods of numerical astrophysics.
+
+<h2>projects</h2>
+For my Bachelor thesis, I used simulations of galaxy clusters to determine misalignment of angular momentum, shape and environment from dark matter and baryonic components of halos. A toolset dubbed A<small>MATEUR</small> was developed to analyze S<small>PH</small> snapshots.
+
+I now investigate smaller scales for my Master thesis, working on dark matter in dwarf spheroidals. High resolution simulations with unprecendented non-equilibrium physics up to <i>z</i>=10 are used to determine the density profiles of stars, dark matter and gas. This allows to shed new light on the cusp-core problem. Comparison with a second simulation with the same initial conditions, but only dark matter, allows to determine the influence of baryons on the formation of cores.
+
+<h2>publications</h2>
+<ul>
+<li><b>Simulated Clusters: Alignments between Shape, Angular Momentum, and Environment</b>, P. Steger, O. Hahn, C. Marcella, C. Porciani, in prep.</li>
+<li><b>Dark Matter in Dwarf Spheroidals</b>, P. Steger, J. Read, A. Boley, in prep.</li>
+</ul>
+
+<h2><a href="http://www.phys.ethz.ch/~psteger">personal homepage</a></h2>

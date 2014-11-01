@@ -1,0 +1,27 @@
+macro read make.sm
+make
+macro read make.sm
+make
+!gv out.eps
+macro read make.sm
+make
+!gv out.eps
+quit
+macro read make.sm
+make
+!gv out.eps
+quit
+macro read make.sm
+make
+!gv out.eps
+quit
+macro read make.sm
+quit
+macro read make.sm
+make
+!evince out.eps
+!gv out.eps
+macro read make.sm
+make
+!gv out.eps
+quit
