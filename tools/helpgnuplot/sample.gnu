@@ -1,0 +1,1 @@
+plot "sample.dat" using 1:2

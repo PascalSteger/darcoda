@@ -1,0 +1,17 @@
+all executables are in ./bin
+
+all codes acting on the whole simulation are found as source code in ./onsim or linked into it from ./bin (i.e. python files)
+
+all codes acting on one halo are found as source code in ./onhalo or linked into it from ./bin (i.e. python files)
+
+all codes acting on all halos of a simulation are found as source code in ./onhalos or linked into it from ./bin (i.e. python files)
+
+RAMSES output:
+
+       _old     is for v??   (as the simulation of A. Boley)
+       _new	is for v3.08 (also first dm only run)
+
+       _hydro 	is for runs with gas and star blocks
+       _dm	is for runs with dm only
+
+       _4,_8	give the -DNPRE
