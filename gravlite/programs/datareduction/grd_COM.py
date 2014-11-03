@@ -31,8 +31,6 @@ def concat_pops(x1, x2, y1, y2, vz1, vz2, gp):
 # @param vz1
 # @param vz2
 
-
-
 def select_pm(x, y, vz, Mg, PM, pm):
     return x[pm], y[pm], vz[pm], Mg[pm], PM[pm]
 ## \fn select_pm(x, y, comp, vz, Mg, PM, pm)
@@ -44,10 +42,42 @@ def select_pm(x, y, vz, Mg, PM, pm):
 # @param PM
 # @param pm
 
+def read_photometry(gpr):
+    #   1-  2  I2    h       RAh       Right Ascension J2000 (hours)
+    #   4-  5  I2    min     RAm       Right Ascension J2000 (minutes)
+    #   7- 11  F5.2  s       RAs       Right Ascension J2000 (seconds)
+    #      13  A1    ---     DE-       Declination J2000 (sign)
+    #  14- 15  I2    deg     DEd       Declination J2000 (degrees)
+    #  17- 18  I2    arcmin  DEm       Declination J2000 (arcminutes)
+    #  20- 24  F5.2  arcsec  DEs       Declination J2000 (arcseconds)
+    #  26- 32  F7.3  mag     Vmag      V magnitude
+    #  34- 39  F6.3  mag   e_Vmag      ?=0 Error on V magnitude
+    #  41- 47  F7.3  mag     Bmag      ?=-59 B magnitude
+    #  49- 54  F6.3  mag   e_Bmag      ?=0 Error on B magnitude
+    #  56- 62  F7.3  mag     Imag      ?=-79 I magnitude
+    #  64- 69  F6.3  mag   e_Imag      ?=0 Error on I magnitude
+    #      71  I1    ---   q_Vmag      [0/3] Quality flag for V magnitude (1)
+    #      73  I1    ---   q_Bmag      [0/3] Quality flag for B magnitude (1)
+    #      75  I1    ---   q_Imag      [0/3] Quality flag for I magnitude (1)
+    delim = [0, 2, 2, 5, 3, 3, 6, 8, 7, 8, 7, 8, 7]
+    RAh, RAm, RAs, DEd, DEm, DEs, \
+        Vmag, e_Vmag, \
+        Bmag, e_Bmag, \
+        Imag, e_Imag = np.genfromtxt(gpr.dir + 'photometry.dat', \
+                                     skiprows = 0, unpack = True,\
+                                     usecols=tuple(0, 12), \
+                                     delimiter=delim)
+
+## \fn read_photometry()
+# read photometry data from photometry.dat, calculate 2D profile, write output file
+
 def run(gp):
     import gr_params
     gpr = gr_params.Params(gp)
     gpr.fil = gpr.dir+"/table_merged.bin"
+    read_photometry(gpr) # TODO get output
+
+
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)

@@ -103,14 +103,18 @@ a separate publication.
 In the following, we present a non-parametric method for the solution of
 equation ~\ref{eqn:LOS} for the total gravitating mass
 density $\rho(r)$, given a single or multiple tracer density profiles $\nu_i(r)$
-with corresponding line-of-sight velocity dispersions $\siglosi(R)$. We write the overall density profile $\rho(r)$ as:
+with corresponding line-of-sight velocity dispersions
+$\siglosi(R)$. We write
+the overall density profile $\rho(r)$ as:
 
 \begin{equation}
     \rho(r) = \rho_{\rm{DM}}(r)+ \frac{M_*}{L} \cdot L_*(r)
 \end{equation}
 where $\rho_{\rm{DM}}(r)$ is the dark matter contribution; $L_*(r)$ is the
 visible light profile; and $(M_*/L)$ is a constant mass-to-light ratio (the
-assumption that this is constant could be relaxed if required by the data).
+assumption that this is constant with radius could be relaxed if
+required by the data). As we will see for our mock data the tracer
+particles have negligible mass, $M_*/L\approx 0$.
 
 The enclosed mass $M(<r)$ then follows from the density via:
 
@@ -154,6 +158,9 @@ $n(r)$ that is allowed to happen, by sampling -- instead of $n(r)$ directly --
 its derivative $dn(r)/d\ln(r)$ with a flat prior in the range $[-\alpha,
 \alpha]$, where $\alpha$ is chosen such that $n(r)$ can sweep from $0$ to
 $n_{\text max}$ over the radii where we have data.
+
+\TODO{To enforce faster convergence we prefer smoother $n(r)$ profiles
+by sampling $dn/d\log r$ from a normal distribution, not a uniform one.}
 
 \subsection{The tracer density profile}
 The tracer density is represented similar to $\rho_{\rm DM}$ for each tracer

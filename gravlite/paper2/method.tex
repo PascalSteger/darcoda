@@ -2,11 +2,26 @@
 We employ the non-parametric mass modelling described in
 \citep{Steger+2014}:
 
-The total mass density is given in bins by
+The total mass density is given in bins by setting the density slope
 
 \begin{equation}
-    \rho_{\text tot} = TODO
+n(r_j)=-{\rm d}\ln\rho(r)/{\rm d}\ln r|_{r=r_j}
 \end{equation}
+for $j ... N_{\rm bin}$ radial bins: $1\leq j\leq N_{\rm bin}$, and
+interpolated linearly in between bin radii $r_{{\rm min},j}<r<r_{{\rm
+    max},j}$.
+
+The density then is given by
+\begin{equation*}
+    \rho(r) = \rho_{1/2}\cdot\exp\left[-\int_{\ln r_{1/2}}^{\ln r}n(s)\text{d}s\right],
+\end{equation*}
+with the density at half-light radius $\rho(r_{1/2})=\rho_{1/2}$, We
+prescribe three buffer bins $n(r_j)$ for $j\in\{N_{\rm bin}+1,
+N_{\rm bin}+2, N_{\rm bin}+3\}$ outside of the range where data is given to
+enable sensible extrapolations towards high radii, and two additional slopes
+$n_0 < 3, n_\infty>3$ for the asymptotic density slopes towards $r=0$ and
+$r=\infty$, which are reached at half the smallest radius and $r_\infty=10r_{\rm
+  max}$.
 
 
 \subsection{Splitting Populations}\label{sec:metals}
