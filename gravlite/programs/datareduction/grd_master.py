@@ -2,6 +2,8 @@
 from mpi4py import MPI
 import numpy as np
 import sys
+from pylab import *
+
 from gl_centering import com_shrinkcircle_v_2D
 import gl_units as gu
 import gl_helper as gh
@@ -74,20 +76,18 @@ import gr_params
 gpr = gr_params.Params(gp)
 
 import gl_units as gu
-global DL
+
 DL = {0: lambda x: x * (138),#+/- 8 for Fornax
       1: lambda x: x * (101),#+/- 5 for Carina
       2: lambda x: x * (79), #+/- 4 for Sculptor
       3: lambda x: x * (86)  #+/- 4 for Sextans
   }[gp.case](gu.kpc__pc)
-global k2 # overall half-light radius in [pc] from Irwin,Hatzidimitriou1995
 k2 = {0: lambda x: x * (339),#+/-36 for Fornax
       1: lambda x: x * (137),#+/-22 for Carina
       2: lambda x: x * (94), #+/-26 for Sculptor
       3: lambda x: x * (294) #+/-38 for Sextans
   }[gp.case](1)
 
-global wpt, Rpt, V0, Ve0, Mg, Mg_err, Fe, Fe_err,PM
 gpr.fil = gpr.dir+"/table_merged.bin"
 delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
 #ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
@@ -101,42 +101,24 @@ RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
 sel = (PM>0)
 RAh=RAh[sel]; RAm=RAm[sel]; RAs=RAs[sel]; DEd=DEd[sel]; DEm=DEm[sel]; DEs=DEs[sel]
 Vmag=Vmag[sel]; VI=VI[sel]; Vhel=Vhel[sel]; Vhel_err=Vhel_err[sel]
-Fe=Fe[sel]; Fe_err=Fe_err[sel]; Mg=Mg[sel]; Mg_err=Mg_err[sel]; PM=PM[sel]
-global Fe_min, Fe_max, Mg_min, Mg_max
-Fe_min = min(Fe); Fe_max = max(Fe); Mg_min = min(Mg); Mg_max = max(Mg)
+Mg=Mg[sel]; Mg_err=Mg_err[sel]; PM=PM[sel]
+Mg_min = min(Mg); Mg_max = max(Mg)
 
-# attention, we do not have Mg measurements for 501 stars in Fornax,
+# attention, we miss Mg measurements for 501 stars in Fornax,
 #  visible by missing SigMg values, set to -1
-#   we exclude them from all further analysis
-global Nsample
 Nsample = len(PM)
 
 # where no Fe or Mg is measured, set the corresponding error to infinity
-Fe_mean = np.mean(Fe[Fe>-1])
 Mg_mean = np.mean(Mg[Mg>-1])
-penalty_err = np.inf
+penalty_err = 10
 for i in range(Nsample):
-    if Fe[i] == -1:
-        Fe[i] = Fe_mean
-        Fe_err[i] = penalty_err
     if Mg[i] == -1:
         Mg[i] = Mg_mean
         Mg_err[i] = penalty_err
-    if Fe_err[i] == -1:
-        Fe_err[i] = penalty_err
     if Mg_err[i] == -1:
         Mg_err[i] = penalty_err
 
 # use all stellar tracer particles from now on, independent on their probability of membership
-#scatter(Fe, Mg)
-show_metallicity(Fe, Fe_err, Mg, Mg_err)
-# TODO show ellipses with errors, and alpha
-#xlabel('Fe')
-#ylabel('Mg')
-#show()
-#pdb.set_trace()
-
-global alpha_s, delta_s
 sig = abs(RAh[0])/RAh[0]
 RAh = RAh/sig
 # stellar position alpha_s, delta_s
@@ -154,7 +136,6 @@ delta_s /= gu.rad__arcsec  # [rad]
 # determine Heliocentric-Rest-Frame Line-Of-Sight velocity of dwarf Vd
 # and position of dwarf (ad, dd)
 # from probability-of-membership weighted means directly
-global Vd, ad, dd
 Vd = np.sum(Vhel * PM)/np.sum(PM)    # [km/s]
 ad = np.sum(alpha_s * PM)/np.sum(PM) # [arcsec]
 dd = np.sum(delta_s * PM)/np.sum(PM) # [arcsec]
@@ -167,7 +148,6 @@ y0 = 1.*np.copy(ys) # [pc]
 
 # remove center displacement, already change x0
 com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, Vhel, PM) # [pc], [km/s]
-global R0
 R0 = np.sqrt(x0**2+y0**2)
 # sort by R0 so integral makes sense later
 order = np.argsort(R0)
@@ -185,20 +165,17 @@ arcmin__pc = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
 Rpt *= arcmin__pc # [pc]
 
 gh.LOG(1,'starting MultiNest run:')
-
 # works with investigation = 'obs', pops = 2, metalpop = True
 # profile with python3 -m cProfile grd_split.py
-### TODO output:
-
 comm = MPI.COMM_SELF.Spawn(sys.executable,
                            args=['grd_metalsplit.py'],
                            maxprocs=3)
 
-comm.bcast(gp, root=MPI.ROOT)
+comm.bcast([gp, Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max], root=MPI.ROOT)
 
-#PI = np.array(0.0, 'd')
-#comm.Reduce(None, [PI, MPI.DOUBLE],
-#            op=MPI.SUM, root=MPI.ROOT)
-#print(PI)
+finish = 0
+comm.Reduce(None, finish,
+            op=MPI.SUM, root=MPI.ROOT)
+print(finish)
 
 comm.Disconnect()

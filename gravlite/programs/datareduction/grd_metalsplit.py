@@ -9,7 +9,6 @@
 
 import pdb
 import numpy as np
-from pylab import *
 import pymultinest
 import gl_helper as gh
 
@@ -23,10 +22,6 @@ def myprior(cube, ndim, nparams):
     off +=1
     for pop in range(gp.pops): # no. of pops goes in here, first MW, then 1,2,..
         # TODO: add up differences from 0
-        #cube[off] = cube[off]*(Fe_max-Fe_min)+Fe_min # Fe_mu
-        #off += 1
-        #cube[off] = cube[off]*(Fe_max-Fe_min) # Fe_sig
-        #off += 1
         cube[off] = cube[off]*(Mg_max-Mg_min)+Mg_min # Mg_mu
         off += 1
         cube[off] = cube[off]*(Mg_max-Mg_min) # Mg_sig
@@ -54,14 +49,10 @@ def w(Rk):
 
 def myloglike(cube, ndim, nparams):
     off = 0
-    Fe_mu = []; Fe_sig = []; Mg_mu = []; Mg_sig = []
+    Mg_mu = []; Mg_sig = []
     frac = cube[off]
     off += 1
     for pop in range(gp.pops):
-        #Fe_mu.append(cube[off])
-        #off += 1
-        #Fe_sig.append(cube[off])
-        #off += 1
         Mg_mu.append(cube[off])
         off += 1
         Mg_sig.append(cube[off])
@@ -70,18 +61,18 @@ def myloglike(cube, ndim, nparams):
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         pdb.set_trace()
     gh.LOG(2,'starting logev evaluation')
-    #p1_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[0]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[0])**2/(2*np.sqrt(Fe_sig[0]**2+Fe_err**2)))
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
-    #p2_Fe= 1/np.sqrt(2*np.pi*(Fe_sig[1]**2+Fe_err**2))*np.exp(-(Fe-Fe_mu[1])**2/(2*np.sqrt(Fe_sig[1]**2+Fe_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
-    p1 = frac*PM*p1_Fe*p1_Mg
-    p2 = (1-frac)*PM*p2_Fe*p2_Mg
+    p1 = frac*PM*p1_Mg
+    p2 = (1-frac)*PM*p2_Mg
     pcom = p1+p2
+    print('pcom (min, max) = ', min(pcom), max(pcom))
+    print('fraction of pcom == 0 : ', sum(pcom==0)/len(pcom))
     lpcom = np.log(pcom)
     logev = np.sum(lpcom)
     gh.LOG(1, 'logL:',logev)
-    if logev < -1e300:
-        pdb.set_trace()
+    #if logev < -1e300:
+    #    pdb.set_trace()
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
@@ -106,9 +97,7 @@ def run(gp):
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = Nsample,
                     evidence_tolerance = 0.0,   # 0 to keep working infinitely
-                    sampling_efficiency = 0.05, # very low eff. in
-                                                #case of const efficiency mode,
-                                                #README
+                    sampling_efficiency = 0.95,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = 1., # separate modes if
                                             #logevidence > this param.
@@ -139,5 +128,13 @@ if __name__=="__main__":
 
     import gl_params
     gp = gl_params.Params()
-    gp = comm.bcast(gp, root=0)
+
+    globs = None
+    globs = comm.bcast(globs, root=0)
+    global Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max
+    gp, Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max = globs
     run(gp)
+    finish = 1
+    comm.Reduce(finish, None,
+                op=MPI.SUM, root=0)
+    comm.Disconnect()

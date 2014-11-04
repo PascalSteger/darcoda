@@ -17,6 +17,7 @@ def check_investigate(inv):
     if inv == 'obs':      return True
     if inv == 'hern':     return True
     if inv == 'triax':    return True
+    if inv == 'coll':     return True
     raise Exception('wrong investigative case in gl_params')
     return False
 ## \fn check_investigate(inv)
@@ -148,7 +149,7 @@ class Params():
         # ----------------------------------------------------------------------
         host_name = socket.gethostname()
         user_name = getpass.getuser()
-        if 'darkside' in host_name:
+        if ('darkside' in host_name) or ('auriga' in host_name) :
             self.machine = 'darkside'
         elif 'pstgnt332' in host_name:
             self.machine = 'pstgnt332'
