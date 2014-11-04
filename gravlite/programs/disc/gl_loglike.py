@@ -22,7 +22,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     off += offstep
 
     offstep = gp.nrho
-    rhopar = np.array(cube[off:off+offstep])
+    rhopar = np.array(cube[off:off+offstep])  #SS cube[1:1+nrho]
     tmp_rho = phys.rho(gp.xepol, rhopar, 0, gp)
     tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
     off += offstep
@@ -32,19 +32,19 @@ def geom_loglike(cube, ndim, nparams, gp):
     # tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
 
     offstep = gp.nrho
-    rhostarpar = np.array(cube[off:off+offstep])
+    rhostarpar = np.array(cube[off:off+offstep]) #SS cube[1+nrho:1+2*nrho]
     tmp_rhostar = phys.rho(gp.xepol, rhostarpar, 0, gp)[gp.nexp:-gp.nexp]
     tmp_profs.set_prof('nu', tmp_rhostar, 0, gp) # [Munit/pc^3]
     Sigstar = phys.nu_SUM_Sig(gp.dat.binmin, gp.dat.binmax, tmp_rhostar) # [Munit/pc^2]
     tmp_profs.set_prof('Sig', Sigstar, 0, gp)
     off += offstep
 
-    MtoL = cube[off]
+    MtoL = cube[off]  #SS cube[1+2*nrho]
     off += 1
 
     for pop in np.arange(1, gp.pops+1):
         offstep = gp.nrho
-        nupar = np.array(cube[off:off+offstep])
+        nupar = np.array(cube[off:off+offstep])  #SS 1 cube[2+2*nrho:2+3*nrho]
         tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)[gp.nexp:-gp.nexp]
         tmp_profs.set_prof('nu', tmp_nu, pop, gp) # [Munit/pc^3]
         tmp_Sig = phys.nu_SUM_Sig(gp.dat.binmin, gp.dat.binmax, tmp_nu) # [Munit/pc^2]
@@ -55,14 +55,15 @@ def geom_loglike(cube, ndim, nparams, gp):
             pdb.set_trace()
 
         offstep = gp.nbeta
-        if gp.chi2_Sig_converged:
-            tiltpar = np.array(cube[off:off+offstep])
+        if gp.chi2_nu_converged:
+            tiltpar = np.array(cube[off:off+offstep])#SS cube[2+3*nrho:..+nbeta]
             tmp_tilt = phys.tilt(gp.xipol, tiltpar, gp)
             if check_tilt(tmp_tilt, gp):
                 gh.LOG(1, 'tilt error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
-            tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
+            if gp.nbeta!=0:
+                tmp_profs.set_prof('tilt', tmp_tilt, pop, gp)
             sig = phys.sigz(gp.xepol, rhopar, rhostarpar, MtoL, nupar, norm, tiltpar, pop, gp)
             tmp_profs.set_prof('sig', sig, pop, gp)
             # tmp_profs.set_prof('kap', kap, pop, gp)

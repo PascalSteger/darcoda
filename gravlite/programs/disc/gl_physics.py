@@ -42,14 +42,14 @@ def rho(z0, rhopar, pop, gp):
     # and apply it to these radii, which may be anything in between
     zs =  np.log(z0/gp.Xscale[pop]) # have to integrate in d log(r)
     logrright = []; logrleft = []
-    if np.rank(rs) == 0:
-        if rs>0:
-            logrright.append(rs)
+    if np.rank(zs) == 0:
+        if zs>0:
+            logrright.append(zs)
         else:
-            logrleft.append(rs)
+            logrleft.append(zs)
     else:
-        logrright = rs[(rs>=0.)]
-        logrleft  = rs[(rs<0.)]
+        logrright = zs[(zs>=0.)]
+        logrleft  = zs[(zs<0.)]
         logrleft  = logrleft[::-1] # inverse order
 
     # integrate to left and right of halflight radius
@@ -114,7 +114,6 @@ def kappa(xipol, Kz):
 
 def nu_decrease(zpars, pars, gp):
     parsu = abs(pars)                        # Mirror prior
-
     if gp.monotonic:
         rnuz_z = np.zeros(len(zpars))
         rnuz_z[0] = parsu[0]
@@ -149,9 +148,9 @@ def nu_decrease(zpars, pars, gp):
             intquad = (a - b*z0 + c*z0*z1)*z1d + (b/2. - c/2.*(z0+z1))*z2d + c/3.*z3d
             norm_nu = norm_nu + intquad
 
-            sel  = (z > z0 and z < z2)
-            zcut = z[sel]
-            tcut = testy[sel]
+            #sel  = (z > z0 and z < z2)
+            #zcut = z[sel]
+            #tcut = testy[sel]
 
     fun /= norm_nu
 
@@ -202,7 +201,7 @@ def kz(zpars, kzpar, gp):
             z3d = z1**3.-z0**3.
             intbit = (a-b*z0+c*z0*z1)*z1d+(b/2.-c/2.*(z0+z1))*z2d+c/3.*z3d
             kz_z[i] = kz_z[i-1] + intbit
-            if i == n_elements(zpars)-2:
+            if i == len(zpars)-2:
                 # Deal with very last bin:
                 z1d = z2-z1; z2d = z2**2.-z1**2.; z3d = z2**3.-z1**3.
 
@@ -234,14 +233,14 @@ def kz(zpars, kzpar, gp):
 # @param gp global parameters
 
 
-def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
+def sigz(zp, rhopar, lbaryonpar, MtoL, nupar, norm, tpar, pop, gp):
     # calculate density and Kz force:
     nutmp = rho(zp, nupar, pop, gp)
     nu_z = nutmp/np.max(nutmp)  # normalized to [1]
     gh.checkpositive(nu_z)
     rhodmtmp = rho(zp, rhopar, 0, gp) # rho_DM in linearly spaced bins
     gh.checkpositive(rhodmtmp)
-    rhostartmp = rho(zp, rhostarpar, 0, gp)
+    rhostartmp = rho(zp, lbaryonpar, 0, gp)
     gh.checkpositive(rhostartmp)
     rhotmp = rhodmtmp+MtoL*rhostartmp # add baryons
     kz_z = kz(zp, rhotmp, gp) # [(km/s)^2/pc]
@@ -321,18 +320,18 @@ def sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpar, pop, gp):
                 sigint[i+1] = sigint[i] + intbit
     sig_z_t2 = 1.0/nu_z * (sigint + norm)
     return  np.sqrt(sig_z_t2[3:-3])
-## \fn sigz(zp, rhopar, rhostarpar, MtoL, nupar, norm, tpars, pop, gp)
+## \fn sigz(zp, rhopar, lbaryonpar, MtoL, nupar, norm, tpars, pop, gp)
 # calculate z velocity dispersion
 # @param zp vertical coordinate [pc]
 # @param rhopar rho to be integrated to give force K_z
-# @param rhostarpar overall baryonic light profile [Lsun]
+#SS No, rhotmp (=rhodmtmp+MtoL*rhostartmp) integrated to give K_z
+# @param lbaryonpar overall baryonic light profile [Lsun]
 # @param MtoL mass-to-light ratio [Msun/Lsun]
 # @param nupar parameters for tracer density falloff
 # @param norm value C, corresponds to integration from 0 to rmin
 # @param tpars tilt parameters
 # @param pop int for population (diff. halflight-radius)
 # @param gp global parameters
-
 
 def sig_rz(z, zpars, tpars):
     # Mirror prior

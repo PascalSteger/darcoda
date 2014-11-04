@@ -7,7 +7,9 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, pdb, logging, socket, getpass
+import pdb
+import socket
+import getpass
 
 def check_investigate(inv):
     if inv == 'discmock': return True
@@ -16,7 +18,10 @@ def check_investigate(inv):
     return False
 
 class Params():
-    def __init__(self, timestamp = ''):
+    def __init__(self, timestamp = '', investigate = '', case = -1):
+
+        # Set machine and user variables
+        # ----------------------------------------------------------------------
         host_name = socket.gethostname()
         user_name = getpass.getuser()
         if 'darkside' in host_name:
@@ -31,10 +36,16 @@ class Params():
             self.machine = 'lisa_SS_login'
         elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
             self.machine = 'lisa_SS_batch'
-        self.geom = 'disc'
-        self.investigate  = 'discmock' # determine which data set to work on
+
+        # Set investigation and geometry
+        if investigate != '':
+            self.investigate = investigate
+        else:
+            self.investigate  = 'discmock' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
+        self.geom = 'disc'
+
         check_investigate(self.investigate)
         self.case = 0 # used in spherical case
         self.pops = 2 # number of stellar tracer populations
@@ -66,8 +77,8 @@ class Params():
         # ----------------------------------------------------------------------
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.chi2_Sig_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100. # if chi2<chi2_switch, add chi2_sig
+        self.chi2_nu_converged = False # first converge on Sig if set to False
+        self.chi2_switch = 10. # if chi2<chi2_switch, add chi2_sig
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
@@ -87,14 +98,14 @@ class Params():
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 1   # number of parameters for beta, in sum of
+        self.nbeta = 0   # number of parameters for beta, in sum of
                          # polynomials
         # TODO: if not using rhostar, subtract gp.nrho:
         self.ndim = 1 + 2*self.nrho + 1 + self.pops*(self.nrho + self.nbeta)
         # +1 for norm, rho, rhostar, MtoL, [nu_i, tilt_i]
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
-        self.nlive = 10*self.ndim
+        self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
 
@@ -103,23 +114,21 @@ class Params():
         self.rhohalf = 10**-1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.log10rhospread = 1.       # with this spread, [dex] in log space
+        self.log10rhospread = 2.       # with this spread, [dex] in log space
         self.rlimnr = -1 # scale below which range of
                          # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
                          # calculated to values in [pc] in gl_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = -1 # same for nu, using same rhalf
-        self.log10nuspread = 1.0
-        self.maxrhoslope  = 0.5    # maximum slope (change if
+        self.log10nuspread = 2.
+        self.maxrhoslope  = 5.    # maximum slope (change if
                                   # monotonicity prior used) of rho
-        self.maxnuslope = 0.5
-        # nrtol: prior (max +/- range) for dn(r)/dlog(r)
+        self.maxnuslope = 5.
+        # nztol: prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    from min(gp.xipol) to max(gp.xipol)
-        self.nrtol  = self.maxrhoslope
-        self.nrtol_nu = 2*self.maxnuslope # same for nu profile
-        self.maxlog10nu = 4.     # direct sampling of nu: min value
-        self.minlog10nu = 0.     # direct sampling of nu: max value
+        self.nztol  = self.maxrhoslope
+        self.nztol_nu = 2*self.maxnuslope # same for nu profile
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
         self.beta00prior = False  # prior beta(r=0) = 0

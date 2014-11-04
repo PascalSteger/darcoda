@@ -7,7 +7,10 @@
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
 
-import os, pdb, sys, pickle
+import os
+import pdb
+import sys
+import pickle
 import numpy as np
 import gl_helper as gh
 
@@ -24,7 +27,6 @@ def get_case(cas):
 #             ntracer = 3e4              # case 2
 # @param cas case number: 0 (3000 tracers, 10k tracers)
 
-
 import os.path
 def newdir(bname):
     if not os.path.exists(bname):
@@ -33,7 +35,6 @@ def newdir(bname):
 ## \fn newdir(bname)
 # create new directory
 # @param bname path
-
 
 class Files:
     # we have the convention to use
@@ -77,6 +78,8 @@ class Files:
             self.set_walk(gp, timestamp)
         elif gp.investigate == 'gaia':
             self.set_gaia(gp, timestamp)
+        elif gp.investigate == 'coll':
+            self.set_coll(gp, timestamp)
         elif gp.investigate == 'triax':
             self.set_triax(gp, timestamp)
         elif gp.investigate == 'obs':
@@ -122,7 +125,7 @@ class Files:
         elif machine == 'lisa_HS_login':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
         elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/????/darcoda/gravlite/'
+            self.machine = '/home/sofia/darcoda/gravlite/'
         elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
             scratch_space = os.getenv("TMPDIR")
             self.machine = scratch_space + '/darcoda/gravlite/'
@@ -189,8 +192,7 @@ class Files:
     # @param gp global parameters
     # @param timestamp for analysis
 
-
-    def set_gaiaTB(self, gp, timestamp=''):
+    def set_gaia(self, gp, timestamp=''):
         beta_star1 = 5; r_DM = 1000
         if gp.case == 1:
             gamma_star1=0.1;
@@ -217,26 +219,22 @@ class Files:
             gamma_star1=1.0;
             r_star1=1000; r_a1=np.inf; gamma_DM=0; rho0=0.400 # core
         elif gp.case == 9:
-            alpha_DM=1.0
-            beta_DM=4.0
-            gamma_DM=1.0
+            alpha_DM=1.0; beta_DM=4.0; gamma_DM=1.0
             r_DM=2000. # [pc]
-            rho_h=2.387329E+07 #Msun/kpc^3
+            rho_h=2.387329e-2 #Msun/pc^3
             alpha_star1=0.5
             gamma_star1=0.1
             r_star1=500.
             #gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
             #r_DM = 2000 # [pc]
         elif gp.case == 10:
-            alpha_DM=1.0
-            beta_DM=4.0
-            gamma_DM=0.0
-            r_DM=4000. #pc
-            rho0=3.021516E+07 #Msun/kpc^3
+            alpha_DM=1.0; beta_DM=4.0; gamma_DM=0.0
+            r_DM=4000. #[pc]
+            rho0=3.021516e-2 #Msun/pc^3
             alpha_star1=0.5
             beta_star1=5.0
             gamma_star1=0.1
-            r_s=1.75 # kpc
+            r_star1=1750. # [pc]
             #gamma_star1=1.0; r_star1=500;  r_a1=np.inf; gamma_DM=1; rho0=2.387329e-2
             #r_DM = 2000 # [pc]
         elif gp.case == 11:
@@ -282,6 +280,27 @@ class Files:
         return
     ## \fn set_gaia(self, gp, timestamp)
     # derive filenames from gaia case
+    # @param gp global parameters
+    # @param timestamp for analysis
+
+    def set_coll(self, gp, timestamp=''):
+        self.longdir = 'mpop1/'
+        self.dir = self.modedir + self.longdir
+        self.dir += timestamp + '/'
+        ## new variable to hold the .dat input file
+        self.datafile = self.dir + 'dat'
+        #self.analytic = self.dir + 'samplepars'
+        for pop in np.arange(gp.pops+1):
+            spop = str(pop)
+            self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt') # all comp.
+            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt') # all comp.
+            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
+        return
+    ## \fn set_coll(self, gp, timestamp)
+    # derive filenames from collisional systems case
     # @param gp global parameters
     # @param timestamp for analysis
 

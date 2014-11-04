@@ -8,7 +8,7 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import sys, pdb
+import pdb
 import numpy as np
 
 from scipy.integrate import simps
@@ -16,7 +16,7 @@ import pymultinest
 
 import gl_helper as gh
 from gl_centering import com_shrinkcircle_v_2D
-import BiWeight as BW
+#import BiWeight as BW
 import gl_units as gu
 
 gh.DEBUGLEVEL = 3

@@ -9,7 +9,6 @@
 
 import numpy as np
 import sys, pdb
-import gl_helper as gh
 import gl_file as gf
 from gl_centering import com_shrinkcircle_v_2D
 

@@ -8,7 +8,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys, pdb
+import pdb
 import pymc as mc
 import matplotlib
 matplotlib.use('pdf')
@@ -16,7 +16,6 @@ from pylab import *
 ion()
 
 from gl_helper import expDtofloat
-from gl_class_files import *
 from scipy.stats import norm
 
 

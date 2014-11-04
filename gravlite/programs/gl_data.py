@@ -8,7 +8,6 @@
 
 import pdb
 import numpy as np
-import gl_physics as phys
 import gl_helper as gh
 import gl_project as glp
 from scipy.interpolate import splrep, splev

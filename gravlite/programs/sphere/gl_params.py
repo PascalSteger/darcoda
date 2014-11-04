@@ -7,7 +7,9 @@
 # (c) 2013 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import os, pdb, logging, socket, getpass
+import pdb
+import socket
+import getpass
 
 def check_investigate(inv):
     if inv == 'walk':     return True
@@ -21,17 +23,17 @@ def check_investigate(inv):
 # check whether there is a valid investigation chosen
 # @param inv string
 
-
 class Params():
     def __init__(self, timestamp = '', investigate = '', case = -1):
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'gaia' # determine which data set to work on
+            self.investigate  = 'coll' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
                                        #         challenge, 1 pop only
+                                       # 'coll': collisional system
                                        # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
         print(' investigation : ', self.investigate)
@@ -42,7 +44,7 @@ class Params():
             self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations
+        self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
@@ -65,9 +67,9 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
-        self.debug = False
-        self.checksig = False
-        self.stopstep = 1
+        self.debug = True # enable calling debug routines during run. Turn off for production runs!
+        self.checksig = False # check sigma_LOS calculation steps in gl_int
+        self.stopstep = 1 # step to stop at by default
 
         # MultiNest options
         # ----------------------------------------------------------------------
@@ -105,7 +107,7 @@ class Params():
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
-        self.nlive = 10*self.ndim
+        self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
         # automatic plotting options
@@ -118,15 +120,15 @@ class Params():
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.log10rhospread = 1.       # with this spread, [dex] in log space
-        self.log10nuspread = 0.5
+        self.log10rhospread = 2.5       # with this spread, [dex] in log space
+        self.log10nuspread = 2.5  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
-        self.nrtol  = 1./(8./self.nipol) # prior (max +/- range) for dn(r)/dlog(r); 8 is log(3000[pc])
-        self.nrtol_nu = 1./(8./self.nipol) # max change in dn(r)/d log(r)
-        self.maxrhoslope  = 4    # maximum slope (change if
+        self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
-        self.maxnuslope = 5      # same for nrnu
+        self.maxnuslope = 6      # same for nrnu
+        self.nrtol  = self.maxrhoslope # max change of n(r) over the full range [0, r_max]
+        self.nrtol_nu = self.maxnuslope # same for nu
         self.beta00prior = False  # beta(r=0)=0
         self.minbetastar = -0.99  # clipping for beta, default: -0.99
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00

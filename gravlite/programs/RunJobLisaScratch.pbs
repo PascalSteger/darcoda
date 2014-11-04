@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -S /bin/bash
-#PBS -lnodes=1:cores16:ppn=16,walltime=00:00:05:00
+#PBS -lnodes=1:cores16:ppn=16,walltime=00:00:02:00
 
 # Copying program files to scratch
 
@@ -13,14 +13,14 @@ mkdir $TMPDIR/darcoda
 mkdir $TMPDIR/darcoda/gravlite
 mkdir $TMPDIR/darcoda/gravlite/programs
 
-cp -r $HOME/LoDaM/darcoda/gravlite/programs/* $TMPDIR/darcoda/gravlite/programs/
+cp -r $HOME/darcoda/gravlite/programs/* $TMPDIR/darcoda/gravlite/programs/
 
 cd $TMPDIR/darcoda/gravlite/programs
 
 # Calculate run time for gravlite, less than wall time to allow for data to be
 # copied back, allow 120 seconds for transfer.
 echo PBS_WALLTIME = $PBS_WALLTIME
-transft=180
+transft=30
 echo Transfer time = $transft
 runtime=$(expr $PBS_WALLTIME - $transft)
 echo gravlite runtime = $runtime
@@ -28,7 +28,9 @@ echo gravlite runtime = $runtime
 python3 gravlite.py& PID=$!; sleep $runtime; kill $PID
 
 echo gravlite killed, transfering data
+ls -l $TMPDIR/darcoda/gravlite/
 
-cp -r $TMPDIR/darcoda/gravlite/DTdiscmock/0/* $HOME/LoDaM/darcoda/gravlite/DTdiscmock/0/
+
+cp -r $TMPDIR/darcoda/gravlite/DTdiscmock/0/* $HOME/darcoda/gravlite/DTdiscmock/0/
 
 echo Data transfered, job finished

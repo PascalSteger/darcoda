@@ -38,11 +38,11 @@ def remove_empty_folders(fdl):
             with open(x[0]+"/ev.dat"):
                 # delete any folder that has empty ev.dat
                 if bufcount(x[0]+'/ev.dat') <= 0:
-                    removeDir(x[0])
+                    #removeDir(x[0])
                     print('empty '+x[0]+'/ev.dat, remove dir?')
                 continue
         except IOError:
-            removeDir(x[0])
+            #removeDir(x[0])
             print(x[0]+'/ev.dat does not exist, remove empty directory '+x[0]+'?')
     return
 ## \fn remove_empty_folders(fdl)
@@ -52,7 +52,6 @@ def remove_empty_folders(fdl):
 
 
 def list_files(basedir):
-    from stat import S_ISREG, ST_CTIME, ST_MODE
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
 
     from datetime import datetime
@@ -309,8 +308,7 @@ def run(investigate="", case=-1, latest=False):
     elif ('lisa' in host_name) and ('hsilverw' in user_name):
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
-        basepath = '/home/sofia/blah/darcoda/gravlite/'
-
+        basepath = '/home/sofia/darcoda/gravlite/'
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
     if latest:
