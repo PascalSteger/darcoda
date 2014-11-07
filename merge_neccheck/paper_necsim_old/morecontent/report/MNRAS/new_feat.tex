@@ -1,0 +1,117 @@
+\documentclass[useAMS]{mn2e}
+%To produce a PDF file with hyperlinks, uncomment the following lines
+%\usepackage[pdftex,pdfpagemode={UseOutlines},bookmarks,bookmarksopen,
+%colorlinks,linkcolor={blue},citecolor={green},urlcolor={red}]{hyperref}
+
+%Original file 1999 October 18
+%Modified 2000 January 19
+
+\begin{document}
+\title{New features in the \textit{Monthly Notices} \LaTeXe\ class file}
+\date{2001 February 06}
+\pubyear{2001} \volume{000} \pagerange{1} \onecolumn
+
+\maketitle \label{firstpage}
+ \nokeywords
+
+The MNRAS \LaTeXe\ class file is implemented by placing the
+command\\
+ \verb"\documentclass["\textit{options}\verb"]{mn2e}"\\
+at the start of the document.
+
+The various \verb"option" commands listed in the \textit{Monthly
+Notices}\ \LaTeX\ style guide for authors\nocite{209guide} can
+still be used. The following additional options
+exist.\label{dcolumn}
+
+\begin{enumerate}
+\item \verb"useAMS" -- this enables the production of upright Greek
+characters $\upi$, $\umu$ and $\upartial$ (\verb"$\upi$",
+\verb"$\umu$" and \verb"$\upartial$") and slanted $\leq$ and
+$\geq$ (\verb"$\leq$" and \verb"$\geq$"). Characters $\upi$,
+$\umu$ and $\upartial$ appear upright only on systems that have
+the Euler roman fonts (\verb"eurm"\textit{xx}); characters $\leq$
+and $\geq$ appear slanted only on systems that have the AMS
+series A fonts (\verb"msam"\textit{xx}). On systems that do not
+have these fonts, the standard forms of the characters appear in
+the printout; however, they should be correct in the final typeset
+paper if the correct \LaTeX\ commands have been used.
+
+\item \verb"usedcolumn" -- this uses the package file \verb"dcolumn.sty"
+to define two new types of column alignment for use in tables. If
+the \verb"usedcolumn" option has been specified then, within a
+table,
+ \verb"d{"\textit{x}\verb"}" can be used to produce a
+`flush right' decimal-aligned column with \textit{x} decimal
+places and
+ \verb"." can be used to provide a decimal-aligned column centred
+ on the decimal point (the number of decimal places does not need
+ to be specified for this column type). Note that the standard \LaTeX\
+ `tools' packages \verb"dcolumn.sty" and \verb"array.sty" are
+ required in order to use the \verb"usedcolumn" option.
+
+\item \verb"usenatbib" -- this uses Patrick Daly's \verb"natbib.sty"
+package for cross-referencing. If the \verb"usenatbib" option is
+specified, citations in the text should be in one of the following
+forms (or one of the additional forms documented within
+\verb"natbib.sty" itself).
+
+  \begin{itemize}
+  \item \verb"\citet{"\textit{key}\verb"}" produces text citations,
+  e.g. Jones et al. (1990),
+  \item \verb"\citep{"\textit{key}\verb"}" produces citations in parentheses,
+  e.g. (Jones et al. 1990),
+  \item \verb"\citealt{"\textit{key}\verb"}" produces citations with no parentheses,
+  e.g. Jones et al. 1990.
+  \end{itemize}
+For three-author papers, a full author list can be forced by
+putting a \verb"*" just before the \verb"{". To add notes within
+the citation, use the form
+\verb"\citep["\textit{pre\_reference\_text}\verb"]["\textit{post\_reference\_text}\verb"]{"\textit{key}\verb"}"
+(note that either of \textit{pre\_reference\_text} and
+\textit{post\_reference\_text} can be blank).
+
+Items in the reference list must be of the form\\
+\verb"\bibitem[\protect\citeauthoryear{"\textit{author\_names}\verb"}{"\textit{year}\verb"}]{"\textit{key}\verb"}"
+Text of reference ...\\
+for one-, two- and multi-author papers, or\\
+\verb"\bibitem[\protect\citeauthoryear{"\textit{three\_author\_names}\verb"}{"\textit{first\_author\_etal}\verb"}{"\textit{year}\verb"}]{"\textit{key}\verb"}"
+Text of reference ...\\
+for three-author papers.
+
+Note that Patrick Daly's package \verb"natbib.sty" is required in
+order to use the \verb"usenatbib" option.
+
+We recommend that authors use \verb"natbib.sty" as their standard
+cross-referencing package, because of the flexibility in citation style
+that it provides.
+
+\item \verb"usegraphicx" -- this loads the graphics package
+\verb"graphicx.sty", which authors can use to include figures in
+their papers. Note that the standard \LaTeX\
+ graphics package \verb"graphicx.sty" is
+ required in order to use the \verb"usegraphicx" option.
+\end{enumerate}
+
+Other style files, or packages providing features such as graphics
+support, can be used in conjunction with \verb"mn.cls". To do
+this, the command
+\verb"\usepackage{"\textit{package\_name}\verb"}" is used.
+
+An additional feature of the class file is that footnote symbols
+are now in the correct journal style (symbols for title page
+footnotes, superscript arabic numbers for text footnotes).
+
+A BibTeX style file, \verb"mn2e.bst", is now available for
+authors who wish to use BiBTeX. It is recommended that this
+should be used in conjunction with \verb"natbib.sty".
+
+For general instructions on preparing \textit{Monthly Notices} papers in
+\LaTeX, please refer to the MNRAS \LaTeX style guide for authors,
+available on the CTAN sites in subdirectory
+\verb"/tex-archive/macros/latex209/mnras".
+
+ \label{lastpage}
+
+
+\end{document}

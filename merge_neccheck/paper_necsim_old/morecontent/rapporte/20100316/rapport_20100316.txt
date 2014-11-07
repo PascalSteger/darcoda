@@ -1,0 +1,48 @@
+Rapport 2010-03-16
+==================
+
+
+Rueckblick
+----------
+* Aufbau Verzeichnis relevanter Literatur, Zusammenfassung, Definitionen
+* Einleitung Paper
+* neue Version AMIGA, AHF korrigiert
+* Aufbereitung des alten Codes begonnen: 
+	Virial Properties mit overdensity wieder aktiviert, 
+	zus\"atzliches Entfernen ungebundener Teilchen revidiert, 
+	OOP
+* Vorlesungen wieder begonnen
+
+
+Ausblick
+--------
+* Weiterarbeit an (neuem?) Paper erst nach Tests des neuen Codes
+* Literatur r\"uckverfolgen
+* Definition Themengebiet, Titel der Masterarbeit; 
+  Master abzuschliessen bis spaetestens Ende FS2012
+
+
+Pendenzen
+---------
+* Philosophie
+* paper
+* checks fuer numerische Effekte, cf. email O. Hahn
+* Binney/Tremaine: Kapitel 4..8,10..
+* Aenderungen fueur AMR?
+* Website
+
+
+Diverses
+--------
+* correction of images for weak lensing: get 'real' dm distribution
+* distribution of dark nrj: uniform/follows nrj/concentrated in voids?
+* distribution of dark matter: structured/uniform: 
+  which scale for splitting point?
+* heating of gas in simulation, quantitative, as fct of density,z,
+* simulate mergers, looking at dm halo 
+  (mass loss, final angular momentum, conservation of momentum)
+* galaxies as spinning tops: precession of stars/gas/dm shells 
+  as fct of environment/mass/axes/angular momentum
+* how can disk survive tidal stresses from near encounters of dm subhalos?
+* influence of dm gravitational field on spectra of stars/galaxies?
+* fractal properties of mass distribution as fct of scale

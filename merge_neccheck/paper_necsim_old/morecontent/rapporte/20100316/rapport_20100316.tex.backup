@@ -1,0 +1,60 @@
+\documentclass[10pt]{report}
+\begin{document}
+%
+\begin{titlepage}
+ \title{Rapport 2009-03-16}
+ \author{P.S.P. Steger}
+ \maketitle
+\end{titlepage}
+%
+
+%
+\paragraph{R\"uckblick}
+%
+\begin{itemize}
+\item Aufbau Verzeichnis relevanter Literatur, Zusammenfassung, Definitionen
+\item Einleitung Paper
+\item neue Version AMIGA, AHF korrigiert
+\item Aufbereitung des alten Codes von O. Hahn begonnen: Virial Properties mit overdensity wieder aktiviert, zus\"atzliches Entfernen ungebundener Teilchen revidiert, OOP
+\item Vorlesungen wieder begonnen
+\end{itemize}
+%
+\paragraph{Ausblick}
+%
+\begin{itemize}
+\item Weiterarbeit an (neuem?) Paper erst nach Tests des neuen Codes
+\item Literatur r\"uckverfolgen
+\item Definition Themengebiet, Titel der Masterarbeit; abzuschliessen bis sp\"atestens Ende FS2012
+\end{itemize}
+%
+\item Master-Arbeit: sp\"atester Termin Master-Diplom Ende FS2012
+\item Vorbereitung Doktorat
+\end{itemize}
+%
+%
+\paragraph{Fragen}
+\begin{itemize}
+\item Gibt es ein Thema, das f\"ur eine Theoretische Semesterarbeit geeignet ist?
+\item Pr\"asenzzeiten/\"Offnungszeiten w\"ahrend Semesterferien?
+\item Privater Computer f\"ur Simulation, mit eigenem Betriebssystem: Darf er im B\"uro stehen, Strom und Internet benutzen?
+\end{itemize}
+%
+\subparagraph{Diverses}
+%
+\begin{itemize}
+\item picture of galaxy: extraction of dm halo mass, angular momentum, density distribution
+\item correction of images for weak lensing: get distribution of dm
+\item distribution of dark energy throughout universe: uniform/follows nrj/concentrated in voids?
+\item detection of cosmic neutrino background;predictions
+
+\item heating of gas in simulation, quantitative, as fct of density,z,
+\item simulate mergers, looking at dm halo (mass loss, final angular momentum, conservation of momentum)
+\item galaxies as spinning tops: precession of stars/gas/dm shells as fct of environment/mass/axes/angular momentum
+
+\item influence of finite c on information propagation for large structures/in the early universe
+\item influence of dm gravitational field on spectra of stars/galaxies? big enough as a means for reconstructing the
+\item fractal properties of mass distribution as fct of scale
+\end{itemize}
+%
+\end{document}
+

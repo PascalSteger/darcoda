@@ -1,0 +1,43 @@
+make
+	#define the data
+	data "out.dat"
+	read {xahf 1 yahf 2 eahf 3 xhp 4 yhp 5 ehp 6}
+
+	#set the plot area
+	device postencap "out.eps"
+	erase
+	window 1 1 1 1
+	#limits x y
+	limits -1 1.5 -4 0
+	ticksize 0.5 0.5 1 1
+	ctype black
+	box
+
+	#ahf
+	ctype blue
+	ltype 0
+	connect xahf yahf
+	error_y xahf yahf eahf
+	
+	#hp
+	ctype red
+	ltype 0
+	connect xhp yhp
+	error_y xhp yhp ehp
+
+	#labels
+	define TeX_strings 1
+	expand 1.001
+	ctype black
+	#toplabel Example 1
+	xlabel \Sigma/V
+	ylabel p(\Sigma/V)
+	#ctype red
+	#relocate 8 2
+	#draw 9 2
+	#relocate 8.5 2
+	#dot
+	#relocate 8 2.25
+	#ctype black
+	#label y=x^{2/3}
+

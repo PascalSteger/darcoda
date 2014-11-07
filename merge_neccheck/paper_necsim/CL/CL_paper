@@ -1,0 +1,43 @@
+
+introduction
+============
+[ ] show that you know what to do
+[ ] introduce "stellar" people as well
+
+methodology
+===========
+[ ] main points only
+[ ] main idea of each method already in literature
+
+data
+====
+[ ] tabular overview of main quantities
+
+results
+=======
+[ ] order of figures as if a talk need be given
+[ ] main result, result 2, supportive graphs
+[ ] bulleted list of main statements
+
+figures
+=======
+[ ] strong lines
+[ ] max 3 informations in one plot
+
+references
+==========
+[ ] no undefined references
+[ ] restrict to < 50
+
+text
+====
+[ ] use exact names
+[ ] use abstraction where necessary
+[ ] active verbs
+[ ] impersonal
+[ ] let english-speaking person check for language errors
+
+format
+======
+[ ] latex, python plots
+[ ] depending on Journal

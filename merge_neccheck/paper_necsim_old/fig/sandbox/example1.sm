@@ -1,0 +1,38 @@
+example1
+	#define the data
+	set x = 0,10,0.1
+	set y = x**(2/3)
+
+	#set the plot area
+	device postencap "example1.ps"
+	erase
+	window 1 1 1 1
+	limits 0 10 0 10
+	ticksize 0 0 0 0
+	ctype black
+	box
+
+	#plot the data
+	ctype red
+	ltype 0
+	connect x y
+
+	ptype 4 3
+	expand 1.001
+	points x y
+
+	#labels
+	define TeX_strings 1
+	ctype black
+	toplabel Example 1
+	xlabel x
+	ylabel y
+	ctype red
+	relocate 8 2
+	draw 9 2
+	relocate 8.5 2
+	dot
+	relocate 8 2.25
+	ctype black
+	label y=x^{2/3}
+
