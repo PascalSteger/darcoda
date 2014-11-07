@@ -36,7 +36,7 @@ second order moment is given by:
 
 \begin{equation}\label{eqn:Jeans}
     \frac{1}{\nu}\frac{\partial}{\partial r}\left(\nu\sigma_{r}^2\right) +
-    \frac{2\beta(r)\sigma_{r}^2}{r} = -\frac{\partial \Phi}{\partial r} &=& -\frac{GM(<r)}{r^2},\\
+    \frac{2\beta(r)\sigma_{r}^2}{r} = -\frac{\partial \Phi}{\partial r} = -\frac{GM(<r)}{r^2},\\
 \end{equation}
 where $M(<r)$ is the total cumulative mass; $\nu$ is the density of a set of
 tracer star particles moving in the potential $\Phi(r)$; $G =
@@ -159,8 +159,9 @@ its derivative $dn(r)/d\ln(r)$ with a flat prior in the range $[-\alpha,
 \alpha]$, where $\alpha$ is chosen such that $n(r)$ can sweep from $0$ to
 $n_{\text max}$ over the radii where we have data.
 
-\TODO{To enforce faster convergence we prefer smoother $n(r)$ profiles
-by sampling $dn/d\log r$ from a normal distribution, not a uniform one.}
+To enforce faster convergence we prefer smoother $n(r)$ profiles
+by sampling $dn/d\log r$ from a normal distribution with width $w>0$,
+not a uniform one in the range $[-w, w]$.
 
 \subsection{The tracer density profile}
 The tracer density is represented similar to $\rho_{\rm DM}$ for each tracer
