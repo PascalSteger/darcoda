@@ -12,7 +12,7 @@ import pdb
 import numpy as np
 
 from scipy.integrate import simps
-import pymultinest
+import multinest
 
 import gl_helper as gh
 from gl_centering import com_shrinkcircle_v_2D
@@ -314,7 +314,7 @@ def run(gp):
     pdb.set_trace()
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 5+(gp.pops+1)*4
-    pymultinest.run(myloglike,   myprior,
+    multinest.run(myloglike,   myprior,
                     n_dims,      n_params = n_dims+1, # None beforehands
                     n_clustering_params = n_dims, # separate modes on
                                                   # the rho parameters

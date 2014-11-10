@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
-# pymultinest run of gravlite integrals needs pymultinest from
-# http://johannesbuchner.github.io/PyMultiNest/
-# http://johannesbuchner.github.io/PyMultiNest/install.html#install-on-linux
 # needs Multinest from https://github.com/JohannesBuchner/MultiNest
 
 # TODO: run with mpirun -np <N> gravlite.py
@@ -15,7 +12,7 @@
 # from __future__ import absolute_import, unicode_literals, print_function
 #from mpi4py import MPI
 import subprocess
-import pymultinest
+import multinest
 import pickle
 import numpy as np
 import pdb
@@ -88,7 +85,7 @@ def prepare_data(gp):
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
 def run(gp):
-    pymultinest.run(myloglike,   myprior,
+    multinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
                     n_clustering_params = gp.ndim,# separate modes on
                                                   # the rho parameters

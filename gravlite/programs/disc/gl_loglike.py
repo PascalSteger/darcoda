@@ -1,7 +1,7 @@
 #!/usr/bin/env ipython3
 
 ## @file
-# define log likelihood function to be called by pyMultinest
+# define log likelihood function to be called by Multinest
 # disc version
 
 import numpy as np
@@ -80,7 +80,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     return tmp_profs   # from   likelihood L = exp(-\chi^2/2), want log of that
 ## \fn geom_loglike(cube, ndim, nparams, gp)
-# define log likelihood function to be called by pyMultinest and plot_profiles
+# define log likelihood function to be called by Multinest and plot_profiles
 # disc version
 # @param cube parameter cube as defined by gl_class_cube, in physical space
 # @param ndim number of dimensions, needed as argument by multinest

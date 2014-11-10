@@ -9,7 +9,7 @@
 
 import pdb
 import numpy as np
-import pymultinest
+import multinest
 import gl_helper as gh
 
 gh.DEBUGLEVEL = 1
@@ -82,7 +82,7 @@ def myloglike(cube, ndim, nparams):
 
 def run(gp):
     n_dims = 1+gp.pops*2
-    pymultinest.run(myloglike,   myprior,
+    multinest.run(myloglike,   myprior,
                     n_dims,      n_params = n_dims,
                     n_clustering_params = n_dims, # separate modes on
                                                   # the rho parameters

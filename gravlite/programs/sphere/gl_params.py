@@ -149,6 +149,7 @@ class Params():
         # ----------------------------------------------------------------------
         host_name = socket.gethostname()
         user_name = getpass.getuser()
+        self.machine = ""
         if ('darkside' in host_name) or ('auriga' in host_name) :
             self.machine = 'darkside'
         elif 'pstgnt332' in host_name:

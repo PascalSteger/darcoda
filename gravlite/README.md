@@ -22,10 +22,12 @@ Installation
 ------------
 
 Following packages need to be installed on your system:
- * python3
+ * openMPI
+ * python3, ipython3
  * matplotlib/pylab
  * scipy
  * ipdb, pdb
+
 
 Then execute
 
@@ -38,16 +40,29 @@ or unzip the file darcoda.zip to $DARCODA_DIR . Then set the environment variabl
 > export PYTHONPATH=$PYTHONPATH:$DARCODA_DIR/gravlite/programs/
 > export PYTHONPATH=$PYTHONPATH:$DARCODA_DIR/gravlite/programs/plotting/
 
-Adapt the path specifications to your needs in
+
+The underlying parameter space sampler is called Multinest. Get the current version from
+
+http://ccpforge.cse.rl.ac.uk/gf/project/multinest/
+
+and replace its Makefile with Makefile_Multinest from this repository. Adapt it
+further to your MPI system, and compile libnest3.so, which should end up in /usr/local/lib64
+or another directory in your $LD_LIBRARY_PATH.
+
+
+Adapt the path specifications to your needs in following files:
 
 gl_params.py
 gl_class_files.py
 import_path.py
 
-and run
+The main code after configuration can be started using
 
-> python3 gravlite.py
+> ipython3 gravlite.py
 
+or by setting the executable flag on gravlite.py via chmod gu+x gravlite.py    and
+
+> ./gravlite.py
 
 
 Parameter files: Main configuration
@@ -61,6 +76,7 @@ have been implemented so far:
  * gaia: spherical mock data from the Gaia challenge catalogue, 1 population
  * walk: spherical Walker mock data from the Gaia challenge catalogue, 2 populations
  * obs: observations of 4 dwarf spheroidals
+ * coll: collisional spherical systems as e.g. globular cluster (snapshots)
  * discmock: disk-like mock data, generated on the fly
  * discsim: disk-like mock data, from a simulation by S. Garbari
 

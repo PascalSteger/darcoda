@@ -1,7 +1,7 @@
 #!/usr/bin/env ipython3
 
 ## @file
-# define log likelihood function to be called by pyMultinest
+# define log likelihood function to be called by multinest
 # spherical version
 
 import numpy as np
@@ -129,7 +129,7 @@ def geom_loglike(cube, ndim, nparams, gp):
             print('plotting error in gl_loglike!')
     return tmp_profs
 ## \fn geom_loglike(cube, ndim, nparams, gp)
-# define log likelihood function to be called by pyMultinest and plot_profiles
+# define log likelihood function to be called by Multinest and plot_profiles
 # spherical version
 # @param cube parameter cube as defined by gl_class_cube, in physical space already (not [0,1] cube anymore)
 # @param ndim number of dimensions, needed as argument by multinest
