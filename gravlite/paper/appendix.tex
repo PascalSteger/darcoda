@@ -1,10 +1,28 @@
 \section{Appendix}
 \appendix
-\subsection{Effects of turning off priors on $n(r)$ and $n'(r)$}
-\TODO{Show one model run without $n(r)$ and $n'(r)$ priors, same number of
-  iterations.}
+\subsection{Effects of priors on $n'(r)$}
+\begin{figure*}
+  \begin{center}
+    \hspace{-7mm}
+    \includegraphics[width=0.3\textwidth]{fig/Gaia07_nr_bound/output/pdf/prof_nr_0.pdf}
+    \includegraphics[width=0.3\textwidth]{fig/Gaia07_nr_bound/output/pdf/prof_rho_0.pdf}
+    \includegraphics[width=0.3\textwidth]{fig/Gaia07_nr_bound/output/pdf/prof_beta_1.pdf}
+  \end{center}
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{fig/Gaia07_nr_free/output/pdf/prof_nr_0.pdf}
+    \includegraphics[width=0.3\textwidth]{fig/Gaia07_nr_free/output/pdf/prof_rho_0.pdf}
+    \includegraphics[width=0.3\textwidth]{fig/Gaia07_nr_free/output/pdf/prof_beta_1.pdf}
+  \end{center}
+  \begin{center}
+    \caption{Influence of $dn(r)/d\log r$ prior. The top panels show
+      $n(r)$, $\rho(r)$, and $\beta^*(r)$ for Gaia07 with a moderate
+      prior of $|dn(r)/d\log r|<1.5/(8/N_{\rm ipol})$, the lower
+      panels show the same profiles with two times this value. We see
+      that a tighter prior on $n(r)$ yields tighter constraints on $\beta^*$.}
+    \label{fig:nrprime}
+    \end{center}
+\end{figure*}
 
-\TODO{Add kurtosis results (appendix?)}
 
 
 \subsection{Convergence of the \MultiNest\ model ensemble}

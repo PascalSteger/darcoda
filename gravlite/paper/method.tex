@@ -232,6 +232,27 @@ numerically, involving three integrations, which are performed with polynomial
 extrapolations of the integrands up to infinity, such that missing contributions
 from $r>r_{\text max}$ do not lead to an artificial falloff of $\siglos$.
 
+We check our integration routine against an analytically known
+Hernquist profile, by setting the input parameters to a simple
+Hernquist profile, in our representation. After calculating all
+profiles and integrals on 100 points in radius -- the same way as is
+done in all runs -- we get a good agreement with the analytic
+$\siglos$ profile, see figure \ref{fig:hern_comparison}.
+
+\begin{figure}
+    \begin{center}
+        \hspace{-7mm}
+        \includegraphics[width=0.5\textwidth]{fig/fit_siglos_out_hern.png}
+        \caption{Integration check: Fitting of the analytic $\siglos$
+          profile for a simple Hernquist profile. Blue is the expected
+          outcome, red is our method, green the data reduced from a
+          simulation with the same parameters, and added observational
+          velocity errors.}
+        \label{fig:hern_comparison}
+    \end{center}
+\end{figure}
+
+
 The last step involves comparison of the projected surface density $\Sigma_i(r)$
 -- calculated from the 3D tracer density $\nu_i(r)$ -- as well as $\sigma_{{\rm
     LOS},i}(r)$, to the respective 2D data profiles for the tracer
@@ -262,7 +283,7 @@ profile:
     halo (since at large radii, the dark matter halo is expected to have a slope
     of $n = 3$).
 \end{enumerate}
-Both priors can be switched; we explore their effect in \S\ref{sec:results}.
+Both priors can be switched; we explore their effect in \S\ref{sec:appendix}.
 
 Otherwise, we use very weak flat priors on all other parameters:
 
