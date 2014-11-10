@@ -42,9 +42,8 @@ def import_path(fullpath):
 
 def set_geometry(geom, machine):
     print('Machine = ', machine)
-    if machine == 'pstgnt332':
-        basepath = '/home/psteger/sci/darcoda/gravlite/programs/'
-    elif machine == 'darkside':
+    basepath = '/home/psteger/sci/darcoda/gravlite/programs/'
+    if machine == 'darkside':
         basepath = '/home/ast/read/user/psteger/software/darcoda/gravlite/programs/'
     elif machine == 'lisa_HS_login':
         basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/programs/'

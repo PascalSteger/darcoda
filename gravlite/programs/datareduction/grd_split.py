@@ -311,7 +311,7 @@ def run(gp):
     gh.sanitize_vector(gphat_v, Nsample, 0, 1e30, DEBUG)
     gphat_w = np.sum(gM_w, 0)/sum_1_PM
     gh.sanitize_vector(gphat_w, Nsample, 0, 1e30, DEBUG)
-    pdb.set_trace()
+
     gh.LOG(1,'starting MultiNest run:')
     n_dims = 5+(gp.pops+1)*4
     multinest.run(myloglike,   myprior,

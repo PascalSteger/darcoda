@@ -43,19 +43,31 @@ def interrupt_handler(signal, frame):
     sys.stderr.write('ERROR: Interrupt received: Terminating\n')
     sys.exit(1)
 
-def run(LogLikelihood,
-    Prior,
-    n_dims,
-    n_params = None,
-    n_clustering_params = None, wrapped_params = None,
-    importance_nested_sampling = True,
-    multimodal = True, const_efficiency_mode = False, n_live_points = 400,
-    evidence_tolerance = 0.5, sampling_efficiency = 0.8,
-    n_iter_before_update = 100, null_log_evidence = -1e90,
-    max_modes = 100, mode_tolerance = -1e90,
-    outputfiles_basename = "chains/1-", seed = -1, verbose = False,
-    resume = True, context = 0, write_output = True, log_zero = -1e100,
-    max_iter = 0, init_MPI = True, dump_callback = None):
+def run(LogLikelihood,\
+        Prior,\
+        n_dims,\
+        n_params = None,\
+        n_clustering_params = None,\
+        wrapped_params = None,\
+        importance_nested_sampling = True,\
+        multimodal = True, \
+        const_efficiency_mode = False,\
+        n_live_points = 400,\
+        evidence_tolerance = 0.5, \
+        sampling_efficiency = 0.8,\
+        n_iter_before_update = 100, \
+        null_log_evidence = -1e90,\
+        max_modes = 100,\
+        mode_tolerance = -1e90,\
+        outputfiles_basename = "chains/1-",\
+        seed = -1, verbose = False,\
+        resume = True, \
+        context = 0, \
+        write_output = True, \
+        log_zero = -1e100,\
+        max_iter = 0, \
+        init_MPI = True,\
+        dump_callback = None):
     """
     Runs MultiNest
 
@@ -203,17 +215,28 @@ def run(LogLikelihood,
                 maxLogLike,logZ,logZerr)
     prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 
-    lib.run(c_bool(importance_nested_sampling),
-        c_bool(multimodal), c_bool(const_efficiency_mode),
-        c_int(n_live_points), c_double(evidence_tolerance),
-        c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
-        c_int(n_clustering_params), c_int(max_modes),
-        c_int(n_iter_before_update), c_double(mode_tolerance),
-        create_string_buffer(outputfiles_basename.encode(),100),
-        c_int(seed), wraps,
-        c_bool(verbose), c_bool(resume),
-        c_bool(write_output), c_bool(init_MPI),
-        c_double(log_zero), c_int(max_iter),
-        loglike_type(loglike),dumper_type(dumper),
-        c_int(context))
+    lib.__nested_MOD_nestrun(c_bool(importance_nested_sampling),\
+                             c_bool(multimodal), \
+                             c_bool(const_efficiency_mode),\
+                             c_int(n_live_points), \
+                             c_double(evidence_tolerance),\
+                             c_double(sampling_efficiency),\
+                             c_int(n_dims), c_int(n_params),\
+                             c_int(n_clustering_params),\
+                             c_int(max_modes),\
+                             c_int(n_iter_before_update),\
+                             c_double(mode_tolerance),\
+                             create_string_buffer(outputfiles_basename.encode(),100),\
+                             c_int(seed), \
+                             wraps,\
+                             c_bool(verbose),\
+                             c_bool(resume),\
+                             c_bool(write_output),\
+                             c_bool(init_MPI),\
+                             c_double(log_zero),\
+                             c_int(max_iter),\
+                             loglike_type(loglike),\
+                             dumper_type(dumper),\
+                             c_int(context))
+    print('started __nested_MOD_nest')
     signal.signal(signal.SIGINT, prev_handler)

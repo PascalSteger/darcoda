@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 from mpi4py import MPI
 import numpy as np
 import sys
@@ -174,8 +174,7 @@ comm = MPI.COMM_SELF.Spawn(sys.executable,
 comm.bcast([gp, Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max], root=MPI.ROOT)
 
 finish = 0
-comm.Reduce(None, finish,
-            op=MPI.SUM, root=MPI.ROOT)
+comm.Reduce(None, finish, op=MPI.SUM, root=MPI.ROOT)
 print(finish)
 
 comm.Disconnect()
