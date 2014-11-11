@@ -1,0 +1,114 @@
+\documentclass[useAMS,usenatbib,letter]{mn2e}
+\usepackage{myaasmacros}
+\usepackage{graphicx}
+\usepackage{ulem}
+\usepackage{color}
+\usepackage{amsmath}
+
+% definitions of symbols
+\def\ltsima{$\; \buildrel < \over \sim \;$}
+\def\simlt{\lower.5ex\hbox{\ltsima}}
+\def\gtsima{$\; \buildrel > \over \sim \;$}
+\def\simgt{\lower.5ex\hbox{\gtsima}}
+% \widebar
+%\usepackage{mathabx}
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+% definitions of often used variables
+\def\siglos{\sigma_{\text{LOS}}}
+\def\siglosi{\sigma_{\text{LOS},i}}
+\def\vztwo{\overline{v_z^2}}
+\def\vztwoi{\overline{v_{z,i}^2}}
+\def\rhodisc{\rho_\mathrm{disc}(z)}
+\def\rhodmext{\rho_\mathrm{dm,ext}}
+\def\rhodm{\rho_\mathrm{dm}}
+\def\rhoeff{\rho_\mathrm{dm}^\mathrm{eff}}
+\def\nuobs{\nu_\mathrm{obs}(z)}
+
+% definitions of units
+\def\tot{\mathrm{tot}}
+\def\pc{\mathrm{pc}}
+\def\kpc{\mathrm{kpc}}
+
+% code name definitions
+\def\GravImage{{\sc GravImage}}
+\def\MultiNest{{\sc MultiNest}}
+
+% definitions of commands
+\newcommand\bcite[1]{(\citeauthor{#1} \citeyear{#1})}
+\newcommand{\changefont}[3]{ \fontfamily{#1} \fontseries{#2}
+  \fontshape{#3} \selectfont}
+\newcommand{\TODO}[1]{\textsc{\textbf{\textcolor{red}{(TODO: #1)}}}}
+
+%For hyperlinks:
+\usepackage[pdftex,
+	breaklinks,
+        colorlinks=true,
+        urlcolor=blue,		% \href{...}{...} external (URL)
+        filecolor=blue,		% \href{...} local file
+        citecolor=blue,		% \href{...} local file
+        linkcolor=blue,		% \ref{...} and \pageref{...}
+        pdftitle={Multi-scale simulations of the Universe},
+        pdfauthor={P. Steger, J. I. Read},
+        pdfsubject={ETH Zurich, University of Surrey},
+        pdfkeywords={},
+        pdfproducer={pdfLaTeX},
+        hypertexnames=false,
+        pdfpagemode=UseNone,
+        bookmarksopen=true]{hyperref}
+
+
+\title[\GravImage: Non-parametric spherical mass modelling]{\GravImage: A
+  non-parametric method for mass modelling spherical systems}
+
+\author[Steger]{P. Steger$^1$\thanks{E-mail: psteger@phys.ethz.ch}, J. I. Read$^{2}$\\
+  $^1$Institute for Astronomy, Department of Physics, ETH Z\"urich, Wolfgang-Pauli-Strasse 27, CH-8093 Z\"urich, Switzerland\\
+  $^2$Department of Physics, University of Surrey, Guildford, GU2 7XH, UK }
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    We present a new non-parametric method based on Jeans modelling to
+    determine the mass distribution in spherical systems with single
+    or multiple tracer populations. A high dimensional parameter space
+    encoding tracer density, line of sight velocity dispersion and
+    total mass density is sampled with \MultiNest.
+
+    Without assumptions on the functional form of any of these profiles, we show
+    that we can successfully recover the radial density profile of spherical
+    mock dwarf galaxies. With two populations with $\sim 5,000$ tracers in each,
+    we begin to disentangle the degeneracy between dark matter density and
+    tracer velocity anisotropy, determining the dark matter cusp slope at the
+    half light radius at nearly 2-$\sigma$ confidence. We also test our method
+    on triaxial mock data for which our method is expected to become biased. We
+    find that with $\sim 10,000$ tracers, this bias remains smaller than our
+    other uncertainties unless we are staring `down the barrel' of the triaxial
+    figure. This leads to the perhaps counterintuitive result that \GravImage\
+    can be reliably applied to triaxial systems so long as they {\it do not}
+    appear circularly symmetric on the sky.
+\end{abstract}
+
+\begin{keywords} galaxies: dwarf -- galaxies: fundamental parameters
+    -- galaxies: kinematics and dynamics -- cosmology: dark matter
+\end{keywords}
+
+% input does not clear page, include does. could use newclude package and include*
+\input{intro}
+\input{method}
+\input{results}
+\input{conclusion}
+\input{acks}
+\input{appendix}
+
+\bibliographystyle{mn2e}
+\bibliography{Steger_2014_GravImage}
+
+
+
+\end{document}
