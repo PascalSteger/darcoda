@@ -2,6 +2,8 @@ DTgaia
 DTcoll
 DTwalk
 DTobs
+DTclus
+DTdisc
 DTtriax
 DTdiscmock
 DTdiscsim
@@ -12,6 +14,7 @@ backup
 *.png
 *~
 *.orig
+*.rip
 
 *.aux
 *.bbl

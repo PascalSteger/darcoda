@@ -29,7 +29,7 @@ Observations of the abundances of metals and chemical species in the
 stellar atmospheres show that the ensemble of stars in a dwarf galaxy
 or globular cluster can be split into populations.
 
-The first approach by \cite{WalkerPenarrubia2011} showed that if the
+An approach by \cite{WalkerPenarrubia2011} showed that if the
 population of e.g. Fornax is split into two populations, and each of
 their half-light radius and mass are determined, restrictions on the
 overall potential can be drawn. Using this approach, they prefer a
@@ -58,6 +58,36 @@ fig. ~\ref{fig:pymcmetal}.
     \end{center}
 \end{figure}
 
+We restrict the method to Mg indices only, as the iron measurements in
+\cite{WalkerPenarrubia2011} are not reliable enough, and a sizeable
+fraction has no metallicity measurements.
+
+\cite{WalkerPenarrubia2011} assume a Plummer-like profile for both
+populations, which must be dropped in our non-parametric profile. We
+additionally let drop the velocity information, and concentrate on
+non-kinematic properties of the stars only. Foreground stars are
+accounted for by weighting the probabilities of membership in each
+population with the overall dSph probability of membership.
+
+We first assume two populations, and from the pdf of the Mg indices,
+we calculate the tracer density profiles for both populations. Each
+star contributes to both populations, with a fraction given by its
+probability of belonging to the chemical population $i$.
+
+If we then see no significant difference between the half-light radii
+distribution of all models with two populations, we conclude that
+population splitting for that particular galaxy will not give us a
+significant information gain in \GravImage.
+
+If we on the other hand get a distinct peak in the pdf of the
+half-light radii we know that there are two -- or possibly more --
+distinct populations we can use for further analysis.
+
+Optimally, we assign each star randomly in proportion to $f_i$ to
+population $i$ for each step in the MultiNest procedure.
+
+
+\subsection{Detailed Explanation}
 In our test suite there are dwarf galaxies with different scale radii
 and small differences in the mean of the metallicity for the two
 populations of stars. In order to reproduce the underlying populations
