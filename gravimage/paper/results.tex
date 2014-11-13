@@ -57,18 +57,18 @@ axis. All models are summarised in Table
     \begin{tabular}{lllll}
         ID & geometry & $\gamma_{\text{DM}}$ & $\gamma_*$ & $r_*$\\
         \hline
-        Gaia01 & sphere & 1 & 0.1 & 100 pc\\
-        Gaia02 & sphere & 0 & 0.1 & 250 pc\\
-        Gaia03 & sphere & 1 & 0.1 & 250 pc\\
-        Gaia04 & sphere & 0 & 0.1 & 1000 pc\\
-        Gaia05 & sphere & 1 & 1.0 & 100 pc\\
-        Gaia06 & sphere & 0 & 1.0 & 250 pc\\
-        Gaia07 & sphere & 1 & 1.0 & 250 pc\\
-        Gaia08 & sphere & 0 & 1.0 & 1000 pc\\
-        Gaia09 & sphere & TODO & TODO & TODO pc\\
-        Gaia10 & sphere & TODO & TODO & TODO pc\\
-        Gaia11 & sphere, tangential & 1 & 1.0 & 500 pc\\
-        Gaia12 & sphere, tangential & 0 & 1.0 & 1750 pc\\\hline\hline
+        %Gaia01 & sphere & 1 & 0.1 & 100 pc\\
+        1pop core & sphere & 0 & 0.1 & 250 pc\\ % Gaia02
+        1pop cusp & sphere & 1 & 0.1 & 250 pc\\ % Gaia03
+        %Gaia04 & sphere & 0 & 0.1 & 1000 pc\\
+        %Gaia05 & sphere & 1 & 1.0 & 100 pc\\
+        %Gaia06 & sphere & 0 & 1.0 & 250 pc\\
+        %Gaia07 & sphere & 1 & 1.0 & 250 pc\\
+        %Gaia08 & sphere & 0 & 1.0 & 1000 pc\\
+        %Gaia09 & sphere & TODO & TODO & TODO pc\\
+        %Gaia10 & sphere & TODO & TODO & TODO pc\\
+        %Gaia11 & sphere, tangential & 1 & 1.0 & 500 pc\\
+        %Gaia12 & sphere, tangential & 0 & 1.0 & 1750 pc\\\hline\hline
     \end{tabular}
 \end{table}
 
@@ -79,8 +79,8 @@ axis. All models are summarised in Table
     \begin{tabular}{llll}
         ID & geometry & $\gamma_{\text{DM}}$ & $r_{1/2,\text{DM}}$\\
         \hline
-        Walk01 & sphere & 0 & 1000 pc \\
-        Walk02 & sphere & 1 & 1000 pc\\\hline\hline
+        2pop core & sphere & 0 & 1000 pc \\              % Walk01
+        2pop cusp & sphere & 1 & 1000 pc\\\hline\hline   % Walk02
     \end{tabular}
 \end{table}
 
@@ -132,9 +132,8 @@ successfully recover the input model within our quoted uncertainties.
         \includegraphics[width=0.33\textwidth]{fig/Gaia03/output/pdf/prof_nr_0}\hspace{-3mm}
         \includegraphics[width=0.33\textwidth]{fig/Gaia03/output/pdf/prof_betastar_1}
 
-        \caption{Reconstructed density for Gaia02
-          (cored, top), and Gaia03 (cusped,
-          bottom); logarithmic density slope; and
+        \caption{Reconstructed density for 1pop core
+          (top), and 1pop cusp (bottom); logarithmic density slope; and
           velocity anisotropy profile, using all
           tracer stars, on the order of 3000. The input model
           profile is marked by the blue dashed
@@ -196,8 +195,8 @@ we used this information directly.
         \includegraphics[width=0.25\textwidth]{fig/Walk02/output/pdf/prof_betastar_2}\\
 
         \caption{Reconstructed density and density
-          slope for the cored Walk01 model (top)
-          and cusped Walk02 model (bottom), with
+          slope for the 2pop core model (top)
+          and 2pop cusp model (bottom), with
           two tracer populations with half light
           radii marked by the vertical green
           lines. Lines are as in Figure
