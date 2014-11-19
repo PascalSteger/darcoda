@@ -85,7 +85,8 @@ def bin_data(gp):
         import grds_write
         grds_write.run(gp)
     elif gp.investigate == 'simplenu':
-        grsimplenu_write.run(gp)
+        import gr_external_data
+        gr_external_data.run(gp)
     return
 ## \fn bin_data(gp)
 # get data, bin it anew (e.g. if gp.nbin changed)

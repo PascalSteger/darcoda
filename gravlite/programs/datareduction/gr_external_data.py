@@ -83,24 +83,30 @@ def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, 
 
 def run(gp):
     global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
+    pdb.set_trace()
 
     external_file='/home/hsilverw/LoDaM/darcoda/gravlite/simplenu/simplenu_sigz_raw.dat'
     external_data = np.loadtxt(external_file)
     z_data = external_data[:, 0]
     v_data = abs(external_data[:, 1])
 
+    # Bin data, constant number of tracers per bin.
+    # First, calculate binmins, binmaxes, and bin centres
+    binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data, gp.nbins)
+    # Then calculate tracer number density
+    nu_data, nu_err_data, sig_data, sig_err_data = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data)
 
 
 
 
-    # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
-    binmin1, binmax1, z_dat_bin1, sig_dat_bin1, count_bin1 = gh.binsmooth(z_dat1, vz_dat1, \
-                                                                     zmin, zmax, gp.nipol, 0.)
-    sig_dat_err_bin1 = np.sqrt(sig_dat_bin1) # Poisson errors
 
-    nu_dat_bin1, nu_dat_err_bin1 = gh.bincount(z_dat1, binmax1)
-    nu_dat_bin1 /= (binmax1-binmin1)
-    nu_dat_err_bin1 /= (binmax1-binmin1)
+
+
+
+    #HS Working Line
+    #Everthing below this line is old, and hasn't been considered for keeping
+    #deletion, or modification
+    # ----------------------------------------------------------------------
 
     import gr_params
     gpr = gr_params.Params(gp)

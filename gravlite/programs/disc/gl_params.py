@@ -46,7 +46,7 @@ class Params():
                                   # 'discsim': read in disc simulation
         self.geom = 'disc'
 
-        check_investigate(self.investigate)
+        #check_investigate(self.investigate)
         self.case = 0 # used in spherical case
         self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
@@ -72,6 +72,36 @@ class Params():
                                 # MCMC
         self.maxR = 5.            # [Xscale], max range in radial bins
 
+        # ----------------------------------------------------------------------
+        #HS Working Line
+        #Everthing above this line is old, and hasn't been considered for keeping
+        #deletion, or modification
+        # ----------------------------------------------------------------------
+
+        self.nbins=15 # Number of bins to split tracer stars into
+        self.nrho = self.nbins + 2 # Number of points where rho and nu parameters will be set,
+                                   # e.g. bin centres, plus zC=0, and zLS (position
+                                   # of Last Star)
+        self.nbaryon_pops = 0. # Number of baryon populations to look at
+                               # =0 if doing simple mass model (eg DM profile describes
+                               # all mmass)
+        self.nbaryon_params = 0. # Number of parameters to describe baryon population
+                                 #  Holmberg & Flynn = 15
+                                 #  with baryon observational information = nrho
+        self.ndim = 1 + 2*self.nrho + self.nbaryon_pops*self.nbaryon_params
+            # Constant C from sigma_z calculation, nrho params for rho,
+            # nrho params for nu, the number of params for all baryon pops
+
+
+
+
+
+
+        #HS Working Line
+        #Everthing below this line is old, and hasn't been considered for keeping
+        #deletion, or modification
+        # ----------------------------------------------------------------------
+
 
         # MultiNest options
         # ----------------------------------------------------------------------
@@ -84,15 +114,7 @@ class Params():
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)
-        self.nrho = self.nipol + 2*self.nexp + 3 # +3 means 1 more
-                                                # parameter for the
-                                                # density at half
-                                                # light radius, 1 more
-                                                # parameter for the
-                                                # asymptote to 0, 1
-                                                # more parameter for
-                                                # the asymptote to
-                                                # \infty
+
         self.nfine = 30  # number of entries in integral lookup table
                          # gives no. log spaced points
         self.rinfty = 5. # interpolate from last slope to slope at
@@ -101,7 +123,7 @@ class Params():
         self.nbeta = 0   # number of parameters for beta, in sum of
                          # polynomials
         # TODO: if not using rhostar, subtract gp.nrho:
-        self.ndim = 1 + 2*self.nrho + 1 + self.pops*(self.nrho + self.nbeta)
+
         # +1 for norm, rho, rhostar, MtoL, [nu_i, tilt_i]
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
