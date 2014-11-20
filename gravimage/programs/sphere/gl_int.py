@@ -60,7 +60,7 @@ def ant_intbeta(r0, betapar, gp):
     intbet = np.zeros(len(r0))
     for k in range(len(r0)):
         intbet[k] = gh.quadinf(xint, yint, r0[0]/1e5, r0[k])
-    # TODO: assumption here was that integration goes down to min(r0)/1e5
+    # assumption here is that integration goes down to min(r0)/1e5
 
     gh.checknan(intbet, 'intbet in ant_intbeta')
     return intbet                                                # [1]
