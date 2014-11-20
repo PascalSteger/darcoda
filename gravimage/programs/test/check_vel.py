@@ -11,8 +11,6 @@ vlos=np.loadtxt('/home/psteger/sci/darcoda/gravimage/DTobs/0/table_all.bin', ski
 
 hist(vlos, 150)
 
-# TODO fit Maxwellian
-
 xlabel(r'$v_{\text{LOS}}\quad\text{km/s}$')
 ylabel(r'$f\quad[1]$')
 pdb.set_trace()

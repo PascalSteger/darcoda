@@ -116,7 +116,6 @@ gh.checkpositive(yint, 'yint sigr2')
 # use quadinflog or quadinfloglog here
 sigr2nu = np.zeros(len(rfine))
 for i in range(len(rfine)):
-    # TODO: check quadinflog with walker profiles
     sigr2nu[i] = np.exp(-idnu[i])/nunu[i]*\
                  gh.quadinflog(xint, yint, rfine[i], gp.rinfty*rfine[-1], True)
     #if sigr2nu[i] == np.inf:
@@ -130,12 +129,10 @@ sigr2anf = ga.sigr2_hern(rfine, 1, 1, G1)
 # project back to LOS values
 # sigl2sold = np.zeros(len(rfine)-gp.nexp
 
-### TODO: find error in here!
-
 sigl2s = np.zeros(len(rfine)-gp.nexp)
 for i in range(len(rfine)-gp.nexp): # get sig_los^2
     xnew = np.sqrt(rfine[i:]**2-rfine[i]**2)             # [pc]
-    ynew = 2.*(1-betanu[i]*(rfine[i]**2)/(rfine[i:]**2)) # TODO check
+    ynew = 2.*(1-betanu[i]*(rfine[i]**2)/(rfine[i:]**2))
     ynew *= nunu[i:] * sigr2nu[i:]
     gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
     # check sigr2nu: has too many entries of inf!

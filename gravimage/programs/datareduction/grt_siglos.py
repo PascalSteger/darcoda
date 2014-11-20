@@ -11,8 +11,6 @@
 from pylab import *
 ion()
 import numpy as np
-import sys
-import math
 
 from BiWeight import meanbiweight
 import gl_file as gf

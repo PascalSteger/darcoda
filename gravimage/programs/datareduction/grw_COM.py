@@ -112,17 +112,6 @@ def run(gp):
         fi.close()
         p, mu1, sig1, mu2, sig2, M, pm1, pm2 = DATA
 
-        # do this in python2, then save via pickle.dump()
-        # TODO: rewrite for now python3 pymc
-        #import pymcmetal as pmc
-        #p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
-        #pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
-        #DATA = [p, mu1, sig1, mu2, sig2, M, pm1, pm2]
-        #import pickle
-        #fi = open('metalsplit.dat', 'wb')
-        #pickle.dump(DATA, fi)
-        #fi.close()
-
     x1, y1, z1, comp1, vb1, vz1, Mg1, PM1 = select_pm(x0, y0, z0, comp0, vb0, vz0, Mg0, PM0, pm1)
     x2, y2, z2, comp2, vb2, vz2, Mg2, PM2 = select_pm(x0, y0, z0, comp0, vb0, vz0, Mg0, PM0, pm2)
 

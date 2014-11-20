@@ -240,9 +240,8 @@ def empty(filename):
 def read_Xscale(filename):
     crscale = open(filename, 'r')
     Xscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
-    # TODO set to first entry only
     crscale.close()
-    return Xscale
+    return Xscale[0]
 ## \fn read_Xscale(filename)
 # read scale radius from file
 # @param filename string

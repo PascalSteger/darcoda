@@ -21,7 +21,6 @@ def myprior(cube, ndim, nparams):
     cube[off] = cube[off] # fraction of particles in part 1
     off +=1
     for pop in range(gp.pops): # no. of pops goes in here, first MW, then 1,2,..
-        # TODO: add up differences from 0
         cube[off] = cube[off]*(Mg_max-Mg_min)+Mg_min # Mg_mu
         off += 1
         cube[off] = cube[off]*(Mg_max-Mg_min) # Mg_sig

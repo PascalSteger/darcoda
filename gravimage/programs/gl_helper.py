@@ -339,7 +339,7 @@ def complete_nu(R0, Sigdat, Sigerr, Rnu):
     Rnuright = Rnu[Rnu>R0[-1]] # extension of radii to the right
     R0nu = Rnu[(Rnu>=R0[0]) * (Rnu<=R0[-1])] # [pc]
 
-    # TODO: use powerlaw to smaller radii
+    # cannot use powerlaw to smaller radii, as we only have data on specific points
     Sigdatleft = np.exp(expol(R0, np.log(Sigdat), Rnuleft, 'linear'))
     Sigerrleft = (Sigerr[0]/Sigdat[0])*Sigdatleft
 

@@ -128,8 +128,6 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     if gp.investigate == 'obs':
         nu_baryons = MtoL*phys.nu(r0fine, lbaryonpar, pop, gp)
         rhofine += nu_baryons
-    # TODO: check influence of wrong beta
-    # betapar[3] -= 0.1
 
 
     # beta
@@ -153,7 +151,6 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # nu
     # ------------------------------------------------------------------------
-    #nupar[0] *= 1e3 # TODO: check that siglos**2 is not changing with scaling of nu
     nufine   = phys.nu(r0fine, nupar, pop, gp)
     if gp.checksig:
         annu = ga.rho(r0fine, gp)[pop]
@@ -435,7 +432,6 @@ def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     #yint = nufine*dPhidr*r0fine**3
     #denom = (gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False))**2
 
-
     theta = np.arccos(r0min/r0fine)
     cth = np.cos(theta)
     sth = np.sin(theta)
@@ -522,7 +518,6 @@ def kappa(r0fine, Mrfine, nufine, sigr2nu, intbetasfine, gp):
         #kapl4s[k] /= yscale
         # LOG('ynew = ',ynew,', kapl4s =', kapl4s[k])
 
-    # TODO: sometimes the last value of kapl4s is nan: why?
     gh.checkpositive(kapl4s, 'kapl4s in kappa_r^4')
 
     # project kappa4_los as well

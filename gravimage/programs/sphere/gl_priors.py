@@ -19,8 +19,6 @@ def check_beta(beta, gp):
         LOG(2, 'max beta!')
         return True
 
-    # TODO: check smoothness of beta
-
     # now checking physical kappa: g(rvar, rfix, beta, dbetadr) >= 0
     if gp.usekappa == False:
         return False

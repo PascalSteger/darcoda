@@ -204,7 +204,7 @@ class ProfileCollection():
         elif gp.investigate == 'walk':
             anrho = ga.rho_walk(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
-            annr = ga.nr3Dtot_deriv_walk(r0, gp) # TODO too high in case of core
+            annr = ga.nr3Dtot_deriv_walk(r0, gp)
             tmp_annu = ga.rho_walk(r0, gp)[1]
             annu.append( tmp_annu )
             anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp) )
@@ -240,7 +240,7 @@ class ProfileCollection():
             nrnu = -gh.derivipol(np.log(annu[pop]), np.log(r0))
             self.analytic.set_prof('nrnu', nrnu, pop, gp)
             self.analytic.set_prof('Sig', anSig[pop] , pop, gp)#/ Signorm, pop, gp)
-            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp) # TODO: find analytic profile
+            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp)
         return
     ## \fn set_analytic(x0, gp)
     # set analytic curves (later shown in blue)
