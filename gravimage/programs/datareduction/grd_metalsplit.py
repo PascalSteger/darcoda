@@ -119,22 +119,22 @@ def run(gp):
                     dump_callback = None)
 
 if __name__=="__main__":
-    from mpi4py import MPI
-    import numpy
+#    from mpi4py import MPI
+#    import numpy
 
-    comm = MPI.Comm.Get_parent()
-    size = comm.Get_size()
-    rank = comm.Get_rank()
+#    comm = MPI.Comm.Get_parent()
+#    size = comm.Get_size()
+#    rank = comm.Get_rank()
 
     import gl_params
     gp = gl_params.Params()
 
     globs = None
-    globs = comm.bcast(globs, root=0)
+#    globs = comm.bcast(globs, root=0)
     global Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max
-    gp, Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max = globs
+#    gp, Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max = globs
     run(gp)
     finish = 1
-    comm.Reduce(finish, None,
-                op=MPI.SUM, root=0)
-    comm.Disconnect()
+#    comm.Reduce(finish, None,
+#                op=MPI.SUM, root=0)
+#    comm.Disconnect()

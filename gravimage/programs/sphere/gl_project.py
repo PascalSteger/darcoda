@@ -234,8 +234,7 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
     # rho *= corr                                      # [Munit/lunit^3]
 
     # fractional error propagation
-    # TODO: not the case, really.
-    # needs to be included in Sig_INT_rho()
+    # TODO right error determination needs to be included in Sig_INT_rho()
     rhoerr = rho * Sigerr/Sig                        # [Munit/lunit^3]
 
     # [pc], [Munit/lunit^3], [Munit/lunit^3]
@@ -285,45 +284,6 @@ def Sig_INT_rho(R0, Sig, gp):
 # see appendix in Mamon Boue 2009
 # @param R0 radii in [pc]
 # @param Sig surface density
-
-
-def Sig_INT_rho_buggy(R0, Sig, gp):
-    # TODO: deproject with variable transformed, x = sqrt(r^2-R^2)
-    pnts = len(Sig)                    # [1]
-
-    R0nu = R0
-    Signu = Sig
-    gh.checkpositive(Signu, 'Signu in Sig_INT_rho')
-
-    splpar_Sig = splrep(R0nu, Signu, k=2, s=0.)
-    dnubydR = splev(R0nu, splpar_Sig, der=1)  # Attention, numerical derivative
-
-    rho = np.zeros(len(R0nu)-gp.nexp)
-    for i in range(len(R0nu)-gp.nexp):
-        xint = R0nu[i:]         # [lunit]
-        yint = np.ones(len(xint))
-        gh.checkpositive(yint)
-        for j in range(i+1, len(R0nu)):
-            yint[j-i] = dnubydR[j]/np.sqrt(R0nu[j]**2-R0nu[i]**2)
-            # [Munit/lunit^3/lunit]
-
-        # Cubic-spline extrapolation to first bin
-        splpar_yint = splrep(xint[1:], yint[1:], k=2, s=0.01)
-        xnew = xint
-        ynew = splev(xnew, splpar_yint)
-        gh.checknan(ynew)
-        splpar_nu = splrep(xnew, ynew, k=1, s=0) # interpolation in real space
-        rho[i] = -1./np.pi * splint(0., max(R0), splpar_nu)
-    gh.checkpositive(rho)
-    splpar_rhon = splrep(R0nu[:-gp.nexp], rho)
-    rhoout = splev(R0, splpar_rhon)     # [Munit/lunit^3]
-    gh.checkpositive(rhoout)
-    return rhoout               # [Munit/lunit^3]
-## \fn Sig_INT_rho(R0, Sig, gp):
-# take surface density, deproject, 2D => 3D with radius r'
-# @param R0 radius in [pc]
-# @param Sig 2D density in [Munit/pc^2]
-# @param gp global parameters
 
 
 def rho_SUM_Mr(r0max, rho):
