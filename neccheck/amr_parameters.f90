@@ -115,12 +115,10 @@ module amr_parameters
   real(dp)::d_sink = -1.D0    ! Sink particle density threshold in user units
   real(dp)::m_star =-1.0      ! Star particle mass in units of mass_sph
   real(dp)::n_star =0.1D0     ! Star formation density threshold in H/cc
-  real(dp)::temp_star =1.0d4  ! Star formation temperature threshold in T/mu
   real(dp)::t_star =0.0D0     ! Star formation time scale in Gyr
   real(dp)::eps_star=0.0D0    ! Star formation efficiency (0.02 at n_star=0.1 gives t_star=8 Gyr)
   real(dp)::fh2_min=0.0       ! Minimum fraction o H_2 or SF
   real(dp)::fh2_rho=1.0d5          !Threshold where we assume we have reached 100% molecular gas (regardless of metals)
-  real(dp)::metal_thresh=1D-8 ! metallicity threshold for IMF switch
   real(dp)::T2_star=0.0D0     ! Typical ISM temperature
   real(dp)::Tmax=1.0D9     ! Maximum FB temperature
   real(dp)::g_star =1.6D0     ! Typical ISM polytropic index
@@ -129,24 +127,21 @@ module amr_parameters
   real(dp)::eta_sn =0.0D0     ! Supernova mass fraction
   real(dp)::yield  =0.0D0     ! Supernova yield
   real(dp)::f_ek   =1.0D0     ! Supernovae kinetic energy fraction (only between 0 and 1)
-
-
+  real(dp)::rbubble=0.0D0     ! Supernovae superbubble radius in pc
+  real(dp)::f_w    =0.0D0     ! Supernovae mass loading factor
+  integer ::ndebris=1         ! Supernovae debris particle number
+  real(dp)::mass_gmc=-1.0     ! Stochastic exploding GMC mass
   real(dp)::n_starIII =0.1D0  ! Star formation density threshold in H/cc pop III
   real(dp)::n_starII =0.1D0   ! Star formation density threshold in H/cc pop I and II
+  real(dp)::z_ave  =0.0D0     ! Average metal abundance
+  real(dp)::B_ave  =0.0D0     ! Average magnetic field
+  real(dp)::z_reion=8.5D0     ! Reionization redshift
   real(dp)::mf1=1d1           ! Stellar mass in solar masses
   real(dp)::mf2=1d2           ! Stellar mass in solar masses
   real(dp)::mf3=1d3           ! Stellar mass in solar masses
   real(dp)::orig_star_mass=1D2! Stellar mass in solar masses
   real(dp)::orig_star_top=1D3 ! Stellar mass in solar masses
-
-
-  real(dp)::rbubble=0.0D0     ! Supernovae superbubble radius in pc
-  real(dp)::f_w    =0.0D0     ! Supernovae mass loading factor
-  integer ::ndebris=1         ! Supernovae debris particle number
-  real(dp)::mass_gmc=-1.0     ! Stochastic exploding GMC mass
-  real(dp)::z_ave  =0.0D0     ! Average metal abundance
-  real(dp)::B_ave  =0.0D0     ! Average magnetic field
-  real(dp)::z_reion=8.5D0     ! Reionization redshift
+  real(dp)::metal_thresh=1D-8 ! metallicity threshold for IMF switch
   real(dp)::T2_start          ! Starting gas temperature
   real(dp)::t_delay=1.0D1     ! Feedback time delay in Myr
   real(dp)::t_diss =20.0D0    ! Dissipation timescale for feedback
@@ -162,13 +157,6 @@ module amr_parameters
   logical ::pressure_fix=.false.
   logical ::nordlund_fix=.true.
   logical ::cooling=.false.
-  logical ::smbh=.false.
-  logical ::agn=.false.
-  logical ::sink_drag=.true.  ! Gas dragging sink
-  logical ::use_proper_time=.false.
-  logical ::ir_feedback=.false. ! Activate ir feedback from accreting sinks
-
-
   logical ::neq_chem=.false.  ! Non-equilbrium chemistry activated
   logical ::isothermal=.false.
   logical ::metal=.false.
@@ -202,29 +190,14 @@ module amr_parameters
   logical ::ysc_stats=.false.
   logical ::AGBheating=.false.
   real(dp)::tSF =2.5     ! Fixed consumption timescale
-
+  logical ::smbh=.false.
+  logical ::agn=.false.
+  logical ::sink_drag=.true.  ! Gas dragging sink
+  logical ::use_proper_time=.false.
+  logical ::ir_feedback=.false. ! Activate ir feedback from accreting sink
   ! Output times
   real(dp),dimension(1:MAXOUT)::aout=1.1       ! Output expansion factors
   real(dp),dimension(1:MAXOUT)::tout=0.0       ! Output times
-
-  ! Movie
-  integer::imovout=0             ! Increment for output times
-  integer::imov=1                ! Initialize
-  real(kind=8)::tendmov=0.,aendmov=0.
-  real(kind=8),allocatable,dimension(:)::amovout,tmovout
-  logical::movie=.false.
-  integer::nw_frame=512 ! prev: nx_frame, width of frame in pixels
-  integer::nh_frame=512 ! prev: ny_frame, height of frame in pixels
-  integer::levelmax_frame=0
-  integer::ivar_frame=1
-  real(kind=8),dimension(1:20)::xcentre_frame=0d0
-  real(kind=8),dimension(1:20)::ycentre_frame=0d0
-  real(kind=8),dimension(1:20)::zcentre_frame=0d0
-  real(kind=8),dimension(1:10)::deltax_frame=0d0
-  real(kind=8),dimension(1:10)::deltay_frame=0d0
-  real(kind=8),dimension(1:10)::deltaz_frame=0d0
-  character(LEN=5)::proj_axis='z' ! x->x, y->y, projection along z
-  integer,dimension(0:NVAR)::movie_vars=0
 
   ! Refinement parameters for each level
   real(dp),dimension(1:MAXLEVEL)::m_refine =-1.0 ! Lagrangian threshold
@@ -273,5 +246,23 @@ module amr_parameters
   integer ,dimension(1:MAXBOUND)    ::jbound_max=0
   integer ,dimension(1:MAXBOUND)    ::kbound_min=0
   integer ,dimension(1:MAXBOUND)    ::kbound_max=0
+
+  ! Movie parameters
+  integer::imovout=0             ! Increment for output times
+  integer::imov=1  !Initialize
+  integer::imovstart=1
+  real(kind=8),allocatable,dimension(:)::movout
+  logical::movie=.false.
+  integer::nx_frame=512
+  integer::ny_frame=512
+  integer::levelmax_frame=0
+  integer::ivar_frame=1
+  real(kind=8)::tfinal=1.0
+  real(kind=8),dimension(1:4)::xcentre_frame=0d0
+  real(kind=8),dimension(1:4)::ycentre_frame=0d0
+  real(kind=8),dimension(1:4)::zcentre_frame=0d0
+  real(kind=8),dimension(1:4)::deltax_frame=0d0
+  real(kind=8),dimension(1:4)::deltay_frame=0d0
+  real(kind=8),dimension(1:4)::deltaz_frame=0d0
 
 end module amr_parameters
