@@ -1,11 +1,10 @@
 program part2map
   !--------------------------------------------------------------------------
-  ! Ce programme calcule la carte de densite surfacique projetee
-  ! des particules de matiere noire d'une simulation RAMSES. 
-  ! Version F90 par R. Teyssier le 01/04/01.
+  ! calculate the projected surface density from DM/star particles
   !--------------------------------------------------------------------------
   implicit none
   integer::ncpu,ndim,npart,ngrid,n,i,j,k,icpu,ipos
+  integer::nstar_tot
   integer::ncpu2,npart2,ndim2,levelmin,levelmax,ilevel
   integer::nx=0,ny=0,ix,iy,ixp1,iyp1,idim,jdim,ncpu_read
   real*8::mtot,ddx,ddy,dex,dey,t
@@ -15,7 +14,7 @@ program part2map
   real*4,dimension(:,:),allocatable::toto
   real*8,dimension(:,:),allocatable::map
   real*8,dimension(:,:),allocatable::x
-  real*8,dimension(:)  ,allocatable::m,metal
+  real*8,dimension(:)  ,allocatable::m,metal,tp
   character(LEN=1)::proj='z'
   character(LEN=5)::nchar,ncharcpu
   character(LEN=80)::ordering,junk
@@ -218,25 +217,31 @@ program part2map
      read(1)ncpu2
      read(1)ndim2
      read(1)npart2
-     read(1)
-     read(1)
-     read(1)
-     read(1)
-     read(1)
+     read(1) ! localseed
+     read(1)nstar_tot
+     write(*,*)'number stars: ', nstar_tot
+     read(1) ! mstar_tot
+     read(1) ! mstar_lost
+     read(1) ! nsink
      allocate(m(1:npart2))
      allocate(metal(1:npart2))
+     allocate(tp(1:npart2))
      allocate(x(1:npart2,1:ndim2))
      do i=1,ndim
-        read(1)m
+        read(1)m ! x, y, z position
         x(1:npart2,i)=m
      end do
      do i=1,ndim
-        read(1)m
+        read(1)m ! vx, vy, vz
      end do
-     read(1)m
+     read(1)m ! mass, mp
+     read(1) ! identity, idp
+     read(1) ! level, levelp
      if(star) then
-        read(1)
-        read(1)metal
+        write(*,*)'read star properties'
+        read(1)tp ! birth epoch, tp
+        read(1)metal ! metallicity, zp
+        write(*,*)'finished, metal(0) = ',metal(0),' tp(0) = ',tp(0)
      endif
      close(1)
      if(periodic)then
@@ -245,6 +250,9 @@ program part2map
              &   x(i,2)>=ymin.and.x(i,2)<=ymax.and. &
              &   x(i,3)>=zmin.and.x(i,3)<=zmax)
         if(star) then
+           ! TODO: bug: no output
+           write(*,*)'birth epoch: ',tp(i)
+           write(*,*)'metallicity: ',metal(i)
            ok_part = ok_part.and.metal(i)>0.0
         endif
         if(ok_part)then
@@ -300,7 +308,7 @@ program part2map
         end if
      end do
      endif
-     deallocate(x,m,metal)
+     deallocate(x,m,metal,tp)
   end do
   write(*,*)'Total mass=',mtot
 
@@ -322,11 +330,8 @@ program part2map
   close(10)
 
 contains
-
   subroutine read_params
-
       implicit none
-
       integer       :: i,n
       integer       :: iargc
       character(len=4)   :: opt
@@ -395,7 +400,6 @@ contains
       return
 
     end subroutine read_params
-
   end program part2map
 
 !=======================================================================

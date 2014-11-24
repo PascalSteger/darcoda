@@ -211,8 +211,8 @@ def sqlstart():
 
     #[TODO] only laptop home
     #connection = MySQLdb.connect('129.132.211.79','psteger','Pinux10','astro')
-    #connection = MySQLdb.connect('84.75.168.98','psteger','Pinux10','astro')
-    connection = MySQLdb.connect('dyng.dyndns.org', 'psteger', 'Pinux10', 'astro')
+    connection = MySQLdb.connect('84.75.168.98','psteger','Pinux10','astro')
+    #connection = MySQLdb.connect('dyng.dyndns.org', 'psteger', 'Pinux10', 'astro')
     #connection = MySQLdb.connect('dyng.dyndns.org', 'root', 'Sinux10', 'astro')
     #connection = MySQLdb.connect('80.218.64.180','root','Sinux10','astro')
     cursor = connection.cursor()

@@ -1,1 +1,1 @@
-/usr/lib/mpich/include/mpif.h
+/usr/include/mpif.h
