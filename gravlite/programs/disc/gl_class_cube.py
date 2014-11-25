@@ -61,14 +61,12 @@ def map_nr(params, prof, pop, gp):
         rhoscale = gp.rhohalf
         Rscale = gp.Xscale[0]
         width = gp.log10rhospread
-        rlimnr = gp.rlimnr
         nrscale = gp.nztol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic
     elif prof=='nu':
         rhoscale = gp.dat.nuhalf[pop]
         Rscale = gp.Xscale[pop]
         width = gp.log10nuspread
-        rlimnr = gp.rlimnr_nu
         nrscale = gp.nztol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:

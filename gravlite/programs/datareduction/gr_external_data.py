@@ -91,8 +91,6 @@ def run(gp):
 
 
 
-
-
     # Calulate binned data (for plots/binned anal.). old way, linear spacings, no const #particles/bin
     binmin1, binmax1, z_dat_bin1, sig_dat_bin1, count_bin1 = gh.binsmooth(z_dat1, vz_dat1, \
                                                                      zmin, zmax, gp.nipol, 0.)

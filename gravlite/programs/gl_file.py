@@ -94,7 +94,7 @@ def bin_data(gp):
 
 def get_binned_data(gp):
     for pop in range(gp.pops+1):
-        A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
+        A = np.loadtxt(gp.files.get_scale_file(pop),unpack=False, skiprows=1)
         gp.Xscale.append(A[0])
         gp.Sig0pc.append(A[1])
         gp.totmass_tracers.append(A[2])

@@ -115,20 +115,12 @@ class Params():
                                   # half-light radius of tracers
                                   # calculated in gl_data
         self.log10rhospread = 2.       # with this spread, [dex] in log space
-        self.rlimnr = -1 # scale below which range of
-                         # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
-                         # calculated to values in [pc] in gl_data.read_nu;
-                         # if set to -1 here, use maxrhoslope everywhere
-        self.rlimnr_nu = -1 # same for nu, using same rhalf
-        self.log10nuspread = 2.
-        self.maxrhoslope  = 5.    # maximum slope (change if
-                                  # monotonicity prior used) of rho
-        self.maxnuslope = 5.
+        self.log10nuspread = 2.        # = 'width' in gl_class_cube
         # nztol: prior (max +/- range) for dn(r)/dlog(r)
         #   determine how far nr can wander with the max allowed nr slope
         #    from min(gp.xipol) to max(gp.xipol)
-        self.nztol  = self.maxrhoslope
-        self.nztol_nu = 2*self.maxnuslope # same for nu profile
+        self.nztol  = 5.
+        self.nztol_nu = 5. # same for nu profile
         self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
                                   # of beta*
         self.beta00prior = False  # prior beta(r=0) = 0
