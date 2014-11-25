@@ -52,7 +52,7 @@ def myprior(cube, ndim, nparams):
         cube = mycube.convert_to_parameter_space(gp)
     except Exception:
         gh.LOG(1, 'parameters not fulfilling prior requirements')
-        
+
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -87,7 +87,7 @@ def prepare_data(gp):
         if gp.getnewpos:
             gf.read_data(gp)
         gf.bin_data(gp)
-    gf.get_binned_data(gp)
+    gf.get_binned_data_noscale(gp)    #H Silverwood 20/11/14
     gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)
 ## \fn prepare_data(gp)

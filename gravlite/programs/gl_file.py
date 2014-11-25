@@ -119,6 +119,16 @@ def get_binned_data(gp):
 # read in binned data, store in a gl_data class
 # @param gp global parameters
 
+
+def get_binned_data_noscale(gp):
+    gp.dat.read_sigz(gp)
+    return gp.dat
+## \fn get_binned_data_noscale(gp)
+# read in binned data, store in a gl_data class
+# @param gp global parameters
+# H Silverwood 20/11/14
+
+
 def get_rhohalfs(gp):
     if gp.geom == 'sphere':
         # Wolf, Walker method for M_half, r_half

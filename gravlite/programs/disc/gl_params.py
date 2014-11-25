@@ -82,10 +82,10 @@ class Params():
         self.nrho = self.nbins + 2 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0, and zLS (position
                                    # of Last Star)
-        self.nbaryon_pops = 0. # Number of baryon populations to look at
+        self.nbaryon_pops = 0 # Number of baryon populations to look at
                                # =0 if doing simple mass model (eg DM profile describes
                                # all mmass)
-        self.nbaryon_params = 0. # Number of parameters to describe baryon population
+        self.nbaryon_params = 0 # Number of parameters to describe baryon population
                                  #  Holmberg & Flynn = 15
                                  #  with baryon observational information = nrho
         self.ndim = 1 + 2*self.nrho + self.nbaryon_pops*self.nbaryon_params
@@ -193,6 +193,10 @@ class Params():
 
         # global arrays
         # ----------------------------------------------------------------------
+        self.z_bin_centers = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
+        self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers, zLS]
+
+
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins
         self.xfine = np.array([]) # [pc] radii for lookup tables,

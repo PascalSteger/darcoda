@@ -90,6 +90,7 @@ class Files:
             self.set_discmock(gp, timestamp)
         elif gp.investigate == 'simplenu':
             self.set_simplenu(gp, timestamp)
+            newdir(self.dir + 'sigz/')
         else:
             print(' wrong investigation in Files()')
             pdb.set_trace()
@@ -508,12 +509,6 @@ class Files:
     def set_simplenu(self, gp, timestamp=''):
         self.dir = self.machine + 'DTsimplenu/0/'
         self.dir += timestamp + '/'
-        self.massfiles.append(self.dir+'M/M_0.txt')
-        self.Sigfiles.append(self.dir+'Sigma/Sigma_0.txt') # all comp.
-        self.nufiles.append(self.dir+'nu/nu_0.txt')
-        self.sigfiles.append(self.dir+'sigz/sigz_0.txt')
-        self.massfiles.append(self.dir+'M/M_1.txt')
-        self.Sigfiles.append(self.dir+'Sigma/Sigma_1.txt') # all comp.
         self.nufiles.append(self.dir+'nu/nu_1.txt')
         self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
         return

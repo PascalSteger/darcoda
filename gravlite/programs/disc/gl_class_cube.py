@@ -51,6 +51,39 @@ def map_tiltstar(pa, gp):
 # mapping tilt parameters from [0,1] to full parameter space
 # @param pa parameter array
 
+def map_kr(params, prof, pop, gp):
+    # params[0] for central value of rho or nu
+    # params[1] for central value of kz (for rho or nu)
+
+    if prof == 'rho':
+        rhonu_C_max = gp.rho_C_max
+        rhonu_C_min = gp.rho_C_min
+        kz_C_max = gp.kz_rho_C_max
+        kz_C_min = gp.kz_rho_C_min
+    elif prof == 'nu':
+        rhonu_C_max = gp.rho_C_max
+        rhonu_C_min = gp.rho_C_min
+        kz_C_max = gp.kz_nu_C_max
+        kz_C_min = gp.kz_nu_C_min
+
+    # rho or nu central value
+    rhonu_C = rhonu_C_max*params[0] + rhonu_C_min*(1 - params[0])
+
+    # kz for rho or nu, central value
+    kz_C = kz_C_max*params[1] + kz_C_min*(1-params[1])
+
+    # Starting from the central value walk the kz value, limited
+    # by max_kz_slope (=dk/dz)
+
+    kz_vector = []
+    kz_iter_minus1 = kz_C
+
+    for param_i in params[2:(1+gp.nbins)]:
+        kz_max = kz_iter_minus1 + gp.max_kz_slope*1.0 #WORKING HERE MONDAY MORNING
+
+
+
+
 
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
@@ -82,7 +115,7 @@ def map_nr(params, prof, pop, gp):
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -1 to exclude infinite enclosed mass
-    nrasym0 = params[1]*0.99 
+    nrasym0 = params[1]*0.99
 
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[2:]
