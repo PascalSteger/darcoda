@@ -138,6 +138,20 @@ class Datafile:
     # @param gp global parameters
 
 
+    def read_sigz(self, gp):
+        pdb.set_trace()
+        bincenters, binmin, binmax, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[0])
+        self.sig.append(sigdat[:]) # [km/s]
+        self.sigerr.append(sigerr[:]) # [km/s]
+        gp.z_bin_centers = bincenters
+        gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmax[-1]]) #
+        return
+    ## \fn read_sig(self, gp)
+    # read in line of sight velocity dispersion
+    # @param gp global parameters
+    # H Silverwood 20/11/14
+
+
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):
             Dummy1, Dummy2, Dummy3, kapdat, kaperr = gh.readcol5(gp.files.kappafiles[pop])
