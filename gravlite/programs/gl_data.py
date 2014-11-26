@@ -139,7 +139,6 @@ class Datafile:
 
 
     def read_sigz(self, gp):
-        pdb.set_trace()
         bincenters, binmin, binmax, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[0])
         self.sig.append(sigdat[:]) # [km/s]
         self.sigerr.append(sigerr[:]) # [km/s]

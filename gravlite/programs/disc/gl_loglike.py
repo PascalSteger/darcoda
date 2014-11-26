@@ -15,6 +15,15 @@ from pylab import *
 ion()
 
 def geom_loglike(cube, ndim, nparams, gp):
+    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins, gp.nrhonu, gp.nbaryon_pops, gp.nbaryon_params)
+
+
+    #HS Working Line
+    #Everthing below this line is old, and hasn't been considered for keeping
+    #deletion, or modification
+    # ----------------------------------------------------------------------
+
+
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
     offstep = 1

@@ -48,7 +48,7 @@ class Params():
 
         #check_investigate(self.investigate)
         self.case = 0 # used in spherical case
-        self.pops = 2 # number of stellar tracer populations
+        self.ntracer_pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
 
         # debug options
@@ -79,7 +79,7 @@ class Params():
         # ----------------------------------------------------------------------
 
         self.nbins=15 # Number of bins to split tracer stars into
-        self.nrho = self.nbins + 2 # Number of points where rho and nu parameters will be set,
+        self.nrhonu = self.nbins + 2 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0, and zLS (position
                                    # of Last Star)
         self.nbaryon_pops = 0 # Number of baryon populations to look at
@@ -88,9 +88,26 @@ class Params():
         self.nbaryon_params = 0 # Number of parameters to describe baryon population
                                  #  Holmberg & Flynn = 15
                                  #  with baryon observational information = nrho
-        self.ndim = 1 + 2*self.nrho + self.nbaryon_pops*self.nbaryon_params
-            # Constant C from sigma_z calculation, nrho params for rho,
-            # nrho params for nu, the number of params for all baryon pops
+        self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+            # Constant C from sigma_z calculation, nrho + 1 params for rho (nrho
+            # points for kz_rho, plus central density of rho, eg rho_C), similarly
+            # nrho +1  params for nu, plus the number of params for all baryon pops
+
+        #Limits for central densities (z=0)
+        self.rho_C_max = 0.2 #Msun pc^-3, for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
+        self.rho_C_min = 0.0 #Msun pc^-3
+        self.nu_C_max = 1.0E5 # no. stars pc^-3
+        self.nu_C_min = 10.0 # no. stars pc^-3
+
+        #Limits for central kz values (z=0)
+        self.kz_rho_C_max = 10.0
+        self.kz_rho_C_min = 0.0
+        self.kz_nu_C_max = 10.0
+        self.kz_nu_C_min = 0.0
+
+        #Maximum kz_slope (=dk/dz)
+        self.max_kz_slope = 5.0
+
 
 
 

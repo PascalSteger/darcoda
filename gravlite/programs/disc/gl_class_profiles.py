@@ -13,44 +13,122 @@ import gl_physics as phys
 import gl_helper as gh
 
 class Profiles:
-    def __init__(self, pops, nipol):
-        self.pops = pops
-        self.nipol= nipol
-        self.x0   = np.zeros(nipol)
+    def __init__(self, ntracer_pops, nbins, nrhonu, nbaryon_pops, nbaryon_params):
+        self.ntracer_pops = ntracer_pops
+        self.nbins = nbins
+        self.nrhonu = nrhonu #?
+        self.nbaryon_pops = nbaryon_pops #?
+        self.nbaryon_params = nbaryon_params #?
+
+        #z-profile points
+        self.z_C = 0.0
+        self.z_vec = np.zeros(nbins)
+        self.z_LS = 0.0
+
+        #Dark Matter profile parameters and derived mass density
+        self.rho_DM_C      = 0.0               #Multinest
+        self.kz_rho_DM_C   = 0.0               #Multinest
+        self.kz_rho_DM_vec = np.zeros(nbins)   #Multinest
+        self.kz_rho_CM_LS  = 0.0               #Multinest
+        self.rho_DM_vec    = np.zeros(nbins)   #Derived from phys
+        self.rho_DM_LS     = 0.0               #Derived from phys
+        self.Sig_DM_vec    = np.zeros(nbins)   #Derived from phys
+        self.Sig_DM_LS     = 0.0               #Derived from phys
+
+        #Baryon mass density and parameters
+        #self.baryon_params  = 0.0 #Currently DUMMY
+        #self.rho_baryon_C   = 0.0
+        #self.rho_baryon_vec = np.zeros(nbins)
+        #self.rho_baryon_LS  = 0.0
+        #self.Sig_baryon_vec = np.zeros(nbins)
+        #self.Sig_baryon_LS  = 0.0
+
+        #Tracer profile parameters and derived mass density
+        self.nu_C      = 0.0                               #Multinest
+        self.kz_nu_C   = 0.0                               #Multinest
+        self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
+        self.kz_nu_LS  = 0.0                               #Multinest
+        self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
+        self.nu_LS     = 0.0                               #Derived from phys
+        self.sig_vec   = np.zeros(ntracer_pops * nbins)    #Derived from phys
+
+        #chi2 of profile
         self.chi2 = 0.0
-        self.rho  = np.zeros(nipol)
-        self.nr   = np.zeros(nipol) #n(r) for mass density
-        self.nrnu = np.zeros(nipol) #n(r) for tracer density
-        self.M    = np.zeros(nipol)
-        self.tilt = np.zeros((pops+1)*nipol) # (pops+1) for overall, 1, 2, ...
-        self.nu   = np.zeros((pops+1)*nipol) # dito
-        self.sig  = np.zeros((pops+1)*nipol)
-        self.Sig  = np.zeros((pops+1)*nipol)
-        self.kap  = np.zeros((pops+1)*nipol)
+
+
+
     ## \fn __init__(self, pops, nipol)
     # constructor
-    # @param pops number of populations
-    # @param nipol number of radial bins
+    # @param ntracer_pops = number of tracer populations
+    # @param nbins = number of vertical bins
 
 
     def set_prof(self, prof, vec, pop, gp):
         gh.sanitize_vector(vec, len(self.x0), -1e30, 1e30, gp.debug)
-        if prof == 'rho':
-            self.rho = vec
-        elif prof == 'nr':
-            self.nr = vec
-        elif prof == 'M':
-            self.M = vec
-        elif prof == 'nu':
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = vec
-        elif prof == 'Sig':
-            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = vec
-        elif prof == 'tilt':
-            self.tilt[pop*self.nipol:(pop+1)*self.nipol] = vec
-        elif prof == 'sig':
-            self.sig[pop*self.nipol:(pop+1)*self.nipol] = vec
-        elif prof == 'kap':
-            self.kap[pop*self.nipol:(pop+1)*self.nipol] = vec
+
+        #z-profile points
+        if prof == 'z_C':
+            self.z_C = vec
+        elif prof == 'z_vec':
+            self.z_vec = vec
+        elif prof == 'z_LS':
+            self.z_LS = vec
+        #Dark matter
+        elif prof == 'rho_DM_C':
+            self.rho_DM_C = vec
+        elif prof == 'kz_rho_DM_C':
+            self.kz_rho_DM_C = vec
+        elif prof == 'kz_rho_DM_vec':
+            self.kz_rho_DM_vec = vec
+        elif prof == 'kz_rho_CM_LS':
+            self.kz_rho_CM_LS = vec
+        elif prof == 'rho_DM_vec':
+            self.rho_DM_vec = vec
+        elif prof == 'rho_DM_LS':
+            self.rho_DM_LS = vec
+        elif prof == 'Sig_DM_vec':
+            self.Sig_DM_vec = vec
+        elif prof == 'Sig_DM_LS':
+            self.Sig_DM_LS = vec
+        #Baryons
+        elif prof == 'baryon_params':
+            print("Baryons aren't implemented yet you muppet")
+        #Tracer stars
+        elif prof == 'nu_C'
+            self.nu_C  = vec
+        elif prof == 'kz_nu_C
+            self.kz_nu_C = vec
+        elif prof == 'kz_nu_vec'
+            self.kz_nu_vec = vec
+        elif prof == 'kz_nu_LS'
+            self.kz_nu_LS = vec
+        elif prof == 'nu_vec'
+            self.nu_vec  = vec
+        elif prof == 'nu_LS'
+            self.nu_LS = vec
+        elif prof == 'sig_vec'
+            self.sig_vec = vec
+        #chi2 of profile
+        elif prof == 'chi2'
+            self.chi2 = vec
+
+
+        #if prof == 'rho':
+        #    self.rho = vec
+        #elif prof == 'nr':
+        #    self.nr = vec
+        #elif prof == 'M':
+        #    self.M = vec
+        #elif prof == 'nu':
+        #    self.nu[pop*self.nipol:(pop+1)*self.nipol] = vec
+        #elif prof == 'Sig':
+        #    self.Sig[pop*self.nipol:(pop+1)*self.nipol] = vec
+        #elif prof == 'tilt':
+        #    self.tilt[pop*self.nipol:(pop+1)*self.nipol] = vec
+        #elif prof == 'sig':
+        #    self.sig[pop*self.nipol:(pop+1)*self.nipol] = vec
+        #elif prof == 'kap':
+        #    self.kap[pop*self.nipol:(pop+1)*self.nipol] = vec
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
     # @param prof profile identifier
@@ -60,23 +138,49 @@ class Profiles:
 
 
     def get_prof(self, prof, pop):
-        if prof == 'rho':
-            return self.rho
-        elif prof == 'nr':
-            return self.nr
-        elif prof == 'M':
-            return self.M
-        elif prof == 'nu':
-            return self.nu[pop*self.nipol:(pop+1)*self.nipol]
-        elif prof == 'Sig':
-            return self.Sig[pop*self.nipol:(pop+1)*self.nipol]
-        elif prof == 'tilt':
-            return self.tilt[pop*self.nipol:(pop+1)*self.nipol]
-        elif prof == 'sig':
-            return self.sig[pop*self.nipol:(pop+1)*self.nipol]
-        elif prof == 'kap':
-            return self.kap[pop*self.nipol:(pop+1)*self.nipol]
-        return self.rho
+        #z-profile points
+        if prof == 'z_C':
+            return self.z_C
+        elif prof == 'z_vec':
+            return self.z_vec
+        elif prof == 'z_LS':
+            return self.z_LS
+        #Dark matter
+        elif prof == 'rho_DM_C':
+            return self.rho_DM_C
+        elif prof == 'kz_rho_DM_C':
+            return self.kz_rho_DM_C
+        elif prof == 'kz_rho_DM_vec':
+            return self.kz_rho_DM_vec
+        elif prof == 'kz_rho_CM_LS':
+            return self.kz_rho_CM_LS
+        elif prof == 'rho_DM_vec':
+            return self.rho_DM_vec
+        elif prof == 'rho_DM_LS':
+            return self.rho_DM_LS
+        elif prof == 'Sig_DM_vec':
+            return self.Sig_DM_vec
+        elif prof == 'Sig_DM_LS':
+            return self.Sig_DM_LS
+        #Baryons
+        elif prof == 'baryon_params':
+            print("Baryons aren't implemented yet you muppet")
+        #Tracer stars
+        elif prof == 'nu_C'
+            return self.nu_C
+        elif prof == 'kz_nu_C
+            return self.kz_nu_C
+        elif prof == 'kz_nu_vec'
+            return self.kz_nu_vec
+        elif prof == 'kz_nu_LS'
+            return self.kz_nu_LS
+        elif prof == 'nu_vec'
+            return self.nu_vec
+        elif prof == 'nu_LS'
+            return self.nu_LS
+        elif prof == 'sig_vec'
+            return self.sig_vec
+
     ## \fn get_prof(self, prof, pop)
     # return density array
     # @param prof of this profile

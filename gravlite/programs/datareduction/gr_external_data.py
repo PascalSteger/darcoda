@@ -56,6 +56,12 @@ def run(gp):
     z_data = external_data[:, 0]
     v_data = abs(external_data[:, 1])
 
+    #Population Splitting
+    if gp.pops > 1:
+        print('More than one population')
+        #DO POPULATION SPLITTING
+
+
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
     binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data, gp.nbins)
