@@ -53,11 +53,11 @@ def run(gp):
 
     external_file='/home/hsilverw/LoDaM/darcoda/gravlite/Data_Sets/simplenu/simplenu_sigz_raw.dat'
     external_data = np.loadtxt(external_file)
-    z_data = external_data[:, 0]
-    v_data = abs(external_data[:, 1])
+    z_data = external_data[:, 0] #[kpc]
+    v_data = abs(external_data[:, 1]) #[km/s]
 
     #Population Splitting
-    if gp.pops > 1:
+    if gp.ntracer_pops > 1:
         print('More than one population')
         #DO POPULATION SPLITTING
 
@@ -65,7 +65,7 @@ def run(gp):
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
     binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data, gp.nbins)
-    # Then calculate tracer number density
+    # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data, nu_err_data, sig_data, sig_err_data = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data)
 
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_data, sig_data, sig_err_data, gp)

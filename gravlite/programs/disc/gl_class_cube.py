@@ -200,7 +200,7 @@ def map_MtoL(pa, gp):
 
 class Cube:
     def __init__ (self, gp):
-        self.pops = gp.pops
+        self.pops = gp.ntracer_pops
         # for density and (nu, tilt)_i
         self.cube = np.zeros(gp.ndim)
         return
@@ -235,11 +235,11 @@ class Cube:
             for i in range(offstep):
                 pc[off+i] = tmp_bary[i]
             off += offstep
-        pdb.set_trace()
+        #pdb.set_trace()
 
 
         #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector, kz_nu_LS
-        for tracer_pop in range(0, gp.pops):
+        for tracer_pop in range(0, gp.ntracer_pops):
             offstep = gp.nrhonu + 1
             tmp_tracer = map_kr(pc[off:off+offstep], 'nu', tracer_pop, gp)
             for i in range(offstep):
@@ -247,7 +247,7 @@ class Cube:
             off += offstep
 
         #print('pc = ', pc[0:gp.ndim])
-        pdb.set_trace()
+        #pdb.set_trace()
 
         if off != gp.ndim:
             gh.LOG(1,'wrong subscripts in gl_class_cube')
@@ -261,7 +261,7 @@ class Cube:
 
 
     def __repr__(self):
-        return "Cube (disc) with "+str(gp.pops)+" pops "
+        return "Cube (disc) with "+str(gp.ntracer_pops)+" pops "
 
     def copy(self, cub):
         self.cube = cub

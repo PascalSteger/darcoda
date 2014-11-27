@@ -32,6 +32,7 @@ class Profiles:
         self.kz_rho_CM_LS  = 0.0               #Multinest
         self.rho_DM_vec    = np.zeros(nbins)   #Derived from phys
         self.rho_DM_LS     = 0.0               #Derived from phys
+        self.Sig_DM_C      = 0.0               #always zero if z_C = 0
         self.Sig_DM_vec    = np.zeros(nbins)   #Derived from phys
         self.Sig_DM_LS     = 0.0               #Derived from phys
 
@@ -51,66 +52,43 @@ class Profiles:
         self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
         self.nu_LS     = 0.0                               #Derived from phys
         self.sig_vec   = np.zeros(ntracer_pops * nbins)    #Derived from phys
+        self.sig_LS    = 0.0                               #Derived from phys
 
         #chi2 of profile
         self.chi2 = 0.0
-
-
-
     ## \fn __init__(self, pops, nipol)
     # constructor
     # @param ntracer_pops = number of tracer populations
     # @param nbins = number of vertical bins
 
+    # set_prof just for the vectors, so that the length can be checked
 
     def set_prof(self, prof, vec, pop, gp):
-        gh.sanitize_vector(vec, len(self.x0), -1e30, 1e30, gp.debug)
+        gh.sanitize_vector(vec, len(gp.z_bin_centers), -1e30, 1e30, gp.debug)
 
         #z-profile points
-        if prof == 'z_C':
-            self.z_C = vec
-        elif prof == 'z_vec':
+        if prof == 'z_vec':
             self.z_vec = vec
-        elif prof == 'z_LS':
-            self.z_LS = vec
         #Dark matter
-        elif prof == 'rho_DM_C':
-            self.rho_DM_C = vec
-        elif prof == 'kz_rho_DM_C':
-            self.kz_rho_DM_C = vec
         elif prof == 'kz_rho_DM_vec':
             self.kz_rho_DM_vec = vec
-        elif prof == 'kz_rho_CM_LS':
-            self.kz_rho_CM_LS = vec
         elif prof == 'rho_DM_vec':
             self.rho_DM_vec = vec
-        elif prof == 'rho_DM_LS':
-            self.rho_DM_LS = vec
         elif prof == 'Sig_DM_vec':
             self.Sig_DM_vec = vec
-        elif prof == 'Sig_DM_LS':
-            self.Sig_DM_LS = vec
         #Baryons
         elif prof == 'baryon_params':
             print("Baryons aren't implemented yet you muppet")
         #Tracer stars
-        elif prof == 'nu_C'
-            self.nu_C  = vec
-        elif prof == 'kz_nu_C
-            self.kz_nu_C = vec
-        elif prof == 'kz_nu_vec'
+        elif prof == 'kz_nu_vec':
             self.kz_nu_vec = vec
-        elif prof == 'kz_nu_LS'
-            self.kz_nu_LS = vec
-        elif prof == 'nu_vec'
+        elif prof == 'nu_vec':
             self.nu_vec  = vec
-        elif prof == 'nu_LS'
-            self.nu_LS = vec
-        elif prof == 'sig_vec'
+        elif prof == 'sig_vec':
             self.sig_vec = vec
         #chi2 of profile
-        elif prof == 'chi2'
-            self.chi2 = vec
+        #elif prof == 'chi2'
+        #    self.chi2 = vec
 
 
         #if prof == 'rho':
@@ -139,47 +117,29 @@ class Profiles:
 
     def get_prof(self, prof, pop):
         #z-profile points
-        if prof == 'z_C':
-            return self.z_C
-        elif prof == 'z_vec':
+        if prof == 'z_vec':
             return self.z_vec
-        elif prof == 'z_LS':
-            return self.z_LS
         #Dark matter
-        elif prof == 'rho_DM_C':
-            return self.rho_DM_C
-        elif prof == 'kz_rho_DM_C':
-            return self.kz_rho_DM_C
         elif prof == 'kz_rho_DM_vec':
             return self.kz_rho_DM_vec
-        elif prof == 'kz_rho_CM_LS':
-            return self.kz_rho_CM_LS
         elif prof == 'rho_DM_vec':
             return self.rho_DM_vec
-        elif prof == 'rho_DM_LS':
-            return self.rho_DM_LS
         elif prof == 'Sig_DM_vec':
             return self.Sig_DM_vec
-        elif prof == 'Sig_DM_LS':
-            return self.Sig_DM_LS
         #Baryons
         elif prof == 'baryon_params':
             print("Baryons aren't implemented yet you muppet")
         #Tracer stars
-        elif prof == 'nu_C'
-            return self.nu_C
-        elif prof == 'kz_nu_C
-            return self.kz_nu_C
-        elif prof == 'kz_nu_vec'
+        elif prof == 'kz_nu_vec':
             return self.kz_nu_vec
-        elif prof == 'kz_nu_LS'
-            return self.kz_nu_LS
-        elif prof == 'nu_vec'
+        elif prof == 'nu_vec':
             return self.nu_vec
-        elif prof == 'nu_LS'
-            return self.nu_LS
-        elif prof == 'sig_vec'
+        elif prof == 'sig_vec':
             return self.sig_vec
+
+        ##chi2 of profile
+        #elif prof == 'chi2'
+        #    return self.chi2
 
     ## \fn get_prof(self, prof, pop)
     # return density array

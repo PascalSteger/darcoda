@@ -139,16 +139,22 @@ class Datafile:
 
 
     def read_sigz(self, gp):
-        bincenters, binmin, binmax, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[0])
+        dummy, dummy, dummy, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[0])
         self.sig.append(sigdat[:]) # [km/s]
         self.sigerr.append(sigerr[:]) # [km/s]
-        gp.z_bin_centers = bincenters
-        gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmax[-1]]) #
+
         return
     ## \fn read_sig(self, gp)
     # read in line of sight velocity dispersion
     # @param gp global parameters
     # H Silverwood 20/11/14
+
+    def read_nu(self, gp):
+        bincenters, binmin, binmax, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
+        self.nu.append(nudat[:]) # [#stars/kpc^3]
+        self.nuerr.append(nuerr[:])
+        gp.z_bin_centers = bincenters # [kpc]
+        gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmax[-1]]) #[kpc]
 
 
     def read_kappa(self, gp):
