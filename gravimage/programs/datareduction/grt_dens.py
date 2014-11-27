@@ -18,6 +18,7 @@ import gl_project as glp
 def run(gp):
     import gr_params
     gpr = gr_params.Params(gp)
+    print('scalefile: ', gp.files.get_scale_file(0))
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     print('input: ',gp.files.get_com_file(0))
     # start from data centered on COM already:
@@ -31,21 +32,29 @@ def run(gp):
         # set number and size of bins
         Rmin = 0. # [rscale]
         Rmax = max(R) if gp.maxR < 0 else float(gp.maxR)   # [Rscale0]
+
+
         sel = (R * Rscalei < Rmax * Rscale0)
         x = x[sel]; y = y[sel]; v = v[sel] #[rscale]
         totmass_tracers = 1.*len(x) #[munit], munit = 1/star
 
         Binmin, Binmax, Rbin = gh.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
-        Vol = gh.volume_circular_ring(Binmin, Binmax, gp)
+        gp.xipol = Rbin
+        minr = min(Rbin)                           # [pc]
+        maxr = max(Rbin)                           # [pc]
+        gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
+                              Rbin, \
+                              2*maxr, 4*maxr, 8*maxr]) # [pc]
+        Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
 
         # rs = gpr.Rerr*np.random.randn(len(r))+r
         Rs = R  # [Rscale] # if no initial offset is whished
 
-        tr = open(gp.files.get_ntracer_file(0),'w')
+        tr = open(gp.files.get_ntracer_file(pop),'w')
         print(totmass_tracers, file=tr)
         tr.close()
 
-        f_Sig, f_nu, f_mass, f_sig, f_kap = gf.write_headers_2D(gp, 0)
+        f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta = gf.write_headers_2D(gp, pop)
 
         # 30 iterations for getting random picked radius values
         Density = np.zeros((gp.nipol,gpr.n))
@@ -60,7 +69,7 @@ def run(gp):
 
         Dens0 = np.sum(Density[0])/float(gpr.n) # [Munit/Rscale0^2]
         Dens0pc = Dens0/Rscale0**2 # [Munit/pc^2]
-        gf.write_Sig_scale(gp.files.get_scale_file(0), Dens0pc, totmass_tracers)
+        gf.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass_tracers)
 
         tpbb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
         Denserr0 = Dens0/np.sqrt(tpbb0)       # [Munit/rscale^2]
@@ -88,13 +97,13 @@ def run(gp):
             merr = menclosed/np.sqrt(tpbb) # artificial menclosed/10 gives good approximation #[totmass_tracers]
             print(Rbin[b], Binmin[b], Binmax[b], menclosed, merr, file=f_mass)
             # [rscale], [totmass_tracers], [totmass_tracers]
-        de.close()
-        em.close()
+        f_Sig.close()
+        f_mass.close()
 
         # deproject Sig to get nu
-        numedi = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
-        numin  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
-        numax  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
+        numedi = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*p_dens, gp)
+        numin  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(p_dens-p_edens), gp)
+        numax  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(p_dens+p_edens), gp)
 
         nu0pc  = numedi[0]
         gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
