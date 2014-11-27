@@ -136,8 +136,8 @@ class Params():
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = False    # mono-prior on rho(x)
-        self.monotonic_nu = False # mono-prior on nu(x)
+        self.monotonic = False    # mono-prior on n(x) for rho(x)
+        self.monotonic_nu = False # mono-prior on n(x) for nu(x)
 
         # integration options
         # ----------------------------------------------------------------------
