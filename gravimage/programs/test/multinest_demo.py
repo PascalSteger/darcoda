@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import math, os
-import multinest
+import pymultinest
 
 if not os.path.exists("chains"): os.mkdir("chains")
 
@@ -23,7 +23,7 @@ n_dims = len(parameters)
 
 print('reached state before run')
 # run MultiNest
-multinest.run(myloglike,\
+pymultinest.run(myloglike,\
               myprior,\
               n_dims,\
               nest_resume = True, \

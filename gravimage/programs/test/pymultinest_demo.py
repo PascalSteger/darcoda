@@ -1,7 +1,7 @@
 #!/usr/bin/env ipython3
 from __future__ import absolute_import, unicode_literals, print_function
 
-import multinest
+import pymultinest
 import math
 import os
 import subprocess
@@ -35,7 +35,7 @@ parameters = ["x", "y"]
 n_params = len(parameters)
 
 # run MultiNest
-multinest.run(myloglike,\
+pymultinest.run(myloglike,\
               myprior,\
               n_params,\
               importance_nested_sampling = False,\

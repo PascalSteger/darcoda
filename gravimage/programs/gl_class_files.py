@@ -120,7 +120,7 @@ class Files:
     def set_dir(self, machine, case, inv):
         self.machine = '/home/psteger/sci/darcoda/gravimage/'
         if machine == 'darkside':
-            self.machine = '/home/ast/read/user/psteger/software/darcoda/gravimage/'
+            self.machine = '/home/ast/read/dark/darcoda/gravimage/'
         elif machine == 'lisa_HS_login':
             self.machine = '/home/hsilverw/LoDaM/darcoda/gravimage/'
         elif machine == 'lisa_SS_login':

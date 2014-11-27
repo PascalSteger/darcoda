@@ -1,12 +1,5 @@
-# Automatically Generated Makefile by EDE.
-# For use with: make
-#
-# DO NOT MODIFY THIS FILE OR YOUR CHANGES MAY BE LOST.
-# EDE is the Emacs Development Environment.
-# http://cedet.sourceforge.net/ede.shtml
-#
+default: all
 
-top="$(CURDIR)"/
-ede_FILES=Project.ede Makefile
-
-gravimage main file_SOURCES=gravimage.py
+all: gravimage.py
+	cython -3 --embed gravimage.py
+	gcc -Wall -Werror -I/usr/include/python3.2mu/ gravimage.c -lpython3.2mu -o gravimage

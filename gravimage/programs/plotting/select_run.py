@@ -303,7 +303,7 @@ def run(investigate="", case=-1, latest=False):
     user_name = getpass.getuser()
     basepath = '/home/psteger/sci/darcoda/gravimage/'
     if 'darkside' in host_name:
-        basepath = '/home/ast/read/dark/gravimage/'
+        basepath = '/home/ast/read/dark/darcoda/gravimage/'
     elif ('lisa' in host_name) and ('hsilverw' in user_name):
         basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
