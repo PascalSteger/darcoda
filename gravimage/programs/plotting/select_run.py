@@ -310,6 +310,7 @@ def run(investigate="", case=-1, latest=False):
         basepath = '/home/sofia/darcoda/gravimage/'
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
+    print(' - searching directory ', basedir, ' for output files')
     if latest:
         fdl = list_files(basedir)
         sel = -1
