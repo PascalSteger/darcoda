@@ -361,4 +361,3 @@ if __name__=='__main__':
 
 # works with investigation = 'obs', pops = 2, metalpop = True
 # profile with python3 -m cProfile grd_split.py
-### TODO output:

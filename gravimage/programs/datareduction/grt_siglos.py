@@ -8,14 +8,17 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-from pylab import *
-ion()
+#from pylab import *
+#ion()
 import numpy as np
 
 from BiWeight import meanbiweight
+import gl_helper as gh
 import gl_file as gf
-from gl_class_files import *
-from gl_helper import bin_r_linear, bin_r_log, bin_r_const_tracers
+import gl_class_files as gcf
+# TODO: find functions with missing module name
+#from gl_class_files import *
+# from gl_helper import bin_r_const_tracers # bin_r_linear, bin_r_log
 
 def run(gp):
     import gr_params
@@ -25,7 +28,7 @@ def run(gp):
     if gf.bufcount(gp.files.get_com_file(0))<2:
         return
     x,y,vlos = np.loadtxt(gp.files.get_com_file(0), skiprows=1, unpack=True) #2*[rscale], [km/s]
-    totmass_tracers = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
+    # totmass_tracers = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
     r = np.sqrt(x*x+y*y) # [rscale]
 
     #set binning

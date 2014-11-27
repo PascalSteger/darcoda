@@ -20,7 +20,6 @@ from BiWeight import meanbiweight
 
 
 def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
-    # TODO ask Mark Wilkinson for photometric profile for Fornax (and Sculptor, Carina, Sextans, Draco, UMi)
     Sig_phot   = np.zeros((gp.nipol, gpr.n))
     for kbin in range(gp.nipol):
         Rw = (Binmax[kbin]-Binmin[kbin])*Rscale0 # [pc]

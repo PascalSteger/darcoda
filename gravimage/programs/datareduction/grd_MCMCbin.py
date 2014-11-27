@@ -105,6 +105,8 @@ def run(gp):
         # output density
         for kkk in range(gp.nipol):
             Rw = (Binmax[kkk]-Binmin[kkk])*Rscale0 # [pc]
+            # TODO use photometric profile from independent dataset in here
+
             kpc = 1000 # [pc]
             DL = {0: lambda x: x * (138),#+/- 8 for Fornax
                   1: lambda x: x * (101),#+/- 5 for Carina
@@ -113,7 +115,7 @@ def run(gp):
               }[gp.case](kpc)
             arcmin = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
             width = (Binmax[kkk]-Binmin[kkk])*Rscale0/arcmin # [arcmin]
-            # TODO change scale according to width
+
             if width < 1.: # [arcmin]
                 wsize_ipol = '0.5'
             elif width < 3.5: # [arcmin]
@@ -137,8 +139,8 @@ def run(gp):
         Dens0pc = Dens0/Rscale0**2              # [munis/pc^2]
         gf.write_Sig_scale(gp.files.get_scale_file(pop), Dens0pc, totmass_tracers)
 
-        tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
-        Denserr0 = Dens0/np.sqrt(tpb0)       # [Munit/Rscale^2]
+        #tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
+        #Denserr0 = Dens0/np.sqrt(tpb0)       # [Munit/Rscale^2]
         P_dens  = np.zeros(gp.nipol)
         P_edens = np.zeros(gp.nipol)
         for b in range(gp.nipol):
@@ -165,7 +167,7 @@ def run(gp):
 
         # deproject Sig to get nu
         numedi = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*P_dens, gp)
-        numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
+        #numin  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens-P_edens), gp)
         numax  = glp.Rho_INT_rho(Rbin*Rscalei, Dens0pc*(P_dens+P_edens), gp)
 
         nu0pc  = numedi[0]

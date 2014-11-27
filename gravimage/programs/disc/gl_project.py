@@ -14,13 +14,9 @@
 
 import numpy as np
 import pdb
-from scipy.integrate import simps
-from scipy.integrate import quad, fixed_quad, quadrature, romberg, cumtrapz
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
 import gl_physics as phys
-from pylab import *
-ion()
 
 def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
     # TODO: check integration for z direction only

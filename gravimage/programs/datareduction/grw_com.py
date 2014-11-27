@@ -8,13 +8,14 @@
 # (c) 2013 Pascal S.P. Steger
 
 import numpy as np
-import sys, pdb
+import pdb
 
 from pylab import *
 ion()
 from gl_helper import expDtofloat
-from gl_class_files import *
-from gl_centering import *
+# TODE find missing modules for both below
+import gl_class_files import as gcf
+import gl_centering as gc
 
 def run(gp):
     import gr_params
@@ -57,18 +58,7 @@ def run(gp):
         fi.close()
         p, mu1, sig1, mu2, sig2, M, pm1, pm2 = DATA
 
-        # TODO: do this in python2 once before invoking run before
-        #import pymcmetal as pmc
-        #p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
-        #pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
-        #DATA = [p, mu1, sig1, mu2, sig2, M, pm1, pm2]
-        #import pickle
-        #fi = open('metalsplit.dat', 'wb')
-        #pickle.dump(DATA, fi)
-        #fi.close()
-
     # cutting pm_i to a maximum of ntracers particles:
-    from random import shuffle
     ind = np.arange(len(x0))
     np.random.shuffle(ind)
     ind = ind[:np.sum(gp.ntracer)]

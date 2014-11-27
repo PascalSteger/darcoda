@@ -45,7 +45,7 @@ def run(gp):
 
     xnew = (x-com_x) #*gp.ana      # [pc]
     ynew = (y-com_y) #*gp.ana      # [pc]
-    znew = (z-com_z) # *gp.ana      # [pc]
+    #znew = (z-com_z) # *gp.ana      # [pc]
     vznew = (vz-com_vz) #*1e3*np.sqrt(gu.G1__pcMsun_1km2s_2*gp.anM/gp.ana) # [km/s], from conversion from system with L=G=M=1
 
     R0 = np.sqrt(xnew**2+ynew**2)   # [pc]

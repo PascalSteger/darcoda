@@ -6,10 +6,9 @@
 # for triaxial systems
 # TODO: enable ellipsoidal bins
 
-# (c) 2013 Pascal S.P. Steger
+# (c) 2014 GPL v.3 Pascal S.P. Steger
 
-
-import sys, pdb
+import pdb
 import numpy as np
 import gl_file as gf
 import gl_helper as gh

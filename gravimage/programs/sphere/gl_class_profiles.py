@@ -34,7 +34,6 @@ class Profiles:
     # @param pops number of populations
     # @param nipol number of radial bins
 
-
     def set_prof(self, prof, vec, pop, gp):
         gh.sanitize_vector(vec, len(self.x0), -200, 1e30, gp.debug)
         if prof == 'rho':

@@ -8,8 +8,6 @@
 
 import pdb
 import numpy as np
-import gl_project
-import gl_physics as phys
 import gl_helper as gh
 
 class Profiles:
