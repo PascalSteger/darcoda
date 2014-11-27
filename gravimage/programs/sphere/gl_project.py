@@ -268,11 +268,13 @@ def Sig_INT_rho(R0, Sig, gp):
     rho = -1./np.pi/R0[:-gp.nexp]*J*splev(R0[:-gp.nexp], splpar_J, der=1)
     sm = sm0*1.
     while(min(rho)<0):
+        print('min(rho)<0, rho = ', rho)
         sm *= 2
         splpar_J = splrep(R0[:-gp.nexp], np.log(J), s=sm)
         rho = -1./np.pi/R0[:-gp.nexp]*J*splev(R0[:-gp.nexp], splpar_J, der=1)
-        if(sm>1):
-            raise Exception('Very irregular profile')
+        print('corrected rho: ',rho)
+        #if(sm>1):
+        #    raise Exception('Very irregular profile')
 
     gh.checkpositive(rho)
 

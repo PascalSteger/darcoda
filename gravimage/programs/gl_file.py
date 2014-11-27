@@ -211,7 +211,7 @@ def write_headers_2D(gp, pop):
 # @param pop component (0: all, 1,2,...)
 
 
-def write_headers_3D(gp, pop):
+def write_headTAers_3D(gp, pop):
     f_nu = open(gp.files.Sigfiles[pop]+'_3D', 'w')
     print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
           'nu(r) [nu(0)];', 'error', \
@@ -239,9 +239,9 @@ def empty(filename):
 
 def read_Xscale(filename):
     crscale = open(filename, 'r')
-    Xscale = np.loadtxt(crscale, comments='#', skiprows=1, unpack=False)
+    Xscale = np.array(np.loadtxt(crscale, comments='#', unpack=False))
     crscale.close()
-    return Xscale[0]
+    return Xscale
 ## \fn read_Xscale(filename)
 # read scale radius from file
 # @param filename string
