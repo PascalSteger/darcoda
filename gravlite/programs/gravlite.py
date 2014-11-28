@@ -15,9 +15,9 @@
 # from __future__ import absolute_import, unicode_literals, print_function
 #from mpi4py import MPI
 import subprocess
+import numpy as np
 import pymultinest
 import pickle
-import numpy as np
 import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
@@ -48,7 +48,11 @@ def show(filepath):
 def myprior(cube, ndim, nparams):
     mycube = Cube(gp)
     mycube.copy(cube)
-    cube = mycube.convert_to_parameter_space(gp)
+    try:
+        cube = mycube.convert_to_parameter_space(gp)
+    except Exception:
+        gh.LOG(1, 'parameters not fulfilling prior requirements')
+
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -57,6 +61,8 @@ def myprior(cube, ndim, nparams):
 # stored with actual parameters
 
 def myloglike(cube, ndim, nparams):
+    if min(cube) == -9999:  # parameters not fulfilling prior requirements,
+        return -1e300       #      return very large chi2
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
@@ -81,7 +87,7 @@ def prepare_data(gp):
         if gp.getnewpos:
             gf.read_data(gp)
         gf.bin_data(gp)
-    gf.get_binned_data(gp)
+    gf.get_binned_data_noscale(gp)    #H Silverwood 20/11/14
     gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)
 ## \fn prepare_data(gp)

@@ -1,4 +1,5 @@
 #!/usr/bin/env ipython3
+# -*- coding: utf-8 -*-
 
 ##
 # @file
@@ -813,3 +814,41 @@ def starred(R0, X, Sigma, Ntot, gp):
 # @param Sigma surface density at these radii, in [Munit/pc^2]
 # @param Ntot total number of stars
 # @param gp global parameters
+
+
+def nu_sig_from_bins(binmin, binmax, x0, v0):
+    # H Silverwood 29/10/2014
+    # Bin position and velocity information, return tracer density and velocity
+    # dispersion (nu and sigma)
+
+    #Sort the stars on position
+    order = np.argsort(x0)
+    x0 = np.array(x0)[order]
+    v0 = np.array(v0)[order]
+
+    #Setup output vectors
+    nu_vec = []
+    nu_err_vec = []
+    sig_vec = []
+    sig_err_vec = []
+    #pdb.set_trace()
+
+    for jter in range(0, len(binmin)):
+        positions=np.where(np.logical_and(x0>=binmin[jter], x0<binmax[jter]))
+
+        #Calculate tracer density nu and Poisson error (sqrt(N)/binsize)
+        nu_vec.append(len(positions[0])/(binmax[jter]-binmin[jter]))
+        nu_err_vec.append(np.sqrt(len(positions[0]))/(binmax[jter]-binmin[jter]))
+        v_list_temp=v0[positions]
+
+        #Calculate velocity dispersion and Poisson error (sqrt(sigma_z))
+        sig_vec.append(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))
+        sig_err_vec.append(np.sqrt(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))) #HS TODO: think about this error calculation
+
+    return nu_vec, nu_err_vec, sig_vec, sig_err_vec
+
+## \fn bin_r_const_tracers(x0, no)
+# split interval into bins of constant particle number
+# @param x0 radii from all particles in an array
+# @param no integer, number of bins
+# @return arrays of (beginning of bins, end of bins, position of bins)

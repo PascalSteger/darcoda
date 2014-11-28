@@ -88,6 +88,9 @@ class Files:
             self.set_discsim(gp, timestamp)
         elif gp.investigate == 'discmock':
             self.set_discmock(gp, timestamp)
+        elif gp.investigate == 'simplenu':
+            self.set_simplenu(gp, timestamp)
+            newdir(self.dir + 'sigz/')
         else:
             print(' wrong investigation in Files()')
             pdb.set_trace()
@@ -499,6 +502,17 @@ class Files:
             self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
         return
     ## \fn set_discmock(self, gp, timestamp='')
+    # set all properties if looking at simple disc
+    # @param gp global parameters
+    # @param timestamp string YYYYMMDDhhmm
+
+    def set_simplenu(self, gp, timestamp=''):
+        self.dir = self.machine + 'DTsimplenu/0/'
+        self.dir += timestamp + '/'
+        self.nufiles.append(self.dir+'nu/nu_1.txt')
+        self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
+        return
+    ## \fn set_simplenu(self, gp, timestamp='')
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm

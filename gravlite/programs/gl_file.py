@@ -85,7 +85,8 @@ def bin_data(gp):
         import grds_write
         grds_write.run(gp)
     elif gp.investigate == 'simplenu':
-        grsimplenu_write.run(gp)
+        import gr_external_data
+        gr_external_data.run(gp)
     return
 ## \fn bin_data(gp)
 # get data, bin it anew (e.g. if gp.nbin changed)
@@ -94,7 +95,7 @@ def bin_data(gp):
 
 def get_binned_data(gp):
     for pop in range(gp.pops+1):
-        A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
+        A = np.loadtxt(gp.files.get_scale_file(pop),unpack=False, skiprows=1)
         gp.Xscale.append(A[0])
         gp.Sig0pc.append(A[1])
         gp.totmass_tracers.append(A[2])
@@ -117,6 +118,16 @@ def get_binned_data(gp):
 ## \fn get_binned_data(gp)
 # read in binned data, store in a gl_data class
 # @param gp global parameters
+
+
+def get_binned_data_noscale(gp):
+    gp.dat.read_sigz(gp)
+    return gp.dat
+## \fn get_binned_data_noscale(gp)
+# read in binned data, store in a gl_data class
+# @param gp global parameters
+# H Silverwood 20/11/14
+
 
 def get_rhohalfs(gp):
     if gp.geom == 'sphere':
