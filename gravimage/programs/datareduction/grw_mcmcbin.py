@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -8,18 +8,21 @@
 # do this consistently with always the same sets of particles per bin
 # 3D version, see grw_MCMCbin for 2D version only
 
-# (c) 2013 Pascal S.P. Steger
+# (c) GPL v3 2014 Pascal S.P. Steger
 
-import sys, pdb
+import pdb
 import numpy as np
-from scipy.stats import kurtosis
-from pylab import *
-ion()
+#from scipy.stats import kurtosis
+#from pylab import *
+#ion()
 
 import gl_file as gf
-from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
-from gl_class_files import *
-from BiWeight import meanbiweight
+#from gl_helper import bin_r_linear, bin_r_log
+#from gl_helper import bin_r_const_tracers
+# TODO determine missing modules
+import gl_class_files as gcf
+
+# from BiWeight import meanbiweight
 import gl_analytic as ga
 
 

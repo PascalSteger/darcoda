@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -11,7 +11,7 @@
 # populations are counted from 0 = first component,
 # 1 = first additional component
 
-# (c) 2013 ETHZ Pascal S.P. Steger
+# (c) GPL v3 2014 ETHZ Pascal S.P. Steger
 
 import numpy as np
 import pdb

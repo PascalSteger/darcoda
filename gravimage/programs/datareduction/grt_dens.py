@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -6,7 +6,7 @@
 # for triaxial systems
 # TODO: enable ellipsoidal bins
 
-# (c) 2014 GPL v.3 Pascal S.P. Steger
+# (c) 2014 GPL v.3 Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import pdb
 import numpy as np

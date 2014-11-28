@@ -1,18 +1,20 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ## @file
 # define log likelihood function to be called by Multinest
 # disc version
 
+# (c) GPL v3 2014 ETHZ, Pascal Steger psteger@phys.ethz.ch
+
 import numpy as np
 import pdb
 import gl_helper as gh
 from gl_class_profiles import Profiles
-from gl_priors import check_bprior, check_tilt
+from gl_priors import check_tilt
 from gl_chi import calc_chi2
 import gl_physics as phys
-from pylab import *
-ion()
+#from pylab import *
+#ion()
 
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)

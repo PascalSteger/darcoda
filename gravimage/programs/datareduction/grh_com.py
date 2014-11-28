@@ -1,13 +1,14 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # read simulation files (x,y,z, vx,vy,vz), center, cut to N particles, write 2D x,y,vlos
 
-# (c) 2013 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import random, pdb
+import random
+import pdb
 
 import gl_units as gu
 # TODO hernquist gp.G1 replacement in gu

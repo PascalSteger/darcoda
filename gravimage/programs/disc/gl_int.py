@@ -1,10 +1,10 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # all integrals from gl_physics
 
-# (c) 2013 Pascal S.P. Steger
+# (c) GPL v3 2014 Pascal S.P. Steger
 
 import numpy as np
 import pdb, scipy

@@ -1,8 +1,10 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ## @file
 # import file with full path specification, only once, setting back sys.path
 # you need to specify PYTHONPATH to include the gravimage/programs
+
+# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import os
 import sys

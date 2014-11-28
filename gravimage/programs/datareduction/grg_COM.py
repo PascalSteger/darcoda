@@ -1,14 +1,14 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # calculate approximative center of mass, assuming constant stellar mass
 # 3D version, see grw_COM for 2D
 
-# (c) 2013 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import sys, pdb
+import pdb
 
 
 def select_pm(x, y, z, vz, pm):
@@ -35,7 +35,6 @@ def run(gp):
         z0 *= 1000. # [pc]
 
     # cutting pm_i to a maximum of ntracers particles:
-    from random import shuffle
     import gl_helper as gh
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
     x0, y0, z0, vz0 = select_pm(x0, y0, z0, vz, ind1)
@@ -56,7 +55,7 @@ def run(gp):
     import gl_file as gf
     for pop in range(gp.pops+1):      # gp.pops +1 for all components together
         pmr = (R0<(gp.maxR*Rscale))
-        m = np.ones(len(R0))
+        #m = np.ones(len(R0))
         x = x0[pmr] # [pc]
         y = y0[pmr] # [pc]
         R = np.sqrt(x*x+y*y) # [pc]
@@ -65,11 +64,11 @@ def run(gp):
         gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
         gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
 
-        if gpr.showplots:
-            gpr.show_part_pos(x, y, pmn, Rscale)
+        #if gpr.showplots:
+        #    gpr.show_part_pos(x, y, pmn, Rscale)
 
 if __name__=='__main__':
-    gpr.showplots = True
+    #gpr.showplots = True
     import gl_params
     gp = gl_params.Params()
     run(gp)

@@ -1,17 +1,16 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # all functions called directly from gravimage
 
-# (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 ETHZ 2014 Pascal Steger, psteger@phys.ethz.ch
 
-from types import *
+import types
+# TODO find missing modules
+
 import pdb
 import numpy as np
-import numpy.random as npr
-
-import gl_analytic as ga
 import gl_helper as gh
 
 def chi2red(model, data, sig, dof):

@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -6,7 +6,12 @@
 
 # (c) 2013 ETHZ, psteger@phys.ethz.ch
 
-import os, sys, time, glob, shutil, pdb, socket, getpass
+import os
+import glob
+import shutil
+import pdb
+import socket
+import getpass
 import numpy as np
 
 def bufcount(filename):

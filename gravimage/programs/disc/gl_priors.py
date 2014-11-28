@@ -1,15 +1,13 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # check all parameters for prior constraints
 # disc version
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import pdb
-import numpy as np
-from scipy.interpolate import splrep, splev
 
 
 def check_tilt(tmp_tilt, gp):

@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -6,7 +6,7 @@
 # for triaxial systems
 ### TODO: extend method to work with elliptical bins // introduce tensors (cf Agnello)
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 #from pylab import *
 #ion()
@@ -30,7 +30,7 @@ def run(gp):
         if gf.bufcount(gp.files.get_com_file(pop))<2:
             return
         x,y,vlos = np.loadtxt(gp.files.get_com_file(pop), skiprows=1, unpack=True) #2*[rscale], [km/s]
-        totmass_tracers = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
+        # totmass_tracers = 1.*len(x)  # [Munit], [Munit], where each star is weighted with the same mass
         r = np.sqrt(x*x+y*y) # [rscale]
 
         #set binning

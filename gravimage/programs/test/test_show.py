@@ -1,4 +1,4 @@
-#!/bin/env ipython3
+#!/bin/env python3
 
 from pylab import *
 ion()

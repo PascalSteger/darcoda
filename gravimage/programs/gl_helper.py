@@ -1,11 +1,13 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # all helper functions
 
-# (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
-import sys, traceback, pdb
+# (c) GPL v3 2014 Pascal S.P. Steger, psteger@phys.ethz.ch
+import sys
+import traceback
+import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps

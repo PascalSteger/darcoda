@@ -1,10 +1,12 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # unit definitions
 # unit1__unit2 gives unit1 in terms of unit2
 # naming convention: m^2/kg => m2kg_1
+
+# (c) GPL v3 2014 Pascal Steger psteger@phys.ethz.ch
 
 import numpy as np
 

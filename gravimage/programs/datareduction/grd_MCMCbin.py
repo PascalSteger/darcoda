@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -7,13 +7,13 @@
 # calculate 4th order velocity moment (kurtosis) of 2D rings
 # do this consistently with always the same sets of particles per bin
 
-# (c) 2013 Pascal S.P. Steger
+# (c) GPL v3 2014 Pascal S.P. Steger
 
-import sys, pdb
+import pdb
 import numpy as np
 from scipy.stats import kurtosis
-from pylab import *
-ion()
+#from pylab import *
+#ion()
 
 import gl_file as gf
 import gl_helper as gh

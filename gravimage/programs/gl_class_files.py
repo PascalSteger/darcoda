@@ -1,10 +1,10 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # class to generate all filenames, independent of which investigation
 
-# (c) 2013 ETHZ, psteger@phys.ethz.ch
+# (c) GPL v3 2014 ETHZ, psteger@phys.ethz.ch
 
 
 import os

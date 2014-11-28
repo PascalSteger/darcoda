@@ -1,14 +1,14 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # calculate approximative center of mass, assuming constant stellar mass
 # 2D version for Fornax, Sculptor, Sextans, .. observed dwarfs
 
-# (c) 2013 Pascal S.P. Steger
+# (c) GPL v3 2014 Pascal S.P. Steger
 
 import numpy as np
-import sys, pdb
+import pdb
 import gl_file as gf
 from gl_centering import com_shrinkcircle_v_2D
 

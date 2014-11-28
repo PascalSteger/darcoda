@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import *
 

@@ -1,10 +1,10 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # basic centering algorithms, shared between gr*_com
 
-# (c) 2013 ETHZ, Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 ETHZ, Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import pdb
 import numpy as np
@@ -24,7 +24,7 @@ def com_mean(x, y, z, pm):
 
 
 def com_shrinkcircle_v_2D(x, y, vlos, pm):
-    eps = 1e-6
+    #eps = 1e-6
     com_x = 1.*np.sum(x*pm)/np.sum(pm);    com_y = 1.*np.sum(y*pm)/np.sum(pm);
     com_vlos = 1.*np.sum(vlos*pm)/np.sum(pm)
     bucom_x = com_x; bucom_y = com_y; bucom_vlos = com_vlos

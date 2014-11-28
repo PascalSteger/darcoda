@@ -1,11 +1,11 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # check deprojection and projection of nu
 # with analytic Hernquist profiles
 
-# (c) 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 from scipy.interpolate import splrep, splint
@@ -22,7 +22,6 @@ import gl_params as gp
 gp.rinfty = 5
 gp.nexp = 3
 import gl_helper as gh
-import gl_int as gi
 import gl_project as glp
 import gl_analytic as ga
 

@@ -1,19 +1,15 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # all file related functions
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
-import sys, pdb
+import pdb
 import numpy as np
 
 import gl_units as gu
-import gl_analytic as ga
-import gl_physics as phys
-from gl_data import Datafile
-
 
 def read_data(gp):
     if gp.investigate == 'hern':

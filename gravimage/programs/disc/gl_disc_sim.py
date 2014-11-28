@@ -1,10 +1,10 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # read data from simulation
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 import numpy.random as npr
@@ -13,8 +13,9 @@ import pdb
 import gl_units as gu
 import gl_helper as gh
 import physics_disc as phys
-from binsmooth import *
-from bincount import *
+# TODO find missing module references
+import binsmooth as bs
+import bincount as bc
 
 
 def disc_sim(gp):

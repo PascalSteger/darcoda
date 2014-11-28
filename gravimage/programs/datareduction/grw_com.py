@@ -1,11 +1,11 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # calculate approximative center of mass, assuming constant stellar mass
 # 3D version, see grw_COM for 2D
 
-# (c) 2013 Pascal S.P. Steger
+# (c) GPL v3 2014 Pascal S.P. Steger
 
 import numpy as np
 import pdb
@@ -13,8 +13,8 @@ import pdb
 from pylab import *
 ion()
 from gl_helper import expDtofloat
-# TODE find missing modules for both below
 import gl_class_files import as gcf
+# TODE find missing modules for both below
 import gl_centering as gc
 
 def run(gp):

@@ -1,19 +1,20 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
 # calculate approximative center of mass, assuming constant stellar mass, for triax. system
 
-# (c) 2013 Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal S.P. Steger, psteger@phys.ethz.ch
 
 
 import numpy as np
-import sys, pdb
-from pylab import *
-ion()
+import pdb
+#from pylab import *
+#ion()
 
-from gl_class_files import *
-from gl_centering import *
+# TODO find missing modules
+import gl_class_files as gcf
+import gl_centering as gc
 
 def run(gp):
     import gr_params

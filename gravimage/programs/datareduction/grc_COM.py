@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -9,8 +9,8 @@
 
 import numpy as np
 import pdb
-from pylab import *
-ion()
+#from pylab import *
+#ion()
 
 import gl_helper as gh
 import gl_file as gf

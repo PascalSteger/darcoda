@@ -1,4 +1,4 @@
-#!/usr/bin/env ipython3
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -10,7 +10,7 @@
 # *INT*          denotes main method = integrating
 # *NORM*         denotes main method = renormalization
 
-# (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
 
 import numpy as np
 import pdb
