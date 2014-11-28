@@ -61,7 +61,7 @@ def myprior(cube, ndim, nparams):
 # stored with actual parameters
 
 def myloglike(cube, ndim, nparams):
-    pdb.set_trace()
+    #pdb.set_trace()
     #if min(cube) == -9999:  # parameters not fulfilling prior requirements,
     #    return -1e300       #      return very large chi2 #HS SEGFAULT CHECK THIS AGAIN
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
@@ -69,8 +69,8 @@ def myloglike(cube, ndim, nparams):
     # TODO: with parallel version, need to append to CPU-based output name
     # we only store models after the initial Sigma burn-in
     if gp.chi2_nu_converged:
-        tmp_profs.x0 = gp.xipol
-        tmp_profs.xbins = np.hstack([gp.binmin, gp.binmax[-1]])
+        tmp_profs.x0 = gp.z_bincenters
+        tmp_profs.xbins = np.hstack([gp.z_binmins, gp.z_binmaxs[-1]])
         with open(gp.files.outdir+'pc2.save', 'ab') as fi:
             pickle.dump(tmp_profs, fi)
             # convention: use chi^2 directly, not log likelihood

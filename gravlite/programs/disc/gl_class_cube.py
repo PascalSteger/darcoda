@@ -73,10 +73,10 @@ def map_kr(params, prof, pop, gp):
         monotonic_multiplier = 0.0
 
     # rho or nu central value
-    rhonu_C = rhonu_C_max*params[0] + rhonu_C_min*(1 - params[0])
+    rhonu_C = rhonu_C_min + (rhonu_C_max-rhonu_C_min)*params[0]
 
     # kz for rho or nu, central value
-    kz_C = kz_C_max*params[1] + kz_C_min*(1-params[1])
+    kz_C = kz_C_min + (kz_C_max - kz_C_min)*params[1]
 
     # Starting from the central value walk the kz value, limited
     # by max_kz_slope (=dk/dz)
@@ -84,11 +84,10 @@ def map_kr(params, prof, pop, gp):
     kz_i_m1 = kz_C #kz_(i-1)
 
     for jter in range(0, gp.nbins):
-        param_i = params[2+jter]
         z_diff = gp.z_all_pts[jter+1] - gp.z_all_pts[jter]
         kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
         kz_min = kz_i_m1 - gp.max_kz_slope*z_diff*monotonic_multiplier
-        kz_i = kz_max*param_i + kz_min*(1-param_i)
+        kz_i = kz_min + (kz_max - kz_min)*params[2+jter]
         kz_i_m1 = kz_i
         kz_vector.append(kz_i)
 
@@ -213,7 +212,6 @@ class Cube:
 
         #Normalisation constant C, for the calculation of sigma_z via Jeans Eq.
         pc = self.cube
-        print('pc = ', pc)
         off = 0
         offstep = 1
         pc[off] = pc[off]*200-100+17**2 # for normalization C
@@ -225,7 +223,6 @@ class Cube:
         for i in range(offstep):
             pc[off+i] = tmp_DM[i]
         off += offstep
-        print('offstep = ', offstep)
 
         #Baryon mass profile parameters
         #Redo this when we introduce baryons

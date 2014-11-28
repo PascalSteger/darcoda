@@ -24,6 +24,10 @@ class Profiles:
         self.z_C = 0.0
         self.z_vec = np.zeros(nbins)
         self.z_LS = 0.0
+        self.binmin = np.zeros(nbins) #?
+        self.binmax = np.zeros(nbins) #?
+        self.xbins = np.zeros(nbins+1) #to mesh with general code
+        self.x0 = np.zeros(nbins) #to mesh with general code
 
         #Dark Matter profile parameters and derived mass density
         self.rho_DM_C      = 0.0               #Multinest
@@ -64,7 +68,7 @@ class Profiles:
     # set_prof just for the vectors, so that the length can be checked
 
     def set_prof(self, prof, vec, pop, gp):
-        gh.sanitize_vector(vec, len(gp.z_bin_centers), -1e30, 1e30, gp.debug)
+        gh.sanitize_vector(vec, len(gp.z_bincenters), -1e30, 1e30, gp.debug)
 
         #z-profile points
         if prof == 'z_vec':

@@ -125,7 +125,11 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 10. # if chi2<chi2_switch, add chi2_sig
+        self.chi2_switch = 1000. # if chi2*10 < chi2_switch, add chi2_sig
+        self.chi2_switch_mincount = 1000. # demand that this number of profiles with
+                                        # chi2<chi2_switch are found before adding chi2_sig
+        self.chi2_switch_counter = 0. # start the counter at 0
+
         self.nipol = 15   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
@@ -137,7 +141,7 @@ class Params():
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
                           # is reached, must be >= 11
-        self.nbeta = 0   # number of parameters for beta, in sum of
+        self.nbeta = 0   # number of parameters for beta, in sum ofgre
                          # polynomials
         # TODO: if not using rhostar, subtract gp.nrho:
 
@@ -202,7 +206,9 @@ class Params():
 
         # global arrays
         # ----------------------------------------------------------------------
-        self.z_bin_centers = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
+        self.z_bincenters = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
+        self.z_binmins = np.array([])
+        self.z_binmaxs = np.array([])
         self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers, zLS]
 
 

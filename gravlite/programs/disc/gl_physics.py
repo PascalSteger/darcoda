@@ -16,7 +16,6 @@ import gl_helper as gh
 
 # New rho function:
 def rho(zvec, kpar, rho0):
-    pdb.set_trace()
     logrho0 = math.log(rho0)
     logrho = np.array(logrho0 + integrate.cumtrapz(-kpar,zvec,initial=0.))
     rhovec = np.exp(logrho)

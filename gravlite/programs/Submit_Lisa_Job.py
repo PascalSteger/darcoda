@@ -18,7 +18,7 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='00:16:00:00'
+walltime='00:01:00:00'
 
 gravlite_path = os.path.abspath('../')
 holding_stack_path = gravlite_path + '/holding_stack/'
@@ -58,13 +58,13 @@ pbs_file.writelines('transft=1200'+'\n')
 pbs_file.writelines('echo Transfer time = $transft'+'\n')
 pbs_file.writelines('runtime=$(expr $PBS_WALLTIME - $transft)'+'\n')
 pbs_file.writelines('echo gravlite runtime = $runtime'+'\n')
-pbs_file.writelines('python3 gravlite.py& PID=$!; sleep $runtime; kill $PID'+'\n')
+pbs_file.writelines('python3 gravlite.py --investigation simplenu& PID=$!; sleep $runtime; kill $PID'+'\n')
 pbs_file.writelines('echo gravlite killed, transfering data'+'\n')
 pbs_file.writelines('cp -r $TMPDIR/darcoda/gravlite/DTdiscmock/0/* $HOME/LoDaM/darcoda/gravlite/DTdiscmock/0/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
 #Submit PDB file
-pdb.set_trace()
+#pdb.set_trace()
 os.chdir(holding_stack_path + holding_number + '/programs/')
 os.system('qsub ' + pbs_filename)

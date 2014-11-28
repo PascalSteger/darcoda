@@ -150,11 +150,13 @@ class Datafile:
     # H Silverwood 20/11/14
 
     def read_nu(self, gp):
-        bincenters, binmin, binmax, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
+        bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
         self.nu.append(nudat[:]) # [#stars/kpc^3]
         self.nuerr.append(nuerr[:])
-        gp.z_bin_centers = bincenters # [kpc]
-        gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmax[-1]]) #[kpc]
+        gp.z_bincenters = bincenters # [kpc]
+        gp.z_binmins = binmins
+        gp.z_binmaxs = binmaxs
+        gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
 
 
     def read_kappa(self, gp):

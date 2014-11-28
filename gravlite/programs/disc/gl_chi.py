@@ -28,7 +28,6 @@ def chi2red(model, data, sig, dof):
 
 
 def calc_chi2(profs, gp):
-    pdb.set_trace()
     chi2 = 0.
 
     #Tracer population comparison
@@ -38,11 +37,11 @@ def calc_chi2(profs, gp):
         nuerr    = gp.dat.nuerr[pop]
         numodel  = profs.get_prof('nu_vec', pop)
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins)
-        gh.LOG(2, ' chi2_nu0 = ', chi2_nu)
+        gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
         chi2 +=chi2_nu
 
-        #if not gp.chi2_nu_converged:
-        #    continue # with pop loop
+        if not gp.chi2_nu_converged:
+            continue # with pop loop
 
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop] # [km/s]
@@ -58,8 +57,16 @@ def calc_chi2(profs, gp):
     if not gp.chi2_nu_converged:
         chi2 *= 10
         if chi2 < gp.chi2_switch:
+            gp.chi2_switch_counter +=1
+            print('chi2 less than switch found #######################################')
+        if gp.chi2_switch_counter>= gp.chi2_switch_mincount:
             gh.LOG(1, 'nu burn-in finished, switching on sigma')
             gp.chi2_nu_converged = True
+
+        #if chi2 < gp.chi2_switch:
+        #    pdb.set_trace()
+        #    gh.LOG(1, 'nu burn-in finished, switching on sigma')
+        #    gp.chi2_nu_converged = True
 
     return chi2
 ## \fn calc_chi2(profs)
