@@ -126,6 +126,7 @@ class Datafile:
 
     def read_sig(self, gp):
         for pop in np.arange(gp.pops+1):
+            print('read_sig on file ', gp.files.sigfiles[pop])
             Dummy1, Dummy2, Dummy3, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
             # 3*[Xscale], [maxsiglos], [maxsiglos]
 

@@ -108,8 +108,10 @@ class ProfileCollection():
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
 
-    def set_x0(self, x0):
+    def set_x0(self, x0, Binmin, Binmax):
         self.x0 = x0
+        self.binmin = Binmin
+        self.binmax = Binmax
         self.Mmin.x0  = x0
         self.M95lo.x0 = x0
         self.M68lo.x0 = x0
@@ -459,7 +461,6 @@ class ProfileCollection():
     def plot_full_distro(self, ax, prof, pop, gp):
         x = self.x0
         y = self.sort_prof(prof, pop, gp) # gives [Nmodels, Nbin] shape matrix
-        pdb.set_trace()
         Nvertbin = np.sqrt(len(y[:,0]))
         xbins = np.hstack([self.binmin, self.binmax[-1]])
         ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
@@ -543,9 +544,14 @@ class ProfileCollection():
                 self.write_chi2(basename, edges, bins)
                 fig.savefig(basename+'/output/prof_chi2_0.pdf')
                 return
-            # replaced with full distribution plot
-            #self.fill_nice(ax, prof, pop, gp)
-            self.plot_full_distro(ax, prof, pop, gp)
+
+            self.fill_nice(ax, prof, pop, gp)
+            # TODO: replace above with full distribution plot (has bugs,
+            #   File "/home/ast/read/dark/darcoda/gravimage/programs/plotting/gl_collection.py", line 466, in plot_full_distro
+            # ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
+            # ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+            #self.plot_full_distro(ax, prof, pop, gp)
+
             self.plot_N_samples(ax, prof, pop)
             if prof == 'Sig' or prof=='nu' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)

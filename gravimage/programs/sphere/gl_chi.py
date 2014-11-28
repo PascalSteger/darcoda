@@ -43,6 +43,7 @@ def calc_chi2(profs, gp):
         chi2 += chi2_Sig                 # [1]
         gh.LOG(1, ' chi2_Sig   = ', chi2_Sig)
 
+        # use the following only if chi2_nu_converged used rather than Sig_converged
         #nudat   = gp.dat.nu[pop]      # [Munit/pc^2]
         #nuerr   = gp.dat.nuerr[pop]   # [Munit/pc^2]
         #numodel = profs.get_prof('nu', pop)

@@ -29,7 +29,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'gaia' # determine which data set to work on
+            self.investigate  = 'triax' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -45,7 +45,7 @@ class Params():
             self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
-        self.pops = 2 # number of stellar tracer populations
+        self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
@@ -75,7 +75,7 @@ class Params():
         # MultiNest options
         # ----------------------------------------------------------------------
         self.chi2_Sig_converged = False # set to False to first converge on Sig
-        self.chi2_switch = 10.
+        self.chi2_switch = 100
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run
@@ -125,6 +125,7 @@ class Params():
         self.log10nuspread = 2.5  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
+        self.innerslope = 2.999
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxnuslope = 6      # same for nrnu

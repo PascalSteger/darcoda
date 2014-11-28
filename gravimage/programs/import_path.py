@@ -44,7 +44,7 @@ def set_geometry(geom, machine):
     print('Machine = ', machine)
     basepath = '/home/psteger/sci/darcoda/gravimage/programs/'
     if machine == 'darkside':
-        basepath = '/home/ast/read/user/psteger/software/darcoda/gravimage/programs/'
+        basepath = '/home/ast/read/dark/darcoda/gravimage/programs/'
     elif machine == 'lisa_HS_login':
         basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/programs/'
     elif machine == 'lisa_SS_login':

@@ -123,7 +123,7 @@ def run(timestamp, basename, gp):
     pc.plot_profile(basename, 'chi2', 0, gp)
     # then select only the best models for plotting the profiles
     pc.cut_subset()
-    pc.set_x0(gp.xipol) # [pc]
+    pc.set_x0(gp.xipol, Binmin*gp.Xscale[0], Binmax*gp.Xscale[0]) # [pc]
     if gp.investigate =='walk' or gp.investigate=='gaia':
         r0analytic = np.logspace(np.log10(1.),\
                                  np.log10(max(gp.xepol)), 100)
