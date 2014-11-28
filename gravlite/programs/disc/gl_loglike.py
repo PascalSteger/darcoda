@@ -15,7 +15,7 @@ from pylab import *
 ion()
 
 def geom_loglike(cube, ndim, nparams, gp):
-    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins, gp.nrhonu, gp.nbaryon_pops, gp.nbaryon_params)
+    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins)#, gp.nrhonu, gp.nbaryon_pops, gp.nbaryon_params)
 
     #Normalisation constant C for sigz calculation
     off = 0
@@ -29,6 +29,10 @@ def geom_loglike(cube, ndim, nparams, gp):
     rho_DM_C = rho_DM_params[0] #rho_C
     kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres, LS]
     tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C) #outputs rho across all points
+
+    tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
+    tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:-1], 0, gp)
+    tmp_profs.kz_rho_DM_LS = kz_rho_DM_allz[-1]
 
     tmp_profs.rho_DM_C = tmp_rho_DM_allz[0]
     tmp_profs.set_prof('rho_DM_vec', tmp_rho_DM_allz[1:-1], 0, gp)
@@ -48,6 +52,11 @@ def geom_loglike(cube, ndim, nparams, gp):
         nu_C = tracer_params[0]
         kz_nu_allz = tracer_params[1:] #kz for rho across all z points [0, bin_centres, LS]
         tmp_nu_allz = phys.rho(gp.z_all_pts, kz_nu_allz, nu_C) #outputs nu across all z points
+
+        tmp_profs.kz_nu_C = kz_nu_allz[0]
+        tmp_profs.set_prof('kz_nu_vec', kz_nu_allz[1:-1], 0, gp)
+        tmp_profs.kz_nu_LS = kz_nu_allz[-1]
+
         tmp_profs.nu_C = tmp_nu_allz[0]
         tmp_profs.set_prof('nu_vec', tmp_nu_allz[1:-1], tracer_pop, gp)
         tmp_profs.nu_LS = tmp_nu_allz[-1]

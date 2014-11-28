@@ -110,7 +110,7 @@ def get_investigate():
     while(invalid):
         try:
             user_input = input('Investigate: (default: '+str(default)+\
-                               ", walk, gaia, triax, hern, obs, discsim, discmock): ")
+                               ", walk, gaia, triax, hern, obs, discsim, discmock, simplenu): ")
             if not user_input:
                 user_input = str(default)
             sel = user_input
@@ -118,7 +118,7 @@ def get_investigate():
             print("error in input")
         invalid = True
         if sel == 'walk' or sel == 'gaia' or sel == 'triax' or sel == 'hern'\
-          or sel == 'obs' or sel == 'discsim' or sel == 'discmock':
+          or sel == 'obs' or sel == 'discsim' or sel == 'discmock' or sel == 'simplenu':
             invalid = False
     return sel
 ## \fn get_investigate(default)
@@ -157,7 +157,8 @@ def get_case(investigate):
                        (sel <= 10 and investigate == 'gaia') or \
                        (sel < 4 and investigate == 'obs') or \
                        (sel <= 8 and investigate == 'triax') or \
-                       (sel == 0 and investigate == 'discmock')):
+                       (sel == 0 and investigate == 'discmock') or\
+                       (sel == 0 and investigate == 'simplenu')):
             invalid = False
         # assign string if working with observed dwarfs
         #if investigate == 'obs':
@@ -328,7 +329,7 @@ def run(investigate="", case=-1, latest=False):
 
     basename = fdl[sel] # full directory path, without '/'
     timestamp = basename.split('/')[-1] # extract last bit
-    return timestamp, basename+'/'#, prof #, pop
+    return timestamp, basename+'/', investigate#, prof #, pop
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one
 # @param investigate string of investigation case, hern, gaia, walk, discmock

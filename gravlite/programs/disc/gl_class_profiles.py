@@ -13,12 +13,12 @@ import gl_physics as phys
 import gl_helper as gh
 
 class Profiles:
-    def __init__(self, ntracer_pops, nbins, nrhonu, nbaryon_pops, nbaryon_params):
+    def __init__(self, ntracer_pops, nbins):#, nrhonu, nbaryon_pops, nbaryon_params):
         self.ntracer_pops = ntracer_pops
         self.nbins = nbins
-        self.nrhonu = nrhonu #?
-        self.nbaryon_pops = nbaryon_pops #?
-        self.nbaryon_params = nbaryon_params #?
+        #self.nrhonu = nrhonu #?
+        #self.nbaryon_pops = nbaryon_pops #?
+        #self.nbaryon_params = nbaryon_params #?
 
         #z-profile points
         self.z_C = 0.0
@@ -33,7 +33,7 @@ class Profiles:
         self.rho_DM_C      = 0.0               #Multinest
         self.kz_rho_DM_C   = 0.0               #Multinest
         self.kz_rho_DM_vec = np.zeros(nbins)   #Multinest
-        self.kz_rho_CM_LS  = 0.0               #Multinest
+        self.kz_rho_DM_LS  = 0.0               #Multinest
         self.rho_DM_vec    = np.zeros(nbins)   #Derived from phys
         self.rho_DM_LS     = 0.0               #Derived from phys
         self.Sig_DM_C      = 0.0               #always zero if z_C = 0

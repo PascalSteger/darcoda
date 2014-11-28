@@ -184,6 +184,13 @@ class ProfileCollection():
     # sort all profiles
     # @param gp global parameters
 
+    def sort_profiles_disc(self, gp):
+        self.sort_prof('nu_vec', 0, gp)
+        self.sort_prof('sig_vec', 0, gp)
+        self.sort_prof('rho_DM_vec', 0, gp)
+        self.sort_prof('kz_rho_DM_vec', 0, gp)
+        self.sort_prof('kz_nu_vec', 0, gp)
+
 
     def set_analytic(self, x0, gp):
         r0 = x0 # [pc], spherical case
@@ -307,6 +314,12 @@ class ProfileCollection():
     # @param basename directory string
     # @param gp global parameters
 
+    def write_all_disc(self, basename, gp):
+        self.write_prof(basename, 'nu_vec', 0, gp)
+        self.write_prof(basename, 'sig_vec', 0, gp)
+        self.write_prof(basename, 'rho_DM_vec', 0, gp)
+        self.write_prof(basename, 'kz_rho_DM_vec', 0, gp)
+        self.write_prof(basename, 'kz_nu_vec', 0, gp)
 
     def plot_N_samples(self, ax, prof, pop):
         k=0
@@ -325,6 +338,7 @@ class ProfileCollection():
 
 
     def plot_data(self, ax, basename, prof, pop, gp):
+        print('Plotting data for prof = ', prof)
         output = go.Output()
         r0 = self.Mmedi.x0 # [pc]
         output.add('radius (data) [pc]', r0)
@@ -343,7 +357,7 @@ class ProfileCollection():
             ax.fill_between(r0, Sigdat-Sigerr, Sigdat+Sigerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([min(Sigdat-Sigerr)/2., 2.*max(Sigdat+Sigerr)])
-        elif prof == 'nu':
+        elif prof == 'nu' or prof == 'nu_vec':
             # get 3D data here
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], nu(R)/nu(0) [1], error [1]
             dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], \
@@ -357,7 +371,7 @@ class ProfileCollection():
             ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)])
-        elif prof == 'sig':
+        elif prof == 'sig' or prof == 'sig_vec':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
             sigdat = DATA[4-1] # [maxsiglosi]
@@ -459,15 +473,12 @@ class ProfileCollection():
 
 
     def fill_nice(self, ax, prof, pop, gp):
-        scaleHS = 1.0
-        if prof == 'nu':
-            scaleHS = gp.nu0pc[pop]
-        M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
-        M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
-        Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS
+        M95lo = self.M95lo.get_prof(prof, pop)
+        M68lo = self.M68lo.get_prof(prof, pop)
+        Mmedi = self.Mmedi.get_prof(prof, pop)
         r0    = self.Mmedi.x0
-        M68hi = self.M68hi.get_prof(prof, pop)*scaleHS
-        M95hi = self.M95hi.get_prof(prof, pop)*scaleHS
+        M68hi = self.M68hi.get_prof(prof, pop)
+        M95hi = self.M95hi.get_prof(prof, pop)
         ax.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
         ax.plot(r0, M95lo, color='black', lw=0.4)
         ax.plot(r0, M95hi, color='black', lw=0.3)
@@ -537,6 +548,10 @@ class ProfileCollection():
            prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
 
+        if prof == 'nu_vec' or prof == 'sig_vec' or prof == 'rho_DM_vec' or prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec':
+            ax.set_xscale('linear')
+            ax.set_yscale('log')
+
         self.plot_labels(ax, prof, pop, gp)
         if len(self.profs)>0:
             if prof == 'chi2':
@@ -556,8 +571,8 @@ class ProfileCollection():
                 return
 
             self.fill_nice(ax, prof, pop, gp)
-            self.plot_N_samples(ax, prof, pop, gp)
-            if prof == 'Sig' or prof=='nu' or prof == 'sig':
+            self.plot_N_samples(ax, prof, pop)
+            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
             if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
