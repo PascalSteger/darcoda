@@ -15,9 +15,9 @@
 # from __future__ import absolute_import, unicode_literals, print_function
 #from mpi4py import MPI
 import subprocess
+import numpy as np
 import pymultinest
 import pickle
-import numpy as np
 import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os

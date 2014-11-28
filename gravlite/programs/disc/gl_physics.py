@@ -15,38 +15,39 @@ import math
 import gl_helper as gh
 
 # New rho function:
-def rho(zvec, kpar, rho0): 
+def rho(zvec, kpar, rho0):
+    zvec0 = np.hstack((0.,zvec))
     logrho0 = math.log(rho0)
-    logrho = np.array(logrho0 + integrate.cumtrapz(-kpar,zvec,initial=0.))
+    logrho = np.array(logrho0 + integrate.cumtrapz(-kpar,zvec0,initial=0.))
     rhovec = np.exp(logrho)
     return rhovec
 # calculate density from k(z) = -d(ln(rho))/dz, rho at z=0, using trapezoidal rule
 # @param kpar: kpar(z) vector, with kpar(0) as zeroth element
 # @param rho0: density at z=0
-# @param zvec: vector of z, at which k(z) is given, required to have z[0] = 0.
+# @param zvec: vector of z, at which k(z) is given (requirs z[0] != 0.)
 
 # New function for calculating the surface density
 def Sig(zvec, rhovec):
+    zvec0 = np.hstack((0.,zvec))
     Sigvec = 2.*np.array(integrate.cumtrapz(rhovec,zvec,initial=0.))
     return Sigvec
 # calculate (total) surface density from the density, using trapezoidal rule
 # @param Sigvec: surface density vector, Sigma[0] = 0.
 # @param rhovec: rho(z) vector, with rho(0) as zeroth element. 
 # OBS: rho(z) is total density: rho = rho_DM + rho_bary (if return total Sig)
-# @param zvec: z-vector, at which rho/Sig(z) is given, required to have z[0] = 0.
+# @param zvec: z-vector, at which rho/Sig(z) is given (requires z[0] != 0.)
 
 # New function for calculating the z-dir velocity dispersion
 def sigz(zvec,Sigvec,nuvec,C):
     Kzvec = -2.*constants.pi*constangs.G*Sigvec[1:]
-    zvec1 = zvec[1:]
     nuvec1 = nuvec[1:]
     integral = integrate.cumtrapz(nuvec1*Kzvec,zvec1,initial=0.) + C
     sig2 = integral/nuvec1
-    sigvec = sqrt(sigz)
+    sigvec = sqrt(sig2)
     return sigvec
 # calculate z velocity dispersion using eq. 5 in 'almost' paper
-# @param sigvec: velocity dispersion vector at the locations of zvec[1:]
-# @param zvec: z-vector, at which nu/Sig(z) is given, assumed to have z[0] = 0.
+# @param sigvec: velocity dispersion vector at the locations of zvec
+# @param zvec: z-vector, at which nu/Sig(z) is given (assuming z[0] != 0.)
 # @param nuvec: tracer number density at the locations of zvec
 # all arrays (zvec,Sigvec,nuvec) are required to be numpy arrays.
 
