@@ -23,7 +23,7 @@ def rho(zvec, kpar, rho0):
 # calculate density from k(z) = -d(ln(rho))/dz, rho at z=0, using trapezoidal rule
 # @param kpar: kpar(z) vector, with kpar(0) as zeroth element
 # @param rho0: density at z=0
-# @param zvec: vector of z, at which k(z) is given, required to have z[0] = 0.
+# @param zvec: vector of z, at which k(z) is given (requirs z[0] != 0.)
 
 # New function for calculating the surface density
 def Sig(zvec, rhovec):
@@ -33,7 +33,7 @@ def Sig(zvec, rhovec):
 # @param Sigvec: surface density vector, Sigma[0] = 0.
 # @param rhovec: rho(z) vector, with rho(0) as zeroth element.
 # OBS: rho(z) is total density: rho = rho_DM + rho_bary (if return total Sig)
-# @param zvec: z-vector, at which rho/Sig(z) is given, required to have z[0] = 0.
+# @param zvec: z-vector, at which rho/Sig(z) is given (requires z[0] != 0.)
 
 # New function for calculating the z-dir velocity dispersion
 def sigz(zvec,Sigvec,nuvec,C):
@@ -45,8 +45,8 @@ def sigz(zvec,Sigvec,nuvec,C):
     sigvec = np.sqrt(sig2)
     return sigvec
 # calculate z velocity dispersion using eq. 5 in 'almost' paper
-# @param sigvec: velocity dispersion vector at the locations of zvec[1:]
-# @param zvec: z-vector, at which nu/Sig(z) is given, assumed to have z[0] = 0.
+# @param sigvec: velocity dispersion vector at the locations of zvec
+# @param zvec: z-vector, at which nu/Sig(z) is given (assuming z[0] != 0.)
 # @param nuvec: tracer number density at the locations of zvec
 # all arrays (zvec,Sigvec,nuvec) are required to be numpy arrays.
 # outputs sigvec at z = zvec[1:], eg discards first z point
