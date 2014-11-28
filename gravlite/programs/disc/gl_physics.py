@@ -41,8 +41,8 @@ def sigz(zvec,Sigvec,nuvec,C):
     zvec1 = zvec[1:]
     nuvec1 = nuvec[1:]
     integral = integrate.cumtrapz(nuvec1*Kzvec,zvec1,initial=0.) + C
-    sigz = integral/nuvec1
-    sigvec = np.sqrt(sigz)
+    sig2 = integral/nuvec1
+    sigvec = np.sqrt(sig2)
     return sigvec
 # calculate z velocity dispersion using eq. 5 in 'almost' paper
 # @param sigvec: velocity dispersion vector at the locations of zvec[1:]
