@@ -60,11 +60,17 @@ def map_kr(params, prof, pop, gp):
         rhonu_C_min = gp.rho_C_min
         kz_C_max = gp.kz_rho_C_max
         kz_C_min = gp.kz_rho_C_min
+        monotonic = gp.monotonic
     elif prof == 'nu':
-        rhonu_C_max = gp.rho_C_max
-        rhonu_C_min = gp.rho_C_min
+        rhonu_C_max = gp.nu_C_max
+        rhonu_C_min = gp.nu_C_min
         kz_C_max = gp.kz_nu_C_max
         kz_C_min = gp.kz_nu_C_min
+        monotonic = gp.monotonic_nu
+
+    monotonic_multiplier = 1.0
+    if monotonic:
+        monotonic_multiplier = 0.0
 
     # rho or nu central value
     rhonu_C = rhonu_C_max*params[0] + rhonu_C_min*(1 - params[0])
@@ -74,15 +80,24 @@ def map_kr(params, prof, pop, gp):
 
     # Starting from the central value walk the kz value, limited
     # by max_kz_slope (=dk/dz)
-
     kz_vector = []
-    kz_iter_minus1 = kz_C
+    kz_i_m1 = kz_C #kz_(i-1)
 
-    for param_i in params[2:(1+gp.nbins)]:
-        kz_max = kz_iter_minus1 + gp.max_kz_slope*1.0 #WORKING HERE MONDAY MORNING
+    for jter in range(0, gp.nbins):
+        param_i = params[2+jter]
+        z_diff = gp.z_all_pts[jter+1] - gp.z_all_pts[jter]
+        kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
+        kz_min = kz_i_m1 - gp.max_kz_slope*z_diff*monotonic_multiplier
+        kz_i = kz_max*param_i + kz_min*(1-param_i)
+        kz_i_m1 = kz_i
+        kz_vector.append(kz_i)
 
+    #kz Last Star
+    kz_LS_max = kz_i + gp.max_kz_slope*(gp.z_all_pts[-1] - gp.z_all_pts[-2])
+    kz_LS_max = kz_i - gp.max_kz_slope*(gp.z_all_pts[-1] - gp.z_all_pts[-2])
+    kz_LS = kz_LS_max*params[3+jter] + kz_min*(1-params[3+jter])
 
-
+    return np.hstack([rhonu_C, kz_C, kz_vector, kz_LS])
 
 
 def map_nr(params, prof, pop, gp):
@@ -185,7 +200,7 @@ def map_MtoL(pa, gp):
 
 class Cube:
     def __init__ (self, gp):
-        self.pops = gp.pops
+        self.pops = gp.ntracer_pops
         # for density and (nu, tilt)_i
         self.cube = np.zeros(gp.ndim)
         return
@@ -195,42 +210,44 @@ class Cube:
 
     def convert_to_parameter_space(self, gp):
         # if we want any priors, here they have to enter:
+
+        #Normalisation constant C, for the calculation of sigma_z via Jeans Eq.
         pc = self.cube
+        print('pc = ', pc)
         off = 0
         offstep = 1
         pc[off] = pc[off]*200-100+17**2 # for normalization C
         off += offstep
 
-        offstep = gp.nrho
-        tmp = map_nr(pc[off:off+offstep], 'rho', 0, gp)
+        #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector, kz_LS
+        offstep = gp.nrhonu + 1
+        tmp_DM = map_kr(pc[off:off+offstep], 'rho', 0, gp)
         for i in range(offstep):
-            pc[off+i] = tmp[i]
+            pc[off+i] = tmp_DM[i]
         off += offstep
+        print('offstep = ', offstep)
 
-        # rho_baryons
-        offstep = gp.nrho
-        tmp_rho_baryons = map_nr(pc[off:off+offstep], 'nu', 0, gp)
-        for i in range(offstep):
-            pc[off+i] = tmp_rho_baryons[i]
-        off += offstep
-
-        offstep = 1
-        pc[off] = map_MtoL(pc[off], gp)
-        off += offstep
-
-        for pop in range(1, gp.pops+1):
-            offstep = gp.nrho
-            tmp = map_nr(pc[off:off+offstep], 'nu', pop, gp)
+        #Baryon mass profile parameters
+        #Redo this when we introduce baryons
+        for bary_pop in range(0, gp.nbaryon_pops):
+            offstep = gp.nbaryon_params
+            tmp_bary = map_kr(pc[off:off+offstep], 'rho', bary_pop, gp)
             for i in range(offstep):
-                pc[off+i] = tmp[i]
+                pc[off+i] = tmp_bary[i]
             off += offstep
-            #pdb.set_trace()
-            if gp.nbeta!=0:
-                offstep = gp.nbeta
-                tmp = map_tiltstar(pc[off:off+offstep], gp)
-                for i in range(offstep):
-                    pc[off+i] = tmp[i]
-                off += offstep
+        #pdb.set_trace()
+
+
+        #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector, kz_nu_LS
+        for tracer_pop in range(0, gp.ntracer_pops):
+            offstep = gp.nrhonu + 1
+            tmp_tracer = map_kr(pc[off:off+offstep], 'nu', tracer_pop, gp)
+            for i in range(offstep):
+                pc[off+i] = tmp_tracer[i]
+            off += offstep
+
+        #print('pc = ', pc[0:gp.ndim])
+        #pdb.set_trace()
 
         if off != gp.ndim:
             gh.LOG(1,'wrong subscripts in gl_class_cube')
@@ -244,7 +261,7 @@ class Cube:
 
 
     def __repr__(self):
-        return "Cube (disc) with "+str(gp.pops)+" pops "
+        return "Cube (disc) with "+str(gp.ntracer_pops)+" pops "
 
     def copy(self, cub):
         self.cube = cub

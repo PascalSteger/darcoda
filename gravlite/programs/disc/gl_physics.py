@@ -33,23 +33,25 @@ def Sig(zvec, rhovec):
     return Sigvec
 # calculate (total) surface density from the density, using trapezoidal rule
 # @param Sigvec: surface density vector, Sigma[0] = 0.
-# @param rhovec: rho(z) vector, with rho(0) as zeroth element. 
+# @param rhovec: rho(z) vector, with rho(0) as zeroth element.
 # OBS: rho(z) is total density: rho = rho_DM + rho_bary (if return total Sig)
 # @param zvec: z-vector, at which rho/Sig(z) is given (requires z[0] != 0.)
 
 # New function for calculating the z-dir velocity dispersion
 def sigz(zvec,Sigvec,nuvec,C):
-    Kzvec = -2.*constants.pi*constangs.G*Sigvec[1:]
+    Kzvec = -2.*constants.pi*constants.G*Sigvec[1:]
+    zvec1 = zvec[1:]
     nuvec1 = nuvec[1:]
     integral = integrate.cumtrapz(nuvec1*Kzvec,zvec1,initial=0.) + C
     sig2 = integral/nuvec1
-    sigvec = sqrt(sig2)
+    sigvec = np.sqrt(sig2)
     return sigvec
 # calculate z velocity dispersion using eq. 5 in 'almost' paper
 # @param sigvec: velocity dispersion vector at the locations of zvec
 # @param zvec: z-vector, at which nu/Sig(z) is given (assuming z[0] != 0.)
 # @param nuvec: tracer number density at the locations of zvec
 # all arrays (zvec,Sigvec,nuvec) are required to be numpy arrays.
+# outputs sigvec at z = zvec[1:], eg discards first z point
 
 
 def tilt(zipol, param, gp):
@@ -94,4 +96,3 @@ def sig_rz(z, zpars, tpars):
 # @param z [pc]
 # @param zpars [pc] z, on which sig is defined
 # @param tpars tilt parameters: Rsun, hr, hsig
-

@@ -121,6 +121,7 @@ def get_binned_data(gp):
 
 
 def get_binned_data_noscale(gp):
+    gp.dat.read_nu(gp)
     gp.dat.read_sigz(gp)
     return gp.dat
 ## \fn get_binned_data_noscale(gp)

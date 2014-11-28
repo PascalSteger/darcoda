@@ -28,42 +28,31 @@ def chi2red(model, data, sig, dof):
 
 
 def calc_chi2(profs, gp):
+    pdb.set_trace()
     chi2 = 0.
 
-    # include rho* in chi^2 calculation
-    nudat    = gp.dat.nu[0]
-    nuerr    = gp.dat.nuerr[0]
-    numodel  = profs.get_prof('nu', 0)
-    chi2_nu = chi2red(numodel, nudat, nuerr, gp.nipol)
-    gh.LOG(2, ' chi2_nu0 = ', chi2_nu)
-    chi2 +=chi2_nu
+    #Tracer population comparison
 
-    for pop in np.arange(1,gp.pops+1): # look at pops 1, 2, ...
+    for pop in range(0, gp.ntracer_pops):
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]
-        numodel  = profs.get_prof('nu', pop)
-        chi2_nu = chi2red(numodel, nudat, nuerr, gp.nipol)
-        gh.LOG(2, ' chi2_nu['+str(pop)+'] = ', chi2_nu)
+        numodel  = profs.get_prof('nu_vec', pop)
+        chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins)
+        gh.LOG(2, ' chi2_nu0 = ', chi2_nu)
         chi2 +=chi2_nu
-        #pdb.set_trace()
-        if not gp.chi2_nu_converged:
-            continue # with pop loop
+
+        #if not gp.chi2_nu_converged:
+        #    continue # with pop loop
 
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop] # [km/s]
-        sigmodel= profs.get_prof('sig', pop)
-        chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nipol) # [1]
+        sigmodel= profs.get_prof('sig_vec', pop)
+        chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nbins) # [1]
         if chi2_sig == np.inf:
             print('chi2_sig has become infinite')
             pdb.set_trace()
         chi2 += chi2_sig             # [1]
         gh.LOG(1, '  chi2_sig  = ', chi2_sig)
-
-        if gp.usekappa:
-            kapdat  = gp.dat.kap[pop]       # [1]
-            kaperr  = gp.dat.kaperr[pop]    # [1]
-            chi2_kap = chi2red(profs.get_kap(pop), kapdat, kaperr, gp.nipol) # [1]
-            chi2 += chi2_kap                                     # [1]
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:

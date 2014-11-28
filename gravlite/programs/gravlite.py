@@ -61,8 +61,9 @@ def myprior(cube, ndim, nparams):
 # stored with actual parameters
 
 def myloglike(cube, ndim, nparams):
-    if min(cube) == -9999:  # parameters not fulfilling prior requirements,
-        return -1e300       #      return very large chi2
+    pdb.set_trace()
+    #if min(cube) == -9999:  # parameters not fulfilling prior requirements,
+    #    return -1e300       #      return very large chi2 #HS SEGFAULT CHECK THIS AGAIN
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
@@ -99,7 +100,7 @@ def run(gp):
                     n_clustering_params = gp.ndim,# separate modes on
                                                   # the rho parameters
                                                   # only: gp.nrho
-                    wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
+                    wrapped_params = [ gp.ntracer_pops, gp.nbins, gp.nrhonu], # do
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
