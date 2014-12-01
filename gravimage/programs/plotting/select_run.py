@@ -303,13 +303,13 @@ def run(investigate="", case=-1, latest=False):
     host_name = socket.gethostname()
     user_name = getpass.getuser()
     if 'pstgnt332' in host_name:
-        basepath = '/home/psteger/sci/darcoda/gravlite/'
+        basepath = '/home/psteger/sci/darcoda/gravimage/'
     elif 'darkside' in host_name:
-        basepath = '/home/ast/read/dark/gravlite/'
+        basepath = '/home/ast/read/dark/gravimage/'
     elif ('lisa' in host_name) and ('hsilverw' in user_name):
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/'
+        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
-        basepath = '/home/sofia/darcoda/gravlite/'
+        basepath = '/home/sofia/darcoda/gravimage/'
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
     if latest:

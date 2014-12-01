@@ -72,7 +72,7 @@ def determine_radius(R, Rmin, Rmax, gp):
         pdb.set_trace()
 ## \fn determine_radius(R, Rmin, Rmax, gp)
 # determine bin radii once and for all. this must not be changed between
-# readout and gravlite run. if you wish to change: set gp.getnewdata =
+# readout and gravimage run. if you wish to change: set gp.getnewdata =
 # True in gl_params.py
 # @param R radii of all tracer particles
 # @param Rmin float

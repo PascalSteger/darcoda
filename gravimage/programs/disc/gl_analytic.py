@@ -2,7 +2,7 @@
 
 ##
 # @file
-# @ingroup gravlite
+# @ingroup gravimage
 # all analytic profiles from gl_physics
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch

@@ -2,7 +2,7 @@
 
 ##
 # @file
-# all parameters for the gravlite MCMC, gaia investigation
+# all parameters for the gravimage MCMC, gaia investigation
 
 # (c) 2013 ETHZ Pascal S.P. Steger
 

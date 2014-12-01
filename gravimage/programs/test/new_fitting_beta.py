@@ -10,7 +10,7 @@ import gl_params
 gp = gl_params.Params()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/sphere/')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
 import gl_analytic as ga
 
 def analytic_beta(x, gp):

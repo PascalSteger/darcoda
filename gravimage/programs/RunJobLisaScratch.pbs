@@ -10,27 +10,27 @@ export RUNDIR=$TMPDIR
 
 cd $TMPDIR
 mkdir $TMPDIR/darcoda
-mkdir $TMPDIR/darcoda/gravlite
-mkdir $TMPDIR/darcoda/gravlite/programs
+mkdir $TMPDIR/darcoda/gravimage
+mkdir $TMPDIR/darcoda/gravimage/programs
 
-cp -r $HOME/darcoda/gravlite/programs/* $TMPDIR/darcoda/gravlite/programs/
+cp -r $HOME/darcoda/gravimage/programs/* $TMPDIR/darcoda/gravimage/programs/
 
-cd $TMPDIR/darcoda/gravlite/programs
+cd $TMPDIR/darcoda/gravimage/programs
 
-# Calculate run time for gravlite, less than wall time to allow for data to be
+# Calculate run time for gravimage, less than wall time to allow for data to be
 # copied back, allow 120 seconds for transfer.
 echo PBS_WALLTIME = $PBS_WALLTIME
 transft=30
 echo Transfer time = $transft
 runtime=$(expr $PBS_WALLTIME - $transft)
-echo gravlite runtime = $runtime
+echo gravimage runtime = $runtime
 
-python3 gravlite.py& PID=$!; sleep $runtime; kill $PID
+python3 gravimage.py& PID=$!; sleep $runtime; kill $PID
 
-echo gravlite killed, transfering data
-ls -l $TMPDIR/darcoda/gravlite/
+echo gravimage killed, transfering data
+ls -l $TMPDIR/darcoda/gravimage/
 
 
-cp -r $TMPDIR/darcoda/gravlite/DTdiscmock/0/* $HOME/darcoda/gravlite/DTdiscmock/0/
+cp -r $TMPDIR/darcoda/gravimage/DTdiscmock/0/* $HOME/darcoda/gravimage/DTdiscmock/0/
 
 echo Data transfered, job finished

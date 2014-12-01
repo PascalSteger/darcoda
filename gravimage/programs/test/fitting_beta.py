@@ -12,7 +12,7 @@ import gl_file as gf
 gf.get_binned_data(gp)
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/sphere/')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
 import gl_analytic as ga
 import gl_physics as phys
 

@@ -9,38 +9,38 @@ PlotFolder=/DTdiscmock/0/201410270754/
 export RUNDIR=$TMPDIR
 
 cd $TMPDIR
-mkdir -p $TMPDIR/darcoda/gravlite/programs
-mkdir -p $TMPDIR/darcoda/gravlite/$PlotFolder
+mkdir -p $TMPDIR/darcoda/gravimage/programs
+mkdir -p $TMPDIR/darcoda/gravimage/$PlotFolder
 
-cp -r $HOME/LoDaM/darcoda/gravlite/programs/* $TMPDIR/darcoda/gravlite/programs/
-cp -r $HOME/LoDaM/darcoda/gravlite/$PlotFolder/* $TMPDIR/darcoda/gravlite/$PlotFolder/
+cp -r $HOME/LoDaM/darcoda/gravimage/programs/* $TMPDIR/darcoda/gravimage/programs/
+cp -r $HOME/LoDaM/darcoda/gravimage/$PlotFolder/* $TMPDIR/darcoda/gravimage/$PlotFolder/
 
-cd $TMPDIR/darcoda/gravlite/$PlotFolder/
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/
 ls -l
 
-cd $TMPDIR/darcoda/gravlite/$PlotFolder/output/
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/
 ls -l
 
-cd $TMPDIR/darcoda/gravlite/programs/plotting
+cd $TMPDIR/darcoda/gravimage/programs/plotting
 echo Plotting directory is:
-echo $TMPDIR/darcoda/gravlite/$PlotFolder
-python3 plot_profiles_batch.py $TMPDIR/darcoda/gravlite/$PlotFolder
+echo $TMPDIR/darcoda/gravimage/$PlotFolder
+python3 plot_profiles_batch.py $TMPDIR/darcoda/gravimage/$PlotFolder
 
 echo Plotfolder contains
-cd $TMPDIR/darcoda/gravlite/$PlotFolder/
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/
 ls -l
 
 echo Output contains
-cd $TMPDIR/darcoda/gravlite/$PlotFolder/output/
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/
 ls -l
 
 echo Output/pdf contains
-cd $TMPDIR/darcoda/gravlite/$PlotFolder/output/pdf/
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/pdf/
 ls -l
 
-# mkdir $TMPDIR/darcoda/gravlite/$PlotFolder/output/PlottedWithLisa$(date+%s)
+# mkdir $TMPDIR/darcoda/gravimage/$PlotFolder/output/PlottedWithLisa$(date+%s)
 
-cp -r $TMPDIR/darcoda/gravlite/$PlotFolder/output $HOME/LoDaM/darcoda/gravlite/$PlotFolder/
-cp -r $TMPDIR/darcoda/gravlite/$PlotFolder/output/* $HOME/LoDaM/darcoda/gravlite/$PlotFolder/output/
+cp -r $TMPDIR/darcoda/gravimage/$PlotFolder/output $HOME/LoDaM/darcoda/gravimage/$PlotFolder/
+cp -r $TMPDIR/darcoda/gravimage/$PlotFolder/output/* $HOME/LoDaM/darcoda/gravimage/$PlotFolder/output/
 
 echo Plots made and copied, job finished

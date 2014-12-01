@@ -2,7 +2,7 @@
 
 ## @file
 # import file with full path specification, only once, setting back sys.path
-# you need to specify PYTHONPATH to include the gravlite/programs
+# you need to specify PYTHONPATH to include the gravimage/programs
 
 import os
 import sys
@@ -43,16 +43,16 @@ def import_path(fullpath):
 def set_geometry(geom, machine):
     print('Machine = ', machine)
     if machine == 'pstgnt332':
-        basepath = '/home/psteger/sci/darcoda/gravlite/programs/'
+        basepath = '/home/psteger/sci/darcoda/gravimage/programs/'
     elif machine == 'darkside':
-        basepath = '/home/ast/read/user/psteger/software/darcoda/gravlite/programs/'
+        basepath = '/home/ast/read/user/psteger/software/darcoda/gravimage/programs/'
     elif machine == 'lisa_HS_login':
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravlite/programs/'
+        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/programs/'
     elif machine == 'lisa_SS_login':
-        basepath = '/home/sofia/darcoda/gravlite/programs/'
+        basepath = '/home/sofia/darcoda/gravimage/programs/'
     elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
         scratch_space = os.getenv("TMPDIR")
-        basepath = scratch_space + '/darcoda/gravlite/programs/'
+        basepath = scratch_space + '/darcoda/gravimage/programs/'
     print('basepath = ', basepath)
     insert_sys_path(basepath + 'datareduction/')
     insert_sys_path(basepath + geom)

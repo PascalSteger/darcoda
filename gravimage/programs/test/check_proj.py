@@ -8,12 +8,12 @@
 
 import sys, pdb
 import numpy as np
-from scipy.stats import kurtosis
+#from scipy.stats import kurtosis
 from pylab import *
 ion()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravlite/programs/datareduction')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/datareduction')
 
 import gl_params as gp
 import gl_file as gf

@@ -51,7 +51,7 @@ def run(gp):
     global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
 
 
-    external_file='/home/hsilverw/LoDaM/darcoda/gravlite/Data_Sets/simplenu/simplenu_sigz_raw.dat'
+    external_file='/home/hsilverw/LoDaM/darcoda/gravimage/Data_Sets/simplenu/simplenu_sigz_raw.dat'
     external_data = np.loadtxt(external_file)
     z_data = external_data[:, 0] #[kpc]
     v_data = abs(external_data[:, 1]) #[km/s]

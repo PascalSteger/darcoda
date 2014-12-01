@@ -1,4 +1,4 @@
-* TODO [[file:sci/darcoda/gravlite/programs/datareduction/grd_split.py::###%20TODO%20calculate%20log%20likelihood%20of%20assigning%20stars%20to%20each%20population][grd_split: calculate log likelihood of assigning stars to each population]]
+* TODO [[file:sci/darcoda/gravimage/programs/datareduction/grd_split.py::###%20TODO%20calculate%20log%20likelihood%20of%20assigning%20stars%20to%20each%20population][grd_split: calculate log likelihood of assigning stars to each population]]
 * TODO [[file:datareduction/grd_split.py::###%20TODO%20output:][grd_split: set output]]
 * TODO [[file:datareduction/grd_split.py::###%20TODO%20set%20to%200%20for%20never][grd_split set to 0]]
 * TODO [[file:datareduction/grd_split.py::###%20TODO%20divide%20by%20integral][grd_split divide by integral]]

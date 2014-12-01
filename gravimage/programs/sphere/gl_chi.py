@@ -2,7 +2,7 @@
 
 ##
 # @file
-# all functions called directly from gravlite
+# all functions called directly from gravimage
 
 # (c) ETHZ 2013 Pascal Steger, psteger@phys.ethz.ch
 

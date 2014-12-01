@@ -122,16 +122,16 @@ class Files:
 
     def set_dir(self, machine, case, inv):
         if machine == 'darkside':
-            self.machine = '/home/ast/read/user/psteger/software/darcoda/gravlite/'
+            self.machine = '/home/ast/read/user/psteger/software/darcoda/gravimage/'
         elif machine == 'pstgnt332':
-            self.machine = '/home/psteger/sci/darcoda/gravlite/'
+            self.machine = '/home/psteger/sci/darcoda/gravimage/'
         elif machine == 'lisa_HS_login':
-            self.machine = '/home/hsilverw/LoDaM/darcoda/gravlite/'
+            self.machine = '/home/hsilverw/LoDaM/darcoda/gravimage/'
         elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/darcoda/gravlite/'
+            self.machine = '/home/sofia/darcoda/gravimage/'
         elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
             scratch_space = os.getenv("TMPDIR")
-            self.machine = scratch_space + '/darcoda/gravlite/'
+            self.machine = scratch_space + '/darcoda/gravimage/'
         self.progdir = self.machine + 'programs/'
         self.modedir = self.machine + 'DT' + inv + '/'
         self.shortdir = self.modedir + str(case) + '/'

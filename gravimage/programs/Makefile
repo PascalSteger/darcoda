@@ -9,4 +9,4 @@
 top="$(CURDIR)"/
 ede_FILES=Project.ede Makefile
 
-gravlite main file_SOURCES=gravlite.py
+gravimage main file_SOURCES=gravimage.py

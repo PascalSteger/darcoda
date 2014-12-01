@@ -2,12 +2,12 @@
 
 ##
 # @file
-# pymultinest run of gravlite integrals needs pymultinest from
+# pymultinest run of gravimage integrals needs pymultinest from
 # http://johannesbuchner.github.io/PyMultiNest/
 # http://johannesbuchner.github.io/PyMultiNest/install.html#install-on-linux
 # needs Multinest from https://github.com/JohannesBuchner/MultiNest
 
-# TODO: run with mpirun -np <N> gravlite.py
+# TODO: run with mpirun -np <N> gravimage.py
 # where <N> is an integer <= number of processors
 # (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
@@ -31,7 +31,7 @@ parser.add_option("-i", "--investigation", dest="investigation",
 parser.add_option("-c", "--case", dest="case",
                       default=-1, help="case: 1, 2, ..")
 (options, args) = parser.parse_args()
-print('gravlite.py '+str(options.investigation)+' '+str(options.case))
+print('gravimage.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging

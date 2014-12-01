@@ -55,7 +55,7 @@ class Params():
             self.fil = self.dir+'mem2'
 
             self.pmsplit = 0.9 # minimum probability of membership required for analysis
-            # use 0 if grw_* should be called from within gravlite
+            # use 0 if grw_* should be called from within gravimage
             self.fileposcartesian = self.dir+'simulation/pos.txt'
             self.filevelcartesian = self.dir+'simulation/vel_my.txt'
 
