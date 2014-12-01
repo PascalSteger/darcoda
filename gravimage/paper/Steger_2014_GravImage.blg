@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2012)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Steger_2014_GravImage.aux
+The style file: mn2e.bst
+Database file #1: Steger_2014_GravImage.bib
+You've used 57 entries,
+            2938 wiz_defined-function locations,
+            953 strings with 14040 characters,
+and the built_in function-call counts, 25810 in all, are:
+= -- 2144
+> -- 1905
+< -- 0
++ -- 640
+- -- 609
+* -- 2141
+:= -- 4903
+add.period$ -- 1
+call.type$ -- 57
+change.case$ -- 414
+chr.to.int$ -- 54
+cite$ -- 57
+duplicate$ -- 956
+empty$ -- 1477
+format.name$ -- 709
+if$ -- 5019
+int.to.chr$ -- 4
+int.to.str$ -- 1
+missing$ -- 57
+newline$ -- 175
+num.names$ -- 228
+pop$ -- 373
+preamble$ -- 1
+purify$ -- 414
+quote$ -- 0
+skip$ -- 905
+stack$ -- 0
+substring$ -- 1173
+swap$ -- 63
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 510
+warning$ -- 0
+while$ -- 251
+width$ -- 0
+write$ -- 569
