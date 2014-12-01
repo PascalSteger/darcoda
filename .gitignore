@@ -24,3 +24,5 @@ __pycache__
 *.pyc
 ._*
 holding_stack
+
+*.o
