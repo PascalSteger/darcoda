@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -S /bin/bash
+#PBS -lnodes=1:cores16:ppn=16,walltime=00:00:02:00
+
+# Copying program files to scratch
+
+#module load openmpi/intel
+
+export RUNDIR=$TMPDIR
+
+cd $TMPDIR
+mkdir $TMPDIR/darcoda
+mkdir $TMPDIR/darcoda/gravimage
+mkdir $TMPDIR/darcoda/gravimage/programs
+
+cp -r $HOME/darcoda/gravimage/programs/* $TMPDIR/darcoda/gravimage/programs/
+
+cd $TMPDIR/darcoda/gravimage/programs
+
+# Calculate run time for gravimage, less than wall time to allow for data to be
+# copied back, allow 120 seconds for transfer.
+echo PBS_WALLTIME = $PBS_WALLTIME
+transft=30
+echo Transfer time = $transft
+runtime=$(expr $PBS_WALLTIME - $transft)
+echo gravimage runtime = $runtime
+
+python3 gravimage.py& PID=$!; sleep $runtime; kill $PID
+
+echo gravimage killed, transfering data
+ls -l $TMPDIR/darcoda/gravimage/
+
+
+cp -r $TMPDIR/darcoda/gravimage/DTdiscmock/0/* $HOME/darcoda/gravimage/DTdiscmock/0/
+
+echo Data transfered, job finished

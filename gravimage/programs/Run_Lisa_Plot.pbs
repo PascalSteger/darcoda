@@ -1,0 +1,46 @@
+#!/bin/bash
+#PBS -S /bin/bash
+#PBS -lnodes=1:ppn=1,walltime=00:00:60:00
+
+# Copying program and data files to scratch
+
+PlotFolder=/DTdiscmock/0/201410270754/
+
+export RUNDIR=$TMPDIR
+
+cd $TMPDIR
+mkdir -p $TMPDIR/darcoda/gravimage/programs
+mkdir -p $TMPDIR/darcoda/gravimage/$PlotFolder
+
+cp -r $HOME/LoDaM/darcoda/gravimage/programs/* $TMPDIR/darcoda/gravimage/programs/
+cp -r $HOME/LoDaM/darcoda/gravimage/$PlotFolder/* $TMPDIR/darcoda/gravimage/$PlotFolder/
+
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/
+ls -l
+
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/
+ls -l
+
+cd $TMPDIR/darcoda/gravimage/programs/plotting
+echo Plotting directory is:
+echo $TMPDIR/darcoda/gravimage/$PlotFolder
+python3 plot_profiles_batch.py $TMPDIR/darcoda/gravimage/$PlotFolder
+
+echo Plotfolder contains
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/
+ls -l
+
+echo Output contains
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/
+ls -l
+
+echo Output/pdf contains
+cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/pdf/
+ls -l
+
+# mkdir $TMPDIR/darcoda/gravimage/$PlotFolder/output/PlottedWithLisa$(date+%s)
+
+cp -r $TMPDIR/darcoda/gravimage/$PlotFolder/output $HOME/LoDaM/darcoda/gravimage/$PlotFolder/
+cp -r $TMPDIR/darcoda/gravimage/$PlotFolder/output/* $HOME/LoDaM/darcoda/gravimage/$PlotFolder/output/
+
+echo Plots made and copied, job finished
