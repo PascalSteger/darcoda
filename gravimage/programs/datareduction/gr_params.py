@@ -79,6 +79,13 @@ class Params():
             self.dir = self.fi.dir
             self.fil = self.dir+'mem2'
             self.pmsplit = 0.9
+
+        elif gp.investigate == 'coll':
+            self.fi = Files(gp)
+            self.fi.set_coll(gp)
+            self.dir = self.fi.dir
+            self.fil = self.dir+'dat'
+
     ## \fn __init__(gp)
     # set up common parameters for data pre-processing
     # @param gp global parameters

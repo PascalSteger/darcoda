@@ -84,6 +84,8 @@ class Files:
             self.set_triax(gp, timestamp)
         elif gp.investigate == 'obs':
             self.set_obs(gp, timestamp)
+        elif gp.investigate == 'coll':
+            self.set_coll(gp, timestamp)
         elif gp.investigate == 'discsim':
             self.set_discsim(gp, timestamp)
         elif gp.investigate == 'discmock':
@@ -417,6 +419,23 @@ class Files:
     # set all variables in the case we work with Fornax observational data
     # @param gp
     # @param timestamp
+
+    def set_coll(self, gp, timestamp=''):
+        self.dir = self.machine + '/DTcoll/'+str(gp.case)+'/'
+        self.dir += timestamp + '/'
+        for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
+            spop = str(pop)
+            self.massfiles.append(self.dir + 'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
+        return
+    ## \fn set_coll(self, gp, timestamp)
+    # set all variables in the case we work with Fornax observational data
+    # @param gp global parameters
+    # @param timestamp in format 'YYYYMMDD'
 
 
     def populate_output_dir(self, gp):

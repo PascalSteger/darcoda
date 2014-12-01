@@ -66,7 +66,7 @@ def select_pm(M, x, y, z, vx, vy, vz, comp, pm):
 def read_data(filename):
     # M0 in Msun, x0, y0, z0 in pc, vx,vy,vz in km/s
     # comp0 1,2 component (float in file, but really only int)
-    M0, x0,y0,z0,vx0,vy0,vz0,comp0 = np.genfromtxt(filename, skiprows = 0, unpack = True,\
+    M0, x0,y0,z0,vx0,vy0,vz0,comp0 = np.genfromtxt(filename, skiprows = 1, unpack = True,\
                                                    usecols=(0, 1, 2, 3, 4, 5, 6, 7),\
                                                    dtype="d17",\
                                                    converters={0:expDtofloat,\

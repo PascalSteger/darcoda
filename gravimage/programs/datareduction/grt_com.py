@@ -35,7 +35,7 @@ def run(gp):
 
     # shrinking sphere method
     pm = np.ones(len(x0))
-    com_x, com_y, com_vz = com_shrinkcircle_v_2D(x0, y0, vlos, pm)
+    com_x, com_y, com_vz = gc.com_shrinkcircle_v_2D(x0, y0, vlos, pm)
 
     x0 -= com_x # [pc]
     y0 -= com_y # [pc]
