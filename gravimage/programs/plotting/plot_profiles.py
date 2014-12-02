@@ -81,10 +81,11 @@ def read_models(basename):
 def pcload_single_entries(basename, gp):
     import gl_collection as glc
     pc = glc.ProfileCollection(gp.pops, gp.nipol)
-    numofmodels = 300
+    numofmodels = np.inf
     current = 0
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
+        dum*=1
         while current < numofmodels:
             current += 1
             print(' current model = ', current)
@@ -93,7 +94,6 @@ def pcload_single_entries(basename, gp):
                 pc.add(MODEL)
             except EOFError:
                 break
-    pdb.set_trace()
     return pc
 ## \fn pcload_single_entries(basename, gp)
 # load all data into [chi^2, profiles] pairs, and add to a profile collection
