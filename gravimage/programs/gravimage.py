@@ -59,7 +59,7 @@ def myloglike(cube, ndim, nparams):
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
     # we only store models after the initial Sigma burn-in
-    if gp.chi2_Sig_converged:
+    if gp.chi2_Sig_converged <= 0:
         tmp_profs.x0 = gp.xipol
         tmp_profs.xbins = np.hstack([gp.dat.binmin, gp.dat.binmax[-1]])
         with open(gp.files.outdir+'pc2.save', 'ab') as fi:

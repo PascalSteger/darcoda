@@ -74,8 +74,8 @@ class Params():
 
         # MultiNest options
         # ----------------------------------------------------------------------
-        self.chi2_Sig_converged = False # set to False to first converge on Sig
-        self.chi2_switch = 100
+        self.chi2_switch = 1000
+        self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run

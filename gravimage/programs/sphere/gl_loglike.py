@@ -22,7 +22,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nipol)
     off = 0
     offstep = gp.nrho
-    if gp.chi2_Sig_converged:
+    if gp.chi2_Sig_converged <= 0:
         rhodmpar = np.array(cube[off:off+offstep])
 
         tmp_profs.set_prof('nr', 1.*rhodmpar[1+1+gp.nexp:-gp.nexp-1], 0, gp)
@@ -65,7 +65,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('Sig', tmp_Sig, pop, gp)
         off += offstep
         offstep = gp.nbeta
-        if gp.chi2_Sig_converged:
+        if gp.chi2_Sig_converged <= 0:
             betapar = np.array(cube[off:off+offstep])
             tmp_beta, tmp_betastar = phys.beta(gp.xipol, betapar, gp)
             if check_beta(tmp_beta, gp):

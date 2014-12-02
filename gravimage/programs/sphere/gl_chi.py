@@ -50,7 +50,7 @@ def calc_chi2(profs, gp):
         #chi2 += chi2_nu                 # [1]
         #gh.LOG(1, ' chi2_nu   = ', chi2_nu)
 
-        if not gp.chi2_Sig_converged:
+        if gp.chi2_Sig_converged > 0:
             continue
 
         sigdat  = gp.dat.sig[pop]    # [km/s]
@@ -74,11 +74,11 @@ def calc_chi2(profs, gp):
             chi2_zetab = chi2red(zetab_model, zetabdat, zetaberr, 1)
             chi2 += (chi2_zetaa + chi2_zetab)
 
-    if not gp.chi2_Sig_converged:
+    if gp.chi2_Sig_converged > 0:
         chi2 *= 10 # overamplify chi2 to get better models after switch
         if chi2 < gp.chi2_switch:
-            gh.LOG(1, 'Sig finished burn-in, switching on sigma!')
-            gp.chi2_Sig_converged = True
+            gp.chi2_Sig_converged -= 1
+            gh.LOG(1, 'Sig finished burn-in, waiting to get stable, ', gp.chi2_Sig_converged)
     return chi2
 ## \fn calc_chi2(profs, gp)
 # Calculate chi^2
