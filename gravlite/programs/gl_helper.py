@@ -821,6 +821,8 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
     # Bin position and velocity information, return tracer density and velocity
     # dispersion (nu and sigma)
 
+    pdb.set_trace()
+
     #Sort the stars on position
     order = np.argsort(x0)
     x0 = np.array(x0)[order]
@@ -842,9 +844,12 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
         v_list_temp=v0[positions]
 
         #Calculate velocity dispersion and Poisson error (sqrt(sigma_z))
-        sig_vec.append(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))
+        sig_vec.append(np.sqrt(np.mean(v_list_temp**2) - (np.mean(v_list_temp))**2))
+        print('Mean velocity = ', np.mean(v_list_temp))
         sig_err_vec.append(np.sqrt(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))) #HS TODO: think about this error calculation
 
+
+    pdb.set_trace()
     return nu_vec, nu_err_vec, sig_vec, sig_err_vec
 
 ## \fn bin_r_const_tracers(x0, no)

@@ -125,8 +125,8 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
-        self.chi2_switch_mincount = 1000. # demand that this number of profiles with
+        self.chi2_switch = 500. # if chi2*10 < chi2_switch, add chi2_sig
+        self.chi2_switch_mincount = 100. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
 

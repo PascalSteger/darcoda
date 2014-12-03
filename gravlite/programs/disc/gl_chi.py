@@ -58,7 +58,7 @@ def calc_chi2(profs, gp):
         chi2 *= 10
         if chi2 < gp.chi2_switch:
             gp.chi2_switch_counter +=1
-            print('chi2 less than switch found #######################################')
+            print('chi2 less than switch found, ', gp.chi2_switch_counter, ' out of ', gp.chi2_switch_mincount, ' needed.')
         if gp.chi2_switch_counter>= gp.chi2_switch_mincount:
             gh.LOG(1, 'nu burn-in finished, switching on sigma')
             gp.chi2_nu_converged = True

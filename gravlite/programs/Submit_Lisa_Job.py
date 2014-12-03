@@ -18,10 +18,11 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='00:02:00:00'
+walltime='00:01:00:00'
 
 gravlite_path = os.path.abspath('../')
 holding_stack_path = gravlite_path + '/holding_stack/'
+investigation = 'DT' + 'simplenu'
 
 #Check for holding area folder, create one if none exists
 if os.path.isdir(holding_stack_path) != True:
@@ -54,13 +55,13 @@ pbs_file.writelines('cd $TMPDIR/darcoda/gravlite/programs'+'\n')
 pbs_file.writelines('# Calculate run time for gravlite, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
 pbs_file.writelines('echo PBS_WALLTIME = $PBS_WALLTIME'+'\n')
-pbs_file.writelines('transft=1200'+'\n')
+pbs_file.writelines('transft=600'+'\n')
 pbs_file.writelines('echo Transfer time = $transft'+'\n')
 pbs_file.writelines('runtime=$(expr $PBS_WALLTIME - $transft)'+'\n')
 pbs_file.writelines('echo gravlite runtime = $runtime'+'\n')
 pbs_file.writelines('python3 gravlite.py --investigation simplenu& PID=$!; sleep $runtime; kill $PID'+'\n')
 pbs_file.writelines('echo gravlite killed, transfering data'+'\n')
-pbs_file.writelines('cp -r $TMPDIR/darcoda/gravlite/DTdiscmock/0/* $HOME/LoDaM/darcoda/gravlite/DTdiscmock/0/'+'\n')
+pbs_file.writelines('cp -r $TMPDIR/darcoda/gravlite/' + investigation +'/0/* $HOME/LoDaM/darcoda/gravlite/'+ investigation +'/0/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
