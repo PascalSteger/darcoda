@@ -18,6 +18,7 @@ import subprocess
 import numpy as np
 import pymultinest
 import pickle
+import gl_helper as gh
 import pdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
