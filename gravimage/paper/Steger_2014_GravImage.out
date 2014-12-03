@@ -1,0 +1,21 @@
+\BOOKMARK [1][]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][]{section.4}{Method}{}% 2
+\BOOKMARK [2][]{subsection.5}{Derivation of the key equations}{section.4}% 3
+\BOOKMARK [2][]{subsection.12}{The mass distribution}{section.4}% 4
+\BOOKMARK [2][]{subsection.16}{The tracer density profile}{section.4}% 5
+\BOOKMARK [2][]{subsection.18}{The velocity anisotropy}{section.4}% 6
+\BOOKMARK [2][]{subsection.22}{Comparison with data}{section.4}% 7
+\BOOKMARK [2][]{subsection.24}{Priors}{section.4}% 8
+\BOOKMARK [2][]{subsection.27}{Parameter Space Sampling}{section.4}% 9
+\BOOKMARK [1][]{section.29}{Mock data}{}% 10
+\BOOKMARK [1][]{section.37}{Results}{}% 11
+\BOOKMARK [2][]{subsection.38}{Single tracer population}{section.37}% 12
+\BOOKMARK [2][]{subsection.41}{Two tracer populations}{section.37}% 13
+\BOOKMARK [2][]{subsection.43}{Triaxial mock data}{section.37}% 14
+\BOOKMARK [2][]{subsection.47}{Data quality}{section.37}% 15
+\BOOKMARK [1][]{section.49}{Conclusions}{}% 16
+\BOOKMARK [1][]{section.50}{Acknowledgements}{}% 17
+\BOOKMARK [1][]{appendix.51}{Appendix}{}% 18
+\BOOKMARK [2][]{subsection.52}{Effects of priors on n'\(r\)}{appendix.51}% 19
+\BOOKMARK [2][]{subsection.54}{Convergence of the MultiNest model ensemble}{appendix.51}% 20
+\BOOKMARK [2][]{subsection.57}{The choice of binning}{appendix.51}% 21
