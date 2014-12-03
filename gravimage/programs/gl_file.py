@@ -48,8 +48,9 @@ def read_data(gp):
 
 
 def bin_data(gp):
-    gp.investigate = 'simplenu'
-    pdb.set_trace()
+    #pdb.set_trace()
+    #gp.investigate = 'simplenu'
+    #pdb.set_trace()
     if gp.investigate == 'hern':
         import gr_MCMCbin
         gr_MCMCbin.run(gp)

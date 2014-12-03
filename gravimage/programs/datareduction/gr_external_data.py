@@ -57,7 +57,8 @@ def run(gp):
     external_data = np.loadtxt(external_file)
     z_data = external_data[:, 0] #[kpc]
     v_data = external_data[:, 1] #[km/s]
-
+    print ('v_data:',v_data[0:100])
+    pdb.set_trace()
     #Population Splitting
     if gp.ntracer_pops > 1:
         print('More than one population')

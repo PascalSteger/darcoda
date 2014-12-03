@@ -45,8 +45,8 @@ def sigz(zvec,Sigvec,nuvec,C):
     integral = integrate.cumtrapz(nuvec*Kzvec,zvec,initial=0.) + C
     sig2 = integral/nuvec
     if (any(sig2<0.)):
+        pdb.set_trace()
         raise ValueError('negative value in sig2 array')
-    print ('phys.sig2',sig2)
     sigvec = np.sqrt(sig2)
     return sigvec
 # calculate z velocity dispersion using eq. 5 in 'almost' paper
