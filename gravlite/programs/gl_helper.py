@@ -843,7 +843,10 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 
         #Calculate velocity dispersion and Poisson error (sqrt(sigma_z))
         sig_vec.append(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))
-        sig_err_vec.append(np.sqrt(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))) #HS TODO: think about this error calculation
+#        sig_vec.append(np.sqrt(np.mean(v_list_temp**2)))
+#        sig_vec.append(np.sqrt(np.mean(np.square(v_list_temp))))
+        sig_err_vec.append(np.sqrt(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2)))
+        #HS TODO: think about this error calculation
 
     return nu_vec, nu_err_vec, sig_vec, sig_err_vec
 

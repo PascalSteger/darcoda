@@ -58,13 +58,17 @@ def geom_loglike(cube, ndim, nparams, gp):
         raise Exception('wrong subscripts in gl_class_cube')
 
     #Calculate Sigma (surface density)
-    Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_DM_allz)
+    Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_DM_allz) #SS not orrect zvec
     tmp_profs.Sig_DM_C = Sig_DM_allz[0]
     tmp_profs.set_prof('Sig_DM_vec', Sig_DM_allz[1:-1], 0, gp)
     tmp_profs.Sig_DM_LS = Sig_DM_allz[-1]
 
     #Calculate sigma (velocity dispersion)
-    sigz_vecLS = phys.sigz(gp.z_all_pts, Sig_DM_allz, tmp_nu_allz, norm)
+    try:
+        sigz_vecLS = phys.sigz(gp.z_all_pts, Sig_DM_allz, tmp_nu_allz, norm)
+    except ValueError:
+        pdb.set_trace()
+        return
     tmp_profs.set_prof('sig_vec', sigz_vecLS[0:-1], 0, gp)
     tmp_profs.sig_LS = sigz_vecLS[-1]
 

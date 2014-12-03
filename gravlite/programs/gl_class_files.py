@@ -494,12 +494,12 @@ class Files:
         self.nufiles.append(self.dir+'nu/nu_1.txt')
         self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
         self.kappafiles.append(self.dir+'kappalos/kappalos_1.txt')
-        if gp.pops == 2:
-            self.massfiles.append(self.dir+'M/M_2.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sigma_2.txt') # all comp.
-            self.nufiles.append(self.dir+'nu/nu_2.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
+#        if gp.pops == 2:  # SS OK to remove?:
+#            self.massfiles.append(self.dir+'M/M_2.txt')
+#            self.Sigfiles.append(self.dir+'Sigma/Sigma_2.txt') # all comp.
+#            self.nufiles.append(self.dir+'nu/nu_2.txt')
+#            self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
+#            self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
         return
     ## \fn set_discmock(self, gp, timestamp='')
     # set all properties if looking at simple disc
