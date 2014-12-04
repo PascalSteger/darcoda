@@ -1,0 +1,24 @@
+all: prep f22 Makefile
+
+prep: fd.f90
+	mpif90 -cpp -fPIC -I /usr/include -L/usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3 -c fd.f90 -lgfortran -Wall
+	mpif90 -cpp -fPIC -I /usr/include -L/usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3 -c itimes.f90 -lgfortran -Wall
+
+
+f21: fd.f90 itimes.f90
+	f2py --build-dir ./fout --include-paths /usr/include --overwrite-signature  -m it -h it.pyf fd.f90 itimes.f90
+
+f22: f21
+	f2py --build-dir ./fout --wrap-functions --include-paths /usr/include  fout/it.pyf
+
+
+f23:
+	f2py -c --build-dir ./fout  --f90exec=mpif90 -I/usr/include/ -L/usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3/ -L/usr/lib64 -lmpich -lgfortran --noopt --noarch --debug --verbose ./fout/it.pyf *.f90
+	mv it.cpython-34.so it.so
+
+mycomp:
+	mpicc -shared -fPIC -I/usr/include/python3.4/ -I/usr/lib64/python3.4/site-packages/numpy/f2py/src/ -I/usr/lib64/python3.4/site-packages/numpy/core/include itmodule.c -o itmodule.so
+
+
+clean:
+	rm -rf *.mod *.o *.so *.c *.f *~ .*~ ./fout/*
