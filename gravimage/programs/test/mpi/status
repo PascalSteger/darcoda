@@ -1,0 +1,210 @@
+**** TODO gravlite: need means of parallelizing
+     :PROPERTIES:
+     :ID:       d1d4d10b-ab25-4bc0-a19b-2543e8dfa02f
+     :END:
+***** CANCELLED parallelization of pyMultiNest                    :CANCELLED:
+      - State "CANCELLED"  from "TODO"       [2014-11-26 Wed 21:40] \\
+        not possible, not even serial one, as the new MultiNest seems to have other interface
+***** CANCELLED debug MPI on PyMultiNest                          :CANCELLED:
+    - State "CANCELLED"  from "TODO"       [2014-11-27 Thu 07:34] \\
+      not possible, apparently, gives segmentation fault without reason
+- does not work with newest version 3.9 of MultiNest anymore, and old version has bugs, no good INS
+- write my own wrapper
+- have boolean and int and double function calls all right
+****** TODO call function from fortran which is defined in python code
+    CLOCK: [2014-11-26 Wed 12:51]--[2014-11-26 Wed 13:16] =>  0:25
+    CLOCK: [2014-11-26 Wed 12:43]--[2014-11-26 Wed 12:51] =>  0:08
+    CLOCK: [2014-11-26 Wed 09:44]--[2014-11-26 Wed 12:39] =>  2:55
+    CLOCK: [2014-11-26 Wed 09:42]--[2014-11-26 Wed 09:44] =>  0:02
+       :PROPERTIES:
+       :ID:       fd4d1a01-24d3-46d3-ba0c-4709870b3247
+       :END:
+- interface inside nested_wrapper.f90 does not work out of the box
+- set up sample python script in grav.py, with function samplefunc() to be called from fmesh.f90
+- called
+WARN=
+CYWARN=
+grav: grav.py
+	cython $(CYWARN) --embed-positions -f --fast-fail -3 grav.py
+	gcc $(WARN) -I/usr/include/python3.4/ -I/usr/lib64/python3.4/site-packages/numpy/core/include -lpython3.4 -lgfortran -c grav.c
+
+- get following in grav.o:
+0000000000000160 d __pyx_doc_4grav_2samplefunc
+000000000000003c d __pyx_k_samplefunc
+00000000000001a0 d __pyx_mdef_4grav_3samplefunc
+0000000000000090 b __pyx_n_s_samplefunc
+0000000000000264 t __pyx_pf_4grav_2samplefunc
+0000000000000236 t __pyx_pw_4grav_3samplefunc
+
+
+- defined function in 08/pyx, cdef extern __pyx_pw_4grav_3samplefunc()
+could also be method definition in __pyx_mdef_4grav_3samplefunc
+
+- that name is found by
+make grav
+nm grav.o|grep samplefunc
+
+- redefined Makefile to first build fmesh, fmesh_wrapper, then grav.py, then conn.pyx
+
+- make all gives
+fmesh_wrapper.o: In function `c_mesh_exp':
+fmesh_wrapper.f90:(.text+0x74): undefined reference to `pyx_pw_4grav_3samplefunc_'
+
+because none of this is defined in conn.o
+
+- include grav.o as well in gcc for all,
+	gcc $(WARN) -I/usr/include/python3.4/ -I/usr/lib64/python3.4/site-packages/numpy/core/include conn.o fmesh_wrapper.o fmesh.o grav.o -lpython3.4 -lgfortran -o conn
+still
+
+fmesh_wrapper.o: In function `c_mesh_exp':
+fmesh_wrapper.f90:(.text+0x74): undefined reference to `pyx_pw_4grav_3samplefunc_'
+
+it's simply not found, due to
+- no start with __
+- no ending _ (automatically appended to fortran call)
+
+- try to include __ in fortran fmesh_wrapper.f90 file:
+gfortran  -c fmesh_wrapper.f90 -o fmesh_wrapper.o
+fmesh_wrapper.f90:20.8:
+
+    call __pyx_pw_4grav_3samplefunc()
+        1
+Error: Syntax error in CALL statement at (1)
+Makefile:18: recipe for target 'mesh' failed
+
+- search for option to gfortran to allow underscores in front of function calls?
+no way, it is an illegal name by the fortran95 standard
+- or is it prohibited by fortran90 (or 2003) definition?
+yes.
+
+- small step forward:
+FOPTS=-fno-underscoring
+should keep the compiler from adding an underscore at the end in fmesh_wrapper.f90
+verified, external call does not have ending _,
+                 U pyx_pw_4grav_3samplefunc
+
+
+- in which case I need to rename it in the grav.c output before compiling it
+- or tell cython to stop this __ behavior
+- replace the __pyx_mdef_4grav_3* with pyx_mdef_4grav_3* by hand
+fmesh_wrapper.o: In function `c_mesh_exp':
+fmesh_wrapper.f90:(.text+0x74): undefined reference to `pyx_mdef_4grav_3samplefunc'
+
+- also try the pf ?
+pf shows same problem
+
+- in conn.pyx,
+cdef extern:
+    void pyx_mdef_4grav_3samplefunc();
+
+make it known
+
+hm. no definiton of pyx_*sample* found in conn.o
+
+- simplification: automatically replace the __pyx_mdef with pyx_mdef
+sed -i 's/__pyx_mdef/pyx_mdef/g' grav.c
+in Makefile after cython ... grav.py
+
+- and do the same in conn.c
+- when compiling
+	gcc $(WARN) -I/usr/include/python3.4/ -I/usr/lib64/python3.4/site-packages/numpy/core/include conn.o grav.o -lpython3.4 -lgfortran -o conn
+(so only using conn.o with reference to pyx_mdef_4grav_3samplefunc) and then supplying it in grav.o, we get
+
+conn.o: In function `__pyx_pf_4conn_samplefunc':
+conn.c:(.text+0x53c): undefined reference to `pyx_mdef_4grav_3samplefunc'
+
+and same for conn.c grav.c
+
+it is defined in grav.o, though
+o> nm grav.o|grep samplefunc
+0000000000000160 d __pyx_doc_4grav_2samplefunc
+000000000000003c d __pyx_k_samplefunc
+00000000000001a0 d pyx_mdef_4grav_3samplefunc
+0000000000000090 b __pyx_n_s_samplefunc
+0000000000000264 t __pyx_pf_4grav_2samplefunc
+0000000000000236 t __pyx_pw_4grav_3samplefunc
+
+- without the replacements, have the same output
+so it is the function called in conn.pyx that is not defined
+changed it back to the __pyx value, everywhere, still same
+
+can call the fortran-defined c_mesh_exp, from inside conn.pyx, though,
+
+
+so: conn.o shows difference between function calls to c_mesh_exp and __pyx_mdef...?
+U c_mesh_exp
+
+00000000000004c0 d __pyx_mdef_4conn_1samplefunc
+                 U __pyx_mdef_4grav_3samplefunc
+
+well, both are undefined, and only given later by a *.o
+
+- difference in fmesh_wrapper.o and grav.o?
+0000000000000000 T c_mesh_exp
+
+0000000000000160 d __pyx_doc_4grav_2samplefunc
+00000000000000a8 b __pyx_kp_u_worked_in_sample_func
+000000000000003c d __pyx_k_samplefunc
+0000000000000050 d __pyx_k_worked_in_sample_func
+00000000000001a0 d __pyx_mdef_4grav_3samplefunc
+0000000000000090 b __pyx_n_s_samplefunc
+0000000000000264 t __pyx_pf_4grav_2samplefunc
+0000000000000236 t __pyx_pw_4grav_3samplefunc
+
+- what are the meanings of the nm output (number) TYPE (name)?
+           "U" The symbol is undefined.
+
+           "T"
+           "t" The symbol is in the text (code) section.
+           "D"
+           "d" The symbol is in the initialized data section.
+           "B"
+           "b" The symbol is in the uninitialized data section (known as BSS).
+
+- no different handling in Makefile, just different compilers
+- enabled all warnings, recompiling
+
+gcc -Wall  -I/usr/include/python3.4/ -I/usr/lib64/python3.4/site-packages/numpy/core/include -lpython3.4 -c conn.c
+In file included from /usr/lib64/python3.4/site-packages/numpy/core/include/numpy/ndarraytypes.h:1760:0,
+                 from /usr/lib64/python3.4/site-packages/numpy/core/include/numpy/ndarrayobject.h:17,
+                 from /usr/lib64/python3.4/site-packages/numpy/core/include/numpy/arrayobject.h:4,
+                 from conn.c:232:
+/usr/lib64/python3.4/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:15:2: warning: #warning "Using deprecated NumPy API, disable it by " "#defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-Wcpp]
+ #warning "Using deprecated NumPy API, disable it by " \
+
+- deprecated old numpy api. numpy is installed in version 1.8.0-r1, seems to be more recent
+
+- file  /usr/lib64/python3.4/site-packages/numpy/core/include/numpy/ndarraytypes.h belongs to dev-python/numpy-1.8.0-r1
+- has some hints in it that newer versions should not use deprecated_api.h
+- trying to circumvent problem with accept_keywords = ~amd64 for dev-python/numpy
+- scipy 0.14.0 required numpy-1.8, removing scipy
+- installation now possible
+- what version of scipy does not depend on numpy-1.8 anymore?
+- scipy-0.14.0 needs numpy-1.9.1 (heh? should have worked)
+- merge of numpy failed: fetch not possible, network down. logged in to eth-5 again
+- merge compiling for python2.7 and 3.4
+- stopped cdap.sh, not needed at the moment, many java-vms closed (order of 200)
+- merge successful, trying to merge scipy again
+- needed lapack for numpy, enabled, recompiling numpy
+- python3.4 can import numpy
+- scipy compiles, can be imported
+- warning still shows up, seems to be a problem inside arrayobject.h, included from conn.c
+- pass -DNPY_NO_DEPRECATED_API to compilation of conn.c
+- done, not working
+- trying with -DNPY_1_7_API_VERSION=9   instead of   0x0000007
+- not helping, disabling these warnings
+- still have undefined references to __pyx_mdef... in conn.o
+
+- void in function call does not work, unknown
+
+****** DONE numpy with USE=lapack
+****** DONE search for packages depending on numpy < 1.9.1
+none specifically on an older version, only for >1.6, >1.7
+****** DONE check whether SWIG will save us, starting from a common C file defining the connections
+    CLOCK: [2014-11-26 Wed 12:51]--[2014-11-26 Wed 12:51] =>  0:00
+http://swig.org/exec.html
+too bad, not as per default
+***** TODO add MPI support to master python file, along the lines of 64, or using mpi4py examples somewhere
+      :PROPERTIES:
+      :ID:       718405bc-0746-4c3d-8a1f-9f07d0d4839f
+      :END:
