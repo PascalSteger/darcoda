@@ -1,7 +1,0 @@
-macro read make.sm
-make
-!gv out.eps
-macro read make.sm
-make
-!gv out.eps
-quit
