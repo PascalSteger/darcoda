@@ -31,15 +31,11 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C) #outputs rho across all points
 
     tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
-    print ('before 1')
     tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:-1], 0, gp)
-    print ('after 1')
     tmp_profs.kz_rho_DM_LS = kz_rho_DM_allz[-1]
 
     tmp_profs.rho_DM_C = tmp_rho_DM_allz[0]
-    print ('before 2')
     tmp_profs.set_prof('rho_DM_vec', tmp_rho_DM_allz[1:-1], 0, gp)
-    print ('after 2')
     tmp_profs.rho_DM_LS = tmp_rho_DM_allz[-1]
     off += offstep
 
@@ -59,12 +55,10 @@ def geom_loglike(cube, ndim, nparams, gp):
 
         tmp_profs.kz_nu_C = kz_nu_allz[0]
         tmp_profs.set_prof('kz_nu_vec', kz_nu_allz[1:-1], 0, gp)
-        print ('after 3')
         tmp_profs.kz_nu_LS = kz_nu_allz[-1]
 
         tmp_profs.nu_C = tmp_nu_allz[0]
         tmp_profs.set_prof('nu_vec', tmp_nu_allz[1:-1], tracer_pop, gp)
-        print ('after 4')
         tmp_profs.nu_LS = tmp_nu_allz[-1]
         off += offstep
 
@@ -76,18 +70,15 @@ def geom_loglike(cube, ndim, nparams, gp):
     Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_DM_allz) #SS not orrect zvec
     tmp_profs.Sig_DM_C = Sig_DM_allz[0]
     tmp_profs.set_prof('Sig_DM_vec', Sig_DM_allz[1:-1], 0, gp)
-    print ('after 5')
     tmp_profs.Sig_DM_LS = Sig_DM_allz[-1]
 
     #Calculate sigma (velocity dispersion)
     try:
         sigz_vecLS = phys.sigz(gp.z_all_pts, Sig_DM_allz, tmp_nu_allz, norm)
     except ValueError:
-        pdb.set_trace()
+        raise ValueError('negative value in sig2 array')
         return
-    print ('before 6')
-    tmp_profs.set_prof('sig_vec', sigz_vecLS[0:-1], 0, gp)
-    print ('after 6')
+    tmp_profs.set_prof('sig_vec', sigz_vecLS[1:-1], 0, gp)
     tmp_profs.sig_LS = sigz_vecLS[-1]
 
     # determine log likelihood

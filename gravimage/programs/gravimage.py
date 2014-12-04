@@ -68,8 +68,6 @@ def myloglike(cube, ndim, nparams):
     try:
         tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     except ValueError:
-        print ('value error propagated to myloglike in gravlite')
-        pdb.set_trace()
         return -1e100  # SS: think about sign...
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
