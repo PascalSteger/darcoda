@@ -94,16 +94,19 @@ class Params():
             # nrho +1  params for nu, plus the number of params for all baryon pops
 
         #Limits for central densities (z=0)
-        self.rho_C_max = 0.2 #Msun pc^-3, for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
+#        self.rho_C_max = 0.2 #Msun pc^-3, for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
+        self.rho_C_max = 0.2*1.E9  #Msun kpc^-3
         self.rho_C_min = 0.0 #Msun pc^-3
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
 
         #Limits for central kz values (z=0)
         self.kz_rho_C_max = 10.0
-        self.kz_rho_C_min = 0.0
+#        self.kz_rho_C_min = 0.0
+        self.kz_rho_C_min = -1.0 #SS
         self.kz_nu_C_max = 10.0
-        self.kz_nu_C_min = 0.0
+#        self.kz_nu_C_min = 0.0
+        self.kz_nu_C_min = -1.0 #SS
 
         #Maximum kz_slope (=dk/dz)
         self.max_kz_slope = 5.0

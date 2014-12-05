@@ -214,12 +214,9 @@ class Cube:
         pc = self.cube
         off = 0
         offstep = 1
-        #pdb.set_trace()
         IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
         IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
-
         pc[off] = IntC_min+(IntC_max-IntC_min)*pc[off]
-        #pc[off] = pc[off]*200-100+17**2 # for normalization C
         off += offstep
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector, kz_LS

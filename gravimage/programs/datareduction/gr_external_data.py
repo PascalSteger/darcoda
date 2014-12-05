@@ -49,8 +49,8 @@ def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigdat, sig
 
 def run(gp):
     global K,C,D,F, zth, zp_kz, zmin, zmax, z0, z02
-    external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw.dat'
-#    external_file='/home/sofia/darcoda/gravlite/Data_Sets/simplenu_sigz_raw.dat'
+#    external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw.dat'
+    external_file='/home/sofia/darcoda/gravlite/Data_Sets/simplenu_sigz_raw.dat'
     external_data = np.loadtxt(external_file)
     z_data = external_data[:, 0] #[kpc]
     v_data = external_data[:, 1] #[km/s]
