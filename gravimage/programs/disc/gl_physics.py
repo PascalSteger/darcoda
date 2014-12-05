@@ -38,7 +38,7 @@ def Sig(zvec, rhovec):
 # New function for calculating the z-dir velocity dispersion
 def sigz(zvec,Sigvec,nuvec,C):
     G1 = 4.299*1e-6  # Newton's constant in strange units (added 1e-6 to get sig in km/s)
-    Sigvec = 10000.*Sigvec  # Remove hideous bodge TODO FIXME
+    #Sigvec = 10000.*Sigvec  # Remove hideous bodge TODO FIXME
     Kzvec = -2.*constants.pi*G1*Sigvec
 #    Kzvec = -2.*constants.pi*G1*Sigvec[1:]
 #    zvec1 = zvec[1:]

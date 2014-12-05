@@ -33,8 +33,12 @@ def unit(prof):
         unit = '[1]'
     elif prof == 'Sig':
         unit = '[(Msun/pc^3)]'
-    elif prof == 'sig':
+    elif prof == 'sig' or prof == 'sig_vec':
         unit = '[km/s]'
+    elif prof == 'nu_vec':
+        unit = '[stars/kpc^3]'
+    elif prof == 'rho_DM_vec':
+        unit = '[Msum/kpc^3]'
     else:
         unit = 'a.u.'
     return unit
@@ -400,8 +404,11 @@ class ProfileCollection():
         if prof=='chi2':
             ax.set_xlabel('$\\log_{10}\\chi^2$')
             ax.set_ylabel('frequency')
-        else:
+        elif gp.geom == 'disc' and prof != 'chi2':
+            ax.set_xlabel('$z\\quad[\\rm{kpc}]$')
+        elif gp.geom == 'sphere' and prof != 'chi2':
             ax.set_xlabel('$R\\quad[\\rm{pc}]$')
+
         if prof == 'rho':
             ax.set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
         elif prof == 'M':
@@ -428,6 +435,24 @@ class ProfileCollection():
             ax.set_ylabel('$n_{\\nu,'+str(pop)+'}(r)$')
         elif prof == 'sig':
             ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\\quad[\\rm{km}/\\rm{s}]$')
+        elif prof == 'nu_vec':
+            ax.set_ylabel('$\\nu_{\\rm{Tr},'+str(pop)+'}\\quad[\\rm{stars}/\\rm{kpc}^3]$')
+        elif prof == 'sig_vec':
+            ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
+        elif prof == 'rho_DM_vec':
+            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+
+
+
+#
+#
+#        elif prof == 'sig' or prof == 'sig_vec':
+#        unit = '[km/s]'
+#    elif prof == 'nu_vec':
+#        unit = '[stars/kpc^3]'
+#    elif prof == 'rho_DM_vec':
+#        unit = '[Msum/kpc^3]'
+
         return
     ## \fn plot_labels(self, ax, prof, pop, gp)
     # draw x and y labels
