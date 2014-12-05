@@ -92,7 +92,7 @@ def runif(cmd1, cmd2, calc, show, runi):
     if(runi):
         os.system(cmd)
 
-        
+
 def threadif(cmd1, cmd2, run1, run2, show, runi):
     # cmd = ""
     if(run1):
@@ -148,7 +148,7 @@ def txt2img(fi,text,bg="#ffffff",fg="#000000",font="FreeSans.ttf",FontSize=14):
     # put the (somewhat) transparent bg on the main
     img.paste(imgbg, mask=mask)
     # add some text to the main
-    draw.text((10,0), text, font=fnt, fill=bg)      
+    draw.text((10,0), text, font=fnt, fill=bg)
     del draw
     img.save(img_name,"PNG",quality=100)#"JPEG",quality=100)
 
@@ -206,15 +206,10 @@ def get_xyzr(snap):
 
 
 def sqlstart():
-    #igloo
-    #connection = MySQLdb.connect('igloo.dhcp.phys.ethz.ch','psteger','Pinux10','astro')
-
-    #[TODO] only laptop home
-    #connection = MySQLdb.connect('129.132.211.79','psteger','Pinux10','astro')
-    connection = MySQLdb.connect('84.75.168.98','psteger','Pinux10','astro')
-    #connection = MySQLdb.connect('dyng.dyndns.org', 'psteger', 'Pinux10', 'astro')
-    #connection = MySQLdb.connect('dyng.dyndns.org', 'root', 'Sinux10', 'astro')
-    #connection = MySQLdb.connect('80.218.64.180','root','Sinux10','astro')
+    # TODO: ask for username and password
+    user = input("Enter mySQL username: ")
+    somesecstring = input(" .. and his little secret: ")
+    connection = MySQLdb.connect('http://steger.aero', user, somesecstring, user)
     cursor = connection.cursor()
     return connection, cursor
 

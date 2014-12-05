@@ -1,9 +1,0 @@
-subroutine output_rectest
-  use amr_commons
-  use hydro_commons, ONLY: nvar, uold
-  implicit none
-
-  integer::ilevel,ivar
-  if(verbose)write(*,*)'Entering output_rectest'
-
-end subroutine output_rectest
