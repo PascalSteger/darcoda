@@ -71,7 +71,7 @@ def run(gp):
 
     star_count = len(z_data)
     gp.nu_C_max = 2.*star_count/(binmax[0]-binmin[0])
-    gp.nu_C_max = 0.1*star_count/(binmax[-1]-binmin[0])
+    gp.nu_C_min = 0.1*star_count/(binmax[-1]-binmin[0])
 
     import gr_params #WHAT DOES THIS DO.
     gpr = gr_params.Params(gp)
