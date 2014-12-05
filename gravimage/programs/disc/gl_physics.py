@@ -38,16 +38,10 @@ def Sig(zvec, rhovec):
 # New function for calculating the z-dir velocity dispersion
 def sigz(zvec,Sigvec,nuvec,C):
     G1 = 4.299*1e-6  # Newton's constant in (km)^2*kpc/(Msun*s^2)
-#    Sigvec = 10000.*Sigvec  # Remove hideous bodge TODO FIXME
     Kzvec = -2.*constants.pi*G1*Sigvec
-#    Kzvec = -2.*constants.pi*G1*Sigvec[1:]
-#    zvec1 = zvec[1:]
-#    nuvec1 = nuvec[1:]
     integral = integrate.cumtrapz(nuvec*Kzvec,zvec,initial=0.) + C
     sig2 = integral/nuvec
     print ('in sigz func, sig2=',sig2)
-#    print ('integral-C=',integral-C,' C=',C)
-#    print ('Sigvec=',Sigvec)
     if (any(sig2<0.)):
         print ('Negative sig2 found in phys.sigz')
         raise ValueError('negative value in sig2 array')

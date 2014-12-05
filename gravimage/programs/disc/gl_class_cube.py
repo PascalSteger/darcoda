@@ -54,7 +54,7 @@ def map_tiltstar(pa, gp):
 def map_kr(params, prof, pop, gp):
     # params[0] for central value of rho or nu
     # params[1] for central value of kz (for rho or nu)
-
+    #pdb.set_trace()
     if prof == 'rho':
         rhonu_C_max = gp.rho_C_max
         rhonu_C_min = gp.rho_C_min
@@ -214,7 +214,9 @@ class Cube:
         pc = self.cube
         off = 0
         offstep = 1
-        pc[off] = pc[off]*200.-100.+20.**2 # sigz^2 at z=0
+        IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
+        IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
+        pc[off] = IntC_min+(IntC_max-IntC_min)*pc[off]
         off += offstep
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector, kz_LS
