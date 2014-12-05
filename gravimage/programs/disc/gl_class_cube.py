@@ -214,7 +214,7 @@ class Cube:
         pc = self.cube
         off = 0
         offstep = 1
-        pc[off] = pc[off]*200-100+17**2 # for normalization C
+        pc[off] = pc[off]*200.-100.+20.**2 # sigz^2 at z=0
         off += offstep
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector, kz_LS
