@@ -75,6 +75,7 @@ def myloglike(cube, ndim, nparams):
 # stored with actual parameters
 
 def prepare_data(gp):
+    # TODO do not get new data if restarting
     if gp.getnewdata:
         if gp.getnewpos:
             gf.read_data(gp)
@@ -118,7 +119,7 @@ def run(gp):
                     outputfiles_basename = gp.files.outdir,
                     seed = -1,
                     verbose = True,
-                    resume = False,
+                    resume = gp.restart,   # TODO check
                     context = 0,
                     write_output = True,
                     log_zero = -1e500,    # points with log likelihood

@@ -26,6 +26,11 @@ def check_investigate(inv):
 
 class Params():
     def __init__(self, timestamp = '', investigate = '', case = -1):
+        if timestamp != '':
+            self.restart = False
+        else:
+            self.restart = True
+
         if investigate != '':
             self.investigate = investigate
         else:
@@ -55,6 +60,7 @@ class Params():
         # data options
         # ----------------------------------------------------------------------
         self.getnewdata = True # get new data computed from observations before burn-in
+        if self.restart: self.getnewdata = False
         self.getnewpos  = True # get new positions of particles, important for Hernquist runs
         if self.getnewdata == False: self.getnewpos = False
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -195,8 +201,8 @@ class Params():
             self.maxsiglos.append(1.);        self.maxsiglos.append(1.)
     ## \fn __init__(self, timestamp = '')
     # set up all parameters used in the course of the MultiNest run,
-    # and the analysis routines in plot_multinest @param timestamp =
-    # '', for output
+    # and the analysis routines in plot_multinest
+    # @param timestamp = '', for new output. set to some existing output dir for restart, plotting
 
 
     def __repr__(self):
