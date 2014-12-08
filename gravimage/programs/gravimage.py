@@ -88,7 +88,7 @@ def prepare_data(gp):
 # @param gp global parameters
 
 def run(gp):
-    pymultinest.run(myloglike,
+    multinest.run(myloglike,
                     myprior,
                     gp.ndim,
                     n_params = gp.ndim+1, # None beforehands
@@ -143,7 +143,7 @@ if __name__=="__main__":
     # import sys
     # sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
-    # TODO: wait for prepare_data to finish
+    # TODO MPI: wait for prepare_data to finish
     # if MPI.COMM_WORLD.Get_rank() == 0:
     #     # TODO: wrong: have 0 take part in sampling as well
     prepare_data(gp) # run once

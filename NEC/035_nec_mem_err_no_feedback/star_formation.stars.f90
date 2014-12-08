@@ -15,9 +15,9 @@ subroutine star_formation(ilevel)
   integer::ilevel
   !----------------------------------------------------------------------
   ! Description: This subroutine spawns star-particle of constant mass
-  ! using a Poisson probability law if some gas condition are fulfilled. 
-  ! It modifies hydrodynamic variables according to mass conservation 
-  ! and assumes an isothermal transformation... 
+  ! using a Poisson probability law if some gas condition are fulfilled.
+  ! It modifies hydrodynamic variables according to mass conservation
+  ! and assumes an isothermal transformation...
   ! On exit, the gas velocity and sound speed are unchanged.
   ! New star particles are synchronized with other collisionless particles.
   ! Array flag2 is used as temporary work space.
@@ -43,7 +43,7 @@ subroutine star_formation(ilevel)
   real(dp)::velc,uc,vc,wc
   real(dp)::vxgauss,vygauss,vzgauss,birth_epoch
   real(kind=8)::mlost,mtot,mlost_all,mtot_all
-  real(kind=8)::RandNum,GaussNum,PoissMean   
+  real(kind=8)::RandNum,GaussNum,PoissMean
   real(dp)::vsn,costheta,sintheta,phi,cosphi,sinphi,twopi
   real(dp),dimension(1:3)::skip_loc
   real(dp)::dx,dx_loc,scale,vol_loc,dx_min,vol_min
@@ -56,18 +56,18 @@ subroutine star_formation(ilevel)
   integer ,dimension(1:nvector),save::list_debris,ind_debris1,ind_debris2
   logical ,dimension(1:nvector),save::ok,ok_new=.true.,ok_true=.true.
   integer ,dimension(1:ncpu)::ntot_star_cpu,ntot_star_all
-  
+
   if(numbtot(1,ilevel)==0) return
   if(.not. hydro)return
   if(ndim.ne.3)return
 
   if(verbose)write(*,*)' Entering star_formation'
-  
+
   ! Conversion factor from user units to cgs units
   call units(scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2)
 
   ! Mesh spacing in that level
-  dx=0.5D0**ilevel 
+  dx=0.5D0**ilevel
   nx_loc=(icoarse_max-icoarse_min+1)
   skip_loc=(/0.0d0,0.0d0,0.0d0/)
   if(ndim>0)skip_loc(1)=dble(icoarse_min)
@@ -122,7 +122,7 @@ subroutine star_formation(ilevel)
   birth_epoch=t
 
   ! Cells center position relative to grid center position
-  do ind=1,twotondim  
+  do ind=1,twotondim
      iz=(ind-1)/4
      iy=(ind-1-4*iz)/2
      ix=(ind-1-2*iy-4*iz)
@@ -147,7 +147,7 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     do ind=1,twotondim  
+     do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
@@ -267,7 +267,7 @@ subroutine star_formation(ilevel)
     stop
 #endif
   end if
-  
+
   !---------------------------------
   ! Compute global stars statistics
   !---------------------------------
@@ -316,19 +316,19 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     
+
      ! Loop over cells
      do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
         end do
-        
+
         ! Flag cells with at least one new star
         do i=1,ngrid
            ok(i)=flag2(ind_cell(i))>0
         end do
-        
+
         ! Gather new star arrays
         nnew=0
         do i=1,ngrid
@@ -340,11 +340,11 @@ subroutine star_formation(ilevel)
              enddo
            end if
         end do
-        
+
         ! Update linked list
         call remove_free(ind_part,nnew)
         call add_list(ind_part,ind_grid_new,ok_new,nnew)
-        
+
         ! Calculate new star particle and modify gas density
         do i=1,nnew
 
@@ -367,7 +367,7 @@ subroutine star_formation(ilevel)
              x=(xg(ind_grid_new(i),1)+xc(ind,1)+fboom*1d-2*dx-skip_loc(1))*scale
              y=(xg(ind_grid_new(i),2)+xc(ind,2)+fboom*1d-2*dx-skip_loc(2))*scale
              z=(xg(ind_grid_new(i),3)+xc(ind,3)+fboom*1d-2*dx-skip_loc(3))*scale
- 
+
 
              ! Set new star particle variables
              tp(ind_part(i))=birth_epoch  ! Birth epoch
@@ -383,7 +383,7 @@ subroutine star_formation(ilevel)
              vp(ind_part(i),3)=w
              if(metal)zp(ind_part(i))=zg  ! Initial star metallicity
              print *, mp(ind_part(i)),idp(ind_part(i)),noboom,fboom
-           
+
         end do
         ! End loop over new star particles
 
@@ -406,7 +406,7 @@ subroutine star_formation(ilevel)
      ! End loop over cells
   end do
   ! End loop over grids
-  
+
   !---------------------------------------------------------
   ! Convert hydro variables back to conservative variables
   !---------------------------------------------------------
@@ -416,7 +416,7 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     do ind=1,twotondim  
+     do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
@@ -455,353 +455,9 @@ subroutine star_formation(ilevel)
 
 #endif
 
-end subroutine star_formation 
-!################################################################
-!################################################################
-!################################################################
-!################################################################
-subroutine feedback(ilevel)
-  use pm_commons
-  use amr_commons
-  implicit none
-  integer::ilevel,ii
-  !------------------------------------------------------------------------
-  ! This routine computes the thermal energy, the kinetic energy and 
-  ! the metal mass dumped in the gas by exploding star particles, 
-  ! called here debris particles, after a time delay t_delay.
-  !------------------------------------------------------------------------
-  real(dp)::scale_nH,scale_T2,scale_l,scale_d,scale_t,scale_v,t0,scale,dx_min,vsn,vdebris
-  integer::igrid,jgrid,ipart,jpart,next_part
-  integer::i,ig,ip,npart1,npart2,icpu,nx_loc
-  integer,dimension(1:nvector),save::ind_grid,ind_part,ind_grid_part
+end subroutine star_formation
 
-  if(numbtot(1,ilevel)==0)return
-  if(verbose)write(*,111)ilevel
 
-#if NDIM==3
-  ! Conversion factor from user units to cgs units
-  call units(scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2)
-
-  ! Mesh spacing in that level
-  nx_loc=(icoarse_max-icoarse_min+1)
-  scale=boxlen/dble(nx_loc)
-  dx_min=(0.5D0**nlevelmax)*scale
-
-  ! Supernovae debris velocity in cgs
-  vsn=sqrt(2.0*1d51/(10.*2d33))/sqrt(1d0+f_w)
-  ! Compute debris flight time in Myr
-  t_delay=1.0d1  !(2.0*dx_min*scale_l/aexp/vsn) / (1d6*365.*24.*3600.)    !OSCAR 
-
-  ! Time delay from Myr to code units
-  t0=t_delay*1d6*(365.*24.*3600.)/scale_t
-  ! Compute debris velocity in code units
-  vdebris=vsn/scale_v
-  ! Gather debris particles only.
-
-  ! Loop over cpus
-  do icpu=1,ncpu
-     igrid=headl(icpu,ilevel)
-     ig=0
-     ip=0
-     ! Loop over grids
-     do jgrid=1,numbl(icpu,ilevel)
-        npart1=numbp(igrid)  ! Number of particles in the grid
-        npart2=0
-        
-        ! Count old enough debris particles
-        if(npart1>0)then
-           ipart=headp(igrid)
-           ! Loop over particles
-           do jpart=1,npart1
-              ! Save next particle   <--- Very important !!!
-              next_part=nextp(ipart)
-              if(idp(ipart).eq.0.and.tp(ipart).lt.(t-t0))then
-                 npart2=npart2+1
-              elseif( (tp(ipart).lt.(t0-t0))&
-     &                .and.(mp(ipart).gt.star_mass*.9) )then
-                 npart2=npart2+1
-              endif
-              ipart=next_part  ! Go to next particle
-           end do
-        endif
-        
-        ! Gather old enough debris particles
-        if(npart2>0)then        
-           ig=ig+1
-           ind_grid(ig)=igrid
-           ipart=headp(igrid)
-           ! Loop over particles
-           do jpart=1,npart1
-              ! Save next particle   <--- Very important !!!
-              next_part=nextp(ipart)
-              if(ig==0)then
-                 ig=1
-                 ind_grid(ig)=igrid
-              end if
-              ! Select only debris particles
-              if(idp(ipart).eq.0.and.tp(ipart).lt.(t-t0))then
-                 ip=ip+1
-                 ind_part(ip)=ipart
-                 ind_grid_part(ip)=ig   
-              elseif( (tp(ipart).lt.(t0-t0)) &
-     &              .and.(mp(ipart).gt.star_mass*.9) )then
-                 ip=ip+1
-                 ind_part(ip)=ipart
-                 ind_grid_part(ip)=ig
-              endif
-              if(ip==nvector)then
-                 call sn2(ind_grid,ind_part,ind_grid_part,ig,ip,ilevel,vdebris)
-                 ip=0
-                 ig=0
-              end if
-              ipart=next_part  ! Go to next particle
-           end do
-           ! End loop over particles
-        end if
-
-        igrid=next(igrid)   ! Go to next grid
-     end do
-
-     ! End loop over grids
-     if(ip>0)call sn2(ind_grid,ind_part,ind_grid_part,ig,ip,ilevel,vdebris)
-  end do 
-  ! End loop over cpus
-
-#endif
-
-111 format('   Entering feedback for level ',I2)
-
-end subroutine feedback
-!################################################################
-!################################################################
-!################################################################
-!################################################################ 
-subroutine sn2(ind_grid,ind_part,ind_grid_part,ng,np,ilevel,vdebris)
-  use amr_commons
-  use pm_commons
-  use hydro_commons
-  use cooling_module, only:neq_spec,dust
-  implicit none
-  integer::ng,np,ilevel,ii
-  integer,dimension(1:nvector)::ind_grid
-  integer,dimension(1:nvector)::ind_grid_part,ind_part
-  !-----------------------------------------------------------------------
-  ! This routine is called by subroutine feedback. Each debris particle
-  ! dumps mass, momentum and energy in the nearest grid cell using array
-  ! uold.
-  !-----------------------------------------------------------------------
-  integer::i,j,idim,nx_loc,nn
-  real(dp)::xxx,mmm,ethermal,vdebris,zdebris
-  real(dp)::dx,dx_loc,scale,vol_loc,d
-  logical::error,remove_part
-  ! Grid based arrays
-  real(dp),dimension(1:nvector,1:ndim),save::x0
-  integer ,dimension(1:nvector),save::ind_cell
-  integer ,dimension(1:nvector,1:threetondim),save::nbors_father_cells
-  integer ,dimension(1:nvector,1:twotondim),save::nbors_father_grids
-  ! Particle based arrays
-  integer,dimension(1:nvector),save::igrid_son,ind_son
-  integer,dimension(1:nvector),save::list1
-  logical,dimension(1:nvector),save::ok,ok_true=.true.
-  real(dp),dimension(1:nvector),save::meff
-  real(dp),dimension(1:nvector,1:ndim),save::x
-  integer ,dimension(1:nvector,1:ndim),save::id,igd,icd
-  integer ,dimension(1:nvector),save::igrid,icell,indp,kg
-  real(dp),dimension(1:3)::skip_loc
-  real(dp)::scale_nH,scale_T2,scale_l,scale_d,scale_t,scale_v
-
-  ! Mesh spacing in that level
-  call units(scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2)
-  dx=0.5D0**ilevel 
-  nx_loc=(icoarse_max-icoarse_min+1)
-  skip_loc=(/0.0d0,0.0d0,0.0d0/)
-  if(ndim>0)skip_loc(1)=dble(icoarse_min)
-  if(ndim>1)skip_loc(2)=dble(jcoarse_min)
-  if(ndim>2)skip_loc(3)=dble(kcoarse_min)
-  scale=boxlen/dble(nx_loc)
-  dx_loc=dx*scale
-  vol_loc=dx_loc**ndim
-
-  zdebris=yield/(1d0+f_w)
-
-#if NDIM==3
-  ! Lower left corner of 3x3x3 grid-cube
-  do idim=1,ndim
-     do i=1,ng
-        x0(i,idim)=xg(ind_grid(i),idim)-3.0D0*dx
-     end do
-  end do
-
-  ! Gather 27 neighboring father cells (should be present anytime !)
-  do i=1,ng
-     ind_cell(i)=father(ind_grid(i))
-  end do
-  call get3cubefather(ind_cell,nbors_father_cells,nbors_father_grids,ng,ilevel)
-
-  ! Rescale position at level ilevel
-  do idim=1,ndim
-     do j=1,np
-        x(j,idim)=xp(ind_part(j),idim)/scale+skip_loc(idim)
-     end do
-  end do
-  do idim=1,ndim
-     do j=1,np
-        x(j,idim)=x(j,idim)-x0(ind_grid_part(j),idim)
-     end do
-  end do
-  do idim=1,ndim
-     do j=1,np
-        x(j,idim)=x(j,idim)/dx
-     end do
-  end do
-
-  ! Check for illegal moves
-  error=.false.
-  do idim=1,ndim
-     do j=1,np
-        if(x(j,idim)<=0.0D0.or.x(j,idim)>=6.0D0)error=.true.
-     end do
-  end do
-  if(error)then
-     write(*,*)'problem in sn2'
-     write(*,*)ilevel,ng,np
-     stop
-  end if
-
-  ! NGP at level ilevel
-  do idim=1,ndim
-     do j=1,np
-        id(j,idim)=x(j,idim)
-     end do
-  end do
-
-   ! Compute parent grids
-  do idim=1,ndim
-     do j=1,np
-        igd(j,idim)=id(j,idim)/2
-     end do
-  end do
-  do j=1,np
-     kg(j)=1+igd(j,1)+3*igd(j,2)+9*igd(j,3)
-  end do
-  do j=1,np
-     igrid(j)=son(nbors_father_cells(ind_grid_part(j),kg(j)))
-  end do
-
-  ! Check if particles are entirely in level ilevel
-  ok(1:np)=.true.
-  do j=1,np
-     ok(j)=ok(j).and.igrid(j)>0
-  end do
-
-  ! If not, rescale position at level ilevel-1
-  do idim=1,ndim
-     do j=1,np
-        if(.not.ok(j))then
-           x(j,idim)=x(j,idim)/2.0D0
-        end if
-     end do
-  end do
-  ! If not, redo NGP at level ilevel-1
-  do idim=1,ndim
-     do j=1,np
-        if(.not.ok(j))then
-           id(j,idim)=x(j,idim)
-        end if
-     end do
-  end do
-
-  ! Compute parent cell position
-  do idim=1,ndim
-     do j=1,np
-        if(ok(j))then
-           icd(j,idim)=id(j,idim)-2*igd(j,idim)
-        else
-           icd(j,idim)=id(j,idim)
-        end if
-     end do
-  end do
-  do j=1,np
-     if(ok(j))then
-        icell(j)=1+icd(j,1)+2*icd(j,2)+4*icd(j,3)
-     else
-        icell(j)=1+icd(j,1)+3*icd(j,2)+9*icd(j,3)   
-     end if
-  end do
-        
-  ! Compute parent cell adresses and particle effective mass
-  do j=1,np
-     if(ok(j))then
-        indp(j)=ncoarse+(icell(j)-1)*ngridmax+igrid(j)
-        !if(zp(ind_part(j))>metal_thresh)then
-        if(idp(ind_part(j))>0)then
-          meff(j)=star_mass*0.1/vol_loc
-        else
-          meff(j)=mp(ind_part(j))/vol_loc 
-        endif
-     else
-        indp(j)=nbors_father_cells(ind_grid_part(j),icell(j))
-        !if(zp(ind_part(j))>metal_thresh)then
-        if(idp(ind_part(j))>0)then
-          meff(j)=star_mass*0.1/vol_loc/dble(twotondim)
-        else
-          meff(j)=mp(ind_part(j))/vol_loc/dble(twotondim)
-        endif
-     end if
-  end do
-
-  ! Update hydro variables due to feedback 
-  do j=1,np
-     ethermal=meff(j)*(1d51/2d33/10d0/scale_v**2)
-     d=uold(indp(j),1)
-     uold(indp(j),1)=uold(indp(j),1)+meff(j)   !We must dump mass for conservation
-#ifdef NONEQCHEM
-           !ACB make sure to adjust chemical species, too.
-           d=uold(indp(j),1)/d
-           nn=neq_spec
-           if (.not.dust)nn=nn-1
-           do ii=1,nn
-              uold(indp(j),6+ii)=uold(indp(j),6+ii)*d
-           enddo
-#endif
-     uold(indp(j),2)=uold(indp(j),2)+meff(j)*vp(ind_part(j),1)
-     uold(indp(j),3)=uold(indp(j),3)+meff(j)*vp(ind_part(j),2)
-     uold(indp(j),4)=uold(indp(j),4)+meff(j)*vp(ind_part(j),3)
-     uold(indp(j),5)=uold(indp(j),5)+0.5d0*meff(j)*(vp(ind_part(j),1)**2+&
-          & vp(ind_part(j),2)**2+vp(ind_part(j),3)**2)+ethermal
-  end do
-  if(metal)then
-     do j=1,np
-        uold(indp(j),6)=uold(indp(j),6)+meff(j)*(zp(ind_part(j))+zdebris) ! always same debris
-     end do
-  endif
-
-  ! Parent particle linked list
-  remove_part=.false.
-  do j=1, np
-    if(idp(ind_part(j))==0) remove_part=.true.
-  enddo
-  if (remove_part) then
-    do j=1,np
-       list1(j)=ind_grid(ind_grid_part(j))
-    end do 
-
-  ! Remove debris particle
-    call remove_list(ind_part,list1,ok_true,np)
-    call add_free_cond(ind_part,ok_true,np)
-  else
-    do j=1,np
-      mp(ind_part(j))=mp(ind_part(j))-star_mass*.1
-    enddo
-  endif
-
-#endif
-  
-end subroutine sn2
-!################################################################
-!################################################################
-!################################################################
-!################################################################
 real*8 function should_i_blow(idum)
 !* math can be done in integer if two comments Cs are moved
 !* see numerical recipes

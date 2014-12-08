@@ -1,12 +1,8 @@
-!################################################################
-!################################################################
-!################################################################
-!################################################################
 subroutine star_formation(ilevel)
   use amr_commons
   use pm_commons
   use hydro_commons
-  use cooling_module, ONLY: XH=>X, rhoc, mH 
+  use cooling_module, ONLY: XH=>X, rhoc, mH
   use random
   implicit none
 #ifndef WITHOUTMPI
@@ -15,9 +11,9 @@ subroutine star_formation(ilevel)
   integer::ilevel
   !----------------------------------------------------------------------
   ! Description: This subroutine spawns star-particle of constant mass
-  ! using a Poisson probability law if some gas condition are fulfilled. 
-  ! It modifies hydrodynamic variables according to mass conservation 
-  ! and assumes an isothermal transformation... 
+  ! using a Poisson probability law if some gas condition are fulfilled.
+  ! It modifies hydrodynamic variables according to mass conservation
+  ! and assumes an isothermal transformation...
   ! On exit, the gas velocity and sound speed are unchanged.
   ! New star particles are synchronized with other collisionless particles.
   ! Array flag2 is used as temporary work space.
@@ -43,7 +39,7 @@ subroutine star_formation(ilevel)
   real(dp)::velc,uc,vc,wc,mass_load
   real(dp)::vxgauss,vygauss,vzgauss,birth_epoch
   real(kind=8)::mlost,mtot,mlost_all,mtot_all
-  real(kind=8)::RandNum,GaussNum,PoissMean   
+  real(kind=8)::RandNum,GaussNum,PoissMean
   real(dp)::vsn,costheta,sintheta,phi,cosphi,sinphi
   real(dp),dimension(1:3)::skip_loc
   real(dp)::dx,dx_loc,scale,vol_loc,dx_min,vol_min
@@ -55,18 +51,18 @@ subroutine star_formation(ilevel)
   integer ,dimension(1:nvector),save::list_debris,ind_debris
   logical ,dimension(1:nvector),save::ok,ok_new=.true.,ok_true=.true.
   integer ,dimension(1:ncpu)::ntot_star_cpu,ntot_star_all
-  
+
   if(numbtot(1,ilevel)==0) return
   if(.not. hydro)return
   if(ndim.ne.3)return
 
   if(verbose)write(*,*)' Entering star_formation'
-  
+
   ! Conversion factor from user units to cgs units
   call units(scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2)
 
   ! Mesh spacing in that level
-  dx=0.5D0**ilevel 
+  dx=0.5D0**ilevel
   nx_loc=(icoarse_max-icoarse_min+1)
   skip_loc=(/0.0d0,0.0d0,0.0d0/)
   if(ndim>0)skip_loc(1)=dble(icoarse_min)
@@ -97,7 +93,7 @@ subroutine star_formation(ilevel)
   birth_epoch=t
 
   ! Cells center position relative to grid center position
-  do ind=1,twotondim  
+  do ind=1,twotondim
      iz=(ind-1)/4
      iy=(ind-1-4*iz)/2
      ix=(ind-1-2*iy-4*iz)
@@ -122,7 +118,7 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     do ind=1,twotondim  
+     do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
@@ -184,7 +180,7 @@ subroutine star_formation(ilevel)
         ! Density criterion
         do i=1,ngrid
            d=uold(ind_cell(i),1)
-           if(d<=d0)ok(i)=.false. 
+           if(d<=d0)ok(i)=.false.
         end do
         ! Geometrical criterion
         if(ivar_refine>0)then
@@ -375,7 +371,7 @@ subroutine star_formation(ilevel)
               vp(ind_debris(i),1)=u
               vp(ind_debris(i),2)=v
               vp(ind_debris(i),3)=w
-              ! GMC metallicity + yield from ejecta 
+              ! GMC metallicity + yield from ejecta
               if(metal)zp(ind_debris(i))=zg+eta_sn*yield*(1-zg)*n*mstar/mdebris
            endif
 
@@ -404,7 +400,7 @@ subroutine star_formation(ilevel)
      ! End loop over cells
   end do
   ! End loop over grids
-  
+
   !---------------------------------------------------------
   ! Convert hydro variables back to conservative variables
   !---------------------------------------------------------
@@ -414,7 +410,7 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     do ind=1,twotondim  
+     do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
@@ -453,7 +449,7 @@ subroutine star_formation(ilevel)
 
 #endif
 
-end subroutine star_formation 
+end subroutine star_formation
 !################################################################
 !################################################################
 !################################################################
