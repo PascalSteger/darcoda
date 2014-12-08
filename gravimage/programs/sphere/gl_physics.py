@@ -93,8 +93,8 @@ def rho(r0, rhodmpar, pop, gp):
 
 
 def nu(r0, vec, pop, gp):
+    # can use rho() for nu profiles, too, as the n(r) representation change was already done in gl_class_cube
     return rho(r0, vec, pop, gp)
-    #return gh.linipollog(gp.xepol, vec, r0)
 ## \fn nu(r0, vec, pop, gp)
 # possibly interpolate nu parameters from gp.xepol where they are defined
 # to any radii r0 (typically gp.rfine) within range of gp.xepol

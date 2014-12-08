@@ -123,6 +123,73 @@ def map_nr(params, prof, pop, gp):
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
         if monotonic:
             # only increase n(r), use pa[i]>=0 directly
+            nr[k] = nr[k-1] + ginv(dnrdlrparams[k]/2.+0.5,0.,nrscale) * nrscale/2. * deltalogr
+        else:
+            # use pa => [-1, 1] for full interval
+            nr[k] = nr[k-1] + ginv(dnrdlrparams[k],0.,nrscale) * nrscale * deltalogr
+
+        # cut at zero: we do not want to have density rising outwards
+        nr[k] = max(0., nr[k])
+
+    # rho slope for asymptotically reaching r = \infty is given directly
+    # must lie below -3, thus n(r)>3
+    #deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
+
+    # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
+    nrasyminfty = max(nr[-1], 3.001)
+
+    params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
+    return params
+## \fn map_nr(params, prof, pop, gp)
+# mapping rho parameters from [0,1] to full parameter space
+# setting all n(r<r_nrlim)<=2.0
+# and possibly a monotonically increasing function
+# first parameter is offset for rho_half
+# second parameter is asymptotic n(r to 0) value
+# @param params cube [0,1]^ndim
+# @param prof string nu, rho, rhostar
+# @param pop population int, 0 for rho*, 1,2,... for tracer densities
+# @param gp global parameters
+
+
+def map_nr_tracers(params, prof, pop, gp):
+    gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
+    nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
+
+    # get offset and n(r) profiles, calculate rho
+    if prof=='rho':
+        rhoscale = gp.rhohalf
+        width = gp.log10rhospread
+        innerslope = gp.innerslope
+        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        monotonic = gp.monotonic
+    elif prof=='nu':
+        rhoscale = gp.dat.nuhalf[pop]
+        width = gp.log10nuspread
+        innerslope = gp.innerslope
+        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+        monotonic = gp.monotonic_nu
+    else:
+        raise Exception('wrong profile in gl_class_cube.map_nr')
+
+    # first parameter gives half-light radius value of rho directly
+    # use [0,1]**3 to increase probability of sampling close to 0
+    # fix value with tracer densities,
+    # sample a flat distribution over log(rho_half)
+    rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
+
+    # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
+    # should be smaller than -3 to exclude infinite enclosed mass
+    nrasym0 = params[1]*innerslope
+
+    # work directly with the dn(r)/dlog(r) parameters here
+    dnrdlrparams = params[1:]
+
+    for k in range(0, gp.nepol):
+        deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
+        # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
+        if monotonic:
+            # only increase n(r), use pa[i]>=0 directly
             nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale/2. * deltalogr
         else:
             # use pa => [-1, 1] for full interval
@@ -140,7 +207,7 @@ def map_nr(params, prof, pop, gp):
 
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
     return params
-## \fn map_nr(params, prof, pop, gp)
+## \fn map_nr_tracers(params, prof, pop, gp)
 # mapping rho parameters from [0,1] to full parameter space
 # setting all n(r<r_nrlim)<=2.0
 # and possibly a monotonically increasing function
@@ -253,7 +320,7 @@ class Cube:
         # rho* only for observations
         if gp.investigate == 'obs':
             offstep = gp.nrho
-            tmp_rhostar = map_nr(pc[off:off+offstep], 'nu', 0, gp)
+            tmp_rhostar = map_nr_tracers(pc[off:off+offstep], 'nu', 0, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_rhostar[i]
             off += offstep
@@ -264,7 +331,7 @@ class Cube:
 
         for pop in range(1,gp.pops+1): # nu1, nu2, ...
             offstep = gp.nrho
-            tmp_nu = map_nr(pc[off:off+offstep], 'nu', pop, gp)
+            tmp_nu = map_nr_tracers(pc[off:off+offstep], 'nu', pop, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_nu[i]
             off += offstep
