@@ -4,7 +4,7 @@
 # @file
 # select a completed or still running MCMC run for plotting
 
-# (c) 2013 ETHZ, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import os
 import glob

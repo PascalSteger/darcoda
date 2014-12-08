@@ -5,7 +5,7 @@
 # based on metallicity, and Mg index, but no v_LOS nor position
 # convention:       1, 2 is for first, second component
 
-# (c) 2014 Pascal S.P. Steger
+# (c) 2014 Pascal S.P. Steger, pascal@steger.aero
 
 import pdb
 import numpy as np
@@ -14,6 +14,21 @@ import gl_helper as gh
 
 gh.DEBUGLEVEL = 1
 DEBUG = True
+
+def bufcount(filename):
+    f = open(filename)
+    lines = 0
+    buf_size = 1024 * 1024
+    read_f = f.read # loop optimization
+    buf = read_f(buf_size)
+    while buf:
+        lines += buf.count('\n')
+        buf = read_f(buf_size)
+    return lines
+## \fn bufcount(filename)
+# determine no. lines optimally
+# @param filename filename
+
 
 def myprior(cube, ndim, nparams):
     # convert to physical space
@@ -35,12 +50,12 @@ def myprior(cube, ndim, nparams):
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
 
-def w(Rk):
-    gh.sanitize_vector(Rk, Nsample, 0, 1e30, DEBUG)
-    w_ipol = np.zeros(Nsample)
-    for k in range(Nsample):
-        w_ipol[k] = wpt[np.where(abs(Rk[k]-Rpt) == min(abs(Rk[k]-Rpt)))]
-    return w_ipol
+# def w(Rk):
+#     gh.sanitize_vector(Rk, Nsample, 0, 1e30, DEBUG)
+#     w_ipol = np.zeros(Nsample)
+#     for k in range(Nsample):
+#         w_ipol[k] = wpt[np.where(abs(Rk[k]-Rpt) == min(abs(Rk[k]-Rpt)))]
+#     return w_ipol
 ## \fn w(Rk)
 # return selection function as function of radius
 # take vector as input
@@ -117,21 +132,40 @@ def run(gp):
                     init_MPI = True,     # use MPI
                     dump_callback = None)
 
+
 if __name__=="__main__":
 #    from mpi4py import MPI
-#    import numpy
-
 #    comm = MPI.Comm.Get_parent()
 #    size = comm.Get_size()
 #    rank = comm.Get_rank()
 
     import gl_params
+    global gp
     gp = gl_params.Params()
 
-    globs = None
-#    globs = comm.bcast(globs, root=0)
-    global Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max
-#    gp, Nsample, wpt, Rpt, Mg, Mg_err, PM, Mg_min, Mg_max = globs
+    #globs = comm.bcast(globs, root=0)
+    global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
+
+    # Nsample is stored as third parameter in scale_0.txt
+    # Xscale, Sig0, Nsample, maxsiglos,  =
+    # but alas, we cannot read it yet, so we have to count lines in /dat file
+    Nsample = bufcount(gp.files.datafile)
+
+    Mg_min = -3 # according to WalkerPenarrubia2011
+    Mg_max = 3
+
+    import gr_params
+    gpr = gr_params.Params(gp)
+    gpr.fil = gpr.dir+"/table_merged.bin"
+    delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
+    ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
+                       usecols=(0,1),delimiter=delim)
+
+    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
+      VHel,e_VHel,SigFe,e_SigFe,\
+      Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
+                                   usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+
     run(gp)
     finish = 1
 #    comm.Reduce(finish, None,
