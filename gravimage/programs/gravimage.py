@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.2
+#!/usr/bin/env python3
 
 ##
 # @file
@@ -12,7 +12,7 @@
 # from __future__ import absolute_import, unicode_literals, print_function
 #from mpi4py import MPI
 import subprocess
-import pymultinest
+import multinest
 import pickle
 import numpy as np
 import pdb

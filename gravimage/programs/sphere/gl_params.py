@@ -26,7 +26,7 @@ def check_investigate(inv):
 
 class Params():
     def __init__(self, timestamp = '', investigate = '', case = -1):
-        if timestamp != '':
+        if timestamp == '':
             self.restart = False
         else:
             self.restart = True
