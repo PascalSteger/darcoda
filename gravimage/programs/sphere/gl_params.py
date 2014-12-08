@@ -34,7 +34,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'coll' # determine which data set to work on
+            self.investigate  = 'obs' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia

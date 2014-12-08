@@ -9,7 +9,7 @@
 
 import pdb
 import numpy as np
-import pymultinest
+import multinest
 import gl_helper as gh
 
 gh.DEBUGLEVEL = 1
@@ -96,41 +96,41 @@ def myloglike(cube, ndim, nparams):
 
 def run(gp):
     n_dims = 1+gp.pops*2
-    pymultinest.run(myloglike,   myprior,
-                    n_dims,      n_params = n_dims,
-                    n_clustering_params = n_dims, # separate modes on
-                                                  # the rho parameters
-                                                  # only (gp.nrho in
-                                                  # this case)
-                    wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
-                                                                     #not
-                                                                     #wrap-around
-                                                                     #parameters
-                    importance_nested_sampling = True, # INS enabled
-                    multimodal = True,            # separate modes
-                    const_efficiency_mode = True, # use const sampling efficiency
-                    n_live_points = Nsample,
-                    evidence_tolerance = 0.0,   # 0 to keep working infinitely
-                    sampling_efficiency = 0.95,
-                    n_iter_before_update = 100, # output after this many iterations
-                    null_log_evidence = 1., # separate modes if
-                                            #logevidence > this param.
-                    max_modes = Nsample,
-                    mode_tolerance = -1.e30,   # mode tolerance in the
-                                               #case where no special
-                                               #value exists: highly
-                                               #negative
-                    outputfiles_basename = gp.files.outdir,
-                    seed = -1,
-                    verbose = True,
-                    resume = False,
-                    context = 0,
-                    write_output = True,
-                    log_zero = -999999, # points with log L < log_zero will be
-                                          # neglected
-                    max_iter = 0,
-                    init_MPI = True,     # use MPI
-                    dump_callback = None)
+    multinest.run(myloglike,
+                  myprior,
+                  nest_ndims = n_dims,
+                  nest_totPar = n_dims,
+                  nest_nCdims = n_dims, # separate modes on
+                  # the rho parameters only (gp.nrho in this case)
+                  wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
+                  #not wrap-around parameters
+                  nest_IS = True, # INS enabled
+                  nest_mmodal = True,            # separate modes
+                  nest_ceff = True, # use const sampling efficiency
+                  nest_nlive = Nsample,
+                  nest_tol = 0.0,   # 0 to keep working infinitely
+                  nest_ef = 0.95,
+                  nest_updInt = 100, # output after this many iterations
+                  null_log_evidence = 1., # separate modes if
+                  #logevidence > this param.
+                  maxClst = Nsample,
+                  nest_Ztol = -1.e30,   # mode tolerance in the
+                  #case where no special value exists: highly negative
+                  outputfiles_basename = gp.files.outdir,
+                  seed = -1,
+                  nest_fb = True,
+                  nest_resume = False,
+                  context = 0,
+                  nest_outfile = True,
+                  nest_logZero = -999999, # points with log L < log_zero will be
+                  # neglected
+                  nest_maxIter = 0,
+                  initMPI = True,     # use MPI
+                  dump_callback = None)
+
+## \fn run(gp)
+# run MultiNest
+# @param gp global parameters defined in gl_params.py
 
 
 if __name__=="__main__":
@@ -146,17 +146,17 @@ if __name__=="__main__":
     #globs = comm.bcast(globs, root=0)
     global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
 
-    # Nsample is stored as third parameter in scale_0.txt
-    # Xscale, Sig0, Nsample, maxsiglos,  =
-    # but alas, we cannot read it yet, so we have to count lines in /dat file
-    Nsample = bufcount(gp.files.datafile)
-
     Mg_min = -3 # according to WalkerPenarrubia2011
     Mg_max = 3
 
     import gr_params
     gpr = gr_params.Params(gp)
     gpr.fil = gpr.dir+"/table_merged.bin"
+
+    # number of measured tracer stars
+    Nsample = bufcount(gpr.fil)
+
+
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
