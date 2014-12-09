@@ -102,9 +102,9 @@ def run(timestamp, basename, gp):
     pc.plot_profile(basename, 'nu_vec', 0, gp)
     pc.plot_profile(basename, 'sig_vec', 0, gp)
     pc.plot_profile(basename, 'rho_DM_vec', 0, gp)
-    #pdb.set_trace()
     pc.plot_profile(basename, 'kz_rho_DM_vec', 0, gp)
     pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
+    pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)
 
     #HS Working Line
     #Everthing below this line is old, and hasn't been considered for keeping

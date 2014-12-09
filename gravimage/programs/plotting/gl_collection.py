@@ -194,6 +194,7 @@ class ProfileCollection():
         self.sort_prof('rho_DM_vec', 0, gp)
         self.sort_prof('kz_rho_DM_vec', 0, gp)
         self.sort_prof('kz_nu_vec', 0, gp)
+        self.sort_prof('Sig_DM_vec', 0, gp)
 
 
     def set_analytic(self, x0, gp):
@@ -324,6 +325,7 @@ class ProfileCollection():
         self.write_prof(basename, 'rho_DM_vec', 0, gp)
         self.write_prof(basename, 'kz_rho_DM_vec', 0, gp)
         self.write_prof(basename, 'kz_nu_vec', 0, gp)
+        self.write_prof(basename, 'Sig_DM_vec', 0, gp)
 
     def plot_N_samples(self, ax, prof, pop):
         k=0
@@ -441,6 +443,12 @@ class ProfileCollection():
             ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+        elif prof == 'kz_nu_vec':
+            ax.set_ylabel('$k(z)_{\\nu}$')
+        elif prof == 'kz_rho_DM_vec':
+            ax.set_ylabel('$k(z)_{\\rho, \\rm{DM}}$')
+        elif prof == 'Sig_DM_vec':
+            ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
 
 
 
@@ -516,7 +524,8 @@ class ProfileCollection():
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
         else:
             self.plot_Xscale_3D(ax, gp)
-        ax.set_xlim([r0[0]/2,r0[-1]*1.5])
+        #pdb.set_trace()
+        ax.set_xlim([r0[0]/2,r0[-1]*1.0]) #HS r0[-1] previously multiplied by 1.5
         # if gp.pops==1:
         #     ax.set_xlim([r0[0], 5*gp.Xscale[1]])
         # else:
@@ -566,6 +575,7 @@ class ProfileCollection():
         fig = plt.figure()
         ax  = fig.add_subplot(111)
 
+
         if prof != 'chi2':
             ax.set_xscale('log')
 
@@ -573,9 +583,13 @@ class ProfileCollection():
            prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
 
-        if prof == 'nu_vec' or prof == 'sig_vec' or prof == 'rho_DM_vec' or prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec':
+        if prof == 'nu_vec' or prof == 'rho_DM_vec':
             ax.set_xscale('linear')
             ax.set_yscale('log')
+
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec':
+            ax.set_xscale('linear')
+            ax.set_yscale('linear')
 
         self.plot_labels(ax, prof, pop, gp)
         if len(self.profs)>0:
@@ -600,12 +614,16 @@ class ProfileCollection():
             if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
+            if prof == 'Sig_DM_vec' or prof == 'nu_vec':
+                self.plot_model_simplenu(ax, basename, prof, gp)
+
             if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
                and (prof != 'Sig'):
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
                 ax.plot(r0, y0, 'b--', lw=2)
 
+            ax.set_xlim(0, gp.z_bincenters[-1])
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')
@@ -656,6 +674,37 @@ class ProfileCollection():
     # @param data array of (M95lo, M68lo, Mmedi, M68hi, M95hi) for the profile in question
     # @param data_analytic analytic profile
     # @param gp global parameters
+
+
+    def plot_model_simplenu(self, ax, basename, prof, gp):
+        K=1500.
+        F=267.65
+        D=0.18
+        z0=0.4
+        nu0 = 1.
+        Ntr = 10000.
+        zmax= 1.2
+
+        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
+
+        zvec=np.linspace(0, 1.0, 100)
+
+        nuvec = nu0*np.exp(-zvec/z0)
+
+        Kzvec = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
+        Sigma_z = (1000.**2)*abs(Kzvec)/(2*np.pi*4.299) #Msun kpc^-1
+
+        if prof == 'Sig_DM_vec':
+            ax.plot(zvec, Sigma_z, 'g-', alpha=0.5)
+            ax.set_ylim(0,1.0E8)
+        elif prof == 'nu_vec':
+            ax.plot(zvec, nuvec, 'g-', alpha=0.5)
+
+        return
+
+
+
+
 
 
     def __repr__(self):
