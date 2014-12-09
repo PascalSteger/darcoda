@@ -156,8 +156,9 @@ class Datafile:
         gp.z_bincenters = bincenters # [kpc]
         gp.z_binmins = binmins
         gp.z_binmaxs = binmaxs
-        gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
-
+        #gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
+        gp.z_all_pts = np.append([0.0], bincenters)  #[kpc]
+        
 
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):

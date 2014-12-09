@@ -79,9 +79,8 @@ class Params():
         # ----------------------------------------------------------------------
 
         self.nbins=15 # Number of bins to split tracer stars into
-        self.nrhonu = self.nbins + 2 # Number of points where rho and nu parameters will be set,
-                                   # e.g. bin centres, plus zC=0, and zLS (position
-                                   # of Last Star)
+        self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
+                                   # e.g. bin centres, plus zC=0
         self.nbaryon_pops = 0 # Number of baryon populations to look at
                                # =0 if doing simple mass model (eg DM profile describes
                                # all mmass)
@@ -216,7 +215,7 @@ class Params():
         self.z_bincenters = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
         self.z_binmins = np.array([])
         self.z_binmaxs = np.array([])
-        self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers, zLS]
+        self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
 
 
         self.xipol = np.array([]) # [pc] hold radius bin centers

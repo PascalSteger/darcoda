@@ -91,12 +91,12 @@ def map_kr(params, prof, pop, gp):
         kz_i_m1 = kz_i
         kz_vector.append(kz_i)
 
-    #kz Last Star
-    kz_LS_max = kz_i + gp.max_kz_slope*(gp.z_all_pts[-1] - gp.z_all_pts[-2])
-    kz_LS_max = kz_i - gp.max_kz_slope*(gp.z_all_pts[-1] - gp.z_all_pts[-2])
-    kz_LS = kz_LS_max*params[3+jter] + kz_min*(1-params[3+jter])
+    ##kz Last Star
+    #kz_LS_max = kz_i + gp.max_kz_slope*(gp.z_all_pts[-1] - gp.z_all_pts[-2])
+    #kz_LS_max = kz_i - gp.max_kz_slope*(gp.z_all_pts[-1] - gp.z_all_pts[-2])
+    #kz_LS = kz_LS_max*params[3+jter] + kz_min*(1-params[3+jter])
 
-    return np.hstack([rhonu_C, kz_C, kz_vector, kz_LS])
+    return np.hstack([rhonu_C, kz_C, kz_vector])
 
 
 def map_nr(params, prof, pop, gp):
@@ -219,7 +219,7 @@ class Cube:
         pc[off] = IntC_min+(IntC_max-IntC_min)*pc[off]
         off += offstep
 
-        #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector, kz_LS
+        #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector
         offstep = gp.nrhonu + 1
         tmp_DM = map_kr(pc[off:off+offstep], 'rho', 0, gp)
         for i in range(offstep):

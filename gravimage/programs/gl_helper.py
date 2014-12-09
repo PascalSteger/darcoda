@@ -834,6 +834,7 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 
     for jter in range(0, len(binmin)):
         positions=np.where(np.logical_and(x0>=binmin[jter], x0<binmax[jter]))
+        pdb.set_trace()
 
         #Calculate tracer density nu and Poisson error (sqrt(N)/binsize)
         nu_vec.append(len(positions[0])/(binmax[jter]-binmin[jter]))
