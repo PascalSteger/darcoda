@@ -33,4 +33,5 @@ CVS
 *.o
 auto
 *.el
-/merge_neccheck/ramses
+ramses
+/NEC/ramses
