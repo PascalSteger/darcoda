@@ -197,7 +197,7 @@ def myloglike(cube, ndim, nparams):
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
 
     global DL
     DL = {0: lambda x: x * (138),#+/- 8 for Fornax

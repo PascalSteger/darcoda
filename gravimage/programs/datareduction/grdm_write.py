@@ -163,7 +163,7 @@ def run(gp):
     nu_dat_err_bin1 /= (binmax1-binmin1)
 
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     if gpr.showplots:
         nuscaleb = nu_zth[np.argmin(np.abs(zth-z0))]
         plt.loglog(zth, nu_zth/nuscaleb, 'b.-')

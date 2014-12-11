@@ -46,7 +46,7 @@ def select_pm(x, y, vz, Mg, PM, pm):
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\

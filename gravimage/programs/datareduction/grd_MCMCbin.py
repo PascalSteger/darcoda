@@ -23,7 +23,7 @@ from BiWeight import meanbiweight
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, \
                            usecols=(0,1), unpack=True)
     # 2*[Rscale0]

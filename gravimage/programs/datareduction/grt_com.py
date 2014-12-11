@@ -18,7 +18,7 @@ import gl_centering as gc
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
 
     print('input: ', gpr.fil)
     x0,y0,vlos = np.genfromtxt(gpr.fil, skiprows=0, unpack =  True,

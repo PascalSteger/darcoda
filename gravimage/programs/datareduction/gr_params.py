@@ -9,7 +9,7 @@
 import pdb
 
 import gl_helper as gh
-class Params():
+class grParams():
     def __init__(self, gp):
         from gl_class_files import Files
         # show plots during execution of data readout?

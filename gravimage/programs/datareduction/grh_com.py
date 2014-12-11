@@ -17,7 +17,7 @@ from gl_centering import com_shrinkcircle_v
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     gu.G1__pcMsun_1km2s_2 = 1.  # as per definition
     gp.anM = 1. #
     gp.ana = 1. #

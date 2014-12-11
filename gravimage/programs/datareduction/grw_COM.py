@@ -81,7 +81,7 @@ def read_data(filename):
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     print('input: ', gpr.fil)
     x0,y0,z0,vb0,vz0,Mg0,PM0,comp0 = read_data(gpr.fil)
     # [pc], [km/s], [1]

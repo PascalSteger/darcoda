@@ -38,7 +38,7 @@ def volume_spherical_shell(binmin, binmax, gp):
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     xall,yall,zall = np.loadtxt(gp.files.get_com_file(0),skiprows=1,\
                                 usecols=(0,1,2),unpack=True) # 2*[rscale0]
     rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)+'_3D')

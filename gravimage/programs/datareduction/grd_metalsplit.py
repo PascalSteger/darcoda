@@ -150,7 +150,7 @@ if __name__=="__main__":
     Mg_max = 3
 
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     gpr.fil = gpr.dir+"/table_merged.bin"
 
     # number of measured tracer stars

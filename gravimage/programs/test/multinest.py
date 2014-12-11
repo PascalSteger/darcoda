@@ -18,8 +18,32 @@ def interrupt_handler(signal, frame):
     sys.stderr.write('ERROR: Interrupt received: Terminating\n')
     sys.exit(1)
 
-def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None, wrapped_params = None, nest_IS = True, nest_mmodal = True, nest_ceff = False, nest_nlive = 400, nest_tol = 0.5, nest_ef = 0.8, nest_updInt = 100, null_log_evidence = -1e90, maxClst = 100, nest_Ztol = -1e30, outputfiles_basename = "chains/1-", seed = -1, nest_fb = False, nest_resume = True, context = 0, nest_outfile = True, nest_logZero = -1e100, nest_maxIter = 0, initMPI = True, dump_callback = None):
-
+def run(LogLikelihood,
+        Prior,
+        nest_ndims,
+        nest_totPar = None,
+        nest_nCdims = None,
+        wrapped_params = None,
+        nest_IS = True,
+        nest_mmodal = True,
+        nest_ceff = False,
+        nest_nlive = 400,
+        nest_tol = 0.5,
+        nest_ef = 0.8,
+        nest_updInt = 100,
+        null_log_evidence = -1e90,
+        maxClst = 100,
+        nest_Ztol = -1e30,
+        outputfiles_basename = "chains/1-",
+        seed = -1,
+        nest_fb = False,
+        nest_resume = True,
+        context = 0,
+        nest_outfile = True,
+        nest_logZero = -1e100,
+        nest_maxIter = 0,
+        initMPI = True,
+        dump_callback = None):
 
     print('got into run() function')
     if nest_totPar == None:
@@ -40,9 +64,17 @@ def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None
     loglike_type = CFUNCTYPE(c_double, POINTER(c_double),
         c_int, c_int, c_double, c_void_p)
 
-    dumper_type  = CFUNCTYPE(c_void_p, c_int, c_int, c_int,
-        POINTER(c_double),POINTER(c_double),POINTER(c_double),
-        c_double,c_double,c_double,c_void_p)
+    dumper_type  = CFUNCTYPE(c_void_p,         # nSamples
+                             c_int,            # nlive
+                             c_int,            # nPar
+                             c_int,            # physLive
+                             POINTER(c_double),# posterior
+                             POINTER(c_double),# paramConstr
+                             POINTER(c_double),# maxLogLike
+                             c_double,         # logZ
+                             c_double,         # INSlogZ
+                             c_double,         # logZerr
+                             c_void_p)         # context_pass
 
     # check if lnew is supported by user function
     nargs = 3
@@ -81,7 +113,9 @@ def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None
     prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 
     print('nest_nlive = '+str(nest_nlive))
-    print('before __nested_MOD_nestrun')
+
+    print('before __nested_MOD_nestrun, here')
+
     lib.__nested_MOD_nestrun(c_bool(nest_IS),\
                              c_bool(nest_mmodal), \
                              c_bool(nest_ceff),\

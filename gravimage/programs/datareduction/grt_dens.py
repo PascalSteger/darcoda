@@ -16,7 +16,7 @@ import gl_project as glp
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
     print('scalefile: ', gp.files.get_scale_file(0))
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     print('input: ',gp.files.get_com_file(0))

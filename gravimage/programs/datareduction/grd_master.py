@@ -73,9 +73,7 @@ import gl_params
 gp = gl_params.Params()
 
 import gr_params
-gpr = gr_params.Params(gp)
-
-import gl_units as gu
+gpr = gr_params.grParams(gp)
 
 DL = {0: lambda x: x * (138),#+/- 8 for Fornax
       1: lambda x: x * (101),#+/- 5 for Carina

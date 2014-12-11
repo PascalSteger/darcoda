@@ -22,7 +22,7 @@ import gl_class_files as gcf
 
 def run(gp):
     import gr_params
-    gpr = gr_params.Params(gp)
+    gpr = gr_params.grParams(gp)
 
     for pop in range(2):
         # get radius, used for all binning
