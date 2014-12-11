@@ -238,7 +238,7 @@ def map_betastar_poly(params, gp):
         off_beta += 1
 
     return params
-## \fn map_betastar_old(params, gp)
+## \fn map_betastar_poly(params, gp)
 # mapping beta parameters from [0,1] to full parameter space,
 # using consecutive polynomials
 # NOT USED ANYMORE
@@ -263,9 +263,9 @@ def map_betastar_sigmoid(params, gp):
     # as we want flat prior in log space
     logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
     return np.hstack([a0, a1, alpha, logrs])
-## \fn map_betastar(pa, gp)
+## \fn map_betastar_sigmoid(params, gp)
 # mapping beta parameters from [0,1] to full param space
-# @param pa parameter vector, size 4
+# @param params parameter vector, size 4
 # @param gp global parameters
 
 
@@ -278,7 +278,7 @@ def map_betastar_j(params, gp):
     logrs = params[2]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
     n0 = params[3]*3 # n, rate of transition
     return np.hstack([a0, a1, logrs, n0])
-## \fn map_betastar(params, gp)
+## \fn map_betastar_j(params, gp)
 # mapping beta parameters from [0,1] to full param space
 # @param params parameter vector, size 4
 # @param gp global parameters

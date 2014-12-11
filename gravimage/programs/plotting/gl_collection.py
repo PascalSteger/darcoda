@@ -122,7 +122,8 @@ class ProfileCollection():
     ## \fn set_x0(self, x0)
     # set radii for 1sigma, 2sigma profiles
     # @param x0 radii in pc
-
+    # @param Binmin minimal radii of bins in [pc]
+    # @param Binmax maximal radii of bins in [pc]
 
     def sort_prof(self, prof, pop, gp):
         self.goodprof = []

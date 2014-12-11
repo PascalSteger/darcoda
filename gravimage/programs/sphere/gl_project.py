@@ -286,7 +286,7 @@ def Sig_INT_rho(R0, Sig, gp):
 # see appendix in Mamon Boue 2009
 # @param R0 radii in [pc]
 # @param Sig surface density
-
+# @param gp global parameters
 
 def rho_SUM_Mr(r0max, rho):
     r0max = np.hstack([0., r0max])

@@ -164,8 +164,6 @@ def betastar(r0, params, gp):
 # @param params 4 parameters
 # @param gp global parameters
 
-
-
 def betastar_old(r0, r0turn, params, gp):
     r0 = np.array([r0]).flatten()
     betatmp = np.zeros(len(r0))

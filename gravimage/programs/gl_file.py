@@ -207,7 +207,7 @@ def write_headers_2D(gp, pop):
 # @param pop component (0: all, 1,2,...)
 
 
-def write_headTAers_3D(gp, pop):
+def write_headers_3D(gp, pop):
     f_nu = open(gp.files.Sigfiles[pop]+'_3D', 'w')
     print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
           'nu(r) [nu(0)];', 'error', \

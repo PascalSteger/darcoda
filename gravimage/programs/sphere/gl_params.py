@@ -199,10 +199,12 @@ class Params():
             self.Sig0pc.append(1.);           self.Sig0pc.append(1.)
             self.totmass_tracers.append(1.);          self.totmass_tracers.append(1.)
             self.maxsiglos.append(1.);        self.maxsiglos.append(1.)
-    ## \fn __init__(self, timestamp = '')
+    ## \fn __init__(self, timestamp, investigate, case)
     # set up all parameters used in the course of the MultiNest run,
     # and the analysis routines in plot_multinest
     # @param timestamp = '', for new output. set to some existing output dir for restart, plotting
+    # @param investigate if set, string of mode
+    # @param case if set, number of case
 
 
     def __repr__(self):

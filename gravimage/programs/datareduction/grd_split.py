@@ -26,7 +26,7 @@ def lp_plummer(Rad, rs):
     logev_plummer = np.log(2.*Rad/rs**2/(1.+Rad**2/rs**2)**2)
     gh.sanitize_vector(logev_plummer, -1, -1e30, 1e6, DEBUG)
     return logev_plummer
-## \fn lp_plummer(Rad, rh)
+## \fn lp_plummer(Rad, rs)
 # eq. 8 Walker 2011, likelihood that a tracer star is member of Plummer sphere
 # @param Rad projected radius from center, [pc]
 # @param rs scale radius, [pc]
@@ -40,7 +40,7 @@ def lp_gauss(X, Xmean, sigmaX, errorX):
     gh.LOG(3,'exponent = ',exponent)
     gh.sanitize_vector(logev_gauss, Nsample, -1e30, 1e6, DEBUG)
     return logev_gauss
-## \fn p_gauss(X, Xmean, sigmaX, errorX)
+## \fn lp_gauss(X, Xmean, sigmaX, errorX)
 # eq. 9, 11 Walker 2011, log likelihood based on generic Gauss function
 # @param X variable, property of stellar tracer
 # @param Xmean mean of all stars in that population
