@@ -12,7 +12,7 @@
 # from __future__ import absolute_import, unicode_literals, print_function
 #from mpi4py import MPI
 import subprocess
-import multinest
+import pymultinest
 import pickle
 import numpy as np
 import pdb
@@ -88,7 +88,7 @@ def prepare_data(gp):
 # @param gp global parameters
 
 def run(gp):
-    multinest.run(myloglike,
+    pymultinest.run(myloglike,
                     myprior,
                     gp.ndim,
                     n_params = gp.ndim+1, # None beforehands
