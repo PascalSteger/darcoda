@@ -6,6 +6,7 @@
 FILE=$1/phys_live.points
 FILE2=$1/phys_live.points_cleaned
 FILE3=$1/Sig_conv.params
+FILE4=$1/Sig_conv.stats
 
 nrho=21
 nbeta=4
@@ -34,3 +35,35 @@ while read params; do
     #echo $paramsbeta|wc -w
     #exit 0
 done < "$FILE2"
+
+# get important numbers via perl command
+
+# perl -e 'use List::Util qw(max min sum); @a=();while(<>){$sqsum+=$_*$_; push(@a,$_)}; $n=@a;$s=sum(@a);$a=$s/@a;$m=max(@a);$mm=min(@a);$std=sqrt($sqsum/$n-($s/$n)*($s/$n));$mid=int @a/2;@srtd=sort @a;if(@a%2){$med=$srtd[$mid];}else{$med=($srtd[$mid-1]+$srtd[$mid])/2;};print "records:$n\nsum:$s\navg:$a\nstd:$std\nmed:$med\max:$m\min:$mm";'
+
+# to be used like
+# cat file_with_one_number_per_line|perl ........
+
+echo -n >  $FILE4
+for i in {1..21}
+do
+    #echo "say hello" $i
+    stats=$(awk -v var=$i '{print $var}' $FILE3 | perl -e 'use List::Util qw(max min sum); @a=();while(<>){$sqsum+=$_*$_; push(@a,$_)}; $n=@a;$s=sum(@a);$a=$s/@a;$m=max(@a);$mm=min(@a);$std=sqrt($sqsum/$n-($s/$n)*($s/$n));$mid=int @a/2;@srtd=sort @a;if(@a%2){$med=$srtd[$mid];}else{$med=($srtd[$mid-1]+$srtd[$mid])/2;};print "$n,$s,$a,$std,$med,$m,$mm,";')
+
+    myn=$(echo $myn $(echo $stats|cut -d',' -f1))
+    mys=$(echo $mys $(echo $stats|cut -d',' -f2))
+    mya=$(echo $mya $(echo $stats|cut -d',' -f3))
+    mystd=$(echo $mystd $(echo $stats|cut -d',' -f4))
+    mymed=$(echo $mymed $(echo $stats|cut -d',' -f5))
+    mym=$(echo $mym $(echo $stats|cut -d',' -f6))
+    mymm=$(echo $mymm $(echo $stats|cut -d',' -f7))
+    #echo $stats >> $FILE4
+    #vec=$(awk '{ print $$(echo $i) }' $FILE3)
+    #echo $vec
+    #echo "bogus"
+    #exit 0
+done
+
+
+echo $mymm >> $FILE4
+echo $mymed >> $FILE4
+echo $mym >> $FILE4
