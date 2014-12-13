@@ -312,7 +312,7 @@ class Cube:
         pc = self.cube
         # DM density rho, set in parametrization of n(r)
         offstep = gp.nrho
-        tmp_nr = map_nr(pc[0:offstep], 'rho', 0, gp)
+        tmp_nr = map_nr_tracers(pc[0:offstep], 'rho', 0, gp)
         for i in range(offstep):
             pc[off+i] = tmp_nr[i]
         off += offstep

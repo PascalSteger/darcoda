@@ -9,7 +9,7 @@
 
 import pdb
 import numpy as np
-import multinest
+import pymultinest
 import gl_helper as gh
 
 gh.DEBUGLEVEL = 1
@@ -78,13 +78,20 @@ def myloglike(cube, ndim, nparams):
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
     p1 = frac*PM*p1_Mg
+    for i in range(0,len(p1)):
+        if p1[i] == 0.0:
+            p1[i] = 1e-30
     p2 = (1-frac)*PM*p2_Mg
+    for i in range(0, len(p2)):
+        if p2[i] == 0.0:
+            p2[i] = 1e-30
     pcom = p1+p2
-    print('pcom (min, max) = ', min(pcom), max(pcom))
-    print('fraction of pcom == 0 : ', sum(pcom==0)/len(pcom))
+    #print('pcom (min, max) = ', min(pcom), max(pcom))
+    #print('fraction of pcom == 0 : ', sum(pcom==0)/len(pcom))
     lpcom = np.log(pcom)
     logev = np.sum(lpcom)
-    gh.LOG(1, 'logL:',logev)
+    print('logev')
+    #gh.LOG(1, 'logL:',logev)
     #if logev < -1e300:
     #    pdb.set_trace()
     return logev
@@ -96,37 +103,37 @@ def myloglike(cube, ndim, nparams):
 
 def run(gp):
     n_dims = 1+gp.pops*2
-    multinest.run(myloglike,
+    pymultinest.run(myloglike,
                   myprior,
-                  nest_ndims = n_dims,
-                  nest_totPar = n_dims,
-                  nest_nCdims = n_dims, # separate modes on
+                  n_dims, # nest_ndims
+                  n_dims, # nest_totPar
+                  n_dims, # separate modes on nest_nCdims
                   # the rho parameters only (gp.nrho in this case)
-                  wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
-                  #not wrap-around parameters
-                  nest_IS = True, # INS enabled
-                  nest_mmodal = True,            # separate modes
-                  nest_ceff = True, # use const sampling efficiency
-                  nest_nlive = Nsample,
-                  nest_tol = 0.0,   # 0 to keep working infinitely
-                  nest_ef = 0.95,
-                  nest_updInt = 100, # output after this many iterations
-                  null_log_evidence = 1., # separate modes if
+                  [ gp.pops, gp.nipol, gp.nrho], # do
+                  #not wrap-around parameters wrapped_params =
+                  True, # nest_IS = INS enabled
+                  True, #nest_mmodal =            # separate modes
+                  True, # nest_ceff = use const sampling efficiency
+                  Nsample, # nest_nlive =
+                  0.0,   # nest_tol = 0 to keep working infinitely
+                  0.95, # nest_ef =
+                  100, # nest_updInt = output after this many iterations
+                  1., # null_log_evidence separate modes if
                   #logevidence > this param.
-                  maxClst = Nsample,
-                  nest_Ztol = -1.e30,   # mode tolerance in the
+                  Nsample, # maxClst =
+                  -1.e30,   # nest_Ztol = mode tolerance in the
                   #case where no special value exists: highly negative
-                  outputfiles_basename = gp.files.outdir,
-                  seed = -1,
-                  nest_fb = True,
-                  nest_resume = False,
-                  context = 0,
-                  nest_outfile = True,
-                  nest_logZero = -999999, # points with log L < log_zero will be
+                  gp.files.outdir, # outputfiles_basename =
+                  -1, # seed =
+                  True, # nest_fb =
+                  False, # nest_resume =
+                  0, # context =
+                  True, # nest_outfile =
+                  -999999, # nest_logZero = points with log L < log_zero will be
                   # neglected
-                  nest_maxIter = 0,
-                  initMPI = True,     # use MPI
-                  dump_callback = None)
+                  0, # nest_maxIter =
+                  True,     # initMPI =  use MPI
+                  None) #dump_callback =
 
 ## \fn run(gp)
 # run MultiNest
