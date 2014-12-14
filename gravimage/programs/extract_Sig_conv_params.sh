@@ -63,7 +63,7 @@ do
     #exit 0
 done
 
-
+# FILE4 holds minimum, median, maximum of allowed range for that parameter
 echo $mymm >> $FILE4
 echo $mymed >> $FILE4
 echo $mym >> $FILE4
