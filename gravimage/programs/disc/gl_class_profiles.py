@@ -23,7 +23,7 @@ class Profiles:
         #z-profile points
         self.z_C = 0.0
         self.z_vec = np.zeros(nbins)
-        self.z_LS = 0.0
+        #self.z_LS = 0.0
         self.binmin = np.zeros(nbins) #?
         self.binmax = np.zeros(nbins) #?
         self.xbins = np.zeros(nbins+1) #to mesh with general code
@@ -33,12 +33,12 @@ class Profiles:
         self.rho_DM_C      = 0.0               #Multinest
         self.kz_rho_DM_C   = 0.0               #Multinest
         self.kz_rho_DM_vec = np.zeros(nbins)   #Multinest
-        self.kz_rho_DM_LS  = 0.0               #Multinest
+        #self.kz_rho_DM_LS  = 0.0               #Multinest
         self.rho_DM_vec    = np.zeros(nbins)   #Derived from phys
-        self.rho_DM_LS     = 0.0               #Derived from phys
+        #self.rho_DM_LS     = 0.0               #Derived from phys
         self.Sig_DM_C      = 0.0               #always zero if z_C = 0
         self.Sig_DM_vec    = np.zeros(nbins)   #Derived from phys
-        self.Sig_DM_LS     = 0.0               #Derived from phys
+        #self.Sig_DM_LS     = 0.0               #Derived from phys
 
         #Baryon mass density and parameters
         #self.baryon_params  = 0.0 #Currently DUMMY
@@ -52,11 +52,11 @@ class Profiles:
         self.nu_C      = 0.0                               #Multinest
         self.kz_nu_C   = 0.0                               #Multinest
         self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
-        self.kz_nu_LS  = 0.0                               #Multinest
+        #self.kz_nu_LS  = 0.0                               #Multinest
         self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
-        self.nu_LS     = 0.0                               #Derived from phys
+        #self.nu_LS     = 0.0                               #Derived from phys
         self.sig_vec   = np.zeros(ntracer_pops * nbins)    #Derived from phys
-        self.sig_LS    = 0.0                               #Derived from phys
+        #self.sig_LS    = 0.0                               #Derived from phys
 
         #chi2 of profile
         self.chi2 = 0.0
