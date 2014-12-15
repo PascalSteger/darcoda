@@ -9,6 +9,7 @@
 
 import numpy as np
 import pdb
+import gl_helper as gh
 import gl_file as gf
 from gl_centering import com_shrinkcircle_v_2D
 
@@ -59,19 +60,19 @@ def run(gp):
 
     # only use stars which are members of the dwarf
     pm = (PM>=0.95)
-    print("fraction of members = ",1.*sum(pm)/len(pm))
+    print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
     ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; RAs=RAs[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm];
     Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm];
     SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
 
     Mg0 = SigMg
     sig = abs(RAh[0])/RAh[0]
-    print('RAh: signum = ',sig)
+    #print('RAh: signum = ',gh.pretty(sig))
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
 
     sig = abs(DEd[0])/DEd[0]
-    print('DEd: signum = ',sig)
+    #print('DEd: signum = ', gh.pretty(sig))
     DEd = DEd/sig
     ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
 
@@ -177,19 +178,19 @@ if __name__=='__main__':
 
     # only use stars which are members of the dwarf
     pm = (PM>=0.95)
-    print("fraction of members = ", 1.*sum(pm)/len(pm))
+    print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
     ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; RAs=RAs[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm];
     Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm];
     SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
 
     Mg0 = SigMg
     sig = abs(RAh[0])/RAh[0]
-    print('RAh: signum = ',sig)
+    #print('RAh: signum = ',sig)
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec] (use 360 deg/12 hrs)
 
     sig = abs(DEd[0])/DEd[0]
-    print('DEd: signum = ',sig)
+    #print('DEd: signum = ',sig)
     DEd = DEd/sig
     ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
 

@@ -72,11 +72,13 @@ def dierfc(y):
     return x
 ## \fn dierfc(y)
 # inverse of complimentary error function from MultiNest implementation
-# @param y
+# @param y vector
 
 def ginv(x, mu, sigma):
     # parameter(SqrtTwo=1.414213562d0)
-    return mu+sigma*np.sqrt(2)*dierfc(2.*(1.-x))
+    v_mu = mu*np.ones(len(x))
+    v_sigma = sigma*np.ones(len(x))
+    return v_mu+v_sigma*np.sqrt(2)*dierfc(2.*(np.ones(len(x))-x))
 ## \fn ginv(x, mu, sigma)
 # take uniform range [0,1] and return normal pdf centered around mu, with width sigma
 # sampled with a normal distribution
@@ -118,18 +120,16 @@ def map_nr(params, prof, pop, gp):
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
 
+    if monotonic:
+        gpar = ginv(dnrdlrparams/2.+0.5, 0., nrscale/2)
+    else:
+        gpar = ginv(dnrdlrparams, 0., nrscale)
+
     for k in range(0, gp.nepol):
         deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
-        if monotonic:
-            # only increase n(r), use pa[i]>=0 directly
-            nr[k] = nr[k-1] + ginv(dnrdlrparams[k]/2.+0.5,0.,nrscale) * nrscale/2. * deltalogr
-        else:
-            # use pa => [-1, 1] for full interval
-            nr[k] = nr[k-1] + ginv(dnrdlrparams[k],0.,nrscale) * nrscale * deltalogr
-
         # cut at zero: we do not want to have density rising outwards
-        nr[k] = max(0., nr[k])
+        nr[k] = max(0., nr[k-1] + gpar[k] * deltalogr)
 
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3, thus n(r)>3

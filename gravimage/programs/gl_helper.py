@@ -477,7 +477,14 @@ def readcoln(filena):
 # @param filena filename
 # @return array
 
-def pretty(vec,dig=3):
+def pretty(scal, dig=3):
+    return "%.*e" % (dig-1, scal)
+## \fn pretty(scal, dig)
+# pretty-print one single scalar
+# @param scal scalar float
+# @param dig int number of digits
+
+def prettyvec(vec, dig=3):
     return ("%."+str(dig)+"f")%vec
 ## \fn pretty(vec,dig=3)
 # clip floats after dig=3 digits
