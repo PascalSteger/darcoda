@@ -17,7 +17,46 @@ effect would be dynamical stirring \cite{Goerdt+2006}.
 
 
 \subsection{Jeans Analysis}
-\TODO{Jeans analysis, mass-beta anisotropy breaking Richardson2014 and before}
+As dwarf galaxies have most of their mass in dark matter, and only
+very little gas (\citet{Gatto+2013}), one can assume stars to form a
+collisionless system of tracer particles obeying the Boltzmann
+equation
+
+\begin{equation}
+0=\frac{\partial f}{\partial t}+\vec{\nabla}_{\vec{x}} f\cdot\vec{v}-
+\vec{nabla}_{\vec{v}}f\cdot\vec{nabla}_{\vec{x}}\Phi
+\end{equation}
+
+with distribution function $f$, time $t$, positions $\vec{x}$,
+velocities $\vec{v}$, and gravitational potential $\Phi$
+
+Under the assumption of steady-state and spherical symmetry, we get
+the Jeans equation
+
+\begin{equation}
+\frac{d(\vu\sigma_r^2)}{dr}+
+\frac{2\beta(r)}{r}\nu\sigma_r^2+
+\nu\frac{GM(<r)}{r^2} = 0
+\end{equation}
+
+with spherical density distribution of tracer stars $\nu(r)$, radial
+velocity dispersion $\sigma_r$, gravitational constant $G$, mass
+enclosed in radius $r$ of $M(<r)$, and velocity anisotropy
+
+\begin{equation}
+\beta(r)=1-\frac{\sigma_t^2(r)}{\sigma_r^2(r)}
+\end{equation}
+
+Jeans' equation with two unconstrained quantities $M(<r)$ and
+$\beta(r)$ leads to the mass-anisotropy degeneracy.
+
+One possibility to break this anisotropy is to introduce independent
+measures, based on the virial equation
+\citep{RichardsonFairbairn2014}. Introducing higher order moments of
+Jeans equation alone does not help, as this invokes more new
+parameters $\beta'$ than equations to constrain them
+\citep{RichardsonFairbairn2013}.
+
 
 
 \subsection{Populations of Tracer Stars}
