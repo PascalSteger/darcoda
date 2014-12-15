@@ -43,6 +43,18 @@ def read_data(gp):
 # @param gp global parameters
 
 
+def read_Sigdata(gp):
+    # put together filename
+    Sigconvparamsfn = gp.files.modedir+'Sig_conv.stats'
+    # read first line into nuparam_min
+    # read second line into nuparam_median
+    # read third line into nuparam_max
+    gp.nupar_min, nupar_med, gp.nupar_max = np.loadtxt(Sigconvparamsfn)
+    return
+## \def read_Sigdata(gp)
+# read previously stored converged nu parameters with min, max values, and store them
+# @param gp global parameters
+
 def bin_data(gp):
     if gp.investigate == 'hern':
         import gr_MCMCbin
