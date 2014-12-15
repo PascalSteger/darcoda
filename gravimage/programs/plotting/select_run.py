@@ -69,7 +69,7 @@ def list_files(basedir):
         ts = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
         try:
             co = bufcount(x+'/ev.dat')
-        except FileNotFoundError:
+        except:
             print('file not found')
             co = 0
         fdl.append((x, ts, co ))
@@ -79,7 +79,7 @@ def list_files(basedir):
     for i in range(len(fdl)):
         try:
             fil = open(fdl[i][0]+'/programs/gl_params.py','r')
-        except FileNotFoundError:
+        except:
             print('missing '+fdl[i][0]+'/programs/gl_params.py')
             continue
         pops = 0                # default: 0 populations, error

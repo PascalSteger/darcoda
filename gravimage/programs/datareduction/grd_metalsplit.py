@@ -90,9 +90,10 @@ def myloglike(cube, ndim, nparams):
     #print('fraction of pcom == 0 : ', sum(pcom==0)/len(pcom))
     lpcom = np.log(pcom)
     logev = np.sum(lpcom)
-    print('logev')
+    print(logev)
     #gh.LOG(1, 'logL:',logev)
-    #if logev < -1e300:
+    if logev < -1e300:
+        logev = -1e300
     #    pdb.set_trace()
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
