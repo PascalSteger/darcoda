@@ -41,7 +41,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'discmock' # determine which data set to work on
+            self.investigate  = 'simplenu' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
         self.geom = 'disc'
@@ -157,26 +157,6 @@ class Params():
         # ellipsoids in phase space to be found
         self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
-
-
-        # parameter spaces
-        # ----------------------------------------------------------------------
-        self.rhohalf = 10**-1.    # prior density for rho at
-                                  # half-light radius of tracers
-                                  # calculated in gl_data
-        self.log10rhospread = 2.       # with this spread, [dex] in log space
-        self.log10nuspread = 2.        # = 'width' in gl_class_cube
-        # nztol: prior (max +/- range) for dn(r)/dlog(r)
-        #   determine how far nr can wander with the max allowed nr slope
-        #    from min(gp.xipol) to max(gp.xipol)
-        self.nztol  = 5.
-        self.nztol_nu = 5. # same for nu profile
-        self.maxbetaslope = 0.2   # linear (and 2nd..order) max slope
-                                  # of beta*
-        self.beta00prior = False  # prior beta(r=0) = 0
-        self.MtoLmin = 0.8
-        self.MtoLmax = 3.
-
 
         # disc case
         # ----------------------------------------------------------------------
