@@ -1,5 +1,146 @@
 
 \section{Introduction}\label{sec:introduction}
+\subsection{Cusp vs Core}
+Without baryonic physics, simulations of structure formation predict a
+universal density profile of the NFW profile \cite{Moore+1999} with an
+asymptotic slope towards the center of $\alpha=1$.
+
+Analysis of observations on the other hand tends to find more constant
+densities in the innermost parts of small systems,
+\cite{FloresPrimack1994}, \cite{Oh+2011}. This has become known as
+cusp-core problem.
+
+Baryonic outflows and sudden changes of the gravitational potential
+were proposed as one possibility to create cores in simulations
+(\cite{Read+2006}, \cite{PontzenGovernato2011}, \cite{Teyssier+2012}). Another
+effect would be dynamical stirring \cite{Goerdt+2006}.
+
+
+\subsection{Jeans Analysis}
+As dwarf galaxies have most of their mass in dark matter, and only
+very little gas (\citep{Gatto+2013}), one can assume stars to form a
+collisionless system of tracer particles obeying the Boltzmann
+equation
+
+\begin{equation}
+0=\frac{\partial f}{\partial t}+\vec{\nabla}_{\vec{x}} f\cdot\vec{v}-
+\vec{\nabla}_{\vec{v}}f\cdot\vec{\nabla}_{\vec{x}}\Phi
+\end{equation}
+
+with distribution function $f$, time $t$, positions $\vec{x}$,
+velocities $\vec{v}$, and gravitational potential $\Phi$
+
+Under the assumption of steady-state and spherical symmetry, we get
+the Jeans equation
+
+\begin{equation}
+\frac{d(\nu\sigma_r^2)}{dr}+
+\frac{2\beta(r)}{r}\nu\sigma_r^2+
+\nu\frac{GM(<r)}{r^2} = 0
+\end{equation}
+
+with spherical density distribution of tracer stars $\nu(r)$, radial
+velocity dispersion $\sigma_r$, gravitational constant $G$, mass
+enclosed in radius $r$ of $M(<r)$, and velocity anisotropy
+
+\begin{equation}
+\beta(r)=1-\frac{\sigma_t^2(r)}{\sigma_r^2(r)}
+\end{equation}
+
+Jeans' equation with two unconstrained quantities $M(<r)$ and
+$\beta(r)$ leads to the mass-anisotropy degeneracy.
+
+One possibility to break this anisotropy is to introduce independent
+measures, based on the virial equation
+\citep{RichardsonFairbairn2014}. Introducing higher order moments of
+Jeans equation alone does not help, as this invokes more new
+parameters $\beta'$ than equations to constrain them
+\citep{RichardsonFairbairn2013}.
+
+
+
+\subsection{Populations of Tracer Stars}
+\citep{Battaglia+2008} try to break the mass-anisotropy degeneracy by
+splitting stars into multiple populations.
+
+
+\citep{WalkerPenarrubia2011}
+
+
+
+
+\citep{Tolstoy+2004} find distinct populations of stars in Sculptor,
+\citep{Battaglia+2006}, \citep{Battaglia+2011} for Fornax and Sextans,
+\citep{Harbeck+2001} and \citep{Bellazzini+2001} for Carina, Tucana
+and Andromeda satellites.
+
+\subsection{Analyses with Parametric Methods}
+Jeans analysis is normally performed with a parametrized form of the
+density profile. A short overview of such methods as applied on Sculptor follows:
+
+\citep{Battaglia+2008} introduce population splitting, and find a core
+with low significance. \citep{AmoriscoEvans2012} use population
+splitting and a distribution function approach, to find a core at high
+significance.
+
+%\citep{Breddels et al. 2011  Schwarzschild  cannot tell}
+
+\citep{RichardsonFairbairn2014} with virial parameters on one
+population find a cusp. \citep{StrigariFrenkWhite2014} use population splitting
+and a distribution function approach with separable $f(E,J)=g(J)h(E)$,
+finding a cusp.
+
+
+\citep{WalkerPenarrubia2011} use population
+splitting, and find a core for Fornax with high significance.
+
+\TODO{more Fornax findings}
+
+
+\citep{Ibata+2013} use a method which is not based on a parametrized profile. % TODO: describe
+
+
+
+\subsection{Non-Parametric Method}
+In a previous paper \TODO{citep{Steger+2014}} we showed a new non-parametric
+method for Jeans-modelling of 1-dimensional systems.
+
+
+
+\section{Data}
+We infer the baryonic density profile for Fornax by data of
+\cite{DeBoer+2012b}, which measure photometry in B, V, and I filters
+for 270.000 stars.
+
+
+\cite{DeBoer+2013} identify several substructures in the B-(V-B)
+plane.  \TODO{Justin: We could use the color-magnitude diagram splits
+  for stellar populations, instead of only using the Mg index. Thus,
+  we would introduce a second dimension, and could even use the same
+  cuts as in there. Needs a join on stellar positions from the
+  deBoer to the Walker data.}
+We use the photometric data for the overall baryonic profile from \cite{DeBoer+2013}.
+
+Further evidence for multiple populations split by metallicity
+$[\text{Fe}/\text{H}]$ alone, is found in fig. 17 of
+\citep{Hendricks+2014}.
+
+
+
+
+
+
+This represents our baryonic profile, which is subtracted from the
+overall density profile to yield the dark matter profile.
+
+
+The kinematic data used for our study is based on \citep{WalkerMateoOlszewski2009b}
+(see \citep{WalkerMateoOlszewski2009a} for a detailed description of the
+acquisition). It contains 2.500 measurements of the kinematics of member stars.
+
+\TODO{Justin: Walker+2009b seems to determine Fe and Mg line widths independently}
+
+
 
 
 %%% Local Variables:

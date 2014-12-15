@@ -80,6 +80,7 @@ class Params():
 
         # MultiNest options
         # ----------------------------------------------------------------------
+        self.getSigdata = True   # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 1000
         self.chi2_Sig_converged = 10 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
@@ -109,6 +110,7 @@ class Params():
         # next: # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
         self.geom = 'sphere'
+        # N_nu = number of populations to work with
         if self.investigate == 'obs':
             N_nu = (self.pops+1)*self.nrho+1
         else:
@@ -136,14 +138,16 @@ class Params():
                                  # monotonicity prior used) of rho
         self.maxnuslope = 6      # same for nrnu
         self.nrtol  = self.maxrhoslope # max change of n(r) over the full range [0, r_max]
-        self.nrtol_nu = self.maxnuslope # same for nu
+        self.nrtol_nu = self.maxnuslope/6 # same for nu
+        self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
+        self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = False  # beta(r=0)=0
         self.minbetastar = -0.99  # clipping for beta, default: -0.99
         self.maxbetastar = 0.99    # clipping for beta, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = False    # mono-prior on n(x) for rho(x)
-        self.monotonic_nu = False # mono-prior on n(x) for nu(x)
+        self.monotonic = False    # monotonicity prior on n(x) for rho(x)
+        self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
         # ----------------------------------------------------------------------

@@ -1,0 +1,72 @@
+\section{Appendix}
+
+\subsection{Effect of Wrong Assignment of Populations}
+We quantify the influence of assigning stars the wrong population by
+looking at the changes for
+
+\begin{enumerate}
+\item assigning stars randomly to two population
+\item assigning stars to populations based on position information
+  only
+\end{enumerate}
+
+\TODO{result}
+
+\subsection{Priors in use}
+We use the priors outlined in \citep{Steger+2014}, with numerical
+values in table \ref{tab:priors}:
+
+\begin{enumerate}
+  \item $\beta^*(r)$ is given in the form
+    \begin{equation}\label{eqn:betastar}
+      \beta^* = \frac{\sigma_r^2-\sigma_t^2}{\sigma_r^2+\sigma_t^2} = \frac{\beta}{2-\beta} \in [-1,1]
+    \end{equation}
+    with the following function:
+
+    \begin{eqnarray} \label{eqn:nonparabetstar}
+      \beta^*(r) &=& \frac{a_0-a_\infty}{1+\kappa \exp(\alpha\ln(r/r_s))}+a_\infty\\
+      \kappa &=& \frac{a_0-a_\infty}{\beta^*(r_s)-a_\infty}-1
+    \end{eqnarray}
+
+
+  \item $n(r)=-{\rm d}\ln\rho(r)/{\rm d}\ln r$ is calculated by integrating its
+    derivative $dn(r)/d\ln r$ -- which is given at discrete bin
+    centers, and drawn from a Gaussian prior of width $\sigma$ -- with
+    the additional constraint that $n(r)\geq0$. The density profile
+
+    \begin{equation*}
+      \rho(r) = \rho_{1/2}\cdot\exp\left[-\int_{\ln r_{1/2}}^{\ln r}n(s)\text{d}s\right],
+    \end{equation*}
+
+    is thus represented by its second derivatives. This enforces a
+    monotonically decreasing $\rho(r)$, and further circumvents strong
+    oscillations from numerical effects.
+
+  \item no use of fourth order moments $\kappa$
+  \item no use of virial parameters $\zeta_A, \zeta_B$
+\end{enumerate}
+
+
+
+\begin{table}
+  \label{tab:priors}
+  \caption{Priors for the \GravImage method used on Fornax.}
+  \centering
+  \begin{tabular}{lllll}
+    Quantity & type & characteristics \\
+    \hline
+    $N_{bin}$ & fixed & 12\\
+    $n_\beta$ & fixed & 4\\
+    $dn(r)/d\ln r$ & Gaussian & mean 0, width $\sigma=5$\\
+    $n(r)$ & bound & $\min(n(r))=0$\\
+    $\ln \rho(r_{1/2})$ & flat & center $-1$, width $2.5$ dex\\
+    $M/L$ & flat & $[0.8, 3]$
+  \end{tabular}
+\end{table}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "Steger+_2014_Fornax"
+%%% End:

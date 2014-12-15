@@ -154,6 +154,11 @@ def map_nr(params, prof, pop, gp):
 
 def map_nr_tracers(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
+
+    # first, if we already have a converged run, use the parameters as stored
+    if gp.getSigdata:
+        return params*(gp.nupar_max-gp.nupar_min)+gp.nupar_min
+
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
 
     # get offset and n(r) profiles, calculate rho

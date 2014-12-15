@@ -1,6 +1,6 @@
 \section{Method}\label{sec:method}
 We employ the non-parametric mass modelling described in
-\citep{Steger+2014}:
+\TODO{citep{Steger+2014}}:
 
 The total mass density is given in bins by setting the density slope
 
@@ -30,16 +30,17 @@ stellar atmospheres show that the ensemble of stars in a dwarf galaxy
 or globular cluster can be split into populations.
 
 An approach by \cite{WalkerPenarrubia2011} showed that if the
-population of e.g. Fornax is split into two populations, and each of
-their half-light radius and mass inside that radius are determined, restrictions on the
-overall potential can be drawn. Using this approach, they prefer a
-cored DM profile for Fornax.
+population of Fornax is split into two populations based on Magnesium
+index and positions and LOS velocities assuming a Plummer sphere, and
+each of their half-light radius and mass inside that radius are
+determined, restrictions on the overall potential can be drawn. Using
+this approach, they prefer a cored DM profile for Fornax.
 
-For real data, we will use a splitting based on metallicity. This is
+For our data, we will use a splitting based on Magnesium index alone. This is
 achieved by using a separate Markov Chain Monte Carlo method. The
-overall metallicity distribution is represented by a sum of two
+overall Magnesium index distribution is represented by a sum of two
 Gaussians with means $\mu_{1,2}$ and widths $\sigma_{1,2}$, and each
-stellar tracer with metallicity $M$ is assigned a population based on
+stellar tracer with Mg index $M$ is assigned a population based on
 the likelihood of its metallicity belonging to said population. The
 process is repeated to marginalize over the means and widths of the
 metallicity distributions. A sample splitting result is shown in
@@ -196,13 +197,6 @@ The errors on this density are rather small, thus we only use the
 deprojected 3D photometric density profile for the subtraction,
 without sampling over its errors, as is done for the kinematic tracer
 population profiles.
-
-\section{Data}
-
-\subsection{Fornax} \TODO{ref} find evidence for three populations.
-
-We use the photometric data for the overall baryonic profile from \cite{DeBoer2013}.
-
 
 
 %%% Local Variables:
