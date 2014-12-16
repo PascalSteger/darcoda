@@ -151,6 +151,9 @@ if __name__=="__main__":
     import gl_params
     global gp
     gp = gl_params.Params()
+    if gp.pops < 2:
+        gh.LOG(1, " population splitting needs 2 or more populations, corrected")
+        gp.pops = 2
 
     #globs = comm.bcast(globs, root=0)
     global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
