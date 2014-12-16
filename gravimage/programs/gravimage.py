@@ -81,7 +81,6 @@ def prepare_data(gp):
         gf.bin_data(gp)
     if gp.getSigdata:
         gf.read_Sigdata(gp)
-    pdb.set_trace()
     gf.get_binned_data(gp)
     gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)

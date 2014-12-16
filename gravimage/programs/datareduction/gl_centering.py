@@ -8,6 +8,7 @@
 
 import pdb
 import numpy as np
+import gl_helper as gh
 
 def com_mean(x, y, z, pm):
     com_x = 1.*np.sum(x*pm)/np.sum(pm) # [pc]
@@ -35,7 +36,10 @@ def com_shrinkcircle_v_2D(x, y, vlos, pm):
     nit = 0; minlen = len(x)/2.
     while nit < 200 and len(x) > minlen:
         nit += 1
-        print('iteration ',nit,' with ',len(x), ' particles has overall COM of: ',bucom_x,bucom_y,' with remaining offset ',dr)
+        print('it ',nit,' with ',len(x),\
+              ' part, COM=', \
+              gh.pretty(bucom_x), gh.pretty(bucom_y),\
+              ' offset ', gh.pretty(dr))
 
         # shrink sphere:
         # 1) calc radius
@@ -82,9 +86,9 @@ def com_shrinkcircle(x, y, z, pm):
     nit = 0; minlen = len(x)*0.666666666
     while nit < 200 and len(x) > minlen:
         nit += 1
-        print('iteration ',nit,' with ',len(x), ' particles',\
-              ' has overall COM of: ',bucom_x,bucom_y,bucom_z,\
-              ' with remaining offset ',dr)
+        print('it ',nit,' with ',len(x), ' part',\
+              ' COM= ', gh.pretty(bucom_x), gh.pretty(bucom_y), gh.pretty(bucom_z),\
+              ' offset ', gh.pretty(dr))
 
         # shrink sphere:
         # 1) calc radius
@@ -136,10 +140,11 @@ def com_shrinkcircle_v(x, y, z, vz, pm):
     nit = 0; minlen = len(x)*0.666666666
     while nit < 200 and len(x) > minlen:
         nit += 1
-        print('iteration ',nit,' with ',len(x), ' particles',\
-              ' has overall COM of: ',bucom_x,bucom_y,bucom_z,\
-              ' and velocity:',bucom_vz,\
-              ' with remaining offset ',dr)
+        print('it ',nit,' with ',len(x), ' part',\
+              ' COM= ', \
+              gh.pretty(bucom_x), gh.pretty(bucom_y), gh.pretty(bucom_z),\
+              ' vel=', gh.pretty(bucom_vz),\
+              ' offset ', gh.pretty(dr))
 
         # shrink sphere:
         # 1) calc radius

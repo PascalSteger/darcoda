@@ -9,6 +9,7 @@
 import pdb
 import numpy as np
 
+import gl_helper as gh
 import gl_units as gu
 
 def read_data(gp):
@@ -44,8 +45,9 @@ def read_data(gp):
 
 
 def read_Sigdata(gp):
+    gh.LOG(1, 'reading Sig converged parameters')
     # put together filename
-    Sigconvparamsfn = gp.files.modedir+'Sig_conv.stats'
+    Sigconvparamsfn = gp.files.modedir+'/'+str(gp.case)+'/Sig_conv.stats'
     # read first line into nuparam_min
     # read second line into nuparam_median
     # read third line into nuparam_max
