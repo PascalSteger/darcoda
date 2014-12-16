@@ -91,7 +91,7 @@ def myloglike(cube, ndim, nparams):
     #print('fraction of pcom == 0 : ', sum(pcom==0)/len(pcom))
     lpcom = np.log(pcom)
     logev = np.sum(lpcom)
-    print(logev)
+    #print(logev)
     #gh.LOG(1, 'logL:',logev)
     if logev < -1e300:
         logev = -1e300
@@ -118,8 +118,8 @@ def run(gp):
                   True, # nest_ceff = use const sampling efficiency
                   Nsample, # nest_nlive =
                   0.0,   # nest_tol = 0 to keep working infinitely
-                  0.95, # nest_ef =
-                  100, # nest_updInt = output after this many iterations
+                  0.25, # nest_ef =
+                  4000, # nest_updInt = output after this many iterations
                   1., # null_log_evidence separate modes if
                   #logevidence > this param.
                   Nsample, # maxClst =
