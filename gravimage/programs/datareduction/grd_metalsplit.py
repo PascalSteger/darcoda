@@ -71,6 +71,7 @@ def myloglike(cube, ndim, nparams):
         off += 1
         Mg_sig.append(cube[off])
         off += 1
+    gh.sanitize_vector(Mg_mu, 2, -10, 10, True)
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         pdb.set_trace()
