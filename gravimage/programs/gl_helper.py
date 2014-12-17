@@ -6,12 +6,13 @@
 
 # (c) GPL v3 2014 Pascal S.P. Steger, psteger@phys.ethz.ch
 import sys
+import time
 import traceback
 import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps
-import time
+
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
 DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
@@ -28,6 +29,30 @@ def LOG(level, message, var=''):
 # @param warning string
 # @param var variable (not mandatory)
 
+def progressbar(progress):
+    barLength = 20 # Modify this to change the length of the progress bar
+    status = ""
+    if isinstance(progress, int):
+        progress = float(progress)
+    if not isinstance(progress, float):
+        progress = 0
+        status = "error: progress var must be float\r\n"
+    if progress < 0:
+        progress = 0
+        status = "Halt...\r\n"
+    if progress >= 1:
+        progress = 1
+        status = "Done...\r\n"
+    block = int(round(barLength*progress))
+    text = "\rPercent: [{0}] {1}% {2}".format( "="*block + " "*(barLength-block), progress*100, status)
+    sys.stdout.write(text)
+    sys.stdout.flush()
+## \fn progressbar(progress)
+# update_progress() : Displays or updates a console progress bar
+# @param progress float between 0 and 1
+# Accepts a float between 0 and 1. Any int will be converted to a float.
+# A value under 0 represents a 'halt'.
+# A value at 1 or bigger represents 100%
 
 def sanitize_vector(vec, length, mini, maxi, debug):
     if length > -1 and len(vec) != length:

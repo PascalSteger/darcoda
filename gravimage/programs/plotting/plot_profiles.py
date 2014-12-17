@@ -88,7 +88,7 @@ def pcload_single_entries(basename, gp):
         dum*=1
         while current < numofmodels:
             current += 1
-            print(' current model = ', current)
+            gh.progressbar((1.0*current)/numofmodels)
             try:
                 MODEL = pickle.load(fi)
                 pc.add(MODEL)
