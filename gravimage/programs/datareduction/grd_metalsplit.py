@@ -33,7 +33,7 @@ def bufcount(filename):
 def myprior(cube, ndim, nparams):
     # convert to physical space
     off = 0
-    cube[off] = cube[off]*0.9+0.1 # fraction of particles in part 1, with min 0.1
+    cube[off] = cube[off]*0.8+0.1 # fraction of particles in part 1, with min 0.1
     off +=1
     for pop in range(gp.pops): # no. of pops goes in here, first MW, then 1,2,..
         cube[off] = cube[off]*(Mg_max-Mg_min)+Mg_min # Mg_mu
