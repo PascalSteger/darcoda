@@ -112,13 +112,14 @@ def list_files(basedir):
 # @param basedir string of directory
 
 
-def list_files_readout(basedir):
+def list_files_readout(basedir, investigate, case):
     bp = gb.get_basepath()
     file = open(bp+"/run_info", "r")
     fdl=[]
     for line in file:
-        if re.search("201*", line):
+        if re.search("DT"+str(investigate)+"/"+str(case)+"//*", line):
             print(line)
+            # TODO: exclude lines with empty ev.dat
             fdl.append(line)
     return fdl
 ## \fn list_files_readout(basedir)
@@ -307,7 +308,7 @@ def get_nbeta(basename):
         for line in f:
             if 'nbeta      = ' in line:
                 import re
-                nipol = int(re.split('[=\n]', line)[-2])
+                nbeta = int(re.split('[=\n]', line)[-2])
     return nbeta
 ## \fn get_nbeta(basename)
 # return number of beta parameters  from gl_params stored in output directory
@@ -330,7 +331,7 @@ def run(investigate="", case=-1, latest=False):
     else:
         action = 'k'
         while(action == 'k'):
-            fdl = list_files_readout(basedir)
+            fdl = list_files_readout(basedir, investigate, case)
             sel = get_run(len(fdl))
             action = get_action()
             if action == 'k':
