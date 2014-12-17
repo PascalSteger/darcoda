@@ -113,7 +113,8 @@ def list_files(basedir):
 
 
 def list_files_readout(basedir):
-    file = open("/home/ast/read/dark/darcoda/gravimage/run_info", "r")
+    bp = gb.get_basepath()
+    file = open(bp+"/run_info", "r")
     fdl=[]
     for line in file:
         if re.search("201*", line):
