@@ -10,6 +10,7 @@ import os
 import glob
 import shutil
 import pdb
+import re
 
 import numpy as np
 import gl_base as gb
@@ -113,11 +114,12 @@ def list_files(basedir):
 
 def list_files_readout(basedir):
     file = open("/home/ast/read/dark/darcoda/gravimage/run_info", "r")
-
+    fdl=[]
     for line in file:
         if re.search("201*", line):
-            print line,
-    return []
+            print(line)
+            fdl.append(line)
+    return fdl
 ## \fn list_files_readout(basedir)
 # return list of MCMC run directories
 # @param basedir string of base directory, e.g. DTgaia/3/

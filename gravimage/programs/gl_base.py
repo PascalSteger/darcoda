@@ -2,7 +2,7 @@
 import socket
 import getpass
 
-def get_basepath()
+def get_basepath():
     host_name = socket.gethostname()
     user_name = getpass.getuser()
     basepath = '/home/psteger/sci/darcoda/gravimage/'
@@ -12,6 +12,7 @@ def get_basepath()
         basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
         basepath = '/home/sofia/darcoda/gravimage/'
+    return basepath
 ## \fn get_basepath()
 # return basepath, depending on machine
 
