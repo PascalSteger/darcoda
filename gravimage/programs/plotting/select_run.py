@@ -10,9 +10,9 @@ import os
 import glob
 import shutil
 import pdb
-import socket
-import getpass
+
 import numpy as np
+import gl_base as gb
 
 def bufcount(filename):
     f = open(filename)
@@ -26,6 +26,7 @@ def bufcount(filename):
     return lines
 ## \fn bufcount(filename)
 # determine no. lines optimally
+# not used anymore
 # @param filename filename
 
 
@@ -62,17 +63,17 @@ def list_files(basedir):
     from datetime import datetime
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
                                  '%Y%m%d%H%M')) for x in dirs]
-    remove_empty_folders(fdl)
+    #remove_empty_folders(fdl)
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
     fdl = []
     for x in dirs:
-        ts = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
+        timestamp = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
         try:
             co = bufcount(x+'/ev.dat')
         except:
             print('file not found')
             co = 0
-        fdl.append((x, ts, co ))
+        fdl.append((x, timestamp, co ))
 
     fdl.sort(key=lambda x: x[1])
 
@@ -106,7 +107,20 @@ def list_files(basedir):
     return out
 ## \fn list_files(basedir)
 # return all working or completed MCMC run directories
+# NOT USED ANYMORE
 # @param basedir string of directory
+
+
+def list_files_readout(basedir):
+    file = open("/home/ast/read/dark/darcoda/gravimage/run_info", "r")
+
+    for line in file:
+        if re.search("201*", line):
+            print line,
+    return []
+## \fn list_files_readout(basedir)
+# return list of MCMC run directories
+# @param basedir string of base directory, e.g. DTgaia/3/
 
 
 def get_investigate():
@@ -303,28 +317,17 @@ def run(investigate="", case=-1, latest=False):
         investigate = get_investigate()
     if case == -1:
         case = get_case(investigate)
-
-    host_name = socket.gethostname()
-    user_name = getpass.getuser()
-    basepath = '/home/psteger/sci/darcoda/gravimage/'
-    if 'darkside' in host_name:
-        basepath = '/home/ast/read/dark/darcoda/gravimage/'
-    elif ('lisa' in host_name) and ('hsilverw' in user_name):
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
-    elif ('lisa' in host_name) and ('sofia' in user_name):
-        basepath = '/home/sofia/darcoda/gravimage/'
+    basepath = gb.get_basepath()
     basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
     print(' - searching directory ', basedir, ' for output files')
     if latest:
-        fdl = list_files(basedir)
+        fdl = list_files_readout(basedir)
         sel = -1
     else:
-        # import import_path as ip
-        # ip.import_path(basedir+'/programs/gl_params.py')
         action = 'k'
         while(action == 'k'):
-            fdl = list_files(basedir)
+            fdl = list_files_readout(basedir)
             sel = get_run(len(fdl))
             action = get_action()
             if action == 'k':

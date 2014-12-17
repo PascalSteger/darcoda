@@ -8,8 +8,7 @@
 
 import numpy as np
 import pdb
-import socket
-import getpass
+import gl_base as gb
 
 def check_investigate(inv):
     if inv == 'discmock': return True
@@ -22,20 +21,7 @@ class Params():
 
         # Set machine and user variables
         # ----------------------------------------------------------------------
-        host_name = socket.gethostname()
-        user_name = getpass.getuser()
-        if 'darkside' in host_name:
-            self.machine = 'darkside'
-        elif 'pstgnt332' in host_name:
-            self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('login' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS_login'
-        elif ('lisa' in host_name) and ('login' not in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS_batch'
-        elif ('lisa' in host_name) and ('login' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS_login'
-        elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS_batch'
+        self.machine = gb.get_machine()
 
         # Set investigation and geometry
         if investigate != '':

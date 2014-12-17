@@ -11,6 +11,8 @@ import pdb
 import socket
 import getpass
 
+import gl_base as gb
+
 def check_investigate(inv):
     if inv == 'walk':     return True
     if inv == 'gaia':     return True
@@ -158,17 +160,7 @@ class Params():
 
         # filesystem-related
         # ----------------------------------------------------------------------
-        host_name = socket.gethostname()
-        user_name = getpass.getuser()
-        self.machine = ""
-        if ('darkside' in host_name) or ('auriga' in host_name) :
-            self.machine = 'darkside'
-        elif 'pstgnt332' in host_name:
-            self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS'
-        elif ('lisa' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS'
+        self.machine = gb.get_machine()
         import import_path as ip
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version
