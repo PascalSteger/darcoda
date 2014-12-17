@@ -117,15 +117,17 @@ def list_files_readout(basedir, investigate, case):
     file = open(bp+"/run_info", "r")
     fdl=[]
     for line in file:
-        if re.search("DT"+str(investigate)+"/"+str(case)+"//*", line):
-            print(line)
-            # TODO: exclude lines with empty ev.dat
-            fdl.append(line)
+        if re.search("DT"+str(investigate)+"/"+str(case)+"/", line):
+            line2 = re.sub(r'\n', '', line)
+            print(line2)
+            if not re.search("File ", line2):
+                fdl.append(line2)
     return fdl
-## \fn list_files_readout(basedir)
+## \fn list_files_readout(basedir, investigate, case)
 # return list of MCMC run directories
 # @param basedir string of base directory, e.g. DTgaia/3/
-
+# @param investigate str investigation, gaia, walk, ..
+# @param case int for case to look at
 
 def get_investigate():
     default = 'gaia'
@@ -326,7 +328,7 @@ def run(investigate="", case=-1, latest=False):
 
     print(' - searching directory ', basedir, ' for output files')
     if latest:
-        fdl = list_files_readout(basedir)
+        fdl = list_files_readout(basedir, investigate, case)
         sel = -1
     else:
         action = 'k'
@@ -338,9 +340,10 @@ def run(investigate="", case=-1, latest=False):
                 import shutil
                 shutil.rmtree(fdl[sel])
 
-    basename = fdl[sel] # full directory path, without '/'
-    timestamp = basename.split('/')[-1] # extract last bit
-    return timestamp, basename+'/'#, prof #, pop
+    line = fdl[sel] # full directory path, without '/'
+    basename = re.split('\t', line)[1]
+    timestamp = re.split('/', basename)[2]
+    return timestamp, basepath+basename+'/'
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one
 # @param investigate string of investigation case, hern, gaia, walk, discmock
