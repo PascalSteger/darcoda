@@ -36,7 +36,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'obs' # determine which data set to work on
+            self.investigate  = 'gaia' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -49,10 +49,10 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 0 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
-        self.pops = 2 # number of stellar tracer populations
+        self.pops = 1 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
@@ -76,7 +76,7 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
-        self.debug = True # enable calling debug routines during run. Turn off for production runs!
+        self.debug = False # enable calling debug routines during run. Turn off for production runs!
         self.checksig = False # check sigma_LOS calculation steps in gl_int
         self.stopstep = 1 # step to stop at by default
 
@@ -84,7 +84,7 @@ class Params():
         # ----------------------------------------------------------------------
         self.getSigdata = False   # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 10
-        self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
+        self.chi2_Sig_converged = 10 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run
@@ -138,9 +138,9 @@ class Params():
         self.innerslope = 2.999
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
-        self.maxnuslope = 6      # same for nrnu
+        self.maxnuslope = 5      # same for nrnu
         self.nrtol  = self.maxrhoslope # max change of n(r) over the full range [0, r_max]
-        self.nrtol_nu = self.maxnuslope/4 # same for nu
+        self.nrtol_nu = self.maxnuslope/2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = True  # beta(r=0)=0

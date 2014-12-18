@@ -25,8 +25,8 @@ File DTgaia/1/201412011433/ev.dat not found!
 19	DTgaia/1/201412011450	0	 1 	 12 	 4
 File DTgaia/1/201412112135/ev.dat not found!
 20	DTgaia/1/201412112136	0	 1 	 12 	 4
-21	DTgaia/1/201412112138	186960	 1 	 12 	 4
-22	DTgaia/1/201412112140	187700	 1 	 12 	 4
+21	DTgaia/1/201412112138	189270	 1 	 12 	 4
+22	DTgaia/1/201412112140	194320	 1 	 12 	 4
 23	DTgaia/1/201412121026	0	 1 	 12 	 4
 1	DTgaia/10/201410272025	164451	 1 	 12 	 4
 2	DTgaia/10/201410280741	444000	 1 	 12 	 4
@@ -78,7 +78,8 @@ File DTgaia/2/201411190925/ev.dat not found!
 8	DTgaia/2/201411262150	207030	 1 	 12 	 4
 9	DTgaia/2/201411262153	215620	 2 	 12 	 4
 File DTgaia/2/201411262154/ev.dat not found!
-10	DTgaia/2/201412112141	182840	 1 	 12 	 4
+10	DTgaia/2/201412112141	190300	 1 	 12 	 4
+11	DTgaia/2/201412172123	62800	 1 	 12 	 4
 1	DTgaia/3/201410031557	21142	 1 	 16 	 4
 2	DTgaia/3/201410052147	11519	 1 	 12 	 4
 3	DTgaia/3/201410052202	27952	 1 	 12 	 4
@@ -102,7 +103,7 @@ File DTgaia/3/201412151448/ev.dat not found!
 19	DTgaia/3/201412151516	0	 1 	 12 	 4
 20	DTgaia/3/201412151542	0	 1 	 12 	 4
 21	DTgaia/3/201412151546	0	 1 	 12 	 4
-22	DTgaia/3/201412151550	274800	 1 	 12 	 4
+22	DTgaia/3/201412151550	312000	 1 	 12 	 4
 1	DTgaia/4/201408230808	10048	 1 	 12 	 4
 2	DTgaia/4/201409220744	1000	 1 	 12 	 5
 3	DTgaia/4/201409221829	10810	 1 	 12 	 5
@@ -236,12 +237,17 @@ File 180810/ev.dat not found!
 File 1/ev.dat not found!
 File 12/ev.dat not found!
 File 4/ev.dat not found!
+File DTobs/0/201412112140/ev.dat not found!
+File 187700/ev.dat not found!
+File 1/ev.dat not found!
+File 12/ev.dat not found!
+File 4/ev.dat not found!
 File DTobs/0/201412112154/ev.dat not found!
 File DTobs/0/201412112157/programs/gl_params.py not found!
 File DTobs/0/201412112159/programs/gl_params.py not found!
 File DTobs/0/201412112201/programs/gl_params.py not found!
 File DTobs/0/201412112203/programs/gl_params.py not found!
-7	DTobs/0/201412152200	119380	 1 	 12 	 4
+7	DTobs/0/201412152200	140640	 1 	 12 	 4
 File DTobs/0/201412160934/programs/gl_params.py not found!
 File DTobs/0/201412160937/programs/gl_params.py not found!
 File DTobs/0/201412160941/programs/gl_params.py not found!
@@ -250,9 +256,11 @@ File DTobs/0/201412160946/programs/gl_params.py not found!
 File DTobs/0/201412160947/programs/gl_params.py not found!
 File DTobs/0/201412160950/programs/gl_params.py not found!
 File DTobs/0/201412160951/programs/gl_params.py not found!
-8	DTobs/0/201412160956	93120	 1 	 12 	 4
+8	DTobs/0/201412160956	118900	 1 	 12 	 4
 File DTobs/0/201412161237/programs/gl_params.py not found!
 File DTobs/0/201412161247/programs/gl_params.py not found!
+9	DTobs/0/201412171808	41420	 1 	 12 	 4
+10	DTobs/0/201412171809	33360	 1 	 12 	 4
 File DTobs/1/201411191025/ev.dat not found!
 File DTobs/1/201412112152/ev.dat not found!
 1	DTtriax/1/201407281057	51958	 1 	 10 	 4
@@ -327,8 +335,8 @@ File DTtriax/8/201407281102/programs/gl_params.py not found!
 36	DTwalk/1/201410182326	16416	 2 	 10 	 4
 37	DTwalk/1/201410201600	231530	 2 	 12 	 4
 38	DTwalk/1/201412011451	0	 1 	 12 	 4
-39	DTwalk/1/201412112141	140410	 1 	 12 	 4
-40	DTwalk/1/201412112142	102260	 2 	 12 	 4
+39	DTwalk/1/201412112141	151160	 1 	 12 	 4
+40	DTwalk/1/201412112142	105200	 2 	 12 	 4
 1	DTwalk/2/201407221821	34631	 1 	 7 	 4
 2	DTwalk/2/201407221823	2131	 2 	 7 	 4
 3	DTwalk/2/201407231746	1489	 2 	 10 	 4
@@ -356,7 +364,7 @@ File DTtriax/8/201407281102/programs/gl_params.py not found!
 25	DTwalk/2/201410132032	16240	 2 	 12 	 4
 26	DTwalk/2/201410182326	13273	 2 	 10 	 4
 27	DTwalk/2/201410201600	242650	 2 	 12 	 4
-28	DTwalk/2/201412112142	146210	 1 	 12 	 4
+28	DTwalk/2/201412112142	157370	 1 	 12 	 4
 29	DTwalk/2/201412112146	1500	 2 	 12 	 4
 File DTwalk/5/201409231133/ev.dat not found!
 File DTwalk/5/201409241558/ev.dat not found!

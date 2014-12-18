@@ -81,14 +81,32 @@ def read_models(basename):
 def pcload_single_entries(basename, gp):
     import gl_collection as glc
     pc = glc.ProfileCollection(gp.pops, gp.nipol)
-    numofmodels = np.inf
+    import re
+    tmp = re.split('/DT', basename)[-1]
+    path = str.join('/', re.split('/', tmp)[:-1])
+
+    rinfo = basename+'../../../run_info'
+
+    # get number of iterations from run_info file
+    import gl_base as gb
+    bp = gb.get_basepath()
+    fil = open(bp+"/run_info", "r")
+    for line in fil:
+        if re.search(path, line):
+            line2 = re.sub(r'\n', '', line)
+            if not re.search("File ", line2):
+                runparams = line2
+    fil.close()
+    numofmodels = int(re.split('\t', runparams)[2])
+
     current = 0
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         dum*=1
         while current < numofmodels:
             current += 1
-            gh.progressbar((1.0*current)/numofmodels)
+            if current%100 == 0:
+                gh.progressbar((1.0*current)/numofmodels)
             try:
                 MODEL = pickle.load(fi)
                 pc.add(MODEL)
@@ -145,6 +163,9 @@ def run(timestamp, basename, gp):
         pc.plot_profile(basename, 'nu', pop, gp)
         pc.plot_profile(basename, 'nrnu', pop, gp)
         pc.plot_profile(basename, 'sig', pop, gp)
+
+    #if gp.pops == 1:
+    #    os.system("cd basename; pdfjam --outfile cat.pdf --nup 3x3 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf")
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string

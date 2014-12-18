@@ -114,14 +114,15 @@ def list_files(basedir):
 
 def list_files_readout(basedir, investigate, case):
     bp = gb.get_basepath()
-    file = open(bp+"/run_info", "r")
+    fil = open(bp+"/run_info", "r")
     fdl=[]
-    for line in file:
+    for line in fil:
         if re.search("DT"+str(investigate)+"/"+str(case)+"/", line):
             line2 = re.sub(r'\n', '', line)
             print(line2)
             if not re.search("File ", line2):
                 fdl.append(line2)
+    fil.close()
     return fdl
 ## \fn list_files_readout(basedir, investigate, case)
 # return list of MCMC run directories

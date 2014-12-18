@@ -9,6 +9,7 @@ import sys
 import time
 import traceback
 import pdb
+import re
 import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps
@@ -44,7 +45,7 @@ def progressbar(progress):
         progress = 1
         status = "Done...\r\n"
     block = int(round(barLength*progress))
-    text = "\rPercent: [{0}] {1}% {2}".format( "="*block + " "*(barLength-block), progress*100, status)
+    text = "\rPercent: [{0}] {1}% {2}".format( "="*block + " "*(barLength-block), pretty(progress*100), status)
     sys.stdout.write(text)
     sys.stdout.flush()
 ## \fn progressbar(progress)
@@ -53,6 +54,14 @@ def progressbar(progress):
 # Accepts a float between 0 and 1. Any int will be converted to a float.
 # A value under 0 represents a 'halt'.
 # A value at 1 or bigger represents 100%
+
+
+def grep(s,pattern):
+    return '\n'.join(re.findall(r'^.*%s.*?$'%pattern,s,flags=re.M))
+## \fn grep(s,pattern)
+# return egrep pattern in file s
+# @param s
+# @param pattern
 
 def sanitize_vector(vec, length, mini, maxi, debug):
     if length > -1 and len(vec) != length:
