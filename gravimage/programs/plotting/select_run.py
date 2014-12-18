@@ -339,7 +339,8 @@ def run(investigate="", case=-1, latest=False):
             action = get_action()
             if action == 'k':
                 import shutil
-                shutil.rmtree(fdl[sel])
+                basename = re.split('\t', fdl[sel])[1]
+                shutil.rmtree(basepath+basename)
 
     line = fdl[sel] # full directory path, without '/'
     basename = re.split('\t', line)[1]

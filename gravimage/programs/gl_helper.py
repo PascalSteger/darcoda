@@ -31,7 +31,7 @@ def LOG(level, message, var=''):
 # @param var variable (not mandatory)
 
 def progressbar(progress):
-    barLength = 20 # Modify this to change the length of the progress bar
+    barLength = 24 # Modify this to change the length of the progress bar
     status = ""
     if isinstance(progress, int):
         progress = float(progress)

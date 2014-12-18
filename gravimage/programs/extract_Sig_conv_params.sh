@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/zsh
 # get all nu n(r) parameters, assuming pops == 1:
 
 # call with output directory, phys_live.points is appended to that name

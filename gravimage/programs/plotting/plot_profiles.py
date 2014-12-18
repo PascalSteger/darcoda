@@ -112,6 +112,7 @@ def pcload_single_entries(basename, gp):
                 pc.add(MODEL)
             except EOFError:
                 break
+    print("")
     return pc
 ## \fn pcload_single_entries(basename, gp)
 # load all data into [chi^2, profiles] pairs, and add to a profile collection
@@ -164,8 +165,10 @@ def run(timestamp, basename, gp):
         pc.plot_profile(basename, 'nrnu', pop, gp)
         pc.plot_profile(basename, 'sig', pop, gp)
 
-    #if gp.pops == 1:
-    #    os.system("cd basename; pdfjam --outfile cat.pdf --nup 3x3 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf")
+    if gp.pops == 1:
+        os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x4 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf ../prof_chi2_0.pdf; evince cat.pdf &")
+    elif gp.pops == 2:
+         os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x5 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf prof_nrnu_2.pdf prof_nu_2.pdf prof_Sig_2.pdf prof_betastar_2.pdf prof_beta_2.pdf prof_sig_2.pdf; evince cat.pdf &")
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string

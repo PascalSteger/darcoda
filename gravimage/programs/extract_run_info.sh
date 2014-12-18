@@ -1,5 +1,9 @@
 #!/bin/bash
 
+cd /home/ast/read/dark/darcoda/gravimage
+
+extract_active_runs.sh > active_runs
+
 # enable extended globbing
 shopt -s extglob
 
@@ -26,7 +30,14 @@ do
                     pops=$(grep "self.pops =" $timestamp/programs/gl_params.py | cut -d"=" -f2 | head -n1 | cut -d"#" -f1)
                     bins=$(grep "self.nipol =" $timestamp/programs/gl_params.py | cut -d"=" -f2 | cut -d"#" -f1)
 
-                    echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta
+                    # if found in active_runs, append "active"
+                    found=$(grep $timestamp active_runs)
+                    #echo $timestamp $found
+                    if [ $timestamp = $found"" ]; then
+                        echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta"\tactive"
+                    else
+                        echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta
+                    fi
                     count=$(echo $count"+1"|bc)
                 fi
             fi
