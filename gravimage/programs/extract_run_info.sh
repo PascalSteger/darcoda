@@ -32,7 +32,6 @@ do
 
                     # if found in active_runs, append "a"
                     found=$(grep $timestamp active_runs)
-                    #echo $timestamp $found
                     active=" "
                     if [ $timestamp = $found"" ]; then
                         active="a"
@@ -40,15 +39,15 @@ do
 
                     # if already plotted, append "p"
                     plotted=" "
-                    if [ -f $timestamp/output/prof_chi2_0.pdf ]
+                    if [ -f $timestamp/output/prof_chi2_0.pdf ]; then
                         plotted="p"
+                    fi
 
                     conv=" "
-                    converged=$(grep "c" $timestamp/output/status)
-                    if [ $converged = "c" ]; then
-                        $conv="c"
+                    if [ -f $timestamp/output/converged ]; then
+                        conv="c"
                     fi
-                    echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta"\t"$active"\t"$plotted"\t"$conv"
+                    echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta"\t"$active"\t"$plotted"\t"$conv
 
                     count=$(echo $count"+1"|bc)
                 fi
