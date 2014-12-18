@@ -30,14 +30,26 @@ do
                     pops=$(grep "self.pops =" $timestamp/programs/gl_params.py | cut -d"=" -f2 | head -n1 | cut -d"#" -f1)
                     bins=$(grep "self.nipol =" $timestamp/programs/gl_params.py | cut -d"=" -f2 | cut -d"#" -f1)
 
-                    # if found in active_runs, append "active"
+                    # if found in active_runs, append "a"
                     found=$(grep $timestamp active_runs)
                     #echo $timestamp $found
+                    active=" "
                     if [ $timestamp = $found"" ]; then
-                        echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta"\tactive"
-                    else
-                        echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta
+                        active="a"
                     fi
+
+                    # if already plotted, append "p"
+                    plotted=" "
+                    if [ -f $timestamp/output/prof_chi2_0.pdf ]
+                        plotted="p"
+
+                    conv=" "
+                    converged=$(grep "c" $timestamp/output/status)
+                    if [ $converged = "c" ]; then
+                        $conv="c"
+                    fi
+                    echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta"\t"$active"\t"$plotted"\t"$conv"
+
                     count=$(echo $count"+1"|bc)
                 fi
             fi
