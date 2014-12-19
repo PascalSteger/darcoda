@@ -13,7 +13,7 @@
 # (c) GPL v3 2014 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 from scipy.integrate import cumtrapz, romberg, simps, quad
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh

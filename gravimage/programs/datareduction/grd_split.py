@@ -8,7 +8,7 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import pdb
+import ipdb
 import numpy as np
 
 from scipy.integrate import simps
@@ -72,7 +72,7 @@ def myprior(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myprior.cube')
-        pdb.set_trace()
+        ipdb.set_trace()
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -156,7 +156,7 @@ def myloglike(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
-        pdb.set_trace()
+        ipdb.set_trace()
 
     gh.LOG(2, 'calculate integrals in denominator')
 
@@ -178,7 +178,7 @@ def myloglike(cube, ndim, nparams):
     sumterms = term_MW+term_pop1+term_pop2
     print('f_MW,pop1,pop2=',np.median(term_MW/sumterms),\
           np.median(term_pop1/sumterms), np.median(term_pop2/sumterms))
-    pdb.set_trace()
+    ipdb.set_trace()
     logterm14sum = np.log(sumterms)
     logev = np.sum(logterm14sum)
     gh.sanitize_scalar(logev, -1e30, 1e6, DEBUG)
@@ -217,8 +217,8 @@ def run(gp):
     global wpt, Rpt, V0, Ve0, W0, We0, PM0
     gpr.fil = gpr.dir+"/table_merged.bin"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-    ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
-                       usecols=(0,1),delimiter=delim)
+    #ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
+    #                   usecols=(0,1),delimiter=delim)
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \

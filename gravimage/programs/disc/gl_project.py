@@ -13,7 +13,7 @@
 # (c) 2013 Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 from scipy.interpolate import splrep, splev, splint
 import gl_helper as gh
 import gl_physics as phys

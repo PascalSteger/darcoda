@@ -6,12 +6,13 @@
 
 # (c) GPL v3 2014 ETHZ, psteger@phys.ethz.ch
 
-
 import os
-import pdb
+import ipdb
 import sys
 import pickle
 import numpy as np
+
+import gl_base as gb
 import gl_helper as gh
 
 def get_case(cas):
@@ -43,7 +44,7 @@ class Files:
     # pop==2 for second tracer population, and so on
     def __init__ (self, gp, timestamp=''):
         ## set which computer we are working on
-        self.machine = ''
+        self.basepath = ''
         ## set base directory, link version for short filenames
         self.shortdir = ''
         self.longdir = ''
@@ -84,15 +85,13 @@ class Files:
             self.set_triax(gp, timestamp)
         elif gp.investigate == 'obs':
             self.set_obs(gp, timestamp)
-        elif gp.investigate == 'coll':
-            self.set_coll(gp, timestamp)
         elif gp.investigate == 'discsim':
             self.set_discsim(gp, timestamp)
         elif gp.investigate == 'discmock':
             self.set_discmock(gp, timestamp)
         else:
             print(' wrong investigation in Files()')
-            pdb.set_trace()
+            ipdb.set_trace()
         ## directory and basename of all output files
         if timestamp == '':
             import datetime
@@ -120,18 +119,9 @@ class Files:
 
 
     def set_dir(self, machine, case, inv):
-        self.machine = '/home/psteger/sci/darcoda/gravimage/'
-        if machine == 'darkside':
-            self.machine = '/home/ast/read/dark/darcoda/gravimage/'
-        elif machine == 'lisa_HS_login':
-            self.machine = '/home/hsilverw/LoDaM/darcoda/gravimage/'
-        elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/darcoda/gravimage/'
-        elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-            scratch_space = os.getenv("TMPDIR")
-            self.machine = scratch_space + '/darcoda/gravimage/'
-        self.progdir = self.machine + 'programs/'
-        self.modedir = self.machine + 'DT' + inv + '/'
+        self.basepath = gb.get_basepath()
+        self.progdir = self.basepath + 'programs/'
+        self.modedir = self.basepath + 'DT' + inv + '/'
         self.shortdir = self.modedir + str(case) + '/'
         return
     ## \fn set_dir(self, machine, case, inv)
@@ -165,28 +155,28 @@ class Files:
 
 
     def set_hern(self, gp, timestamp=''):
-        self.dir = self.machine + 'DThern/'
+        self.dir = self.basepath + 'DThern/'
         self.dir += timestamp + '/'
         sim = self.get_sim_name(gp)
-        self.massfiles.append(self.dir+'M/'+sim+'M_0.txt')
-        self.massfiles.append(self.dir+'M/'+sim+'M_1.txt')
-        self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_0.txt') # all comp.
-        self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_1.txt') # first comp.
-        self.nufiles.append(self.dir+'nu/'+sim+'nu_0.txt') # all comp.
-        self.nufiles.append(self.dir+'nu/'+sim+'nu_1.txt') # first comp.
-        self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_0.txt') # all comp.
-        self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_1.txt') # first comp.
-        self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_0.txt') # all comp.
-        self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_1.txt') # first comp.
-        self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_0.txt')
-        self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_1.txt')
+        self.massfiles.append(self.dir + 'M/'+sim+'M_0.txt')
+        self.massfiles.append(self.dir + 'M/'+sim+'M_1.txt')
+        self.Sigfiles.append(self.dir  + 'Sigma/'+sim+'Sig_0.txt') # all comp.
+        self.Sigfiles.append(self.dir  + 'Sigma/'+sim+'Sig_1.txt') # first comp.
+        self.nufiles.append(self.dir   + 'nu/'+sim+'nu_0.txt') # all comp.
+        self.nufiles.append(self.dir   + 'nu/'+sim+'nu_1.txt') # first comp.
+        self.sigfiles.append(self.dir  + 'siglos/'+sim+'veldisplos_0.txt') # all comp.
+        self.sigfiles.append(self.dir  + 'siglos/'+sim+'veldisplos_1.txt') # first comp.
+        self.kappafiles.append(self.dir+ 'kappalos/'+sim+'kappalos_0.txt') # all comp.
+        self.kappafiles.append(self.dir+ 'kappalos/'+sim+'kappalos_1.txt') # first comp.
+        self.zetafiles.append(self.dir + 'zeta/'+sim+'zeta_0.txt')
+        self.zetafiles.append(self.dir + 'zeta/'+sim+'zeta_1.txt')
         if gp.pops == 2:
-            self.massfiles.append(self.dir+'M/'+sim+'M_2.txt')
-            self.Sigfiles.append(self.dir+'Sigma/'+sim+'Sig_2.txt')
-            self.nufiles.append(self.dir+'nu/'+sim+'nu_2.txt')
-            self.sigfiles.append(self.dir+'siglos/'+sim+'veldisplos_2.txt')
-            self.kappafiles.append(self.dir+'kappalos/'+sim+'kappalos_2.txt')
-            self.zetafiles.append(self.dir+'zeta/'+sim+'zeta_2.txt')
+            self.massfiles.append(self.dir + 'M/'+sim+'M_2.txt')
+            self.Sigfiles.append(self.dir  + 'Sigma/'+sim+'Sig_2.txt')
+            self.nufiles.append(self.dir   + 'nu/'+sim+'nu_2.txt')
+            self.sigfiles.append(self.dir  + 'siglos/'+sim+'veldisplos_2.txt')
+            self.kappafiles.append(self.dir+ 'kappalos/'+sim+'kappalos_2.txt')
+            self.zetafiles.append(self.dir + 'zeta/'+sim+'zeta_2.txt')
         return
     ## \fn set_hern(self, gp, timestamp)
     # set all filenames for Hernquist case
@@ -284,30 +274,9 @@ class Files:
     # @param gp global parameters
     # @param timestamp for analysis
 
-    def set_coll(self, gp, timestamp=''):
-        self.longdir = 'mpop1/'
-        self.dir = self.modedir + self.longdir
-        self.dir += timestamp + '/'
-        ## new variable to hold the .dat input file
-        self.datafile = self.dir + 'dat'
-        #self.analytic = self.dir + 'samplepars'
-        for pop in np.arange(gp.pops+1):
-            spop = str(pop)
-            self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt') # all comp.
-            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt') # all comp.
-            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
-            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
-        return
-    ## \fn set_coll(self, gp, timestamp)
-    # derive filenames from collisional systems case
-    # @param gp global parameters
-    # @param timestamp for analysis
-
 
     def set_walk(self, gp, timestamp=''):
-        self.dir = self.machine + 'DTwalk/'
+        self.dir = self.basepath + 'DTwalk/'
         if gp.case == 0:
             gamma_star1 =   0.1;    gamma_star2 =   1.0 # 1. or 0.1
             beta_star1  =   5.0;    beta_star2  =   5.0 # fixed to 5
@@ -368,12 +337,12 @@ class Files:
         self.params = [beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0]
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             spop = str(pop)
-            self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt')
-            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
-            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
+            self.massfiles.append(self.dir + 'M/M_'+spop+'.txt')
+            self.Sigfiles.append(self.dir  + 'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir   + 'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir  + 'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+ 'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir + 'zeta/zeta_'+spop+'.txt')
         return
     ## \fn set_walk(self, gp, timestamp)
     # derive filenames from Walker&Penarrubia parameters
@@ -404,47 +373,68 @@ class Files:
 
 
     def set_obs(self, gp, timestamp=''):
-        self.dir = self.machine + '/DTobs/'+str(gp.case)+'/'
+        self.dir = self.basepath + 'DTobs/'+str(gp.case)+'/'
         self.dir += timestamp + '/'
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             spop = str(pop)
             self.massfiles.append(self.dir + 'M/M_'+spop+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt')
-            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
-            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
+            self.Sigfiles.append(self.dir  + 'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir   + 'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir  + 'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+ 'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir + 'zeta/zeta_'+spop+'.txt')
         return
     ## \fn set_obs(self, gp, timestamp)
     # set all variables in the case we work with Fornax observational data
     # @param gp
     # @param timestamp
 
+    # def set_coll(self, gp, timestamp=''):
+    #     self.longdir = 'mpop1/'
+    #     self.dir = self.modedir + self.longdir
+    #     self.dir += timestamp + '/'
+    #     ## new variable to hold the .dat input file
+    #     self.datafile = self.dir + 'dat'
+    #     #self.analytic = self.dir + 'samplepars'
+    #     for pop in np.arange(gp.pops+1):
+    #         spop = str(pop)
+    #         self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
+    #         self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt') # all comp.
+    #         self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt') # all comp.
+    #         self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
+    #         self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
+    #         self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
+    #     return
+    # TODO: delete if code below works
+    ## \fn set_coll(self, gp, timestamp)
+    # derive filenames from collisional systems case
+    # @param gp global parameters
+    # @param timestamp for analysis
+
     def set_coll(self, gp, timestamp=''):
-        self.dir = self.machine + '/DTcoll/'+str(gp.case)+'/'
+        self.dir = self.basepath + 'DTcoll/'+str(gp.case)+'/'
         self.dir += timestamp + '/'
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             spop = str(pop)
             self.massfiles.append(self.dir + 'M/M_'+spop+'.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt')
-            self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
-            self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
+            self.Sigfiles.append(self.dir  + 'Sigma/Sig_'+spop+'.txt')
+            self.nufiles.append(self.dir   + 'nu/nu_'+spop+'.txt')
+            self.sigfiles.append(self.dir  + 'siglos/siglos_'+spop+'.txt')
+            self.kappafiles.append(self.dir+ 'kappalos/kappalos_'+spop+'.txt')
+            self.zetafiles.append(self.dir + 'zeta/zeta_'+spop+'.txt')
         return
     ## \fn set_coll(self, gp, timestamp)
     # set all variables in the case we work with Fornax observational data
     # @param gp global parameters
     # @param timestamp in format 'YYYYMMDD'
 
-
     def populate_output_dir(self, gp):
         # copy only after data is read in!
-        os.system('mkdir -p '+self.outdir+'/programs')
+        os.system('mkdir -p '+self.outdir+'programs')
         # rsync -r --exclude '.git' source target to exclude .git dir from copy
         os.system('rsync -rl --exclude ".git" --exclude "doc"'+\
                   ' --exclude "__pycache__" ' + \
-                  self.progdir + ' ' + self.outdir+'/programs/')
+                  self.progdir + ' ' + self.outdir+'programs/')
         # copy data for later reference,
         # in Hernquist case: neglect simulation folder
         os.system('rsync -rl --exclude "201*" --exclude "simulation" ' + \
@@ -454,38 +444,35 @@ class Files:
     # copy data files to output directory, with timestamp
     # @param gp global parameters
 
-
     def get_scale_file(self, i):
         return self.dir+'scale_'+str(i)+'.txt'
     ## \fn get_scale_file(self, i)
     # return filename for storing scaling properties (half-light radius, ...)
     # @param i population number. 0: all pops, 1,2,n: component i
 
-
     def get_ntracer_file(self, i):
         return self.dir+'ntracer_'+str(i)+'.txt'
     ## \fn get_ntracer_file(self, i)
     # get filename with attached tracer information
 
-
     def set_discsim(self, gp, timestamp=''):
         # entry for "all components" as the first entry. Convention: 0. all 1. pop, 2. pop, 3. pop = background
-        self.dir = self.machine + 'DTdiscsim/mwhr/'
+        self.dir = self.basepath + 'DTdiscsim/mwhr/'
         self.dir += timestamp + '/'
         # self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt')
         # self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # again all components
         # self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # all comp.
         # self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # overall surface density?
-        self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
-        self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
-        self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
-        self.kappafiles.append(self.dir +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_stars.txt') # first comp.
+        self.posvelfiles.append(self.dir  + 'sim/mwhr_r8500_ang'+gp.patch+'_stars.txt') # first comp.
+        self.Sigfiles.append(self.dir     + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_stars.txt') # first comp
+        self.sigfiles.append(self.dir     +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_stars.txt') # first comp.
+        self.kappafiles.append(self.dir   +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_stars.txt') # first comp.
         self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfaceden.txt') # baryonic surface density
         if gp.pops ==2:
-            self.posvelfiles.append(self.dir + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
-            self.Sigfiles.append(self.dir + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
-            self.sigfiles.append(self.dir +  'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_dm.txt') # second comp.
-            self.kappafiles.append(self.dir +  'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_dm.txt') # second comp.
+            self.posvelfiles.append(self.dir  + 'sim/mwhr_r8500_ang'+gp.patch+'_dm.txt') # second comp.
+            self.Sigfiles.append(self.dir     + 'Sigma/mwhr_r8500_ang'+gp.patch+'_falloff_dm.txt') # second comp.
+            self.sigfiles.append(self.dir     + 'siglos/mwhr_r8500_ang'+gp.patch+'_dispvel_dm.txt') # second comp.
+            self.kappafiles.append(self.dir   + 'kappalos/mwhr_r8500_ang'+gp.patch+'_kappa_dm.txt') # second comp.
             self.surfdenfiles.append(self.dir + 'surfden/mwhr_r8500_ang'+gp.patch+'_surfacedenDM.txt') # DM surface density
 
         return
@@ -494,32 +481,30 @@ class Files:
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
 
-
     def set_discmock(self, gp, timestamp=''):
-        self.dir = self.machine + 'DTdiscmock/0/'
+        self.dir = self.basepath + 'DTdiscmock/0/'
         self.dir += timestamp + '/'
-        self.massfiles.append(self.dir+'M/M_0.txt')
-        self.Sigfiles.append(self.dir+'Sigma/Sigma_0.txt') # all comp.
-        self.nufiles.append(self.dir+'nu/nu_0.txt')
-        self.sigfiles.append(self.dir+'siglos/siglos_0.txt')
-        self.kappafiles.append(self.dir+'kappalos/kappalos_0.txt')
-        self.massfiles.append(self.dir+'M/M_1.txt')
-        self.Sigfiles.append(self.dir+'Sigma/Sigma_1.txt') # all comp.
-        self.nufiles.append(self.dir+'nu/nu_1.txt')
-        self.sigfiles.append(self.dir+'siglos/siglos_1.txt')
-        self.kappafiles.append(self.dir+'kappalos/kappalos_1.txt')
+        self.massfiles.append(self.dir + 'M/M_0.txt')
+        self.Sigfiles.append(self.dir  + 'Sigma/Sigma_0.txt') # all comp.
+        self.nufiles.append(self.dir   + 'nu/nu_0.txt')
+        self.sigfiles.append(self.dir  + 'siglos/siglos_0.txt')
+        self.kappafiles.append(self.dir+ 'kappalos/kappalos_0.txt')
+        self.massfiles.append(self.dir + 'M/M_1.txt')
+        self.Sigfiles.append(self.dir  + 'Sigma/Sigma_1.txt') # all comp.
+        self.nufiles.append(self.dir   + 'nu/nu_1.txt')
+        self.sigfiles.append(self.dir  + 'siglos/siglos_1.txt')
+        self.kappafiles.append(self.dir+ 'kappalos/kappalos_1.txt')
         if gp.pops == 2:
-            self.massfiles.append(self.dir+'M/M_2.txt')
-            self.Sigfiles.append(self.dir+'Sigma/Sigma_2.txt') # all comp.
-            self.nufiles.append(self.dir+'nu/nu_2.txt')
-            self.sigfiles.append(self.dir+'siglos/siglos_2.txt')
-            self.kappafiles.append(self.dir+'kappalos/kappalos_2.txt')
+            self.massfiles.append(self.dir + 'M/M_2.txt')
+            self.Sigfiles.append(self.dir  + 'Sigma/Sigma_2.txt') # all comp.
+            self.nufiles.append(self.dir   + 'nu/nu_2.txt')
+            self.sigfiles.append(self.dir  + 'siglos/siglos_2.txt')
+            self.kappafiles.append(self.dir+ 'kappalos/kappalos_2.txt')
         return
     ## \fn set_discmock(self, gp, timestamp='')
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
-
 
     def get_com_file(self, n):
         gh.sanitize_scalar(n, 0, 2, True)
@@ -527,7 +512,6 @@ class Files:
     ## \fn get_com_file(n)
     # get filename of COM file
     # @param n population
-
 
     def __repr__(self):
         return "Files: "+self.dir

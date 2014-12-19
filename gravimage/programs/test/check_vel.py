@@ -13,4 +13,4 @@ hist(vlos, 150)
 
 xlabel(r'$v_{\text{LOS}}\quad\text{km/s}$')
 ylabel(r'$f\quad[1]$')
-pdb.set_trace()
+ipdb.set_trace()

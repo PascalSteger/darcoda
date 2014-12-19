@@ -6,7 +6,7 @@
 
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 
 import gl_helper as gh
@@ -47,7 +47,7 @@ def read_data(gp):
 def read_Sigdata(gp):
     gh.LOG(1, 'reading Sig converged parameters')
     # put together filename
-    Sigconvparamsfn = gp.files.modedir+'/'+str(gp.case)+'/Sig_conv.stats'
+    Sigconvparamsfn = gp.files.modedir+str(gp.case)+'/Sig_conv.stats'
     # read first line into nuparam_min
     # read second line into nuparam_median
     # read third line into nuparam_max

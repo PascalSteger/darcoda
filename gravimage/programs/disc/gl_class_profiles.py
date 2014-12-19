@@ -6,7 +6,7 @@
 
 # (c) GPL v3 2014 ETHZ psteger@phys.ethz.ch
 
-import pdb
+import ipdb
 import numpy as np
 import gl_helper as gh
 

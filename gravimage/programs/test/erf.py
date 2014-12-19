@@ -110,11 +110,11 @@ def ginv(x, mu, sigma):
 # @param sigma width of normal distribution
 
 if __name__=="__main__":
-    import pdb
+    import ipdb
     from pylab import *
     Nsample = 1000
     x = np.linspace(0, 1, Nsample)
     out = ginv(x, 0., 0.1)
     hist(out, np.sqrt(Nsample))
     show()
-    pdb.set_trace()
+    ipdb.set_trace()

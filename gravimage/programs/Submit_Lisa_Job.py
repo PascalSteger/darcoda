@@ -13,7 +13,7 @@
 from numpy import *
 import os, datetime, shutil
 from subprocess import call
-import pdb
+import ipdb
 
 nodes=1
 cores=16
@@ -21,7 +21,7 @@ ppn=16
 walltime='00:00:15:00'
 
 gravimage_path = os.path.abspath('../')
-holding_stack_path = gravimage_path + '/holding_stack/'
+holding_stack_path = gravimage_path + 'holding_stack/'
 
 #Check for holding area folder, create one if none exists
 if os.path.isdir(holding_stack_path) != True:
@@ -35,7 +35,7 @@ holding_number = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 shutil.copytree(gravimage_path + '/programs', holding_stack_path + holding_number + '/programs/')
 
 #Create PBS file
-pbs_filename = holding_stack_path + holding_number + '/programs/PBS_LisaSubmit_' + holding_number + '.pbs'
+pbs_filename = holding_stack_path + holding_number + 'programs/PBS_LisaSubmit_' + holding_number + '.pbs'
 pbs_file = open(pbs_filename, 'w')
 pbs_file.writelines('#!/bin/bash'+'\n')
 pbs_file.writelines('#PBS -S /bin/bash'+'\n')
@@ -46,7 +46,7 @@ pbs_file.writelines('export RUNDIR=$TMPDIR'+'\n')
 pbs_file.writelines('cd $TMPDIR'+'\n')
 pbs_file.writelines('mkdir -p $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('mkdir $TMPDIR/darcoda/gravimage/programs/HoldingNumberWas_' + holding_number)
-pbs_file.writelines('cp -r $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs/* $TMPDIR/darcoda/gravimage/programs/'+'\n')
+pbs_file.writelines('cp -r $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'programs/* $TMPDIR/darcoda/gravimage/programs/'+'\n')
 pbs_file.writelines('cd $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('# Calculate run time for gravimage, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
@@ -62,6 +62,6 @@ pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
 #Submit PDB file
-pdb.set_trace()
-os.chdir(holding_stack_path + holding_number + '/programs/')
+ipdb.set_trace()
+os.chdir(holding_stack_path + holding_number + 'programs/')
 os.system('qsub ' + pbs_filename)

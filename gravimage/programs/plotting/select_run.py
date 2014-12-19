@@ -9,7 +9,7 @@
 import os
 import glob
 import shutil
-import pdb
+import ipdb
 import re
 
 import numpy as np
@@ -42,15 +42,15 @@ def removeDir(path):
 def remove_empty_folders(fdl):
     for x in fdl:
         try:
-            with open(x[0]+"/ev.dat"):
+            with open(x[0]+"ev.dat"):
                 # delete any folder that has empty ev.dat
-                if bufcount(x[0]+'/ev.dat') <= 0:
+                if bufcount(x[0]+'ev.dat') <= 0:
                     #removeDir(x[0])
-                    print('empty '+x[0]+'/ev.dat, remove dir?')
+                    print('empty '+x[0]+'ev.dat, remove dir?')
                 continue
         except IOError:
             #removeDir(x[0])
-            print(x[0]+'/ev.dat does not exist, remove empty directory '+x[0]+'?')
+            print(x[0]+'ev.dat does not exist, remove empty directory '+x[0]+'?')
     return
 ## \fn remove_empty_folders(fdl)
 # remove all folders in list fdl without any ev.dat file in it = where
@@ -70,7 +70,7 @@ def list_files(basedir):
     for x in dirs:
         timestamp = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
         try:
-            co = bufcount(x+'/ev.dat')
+            co = bufcount(x+'ev.dat')
         except:
             print('file not found')
             co = 0
@@ -80,9 +80,9 @@ def list_files(basedir):
 
     for i in range(len(fdl)):
         try:
-            fil = open(fdl[i][0]+'/programs/gl_params.py','r')
+            fil = open(fdl[i][0]+'programs/gl_params.py','r')
         except:
-            print('missing '+fdl[i][0]+'/programs/gl_params.py')
+            print('missing '+fdl[i][0]+'programs/gl_params.py')
             continue
         pops = 0                # default: 0 populations, error
         nipol = 0
@@ -275,7 +275,7 @@ def get_prof():
 
 def get_pops(basename):
     pops = 1
-    with open(basename+'/programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gl_params.py', 'r') as f:
         for line in f:
             lss = line.split()
             if len(lss) == 0:
@@ -293,7 +293,7 @@ def get_pops(basename):
 
 def get_nipol(basename):
     nipol = 0
-    with open(basename+'/programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gl_params.py', 'r') as f:
         for line in f:
             if 'nipol      = ' in line:
                 import re
@@ -307,7 +307,7 @@ def get_nipol(basename):
 
 def get_nbeta(basename):
     nbeta = 0
-    with open(basename+'/programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gl_params.py', 'r') as f:
         for line in f:
             if 'nbeta      = ' in line:
                 import re
@@ -325,7 +325,7 @@ def run(investigate="", case=-1, latest=False):
     if case == -1:
         case = get_case(investigate)
     basepath = gb.get_basepath()
-    basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
+    basedir = os.path.abspath(basepath+'DT'+investigate+'/'+str(case)+'/')
 
     print(' - searching directory ', basedir, ' for output files')
     if latest:

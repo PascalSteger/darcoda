@@ -5,7 +5,7 @@ from ctypes import CDLL
 from ctypes import c_bool, c_int, c_double, c_void_p
 from ctypes import CFUNCTYPE, POINTER
 from ctypes import create_string_buffer
-import pdb
+import ipdb
 try:
     lib = CDLL('libnest3.so')
 except OSError as e:

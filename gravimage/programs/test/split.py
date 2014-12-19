@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import numpy.random as npr
 import numpy as np
-import pdb
+import ipdb
 import matplotlib
 #matplotlib.use('pdf')
 

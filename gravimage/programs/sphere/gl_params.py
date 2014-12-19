@@ -7,7 +7,7 @@
 # (c) GPL v3 2014 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import pdb
+import ipdb
 import socket
 import getpass
 

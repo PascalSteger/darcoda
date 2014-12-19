@@ -8,9 +8,10 @@
 
 import os
 import sys
-import pdb
+import ipdb
 from imp import reload
 
+import gl_base as gb
 
 def insert_sys_path(fullpath):
     sys.path.insert(0, fullpath)
@@ -44,17 +45,8 @@ def import_path(fullpath):
 
 def set_geometry(geom, machine):
     print('Machine = ', machine)
-    basepath = '/home/psteger/sci/darcoda/gravimage/programs/'
-    if machine == 'darkside':
-        basepath = '/home/ast/read/dark/darcoda/gravimage/programs/'
-    elif machine == 'lisa_HS_login':
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/programs/'
-    elif machine == 'lisa_SS_login':
-        basepath = '/home/sofia/darcoda/gravimage/programs/'
-    elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-        scratch_space = os.getenv("TMPDIR")
-        basepath = scratch_space + '/darcoda/gravimage/programs/'
-    print('basepath = ', basepath)
+    basepath = gb.get_basepath()+'programs/'
+
     insert_sys_path(basepath + 'datareduction/')
     insert_sys_path(basepath + geom)
 ## \fn set_geometry(geom, machine)

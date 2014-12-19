@@ -8,7 +8,7 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb
+import ipdb
 
 import gl_units as gu
 import gl_helper as gh

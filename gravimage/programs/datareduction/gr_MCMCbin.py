@@ -9,7 +9,7 @@
 
 # (c) GPL v3 2014 Pascal S.P. Steger
 
-import pdb
+import ipdb
 import numpy as np
 from scipy.stats import kurtosis
 
@@ -163,7 +163,7 @@ def run(gp):
 
                 Sigma = Sig_kin[:,k]
                 if gp.usezeta:
-                    pdb.set_trace()
+                    ipdb.set_trace()
                     Ntot[k] = gh.Ntot(Rbin, Sigma, gp)
                     zetaa[k] = gh.starred(Rbin, v4[:,k], Sigma, Ntot[k], gp)
                     v2denom = (gh.starred(Rbin, v2[:,k], Sigma, Ntot[k], gp))**2

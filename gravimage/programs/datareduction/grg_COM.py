@@ -8,7 +8,7 @@
 # (c) GPL v3 2014 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import pdb
+import ipdb
 
 
 def select_pm(x, y, z, vz, pm):

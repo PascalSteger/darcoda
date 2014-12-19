@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
-import pdb
+import ipdb
 import gl_params
 gp = gl_params.Params()
 
@@ -53,7 +53,7 @@ ax.plot(x, y, 'b--')
 #ax.plot(x, yn, 'b')
 #ax.plot(x, model_beta(x, 0.5), 'r')
 
-pdb.set_trace()
+ipdb.set_trace()
 popt, pcov = curve_fit(model_beta, x, y)
 
 ax.plot(x, model_beta(x, *popt), 'g')

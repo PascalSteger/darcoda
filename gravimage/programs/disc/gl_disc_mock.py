@@ -9,7 +9,7 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb
+import ipdb
 from scipy.integrate import simps
 
 import gl_units as gu

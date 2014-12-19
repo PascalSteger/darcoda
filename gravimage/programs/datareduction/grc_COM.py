@@ -8,7 +8,7 @@
 # (c) 2014 Pascal S.P. Steger
 
 import numpy as np
-import pdb
+import ipdb
 #from pylab import *
 #ion()
 

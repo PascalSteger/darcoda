@@ -7,7 +7,7 @@
 
 # start off with plotting/ in front of path
 #import sys
-import pdb
+import ipdb
 import pickle
 import os
 import numpy as np
@@ -59,11 +59,11 @@ def correct_E_error(filename):
 
 def read_models(basename):
     # read in all accepted models
-    print(basename+'/{ev.dat, phys_live.points}')
-    correct_E_error(basename + '/ev.dat')
-    correct_E_error(basename + '/phys_live.points')
-    REJECTED = np.loadtxt(basename+'/ev.dat', skiprows=0, unpack=False)
-    LIVE = np.loadtxt(basename+'/phys_live.points', skiprows=0, unpack=False)
+    print(basename+'{ev.dat, phys_live.points}')
+    correct_E_error(basename + 'ev.dat')
+    correct_E_error(basename + 'phys_live.points')
+    REJECTED = np.loadtxt(basename+'ev.dat', skiprows=0, unpack=False)
+    LIVE = np.loadtxt(basename+'phys_live.points', skiprows=0, unpack=False)
     ALL = np.vstack([REJECTED[:,:-3], LIVE[:,:-2]])
     npr.shuffle(ALL)
     # for debugging, random 10 models

@@ -8,7 +8,7 @@
 # (c) GPL v3 2014 Pascal S.P. Steger
 
 import numpy as np
-import pdb
+import ipdb
 import gl_helper as gh
 import gl_file as gf
 from gl_centering import com_shrinkcircle_v_2D

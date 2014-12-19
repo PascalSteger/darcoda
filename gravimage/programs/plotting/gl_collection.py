@@ -7,7 +7,7 @@
 
 import numpy as np
 import numpy.random as npr
-import pdb
+import ipdb
 
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -260,13 +260,13 @@ class ProfileCollection():
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
         output.add('M 68% CL high '+ uni, self.M68hi.get_prof(prof, pop))
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
-        output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
+        output.write(basename+'output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
         if (gp.investigate =='walk' or gp.investigate=='gaia') \
            and (prof != 'Sig'):
             out_an = go.Output()
             out_an.add('radius [pc]', self.analytic.x0)
             out_an.add('analytic profile', self.analytic.get_prof(prof, pop))
-            out_an.write(basename+'/output/analytic/prof_'+prof+'_'+str(pop)+'.analytic')
+            out_an.write(basename+'output/analytic/prof_'+prof+'_'+str(pop)+'.analytic')
     ## \fn write_prof(self, basename, prof, pop, gp)
     # write output file for a single profile
     # @param basename directory string
@@ -279,7 +279,7 @@ class ProfileCollection():
         output = go.Output()
         output.add('edges', edges[1:])
         output.add('bins', bins)
-        output.write(basename+'/output/prof_chi2_0.ascii')
+        output.write(basename+'output/prof_chi2_0.ascii')
         return
     ## \fn write_chi2(self, basename, edges, bins)
     # write ascii file with chi2 information
@@ -373,7 +373,7 @@ class ProfileCollection():
             ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([0., 2.*max(sigdat+sigerr)])
-        output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
+        output.write(basename+'output/data/prof_'+prof+'_'+str(pop)+'.data')
         return
     ## \fn plot_data(self, ax, basename, prof, pop, gp)
     # plot data as blue shaded region
@@ -543,7 +543,7 @@ class ProfileCollection():
                 ax.step(edges[1:], bins, where='pre')
                 plt.draw()
                 self.write_chi2(basename, edges, bins)
-                fig.savefig(basename+'/output/prof_chi2_0.pdf')
+                fig.savefig(basename+'output/prof_chi2_0.pdf')
                 return
 
             self.fill_nice(ax, prof, pop, gp)
@@ -566,7 +566,7 @@ class ProfileCollection():
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')
-        fig.savefig(basename+'/output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
+        fig.savefig(basename+'output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
         return
     ## \fn plot_profile(self, basename, prof, pop, gp)
     # plot single profile

@@ -16,7 +16,7 @@
 
 # SS testing (7 october 2014)
 
-import pdb
+import ipdb
 import numpy as np
 import gl_helper as gh
 

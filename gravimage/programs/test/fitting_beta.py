@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
-import pdb
+import ipdb
 import gl_params
 gp = gl_params.Params()
 import gl_file as gf
@@ -97,4 +97,4 @@ ax2.set_xlabel('$r\\,[{\\rm pc}]$')
 #ax.draw()
 plt.savefig('beta_fit_all.pdf')
 
-pdb.set_trace()
+ipdb.set_trace()

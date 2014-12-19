@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -6,7 +6,12 @@
 
 # TODO: run with mpirun -np <N> gravimage.py
 # where <N> is an integer <= number of processors
-# (c) 2013 ETHZ Pascal Steger, psteger@phys.ethz.ch
+
+# Copyright 2015 GPLv3 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+
+# get latest version of PyMultiNest from
+# svn checkout http://lisasolve.googlecode.com/svn/trunk/ lisasolve-read-only
+
 
 ### imports
 # from __future__ import absolute_import, unicode_literals, print_function
@@ -15,7 +20,7 @@ import subprocess
 import pymultinest
 import pickle
 import numpy as np
-import pdb
+import ipdb
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
@@ -90,47 +95,47 @@ def prepare_data(gp):
 
 def run(gp):
     pymultinest.run(myloglike,
-                    myprior,
-                    gp.ndim,
-                    n_params = gp.ndim+1, # None beforehands
-                    n_clustering_params = gp.ndim,# separate modes on
-                                                  # the rho parameters
-                                                  # only: gp.nrho
-                    wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
-                                                                     #not
-                                                                     #wrap-around
-                                                                     #parameters
-                    importance_nested_sampling = True, # INS enabled
-                    multimodal = True,           # separate modes
-                    const_efficiency_mode = True, # use const sampling efficiency
-                    n_live_points = gp.nlive,
-                    evidence_tolerance = 0.0, # set to 0 to keep
-                                              # algorithm working
-                                              # indefinitely
-                    sampling_efficiency = 0.55,
-                    n_iter_before_update = 10, # output after this many iterations
-                    null_log_evidence = -1e100,
-                    max_modes = gp.nlive,   # preallocation of modes:
-                                            #max. = number of live
-                                            #points
-                    mode_tolerance = -1.e100,   # mode tolerance in the
-                                               #case where no special
-                                               #value exists: highly
-                                               #negative
-                    outputfiles_basename = gp.files.outdir,
-                    seed = -1,
-                    verbose = True,
-                    resume = gp.restart,   # TODO check
-                    context = 0,
-                    write_output = True,
-                    log_zero = -1e500,    # points with log likelihood
-                                          #< log_zero will be
-                                          #neglected
-                    max_iter = 0,         # set to 0 for never reaching max_iter (no
-                                          #stopping criterium based on
-                                          #number of iterations)
-                    init_MPI = False,     # use MPI
-                    dump_callback = None)
+                  myprior,
+                  gp.ndim,
+                  n_params = gp.ndim+1, # None beforehands
+                  n_clustering_params = gp.ndim,# separate modes on
+                  # the rho parameters
+                  # only: gp.nrho
+                  wrapped_params = [ gp.pops, gp.nipol, gp.nrho], # do
+                  #not
+                  #wrap-around
+                  #parameters
+                  importance_nested_sampling = True, # INS enabled
+                  multimodal = True,           # separate modes
+                  const_efficiency_mode = True, # use const sampling efficiency
+                  n_live_points = gp.nlive,
+                  evidence_tolerance = 0.0, # set to 0 to keep
+                  # algorithm working
+                  # indefinitely
+                  sampling_efficiency = 0.55,
+                  n_iter_before_update = 10, # output after this many iterations
+                  null_log_evidence = -1e100,
+                  max_modes = gp.nlive,   # preallocation of modes:
+                  #max. = number of live
+                  #points
+                  mode_tolerance = -1.e100,   # mode tolerance in the
+                  #case where no special
+                  #value exists: highly
+                  #negative
+                  outputfiles_basename = gp.files.outdir,
+                  seed = -1,
+                  verbose = True,
+                  resume = gp.restart,   # TODO check
+                  context = 0,
+                  write_output = True,
+                  log_zero = -1e500,    # points with log likelihood
+                  #< log_zero will be
+                  #neglected
+                  max_iter = 0,         # set to 0 for never reaching max_iter (no
+                  #stopping criterium based on
+                  #number of iterations)
+                  init_MPI = False,     # use MPI
+                  dump_callback = None)
 
 if __name__=="__main__":
     global Cube, geom_loglike

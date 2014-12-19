@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import multinest
+import pymultinest
 import math
 import os
 if not os.path.exists("chains"): os.mkdir("chains")
@@ -23,7 +23,7 @@ parameters = ["x", "y"]
 n_params = len(parameters)
 
 # run MultiNest
-multinest.run(LogLikelihood=myloglike,
+pymultinest.run(LogLikelihood=myloglike,
               Prior=myprior,
               nest_ndims = n_params,
               nest_fb = True,

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # split populations in observed dwarf galaxies
@@ -7,13 +7,31 @@
 
 # (c) 2014 Pascal S.P. Steger, pascal@steger.aero
 
-import pdb
+import ipdb
+import sys
 import numpy as np
 import pymultinest
 import gl_helper as gh
 
 gh.DEBUGLEVEL = 1
 DEBUG = True
+
+
+try:
+    from mpi4py import MPI
+
+    myrank = MPI.COMM_WORLD.Get_rank()
+    nprocs = MPI.COMM_WORLD.Get_size()
+    procnm = MPI.Get_processor_name()
+except:
+    myrank = 0
+    nprocs = 1
+    procnm = 'localhost'
+
+sys.stdout.write("Hello, World!! I am process %d of %d on %s.\n" % (myrank, nprocs, procnm))
+sys.stdout.flush()
+
+
 
 def bufcount(filename):
     f = open(filename)
@@ -43,7 +61,7 @@ def myprior(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myprior.cube')
-        pdb.set_trace()
+        ipdb.set_trace()
     return cube
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -75,7 +93,7 @@ def myloglike(cube, ndim, nparams):
     gh.sanitize_vector(Mg_mu, 2, -10, 10, True)
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
-        pdb.set_trace()
+        ipdb.set_trace()
     gh.LOG(2,'starting logev evaluation')
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
@@ -96,7 +114,7 @@ def myloglike(cube, ndim, nparams):
     #gh.LOG(1, 'logL:',logev)
     if logev < -1e300:
         logev = -1e300
-    #    pdb.set_trace()
+    #    ipdb.set_trace()
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
@@ -164,7 +182,8 @@ if __name__=="__main__":
 
     import gr_params
     gpr = gr_params.grParams(gp)
-    gpr.fil = gpr.dir+"/table_merged.bin"
+    # convention: directory names have ending "/"
+    gpr.fil = gpr.dir+"table_merged.bin"
 
     # number of measured tracer stars
     Nsample = bufcount(gpr.fil)

@@ -35,7 +35,7 @@
 #------------------------------------------------------------------
 
 
-import pdb
+import ipdb
 import numpy as np
 from scipy.stats import t as Tfunc
 from scipy.stats import chi2 as CHI2
