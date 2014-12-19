@@ -121,6 +121,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     # determine log likelihood
     chi2 = calc_chi2(tmp_profs, gp)
     gh.LOG(1, '   log L = ', -chi2/2.)
+    ipdb.set_trace()
     tmp_profs.chi2 = chi2
     # after some predefined wallclock time, plot all profiles
     if time.time() - gp.last_plot >= gp.plot_after:

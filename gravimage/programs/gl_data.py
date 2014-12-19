@@ -167,6 +167,6 @@ class Datafile:
     # @param gp global parameters
 
     def __repr__(self):
-        return "Datafile: radii "+self.rbin
+        return "Datafile class, call gp.dat.rbin, .Sig, .sig"
     ## \fn __repr__(self)
     # string representation for ipython

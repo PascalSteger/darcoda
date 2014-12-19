@@ -76,7 +76,6 @@ class ProfileCollection():
     # add a profile
     # @param prof Profile to add
 
-
     def cut_subset(self):
         self.chis = np.array(self.chis) # better to work with numpy arrays for subsections
         minchi = min(self.chis)
@@ -207,7 +206,7 @@ class ProfileCollection():
         elif gp.investigate == 'walk':
             anrho = ga.rho_walk(r0, gp)[0]
             anM = glp.rho_SUM_Mr(r0, anrho)
-            annr = ga.nr3Dtot_deriv_walk(r0, gp)
+            annr = ga.nr3Dtot_deriv_walk(r0, gp) # TODO too high in case of core
             tmp_annu = ga.rho_walk(r0, gp)[1]
             annu.append( tmp_annu )
             anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp) )
@@ -243,7 +242,7 @@ class ProfileCollection():
             nrnu = -gh.derivipol(np.log(annu[pop]), np.log(r0))
             self.analytic.set_prof('nrnu', nrnu, pop, gp)
             self.analytic.set_prof('Sig', anSig[pop] , pop, gp)#/ Signorm, pop, gp)
-            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp)
+            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp) # TODO: find analytic profile
         return
     ## \fn set_analytic(x0, gp)
     # set analytic curves (later shown in blue)
@@ -458,6 +457,14 @@ class ProfileCollection():
     # @param ax axis object
     # @param gp global parameters
 
+
+    def fill_nice(self, ax, prof, pop, gp):
+        scaleHS = 1.0
+        if prof == 'nu':
+            scaleHS = gp.nu0pc[pop]
+        M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
+        M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
+        Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS
 
     def plot_full_distro(self, ax, prof, pop, gp):
         x = self.x0

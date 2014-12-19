@@ -59,16 +59,16 @@ def calc_chi2(profs, gp):
         chi2 += chi2_sig                # [1]
         gh.LOG(1, '  chi2_sig  = ', chi2_sig)
         if gp.usekappa:
-            kapdat  = gp.dat.kap[pop] # [1]
-            kaperr  = gp.dat.kaperr[pop] # [1]
+            kapdat  = 1.*gp.dat.kap[pop] # [1]
+            kaperr  = 1.*gp.dat.kaperr[pop] # [1]
             chi2_kap = chi2red(profs.get_kap(pop), kapdat, kaperr, gp.nipol) # [1]
             chi2 += chi2_kap            # [1]
 
         if gp.usezeta:
-            zetaadat = gp.dat.zetaadat[pop]
-            zetabdat = gp.dat.zetabdat[pop]
-            zetaaerr = gp.dat.zetaaerr[pop]
-            zetaberr = gp.dat.zetaberr[pop]
+            zetaadat = 1.*gp.dat.zetaadat[pop]
+            zetabdat = 1.*gp.dat.zetabdat[pop]
+            zetaaerr = 1.*gp.dat.zetaaerr[pop]
+            zetaberr = 1.*gp.dat.zetaberr[pop]
             zetaa_model, zetab_model = profs.get_zeta(pop)
             chi2_zetaa = chi2red(zetaa_model, zetaadat, zetaaerr, 1)
             chi2_zetab = chi2red(zetab_model, zetabdat, zetaberr, 1)

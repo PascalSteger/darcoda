@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -131,15 +131,15 @@ class Params():
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
                                   # calculated in gl_data
-        self.log10rhospread = 2.5       # with this spread, [dex] in log space
-        self.log10nuspread = 2.5  # same for nu
+        self.log10rhospread = 1.       # with this spread, [dex] in log space
+        self.log10nuspread = 0.5  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxnuslope = 5      # same for nrnu
-        self.nrtol  = self.maxrhoslope # max change of n(r) over the full range [0, r_max]
+        self.nrtol  = self.maxrhoslope/2 # max change of n(r) over the full range [0, r_max]
         self.nrtol_nu = self.maxnuslope/2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu

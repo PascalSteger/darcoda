@@ -122,8 +122,11 @@ def pcload_single_entries(basename, gp):
 
 def run(timestamp, basename, gp):
     prepare_output_folder(basename)
-    import gl_file as glf
-    gp.dat = glf.get_binned_data(gp)
+
+    # check whether we need to read in gp.dat, or whether we are plotting from inside gravimage main program
+    if len(gp.dat.Sig == 0):
+        import gl_file as glf
+        gp.dat = glf.get_binned_data(gp)
     read_scale(basename, gp) # store half-light radii in  gp.Xscale
     import gl_helper as gh
     Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0])

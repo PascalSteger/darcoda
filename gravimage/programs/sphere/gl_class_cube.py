@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -86,7 +86,6 @@ def ginv(x, mu, sigma):
 # @param mu central value
 # @param sigma width of normal distribution
 
-
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
@@ -151,8 +150,7 @@ def map_nr(params, prof, pop, gp):
 # @param pop population int, 0 for rho*, 1,2,... for tracer densities
 # @param gp global parameters
 
-
-def map_nr_tracers(params, prof, pop, gp):
+def map_nr_tracers(params, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
 
     # first, if we already have a converged run, use the parameters as stored
@@ -162,20 +160,11 @@ def map_nr_tracers(params, prof, pop, gp):
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
 
     # get offset and n(r) profiles, calculate rho
-    if prof=='rho':
-        rhoscale = gp.rhohalf
-        width = gp.log10rhospread
-        innerslope = gp.innerslope
-        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
-        monotonic = gp.monotonic
-    elif prof=='nu':
-        rhoscale = gp.dat.nuhalf[pop]
-        width = gp.log10nuspread
-        innerslope = gp.innerslope
-        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
-        monotonic = gp.monotonic_nu
-    else:
-        raise Exception('wrong profile in gl_class_cube.map_nr')
+    rhoscale = gp.dat.nuhalf[pop]
+    width = gp.log10nuspread
+    innerslope = gp.innerslope
+    nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+    monotonic = gp.monotonic_nu
 
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
@@ -212,17 +201,15 @@ def map_nr_tracers(params, prof, pop, gp):
 
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
     return params
-## \fn map_nr_tracers(params, prof, pop, gp)
+## \fn map_nr_tracers(params, pop, gp)
 # mapping rho parameters from [0,1] to full parameter space
 # setting all n(r<r_nrlim)<=2.0
 # and possibly a monotonically increasing function
 # first parameter is offset for rho_half
 # second parameter is asymptotic n(r to 0) value
 # @param params cube [0,1]^ndim
-# @param prof string nu, rho, rhostar
 # @param pop population int, 0 for rho*, 1,2,... for tracer densities
 # @param gp global parameters
-
 
 def map_betastar_poly(params, gp):
     gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
@@ -249,7 +236,6 @@ def map_betastar_poly(params, gp):
 # NOT USED ANYMORE
 # @param params parameter array
 # @param gp global parameters
-
 
 def map_betastar_sigmoid(params, gp):
     gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
@@ -325,7 +311,7 @@ class Cube:
         # rho* only for observations
         if gp.investigate == 'obs':
             offstep = gp.nrho
-            tmp_rhostar = map_nr_tracers(pc[off:off+offstep], 'nu', 0, gp)
+            tmp_rhostar = map_nr_tracers(pc[off:off+offstep], 0, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_rhostar[i]
             off += offstep
@@ -336,7 +322,7 @@ class Cube:
 
         for pop in range(1,gp.pops+1): # nu1, nu2, ...
             offstep = gp.nrho
-            tmp_nu = map_nr_tracers(pc[off:off+offstep], 'nu', pop, gp)
+            tmp_nu = map_nr_tracers(pc[off:off+offstep], pop, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_nu[i]
             off += offstep

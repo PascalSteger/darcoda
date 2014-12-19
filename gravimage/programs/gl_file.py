@@ -37,8 +37,8 @@ def read_data(gp):
         import grd_COM
         grd_COM.run(gp)
         if gp.pops > 1:
-            import grd_split
-            grd_split.run(gp)
+            import grd_metalsplit
+            grd_metalsplit.run(gp)
 ## \fn read_data(gp)
 # read in files with differing file formats, write out to common x, y, vz file
 # @param gp global parameters
