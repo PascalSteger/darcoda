@@ -40,7 +40,7 @@ def calc_chi2(profs, gp):
         Sigmodel = profs.get_prof('Sig', pop)
         chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
         chi2 += chi2_Sig                 # [1]
-        gh.LOG(1, ' chi2_Sig   = ', chi2_Sig)
+        gh.LOG(2, ' chi2_Sig   = ', chi2_Sig)
 
         # use the following only if chi2_nu_converged used rather than Sig_converged
         #nudat   = gp.dat.nu[pop]      # [Munit/pc^2]
@@ -57,7 +57,7 @@ def calc_chi2(profs, gp):
         sigerr  = gp.dat.sigerr[pop]    # [km/s]
         chi2_sig = chi2red(profs.get_prof('sig', pop), sigdat, sigerr, gp.nipol) # [1]
         chi2 += chi2_sig                # [1]
-        gh.LOG(1, '  chi2_sig  = ', chi2_sig)
+        gh.LOG(2, '  chi2_sig  = ', chi2_sig)
         if gp.usekappa:
             kapdat  = 1.*gp.dat.kap[pop] # [1]
             kaperr  = 1.*gp.dat.kaperr[pop] # [1]

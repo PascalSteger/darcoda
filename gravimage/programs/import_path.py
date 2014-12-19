@@ -47,7 +47,7 @@ def set_geometry(geom, machine):
     print('Machine = ', machine)
     basepath = gb.get_basepath()+'programs/'
 
-    insert_sys_path(basepath + 'datareduction/')
+    insert_sys_path(basepath + 'reducedata/')
     insert_sys_path(basepath + geom)
 ## \fn set_geometry(geom, machine)
 # get right directory for geometry-dependent imports

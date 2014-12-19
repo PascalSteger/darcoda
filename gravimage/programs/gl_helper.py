@@ -22,7 +22,12 @@ def LOG(level, message, var=''):
     if level > DEBUGLEVEL:
         return
     t = time.time()
-    print(time.ctime(t), message, var)
+    if level < 0:
+        text="\r"+time.ctime(t)+message+str(var)
+        sys.stdout.write(text)
+        sys.stdout.flush()
+    else:
+        print(time.ctime(t), message, var)
     return
 ## \fn LOG(level, warning, var)
 # print debugging message if level is important enough

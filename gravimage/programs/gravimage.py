@@ -112,16 +112,19 @@ def run(gp):
                   evidence_tolerance = 0.0, # set to 0 to keep
                   # algorithm working
                   # indefinitely
-                  sampling_efficiency = 0.55,
-                  n_iter_before_update = 10, # output after this many iterations
+                  sampling_efficiency = 0.05, # 0.05 according to
+                                              # MultiNest README for >
+                                              # 30 params
+                  n_iter_before_update = 10000, # output after this
+                                                # many iterations
                   null_log_evidence = -1e100,
                   max_modes = gp.nlive,   # preallocation of modes:
                   #max. = number of live
                   #points
                   mode_tolerance = -1.e100,   # mode tolerance in the
-                  #case where no special
-                  #value exists: highly
-                  #negative
+                                              # case where no special
+                                              # value exists: highly
+                                              # negative
                   outputfiles_basename = gp.files.outdir,
                   seed = -1,
                   verbose = True,

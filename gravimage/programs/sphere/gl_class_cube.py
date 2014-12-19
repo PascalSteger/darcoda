@@ -91,20 +91,11 @@ def map_nr(params, prof, pop, gp):
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
 
     # get offset and n(r) profiles, calculate rho
-    if prof=='rho':
-        rhoscale = gp.rhohalf
-        width = gp.log10rhospread
-        innerslope = gp.innerslope
-        nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
-        monotonic = gp.monotonic
-    elif prof=='nu':
-        rhoscale = gp.dat.nuhalf[pop]
-        width = gp.log10nuspread
-        innerslope = gp.innerslope
-        nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
-        monotonic = gp.monotonic_nu
-    else:
-        raise Exception('wrong profile in gl_class_cube.map_nr')
+    rhoscale = gp.rhohalf
+    width = gp.log10rhospread
+    innerslope = gp.innerslope
+    nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+    monotonic = gp.monotonic
 
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
@@ -171,10 +162,11 @@ def map_nr_tracers(params, pop, gp):
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
+    # 10** is correct
 
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    nrasym0 = params[1]*innerslope
+    nrasym0 = params[1]**2*innerslope # **2 tweaks it toward lower values while still keeping general
 
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]

@@ -11,6 +11,10 @@ import ipdb
 import time
 from scipy.interpolate import splev, splrep
 
+#import matplotlib.pyplot as plt
+#fig, ax=plt.subplots()
+#import matplotlib.animation as animation
+
 import gl_physics as phys
 from gl_class_profiles import Profiles
 from gl_priors import check_beta
@@ -119,12 +123,18 @@ def geom_loglike(cube, ndim, nparams, gp):
         ipdb.set_trace()
 
     # determine log likelihood
+
     chi2 = calc_chi2(tmp_profs, gp)
-    gh.LOG(1, '   log L = ', -chi2/2.)
-    ipdb.set_trace()
+    gh.LOG(-1, '  ln L = ', gh.pretty(-chi2/2.))
+    #x=gp.dat.rbin
+    #linedat,=ax.loglog(x, gp.dat.Sig[1], 'b')
+    #line,=ax.loglog(x, tmp_profs.get_prof("Sig", 1), 'r', alpha=0.1)
+    #plt.draw()
+    #plt.show()
     tmp_profs.chi2 = chi2
-    # after some predefined wallclock time, plot all profiles
-    if time.time() - gp.last_plot >= gp.plot_after:
+
+    # after some predefined wallclock time and Sig convergence, plot all profiles
+    if time.time() - gp.last_plot >= gp.plot_after and gp.chi2_Sig_converged <= 0:
         gp.last_plot = time.time()
         try:
             import plotting.plot_profiles

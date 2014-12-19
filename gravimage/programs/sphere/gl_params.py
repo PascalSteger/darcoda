@@ -118,13 +118,13 @@ class Params():
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
-        self.nlive = 100*self.ndim
+        self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
         # automatic plotting options
         # ----------------------------------------------------------------------
         self.last_plot = -1    # timestamp of last automatic plot, set to -1
-        self.plot_after = 5*60  # [s] to elapse before automatic plotting
+        self.plot_after = 3600  # [s] to elapse before automatic plotting called again
 
         # parameter spaces
         # ----------------------------------------------------------------------
@@ -132,24 +132,24 @@ class Params():
                                   # half-light radius of tracers
                                   # calculated in gl_data
         self.log10rhospread = 1.       # with this spread, [dex] in log space
-        self.log10nuspread = 0.5  # same for nu
+        self.log10nuspread = 0.3  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxrhoslope  = 5    # maximum slope (change if
                                  # monotonicity prior used) of rho
         self.maxnuslope = 5      # same for nrnu
-        self.nrtol  = self.maxrhoslope/2 # max change of n(r) over the full range [0, r_max]
-        self.nrtol_nu = self.maxnuslope/2 # same for nu
+        self.nrtol  = self.maxrhoslope # max change of n(r) over the full range [0, r_max]
+        self.nrtol_nu = self.maxnuslope*2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = True  # beta(r=0)=0
-        self.minbetastar = -0.99  # clipping for beta, default: -0.99
-        self.maxbetastar = 0.99    # clipping for beta, default:  1.00
+        self.minbetastar = -0.99 # clipping for beta*, default: -0.99
+        self.maxbetastar = 0.99  # clipping for beta*, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = False    # monotonicity prior on n(x) for rho(x)
-        self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
+        self.monotonic = False   # monotonicity prior on n(x) for rho(x)
+        self.monotonic_nu = True # monotonicity prior on n(x) for nu(x)
 
         # integration options
         # ----------------------------------------------------------------------

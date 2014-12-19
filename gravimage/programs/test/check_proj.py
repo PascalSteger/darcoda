@@ -12,7 +12,7 @@ from pylab import *
 ion()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/datareduction')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
 
 import gl_params as gp
 import gl_project as glp

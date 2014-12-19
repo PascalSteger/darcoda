@@ -13,8 +13,8 @@ from pylab import *
 ion()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/datareduction')
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
 
 #from gl_timing import *
 import time
