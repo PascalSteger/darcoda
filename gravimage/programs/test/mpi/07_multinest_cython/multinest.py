@@ -17,6 +17,10 @@ import inspect
 def interrupt_handler(signal, frame):
     sys.stderr.write('ERROR: Interrupt received: Terminating\n')
     sys.exit(1)
+## \fn interrupt_handler(signal, frame)
+# handle error message
+# @param signal int
+# @param frame where it happened
 
 def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None, wrapped_params = None, nest_IS = True, nest_mmodal = True, nest_ceff = False, nest_nlive = 400, nest_tol = 0.5, nest_ef = 0.8, nest_updInt = 100, null_log_evidence = -1e90, maxClst = 100, nest_Ztol = -1e30, outputfiles_basename = "chains/1-", seed = -1, nest_fb = False, nest_resume = True, context = 0, nest_outfile = True, nest_logZero = -1e100, nest_maxIter = 0, initMPI = True, dump_callback = None):
 
@@ -128,32 +132,42 @@ def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None
 #        return math.pow(2. + chi, 5)
 #Some of the parameters are explained below. Otherwise consult the
 #MultiNest documentation.
-#@param nest_IS:
+# @param LogLikelihood
+# @param Prior
+# @param nest_ndims
+# @param nest_IS:
 # If True, Multinest will use Importance Nested Sampling (INS). Read http://arxiv.org/abs/1306.2144
 # for more details on INS. Please read the MultiNest README file before using the INS in MultiNest v3.0.
-#@param nest_totPar:
+# @param nest_totPar:
 #    Total no. of parameters, should be equal to ndims in most cases
 #    but if you need to store some additional
 #    parameters with the actual parameters then you need to pass
 #    them through the likelihood routine.
-
-#@param nest_ef:
+# @param wrapped_params
+# @param nest_mmodal
+# @param nest_ceff
+# @param nest_nlive
+# @param nest_updInt
+# @param maxClst
+# @param outputfiles_basename
+# @param seed
+# @param nest_fb
+# @param nest_resume
+# @param context
+# @param nest_ef:
 #    defines the sampling efficiency. 0.8 and 0.3 are recommended
 #    for parameter estimation & evidence evalutation
 #    respectively.
 #    use 'parameter' or 'model' to select the respective default
 #    values
-
-#@param nest_Ztol:
+# @param nest_Ztol:
 #    MultiNest can find multiple modes & also specify which samples belong to which mode. It might be
 #    desirable to have separate samples & mode statistics for modes with local log-evidence value greater than a
 #    particular value in which case Ztol should be set to that value. If there isn't any particularly interesting
 #    Ztol value, then Ztol should be set to a very large negative number (e.g. -1e90).
-
-#@param nest_tol:
+# @param nest_tol:
 #    A value of 0.5 should give good enough accuracy.
-
-#@param nest_nCdims:
+# @param nest_nCdims:
 #    If mmodal is T, MultiNest will attempt to separate out the
 #    modes. Mode separation is done through a clustering
 #    algorithm. Mode separation can be done on all the parameters
@@ -163,8 +177,7 @@ def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None
 #    clustering is less accurate as the dimensionality increases.
 #    If nCdims < ndims then mode separation is done on
 #    the first nCdims parameters.
-
-#@param null_log_evidence:
+# @param null_log_evidence:
 #    If mmodal is T, MultiNest can find multiple modes & also specify
 #    which samples belong to which mode. It might be
 # desirable to have separate samples & mode statistics for modes
@@ -173,18 +186,13 @@ def run(LogLikelihood, Prior, nest_ndims, nest_totPar = None, nest_nCdims = None
 # value. If there isn't any particulrly interesting
 # nullZ value, then nullZ should be set to a very large negative
 # number (e.g. -1.d90).
-
 # @param initMPI:
 #     initialize MPI routines?, relevant only if compiling with MPI
-
 # @param nest_logZero:
 #     points with loglike < logZero will be ignored by MultiNest
-
 # @param nest_maxIter:
 #     maximum number of iterations. 0 is unlimited.
-
 # @param nest_outfile:
 #     write output files? This is required for analysis.
-
 # @param dump_callback:
 #     a callback function for dumping the current status

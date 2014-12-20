@@ -113,26 +113,11 @@ def betastar2beta(betastar):
 # map beta* to beta
 # @param betastar float array
 
-
 def beta2betastar(beta):
     return beta/(2.-beta)
 ## \fn beta2betastar(beta)
 # get back betastar from a beta
 # @param beta [1]
-
-
-# def betastar_sigmoid(r0, r0turn, vec, gp):
-#     gh.sanitize_vector(vec, 4, -1e6, 1e6, gp.debug)
-#     gh.sanitize_scalar(r0turn, 1e-10, max(gp.xfine), gp.debug)
-#     s=np.log(r0/r0turn)
-#     betatmp = vec[0]/(1+np.exp(vec[1]*s+vec[2]))+vec[3]*np.ones(len(r0))
-#     return betatmp
-## \fn betastar(r0, vec, gp)
-# calculate betastar from 4 parameters, using general sigmoid function
-# @param r0 radii [pc]
-# @param vec 4 parameters
-# @param gp global parameters
-
 
 def betastar_4(r0, params, gp):
     gh.sanitize_vector(params, gp.nbeta, -1, max(gp.xepol), gp.debug)
@@ -148,7 +133,6 @@ def betastar_4(r0, params, gp):
 # @param r0 radii [pc]
 # @param params 4 parameters: asymptote of beta at r->0, asymptote of beta at r->infty, speed of change, scale radius at which change takes place
 # @param gp global parameters
-
 
 def betastar(r0, params, gp):
     bs = betastar_4(r0, params, gp)

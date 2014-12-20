@@ -525,7 +525,7 @@ def pretty(scal, dig=3):
 
 def prettyvec(vec, dig=3):
     return ("%."+str(dig)+"f")%vec
-## \fn pretty(vec,dig=3)
+## \fn prettyvec(vec,dig=3)
 # clip floats after dig=3 digits
 # @param vec array of floats
 # @param dig number of digits, default is 3
