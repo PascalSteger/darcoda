@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -10,10 +10,10 @@ import numpy as np
 import random
 import ipdb
 
-import gl_units as gu
+import gi_units as gu
 # TODO hernquist gp.G1 replacement in gu
-import gl_helper as gh
-from gl_centering import com_shrinkcircle_v
+import gi_helper as gh
+from gi_centering import com_shrinkcircle_v
 
 def run(gp):
     import gr_params
@@ -79,6 +79,6 @@ def run(gp):
 
 if __name__=='__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

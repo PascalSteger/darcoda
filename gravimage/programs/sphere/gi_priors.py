@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -9,8 +9,8 @@
 import ipdb
 import numpy as np
 from scipy.interpolate import splrep, splev
-from gl_int import g
-from gl_helper import LOG
+from gi_int import g
+from gi_helper import LOG
 
 
 def check_beta(beta, gp):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,8 +8,8 @@
 
 import ipdb
 import numpy as np
-import gl_helper as gh
-import gl_project as glp
+import gi_helper as gh
+import gi_project as glp
 from scipy.interpolate import splrep, splev
 
 def introduce_points_in_between(r0, gp):

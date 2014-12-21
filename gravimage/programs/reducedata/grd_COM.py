@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -9,9 +9,9 @@
 
 import numpy as np
 import ipdb
-import gl_helper as gh
-import gl_file as gf
-from gl_centering import com_shrinkcircle_v_2D
+import gi_helper as gh
+import gi_file as gf
+from gi_centering import com_shrinkcircle_v_2D
 
 def concat_pops(x1, x2, y1, y2, vz1, vz2, gp):
     x0 = np.hstack([x1, x2])
@@ -144,7 +144,7 @@ def run(gp):
     for pmn in [pm, pm1, pm2]:
         pop = pop+1
         pmr = (R0<(gp.maxR*Rscale)) # read max extension for data
-                                    # (rprior*Rscale) from gl_params
+                                    # (rprior*Rscale) from gi_params
         pmn = pmn*pmr                   # [1]
         print("fraction of members = ", 1.0*sum(pmn)/len(pmn))
 
@@ -162,8 +162,8 @@ def run(gp):
 if __name__=='__main__':
     # for debugging input issues here:
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     # instead of run(gp), use the code directly, such that after execution, the variables are available
 
     gpr.fil = gpr.dir+"/table_merged.bin"
@@ -213,7 +213,7 @@ if __name__=='__main__':
     pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
     x0, y0, vz0, Mg0, PM0 = select_pm(x0, y0, vz0, Mg0, PM0, pm)
 
-    # assign population (OLD, new way is to run grd_split after grd_COM in gl_file
+    # assign population (OLD, new way is to run grd_split after grd_COM in gi_file
     # if gp.pops == 2:
     #     import pymcmetal as pmc
     #     p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)

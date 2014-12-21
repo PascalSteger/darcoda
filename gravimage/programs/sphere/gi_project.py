@@ -16,8 +16,8 @@ import numpy as np
 import ipdb
 from scipy.integrate import cumtrapz, romberg, simps, quad
 from scipy.interpolate import splrep, splev, splint
-import gl_helper as gh
-import gl_physics as phys
+import gi_helper as gh
+import gi_physics as phys
 
 
 def rho_INTDIRECT_Sig(r0, rho):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # plot all profiles of a given run
@@ -17,7 +17,7 @@ import numpy.random as npr
 import time
 npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
-import gl_helper as gh
+import gi_helper as gh
 
 import matplotlib
 matplotlib.use('Agg')
@@ -84,7 +84,7 @@ def read_models(basename):
 
 
 def pcload_single_entries(basename, gp):
-    import gl_collection as glc
+    import gi_collection as glc
     pc = glc.ProfileCollection(gp.pops, gp.nipol)
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
@@ -103,10 +103,10 @@ def pcload_single_entries(basename, gp):
 
 def run(timestamp, basename, gp):
     prepare_output_folder(basename)
-    import gl_file as glf
+    import gi_file as glf
     gp.dat = glf.get_binned_data(gp)
     read_scale(basename, gp) # store half-light radii in  gp.Xscale
-    import gl_helper as gh
+    import gi_helper as gh
     Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0])
     # [Xscale0], [Munit/Xscale0^2]
     # verified that indeed the stored files in the run directory are used
@@ -159,15 +159,15 @@ if __name__ == '__main__':
 
     import select_run as sr
 
-    # include runtime gl_params, but other files all from current directory
+    # include runtime gi_params, but other files all from current directory
     import import_path as ip
     # load stored parameters
     ip.insert_sys_path(basename+'programs/')
-    import gl_params as glp
+    import gi_params as glp
     ip.remove_first()
     # uncomment following to use stored collection, loglike, all other modules
     #ip.insert_sys_path(basename+'sphere')
-    #import gl_collection as glc
+    #import gi_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
     gp = glp.Params(timestamp)
     gp.pops = sr.get_pops(basename)

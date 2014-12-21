@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -35,12 +35,12 @@ def run(gp):
         z0 *= 1000. # [pc]
 
     # cutting pm_i to a maximum of ntracers particles:
-    import gl_helper as gh
+    import gi_helper as gh
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
     x0, y0, z0, vz0 = select_pm(x0, y0, z0, vz, ind1)
 
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
-    import gl_centering as glc
+    import gi_centering as glc
     com_x, com_y, com_z, com_vz = glc.com_shrinkcircle_v(x0, y0, z0, vz, PM)
 
     # from now on, work with 2D data only;
@@ -52,7 +52,7 @@ def run(gp):
     R0 = np.sqrt(x0*x0+y0*y0) # [pc]
     Rscale = np.median(R0) # [pc]
 
-    import gl_file as gf
+    import gi_file as gf
     for pop in range(gp.pops+1):      # gp.pops +1 for all components together
         pmr = (R0<(gp.maxR*Rscale))
         #m = np.ones(len(R0))
@@ -69,6 +69,6 @@ def run(gp):
 
 if __name__=='__main__':
     #gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

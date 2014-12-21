@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -12,8 +12,8 @@ import sys
 import pickle
 import numpy as np
 
-import gl_base as gb
-import gl_helper as gh
+import gi_base as gb
+import gi_helper as gh
 
 def get_case(cas):
     ntracer = 0
@@ -522,3 +522,7 @@ class Files:
 
 ## \class Files
 # Common base class for all filename sets
+
+if __name__=="__main__":
+    # TODO: call test
+    print("calling test")

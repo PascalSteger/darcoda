@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -13,7 +13,7 @@ import ipdb
 import re
 
 import numpy as np
-import gl_base as gb
+import gi_base as gb
 
 def bufcount(filename):
     f = open(filename)
@@ -80,9 +80,9 @@ def list_files(basedir):
 
     for i in range(len(fdl)):
         try:
-            fil = open(fdl[i][0]+'programs/gl_params.py','r')
+            fil = open(fdl[i][0]+'programs/gi_params.py','r')
         except:
-            print('missing '+fdl[i][0]+'programs/gl_params.py')
+            print('missing '+fdl[i][0]+'programs/gi_params.py')
             continue
         pops = 0                # default: 0 populations, error
         nipol = 0
@@ -190,7 +190,7 @@ def get_case(investigate):
         #    sel = choose_obs(sel)
     return sel
 ## \fn get_case()
-# ask user for choice on case number (see gl_params and gl_class_files
+# ask user for choice on case number (see gi_params and gi_class_files
 # for definitions)
 # @return sel integer for case number
 
@@ -275,7 +275,7 @@ def get_prof():
 
 def get_pops(basename):
     pops = 1
-    with open(basename+'programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gi_params.py', 'r') as f:
         for line in f:
             lss = line.split()
             if len(lss) == 0:
@@ -286,35 +286,35 @@ def get_pops(basename):
                 # pops = int(re.split('[=\n]', line)[-2])
     return pops
 ## \fn get_pops(basename)
-# return number of populations from gl_params stored in output directory
+# return number of populations from gi_params stored in output directory
 # @param basename string of output dir
 # @return integer number of populations
 
 
 def get_nipol(basename):
     nipol = 0
-    with open(basename+'programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gi_params.py', 'r') as f:
         for line in f:
             if 'nipol      = ' in line:
                 import re
                 nipol = int(re.split('[=\n]', line)[-2])
     return nipol
 ## \fn get_nipol(basename)
-# return number bins from gl_params stored in output directory
+# return number bins from gi_params stored in output directory
 # @param basename string of output dir
 # @return integer number of bins
 
 
 def get_nbeta(basename):
     nbeta = 0
-    with open(basename+'programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gi_params.py', 'r') as f:
         for line in f:
             if 'nbeta      = ' in line:
                 import re
                 nbeta = int(re.split('[=\n]', line)[-2])
     return nbeta
 ## \fn get_nbeta(basename)
-# return number of beta parameters  from gl_params stored in output directory
+# return number of beta parameters  from gi_params stored in output directory
 # @param basename string of output dir
 # @return integer number of beta* parameters
 
@@ -354,5 +354,5 @@ def run(investigate="", case=-1, latest=False):
 # @return basename, prof (string)
 
 if __name__ == '__main__':
-    # default: take overall gl_params for parameters
+    # default: take overall gi_params for parameters
     run()

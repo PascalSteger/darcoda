@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -14,8 +14,8 @@ ion()
 import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
 
-import gl_params as gp
-import gl_project as glp
+import gi_params as gp
+import gi_project as glp
 
 
 def run(gp):
@@ -106,7 +106,7 @@ def run(gp):
 
 
 if __name__=="__main__":
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
 
     run(gp)

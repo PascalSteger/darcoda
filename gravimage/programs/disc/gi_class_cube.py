@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -18,7 +18,7 @@
 
 import ipdb
 import numpy as np
-import gl_helper as gh
+import gi_helper as gh
 
 def map_tilt_slope(vec, gp):
     T = np.zeros(len(vec))
@@ -73,7 +73,7 @@ def map_nr(params, prof, pop, gp):
         nrscale = gp.nztol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
         monotonic = gp.monotonic_nu
     else:
-        raise Exception('wrong profile in gl_class_cube.map_nr')
+        raise Exception('wrong profile in gi_class_cube.map_nr')
 
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
@@ -150,7 +150,7 @@ def map_nu(pa, gp):
 # if used, put
 #         self.maxlog10nu = 4.     # direct sampling of nu: min value
 #        self.minlog10nu = 0.     # direct sampling of nu: max value
-# in gl_params
+# in gi_params
 # @param pa cube [0,1]^n
 # @param gp global parameters
 
@@ -214,8 +214,8 @@ class Cube:
             off += offstep
 
         if off != gp.ndim:
-            gh.LOG(1,'wrong subscripts in gl_class_cube')
-            raise Exception('wrong subscripts in gl_class_cube')
+            gh.LOG(1,'wrong subscripts in gi_class_cube')
+            raise Exception('wrong subscripts in gi_class_cube')
 
         return pc
     ## \fn convert_to_parameter_space(self, gp)

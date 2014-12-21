@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -9,8 +9,8 @@
 import ipdb
 import numpy as np
 
-import gl_helper as gh
-import gl_units as gu
+import gi_helper as gh
+import gi_units as gu
 
 def read_data(gp):
     if gp.investigate == 'hern':
@@ -123,7 +123,7 @@ def get_binned_data(gp):
         gp.dat.read_zeta(gp)
     return gp.dat
 ## \fn get_binned_data(gp)
-# read in binned data, store in a gl_data class
+# read in binned data, store in a gi_data class
 # @param gp global parameters
 
 def get_rhohalfs(gp):

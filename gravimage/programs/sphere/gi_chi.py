@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -11,7 +11,7 @@ import types
 
 import ipdb
 import numpy as np
-import gl_helper as gh
+import gi_helper as gh
 
 def chi2red(model, data, sig, dof):
     # if Degrees Of Freedom = 1, return non-reduced chi2

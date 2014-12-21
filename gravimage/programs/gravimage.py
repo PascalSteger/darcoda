@@ -34,12 +34,12 @@ parser.add_option("-c", "--case", dest="case",
                       default=-1, help="case: 1, 2, ..")
 (options, args) = parser.parse_args()
 print('gravimage.py '+str(options.investigation)+' '+str(options.case))
-import gl_params
+import gi_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
 ts = '' # empty timestamp means: create new timestamp with folder
-gp = gl_params.Params(ts, options.investigation, int(options.case))
-import gl_file as gf
+gp = gi_params.Params(ts, options.investigation, int(options.case))
+import gi_file as gf
 
 def show(filepath):
     subprocess.call(('xdg-open', filepath))
@@ -142,8 +142,8 @@ def run(gp):
 
 if __name__=="__main__":
     global Cube, geom_loglike
-    from gl_class_cube import Cube
-    from gl_loglike import geom_loglike
+    from gi_class_cube import Cube
+    from gi_loglike import geom_loglike
 
     # hwmess = "Hello, World!! I am process %d of %d on %s.\n"
     # myrank = MPI.COMM_WORLD.Get_rank()

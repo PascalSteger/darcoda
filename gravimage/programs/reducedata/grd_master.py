@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 #from mpi4py import MPI
 import numpy as np
 import sys
 from pylab import *
 
-from gl_centering import com_shrinkcircle_v_2D
-import gl_units as gu
-import gl_helper as gh
+from gi_centering import com_shrinkcircle_v_2D
+import gi_units as gu
+import gi_helper as gh
 
 def show_metallicity(Fe, Fe_err, Mg, Mg_err):
     import matplotlib.pyplot as plt
@@ -69,8 +69,8 @@ def show_metallicity(Fe, Fe_err, Mg, Mg_err):
 # @param Mg Magnesium abundance
 # @param Mg_err error on it
 
-import gl_params
-gp = gl_params.Params()
+import gi_params
+gp = gi_params.Params()
 
 import gr_params
 gpr = gr_params.grParams(gp)

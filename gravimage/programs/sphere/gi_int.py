@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
-# all integrals from gl_physics
+# all integrals from gi_physics
 
 # (c) GPL v3 2014 Pascal S.P. Steger
 
@@ -11,11 +11,11 @@ import ipdb
 from scipy.integrate import simps,quad
 from scipy.interpolate import splrep, splev, splint
 
-import gl_units as gu
-import gl_helper as gh
-import gl_analytic as ga
-import gl_physics as phys
-import gl_project as glp
+import gi_units as gu
+import gi_helper as gh
+import gi_analytic as ga
+import gi_physics as phys
+import gi_project as glp
 
 import matplotlib
 matplotlib.use('pdf')

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -10,8 +10,8 @@ import ipdb
 import numpy as np
 
 from scipy.interpolate import splrep, splint
-import gl_helper as gh
-import gl_int as gi
+import gi_helper as gh
+import gi_int as gi
 
 
 def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
@@ -93,7 +93,7 @@ def rho(r0, rhodmpar, pop, gp):
 
 
 def nu(r0, vec, pop, gp):
-    # can use rho() for nu profiles, too, as the n(r) representation change was already done in gl_class_cube
+    # can use rho() for nu profiles, too, as the n(r) representation change was already done in gi_class_cube
     return rho(r0, vec, pop, gp)
 ## \fn nu(r0, vec, pop, gp)
 # possibly interpolate nu parameters from gp.xepol where they are defined
@@ -176,7 +176,7 @@ def beta(r0, params, gp):
 ## \fn beta(r0, params, gp)
 # beta and beta* from beta parameter array
 # @param r0 radii [pc]
-# @param params array, see gl_class_cube
+# @param params array, see gi_class_cube
 # @param gp global parameters
 
 
@@ -239,3 +239,10 @@ def sig_kap_zet(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 # @param betapar 1D array 3D velocity anisotropy parameters [1]
 # @param pop int population to take halflight radius from
 # @param gp global parameters
+
+
+if __name__=="__main__":
+    # check whether backward-calculation of parameters is done correctly
+    import gi_params
+    gp = gi_params.Params()
+    annu = rhodm_hernquist(gp.xipol, 1.e0, max(gp.xipol)/2., 3, 2, 1)

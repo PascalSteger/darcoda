@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @ file
@@ -12,8 +12,8 @@ import numpy.random as npr
 import ipdb
 from scipy.integrate import simps
 
-import gl_units as gu
-import gl_helper as gh
+import gi_units as gu
+import gi_helper as gh
 
 
 def disc_mock(gp):

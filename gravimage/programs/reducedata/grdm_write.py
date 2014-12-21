@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @ file
@@ -12,8 +12,8 @@ import numpy.random as npr
 import ipdb
 from scipy.integrate import simps
 
-import gl_units as gu
-import gl_helper as gh
+import gi_units as gu
+import gi_helper as gh
 
 def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp):
 #    ipdb.set_trace()
@@ -315,6 +315,6 @@ def run(gp):
 # @param gp global parameters
 
 if __name__=="__main__":
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

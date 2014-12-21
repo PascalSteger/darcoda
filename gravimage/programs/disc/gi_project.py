@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -15,8 +15,8 @@
 import numpy as np
 import ipdb
 from scipy.interpolate import splrep, splev, splint
-import gl_helper as gh
-import gl_physics as phys
+import gi_helper as gh
+import gi_physics as phys
 
 def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
     # TODO: check integration for z direction only

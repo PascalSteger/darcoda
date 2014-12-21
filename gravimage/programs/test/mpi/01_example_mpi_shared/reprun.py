@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## start program with
 # LD_PRELOAD=/usr/lib64/libmpi.so mpirun -n 1 ./reprun.py

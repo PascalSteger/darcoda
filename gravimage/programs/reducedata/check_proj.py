@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -14,13 +14,13 @@ from scipy.stats import kurtosis
 from pylab import *
 ion()
 
-import gl_params
-gp = gl_params.Params()
-import gl_file as gf
-from gl_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
-from gl_class_files import *
+import gi_params
+gp = gi_params.Params()
+import gi_file as gf
+from gi_helper import expDtofloat, bin_r_linear, bin_r_log, bin_r_const_tracers
+from gi_class_files import *
 from BiWeight import meanbiweight
-from gl_project import *
+from gi_project import *
 
 ## run all commands inside check_proj
 def run():

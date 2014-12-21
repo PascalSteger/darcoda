@@ -1,4 +1,4 @@
-#/usr/bin/env python3
+#/usr/bin/env ipython3
 
 ## \file
 # check the distribution of LOS velocities

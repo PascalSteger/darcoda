@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -13,8 +13,8 @@ import ipdb
 #ion()
 
 # TODO find missing modules
-import gl_class_files as gcf
-import gl_centering as gc
+import gi_class_files as gcf
+import gi_centering as gc
 
 def run(gp):
     import gr_params
@@ -41,7 +41,7 @@ def run(gp):
     y0 -= com_y # [pc]
     vlos -= com_vz #[km/s]
 
-    import gl_file as gf
+    import gi_file as gf
     for pop in range(2):
         Rc = np.sqrt(x0**2+y0**2) # [pc]
         Rhalf = np.median(Rc) # [pc]
@@ -73,6 +73,6 @@ def run(gp):
 
 if __name__=='__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -15,7 +15,7 @@ matplotlib.use('pdf')
 #from pylab import *
 #ion()
 
-from gl_helper import expDtofloat
+from gi_helper import expDtofloat
 from scipy.stats import norm
 
 

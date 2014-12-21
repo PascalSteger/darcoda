@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
 # @ingroup gravimage
-# all analytic profiles from gl_physics
+# all analytic profiles from gi_physics
 
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
@@ -12,7 +12,7 @@ import ipdb
 from scipy.integrate import simps
 #import numpy as np
 import numpy.random as npr
-import gl_helper as gh
+import gi_helper as gh
 
 asech = lambda x: np.arccosh(1./x)
 asec  = lambda x: np.arccos(1./x)

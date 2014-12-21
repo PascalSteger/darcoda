@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -12,10 +12,10 @@ import ipdb
 #from pylab import *
 #ion()
 
-import gl_helper as gh
-import gl_file as gf
-from gl_helper import expDtofloat
-from gl_centering import com_shrinkcircle_v
+import gi_helper as gh
+import gi_file as gf
+from gi_helper import expDtofloat
+from gi_centering import com_shrinkcircle_v
 
 
 def concat_pops(x1, x2, y1, y2, z1, z2, vz1, vz2, gp):
@@ -142,7 +142,7 @@ def run(gp):
         pop = pop + 1                    # population number
         pmr = ( R0 < (gp.maxR*Rscale) )  # read max extension for data
                                          #(rprior*Rscale) from
-                                         #gl_params
+                                         #gi_params
         pmn = pmn*pmr                    # [1]
         print("fraction of members = ", 1.0*sum(pmn)/len(pmn))
 
@@ -157,6 +157,6 @@ def run(gp):
 
 if __name__=='__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

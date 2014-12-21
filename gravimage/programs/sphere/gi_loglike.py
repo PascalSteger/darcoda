@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # define log likelihood function to be called by multinest
@@ -15,12 +15,12 @@ from scipy.interpolate import splev, splrep
 #fig, ax=plt.subplots()
 #import matplotlib.animation as animation
 
-import gl_physics as phys
-from gl_class_profiles import Profiles
-from gl_priors import check_beta
-from gl_chi import calc_chi2
-import gl_helper as gh
-import gl_project as glp
+import gi_physics as phys
+from gi_class_profiles import Profiles
+from gi_priors import check_beta
+from gi_chi import calc_chi2
+import gi_helper as gh
+import gi_project as glp
 
 
 def geom_loglike(cube, ndim, nparams, gp):
@@ -83,7 +83,7 @@ def geom_loglike(cube, ndim, nparams, gp):
             tmp_profs.set_prof('betastar', tmp_betastar, pop, gp)
             try:
                 if gp.checksig:
-                    import gl_analytic as ga
+                    import gi_analytic as ga
                     anrho = ga.rho(gp.xepol, gp)[0]
                     rhodmpar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
                     nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
@@ -119,7 +119,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                 return tmp_profs
         off += offstep # still do this even if gp.chi2_Sig_converged is False
     if off != gp.ndim:
-        gh.LOG(1, 'wrong subscripts in gl_loglike')
+        gh.LOG(1, 'wrong subscripts in gi_loglike')
         ipdb.set_trace()
 
     # determine log likelihood
@@ -140,12 +140,12 @@ def geom_loglike(cube, ndim, nparams, gp):
             import plotting.plot_profiles
             plotting.plot_profiles.run(gp.files.timestamp, gp.files.outdir, gp)
         except:
-            print('plotting error in gl_loglike!')
+            print('plotting error in gi_loglike!')
     return tmp_profs
 ## \fn geom_loglike(cube, ndim, nparams, gp)
 # define log likelihood function to be called by Multinest and plot_profiles
 # spherical version
-# @param cube parameter cube as defined by gl_class_cube, in physical space already (not [0,1] cube anymore)
+# @param cube parameter cube as defined by gi_class_cube, in physical space already (not [0,1] cube anymore)
 # @param ndim number of dimensions, needed as argument by multinest
 # @param nparams number of parameters, needed as argument by multinest
 # @param gp global parameters

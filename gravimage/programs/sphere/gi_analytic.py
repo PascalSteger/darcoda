@@ -1,18 +1,18 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
 # @ingroup gravimage
-# all analytic profiles from gl_physics
+# all analytic profiles from gi_physics
 
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 import ipdb
 
-import gl_units as gu
-import gl_project as glp
-import gl_helper as gh
+import gi_units as gu
+import gi_project as glp
+import gi_helper as gh
 
 asech = lambda x: np.arccosh(1./x)
 asec  = lambda x: np.arccos(1./x)
@@ -220,7 +220,7 @@ def nr3Dtot_deriv_walk(rad, gp):
     # TODO too high for walk1, core
     lrho = np.log(rhotot_walk(rad, gp))
     lr   = np.log(rad)
-    import gl_helper as gh
+    import gi_helper as gh
     return -gh.derivcoarse(lrho, lr)
 ## \fn nr3Dtot_deriv_walk(rad, gp)
 # plot d log rho/d log r
@@ -231,7 +231,7 @@ def nr3Dtot_deriv_walk(rad, gp):
 def nr3Dtot_deriv_triax(rad):
     lrho = np.log(rho_triax(rad))
     lr   = np.log(rad)
-    import gl_helper as gh
+    import gi_helper as gh
     return -gh.derivcoarse(lrho, lr)
 ## \fn nr3Dtot_deriv_triax(rad)
 # plot d log rho/d log r
@@ -241,7 +241,7 @@ def nr3Dtot_deriv_triax(rad):
 def nr3Dtot_deriv_gaia(rad):
     lrho = np.log(rhotot_gaia(rad))
     lr   = np.log(rad)
-    import gl_helper as gh
+    import gi_helper as gh
     return -gh.derivcoarse(lrho, lr)
 ## \fn nr3Dtot_deriv_gaia(rad)
 # plot d log rho/d log r

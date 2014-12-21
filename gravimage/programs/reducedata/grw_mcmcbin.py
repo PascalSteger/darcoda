@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -16,14 +16,14 @@ import numpy as np
 #from pylab import *
 #ion()
 
-import gl_file as gf
-#from gl_helper import bin_r_linear, bin_r_log
-#from gl_helper import bin_r_const_tracers
+import gi_file as gf
+#from gi_helper import bin_r_linear, bin_r_log
+#from gi_helper import bin_r_const_tracers
 # TODO determine missing modules
-import gl_class_files as gcf
+import gi_class_files as gcf
 
 # from BiWeight import meanbiweight
-import gl_analytic as ga
+import gi_analytic as ga
 
 
 def volume_spherical_shell(binmin, binmax, gp):
@@ -152,6 +152,6 @@ def run(gp):
 
 if __name__ == '__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

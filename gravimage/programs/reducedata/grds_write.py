@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -10,8 +10,8 @@ import numpy as np
 import numpy.random as npr
 import ipdb
 
-import gl_units as gu
-import gl_helper as gh
+import gi_units as gu
+import gi_helper as gh
 import physics_disc as phys
 #from binsmooth import *
 #from bincount import *

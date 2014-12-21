@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,7 +8,7 @@
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy
-import gl_params as gp
+import gi_params as gp
 
 
 import sys

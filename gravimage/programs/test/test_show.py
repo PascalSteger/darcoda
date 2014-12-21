@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/bin/env ipython3
 
 from pylab import *
 ion()
@@ -6,11 +6,13 @@ ion()
 import ipdb
 import numpy as np
 
-x = np.linspace(0, 2*np.pi, 100)
-y = np.sin(x)
+
+if __name__=="__main__":
+    x = np.linspace(0, 2*np.pi, 100)
+    y = np.sin(x)
 
 
-plot(x, y, label='sin')
-ipdb.set_trace()
+    plot(x, y, label='sin')
+    ipdb.set_trace()
 
-print('too late')
+    print('too late')

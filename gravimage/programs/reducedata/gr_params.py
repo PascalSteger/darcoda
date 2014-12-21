@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/bin/env ipython3
 
 ##
 # @file
@@ -22,10 +22,10 @@ def rhodm(r, r_DM, rho0, alpha_DM, beta_DM, gamma_DM):
 # @param beta_DM  profile parameter, transition strength
 # @param gamma_DM profile parameter, central slope
 
-import gl_helper as gh
+import gi_helper as gh
 class grParams():
     def __init__(self, gp):
-        from gl_class_files import Files
+        from gi_class_files import Files
         # show plots during execution of data readout?
         # set automatically if gr_MCMCbin.py is called on the command line
         self.showplots = False

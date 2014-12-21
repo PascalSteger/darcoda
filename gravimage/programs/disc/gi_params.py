@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,12 +8,12 @@
 
 import numpy as np
 import ipdb
-import gl_base as gb
+import gi_base as gb
 
 def check_investigate(inv):
     if inv == 'discmock': return True
     if inv == 'discsim': return True
-    raise Exception('wrong investigative case in gl_params')
+    raise Exception('wrong investigative case in gi_params')
     return False
 
 class Params():
@@ -99,11 +99,11 @@ class Params():
         # ----------------------------------------------------------------------
         self.rhohalf = 10**-1.    # prior density for rho at
                                   # half-light radius of tracers
-                                  # calculated in gl_data
+                                  # calculated in gi_data
         self.log10rhospread = 2.       # with this spread, [dex] in log space
         self.rlimnr = -1 # scale below which range of
                          # n(r<rlimnr*r_half)<maxrhoslope/2, in multiples of r_half.
-                         # calculated to values in [pc] in gl_data.read_nu;
+                         # calculated to values in [pc] in gi_data.read_nu;
                          # if set to -1 here, use maxrhoslope everywhere
         self.rlimnr_nu = -1 # same for nu, using same rhalf
         self.log10nuspread = 2.
@@ -149,9 +149,9 @@ class Params():
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version
                                                  # of the code
-        import gl_class_files
-        self.files = gl_class_files.Files(self, timestamp)
-        from gl_data import Datafile
+        import gi_class_files
+        self.files = gi_class_files.Files(self, timestamp)
+        from gi_data import Datafile
         self.dat = Datafile()
 
 

@@ -13,12 +13,12 @@
 import numpy as np
 
 from BiWeight import meanbiweight
-import gl_helper as gh
-import gl_file as gf
-import gl_class_files as gcf
+import gi_helper as gh
+import gi_file as gf
+import gi_class_files as gcf
 # TODO: find functions with missing module name
-#from gl_class_files import *
-# from gl_helper import bin_r_const_tracers # bin_r_linear, bin_r_log
+#from gi_class_files import *
+# from gi_helper import bin_r_const_tracers # bin_r_linear, bin_r_log
 
 def run(gp):
     import gr_params
@@ -97,6 +97,6 @@ def run(gp):
 
 if __name__ == '__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

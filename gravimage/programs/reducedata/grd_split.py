@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # split populations in observed dwarf galaxies
@@ -14,10 +14,10 @@ import numpy as np
 from scipy.integrate import simps
 import pymultinest
 
-import gl_helper as gh
-from gl_centering import com_shrinkcircle_v_2D
+import gi_helper as gh
+from gi_centering import com_shrinkcircle_v_2D
 #import BiWeight as BW
-import gl_units as gu
+import gi_units as gu
 
 gh.DEBUGLEVEL = 3
 DEBUG = True
@@ -354,8 +354,8 @@ def run(gp):
 
 
 if __name__=='__main__':
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
 
     run(gp)
 

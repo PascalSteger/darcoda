@@ -15,7 +15,7 @@
 
 import numpy as np
 import ipdb
-import gl_helper as gh
+import gi_helper as gh
 
 def dierfc(y):
     y = np.array(y)
@@ -143,31 +143,25 @@ def map_nr(params, prof, pop, gp):
 
 def map_nr_tracers(params, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
-
     # first, if we already have a converged run, use the parameters as stored
     if gp.getSigdata:
         return params*(gp.nupar_max-gp.nupar_min)+gp.nupar_min
-
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
-
     # get offset and n(r) profiles, calculate rho
     rhoscale = gp.dat.nuhalf[pop]
     width = gp.log10nuspread
     innerslope = gp.innerslope
     nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
     monotonic = gp.monotonic_nu
-
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
     # 10** is correct
-
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     nrasym0 = params[1]**2*innerslope # **2 tweaks it toward lower values while still keeping general
-
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
 
@@ -186,11 +180,9 @@ def map_nr_tracers(params, pop, gp):
 
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3, thus n(r)>3
-    deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
-
+    #deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
     # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
     nrasyminfty = max(nr[-1], 3.001)
-
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
     return params
 ## \fn map_nr_tracers(params, pop, gp)
@@ -326,8 +318,8 @@ class Cube:
             off += offstep
 
         if off != gp.ndim:
-            gh.LOG(1,'wrong subscripts in gl_class_cube')
-            raise Exception('wrong subscripts in gl_class_cube')
+            gh.LOG(1,'wrong subscripts in gi_class_cube')
+            raise Exception('wrong subscripts in gi_class_cube')
 
         return pc
     ## \fn convert_to_parameter_space(self, gp)

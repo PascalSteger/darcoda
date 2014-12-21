@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # import file with full path specification, only once, setting back sys.path
@@ -11,7 +11,7 @@ import sys
 import ipdb
 from imp import reload
 
-import gl_base as gb
+import gi_base as gb
 
 def insert_sys_path(fullpath):
     sys.path.insert(0, fullpath)

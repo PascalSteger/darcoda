@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -10,7 +10,7 @@
 import ipdb
 import numpy as np
 from scipy.interpolate import splrep, splint
-import gl_helper as gh
+import gi_helper as gh
 
 
 def nr(z0, dlr, pop, gp):

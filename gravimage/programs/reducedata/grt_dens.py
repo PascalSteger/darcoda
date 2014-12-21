@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -10,9 +10,9 @@
 
 import ipdb
 import numpy as np
-import gl_file as gf
-import gl_helper as gh
-import gl_project as glp
+import gi_file as gf
+import gi_helper as gh
+import gi_project as glp
 
 def run(gp):
     import gr_params
@@ -120,6 +120,6 @@ def run(gp):
 
 if __name__ == '__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)

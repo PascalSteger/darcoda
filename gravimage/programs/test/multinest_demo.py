@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 import math, os
 import pymultinest
@@ -17,17 +17,18 @@ def myloglike(cube, ndim, nparams):
         chi *= math.cos(cube[i] / 2.)
     return math.pow(2. + chi, 5)
 
-# number of dimensions our problem has
-parameters = ["x", "y"]
-n_dims = len(parameters)
+if __name__=="__main__":
+    # number of dimensions our problem has
+    parameters = ["x", "y"]
+    n_dims = len(parameters)
 
-print('reached state before run')
-# run MultiNest
-pymultinest.run(myloglike,\
-              myprior,\
-              n_dims,\
-              nest_resume = True, \
-              nest_fb = True,\
-              initMPI = False)
+    print('reached state before run')
+    # run MultiNest
+    pymultinest.run(myloglike,\
+                    myprior,\
+                    n_dims,\
+                    nest_resume = True, \
+                    nest_fb = True,\
+                    initMPI = False)
 
-print('run successfully finished')
+    print('run successfully finished')

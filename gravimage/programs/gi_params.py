@@ -11,7 +11,7 @@ import ipdb
 import socket
 import getpass
 
-import gl_base as gb
+import gi_base as gb
 
 def check_investigate(inv):
     if inv == 'walk':     return True
@@ -20,7 +20,7 @@ def check_investigate(inv):
     if inv == 'hern':     return True
     if inv == 'triax':    return True
     if inv == 'coll':     return True
-    raise Exception('wrong investigative case in gl_params')
+    raise Exception('wrong investigative case in gi_params')
     return False
 ## \fn check_investigate(inv)
 # check whether there is a valid investigation chosen
@@ -77,7 +77,7 @@ class Params():
         # debug options
         # ----------------------------------------------------------------------
         self.debug = False # enable calling debug routines during run. Turn off for production runs!
-        self.checksig = False # check sigma_LOS calculation steps in gl_int
+        self.checksig = False # check sigma_LOS calculation steps in gi_int
         self.stopstep = 1 # step to stop at by default
 
         # MultiNest options
@@ -130,7 +130,7 @@ class Params():
         # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at
                                   # half-light radius of tracers
-                                  # calculated in gl_data
+                                  # calculated in gi_data
         self.log10rhospread = 1.       # with this spread, [dex] in log space
         self.log10nuspread = 0.3  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
@@ -165,9 +165,9 @@ class Params():
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version
                                                  # of the code
-        import gl_class_files
-        self.files = gl_class_files.Files(self, timestamp)
-        from gl_data import Datafile
+        import gi_class_files
+        self.files = gi_class_files.Files(self, timestamp)
+        from gi_data import Datafile
         self.dat = Datafile()
 
         # global arrays

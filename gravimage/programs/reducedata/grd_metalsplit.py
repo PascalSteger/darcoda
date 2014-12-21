@@ -11,7 +11,7 @@ import ipdb
 import sys
 import numpy as np
 import pymultinest
-import gl_helper as gh
+import gi_helper as gh
 
 gh.DEBUGLEVEL = 1
 DEBUG = True
@@ -158,7 +158,7 @@ def run(gp):
 
 ## \fn run(gp)
 # run MultiNest
-# @param gp global parameters defined in gl_params.py
+# @param gp global parameters defined in gi_params.py
 
 
 if __name__=="__main__":
@@ -167,9 +167,9 @@ if __name__=="__main__":
 #    size = comm.Get_size()
 #    rank = comm.Get_rank()
 
-    import gl_params
+    import gi_params
     global gp
-    gp = gl_params.Params()
+    gp = gi_params.Params()
     if gp.pops < 2:
         gh.LOG(1, " population splitting needs 2 or more populations, corrected")
         gp.pops = 2

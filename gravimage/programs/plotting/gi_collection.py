@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ## @file
 # collect profiles and perform actions on them
@@ -12,11 +12,11 @@ import ipdb
 import matplotlib.pyplot as plt
 plt.ioff()
 
-from gl_class_profiles import Profiles
-import gl_output as go
-import gl_helper as gh
-import gl_analytic as ga
-import gl_project as glp
+from gi_class_profiles import Profiles
+import gi_output as go
+import gi_helper as gh
+import gi_analytic as ga
+import gi_project as glp
 
 USE_ALL = True
 
@@ -555,7 +555,7 @@ class ProfileCollection():
 
             self.fill_nice(ax, prof, pop, gp)
             # TODO: replace above with full distribution plot (has bugs,
-            #   File "/home/ast/read/dark/darcoda/gravimage/programs/plotting/gl_collection.py", line 466, in plot_full_distro
+            #   File "/home/ast/read/dark/darcoda/gravimage/programs/plotting/gi_collection.py", line 466, in plot_full_distro
             # ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
             # ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
             #self.plot_full_distro(ax, prof, pop, gp)

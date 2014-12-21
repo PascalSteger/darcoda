@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -8,7 +8,7 @@
 
 import ipdb
 import numpy as np
-import gl_helper as gh
+import gi_helper as gh
 
 def com_mean(x, y, z, pm):
     com_x = 1.*np.sum(x*pm)/np.sum(pm) # [pc]

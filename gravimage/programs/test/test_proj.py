@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -16,14 +16,24 @@ import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
 
-#from gl_timing import *
+#from gi_timing import *
 import time
-import gl_params as gp
+import gi_params as gp
 gp.rinfty = 5
 gp.nexp = 3
-import gl_helper as gh
-import gl_project as glp
-import gl_analytic as ga
+import gi_helper as gh
+import gi_project as glp
+import gi_analytic as ga
+
+
+def introduce_points_in_between(r0):
+    rmin = np.log10(min(r0))
+    rmax = np.log10(max(r0))
+    return np.logspace(rmin, rmax, Nfine)
+## \fn introduce_points_in_between(r0)
+# get gp.fine points logarithmically spaced points
+# @param r0 3D radius
+
 
 # unitsXS
 G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
@@ -34,14 +44,6 @@ G1  = G1*msun/km**2/pc
 
 Nfine = 30
 MtoL = 100000. # constant
-
-def introduce_points_in_between(r0):
-    rmin = np.log10(min(r0))
-    rmax = np.log10(max(r0))
-    return np.logspace(rmin, rmax, Nfine)
-## \fn introduce_points_in_between(r0)
-# get gp.fine points logarithmically spaced points
-# @param r0 3D radius
 
 
 r0 = np.logspace(-2, 2, 10)

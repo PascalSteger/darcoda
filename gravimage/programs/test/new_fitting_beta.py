@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 import numpy as np
 from scipy.optimize import curve_fit
@@ -6,12 +6,12 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import ipdb
-import gl_params
-gp = gl_params.Params()
+import gi_params
+gp = gi_params.Params()
 
 import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
-import gl_analytic as ga
+import gi_analytic as ga
 
 def analytic_beta(x, gp):
     # gaia 1 pop
@@ -39,26 +39,25 @@ def model_beta(r0, vec):
 # @param r0 radii [pc]
 # @param vec normalized ai, s.t. abs(sum(ai)) = 1
 
+if __name__=="__main__":
+    fig = plt.figure()
+    ax  = fig.add_subplot(1,1,1)
 
-fig = plt.figure()
-ax  = fig.add_subplot(1,1,1)
+    x = np.linspace(0, 3e3, 20)
+    # y = func(x, 2.5, 1.3, 0.5)
+    y = analytic_beta(x, gp)
 
-x = np.linspace(0, 3e3, 20)
-# y = func(x, 2.5, 1.3, 0.5)
-y = analytic_beta(x, gp)
+    ax.plot(x, y, 'b--')
+    #yn = y*(1 + 0.1*np.random.normal(size=len(x)))
+    #ax.plot(x, yn, 'b')
+    #ax.plot(x, model_beta(x, 0.5), 'r')
 
-ax.plot(x, y, 'b--')
+    ipdb.set_trace()
+    popt, pcov = curve_fit(model_beta, x, y)
 
-#yn = y*(1 + 0.1*np.random.normal(size=len(x)))
-#ax.plot(x, yn, 'b')
-#ax.plot(x, model_beta(x, 0.5), 'r')
+    ax.plot(x, model_beta(x, *popt), 'g')
+    #ax.draw()
+    plt.savefig('beta_fit.pdf')
 
-ipdb.set_trace()
-popt, pcov = curve_fit(model_beta, x, y)
-
-ax.plot(x, model_beta(x, *popt), 'g')
-#ax.draw()
-plt.savefig('beta_fit.pdf')
-
-print(popt)
-print(pcov)
+    print(popt)
+    print(pcov)

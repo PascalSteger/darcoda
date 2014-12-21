@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -113,7 +113,7 @@ def determine_radius(R, Rmin, Rmax, gp):
 ## \fn determine_radius(R, Rmin, Rmax, gp)
 # determine bin radii once and for all. this must not be changed between
 # readout and gravimage run. if you wish to change: set gp.getnewdata =
-# True in gl_params.py
+# True in gi_params.py
 # @param R radii of all tracer particles
 # @param Rmin float
 # @param Rmax float
@@ -861,3 +861,8 @@ def starred(R0, X, Sigma, Ntot, gp):
 # @param Sigma surface density at these radii, in [Munit/pc^2]
 # @param Ntot total number of stars
 # @param gp global parameters
+
+
+if __name__=="__main__":
+    # TODO: define tests
+    print("calling tests from gi_helper")

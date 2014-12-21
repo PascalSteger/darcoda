@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env ipython3
 
 ##
 # @file
@@ -12,10 +12,10 @@ import ipdb
 
 from pylab import *
 ion()
-from gl_helper import expDtofloat
-import gl_class_files import as gcf
+from gi_helper import expDtofloat
+import gi_class_files import as gcf
 # TODE find missing modules for both below
-import gl_centering as gc
+import gi_centering as gc
 
 def run(gp):
     import gr_params
@@ -139,6 +139,6 @@ def run(gp):
 
 if __name__=='__main__':
     gpr.showplots = True
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
     run(gp)
