@@ -30,7 +30,7 @@ def nr(r0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     rnu = np.hstack([r0[0]/gp.rinfty, r0, gp.rinfty*r0[-1]])
     # up: common radii r0, but different scale radius for each pop
-    logrnu = np.log(rnu/gp.Xscale[pop])
+    logrnu = np.log(rnu/gp.dat.rhalf[pop])
     dlrnu = -1.*dlr
 
     # use linear spline interpolation for dn/dlogr (logr)
@@ -55,7 +55,9 @@ def rho(r0, rhodmpar, pop, gp):
     spline_n = nr(gp.xepol, vec, pop, gp)
 
     # and apply it to these radii, which may be anything in between
-    rs =  np.log(r0/gp.Xscale[pop]) # have to integrate in d log(r)
+    # self.Xscale is determined in 2D, not 3D
+    # use gp.dat.rhalf[0]
+    rs =  np.log(r0/gp.dat.rhalf[pop]) # have to integrate in d log(r)
     logrright = []; logrleft = []
     if np.rank(rs) == 0:
         if rs>0:

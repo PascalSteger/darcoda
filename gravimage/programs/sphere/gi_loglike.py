@@ -85,7 +85,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                 if gp.checksig:
                     import gi_analytic as ga
                     anrho = ga.rho(gp.xepol, gp)[0]
-                    rhodmpar_half = np.exp(splev(gp.Xscale[0], splrep(gp.xepol, np.log(anrho))))
+                    rhodmpar_half = np.exp(splev(gp.dat.rhalf[0], splrep(gp.xepol, np.log(anrho))))
                     nr = -gh.derivipol(np.log(anrho), np.log(gp.xepol))
                     dlr = np.hstack([nr[0], nr, nr[-1]])
                     if gp.investigate =='gaia':
@@ -103,7 +103,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                     elif gp.investigate == 'hern':
                         betapar = np.array([0, 0, 2, max(gp.xipol)/2]) # for hern
                     annu = ga.rho(gp.xepol, gp)[1]
-                    nupar_half = np.exp(splev(gp.Xscale[1], splrep(gp.xepol, np.log(annu))))
+                    nupar_half = np.exp(splev(gp.dat.rhalf[1], splrep(gp.xepol, np.log(annu))))
                     nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
                     dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
                     if gp.investigate == 'gaia':
