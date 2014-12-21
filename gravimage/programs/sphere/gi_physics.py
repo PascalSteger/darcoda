@@ -26,7 +26,6 @@ def rhodm_hernquist(r, rho0, r_DM, alpha_DM, beta_DM, gamma_DM):
 # @param beta_DM [1]
 # @param gamma_DM [1] central density slope
 
-
 def nr(r0, dlr, pop, gp):
     # extend asymptotes to 0, and high radius
     rnu = np.hstack([r0[0]/gp.rinfty, r0, gp.rinfty*r0[-1]])
@@ -45,7 +44,6 @@ def nr(r0, dlr, pop, gp):
 # @param dlr d log rho/ d log r: asymptote at 0, n(r) for all bins, asymptote at infinity
 # @param pop int for population (both, 1, 2, ...)
 # @param gp global parameters
-
 
 def rho(r0, rhodmpar, pop, gp):
     gh.sanitize_vector(rhodmpar, len(gp.xepol)+3, 0, 1e30, gp.debug)
@@ -179,14 +177,11 @@ def beta(r0, params, gp):
 # @param params array, see gi_class_cube
 # @param gp global parameters
 
-
 def calculate_rho(r, M):
     r0 = np.hstack([0,r])                         # [lunit]
     M0 = np.hstack([0,M])
-
     deltaM   = M0[1:]-M0[:-1]                     # [Munit]
     gh.checkpositive(deltaM,  'unphysical negative mass increment encountered')
-
     deltavol = 4./3.*np.pi*(r0[1:]**3-r0[:-1]**3) # [lunit^3]
     rho     = deltaM / deltavol                  # [Munit/lunit^3]
     gh.checkpositive(rho, 'rho in calculate_rho')
@@ -196,14 +191,11 @@ def calculate_rho(r, M):
 # @param r radius in [pc]
 # @param M enclosed mass profile, [Munit]
 
-
 def calculate_surfdens(r, M):
     r0 = np.hstack([0,r])                         # [lunit]
     M0 = np.hstack([0,M])                         # [Munit]
-
     deltaM = M0[1:]-M0[:-1]                       # [Munit]
     gh.checkpositive(deltaM, 'unphysical negative mass increment encountered')
-
     deltavol = np.pi*(r0[1:]**2 - r0[:-1]**2)        # [lunit^2]
     Sig = deltaM/deltavol                           # [Munit/lunit^2]
     gh.checkpositive(Sig, 'Sig in calculate_surfdens')
@@ -212,7 +204,6 @@ def calculate_surfdens(r, M):
 # take mass(<r) in bins, calc mass in annuli, get surface density
 # @param r radius in [pc]
 # @param M 3D mass profile
-
 
 def sig_kap_zet(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     siglos2, kaplos4, zetaa, zetab = gi.ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)

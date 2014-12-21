@@ -35,10 +35,15 @@ class Datafile:
         self.Mhalf = []; self.rhalf = []
 
         ## keep radial profile of the tracer density, averaged in 2D-rings
-        self.nu = [];    self.nu_epol = []
-        self.nuerr = []; self.nuerr_epol = []
+        self.nu = []
+        self.nuerr = []
 
+        self.nu_epol = []
+        self.nuerr_epol = []
+
+        ## to keep the nr parameters
         self.nuhalf = []
+        self.nrnu = []
 
         self.Sig = [];     self.Sigerr = []
 
@@ -108,6 +113,55 @@ class Datafile:
                 nuhalf = np.exp(splev(np.log(r_half), splpar_nu)) # [pc]
                 self.nuhalf.append(nuhalf)
                 # [Munit/pc^3]
+
+                # calculate n(r) parameters as used in gi_physics from the nu(r) profile
+                rleft = self.rbin[self.rbin <= r_half]
+                rleft = rleft[::-1]
+                rright= self.rbin[self.rbin > r_half]
+                nuleft = nudat[self.rbin <= r_half]
+                nuleft = nuleft[::-1]
+                nuright = nudat[self.rbin > r_half]
+
+                rlast = 1.*r_half
+                nulast = 1.*nuhalf
+                sloperight = []
+                for r0 in rright:
+                    i = np.argmin(np.abs(rright - r0))
+                    Deltanu = nuright[i] - nulast
+                    Deltar  = rright[i] - rlast
+                    sloperight.append(Deltanu/Deltar)
+                    nulast = nuright[i]
+                    rlast = rright[i]
+
+                rlast = 1.*r_half
+                nulast = 1.*nuhalf
+                slopeleft = []
+                # work through the array from the left, from r_half
+                for r0 in rleft[::-1]:
+                    i = np.argmin(np.abs(rleft - r0))
+                    Deltanu = nuleft[i] - nulast
+                    Deltar  = rleft[i] - rlast
+                    slopeleft.append(Deltanu/Deltar)
+                    nulast = nuleft[i]
+                    rlast = rleft[i]
+
+                # inverse order of slopeleft to have it sorted according increasing r
+                slopeleft = slopeleft[::-1]
+
+                slopes = np.hstack([slopeleft, sloperight])
+                Deltalogr = np.log(self.rbin[1:]) - np.log(self.rbin[:-1])
+                nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
+                extleft = np.array([nrpar[0], nrpar[0], nrpar[0]])
+                extright = np.array([nrpar[-1], nrpar[-1], nrpar[-1]])
+                self.nrnu = np.hstack([nuhalf, nrpar[0], extleft, nrpar, nrpar[-1], extright, nrpar[-1]])
+
+                import gi_physics as phys
+                from pyplot import plot
+                plot(gp.xepol, self.nu_epol, 'b')
+                plot(gp.xipol, phys.rho(self.rbin, self.nrnu, 1, gp))
+                ipdb.set_trace()
+                print(nrpar)
+
             else:
                 gh.LOG(1, 'working in disc symmetry: reading nu directly')
                 dummy1, dummy2, dummy3, nudat, nuerr = \
