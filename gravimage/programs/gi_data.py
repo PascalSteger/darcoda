@@ -115,12 +115,12 @@ class Datafile:
                 # [Munit/pc^3]
 
                 # calculate n(r) parameters as used in gi_physics from the nu(r) profile
-                rleft = self.rbin[self.rbin <= r_half]
+                rleft = gp.xfine[gp.xfine <= r_half]
                 rleft = rleft[::-1]
-                rright= self.rbin[self.rbin > r_half]
-                nuleft = nudat[self.rbin <= r_half]
+                rright= gp.xfine[gp.xfine > r_half]
+                nuleft = nudatnu[gp.xfine <= r_half]
                 nuleft = nuleft[::-1]
-                nuright = nudat[self.rbin > r_half]
+                nuright = nudatnu[gp.xfine > r_half]
 
                 rlast = 1.*r_half
                 nulast = 1.*nuhalf
@@ -145,22 +145,40 @@ class Datafile:
                     rlast = rleft[i]
                 # inverse order of slopeleft to have it sorted according increasing r
                 slopeleft = slopeleft[::-1]
-                slopes = np.hstack([slopeleft, sloperight])
-                Deltalogr = np.log(self.rbin[1:]) - np.log(self.rbin[:-1])
-                nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
-                extleft = np.array([nrpar[0], nrpar[0], nrpar[0]])
-                extright = np.array([nrpar[-1], nrpar[-1], nrpar[-1]])
-                self.nrnu = np.hstack([nuhalf, nrpar[0], extleft, nrpar, nrpar[-1], extright, nrpar[-1]])
 
-                import gi_physics as phys
-                from pylab import loglog, axvline, axhline
-                loglog(gp.xepol, self.nu_epol[0], 'b')
-                axvline(r_half)
-                axhline(nuhalf)
-                rh = phys.rho(gp.xepol, self.nrnu, 0, gp)
-                loglog(gp.xepol, rh, 'r', lw=2)
-                print(nrpar)
-                ipdb.set_trace()
+                slopes = np.hstack([slopeleft, sloperight])
+                nrpar = 1.*slopes[:-1]
+                #Deltalogr = np.log(gp.xfine[1:]) - np.log(gp.xfine[:-1])
+                #nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
+
+                spl_nrpar = splrep(gp.xfine[:-1], nrpar, k=1)
+                nre = splev( gp.xipol, spl_nrpar)
+
+                extleft = splev(gp.xepol[0:3], spl_nrpar) # np.array([nrpar[0], nrpar[0], nrpar[0]])
+                extright = splev(gp.xepol[-3:], spl_nrpar) #[nrpar[-1], nrpar[-1], nrpar[-1]])
+                self.nrnu = np.hstack([nuhalf,
+                                       nre[0],
+                                       extleft,
+                                       nre,
+                                       extright,
+                                       nre[-1]])
+
+                # import gi_physics as phys
+                # from pylab import loglog, axvline, axhline, plot, xscale, clf
+                # loglog(gp.xepol, self.nu_epol[0], 'b.-', lw=1)
+                # axvline(r_half)
+                # axhline(nuhalf)
+                # rh = phys.rho(gp.xepol, self.nrnu, 0, gp)
+                # loglog(gp.xepol, rh, 'r.-', linewidth=2)
+                # ipdb.set_trace()
+                # clf()
+                # plot(gp.xfine[:-1], nrpar, '.-')
+                # plot(gp.xipol, nre, '.-')
+                # xscale('log')
+                # axvline(r_half)
+                # ipdb.set_trace()
+                # print(nrpar)
+
 
             else:
                 gh.LOG(1, 'working in disc symmetry: reading nu directly')

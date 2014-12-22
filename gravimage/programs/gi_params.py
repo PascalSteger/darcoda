@@ -101,7 +101,7 @@ class Params():
                                                 # more parameter for
                                                 # the asymptote to
                                                 # \infty
-        self.nfine = 2*self.nipol  # number of entries in integral lookup table
+        self.nfine = 10*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
