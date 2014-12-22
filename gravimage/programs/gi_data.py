@@ -127,27 +127,24 @@ class Datafile:
                 sloperight = []
                 for r0 in rright:
                     i = np.argmin(np.abs(rright - r0))
-                    Deltanu = nuright[i] - nulast
-                    Deltar  = rright[i] - rlast
+                    Deltanu = -(np.log(nuright[i]) - np.log(nulast))
+                    Deltar  = np.log(rright[i]) - np.log(rlast)
                     sloperight.append(Deltanu/Deltar)
                     nulast = nuright[i]
                     rlast = rright[i]
-
                 rlast = 1.*r_half
                 nulast = 1.*nuhalf
                 slopeleft = []
                 # work through the array from the left, from r_half
-                for r0 in rleft[::-1]:
+                for r0 in rleft:
                     i = np.argmin(np.abs(rleft - r0))
-                    Deltanu = nuleft[i] - nulast
-                    Deltar  = rleft[i] - rlast
+                    Deltanu = np.log(nuleft[i]) - np.log(nulast)
+                    Deltar  = np.log(rlast) - np.log(rleft[i])
                     slopeleft.append(Deltanu/Deltar)
                     nulast = nuleft[i]
                     rlast = rleft[i]
-
                 # inverse order of slopeleft to have it sorted according increasing r
                 slopeleft = slopeleft[::-1]
-
                 slopes = np.hstack([slopeleft, sloperight])
                 Deltalogr = np.log(self.rbin[1:]) - np.log(self.rbin[:-1])
                 nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
@@ -156,11 +153,14 @@ class Datafile:
                 self.nrnu = np.hstack([nuhalf, nrpar[0], extleft, nrpar, nrpar[-1], extright, nrpar[-1]])
 
                 import gi_physics as phys
-                from pyplot import plot
-                plot(gp.xepol, self.nu_epol, 'b')
-                plot(gp.xipol, phys.rho(self.rbin, self.nrnu, 1, gp))
-                ipdb.set_trace()
+                from pylab import loglog, axvline, axhline
+                loglog(gp.xepol, self.nu_epol[0], 'b')
+                axvline(r_half)
+                axhline(nuhalf)
+                rh = phys.rho(gp.xepol, self.nrnu, 0, gp)
+                loglog(gp.xepol, rh, 'r', lw=2)
                 print(nrpar)
+                ipdb.set_trace()
 
             else:
                 gh.LOG(1, 'working in disc symmetry: reading nu directly')
