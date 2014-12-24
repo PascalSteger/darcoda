@@ -11,9 +11,9 @@ import ipdb
 import time
 from scipy.interpolate import splev, splrep
 
-#import matplotlib.pyplot as plt
-#fig, ax=plt.subplots()
-#import matplotlib.animation as animation
+# import matplotlib.pyplot as plt
+# fig, ax=plt.subplots()
+# import matplotlib.animation as animation
 
 import gi_physics as phys
 from gi_class_profiles import Profiles
@@ -126,11 +126,11 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     chi2 = calc_chi2(tmp_profs, gp)
     gh.LOG(-1, '  ln L = ', gh.pretty(-chi2/2.))
-    #x=gp.dat.rbin
-    #linedat,=ax.loglog(x, gp.dat.Sig[1], 'b')
-    #line,=ax.loglog(x, tmp_profs.get_prof("Sig", 1), 'r', alpha=0.1)
-    #plt.draw()
-    #plt.show()
+    # x=gp.dat.rbin
+    # linedat,=ax.loglog(x, gp.dat.Sig[1], 'b')
+    # line,=ax.loglog(x, tmp_profs.get_prof("Sig", 1), 'r', alpha=0.1)
+    # plt.draw()
+    # plt.show()
     tmp_profs.chi2 = chi2
 
     # after some predefined wallclock time and Sig convergence, plot all profiles

@@ -29,29 +29,24 @@ class Datafile:
         self.rbin = []
         ## biggest radius of the data bins, in [pc]
         self.binmax = []
-
         ## keep mass profile
         self.Mr = []; self.Mrerr = []
         self.Mhalf = []; self.rhalf = []
-
         ## keep radial profile of the tracer density, averaged in 2D-rings
         self.nu = []
         self.nuerr = []
-
         self.nu_epol = []
         self.nuerr_epol = []
-
         ## to keep the nr parameters
         self.nuhalf = []
         self.nrnu = []
-
-        self.Sig = [];     self.Sigerr = []
-
+        self.nrnuerr = []
+        self.Sig = []
+        self.Sigerr = []
         ## keep line of sight velocity dispersion profile, in [km/s]
         self.sig = []
         ## keep error of sigdat
         self.sigerr = []
-
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
         ## keep errors of kapdat
@@ -59,7 +54,6 @@ class Datafile:
         return
     ## \fn __init__(self)
     # constructor: set all initial values
-
 
     def read_Sig(self, gp):
         for pop in np.arange(gp.pops+1):
@@ -145,23 +139,24 @@ class Datafile:
                     rlast = rleft[i]
                 # inverse order of slopeleft to have it sorted according increasing r
                 slopeleft = slopeleft[::-1]
-
                 slopes = np.hstack([slopeleft, sloperight])
                 nrpar = 1.*slopes[:-1]
                 #Deltalogr = np.log(gp.xfine[1:]) - np.log(gp.xfine[:-1])
                 #nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
-
                 spl_nrpar = splrep(gp.xfine[:-1], nrpar, k=1)
                 nre = splev( gp.xipol, spl_nrpar)
-
                 extleft = splev(gp.xepol[0:3], spl_nrpar) # np.array([nrpar[0], nrpar[0], nrpar[0]])
                 extright = splev(gp.xepol[-3:], spl_nrpar) #[nrpar[-1], nrpar[-1], nrpar[-1]])
-                self.nrnu = np.hstack([nuhalf,
-                                       nre[0],
-                                       extleft,
-                                       nre,
-                                       extright,
-                                       nre[-1]])
+                maxnre = max(nre)
+                self.nrnu.append(np.hstack([nuhalf,
+                                            nre[0],
+                                            extleft,
+                                            nre,
+                                            extright,
+                                            nre[-1]]))
+                errnre = np.ones(1+len(extleft)+len(nre)+len(extright)+1)*maxnre/10.
+                self.nrnuerr.append(np.hstack([nuhalf/3.,
+                                               errnre]))
 
                 # import gi_physics as phys
                 # from pylab import loglog, axvline, axhline, plot, xscale, clf
@@ -169,7 +164,11 @@ class Datafile:
                 # axvline(r_half)
                 # axhline(nuhalf)
                 # rh = phys.rho(gp.xepol, self.nrnu, 0, gp)
+                # rhmin = phys.rho(gp.xepol, self.nrnu - self.nrnuerr, 0, gp)
+                # rhmax = phys.rho(gp.xepol, self.nrnu + self.nrnuerr, 0, gp)
                 # loglog(gp.xepol, rh, 'r.-', linewidth=2)
+                # loglog(gp.xepol, rhmin, 'g.-')
+                # loglog(gp.xepol, rhmax, 'g--')
                 # ipdb.set_trace()
                 # clf()
                 # plot(gp.xfine[:-1], nrpar, '.-')

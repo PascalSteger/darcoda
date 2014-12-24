@@ -141,6 +141,16 @@ def map_nr(params, prof, pop, gp):
 # @param pop population int, 0 for rho*, 1,2,... for tracer densities
 # @param gp global parameters
 
+def map_nr_data(params, pop, gp):
+    meannr = gp.dat.nrnu[pop]
+    stdnr = gp.dat.nrnuerr[pop]
+    return (np.array(params)-0.5)*2.*stdnr+meannr
+## \fn map_nr_data(params, pop, gp)
+# create nr params
+# @param params
+# @param pop population int
+# @param gp global parameter
+
 def map_nr_tracers(params, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     # first, if we already have a converged run, use the parameters as stored
@@ -243,7 +253,6 @@ def map_betastar_sigmoid(params, gp):
 # @param params parameter vector, size 4
 # @param gp global parameters
 
-
 def map_betastar_j(params, gp):
     gh.sanitize_vector(params, 4, 0, 1, gp.debug)
     # betastar = exp(-(r/r0)^n)*(a0-a1)+a1
@@ -258,7 +267,6 @@ def map_betastar_j(params, gp):
 # @param params parameter vector, size 4
 # @param gp global parameters
 
-
 def map_MtoL(param, gp):
     gh.sanitize_scalar(param, 0, 1, gp.debug)
     scale = gp.MtoLmax - gp.MtoLmin
@@ -268,7 +276,6 @@ def map_MtoL(param, gp):
 # map [0,1] to MtoL flat prior
 # @param param scalar
 # @param gp global parameters holding MtoL{min,max}
-
 
 class Cube:
     def __init__ (self, gp):
@@ -295,7 +302,7 @@ class Cube:
         # rho* only for observations
         if gp.investigate == 'obs':
             offstep = gp.nrho
-            tmp_rhostar = map_nr_tracers(pc[off:off+offstep], 0, gp)
+            tmp_rhostar = map_nr_data(pc[off:off+offstep], 0, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_rhostar[i]
             off += offstep
@@ -306,7 +313,7 @@ class Cube:
 
         for pop in range(1,gp.pops+1): # nu1, nu2, ...
             offstep = gp.nrho
-            tmp_nu = map_nr_tracers(pc[off:off+offstep], pop, gp)
+            tmp_nu = map_nr_data(pc[off:off+offstep], pop, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_nu[i]
             off += offstep

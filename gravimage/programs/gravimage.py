@@ -112,7 +112,7 @@ def run(gp):
                   evidence_tolerance = 0.0, # set to 0 to keep
                   # algorithm working
                   # indefinitely
-                  sampling_efficiency = 0.05, # 0.05 according to
+                  sampling_efficiency = 0.25, # 0.05 according to
                                               # MultiNest README for >
                                               # 30 params
                   n_iter_before_update = 10000, # output after this
