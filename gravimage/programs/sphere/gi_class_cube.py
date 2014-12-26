@@ -212,6 +212,8 @@ def map_betastar_poly(params, gp):
     # starting offset in range [-1,1]
     # cluster around 0, go symmetrically in both directions,
     params[0] = 1.98*(params[0]-0.5)
+    if gp.beta00prior:
+        params[0] = 0.0
     # out to maxbetaslope
     # here we allow |beta_star,0| > 1, so that any models with
     # beta(<r_i) = 1, beta(>r_i) < 1
@@ -241,7 +243,7 @@ def map_betastar_sigmoid(params, gp):
     bdiff = bmax-bmin
     a0 = params[0]*bdiff + bmin  # a0
     if gp.beta00prior:
-        params[0] = 0
+        a0 = 0.
     a1 = params[1]*bdiff + bmin  # a1
     alpha = params[2]*5             # alpha
     # r_s, sampled in log space over all radii,
