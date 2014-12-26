@@ -94,7 +94,7 @@ def map_nr(params, prof, pop, gp):
     rhoscale = gp.rhohalf
     width = gp.log10rhospread
     innerslope = gp.innerslope
-    nrscale = gp.nrtol/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
+    nrscale = gp.nrtol #/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
     monotonic = gp.monotonic
 
     # first parameter gives half-light radius value of rho directly
@@ -102,11 +102,9 @@ def map_nr(params, prof, pop, gp):
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
-
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
     nrasym0 = params[1]*innerslope
-
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
 
@@ -114,7 +112,6 @@ def map_nr(params, prof, pop, gp):
         gpar = ginv(dnrdlrparams/2.+0.5, 0., nrscale/2)
     else:
         gpar = ginv(dnrdlrparams, 0., nrscale)
-
     for k in range(0, gp.nepol):
         deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
@@ -125,7 +122,7 @@ def map_nr(params, prof, pop, gp):
     # must lie below -3, thus n(r)>3
     #deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
 
-    # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
+    # finite mass prior: to bound between 3 and ..
     nrasyminfty = max(nr[-1], 3.001)
 
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
@@ -191,7 +188,7 @@ def map_nr_tracers(params, pop, gp):
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3, thus n(r)>3
     #deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))
-    # finite mass prior: to bound between 3 and gp.maxrhoslope, favoring 3:
+    # finite mass prior: to bound between 3 and ..
     nrasyminfty = max(nr[-1], 3.001)
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
     return params

@@ -49,7 +49,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 4 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -84,7 +84,7 @@ class Params():
         # ----------------------------------------------------------------------
         self.getSigdata = False   # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 10
-        self.chi2_Sig_converged = 10 # how many times do we have to be below that threshold?
+        self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run
@@ -101,7 +101,7 @@ class Params():
                                                 # more parameter for
                                                 # the asymptote to
                                                 # \infty
-        self.nfine = 2*self.nipol  # number of entries in integral lookup table
+        self.nfine = 10*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
         self.rinfty = 5. # interpolate from last slope to slope at
                           # 10*max(xipol), where asymptote to \infty
@@ -136,10 +136,8 @@ class Params():
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
-        self.maxrhoslope  = 5    # maximum slope (change if
-                                 # monotonicity prior used) of rho
         self.maxnuslope = 5      # same for nrnu
-        self.nrtol  = self.maxrhoslope # max change of n(r) over the full range [0, r_max]
+        self.nrtol  = 1 # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
