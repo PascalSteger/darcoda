@@ -7,7 +7,7 @@
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
 import sys
-import ipdb
+import pdb
 import math
 import numpy as np
 from scipy.stats import kurtosis
@@ -104,7 +104,7 @@ def run():
         ax2.plot(rbin,Rho_INT_rho(Rbin,Dens,Denserr),color='green')
         draw()
 
-        ipdb.set_trace()
+        pdb.set_trace()
         ioff(); show()
 
 if __name__=="__main__":

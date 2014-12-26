@@ -7,7 +7,7 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb
+import pdb
 
 import matplotlib.pyplot as plt
 plt.ioff()

@@ -9,7 +9,7 @@
 
 # (c) GPL v3 2014 Pascal S.P. Steger
 
-import ipdb
+import pdb
 import numpy as np
 from scipy.stats import kurtosis
 #from pylab import *

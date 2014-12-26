@@ -8,7 +8,7 @@
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import ipdb
+import pdb
 from scipy.integrate import simps
 #import numpy as np
 import numpy.random as npr

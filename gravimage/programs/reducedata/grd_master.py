@@ -183,7 +183,7 @@ def myprior(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myprior.cube')
-        ipdb.set_trace()
+        pdb.set_trace()
     return cube
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -214,7 +214,7 @@ def myloglike(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
-        ipdb.set_trace()
+        pdb.set_trace()
     gh.LOG(2,'starting logev evaluation')
     p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
     p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
@@ -227,7 +227,7 @@ def myloglike(cube, ndim, nparams):
     logev = np.sum(lpcom)
     gh.LOG(1, 'logL:',logev)
     #if logev < -1e300:
-    #    ipdb.set_trace()
+    #    pdb.set_trace()
     return logev
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)

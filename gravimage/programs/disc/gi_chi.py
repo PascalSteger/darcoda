@@ -8,7 +8,7 @@
 # (c) GPL v3 ETHZ 2014 Pascal Steger, psteger@phys.ethz.ch
 
 #from types import *
-import ipdb
+import pdb
 import numpy as np
 import gi_helper as gh
 
@@ -45,7 +45,7 @@ def calc_chi2(profs, gp):
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nipol)
         gh.LOG(2, ' chi2_nu['+str(pop)+'] = ', chi2_nu)
         chi2 +=chi2_nu
-        ipdb.set_trace()
+        pdb.set_trace()
         if not gp.chi2_nu_converged:
             continue # with pop loop
 
@@ -55,7 +55,7 @@ def calc_chi2(profs, gp):
         chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nipol) # [1]
         if chi2_sig == np.inf:
             print('chi2_sig has become infinite')
-            ipdb.set_trace()
+            pdb.set_trace()
         chi2 += chi2_sig             # [1]
         gh.LOG(1, '  chi2_sig  = ', chi2_sig)
 

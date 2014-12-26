@@ -8,7 +8,7 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb
+import pdb
 
 import gi_units as gu
 import gi_helper as gh

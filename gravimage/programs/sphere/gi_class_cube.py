@@ -14,7 +14,7 @@
 # (c) GPL v3 2014 ETHZ Pascal S.P. Steger
 
 import numpy as np
-import ipdb
+import pdb
 import gi_helper as gh
 
 def dierfc(y):

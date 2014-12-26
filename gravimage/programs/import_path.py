@@ -8,7 +8,7 @@
 
 import os
 import sys
-import ipdb
+import pdb
 from imp import reload
 
 import gi_base as gb

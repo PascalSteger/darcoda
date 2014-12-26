@@ -1,5 +1,5 @@
 #!/usr/bin/env ipython
-import ipdb
+import pdb
 import matplotlib.pyplot as plt
 plt.ion()
 import numpy as np
@@ -22,4 +22,4 @@ fig.colorbar(im)
 
 plt.draw()
 plt.show()
-ipdb.set_trace()
+pdb.set_trace()

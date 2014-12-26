@@ -6,7 +6,7 @@
 
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
-import ipdb
+import pdb
 import numpy as np
 from scipy.interpolate import splrep, splev
 from gi_int import g

@@ -8,7 +8,7 @@
 
 # (c) 2014 GPL v.3 Pascal S.P. Steger, psteger@phys.ethz.ch
 
-import ipdb
+import pdb
 import numpy as np
 import gi_file as gf
 import gi_helper as gh

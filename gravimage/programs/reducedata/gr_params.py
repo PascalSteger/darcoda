@@ -6,7 +6,7 @@
 
 # (c) GPL v3 2014 ETHZ Pascal Steger, psteger@phys.ethz.ch
 
-import ipdb
+import pdb
 
 def rhodm(r, r_DM, rho0, alpha_DM, beta_DM, gamma_DM):
     # TODO beta_DM: define up here somewhere
@@ -49,7 +49,7 @@ class grParams():
                 self.simvel = gp.files.dir+'simulation/'+self.simname+'stars_vel.txt'
             else:
                 gh.LOG(0, 'get data for more than 2 pops in Hernquist profile')
-                ipdb.set_trace()
+                pdb.set_trace()
 
         elif gp.investigate == 'walk': # or just want to try some other generic pymc stuff:
             self.r_DM  = 1000.

@@ -7,7 +7,7 @@
 # (c) GPL v3 2014 ETHZ, psteger@phys.ethz.ch
 
 import os
-import ipdb
+import pdb
 import sys
 import pickle
 import numpy as np
@@ -91,7 +91,7 @@ class Files:
             self.set_discmock(gp, timestamp)
         else:
             print(' wrong investigation in Files()')
-            ipdb.set_trace()
+            pdb.set_trace()
         ## directory and basename of all output files
         if timestamp == '':
             import datetime

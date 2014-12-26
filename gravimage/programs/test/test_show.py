@@ -3,7 +3,7 @@
 from pylab import *
 ion()
 
-import ipdb
+import pdb
 import numpy as np
 
 
@@ -13,6 +13,6 @@ if __name__=="__main__":
 
 
     plot(x, y, label='sin')
-    ipdb.set_trace()
+    pdb.set_trace()
 
     print('too late')

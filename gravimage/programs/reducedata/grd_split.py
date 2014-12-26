@@ -8,7 +8,7 @@
 
 # (c) 2013 Pascal S.P. Steger
 
-import ipdb
+import pdb
 import numpy as np
 
 from scipy.integrate import simps
@@ -72,7 +72,7 @@ def myprior(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myprior.cube')
-        ipdb.set_trace()
+        pdb.set_trace()
     return
 ## \fn myprior(cube, ndim, nparams) priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
@@ -156,7 +156,7 @@ def myloglike(cube, ndim, nparams):
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     gh.LOG(2, 'calculate integrals in denominator')
 
@@ -178,7 +178,7 @@ def myloglike(cube, ndim, nparams):
     sumterms = term_MW+term_pop1+term_pop2
     print('f_MW,pop1,pop2=',np.median(term_MW/sumterms),\
           np.median(term_pop1/sumterms), np.median(term_pop2/sumterms))
-    ipdb.set_trace()
+    pdb.set_trace()
     logterm14sum = np.log(sumterms)
     logev = np.sum(logterm14sum)
     gh.sanitize_scalar(logev, -1e30, 1e6, DEBUG)

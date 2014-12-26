@@ -7,7 +7,7 @@
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
-import ipdb
+import pdb
 import time
 from scipy.interpolate import splev, splrep
 
@@ -120,7 +120,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         off += offstep # still do this even if gp.chi2_Sig_converged is False
     if off != gp.ndim:
         gh.LOG(1, 'wrong subscripts in gi_loglike')
-        ipdb.set_trace()
+        pdb.set_trace()
 
     # determine log likelihood
 

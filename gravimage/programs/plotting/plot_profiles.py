@@ -7,7 +7,7 @@
 
 # start off with plotting/ in front of path
 #import sys
-import ipdb
+import pdb
 import pickle
 import os
 import numpy as np
@@ -124,7 +124,7 @@ def run(timestamp, basename, gp):
     prepare_output_folder(basename)
 
     # check whether we need to read in gp.dat, or whether we are plotting from inside gravimage main program
-    if len(gp.dat.Sig == 0):
+    if len(gp.dat.Sig) == 0:
         import gi_file as glf
         gp.dat = glf.get_binned_data(gp)
     read_scale(basename, gp) # store half-light radii in  gp.Xscale

@@ -9,14 +9,14 @@
 
 import numpy as np
 import numpy.random as npr
-import ipdb
+import pdb
 from scipy.integrate import simps
 
 import gi_units as gu
 import gi_helper as gh
 
 def write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp):
-#    ipdb.set_trace()
+#    pdb.set_trace()
     for pop in range(gp.pops+1):
         # write scales
         crscale = open(gp.files.get_scale_file(pop), 'w')
@@ -169,7 +169,7 @@ def run(gp):
         plt.loglog(zth, nu_zth/nuscaleb, 'b.-')
         nuscaler = nu_dat_bin1[np.argmin(np.abs(zth-z0))]
         plt.loglog(zth, nu_dat_bin1/nuscaler, 'r.-')
-        # ipdb.set_trace()
+        # pdb.set_trace()
 
     Sig_dat_bin1 = np.cumsum(nu_dat_bin1)
     Sig_dat_err_bin1 = np.sqrt(Sig_dat_bin1)
@@ -301,7 +301,7 @@ def run(gp):
     if gp.pops == 2:
         sigerr.append(sig_dat_err_bin2/scales[2][4])
 
-#    ipdb.set_trace()
+#    pdb.set_trace()
 
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\

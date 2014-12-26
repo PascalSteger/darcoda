@@ -6,7 +6,7 @@
 
 # (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
 
-import ipdb
+import pdb
 import numpy as np
 import gi_helper as gh
 import gi_project as glp
@@ -169,13 +169,13 @@ class Datafile:
                 # loglog(gp.xepol, rh, 'r.-', linewidth=2)
                 # loglog(gp.xepol, rhmin, 'g.-')
                 # loglog(gp.xepol, rhmax, 'g--')
-                # ipdb.set_trace()
+                # pdb.set_trace()
                 # clf()
                 # plot(gp.xfine[:-1], nrpar, '.-')
                 # plot(gp.xipol, nre, '.-')
                 # xscale('log')
                 # axvline(r_half)
-                # ipdb.set_trace()
+                # pdb.set_trace()
                 # print(nrpar)
 
 

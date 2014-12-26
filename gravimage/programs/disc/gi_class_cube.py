@@ -16,7 +16,7 @@
 
 # SS testing (7 october 2014)
 
-import ipdb
+import pdb
 import numpy as np
 import gi_helper as gh
 

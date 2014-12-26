@@ -7,7 +7,7 @@
 # (c) GPL v3 2014 ETHZ, Pascal Steger psteger@phys.ethz.ch
 
 import numpy as np
-import ipdb
+import pdb
 import gi_helper as gh
 from gi_class_profiles import Profiles
 from gi_priors import check_tilt
@@ -54,7 +54,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         off += offstep
 
         if gp.checksig:
-            ipdb.set_trace()
+            pdb.set_trace()
 
         offstep = gp.nbeta
         if gp.chi2_nu_converged:
