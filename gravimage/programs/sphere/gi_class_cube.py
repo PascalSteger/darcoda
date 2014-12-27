@@ -93,7 +93,6 @@ def map_nr(params, prof, pop, gp):
     # get offset and n(r) profiles, calculate rho
     rhoscale = gp.rhohalf
     width = gp.log10rhospread
-    innerslope = gp.innerslope
     nrscale = gp.nrtol #/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
     monotonic = gp.monotonic
 
@@ -104,7 +103,7 @@ def map_nr(params, prof, pop, gp):
     rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    nrasym0 = params[1]*innerslope
+    nrasym0 = params[1]*gp.innerslope
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
 
@@ -157,9 +156,7 @@ def map_nr_tracers(params, pop, gp):
     # get offset and n(r) profiles, calculate rho
     rhoscale = gp.dat.nuhalf[pop]
     width = gp.log10nuspread
-    innerslope = gp.innerslope
     nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
-    monotonic = gp.monotonic_nu
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
@@ -168,14 +165,14 @@ def map_nr_tracers(params, pop, gp):
     # 10** is correct
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    nrasym0 = params[1]**2*innerslope # **2 tweaks it toward lower values while still keeping general
+    nrasym0 = params[1]**2*gp.innerslope # **2 tweaks it toward lower values while still keeping general
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
 
     for k in range(0, gp.nepol):
         deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
-        if monotonic:
+        if gp.monotonic_nu:
             # only increase n(r), use pa[i]>=0 directly
             nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale/2. * deltalogr
         else:

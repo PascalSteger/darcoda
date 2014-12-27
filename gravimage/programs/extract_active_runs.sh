@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/bin/zsh
 
 TODAY=$(date | cut -d" " -f2,3)
 #echo $TODAY

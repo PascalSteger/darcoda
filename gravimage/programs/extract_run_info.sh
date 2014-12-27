@@ -1,13 +1,17 @@
 #!/bin/bash
 
-cd /home/ast/read/dark/darcoda/gravimage
+
+if [ -d /home/ast ]; then
+    cd /home/ast/read/dark/darcoda/gravimage
+else
+    cd /home/psteger/sci/darcoda/gravimage
+fi
 
 extract_active_runs.sh > active_runs
 
 # enable extended globbing
 shopt -s extglob
 
-cd /home/ast/read/dark/darcoda/gravimage
 
 for inv in DT*
 do

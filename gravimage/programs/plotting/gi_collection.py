@@ -8,6 +8,7 @@
 import numpy as np
 import numpy.random as npr
 import pdb
+from multiprocessing import Process
 
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -44,7 +45,7 @@ def unit(prof):
 
 
 class ProfileCollection():
-    def __init__(self, pops, nipol):
+    def __init__(self, pops, nepol):
         self.chis = []
         self.goodchi = []  # will contain all chi^2 for models in self.subset
         self.goodprof = [] # will contain the corresponding profiles
@@ -53,18 +54,18 @@ class ProfileCollection():
         self.x0 = np.array([])
         self.binmin = np.array([])
         self.binmax = np.array([])
-        self.Mmin  = Profiles(pops, nipol)
-        self.M95lo = Profiles(pops, nipol)
-        self.M68lo = Profiles(pops, nipol)
-        self.Mmedi = Profiles(pops, nipol)
-        self.M68hi = Profiles(pops, nipol)
-        self.M95hi = Profiles(pops, nipol)
-        self.Mmax  = Profiles(pops, nipol)
+        self.Mmin  = Profiles(pops, nepol)
+        self.M95lo = Profiles(pops, nepol)
+        self.M68lo = Profiles(pops, nepol)
+        self.Mmedi = Profiles(pops, nepol)
+        self.M68hi = Profiles(pops, nepol)
+        self.M95hi = Profiles(pops, nepol)
+        self.Mmax  = Profiles(pops, nepol)
         self.analytic = Profiles(pops, 100)
-    ## \fn __init__(self, pops, nipol)
+    ## \fn __init__(self, pops, nepol)
     # constructor
     # @param pops number of populations
-    # @param nipol number of bins
+    # @param nepol number of bins
 
     def add(self, prof):
         if np.isnan(prof.chi2):
@@ -108,9 +109,9 @@ class ProfileCollection():
 
 
     def set_x0(self, x0, Binmin, Binmax):
-        self.x0 = x0
         self.binmin = Binmin
         self.binmax = Binmax
+        self.x0 = x0
         self.Mmin.x0  = x0
         self.M95lo.x0 = x0
         self.M68lo.x0 = x0
@@ -168,21 +169,28 @@ class ProfileCollection():
 
 
     def sort_profiles(self, gp):
-        self.sort_prof('rho', 0, gp)
-        self.sort_prof('M', 0, gp)
-        self.sort_prof('Sig', 0, gp)
-        self.sort_prof('nr', 0, gp)
-        self.sort_prof('nrnu', 0, gp)
-        self.sort_prof('nu', 0, gp)
+        pr=[]
+        pr.append(Process(target=self.sort_prof, args=('rho', 0, gp,)))
+        pr.append(Process(target=self.sort_prof, args=('M', 0, gp,)))
+        pr.append(Process(target=self.sort_prof, args=('Sig', 0, gp,)))
+        pr.append(Process(target=self.sort_prof, args=('nr', 0, gp,)))
+        pr.append(Process(target=self.sort_prof, args=('nrnu', 0, gp,)))
+        pr.append(Process(target=self.sort_prof, args=('nu', 0, gp,)))
         for pop in np.arange(1, gp.pops+1):
-            self.sort_prof('betastar', pop, gp)
-            self.sort_prof('beta', pop, gp)
-            self.sort_prof('nu', pop, gp)
-            self.sort_prof('nrnu', pop, gp)
-            self.sort_prof('Sig', pop, gp)
-            self.sort_prof('sig', pop, gp)
+            pr.append(Process(target=self.sort_prof, args=('betastar', pop, gp,)))
+            pr.append(Process(target=self.sort_prof, args=('beta', pop, gp,)))
+            pr.append(Process(target=self.sort_prof, args=('nu', pop, gp,)))
+            pr.append(Process(target=self.sort_prof, args=('nrnu', pop, gp,)))
+            pr.append(Process(target=self.sort_prof, args=('Sig', pop, gp,)))
+            pr.append(Process(target=self.sort_prof, args=('sig', pop, gp,)))
+        for i in pr:
+            i.start()
+        for i in pr:
+            i.join()
+        pdb.set_trace()
+        return
     ## \fn sort_profiles(self, gp)
-    # sort all profiles
+    # sort all profiles, in a parallel way
     # @param gp global parameters
 
 
@@ -253,7 +261,7 @@ class ProfileCollection():
     def write_prof(self, basename, prof, pop, gp):
         output = go.Output()
         uni = unit(prof)
-        output.add('radius (models) [pc]', self.Mmedi.x0)
+        output.add('radius (models) [pc]', gp.xepol)
         output.add('M 95% CL low ' + uni, self.M95lo.get_prof(prof, pop))
         output.add('M 68% CL low ' + uni, self.M68lo.get_prof(prof, pop))
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
@@ -327,7 +335,7 @@ class ProfileCollection():
 
     def plot_data(self, ax, basename, prof, pop, gp):
         output = go.Output()
-        r0 = self.Mmedi.x0 # [pc]
+        r0 = gp.xipol # [pc]
         output.add('radius (data) [pc]', r0)
         if prof == 'Sig':
             # get 2D data here
@@ -457,15 +465,6 @@ class ProfileCollection():
     # @param ax axis object
     # @param gp global parameters
 
-
-    def fill_nice(self, ax, prof, pop, gp):
-        scaleHS = 1.0
-        if prof == 'nu':
-            scaleHS = gp.nu0pc[pop]
-        M95lo = self.M95lo.get_prof(prof, pop)*scaleHS
-        M68lo = self.M68lo.get_prof(prof, pop)*scaleHS
-        Mmedi = self.Mmedi.get_prof(prof, pop)*scaleHS
-
     def plot_full_distro(self, ax, prof, pop, gp):
         x = self.x0
         y = self.sort_prof(prof, pop, gp) # gives [Nmodels, Nbin] shape matrix
@@ -476,7 +475,7 @@ class ProfileCollection():
         H, xedges, yedges = np.histogram2d(x, y, bins=[xbins, ybins])
         fig, ax = plt.subplots(figsize=(8, 8), dpi=80, facecolor='w', edgecolor='k')
 
-        ax.set_xlim([self.x[0]/2,self.x0[-1]*1.5])
+        ax.set_xlim([self.x[0],self.x0[-1]])
 
         extent = [min(xbins), max(xbins), min(ybins), max(ybins)]
         im = ax.imshow(H.T, extent=extent, aspect='auto', interpolation='nearest', cmap=plt.cm.binary) #plt.cm.Blues)
@@ -499,9 +498,11 @@ class ProfileCollection():
         M95lo = self.M95lo.get_prof(prof, pop)
         M68lo = self.M68lo.get_prof(prof, pop)
         Mmedi = self.Mmedi.get_prof(prof, pop)
-        r0    = self.Mmedi.x0
+        r0    = gp.xepol
         M68hi = self.M68hi.get_prof(prof, pop)
         M95hi = self.M95hi.get_prof(prof, pop)
+        print('lengths:', len(r0), len(M95lo), len(M95hi))
+        print('min max M95: ', min(M95lo), max(M95lo), prof)
         ax.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
         ax.plot(r0, M95lo, color='black', lw=0.4)
         ax.plot(r0, M95hi, color='black', lw=0.3)
@@ -514,7 +515,8 @@ class ProfileCollection():
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
         else:
             self.plot_Xscale_3D(ax, gp)
-        ax.set_xlim([r0[0]/2,r0[-1]*1.5])
+        ax.set_xlim([r0[0], r0[-1]])
+        ax.set_ylim([min(M68lo), max(M68hi)])
         return
     ## \fn fill_nice(self, ax, prof, pop, gp)
     # plot filled region for 1sigma and 2sigma confidence interval
@@ -581,46 +583,6 @@ class ProfileCollection():
     # @param prof string of profile to look at
     # @param pop population number
     # @param gp global parameters
-
-
-    def plot_from_ascii_chi(self, ax, chidata):
-        edges = chidata[:,0]
-        bins  = chidata[:,1]
-        ax.step(edges, bins, where='pre')
-    ## \fn plot_from_ascii_chi(self, ax, chidata)
-    # plot chi ascii files
-    # @param ax axis profile
-    # @param chidata data
-
-
-    def plot_from_ascii(self, ax, data, data_analytic, gp):
-        r0 = data[:,0]
-        M95lo = data[:,1]
-        M68lo = data[:,2]
-        Mmedi = data[:,3]
-        M68hi = data[:,4]
-        M95hi = data[:,5]
-        ax.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
-        ax.plot(r0, M95lo, color='black', lw=0.4)
-        ax.plot(r0, M95hi, color='black', lw=0.3)
-        ax.fill_between(r0, M68lo, M68hi, color='black', alpha=0.4, lw=0.1)
-        ax.plot(r0, M68lo, color='black', lw=0.4)
-        ax.plot(r0, M68hi, color='black', lw=0.3)
-        ax.plot(r0, Mmedi, 'r', lw=1)
-        for pop in range(gp.pops):
-            ax.axvline(gp.Xscale[pop+1], color='gray', lw=0.5) # [pc]
-
-        ranalytic = data_analytic[:,0]
-        analytic  = data_analytic[:,1]
-        ax.plot(ranalytic, analytic, lw=2, color='blue')
-        return
-    ## \fn plot_from_ascii(self, ax, data, data_analytic, gp)
-    # plot a single plot from previously calculated data
-    # @param ax axis object to plot into
-    # @param data array of (M95lo, M68lo, Mmedi, M68hi, M95hi) for the profile in question
-    # @param data_analytic analytic profile
-    # @param gp global parameters
-
 
     def __repr__(self):
         return "Profile Collection with "+str(len(self.profs))+" Profiles"

@@ -15,6 +15,8 @@ import numpy.random as npr
 import time
 npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
+from multiprocessing import Process
+
 import gi_helper as gh
 
 def prepare_output_folder(basename):
@@ -26,7 +28,6 @@ def prepare_output_folder(basename):
 ## \fn prepare_output_folder(basename)
 # create directory structure in output folder
 # @param basename string, data folder
-
 
 def read_scale(basename, gp):
     gp.Xscale = []
@@ -45,7 +46,6 @@ def read_scale(basename, gp):
 # read scale file, store into gp.*scale
 # @param basename string
 # @param gp
-
 
 def correct_E_error(filename):
     import os
@@ -80,13 +80,10 @@ def read_models(basename):
 
 def pcload_single_entries(basename, gp):
     import gi_collection as glc
-    pc = glc.ProfileCollection(gp.pops, gp.nipol)
+    pc = glc.ProfileCollection(gp.pops, gp.nepol)
     import re
     tmp = re.split('/DT', basename)[-1]
     path = str.join('/', re.split('/', tmp)[:-1])
-
-    rinfo = basename+'../../../run_info'
-
     # get number of iterations from run_info file
     import gi_base as gb
     bp = gb.get_basepath()
@@ -98,7 +95,6 @@ def pcload_single_entries(basename, gp):
                 runparams = line2
     fil.close()
     numofmodels = int(re.split('\t', runparams)[2])
-
     current = 0
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
@@ -145,33 +141,42 @@ def run(timestamp, basename, gp):
     pc.plot_profile(basename, 'chi2', 0, gp)
     # then select only the best models for plotting the profiles
     pc.cut_subset()
-    pc.set_x0(gp.xipol, Binmin*gp.Xscale[0], Binmax*gp.Xscale[0]) # [pc]
+    pc.set_x0(gp.xepol, Binmin*gp.Xscale[0], Binmax*gp.Xscale[0]) # [pc]
     if gp.investigate =='walk' or gp.investigate=='gaia':
         r0analytic = np.logspace(np.log10(1.),\
                                  np.log10(max(gp.xepol)), 100)
         pc.set_analytic(r0analytic, gp)
     pc.sort_profiles(gp)
     pc.write_all(basename, gp)
-    pc.plot_profile(basename, 'rho', 0, gp)
-    if gp.investigate == 'obs':
-        pc.plot_profile(basename, 'Sig', 0, gp)
-        pc.plot_profile(basename, 'nu', 0, gp)
-        pc.plot_profile(basename, 'nrnu', 0, gp)
-    pc.plot_profile(basename, 'nr', 0, gp)
-    if gp.geom == 'sphere':
-        pc.plot_profile(basename, 'M', 0, gp)
-    for pop in np.arange(1, gp.pops+1):
-        pc.plot_profile(basename, 'betastar', pop, gp)
-        pc.plot_profile(basename, 'beta', pop, gp)
-        pc.plot_profile(basename, 'Sig', pop, gp)
-        pc.plot_profile(basename, 'nu', pop, gp)
-        pc.plot_profile(basename, 'nrnu', pop, gp)
-        pc.plot_profile(basename, 'sig', pop, gp)
 
+    # start following plotting routines as threads, in parallel
+    pr=[]
+    pr.append(Process(target=pc.plot_profile, args=(basename, 'rho', 0, gp,)))
+    pr.append(Process(target=pc.plot_profile, args=(basename, 'nr', 0, gp)))
+    if gp.investigate == 'obs':
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'Sig', 0, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'nu', 0, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'nrnu', 0, gp,)))
+    if gp.geom == 'sphere':
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'M', 0, gp,)))
+    for pop in np.arange(1, gp.pops+1):
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'betastar', pop, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'beta', pop, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'Sig', pop, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'nu', pop, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'nrnu', pop, gp,)))
+        pr.append(Process(target=pc.plot_profile, args=(basename, 'sig', pop, gp,)))
+
+    for i in pr:
+        i.start()
+    for i in pr:
+        i.join()
     if gp.pops == 1:
-        os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x4 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf ../prof_chi2_0.pdf; evince cat.pdf &")
+        os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x4 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf ../prof_chi2_0.pdf")
+        #; evince cat.pdf &")
     elif gp.pops == 2:
-         os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x5 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf prof_nrnu_2.pdf prof_nu_2.pdf prof_Sig_2.pdf prof_betastar_2.pdf prof_beta_2.pdf prof_sig_2.pdf; evince cat.pdf &")
+         os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x5 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf prof_nrnu_2.pdf prof_nu_2.pdf prof_Sig_2.pdf prof_betastar_2.pdf prof_beta_2.pdf prof_sig_2.pdf")
+         # ;evince cat.pdf &")
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string

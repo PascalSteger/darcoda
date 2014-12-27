@@ -49,7 +49,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 4 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -137,7 +137,7 @@ class Params():
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxnuslope = 5      # same for nrnu
-        self.nrtol  = 1 # scale of change of dn/dr
+        self.nrtol  = 0.5 # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
@@ -147,7 +147,7 @@ class Params():
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
         self.monotonic = False   # monotonicity prior on n(x) for rho(x)
-        self.monotonic_nu = True # monotonicity prior on n(x) for nu(x)
+        self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
         # ----------------------------------------------------------------------

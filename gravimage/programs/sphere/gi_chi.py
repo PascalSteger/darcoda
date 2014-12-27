@@ -6,9 +6,6 @@
 
 # (c) GPL v3 ETHZ 2014 Pascal Steger, psteger@phys.ethz.ch
 
-import types
-# TODO find missing modules
-
 import pdb
 import numpy as np
 import gi_helper as gh
@@ -37,7 +34,7 @@ def calc_chi2(profs, gp):
     for pop in np.arange(1, gp.pops+1): # [1, 2, ... , pops]
         Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
         Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]
-        Sigmodel = profs.get_prof('Sig', pop)
+        Sigmodel = profs.get_prof('Sig', pop)[gp.nexp:-gp.nexp]
         chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
         chi2 += chi2_Sig                 # [1]
         gh.LOG(2, ' chi2_Sig   = ', chi2_Sig)
@@ -45,7 +42,7 @@ def calc_chi2(profs, gp):
         # use the following only if chi2_nu_converged used rather than Sig_converged
         #nudat   = gp.dat.nu[pop]      # [Munit/pc^2]
         #nuerr   = gp.dat.nuerr[pop]   # [Munit/pc^2]
-        #numodel = profs.get_prof('nu', pop)
+        #numodel = profs.get_prof('nu', pop)[gp.nexp:-gp.nexp]
         #chi2_nu  = chi2red(numodel, nudat, nuerr, gp.nipol) # [1]
         #chi2 += chi2_nu                 # [1]
         #gh.LOG(1, ' chi2_nu   = ', chi2_nu)
@@ -55,7 +52,8 @@ def calc_chi2(profs, gp):
 
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop]    # [km/s]
-        chi2_sig = chi2red(profs.get_prof('sig', pop), sigdat, sigerr, gp.nipol) # [1]
+        smodel = profs.get_prof('sig', pop)[gp.nexp:-gp.nexp]
+        chi2_sig = chi2red(smodel, sigdat, sigerr, gp.nipol) # [1]
         chi2 += chi2_sig                # [1]
         gh.LOG(2, '  chi2_sig  = ', chi2_sig)
         if gp.usekappa:

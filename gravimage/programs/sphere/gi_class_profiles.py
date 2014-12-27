@@ -11,28 +11,29 @@ import numpy as np
 import gi_helper as gh
 
 class Profiles:
-    def __init__(self, pops, nipol):
+    def __init__(self, pops, nepol):
         self.pops = pops
-        self.nipol= nipol
-        self.x0   = np.zeros(nipol)
-        self.xbins = np.zeros(nipol)
+        self.nepol= nepol
+        self.x0   = np.zeros(nepol)
+        self.xbins = np.zeros(nepol)
         self.chi2 = 0.0
-        self.rho  = np.zeros(nipol)
-        self.nr   = np.zeros(nipol)
-        self.M    = np.zeros(nipol)
-        self.betastar = np.zeros((pops+1)*nipol)
-        self.beta = np.zeros((pops+1)*nipol) # (pops+1) for overall (rho*), 1, 2, ...
-        self.nu   = np.zeros((pops+1)*nipol) # dito
-        self.nrnu = np.zeros((pops+1)*nipol)
-        self.Sig  = np.zeros((pops+1)*nipol)
-        self.sig  = np.zeros((pops+1)*nipol)
-        self.kap  = np.zeros((pops+1)*nipol)
+        self.rho  = np.zeros(nepol)
+        self.nr   = np.zeros(nepol)
+        self.M    = np.zeros(nepol)
+        self.MtoL = -1.0
+        self.betastar = np.zeros((pops+1)*nepol)
+        self.beta = np.zeros((pops+1)*nepol) # (pops+1) for overall (rho*), 1, 2, ...
+        self.nu   = np.zeros((pops+1)*nepol) # dito
+        self.nrnu = np.zeros((pops+1)*nepol)
+        self.Sig  = np.zeros((pops+1)*nepol)
+        self.sig  = np.zeros((pops+1)*nepol)
+        self.kap  = np.zeros((pops+1)*nepol)
         self.zetaa = 0.
         self.zetab = 0.
-    ## \fn __init__(self, pops, nipol)
+    ## \fn __init__(self, pops, nepol)
     # constructor
     # @param pops number of populations
-    # @param nipol number of radial bins
+    # @param nepol number of radial bins
 
     def set_prof(self, prof, vec, pop, gp):
         gh.sanitize_vector(vec, len(self.x0), -200, 1e30, gp.debug)
@@ -43,19 +44,19 @@ class Profiles:
         elif prof == 'M':
             self.M = vec
         elif prof == 'nu':
-            self.nu[pop*self.nipol:(pop+1)*self.nipol] = vec # vec has nrho-3 entries
+            self.nu[pop*self.nepol:(pop+1)*self.nepol] = vec # vec has nrho-3 entries
         elif prof == 'nrnu':
-            self.nrnu[pop*self.nipol:(pop+1)*self.nipol] = vec
+            self.nrnu[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'betastar':
-            self.betastar[pop*self.nipol:(pop+1)*self.nipol] = vec
+            self.betastar[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'beta':
-            self.beta[pop*self.nipol:(pop+1)*self.nipol] = vec
+            self.beta[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'Sig':
-            self.Sig[pop*self.nipol:(pop+1)*self.nipol] = vec
+            self.Sig[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'sig':
-            self.sig[pop*self.nipol:(pop+1)*self.nipol] = vec
+            self.sig[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'kap':
-            self.kap[pop*self.nipol:(pop+1)*self.nipol] = vec
+            self.kap[pop*self.nepol:(pop+1)*self.nepol] = vec
         else:
             raise Exception('unknown profile to be set in gi_class_profiles.set_prof')
     ## \fn set_prof(self, prof, vec, pop, gp)
@@ -65,6 +66,12 @@ class Profiles:
     # @param pop population, if applicable
     # @param gp global parameters
 
+    def set_MtoL(self, MtoL):
+        self.MtoL = MtoL
+        return
+    ## \fn set_MtoL(self, MtoL)
+    # store mass-to-light ratio
+    # @param MtoL float
 
     def set_zeta(self, zetaa, zetab, pop):
         self.zetaa = zetaa
@@ -84,19 +91,19 @@ class Profiles:
         elif prof == 'M':
             return self.M
         elif prof == 'Sig':
-            return self.Sig[pop*self.nipol:(pop+1)*self.nipol]
+            return self.Sig[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nu':
-            return self.nu[pop*self.nipol:(pop+1)*self.nipol]
+            return self.nu[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nrnu':
-            return self.nrnu[pop*self.nipol:(pop+1)*self.nipol]
+            return self.nrnu[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'betastar':
-            return self.betastar[pop*self.nipol:(pop+1)*self.nipol]
+            return self.betastar[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'beta':
-            return self.beta[pop*self.nipol:(pop+1)*self.nipol]
+            return self.beta[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'sig':
-            return self.sig[pop*self.nipol:(pop+1)*self.nipol]
+            return self.sig[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'kap':
-            return self.kap[pop*self.nipol:(pop+1)*self.nipol]
+            return self.kap[pop*self.nepol:(pop+1)*self.nepol]
         else:
             raise Exception('specify prof!')
     ## \fn get_prof(self, prof, pop)
@@ -113,7 +120,7 @@ class Profiles:
 
 
     def __repr__(self):
-        return "Profiles: "+str(self.pops)+" populations, "+str(self.nipol)+" nipol, "+" chi2 = "+str(self.chi2)
+        return "Profiles: "+str(self.pops)+" populations, "+str(self.nepol)+" nepol, "+" chi2 = "+str(self.chi2)
     ## \fn __repr__(self)
     # string representation for ipython
 
