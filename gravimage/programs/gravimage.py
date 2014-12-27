@@ -21,6 +21,8 @@ import pymultinest
 import pickle
 import numpy as np
 import pdb
+from multiprocessing import Pool
+
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)

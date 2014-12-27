@@ -99,15 +99,16 @@ def pcload_single_entries(basename, gp):
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         dum*=1
-        while current < numofmodels:
-            current += 1
-            if current%100 == 0:
-                gh.progressbar((1.0*current)/numofmodels)
-            try:
+        try:
+            while True:
+                current += 1
+                if current%100 == 0:
+                    gh.progressbar((1.0*current)/numofmodels)
+
                 MODEL = pickle.load(fi)
                 pc.add(MODEL)
-            except EOFError:
-                break
+        except EOFError:
+            pass
     print("")
     return pc
 ## \fn pcload_single_entries(basename, gp)
@@ -115,8 +116,7 @@ def pcload_single_entries(basename, gp):
 # @param basename string
 # @param gp global parameters
 
-
-def run(timestamp, basename, gp):
+def run(timestamp, basename, gp, evince=False):
     prepare_output_folder(basename)
 
     # check whether we need to read in gp.dat, or whether we are plotting from inside gravimage main program
@@ -150,39 +150,42 @@ def run(timestamp, basename, gp):
     pc.write_all(basename, gp)
 
     # start following plotting routines as threads, in parallel
-    pr=[]
-    pr.append(Process(target=pc.plot_profile, args=(basename, 'rho', 0, gp,)))
-    pr.append(Process(target=pc.plot_profile, args=(basename, 'nr', 0, gp)))
-    if gp.investigate == 'obs':
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'Sig', 0, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'nu', 0, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'nrnu', 0, gp,)))
-    if gp.geom == 'sphere':
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'M', 0, gp,)))
-    for pop in np.arange(1, gp.pops+1):
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'betastar', pop, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'beta', pop, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'Sig', pop, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'nu', pop, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'nrnu', pop, gp,)))
-        pr.append(Process(target=pc.plot_profile, args=(basename, 'sig', pop, gp,)))
+    from multiprocessing import Pool
+    with Pool(processes=8) as pool:
+        pr=[]
+        pr.append(pool.apply_async(pc.plot_profile, [basename, 'rho', 0, gp]))
+        pr.append(pool.apply_async(pc.plot_profile, [basename, 'nr', 0, gp]))
+        if gp.investigate == 'obs':
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'Sig', 0, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nu', 0, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nrnu', 0, gp]))
+        if gp.geom == 'sphere':
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'M', 0, gp]))
+        for pop in np.arange(1, gp.pops+1):
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'betastar', pop, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'beta', pop, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'Sig', pop, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nu', pop, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nrnu', pop, gp]))
+            pr.append(pool.apply_async(pc.plot_profile, [basename, 'sig', pop, gp]))
+        for lp in pr:
+            lp.get()
 
-    for i in pr:
-        i.start()
-    for i in pr:
-        i.join()
+    cmd = "cd "+basename+"/output/pdf/;"
     if gp.pops == 1:
-        os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x4 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf ../prof_chi2_0.pdf")
-        #; evince cat.pdf &")
+        cmd += "pdfjam --outfile cat.pdf --nup 3x4 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf ../prof_chi2_0.pdf;"
     elif gp.pops == 2:
-         os.system("cd "+basename+"/output/pdf/; pdfjam --outfile cat.pdf --nup 3x5 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf prof_nrnu_2.pdf prof_nu_2.pdf prof_Sig_2.pdf prof_betastar_2.pdf prof_beta_2.pdf prof_sig_2.pdf")
-         # ;evince cat.pdf &")
-## \fn run(timestamp, basename, gp)
+        cmd += "pdfjam --outfile cat.pdf --nup 3x5 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf prof_nrnu_2.pdf prof_nu_2.pdf prof_Sig_2.pdf prof_betastar_2.pdf prof_beta_2.pdf prof_sig_2.pdf;"
+
+    if evince:
+        cmd += "evince cat.pdf &"
+    os.system(cmd)
+## \fn run(timestamp, basename, gp, evince)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string
 # @param basename string
 # @param gp global parameters
-
+# @param evince bool to show output overview pdf
 
 if __name__ == '__main__':
     parser = OptionParser()
@@ -216,4 +219,4 @@ if __name__ == '__main__':
     gp = glp.Params(timestamp)
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
-    run(timestamp, basename, gp)
+    run(timestamp, basename, gp, True)

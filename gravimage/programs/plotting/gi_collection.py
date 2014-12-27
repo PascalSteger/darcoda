@@ -169,25 +169,19 @@ class ProfileCollection():
 
 
     def sort_profiles(self, gp):
-        pr=[]
-        pr.append(Process(target=self.sort_prof, args=('rho', 0, gp,)))
-        pr.append(Process(target=self.sort_prof, args=('M', 0, gp,)))
-        pr.append(Process(target=self.sort_prof, args=('Sig', 0, gp,)))
-        pr.append(Process(target=self.sort_prof, args=('nr', 0, gp,)))
-        pr.append(Process(target=self.sort_prof, args=('nrnu', 0, gp,)))
-        pr.append(Process(target=self.sort_prof, args=('nu', 0, gp,)))
+        self.sort_prof('rho', 0, gp)
+        self.sort_prof('M', 0, gp)
+        self.sort_prof('Sig', 0, gp)
+        self.sort_prof('nr', 0, gp)
+        self.sort_prof('nrnu', 0, gp)
+        self.sort_prof('nu', 0, gp)
         for pop in np.arange(1, gp.pops+1):
-            pr.append(Process(target=self.sort_prof, args=('betastar', pop, gp,)))
-            pr.append(Process(target=self.sort_prof, args=('beta', pop, gp,)))
-            pr.append(Process(target=self.sort_prof, args=('nu', pop, gp,)))
-            pr.append(Process(target=self.sort_prof, args=('nrnu', pop, gp,)))
-            pr.append(Process(target=self.sort_prof, args=('Sig', pop, gp,)))
-            pr.append(Process(target=self.sort_prof, args=('sig', pop, gp,)))
-        for i in pr:
-            i.start()
-        for i in pr:
-            i.join()
-        pdb.set_trace()
+            self.sort_prof('betastar', pop, gp)
+            self.sort_prof('beta', pop, gp)
+            self.sort_prof('nu', pop, gp)
+            self.sort_prof('nrnu', pop, gp)
+            self.sort_prof('Sig', pop, gp)
+            self.sort_prof('sig', pop, gp)
         return
     ## \fn sort_profiles(self, gp)
     # sort all profiles, in a parallel way
@@ -516,7 +510,12 @@ class ProfileCollection():
         else:
             self.plot_Xscale_3D(ax, gp)
         ax.set_xlim([r0[0], r0[-1]])
-        ax.set_ylim([min(M68lo), max(M68hi)])
+        if prof=='beta' or prof=='betastar':
+            ax.set_ylim([-1,1])
+        elif prof=='nr' or prof=='nrnu':
+            ax.set_ylim([0., max(M95hi)])
+        else:
+            ax.set_ylim([min(M68lo), max(M68hi)])
         return
     ## \fn fill_nice(self, ax, prof, pop, gp)
     # plot filled region for 1sigma and 2sigma confidence interval
@@ -576,7 +575,7 @@ class ProfileCollection():
         else:
             gh.LOG(1, 'empty self.profs')
         fig.savefig(basename+'output/pdf/prof_'+prof+'_'+str(pop)+'.pdf')
-        return
+        return 1
     ## \fn plot_profile(self, basename, prof, pop, gp)
     # plot single profile
     # @param basename

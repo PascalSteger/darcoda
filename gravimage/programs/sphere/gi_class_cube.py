@@ -232,13 +232,11 @@ def map_betastar_sigmoid(params, gp):
     # s0 = np.log(r0/r0turn)
     # kappa = (a0-a1)/(betastar(r_s) - a1)-1
     # beta = (a0-a1)/(1+kappa*exp(alpha*s0))
-    bmin = gp.minbetastar
-    bmax = gp.maxbetastar
-    bdiff = bmax-bmin
-    a0 = params[0]*bdiff + bmin  # a0
+    bdiff = gp.maxbetastar-gp.minbetastar
+    a0 = params[0]*bdiff + gp.minbetastar  # a0
     if gp.beta00prior:
         a0 = 0.
-    a1 = params[1]*bdiff + bmin  # a1
+    a1 = params[1]*bdiff + gp.minbetastar  # a1
     alpha = params[2]*5             # alpha
     # r_s, sampled in log space over all radii,
     # as we want flat prior in log space
