@@ -38,6 +38,7 @@ File DTgaia/1/201412191600/programs/gi_params.py not found!
 File DTgaia/1/201412191602/programs/gi_params.py not found!
 File DTgaia/1/201412191606/programs/gi_params.py not found!
 1	DTgaia/1/201412242125	4100	 1 	 12 	 4 	 	p	
+2	DTgaia/1/201412272109	4100	 1 	 12 	 4 	a	 	
 File DTgaia/10/201410272025/ev.dat not found!
 File DTgaia/10/201410280741/ev.dat not found!
 File DTgaia/11/201408271247/ev.dat not found!
@@ -184,12 +185,15 @@ File DTgaia/2/201412241002/ev.dat not found!
 11	DTgaia/2/201412241238	0	 1 	 12 	 4 	 	 	
 12	DTgaia/2/201412241349	0	 1 	 12 	 4 	 	 	
 13	DTgaia/2/201412242124	4100	 1 	 12 	 4 	 	 	
-14	DTgaia/2/201412261153	33100	 1 	 12 	 4 	a	p	
-15	DTgaia/2/201412261325	7800	 1 	 12 	 4 	a	p	
-16	DTgaia/2/201412261601	4700	 1 	 12 	 4 	a	p	
-17	DTgaia/2/201412271312	600	 1 	 12 	 4 	a	 	
-18	DTgaia/2/201412271313	100	 1 	 12 	 4 	a	 	
-19	DTgaia/2/201412271318	3800	 1 	 12 	 4 	a	p	
+14	DTgaia/2/201412261153	33100	 1 	 12 	 4 	 	p	
+15	DTgaia/2/201412261325	7800	 1 	 12 	 4 	 	p	
+16	DTgaia/2/201412261601	4700	 1 	 12 	 4 	 	p	
+17	DTgaia/2/201412271312	600	 1 	 12 	 4 	 	 	
+18	DTgaia/2/201412271313	100	 1 	 12 	 4 	 	 	
+19	DTgaia/2/201412271318	3800	 1 	 12 	 4 	 	p	
+File DTgaia/2/201412271649/ev.dat not found!
+20	DTgaia/2/201412271650	3900	 1 	 12 	 4 	a	 	
+21	DTgaia/2/201412272108	4000	 1 	 12 	 4 	a	 	
 File DTgaia/3/201410031557/ev.dat not found!
 File DTgaia/3/201410052147/ev.dat not found!
 File DTgaia/3/201410052202/programs/gi_params.py not found!
@@ -203,6 +207,8 @@ File DTgaia/3/201410201555/ev.dat not found!
 File DTgaia/3/201410272021/ev.dat not found!
 File DTgaia/3/201410280738/ev.dat not found!
 1	DTgaia/3/201412242125	3500	 1 	 12 	 4 	 	 	
+2	DTgaia/3/201412271719	3600	 1 	 12 	 4 	 	 	
+3	DTgaia/3/201412272108	3400	 1 	 12 	 4 	 	 	
 File DTgaia/4/201408230808/ev.dat not found!
 File DTgaia/4/201409220744/ev.dat not found!
 File DTgaia/4/201409221829/ev.dat not found!
@@ -220,6 +226,7 @@ File DTgaia/4/201410201555/ev.dat not found!
 File DTgaia/4/201410272022/ev.dat not found!
 File DTgaia/4/201410280738/ev.dat not found!
 File DTgaia/4/201410280739/ev.dat not found!
+1	DTgaia/4/201412272109	7100	 1 	 12 	 4 	 	 	
 File DTgaia/5/201408200838/ev.dat not found!
 File DTgaia/5/201408200839/ev.dat not found!
 File DTgaia/5/201408230800/ev.dat not found!

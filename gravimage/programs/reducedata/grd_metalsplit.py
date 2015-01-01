@@ -16,7 +16,6 @@ import gi_helper as gh
 gh.DEBUGLEVEL = 1
 DEBUG = True
 
-
 try:
     from mpi4py import MPI
 
@@ -31,8 +30,6 @@ except:
 sys.stdout.write("Hello, World!! I am process %d of %d on %s.\n" % (myrank, nprocs, procnm))
 sys.stdout.flush()
 
-
-
 def bufcount(filename):
     f = open(filename)
     lines = 0
@@ -46,7 +43,6 @@ def bufcount(filename):
 ## \fn bufcount(filename)
 # determine no. lines optimally
 # @param filename filename
-
 
 def myprior(cube, ndim, nparams):
     # convert to physical space
