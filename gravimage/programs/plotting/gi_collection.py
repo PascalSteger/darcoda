@@ -8,7 +8,7 @@
 import numpy as np
 import numpy.random as npr
 import pdb
-from multiprocessing import Process
+#from multiprocessing import Process
 
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -19,7 +19,7 @@ import gi_helper as gh
 import gi_analytic as ga
 import gi_project as glp
 
-USE_ALL = True
+USE_ALL=False
 
 def unit(prof):
     if prof == 'rho' or prof == 'nu':
@@ -42,7 +42,6 @@ def unit(prof):
 ## \fn unit(prof)
 # return string with units for profile
 # @param prof string for profile
-
 
 class ProfileCollection():
     def __init__(self, pops, nepol):
@@ -84,29 +83,14 @@ class ProfileCollection():
             maxchi = max(self.chis)
         else:
             counts, bins = np.histogram(np.log10(self.chis), bins=np.sqrt(len(self.chis)))
-            mincounts = -1
-            found_max = False; found_min = False
-            for k in range(len(counts)):
-                # flag if we found the first max peak in the chi2 distribution
-                if counts[k] < mincounts and not found_max:
-                    found_max = True
-
-                # if still on rising part, store actual entry as new maximum
-                # and set starting minimum chi2 at highest value, to be changed later on
-                if counts[k] >= mincounts and not found_max:
-                    mincounts = counts[k]
-                    maxcounts = counts[k]
-                # if on decreasing branch, continue to set down border
-                if counts[k] < maxcounts and found_max and not found_min:
-                    mincounts = counts[k]
-                if counts[k] >= maxcounts and found_max:
-                    found_min = True
+            posmax = np.argmin(np.abs(counts-max(counts)))
+            for k in range(posmax, len(counts)-1):
+                if counts[k+1] > counts[k]:
                     break
             maxchi = 10**(bins[k+1])
         self.subset = [minchi, maxchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
-
 
     def set_x0(self, x0, Binmin, Binmax):
         self.binmin = Binmin
@@ -165,8 +149,7 @@ class ProfileCollection():
         return
     ## \fn calculate_M(self, gp)
     # calculate M profiles from rho, as this has not been done prior to pc2.save
-    # @param gp global parameters
-
+    # @param gp global parameters0
 
     def sort_profiles(self, gp):
         self.sort_prof('rho', 0, gp)
@@ -186,7 +169,6 @@ class ProfileCollection():
     ## \fn sort_profiles(self, gp)
     # sort all profiles, in a parallel way
     # @param gp global parameters
-
 
     def set_analytic(self, x0, gp):
         r0 = x0 # [pc], spherical case
@@ -251,7 +233,6 @@ class ProfileCollection():
     # @param x0 radius in [pc]
     # @param gp global parameters
 
-
     def write_prof(self, basename, prof, pop, gp):
         output = go.Output()
         uni = unit(prof)
@@ -275,7 +256,6 @@ class ProfileCollection():
     # @param pop population int
     # @param gp global parameters
 
-
     def write_chi2(self, basename, edges, bins):
         output = go.Output()
         output.add('edges', edges[1:])
@@ -287,7 +267,6 @@ class ProfileCollection():
     # @param basename directory string
     # @param edges array of edges
     # @param bins y-values
-
 
     def write_all(self, basename, gp):
         self.write_prof(basename, 'rho', 0, gp)
@@ -310,7 +289,6 @@ class ProfileCollection():
     # @param basename directory string
     # @param gp global parameters
 
-
     def plot_N_samples(self, ax, prof, pop):
         k=0
         while k<100:
@@ -325,7 +303,6 @@ class ProfileCollection():
     # @param ax axis object to draw upon
     # @param prof string
     # @param pop integer for which population
-
 
     def plot_data(self, ax, basename, prof, pop, gp):
         output = go.Output()
@@ -384,7 +361,6 @@ class ProfileCollection():
     # @param pop which population to analyze: 0 (all), 1, 2, ...
     # @param gp global parameters
 
-
     def plot_labels(self, ax, prof, pop, gp):
         if prof=='chi2':
             ax.set_xlabel('$\\log_{10}\\chi^2$')
@@ -424,7 +400,6 @@ class ProfileCollection():
     # @param prof string of profile to look at
     # @param pop which population to analyze: 0 (all), 1, 2, ...
     # @param gp global parameters
-
 
     def plot_Xscale_3D(self, ax, gp):
         if gp.investigate == 'walk':
@@ -544,7 +519,7 @@ class ProfileCollection():
                     # do include all chi^2 values for plot
                     goodchi.append(self.chis[k])
                 print('plotting profile chi for '+str(len(goodchi))+' models')
-                print('min, max, maxsubset found chi2: ', min(self.chis), max(self.chis), self.subset[1])
+                print('min, max, maxsubset chi2: ', min(self.chis), max(self.chis), self.subset[1])
                 bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \
                                            bins=max(6,np.sqrt(len(goodchi))),\
                                            density=True)

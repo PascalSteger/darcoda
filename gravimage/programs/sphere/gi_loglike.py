@@ -48,7 +48,6 @@ def geom_loglike(cube, ndim, nparams, gp):
         lbaryonpar = np.array(cube[off:off+offstep])
         rhostar = phys.rho(gp.xepol, lbaryonpar, 0, gp)
 
-
         off += offstep
         Signu = glp.rho_param_INT_Sig(gp.xepol, lbaryonpar, 0, gp) # [Munit/pc^2]
         MtoL = cube[off]

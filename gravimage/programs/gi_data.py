@@ -177,8 +177,6 @@ class Datafile:
                 # axvline(r_half)
                 # pdb.set_trace()
                 # print(nrpar)
-
-
             else:
                 gh.LOG(1, 'working in disc symmetry: reading nu directly')
                 dummy1, dummy2, dummy3, nudat, nuerr = \

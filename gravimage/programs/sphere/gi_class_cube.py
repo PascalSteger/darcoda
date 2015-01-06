@@ -89,33 +89,36 @@ def ginv(x, mu, sigma):
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
-
     # get offset and n(r) profiles, calculate rho
-    rhoscale = gp.rhohalf
-    width = gp.log10rhospread
-    nrscale = gp.nrtol #/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
-    monotonic = gp.monotonic
-
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
+    rhohalf = 10**((params[0]-0.5)*2.*gp.log10rhospread+np.log10(gp.rhohalf))
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
-    nrasym0 = params[1]*gp.innerslope
+    nrasym0 = params[1]**2*gp.innerslope
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
-
-    if monotonic:
-        gpar = ginv(dnrdlrparams/2.+0.5, 0., nrscale/2)
+    if gp.monotonic:
+        gpar = ginv(np.array(dnrdlrparams)/2.+0.5, 0., gp.nrtol/2)
     else:
-        gpar = ginv(dnrdlrparams, 0., nrscale)
-    for k in range(0, gp.nepol):
-        deltalogr = (np.log(gp.xepol[k-1])-np.log(gp.xepol[k-2]))
+        gpar = ginv(dnrdlrparams, 0., gp.nrtol)
+
+    # set the innermost nr parameter starting from nrasym0 parameter instead of 0
+    deltalogr = (np.log(gp.xepol[0])-np.log(gp.xepol[0]/gp.rinfty))
+    nr[0] = nrasym0 + gpar[0] * deltalogr
+
+    for k in range(1, gp.nepol):
+        deltalogr = (np.log(gp.xepol[k])-np.log(gp.xepol[k-1]))
         # construct n(r_k+1) from n(r_k)+dn/dlogr*Delta log r, integrated
         # cut at zero: we do not want to have density rising outwards
-        nr[k] = max(0., nr[k-1] + gpar[k] * deltalogr)
+        nr[k] = nr[k-1] + gpar[k] * deltalogr
+
+    # correct n(r) >= 0 after calculating them, to keep parameters independent
+    for k in range(gp.nepol):
+        if nr[k]<0:
+            nr[k] = 0.0
 
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3, thus n(r)>3
@@ -149,19 +152,17 @@ def map_nr_data(params, pop, gp):
 
 def map_nr_tracers(params, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
-    # first, if we already have a converged run, use the parameters as stored
+    # first, if we already have a Sig-converged run, use the parameters as stored
     if gp.getSigdata:
         return params*(gp.nupar_max-gp.nupar_min)+gp.nupar_min
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
     # get offset and n(r) profiles, calculate rho
-    rhoscale = gp.dat.nuhalf[pop]
-    width = gp.log10nuspread
     nrscale = gp.nrtol_nu/(max(np.log(gp.xipol))-min(np.log(gp.xipol)))
     # first parameter gives half-light radius value of rho directly
     # use [0,1]**3 to increase probability of sampling close to 0
     # fix value with tracer densities,
     # sample a flat distribution over log(rho_half)
-    rhohalf = 10**((params[0]-0.5)*2.*width+np.log10(rhoscale))
+    rhohalf = 10**((params[0]-0.5)*2.*gp.log10nuspread+np.log10(gp.dat.nuhalf[pop]))
     # 10** is correct
     # nr(r=0) is = rho slope for approaching r=0 asymptotically, given directly
     # should be smaller than -3 to exclude infinite enclosed mass
@@ -229,11 +230,9 @@ def map_betastar_poly(params, gp):
 
 def map_betastar_sigmoid(params, gp):
     gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
-    # s0 = np.log(r0/r0turn)
-    # kappa = (a0-a1)/(betastar(r_s) - a1)-1
-    # beta = (a0-a1)/(1+kappa*exp(alpha*s0))
     bdiff = gp.maxbetastar-gp.minbetastar
     a0 = params[0]*bdiff + gp.minbetastar  # a0
+    # TODO: remove parameter for the case that beta00prior is set, as then we already know its value (and thus need to sample one dimension less)
     if gp.beta00prior:
         a0 = 0.
     a1 = params[1]*bdiff + gp.minbetastar  # a1
@@ -281,9 +280,8 @@ class Cube:
     # constructor, with modes depending on locpop
     # @param gp
 
-
     def convert_to_parameter_space(self, gp):
-        # if we want any priors, here they have to enter:
+        # priors enter here
         off = 0
         pc = self.cube
         # DM density rho, set in parametrization of n(r)

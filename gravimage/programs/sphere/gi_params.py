@@ -36,7 +36,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'obs' # determine which data set to work on
+            self.investigate  = 'gaia' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -49,7 +49,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 0 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -104,9 +104,9 @@ class Params():
         self.nfine = 10*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
         self.rinfty = 5. # interpolate from last slope to slope at
-                          # 10*max(xipol), where asymptote to \infty
-                          # is reached, must be >= 11
-        self.nbeta = 4    # number of parameters for beta, in sum of
+                         # 10*max(xipol), where asymptote to \infty
+                         # is reached, must be >= 11
+        self.nbeta = 4   # number of parameters for beta, in sum of
                          # polynomials
         self.x0turn = -1 # [pc] pinch radius for beta polynomial, set in data readin
         # next: # live points, > ndim, < 2^ndim, about number of
@@ -114,7 +114,7 @@ class Params():
         self.geom = 'sphere'
         # N_nu = number of populations to work with
         if self.investigate == 'obs':
-            N_nu = (self.pops+1)*self.nrho+1
+            N_nu = (self.pops+1)*self.nrho+1 #last +1 for MtoL param
         else:
             N_nu = self.pops*self.nrho
         self.ndim = self.nrho + N_nu + self.pops*self.nbeta
@@ -129,24 +129,24 @@ class Params():
         # parameter spaces
         # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at
-                                  # half-light radius of tracers
-                                  # calculated in gi_data
-        self.log10rhospread = 1.       # with this spread, [dex] in log space
+                              # half-light radius of tracers
+                              # calculated in gi_data
+        self.log10rhospread = 1.  # with this spread, [dex] in log space
         self.log10nuspread = 0.3  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
-        self.maxnuslope = 5      # same for nrnu
-        self.nrtol  = 0.5 # scale of change of dn/dr
+        self.maxnuslope = 5   # same for nrnu
+        self.nrtol  = 0.5     # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = True  # beta(r=0)=0
-        self.minbetastar = -0.0 # clipping for beta*, default: -0.99
+        self.minbetastar = -0.0  # clipping for beta*, default: -0.99
         self.maxbetastar = 0.99  # clipping for beta*, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = False   # monotonicity prior on n(x) for rho(x)
+        self.monotonic = True     # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options

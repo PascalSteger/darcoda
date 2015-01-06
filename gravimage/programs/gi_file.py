@@ -129,8 +129,8 @@ def get_rhohalfs(gp):
     if gp.geom == 'sphere':
         # Wolf, Walker method for M_half, r_half
         # assuming isotropic Plummer profile:
-        r_half = gp.dat.rhalf[0] # [pc] from overall rho*
-        sigv = max(gp.dat.sig[0]) # [km/s] from overall rho*
+        r_half = gp.dat.rhalf[1] # [pc] from first population
+        sigv = max(gp.dat.sig[1]) # [km/s] from first population
         M_half_walk = 5.*r_half*sigv**2/(2.*gu.G1__pcMsun_1km2s_2) # [Munit] Walker Penarrubia 2011
         r_half_walk = r_half
         # other estimate: Wolf+2010,

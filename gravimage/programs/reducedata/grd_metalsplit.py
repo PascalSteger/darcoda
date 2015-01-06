@@ -50,7 +50,7 @@ def myprior(cube, ndim, nparams):
     cube[off] = cube[off]*0.8+0.1 # fraction of particles in part 1, with min 0.1, max 0.9
     # such that each population has at least 10% of the total no. stars
     off +=1
-    for pop in range(gp.pops): # no. of pops goes in here, first MW, then 1,2,..
+    for pop in range(2): # 2 pops
         cube[off] = cube[off]*(Mg_max-Mg_min)+Mg_min # Mg_mu
         off += 1
         cube[off] = cube[off]*(Mg_max-Mg_min) # Mg_sig
@@ -91,8 +91,10 @@ def myloglike(cube, ndim, nparams):
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         pdb.set_trace()
     gh.LOG(2,'starting logev evaluation')
-    p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[0])**2/(2*np.sqrt(Mg_sig[0]**2+Mg_err**2)))
-    p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*np.exp(-(Mg-Mg_mu[1])**2/(2*np.sqrt(Mg_sig[1]**2+Mg_err**2)))
+    p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*\
+           np.exp(-(Mg-Mg_mu[0])**2/(2*(Mg_sig[0]**2+Mg_err**2)))
+    p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*\
+           np.exp(-(Mg-Mg_mu[1])**2/(2*(Mg_sig[1]**2+Mg_err**2)))
     p1 = frac*PM*p1_Mg
     for i in range(0,len(p1)):
         if p1[i] == 0.0:
@@ -102,6 +104,7 @@ def myloglike(cube, ndim, nparams):
         if p2[i] == 0.0:
             p2[i] = 1e-30
     pcom = p1+p2
+    #pdb.set_trace()
     #print('pcom (min, max) = ', min(pcom), max(pcom))
     #print('fraction of pcom == 0 : ', sum(pcom==0)/len(pcom))
     lpcom = np.log(pcom)
@@ -120,6 +123,7 @@ def myloglike(cube, ndim, nparams):
 
 def run(gp):
     n_dims = 1+gp.pops*2
+    #Nsample = 10*n_dims
     pymultinest.run(myloglike,
                   myprior,
                   n_dims, # nest_ndims
@@ -133,8 +137,8 @@ def run(gp):
                   True, # nest_ceff = use const sampling efficiency
                   Nsample, # nest_nlive =
                   0.0,   # nest_tol = 0 to keep working infinitely
-                  0.25, # nest_ef =
-                  4000, # nest_updInt = output after this many iterations
+                  0.8, # nest_ef =
+                  10000, # nest_updInt = output after this many iterations
                   1., # null_log_evidence separate modes if
                   #logevidence > this param.
                   Nsample, # maxClst =
@@ -151,7 +155,6 @@ def run(gp):
                   0, # nest_maxIter =
                   True,     # initMPI =  use MPI
                   None) #dump_callback =
-
 ## \fn run(gp)
 # run MultiNest
 # @param gp global parameters defined in gi_params.py
@@ -172,28 +175,39 @@ if __name__=="__main__":
 
     #globs = comm.bcast(globs, root=0)
     global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
-
     Mg_min = -3 # according to WalkerPenarrubia2011
     Mg_max = 3
-
     import gr_params
     gpr = gr_params.grParams(gp)
     # convention: directory names have ending "/"
     gpr.fil = gpr.dir+"table_merged.bin"
-
     # number of measured tracer stars
     Nsample = bufcount(gpr.fil)
-
-
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
                        usecols=(0,1),delimiter=delim)
-
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
       VHel,e_VHel,SigFe,e_SigFe,\
       Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                    usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
 
+    from pylab import hist, plot
+    sel = (Mg>-1)
+    #hist(Mg[sel], np.sqrt(sum(sel))/2)
+    hist(Mg, np.sqrt(len(Mg))/2)
+
+    # parameters before xmas
+    #cubeML = np.array([0.182674983341384600E+00, 0.594077942436640249E+00, 0.257406712524971391E-05, 0.594054441759882756E+00, 0.164647326919362003E-05])
+
+    #params after xmas
+    cubeML= np.array([0.475319236624166197E+00, 0.621662395675444568E+00, 0.798401723057411417E-01, 0.550211197376269112E+00, 0.158468782949331616E+00])
+
+
+    cubeMLphys=myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
+
+    myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
+    pML, mu1ML, sig1ML, mu2ML, sig2ML = cubeMLphys
+    pdb.set_trace()
     run(gp)
     finish = 1
 #    comm.Reduce(finish, None,

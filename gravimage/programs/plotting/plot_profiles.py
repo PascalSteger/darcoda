@@ -15,7 +15,7 @@ import numpy.random as npr
 import time
 npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
-from multiprocessing import Process
+#from multiprocessing import Process
 
 import gi_helper as gh
 
@@ -141,6 +141,7 @@ def run(timestamp, basename, gp, evince=False):
     pc.plot_profile(basename, 'chi2', 0, gp)
     # then select only the best models for plotting the profiles
     pc.cut_subset()
+
     pc.set_x0(gp.xepol, Binmin*gp.Xscale[0], Binmax*gp.Xscale[0]) # [pc]
     if gp.investigate =='walk' or gp.investigate=='gaia':
         r0analytic = np.logspace(np.log10(1.),\
