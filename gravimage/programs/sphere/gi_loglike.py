@@ -150,13 +150,13 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.chi2 = chi2
 
     # after some predefined wallclock time and Sig convergence, plot all profiles
-    if time.time() - gp.last_plot >= gp.plot_after and gp.chi2_Sig_converged <= 0:
-        gp.last_plot = time.time()
-        try:
-            import plotting.plot_profiles
-            plotting.plot_profiles.run(gp.files.timestamp, gp.files.outdir, gp)
-        except:
-            print('plotting error in gi_loglike!')
+    #if time.time() - gp.last_plot >= gp.plot_after and gp.chi2_Sig_converged <= 0:
+    #    gp.last_plot = time.time()
+    #    try:
+    #        import plotting.plot_profiles
+    #        plotting.plot_profiles.run(gp.files.timestamp, gp.files.outdir, gp)
+    #    except:
+    #        print('plotting error in gi_loglike!')
 
     # close pool automatically after with clause
     return tmp_profs
