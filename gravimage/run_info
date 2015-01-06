@@ -38,7 +38,9 @@ File DTgaia/1/201412191600/programs/gi_params.py not found!
 File DTgaia/1/201412191602/programs/gi_params.py not found!
 File DTgaia/1/201412191606/programs/gi_params.py not found!
 1	DTgaia/1/201412242125	4100	 1 	 12 	 4 	 	p	
-2	DTgaia/1/201412272109	4100	 1 	 12 	 4 	a	 	
+2	DTgaia/1/201412272109	4100	 1 	 12 	 4 	 	p	
+3	DTgaia/1/201501012252	2000	 2 	 12 	 4 	a	 	
+File DTgaia/1/201501012253/ev.dat not found!
 File DTgaia/10/201410272025/ev.dat not found!
 File DTgaia/10/201410280741/ev.dat not found!
 File DTgaia/11/201408271247/ev.dat not found!
@@ -192,8 +194,8 @@ File DTgaia/2/201412241002/ev.dat not found!
 18	DTgaia/2/201412271313	100	 1 	 12 	 4 	 	 	
 19	DTgaia/2/201412271318	3800	 1 	 12 	 4 	 	p	
 File DTgaia/2/201412271649/ev.dat not found!
-20	DTgaia/2/201412271650	3900	 1 	 12 	 4 	a	 	
-21	DTgaia/2/201412272108	4000	 1 	 12 	 4 	a	 	
+20	DTgaia/2/201412271650	3900	 1 	 12 	 4 	 	 	
+21	DTgaia/2/201412272108	4000	 1 	 12 	 4 	 	p	
 File DTgaia/3/201410031557/ev.dat not found!
 File DTgaia/3/201410052147/ev.dat not found!
 File DTgaia/3/201410052202/programs/gi_params.py not found!
@@ -207,8 +209,9 @@ File DTgaia/3/201410201555/ev.dat not found!
 File DTgaia/3/201410272021/ev.dat not found!
 File DTgaia/3/201410280738/ev.dat not found!
 1	DTgaia/3/201412242125	3500	 1 	 12 	 4 	 	 	
-2	DTgaia/3/201412271719	3600	 1 	 12 	 4 	 	 	
-3	DTgaia/3/201412272108	3400	 1 	 12 	 4 	 	 	
+2	DTgaia/3/201412271719	3700	 1 	 12 	 4 	 	 	
+3	DTgaia/3/201412272108	3400	 1 	 12 	 4 	 	p	
+4	DTgaia/3/201501020806	46858	 1 	 12 	 4 	 	 	
 File DTgaia/4/201408230808/ev.dat not found!
 File DTgaia/4/201409220744/ev.dat not found!
 File DTgaia/4/201409221829/ev.dat not found!
@@ -226,7 +229,9 @@ File DTgaia/4/201410201555/ev.dat not found!
 File DTgaia/4/201410272022/ev.dat not found!
 File DTgaia/4/201410280738/ev.dat not found!
 File DTgaia/4/201410280739/ev.dat not found!
-1	DTgaia/4/201412272109	7100	 1 	 12 	 4 	 	 	
+1	DTgaia/4/201412272109	7200	 1 	 12 	 4 	 	 	
+File DTgaia/4/201412290538/ev.dat not found!
+2	DTgaia/4/201501020806	53128	 1 	 12 	 4 	 	 	
 File DTgaia/5/201408200838/ev.dat not found!
 File DTgaia/5/201408200839/ev.dat not found!
 File DTgaia/5/201408230800/ev.dat not found!
@@ -263,6 +268,7 @@ File DTgaia/5/201410201101/ev.dat not found!
 File DTgaia/5/201410201555/ev.dat not found!
 File DTgaia/5/201410272022/ev.dat not found!
 File DTgaia/5/201410280739/ev.dat not found!
+1	DTgaia/5/201501020806	41092	 1 	 12 	 4 	 	 	
 File DTgaia/6/201408200845/ev.dat not found!
 File DTgaia/6/201408200846/ev.dat not found!
 File DTgaia/6/201408212006/ev.dat not found!
@@ -289,6 +295,7 @@ File DTgaia/6/201410201101/ev.dat not found!
 File DTgaia/6/201410201555/ev.dat not found!
 File DTgaia/6/201410272023/ev.dat not found!
 File DTgaia/6/201410280740/ev.dat not found!
+1	DTgaia/6/201501020806	101445	 1 	 12 	 4 	 	 	
 File DTgaia/7/201408200849/ev.dat not found!
 File DTgaia/7/201408200853/ev.dat not found!
 File DTgaia/7/201408211958/ev.dat not found!
@@ -308,6 +315,7 @@ File DTgaia/7/201410201101/ev.dat not found!
 File DTgaia/7/201410201556/ev.dat not found!
 File DTgaia/7/201410272024/ev.dat not found!
 File DTgaia/7/201410280740/ev.dat not found!
+1	DTgaia/7/201501020807	49814	 1 	 12 	 4 	 	 	
 File DTgaia/8/201408230810/ev.dat not found!
 File DTgaia/8/201409220751/ev.dat not found!
 File DTgaia/8/201409221832/ev.dat not found!
@@ -339,6 +347,8 @@ File DTobs/0/201412191055/ev.dat not found!
 File DTobs/0/201412191106/programs/gi_params.py not found!
 File DTobs/0/201412191405/programs/gi_params.py not found!
 File DTobs/0/201412191414/programs/gi_params.py not found!
+File DTobs/0/201412290539/programs/gi_params.py not found!
+1	DTobs/0/201501012252	43200	 1 	 12 	 4 	a	 	
 File DTobs/1/201410270938/programs/gi_params.py not found!
 File DTobs/1/201410271042/ev.dat not found!
 File DTobs/1/201410271043/programs/gi_params.py not found!
@@ -389,6 +399,7 @@ File DTobs/1/201412081612/ev.dat not found!
 File DTobs/2/201410101113/programs/gi_params.py not found!
 File DTobs/2/201410101115/programs/gi_params.py not found!
 File DTobs/2/201410101214/programs/gi_params.py not found!
+File DTtriax/4/201501020929/ev.dat not found!
 File DTwalk/1/201407231745/ev.dat not found!
 File DTwalk/1/201407231747/ev.dat not found!
 File DTwalk/1/201407280941/ev.dat not found!

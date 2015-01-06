@@ -36,13 +36,16 @@ def read_data(gp):
     elif gp.investigate == 'obs':
         import grd_COM
         grd_COM.run(gp)
+        if gp.case == 0:
+            # in case we work with Fornax dwarf, use deBoer data for
+            import grd_COM_for
+            grd_COM_for.run(gp)
         if gp.pops > 1:
             import grd_metalsplit
             grd_metalsplit.run(gp)
 ## \fn read_data(gp)
 # read in files with differing file formats, write out to common x, y, vz file
 # @param gp global parameters
-
 
 def read_Sigdata(gp):
     gh.LOG(1, 'reading Sig converged parameters')
@@ -88,6 +91,10 @@ def bin_data(gp):
             import grd_split
             grd_split.run(gp)
         gr_MCMCbin.run(gp)
+        # for Fornax, overwrite first Sigma with deBoer data
+        if gp.case == 0:
+            import gr_MCMCbin_for
+            gr_MCMCbin_for.run(gp)
     elif gp.investigate == 'discmock':
         import grdm_write
         grdm_write.run(gp)

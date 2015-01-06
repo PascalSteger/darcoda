@@ -125,6 +125,56 @@ def com_shrinkcircle(x, y, z, pm):
 # @param z array of z values in [pc]
 # @param pm array of probability of membership values in [1]
 
+def com_shrinkcircle_2D(x, y):
+    com_x = np.mean(x)
+    com_y = np.mean(y)
+    bucom_x = 0.+com_x
+    bucom_y = 0.+com_y
+    x -= com_x
+    y -= com_y
+    dr = np.sqrt(com_x**2+com_y**2)
+    R0 = np.sqrt(x**2+y**2)
+
+    nit = 0; minlen = len(x)*0.666666666
+    while nit < 200 and len(x) > minlen:
+        nit += 1
+        print('it ',nit,' with ',len(x), ' part',\
+              ' COM= ', gh.pretty(bucom_x), gh.pretty(bucom_y),\
+              ' offset ', gh.pretty(dr))
+
+        # shrink sphere:
+        # 1) calc radius
+        R0 = np.sqrt(x**2+y**2)
+        # 2) sort remaining particles
+        order = np.argsort(R0)
+        R0 = np.array(R0)[order]
+        x = np.array(x)[order]
+        y = np.array(y)[order]
+
+        # 3) cut x,y,z,pm after 1-10%
+        end = len(R0)*0.95
+        R0 = R0[:end]
+        x = x[:end]
+        y = y[:end]
+
+        # calculate new COM
+        com_x = np.mean(x)
+        com_y = np.mean(y)
+        dr = np.sqrt(com_x**2+com_y**2)
+
+        # add to bucom
+        bucom_x += com_x
+        bucom_y += com_y
+
+        # recenter particles
+        x -= com_x
+        y -= com_y
+
+    return bucom_x, bucom_y
+## \fn com_shrinkcircle(x, y)
+# 2D shrinking sphere
+# @param x array of x values in [pc]
+# @param y array of y values in [pc]
 
 def com_shrinkcircle_v(x, y, z, vz, pm):
     eps = 1e-6
