@@ -46,7 +46,7 @@ def select_pm(x, y, vz, Mg, PM, pm):
 def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
-    gpr.fil = gpr.dir+"/deBoer/table1.bin"
+    gpr.fil = gpr.dir+"/deBoer/table1.dat"
 
     ALL = np.loadtxt(gpr.fil)
     RAh = ALL[:,0]
@@ -81,7 +81,7 @@ def run(gp):
     x0 = np.copy(xs)
     y0 = np.copy(ys) # [pc]
 
-    com_x, com_y = com_shrinkcircle_2D(x0, y0, pm) # [pc], [km/s]
+    com_x, com_y = com_shrinkcircle_2D(x0, y0) # [pc], [km/s]
 
     # from now on, work with 2D data only; z0 was only used to get center in (x,y) better
     # x0 -= com_x; y0 -= com_y # [pc]
@@ -99,8 +99,9 @@ def run(gp):
 
     R = np.sqrt(x*x+y*y)            # [pc]
     Rscalei = np.median(R)          # [pc]
+    pdb.set_trace()
     gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei) # [pc]
-    gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, 0, Rscalei) # [pc]
+    gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, np.zeros(len(x)), Rscalei) # [pc]
 ## \fn run(gp)
 # main functionality: get center of mass of deBoer data
 # @param gp global parameters
@@ -112,68 +113,6 @@ def run(gp):
 
 if __name__=='__main__':
     # for debugging input issues here:
-    gpr.showplots = True
     import gi_params
     gp = gi_params.Params()
     # instead of run(gp), use the code directly, such that after execution, the variables are available
-
-    gpr.fil = gpr.dir+"/table_merged.bin"
-    delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-    ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
-                       usecols=(0,1),delimiter=delim)
-
-    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
-      VHel,e_VHel,SigFe,e_SigFe,\
-      SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
-                                       usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
-
-    # only use stars which are members of the dwarf
-    pm = (PM>=0.95)
-    print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
-    ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; RAs=RAs[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm];
-    Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm];
-    SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
-
-    Mg0 = SigMg
-    sig = abs(RAh[0])/RAh[0]
-    #print('RAh: signum = ',sig)
-    RAh = RAh/sig
-    xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec] (use 360 deg/12 hrs)
-
-    sig = abs(DEd[0])/DEd[0]
-    #print('DEd: signum = ',sig)
-    DEd = DEd/sig
-    ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
-
-    arcsec = 2.*np.pi/(360.*60.*60) # [pc]
-
-    kpc = 1000 # [pc]
-    DL = {0: lambda x: x * (138),#+/- 8 for Fornax
-          1: lambda x: x * (101),#+/- 5 for Carina
-          2: lambda x: x * (79),  #+/- 4 for Sculptor
-          3: lambda x: x * (86) #+/- 4 for Sextans
-      }[gp.case](kpc)
-
-    xs *= (arcsec*DL) # [pc]
-    ys *= (arcsec*DL) # [pc]
-
-    PM0 = np.copy(PM); x0 = np.copy(xs); y0 = np.copy(ys)
-    vz0 = np.copy(VHel)
-
-    # only use stars which are members of the dwarf: exclude pop3 by construction
-    pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
-    x0, y0, vz0, Mg0, PM0 = select_pm(x0, y0, vz0, Mg0, PM0, pm)
-
-    # assign population (OLD, new way is to run grd_split after grd_COM in gi_file
-    # if gp.pops == 2:
-    #     import pymcmetal as pmc
-    #     p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)
-    #     pm1, pm2 = pmc.assign_pop(Mg0, p, mu1, sig1, mu2, sig2)
-    #     fi = open(gp.files.dir+'metalsplit.dat', 'w')
-    #     fi.write(str(p)+'\n')
-    #     fi.write(str(mu1)+'\n')
-    #     fi.write(str(sig1)+'\n')
-    #     fi.write(str(mu2)+'\n')
-    #     fi.write(str(sig2)+'\n')
-    #     fi.close()
-    #     np.savetxt(gp.files.dir+'metalsplit_assignment.dat', np.array([pm1, pm2]))

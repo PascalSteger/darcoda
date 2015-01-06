@@ -38,6 +38,7 @@ def read_data(gp):
         grd_COM.run(gp)
         if gp.case == 0:
             # in case we work with Fornax dwarf, use deBoer data for
+            #pdb.set_trace()
             import grd_COM_for
             grd_COM_for.run(gp)
         if gp.pops > 1:
@@ -93,8 +94,10 @@ def bin_data(gp):
         gr_MCMCbin.run(gp)
         # for Fornax, overwrite first Sigma with deBoer data
         if gp.case == 0:
+            pdb.set_trace()
             import gr_MCMCbin_for
             gr_MCMCbin_for.run(gp)
+
     elif gp.investigate == 'discmock':
         import grdm_write
         grdm_write.run(gp)
@@ -118,10 +121,6 @@ def get_binned_data(gp):
             gp.maxsiglos.append(A[4])
         else:
             gp.maxsiglos.append(A[3])
-    #if gp.investigate == "walk":
-    #    for pop in range(gp.pops):
-    #        gp.ntracer[pop] = gp.totmass_tracers[pop+1]
-
     gp.dat.read_Sig(gp)    # set gp.xipol in here
     gp.dat.read_sig(gp)
     if gp.usekappa:
@@ -142,8 +141,8 @@ def get_rhohalfs(gp):
         M_half_walk = 5.*r_half*sigv**2/(2.*gu.G1__pcMsun_1km2s_2) # [Munit] Walker Penarrubia 2011
         r_half_walk = r_half
         # other estimate: Wolf+2010,
-        M_half_wolf = 4*r_half*sigv**2/gu.G1__pcMsun_1km2s_2
-        r_half_wolf = 4/3. * r_half
+        #M_half_wolf = 4*r_half*sigv**2/gu.G1__pcMsun_1km2s_2
+        #r_half_wolf = 4/3. * r_half
 
         # density at half-light radius of baryons
         rhohalf_approx = 3*M_half_walk/(4.*np.pi*r_half_walk**3) # max density possible assuming alpha=0

@@ -130,19 +130,6 @@ class Files:
     # @param case which special case in investigated
     # @param inv string of investigation
 
-
-    def set_ntracer(self, cas):
-        ntracer = get_case(cas)
-        ## number of tracers
-        self.ntracer = ntracer
-        ## string of the same quantity
-        self.nstr = str(ntracer)
-        return self.ntracer, self.nstr
-    ## \fn set_ntracer(self,cas)
-    # set number of tracers
-    # @param cas based on the case (3k, 30k tracers) we are working on
-
-
     def get_sim_name(self, gp):
         if gp.hern_sim_pops == 1:
             simname = 'unit_hern_1_'
@@ -152,7 +139,6 @@ class Files:
     ## \fn get_sim_name(self, gp)
     # get simulation names in the Hernquist case
     # @param gp global parameters
-
 
     def set_hern(self, gp, timestamp=''):
         self.dir = self.basepath + 'DThern/'
@@ -388,28 +374,6 @@ class Files:
     # set all variables in the case we work with Fornax observational data
     # @param gp
     # @param timestamp
-
-    # def set_coll(self, gp, timestamp=''):
-    #     self.longdir = 'mpop1/'
-    #     self.dir = self.modedir + self.longdir
-    #     self.dir += timestamp + '/'
-    #     ## new variable to hold the .dat input file
-    #     self.datafile = self.dir + 'dat'
-    #     #self.analytic = self.dir + 'samplepars'
-    #     for pop in np.arange(gp.pops+1):
-    #         spop = str(pop)
-    #         self.massfiles.append(self.dir+'M/M_'+spop+'.txt')
-    #         self.Sigfiles.append(self.dir+'Sigma/Sig_'+spop+'.txt') # all comp.
-    #         self.nufiles.append(self.dir+'nu/nu_'+spop+'.txt') # all comp.
-    #         self.sigfiles.append(self.dir+'siglos/siglos_'+spop+'.txt')
-    #         self.kappafiles.append(self.dir+'kappalos/kappalos_'+spop+'.txt')
-    #         self.zetafiles.append(self.dir+'zeta/zeta_'+spop+'.txt')
-    #     return
-    # TODO: delete if code below works
-    ## \fn set_coll(self, gp, timestamp)
-    # derive filenames from collisional systems case
-    # @param gp global parameters
-    # @param timestamp for analysis
 
     def set_coll(self, gp, timestamp=''):
         self.dir = self.basepath + 'DTcoll/'+str(gp.case)+'/'
