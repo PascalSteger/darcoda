@@ -194,34 +194,32 @@ class Datafile:
     # read surface density of tracer stars, deproject, renormalize
     # @param gp global parameters
 
-
     def read_sig(self, gp):
-        for pop in np.arange(gp.pops+1):
-            print('read_sig on file ', gp.files.sigfiles[pop])
-            Dummy1, Dummy2, Dummy3, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
+        # only ever use the tracer particles for velocity information
+        self.sig.append(np.zeros(gp.nipol))
+        self.sigerr.append(np.zeros(gp.nipol))
+        for pop in np.arange(gp.pops):
+            print('read_sig on file ', gp.files.sigfiles[pop+1])
+            Dummy1, Dummy2, Dummy3, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop+1])
             # 3*[Xscale], [maxsiglos], [maxsiglos]
-
             # change to km/s here
-            self.sig.append(sigdat[:] * gp.maxsiglos[pop]) # [km/s]
-            self.sigerr.append(sigerr[:] * gp.maxsiglos[pop]) # [km/s]
+            self.sig.append(sigdat[:] * gp.maxsiglos[pop+1]) # [km/s]
+            self.sigerr.append(sigerr[:] * gp.maxsiglos[pop+1]) # [km/s]
         return
     ## \fn read_sig(self, gp)
-    # read in line of sight velocity dispersion
+    # read in line of sight velocity dispersion for tracer particles
     # @param gp global parameters
-
 
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):
             Dummy1, Dummy2, Dummy3, kapdat, kaperr = gh.readcol5(gp.files.kappafiles[pop])
             # 3*[Xscale], [1], [1]
-
             self.kap.append(kapdat) # [1]
             self.kaperr.append(kaperr) # [1]
         return
     ## \fn read_kappa(self, gp)
     # read in line of sight velocity kurtosis
     # @param gp global parameters
-
 
     def read_zeta(self, gp):
         for pop in np.arange(gp.pops+1):

@@ -75,67 +75,71 @@ def run(gp):
 
     f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta = gf.write_headers_2D(gp, pop)
 
-    if (gp.pops == 1 and pop < 1) or gp.pops == 2:
-        Sig_phot   = np.zeros((gp.nipol, gpr.n))
+    Sig_phot   = np.zeros((gp.nipol, gpr.n))
+    # particle selections, shared by density, siglos, kappa and zeta calculations
+    tpb       = np.zeros((gp.nipol,gpr.n))
+    for k in range(gpr.n):
+        Rsi   = gh.add_errors(Rs,   gpr.Rerr)   # [Rscalei]
+        for i in range(gp.nipol):
+            ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
+                                          Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
+            tpb[i][k] = float(len(ind1)) #[1]
+            Sig_phot[i][k] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/rscale**2]
 
-        # particle selections, shared by density, siglos, kappa and zeta calculations
-        tpb       = np.zeros((gp.nipol,gpr.n))
-        for k in range(gpr.n):
-            Rsi   = gh.add_errors(Rs,   gpr.Rerr)   # [Rscalei]
-            for i in range(gp.nipol):
-                ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
-                                              Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
-                tpb[i][k] = float(len(ind1)) #[1]
-                Sig_phot[i][k] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/rscale**2]
-
-        # do the following for all populations
-        Sig0 = np.sum(Sig_phot[0])/float(gpr.n) # [Munit/Rscale^2]
-        Sig0pc = Sig0/Rscale0**2              # [munis/pc^2]
-        gf.write_Sig_scale(gp.files.get_scale_file(pop), Sig0pc, totmass_tracers)
+    # do the following for all populations
+    Sig0 = np.sum(Sig_phot[0])/float(gpr.n) # [Munit/Rscale^2]
+    Sig0pc = Sig0/Rscale0**2              # [munis/pc^2]
+    gf.write_Sig_scale(gp.files.get_scale_file(pop), Sig0pc, totmass_tracers)
 
 
 
-        # calculate density and mass profile, store it
-        # ----------------------------------------------------------------------
-        P_dens  = np.zeros(gp.nipol)
-        P_edens = np.zeros(gp.nipol)
-        for b in range(gp.nipol):
-            Sig = np.sum(Sig_phot[b])/(1.*gpr.n) # [Munit/Rscale^2]
-            tpbb   = np.sum(tpb[b])/float(gpr.n)       # [1], mean number of tracers in bin
-            Sigerr = Sig/np.sqrt(tpbb)       # [Munit/Rscale^2], Poissonian error
-            # compare data and analytic profile <=> get stellar
-            # density or mass ratio from Matt Walker
-            if(np.isnan(Sigerr)):
-                P_dens[b] = P_dens[b-1]  # [1]
-                P_edens[b]= P_edens[b-1] # [1]
-            else:
-                P_dens[b] = Sig/Sig0   # [1]
-                P_edens[b]= Sigerr/Sig0 # [1]
+    # calculate density and mass profile, store it
+    # ----------------------------------------------------------------------
+    P_dens  = np.zeros(gp.nipol)
+    P_edens = np.zeros(gp.nipol)
+    for b in range(gp.nipol):
+        Sig = np.sum(Sig_phot[b])/(1.*gpr.n) # [Munit/Rscale^2]
+        tpbb   = np.sum(tpb[b])/float(gpr.n)       # [1], mean number of tracers in bin
+        Sigerr = Sig/np.sqrt(tpbb)       # [Munit/Rscale^2], Poissonian error
+        # compare data and analytic profile <=> get stellar
+        # density or mass ratio from Matt Walker
+        if(np.isnan(Sigerr)):
+            P_dens[b] = P_dens[b-1]  # [1]
+            P_edens[b]= P_edens[b-1] # [1]
+        else:
+            P_dens[b] = Sig/Sig0   # [1]
+            P_edens[b]= Sigerr/Sig0 # [1]
 
-            print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=f_Sig)
-            # 3*[rscale], [dens0], [dens0]
-            indr = (R<Binmax[b])
-            Menclosed = float(np.sum(indr))/totmass_tracers # for normalization to 1#[totmass_tracers]
-            Merr = Menclosed/np.sqrt(tpbb) # or artificial Menclosed/10 #[totmass_tracers]
-            print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=f_mass) # [Rscale0], 2* [totmass_tracers]
-        f_Sig.close()
-        f_mass.close()
+        print(Rbin[b], Binmin[b], Binmax[b], P_dens[b], P_edens[b], file=f_Sig)
+        # 3*[rscale], [dens0], [dens0]
+        indr = (R<Binmax[b])
+        Menclosed = float(np.sum(indr))/totmass_tracers # for normalization to 1#[totmass_tracers]
+        Merr = Menclosed/np.sqrt(tpbb) # or artificial Menclosed/10 #[totmass_tracers]
+        print(Rbin[b], Binmin[b], Binmax[b], Menclosed, Merr, file=f_mass) # [Rscale0], 2* [totmass_tracers]
+    f_Sig.close()
+    f_mass.close()
 
 
-        # deproject Sig to get nu
-        numedi = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
-        #numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
-        numax  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens+P_edens), gp)
+    # deproject Sig to get nu
+    numedi = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
+    #numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
+    numax  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens+P_edens), gp)
 
-        nu0pc  = numedi[0]
-        gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
+    nu0pc  = numedi[0]
+    gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
 
-        nuerr  = numax-numedi
-        for b in range(gp.nipol):
-            print(Rbin[b], Binmin[b], Binmax[b],\
-                  numedi[b]/nu0pc, nuerr[b]/nu0pc, \
-                  file = f_nu)
-        f_nu.close()
+    nuerr  = numax-numedi
+    for b in range(gp.nipol):
+        print(Rbin[b], Binmin[b], Binmax[b],\
+              numedi[b]/nu0pc, nuerr[b]/nu0pc, \
+              file = f_nu)
+    f_nu.close()
+
+    # write dummy sig scale, not to be used later on
+    maxsiglos = -1. #[km/s]
+    fpars = open(gp.files.get_scale_file(pop),'a')
+    print(maxsiglos, file=fpars)          #[km/s]
+    fpars.close()
 
 if __name__ == '__main__':
     import gi_params

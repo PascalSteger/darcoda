@@ -87,12 +87,19 @@ def run(gp):
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ', gp.files.get_com_file(pop))
+
+        if gp.investigate == "obs" and pop==0:
+            # for Fornax, overwrite first Sigma with deBoer data
+            import gr_MCMCbin_for
+            gr_MCMCbin_for.run(gp)
+            continue
+
         # start from data centered on COM already:
         if gf.bufcount(gp.files.get_com_file(pop))<2:
             continue
 
         # only read in data if needed: pops = 1: reuse data from pop=0 part
-        if (gp.pops == 1 and pop < 1 or gp.pops == 2):
+        if (gp.pops == 1 and pop < 1 or gp.pops == 2) or gp.investigate == 'obs':
             x,y,v = np.loadtxt(gp.files.get_com_file(pop),\
                                skiprows=1,usecols=(0,1,2),unpack=True)
             # [Rscalei], [Rscalei], [km/s]
@@ -117,7 +124,7 @@ def run(gp):
 
         f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta = gf.write_headers_2D(gp, pop)
 
-        if (gp.pops == 1 and pop < 1) or gp.pops == 2:
+        if (gp.pops == 1 and pop < 1) or gp.pops == 2 or gp.investigate == 'obs':
             Sig_kin   = np.zeros((gp.nipol, gpr.n))
             siglos    = np.zeros((gp.nipol, gpr.n))
             if gp.usekappa:

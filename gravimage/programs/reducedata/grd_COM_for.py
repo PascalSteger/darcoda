@@ -99,7 +99,7 @@ def run(gp):
 
     R = np.sqrt(x*x+y*y)            # [pc]
     Rscalei = np.median(R)          # [pc]
-    pdb.set_trace()
+    #pdb.set_trace()
     gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei) # [pc]
     gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, np.zeros(len(x)), Rscalei) # [pc]
 ## \fn run(gp)

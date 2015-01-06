@@ -62,15 +62,15 @@ def read_Sigdata(gp):
 # @param gp global parameters
 
 def bin_data(gp):
+    import gr_MCMCbin
     if gp.investigate == 'hern':
-        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
-        import grg_COM, gr_MCMCbin
+        import grg_COM
         grg_COM.run(gp)
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'walk':
-        import grw_COM, gr_MCMCbin # inside there, split by metallicity
+        import grw_COM # inside there, split by metallicity
         grw_COM.run(gp)
         gr_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhotot_walk)
@@ -86,18 +86,12 @@ def bin_data(gp):
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM, gr_MCMCbin
+        import grd_COM
         grd_COM.run(gp)
         if gp.pops > 1:
             import grd_split
             grd_split.run(gp)
         gr_MCMCbin.run(gp)
-        # for Fornax, overwrite first Sigma with deBoer data
-        if gp.case == 0:
-            pdb.set_trace()
-            import gr_MCMCbin_for
-            gr_MCMCbin_for.run(gp)
-
     elif gp.investigate == 'discmock':
         import grdm_write
         grdm_write.run(gp)
@@ -108,7 +102,6 @@ def bin_data(gp):
 ## \fn bin_data(gp)
 # get data, bin it anew (e.g. if gp.nbin changed)
 # @param gp global parameter
-
 
 def get_binned_data(gp):
     for pop in range(gp.pops+1):
@@ -178,7 +171,6 @@ def arraydump(fname, arrays, app='a', narr=1):
 # @param app  ='a' appending?
 # @param narr =1 number of arrays
 
-
 def bufcount(filename):
     f = open(filename)
     lines = 0
@@ -194,7 +186,6 @@ def bufcount(filename):
 ## \fn bufcount(filename)
 # count lines of a file
 # @param filename string
-
 
 def write_headers_2D(gp, pop):
     f_Sig = open(gp.files.Sigfiles[pop], 'w')
@@ -226,7 +217,6 @@ def write_headers_2D(gp, pop):
 # @param gp global parameters
 # @param pop component (0: all, 1,2,...)
 
-
 def write_headers_3D(gp, pop):
     f_nu = open(gp.files.Sigfiles[pop]+'_3D', 'w')
     print('rbin [rscale];','binmin [rscale];','binmax [rscale];',\
@@ -243,7 +233,6 @@ def write_headers_3D(gp, pop):
 # @param gp global parameters
 # @param pop population int
 
-
 def empty(filename):
     if bufcount(filename)<2:
         return True
@@ -251,7 +240,6 @@ def empty(filename):
 ## \fn empty(filename)
 # determine if file is empty or not
 # @param filename string
-
 
 def read_Xscale(filename):
     crscale = open(filename, 'r')
@@ -262,7 +250,6 @@ def read_Xscale(filename):
 # read scale radius from file
 # @param filename string
 
-
 def write_tracer_file(filename, totmass_tracers):
     tr = open(filename, 'w')
     print(totmass_tracers, file=tr)
@@ -271,7 +258,6 @@ def write_tracer_file(filename, totmass_tracers):
 # write tracer file
 # @param filename
 # @param totmass_tracers
-
 
 def write_Sig_scale(filename, Sig0pc, totmass_tracers):
     cdens = open(filename, 'a')
@@ -284,7 +270,6 @@ def write_Sig_scale(filename, Sig0pc, totmass_tracers):
 # @param Sig0pc central density [Munit/pc^2]
 # @param totmass_tracers total tracer density mass
 
-
 def write_nu_scale(filename, nu0pc):
     cdens = open(filename, 'a')
     print(nu0pc, file=cdens)                      # [Munit/pc^2]
@@ -293,7 +278,6 @@ def write_nu_scale(filename, nu0pc):
 # output 3D tracer density scale
 # @param filename
 # @param nu0pc central 3D tracer density [Munit/pc^3]
-
 
 def write_data_output(filename, x, y, vz, Xscale):
     print('output: ', filename)
@@ -310,7 +294,6 @@ def write_data_output(filename, x, y, vz, Xscale):
 # @param y
 # @param vz
 # @param Xscale
-
 
 def write_Xscale(filename, Xscale):
     crscale = open(filename, 'w')
