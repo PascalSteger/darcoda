@@ -151,26 +151,28 @@ def run(timestamp, basename, gp, evince=False):
     pc.write_all(basename, gp)
 
     # start following plotting routines as threads, in parallel
-    from multiprocessing import Pool
-    with Pool(processes=8) as pool:
-        pr=[]
-        pr.append(pool.apply_async(pc.plot_profile, [basename, 'rho', 0, gp]))
-        pr.append(pool.apply_async(pc.plot_profile, [basename, 'nr', 0, gp]))
-        if gp.investigate == 'obs':
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'Sig', 0, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nu', 0, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nrnu', 0, gp]))
-        if gp.geom == 'sphere':
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'M', 0, gp]))
-        for pop in np.arange(1, gp.pops+1):
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'betastar', pop, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'beta', pop, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'Sig', pop, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nu', pop, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'nrnu', pop, gp]))
-            pr.append(pool.apply_async(pc.plot_profile, [basename, 'sig', pop, gp]))
-        for lp in pr:
-            lp.get()
+    #from multiprocessing import Pool
+    #with Pool(processes=8) as pool:
+    #    pr=[]
+    #    pr.append(pool.apply_async(pc.plot_profile, [basename, 'rho', 0, gp]))
+    #for lp in pr:
+    #    lp.get()
+
+    pc.plot_profile(basename, 'rho', 0, gp)
+    pc.plot_profile(basename, 'nr', 0, gp)
+    if gp.investigate == 'obs':
+        pc.plot_profile(basename, 'Sig', 0, gp)
+        pc.plot_profile(basename, 'nu', 0, gp)
+        pc.plot_profile(basename, 'nrnu', 0, gp)
+    if gp.geom == 'sphere':
+        pc.plot_profile(basename, 'M', 0, gp)
+    for pop in np.arange(1, gp.pops+1):
+        pc.plot_profile(basename, 'betastar', pop, gp)
+        pc.plot_profile(basename, 'beta', pop, gp)
+        pc.plot_profile(basename, 'Sig', pop, gp)
+        pc.plot_profile(basename, 'nu', pop, gp)
+        pc.plot_profile(basename, 'nrnu', pop, gp)
+        pc.plot_profile(basename, 'sig', pop, gp)
 
     cmd = "cd "+basename+"/output/pdf/;"
     if gp.pops == 1:

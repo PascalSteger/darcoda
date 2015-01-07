@@ -157,7 +157,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     #        plotting.plot_profiles.run(gp.files.timestamp, gp.files.outdir, gp)
     #    except:
     #        print('plotting error in gi_loglike!')
-
     # close pool automatically after with clause
     return tmp_profs
 ## \fn geom_loglike(cube, ndim, nparams, gp)

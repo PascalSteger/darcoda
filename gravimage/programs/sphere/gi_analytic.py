@@ -201,11 +201,11 @@ def nu3Dtot_gaia(rad, gp):
     if gp.investigate != 'gaia':
         raise Exception('wrong investigation!')
     alpha_star1 = 2.
-    alpha_DM = 1.
+    #alpha_DM = 1.
     beta_DM = 3.
     if gp.case == 9 or gp.case == 10:
         alpha_star1 = 0.5
-        beta_DM = 4.
+        #beta_DM = 4.
     beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
     nustar1 = rho_general(rad, r_star1, rho0, alpha_star1, beta_star1, gamma_star1)
     return nustar1
