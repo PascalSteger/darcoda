@@ -11,6 +11,7 @@ import pdb
 import sys
 import numpy as np
 import pymultinest
+
 import gi_helper as gh
 
 gh.DEBUGLEVEL = 1
@@ -26,6 +27,12 @@ except:
     myrank = 0
     nprocs = 1
     procnm = 'localhost'
+
+
+import matplotlib
+matplotlib.use('pdf')
+from pylab import *
+ion()
 
 sys.stdout.write("Hello, World!! I am process %d of %d on %s.\n" % (myrank, nprocs, procnm))
 sys.stdout.flush()
@@ -159,6 +166,14 @@ def run(gp):
 # run MultiNest
 # @param gp global parameters defined in gi_params.py
 
+def introduce_points_in_between(r0, gp):
+    rmin = np.log10(min(r0))
+    rmax = np.log10(max(r0))
+    return np.logspace(rmin, rmax, gp.nfine)
+## \fn introduce_points_in_between(r0, gp)
+# get gp.fine points logarithmically spaced points
+# @param r0 [pc] gp.xipol
+# @param gp global parameter
 
 if __name__=="__main__":
 #    from mpi4py import MPI
@@ -175,8 +190,6 @@ if __name__=="__main__":
 
     #globs = comm.bcast(globs, root=0)
     global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
-    Mg_min = -3 # according to WalkerPenarrubia2011
-    Mg_max = 3
     import gr_params
     gpr = gr_params.grParams(gp)
     # convention: directory names have ending "/"
@@ -191,25 +204,185 @@ if __name__=="__main__":
       Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                    usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
 
-    from pylab import hist, plot
-    sel = (Mg>-1)
-    #hist(Mg[sel], np.sqrt(sum(sel))/2)
-    hist(Mg, np.sqrt(len(Mg))/2)
+
+    sel = (Mg>-1)  # exclude missing data on Mg
+    RAh = RAh[sel]
+    RAm = RAm[sel]
+    RAs = RAs[sel]
+    DEd = DEd[sel]
+    DEm = DEm[sel]
+    DEs = DEs[sel]
+    Vmag = Vmag[sel]
+    VI  = VI[sel]
+    VHel = VHel[sel]
+    e_VHel = e_VHel[sel]
+    Mg = Mg[sel]
+    Mg_err = Mg_err[sel]
+    PM = PM[sel]
+
+    Mg_min = min(Mg) # -3, 3 if according to WalkerPenarrubia2011
+    Mg_max = max(Mg)
+
+    # easiest way: use histogram to show data
+    hist(Mg, np.sqrt(len(Mg))/2, normed=True)
+
+    # but: it's not as easy as that
+    # we have datapoints with errors and probability of membership weighting
+    # thus, we need to smear the values out using a Gaussian of width = Mg_err
+    # and add them up afterwards after scaling with probability PM
+    x = np.array(np.linspace(min(Mg), max(Mg), 100))
+    Mgdf = np.zeros(100)
+    for i in range(len(Mg)):
+        Mgdf += PM[i]*gh.gauss(x, Mg[i], Mg_err[i])
+    Mgdf /= sum(PM)
+
+    plot(x, Mgdf, 'g', lw=2)
+    # only then we want to compare to Gaussians that were found
 
     # parameters before xmas
     #cubeML = np.array([0.182674983341384600E+00, 0.594077942436640249E+00, 0.257406712524971391E-05, 0.594054441759882756E+00, 0.164647326919362003E-05])
-
     #params after xmas
     cubeML= np.array([0.475319236624166197E+00, 0.621662395675444568E+00, 0.798401723057411417E-01, 0.550211197376269112E+00, 0.158468782949331616E+00])
-
+    # params without -1
+    #cubeML = np.array([0.176705518068617978E+00, 0.531338016376025291E+00, 0.199706603159984453E+00, 0.595853219232823861E+00, 0.107494036628876938E+00])
 
     cubeMLphys=myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
-
-    myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
+    #myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
     pML, mu1ML, sig1ML, mu2ML, sig2ML = cubeMLphys
+    g1 = pML*gh.gauss(x, mu1ML, sig1ML)
+    g2 = (1-pML)*gh.gauss(x, mu2ML, sig2ML)
+    gtot = g1+g2
+
+    plot(x, pML*g1, 'white')
+    plot(x, (1-pML)*g2, 'white')
+    plot(x, gtot, 'r')
+    xlabel('Mg')
+    ylabel('pdf')
+
+    # get center of photometric measurements by deBoer
+    # for Fornax, we have
+    com_x = 96203.736358393697
+    com_y = -83114.080684733024
+        # only use stars which are members of the dwarf
+    sig = abs(RAh[0])/RAh[0]
+    RAh = RAh/sig
+    xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
+    sig = abs(DEd[0])/DEd[0]
+    DEd = DEd/sig
+    ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
+    arcsec = 2.*np.pi/(360.*60.*60) # [pc]
+    kpc = 1000 # [pc]
+    DL = {0: lambda x: x * (138),#+/- 8 for Fornax
+          1: lambda x: x * (101),#+/- 5 for Carina
+          2: lambda x: x * (79),  #+/- 4 for Sculptor
+          3: lambda x: x * (86) #+/- 4 for Sextans
+      }[gp.case](kpc)
+
+    xs *= (arcsec*DL) # [pc]
+    ys *= (arcsec*DL) # [pc]
+
+
+    # instantiate different samplings, store half-light radii (2D)
+    R1half = []
+    R2half = []
+    for k in range(100):
+        # get a sample assignment:
+        import numpy.random as npr
+        popass = []
+        for i in range(len(Mg)):
+            mg = Mg[i]
+            ppop1 = pML*gh.gauss(mg, mu1ML, sig1ML)
+            ppop2 = (1-pML)*gh.gauss(mg, mu2ML, sig2ML)
+            if npr.rand() <= ppop1/(ppop1+ppop2):
+                popass.append(1)
+            else:
+                popass.append(2)
+
+        popass = np.array(popass)
+        sel1 = (popass==1)
+        sel2 = (popass==2)
+        #radii of all stellar tracers from pop 1 and 2
+        R1 = np.sqrt((xs[sel1]-com_x)**2 + (ys[sel1]-com_y)**2)
+        R2 = np.sqrt((xs[sel2]-com_x)**2 + (ys[sel2]-com_y)**2)
+        R1.sort()
+        R2.sort()
+
+        import gi_project as glp
+        clf()
+        for pop in np.arange(2)+1:
+            if pop == 1:
+                R0 = R1 # [pc]
+                Rhalf = R1[len(R1)/2]
+                R1half.append(Rhalf)
+                co = 'blue'
+            else:
+                R0 = R2 # [pc]
+                Rhalf = R2[len(R2)/2]
+                R2half.append(Rhalf)
+                co = 'red'
+            Rdiff = np.abs(R1[len(R1)/2] - R2[len(R2)/2])
+            if Rdiff < 95 or Rdiff > 105:
+                continue
+
+            # calculate 2D Sig profiles
+            Rmin = min(R0) # [pc]
+            Rmax = max(R0) # [pc]
+            Binmin, Binmax, Rbin = gh.determine_radius(R0, Rmin, Rmax, gp) # [pc]
+            gp.xipol = Rbin # [pc]
+            minr = min(Rbin)                           # [pc]
+            maxr = max(Rbin)                           # [pc]
+            Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [pc^2]
+            totmass_tracers = float(len(x))
+            Rsi   = gh.add_errors(R0,   gpr.Rerr)   # [pc], gpr.Rerr was in
+            tpb = np.zeros(gp.nipol)
+            Sig_phot = np.zeros(gp.nipol)
+            for i in range(gp.nipol):
+                ind1 = np.argwhere(np.logical_and(Rsi >= Binmin[i], \
+                                                  Rsi <  Binmax[i])).flatten() # [1]
+                tpb[i] = float(len(ind1)) # [1]
+                Sig_phot[i] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/pc^2]
+
+            # loglog(gp.xipol, Sig_phot, co)
+            # axvline(Rhalf, color=co)
+            # xlim([min(gp.xipol), max(gp.xipol)])
+            # xlabel(r'$R$')
+            # ylabel(r'$\Sigma(R)$')
+
+
+            # deproject to get 3D nu profiles
+            gp.xipol = Rbin
+            minr = min(Rbin)                           # [pc]
+            maxr = max(Rbin)                           # [pc]
+            gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
+                                  Rbin, \
+                                  2*maxr, 4*maxr, 8*maxr]) # [pc]
+            gp.xfine = introduce_points_in_between(gp.xepol, gp)
+            Sigdatnu, Sigerrnu = gh.complete_nu(Rbin, Sig_phot, Sig_phot/10., gp.xfine)
+            dummyx, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
+                                                              Sigdatnu, Sigerrnu,\
+                                                              gp)
+            nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
+            nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
+
+            loglog(gp.xipol, nudat, co)
+            axvline(Rhalf, color=co)
+            xlim([min(gp.xipol), max(gp.xipol)])
+            xlabel(r'$R$')
+            ylabel(r'$\nu(R)$')
+
+            plum = 100*gh.plummer(gp.xipol, Rhalf, len(R0))
+            loglog(gp.xipol, plum, color=co, linestyle='--')
+            ylim([min(plum), max(plum)])
+            pdb.set_trace()
+
+    R1half = np.array(R1half)
+    R2half = np.array(R2half)
+    Rdiffhalf = np.abs(R1half-R2half)
+
+    clf()
+    hist(Rdiffhalf, np.sqrt(len(Rdiffhalf))/2)
+    xlabel(r'\Delta R')
+    ylabel('pdf')
     pdb.set_trace()
+
     run(gp)
-    finish = 1
-#    comm.Reduce(finish, None,
-#                op=MPI.SUM, root=0)
-#    comm.Disconnect()
