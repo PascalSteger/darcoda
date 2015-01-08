@@ -268,7 +268,14 @@ def Sig_INT_rho(R0, Sig, gp):
         sm *= 2
         splpar_J = splrep(R0[:-gp.nexp], np.log(J), s=sm)
         rho = -1./np.pi/R0[:-gp.nexp]*J*splev(R0[:-gp.nexp], splpar_J, der=1)
-        #if(sm>1):
+        if(sm>1):
+            print('very irregular profile')
+            sel = (rho >= 0.0)
+            finerho = rho[sel]
+            firstfinerho = finerho[0]
+            for k in range(len(rho)):
+                if rho[k] <0:
+                    rho[k] = firstfinerho
         #    raise Exception('Very irregular profile')
 
     gh.checkpositive(rho)
