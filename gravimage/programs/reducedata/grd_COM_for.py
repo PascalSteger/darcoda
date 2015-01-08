@@ -82,7 +82,7 @@ def run(gp):
     y0 = np.copy(ys) # [pc]
 
     com_x, com_y = com_shrinkcircle_2D(x0, y0) # [pc], [km/s]
-
+    pdb.set_trace()
     # from now on, work with 2D data only; z0 was only used to get center in (x,y) better
     # x0 -= com_x; y0 -= com_y # [pc]
     # vz0 -= com_vz #[km/s]

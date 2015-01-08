@@ -60,6 +60,31 @@ def progressbar(progress):
 # A value under 0 represents a 'halt'.
 # A value at 1 or bigger represents 100%
 
+def gauss(x, mu, sig):
+    pref = 1./(sig*np.sqrt(2*np.pi))
+    ex = np.exp( -1./2*((x-mu)/sig)**2)
+    return pref * ex
+## \fn gauss(x, mu, sig)
+# return Gaussian around mu of width sig
+# @param x positions to evaluate
+# @param mu center
+# @param sig width
+
+def plummer(r, rhalf, L):
+    return 3*L/(4*np.pi*rhalf**3*(1.+r**2/rhalf**2)**(5/2))
+## \fn plummer(r, rhalf, L)
+# 3D Plummer profile
+# @param r radii to evaluate on
+# @param rhalf half-light radius
+# @param L total luminosity
+
+def Plummer(R, Rhalf, L):
+    return L/(np.pi*Rhalf**2*(1+R**2/Rhalf**2)**2)
+## \fn Plummer(R, Rhalf)
+# 2D Plummer surface density profile
+# @param R 2D radii to evaluate on
+# @param Rhalf half-light radius
+# @param L total luminosity
 
 def grep(s,pattern):
     return '\n'.join(re.findall(r'^.*%s.*?$'%pattern,s,flags=re.M))

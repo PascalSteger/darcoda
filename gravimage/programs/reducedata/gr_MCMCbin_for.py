@@ -84,7 +84,7 @@ def run(gp):
             ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
                                           Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
             tpb[i][k] = float(len(ind1)) #[1]
-            Sig_phot[i][k] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/rscale**2]
+            Sig_phot[i][k] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/rscale^2]
 
     # do the following for all populations
     Sig0 = np.sum(Sig_phot[0])/float(gpr.n) # [Munit/Rscale^2]

@@ -52,7 +52,7 @@ class Params():
             self.case = 0 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations
+        self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
@@ -87,7 +87,7 @@ class Params():
         self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run
+        self.nipol = 9   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
