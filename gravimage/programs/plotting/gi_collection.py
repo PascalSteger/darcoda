@@ -89,7 +89,8 @@ class ProfileCollection():
                     break
             maxchi = 10**(bins[k+1])
         self.subset = [minchi, maxchi]
-    ## \fn cut_subset(self)
+        print('chi^2 subset: ',minchi, maxchi)
+        ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
     def set_x0(self, x0, Binmin, Binmax):
@@ -519,7 +520,6 @@ class ProfileCollection():
                     # do include all chi^2 values for plot
                     goodchi.append(self.chis[k])
                 print('plotting profile chi for '+str(len(goodchi))+' models')
-                print('min, max, maxsubset chi2: ', min(self.chis), max(self.chis), self.subset[1])
                 bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \
                                            bins=max(6,np.sqrt(len(goodchi))),\
                                            density=True)
