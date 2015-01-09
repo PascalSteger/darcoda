@@ -90,7 +90,7 @@ class ProfileCollection():
             maxchi = 10**(bins[k+1])
         self.subset = [minchi, maxchi]
         print('chi^2 subset: ',minchi, maxchi)
-        ## \fn cut_subset(self)
+    ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
     def set_x0(self, x0, Binmin, Binmax):
