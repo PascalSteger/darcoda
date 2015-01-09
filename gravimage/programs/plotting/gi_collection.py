@@ -537,7 +537,7 @@ class ProfileCollection():
             #self.plot_full_distro(ax, prof, pop, gp)
 
             self.plot_N_samples(ax, prof, pop)
-            if prof == 'Sig' or prof=='nu' or prof == 'sig':
+            if prof == 'Sig' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
 
             if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
