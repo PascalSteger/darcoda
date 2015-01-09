@@ -137,12 +137,12 @@ class Params():
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxnuslope = 5   # same for nrnu
-        self.nrtol  = 1.     # scale of change of dn/dr
+        self.nrtol  = 2.     # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # same for nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
-        self.beta00prior = False  # beta(r=0)=0
-        self.minbetastar = -0.99  # clipping for beta*, default: -0.99
+        self.beta00prior = True  # beta(r=0)=0
+        self.minbetastar = -0.  # clipping for beta*, default: -0.99
         self.maxbetastar = 0.99  # clipping for beta*, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
