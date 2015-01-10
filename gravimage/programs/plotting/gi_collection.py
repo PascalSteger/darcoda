@@ -420,7 +420,7 @@ class ProfileCollection():
                 elif pop == 1:
                     nuprof = nu2
             if gp.geom == 'sphere':
-                Mprof = glp.rho_SUM_Mr(gp.xipol, nuprof)
+                Mprof = glp.rho_SUM_Mr(gp.xepol, nuprof)
                 Mmax = max(Mprof) # Mprof[-1]
                 ihalf = -1
                 for kk in range(len(Mprof)):
