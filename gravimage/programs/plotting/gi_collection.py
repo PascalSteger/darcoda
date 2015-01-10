@@ -85,12 +85,12 @@ class ProfileCollection():
             counts, bins = np.histogram(np.log10(self.chis), bins=np.sqrt(len(self.chis)))
             posmax = np.argmin(np.abs(counts-max(counts)))
             for k in range(posmax, len(counts)-1):
-                if counts[k+1] > counts[k]:
+                if counts[k+1] > counts[k] or counts[k+1]==0 or counts[k+1]<=max(counts)/10:
                     break
             maxchi = 10**(bins[k+1])
         self.subset = [minchi, maxchi]
         print('chi^2 subset: ',minchi, maxchi)
-        ## \fn cut_subset(self)
+    ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
     def set_x0(self, x0, Binmin, Binmax):
