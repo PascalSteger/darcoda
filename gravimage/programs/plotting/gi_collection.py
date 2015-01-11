@@ -202,16 +202,16 @@ class ProfileCollection():
                 annu.append(nu)
                 anSig.append(glp.rho_INT_Sig(r0, nu, gp))
         elif gp.investigate == 'triax':
-            anrho = ga.rho_triax(r0, gp)[0]
+            anrho = ga.rho_triax(r0, gp) # one and only
             anM = glp.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_deriv_triax(r0, gp)
-            tmp_annu = ga.rho_triax(r0, gp)[1]
+            tmp_annu = ga.rho_triax(r0, gp) # TODO, M/L=1 assumed here, wrong
             annu.append(tmp_annu)
             anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp))
             for pop in np.arange(1, gp.pops+1):
-                beta = ga.beta_triax(r0, gp)[pop]
+                beta = ga.beta_triax(r0)
                 anbeta.append(beta)
-                nu = ga.rho_triax(r0, gp)[pop]
+                nu = ga.rho_triax(r0, gp) # TODO, M/L=1 assumption
                 annu.append(nu)
                 anSig.append( glp.rho_INT_Sig(r0, nu, gp))
         self.analytic.set_prof('rho', anrho, 0, gp)
@@ -540,12 +540,11 @@ class ProfileCollection():
             if prof == 'Sig' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
 
-            if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
+            if (gp.investigate == 'walk' or gp.investigate == 'gaia' or gp.investigate=='triax') \
                and prof != 'Sig' and prof != 'nu':
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
                 ax.plot(r0, y0, 'b--', lw=2)
-
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')

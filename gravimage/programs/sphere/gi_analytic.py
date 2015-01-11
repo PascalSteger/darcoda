@@ -32,7 +32,6 @@ def X(s0):
 # equation 33, 34 from Hernquist 1990
 # @param s0: radius, [1]
 
-
 def rho_general(r0, rscale, rho0, alpha, beta, gamma):
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
@@ -50,27 +49,28 @@ def rho_general(r0, rscale, rho0, alpha, beta, gamma):
 # @param beta steepness of turnover
 # @return 3D Hernquist density in [Munit/pc^3]
 
-
-def rho_triax(rad):
+def rho_triax(rad, gp):
     alpha = 1.
     beta = 4.
     rs = 1500.                          # [pc]
-    if gp.case == 0:               # core
+    if gp.case <= 4:               # core
         gamma = 0.23
         rhos  = 1.177E-1                # [Munit/pc^3]
-    elif gp.case == 1:             # cusp
+    elif gp.case > 4 and gp.case <=8:             # cusp
         gamma = 1.
         rhos  = 5.522E-2                # [Munit/pc^3]
+    else:
+        raise Exception('wrong case for triax system')
 
     rho = rhos
     rho /= (rad/rs)**gamma
     rho /= (1+(rad/rs)**(1/alpha))**(alpha*(beta-gamma))
     return rho
-## \fn rho_triax(rad)
+## \fn rho_triax(rad, gp)
 # density for a triaxial halo in Gaia challenge
 # @param rad radius in [pc]
+# @param gp global parameters
 # @return density in [Munit/pc^3]
-
 
 def rho_walk(rad, gp, mf1=1, mf2=1):
     # rho_DM(r) = rho_0 (r/r_DM)^(-gamma_DM) *
@@ -228,15 +228,15 @@ def nr3Dtot_deriv_walk(rad, gp):
 # @param gp global parameters
 
 
-def nr3Dtot_deriv_triax(rad):
-    lrho = np.log(rho_triax(rad))
+def nr3Dtot_deriv_triax(rad, gp):
+    lrho = np.log(rho_triax(rad, gp))
     lr   = np.log(rad)
     import gi_helper as gh
     return -gh.derivcoarse(lrho, lr)
-## \fn nr3Dtot_deriv_triax(rad)
+## \fn nr3Dtot_deriv_triax(rad, gp)
 # plot d log rho/d log r
 # @param rad radius in pc, not in log
-
+# @param gp global parameters
 
 def nr3Dtot_deriv_gaia(rad):
     lrho = np.log(rhotot_gaia(rad))
@@ -529,7 +529,6 @@ def beta_triax(rad):
 # calculate velocity anisotropy for Dehnen-Wilkinson triaxial model
 # @param rad in [pc]
 
-
 def beta(rad, gp):
     if gp.investigate =='hern':
         return beta_hern(rad)
@@ -537,6 +536,8 @@ def beta(rad, gp):
         return beta_gaia(rad, gp)
     elif gp.investigate == 'walk':
         return beta_walk(rad, gp)
+    elif gp.investigate == 'triax':
+        return beta_triax(rad)
     else:
         gh.LOG(1, 'ga.beta not defined')
         pdb.set_trace()
@@ -544,7 +545,6 @@ def beta(rad, gp):
 # analytic profile for all investigations
 # @param rad radii in pc
 # @param gp global parameters
-
 
 def rho_hern(r0, gp):
     s = r0/gp.ana                              # [1]
@@ -557,7 +557,6 @@ def rho_hern(r0, gp):
 # @param gp global parameters
 # @return density in [Munit/pc^3]
 
-
 def rho_hern2(r0, gp, gamma = 1):
     rho0 = M*(3.-gamma)/(4.*np.pi*gp.ana**3)
     rho0 *= (r0/gp.ana)**(-gamma)
@@ -569,7 +568,6 @@ def rho_hern2(r0, gp, gamma = 1):
 # @param r0 radius in pc
 # @param gp global parameters
 # @param gamma inner density slope. default: cusp
-
 
 def rho(r0, gp):
     if gp.investigate == 'hern':

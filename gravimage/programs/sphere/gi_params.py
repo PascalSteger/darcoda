@@ -36,7 +36,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'gaia' # determine which data set to work on
+            self.investigate  = 'walk' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -52,7 +52,7 @@ class Params():
             self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations
+        self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
@@ -83,7 +83,7 @@ class Params():
         # MultiNest options
         # ----------------------------------------------------------------------
         self.getSigdata = False   # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
-        self.chi2_switch = 10
+        self.chi2_switch = 40
         self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
@@ -138,7 +138,7 @@ class Params():
         self.innerslope = 2.999
         self.maxnuslope = 5   # same for nrnu
         self.nrtol  = 2.     # scale of change of dn/dr
-        self.nrtol_nu = self.maxnuslope*2 # same for nu
+        self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = True  # beta(r=0)=0

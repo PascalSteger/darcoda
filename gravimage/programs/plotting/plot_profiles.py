@@ -143,7 +143,7 @@ def run(timestamp, basename, gp, evince=False):
     pc.cut_subset()
 
     pc.set_x0(gp.xepol, Binmin*gp.Xscale[0], Binmax*gp.Xscale[0]) # [pc]
-    if gp.investigate =='walk' or gp.investigate=='gaia':
+    if gp.investigate =='walk' or gp.investigate=='gaia' or gp.investigate =='triax':
         r0analytic = np.logspace(np.log10(1.),\
                                  np.log10(max(gp.xepol)), 100)
         pc.set_analytic(r0analytic, gp)
