@@ -11,6 +11,9 @@ import numpy as np
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.integrate import quad, romberg, simps
 import time
+import socket
+import getpass
+import os
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
 DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
@@ -834,7 +837,6 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 
     for jter in range(0, len(binmin)):
         positions=np.where(np.logical_and(x0>=binmin[jter], x0<binmax[jter]))
-        pdb.set_trace()
 
         #Calculate tracer density nu and Poisson error (sqrt(N)/binsize)
         nu_vec.append(len(positions[0])/(binmax[jter]-binmin[jter]))
@@ -852,3 +854,34 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 # @param x0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
+
+def detect_machine():
+    host_name = socket.gethostname()
+    user_name = getpass.getuser()
+    if 'darkside' in host_name:
+        machine = 'darkside'
+        gravimage_path = '/home/ast/read/dark/gravimage/'
+
+    elif 'pstgnt332' in host_name:
+        machine = 'pstgnt332'
+        gravimage_path = '/home/psteger/sci/darcoda/gravimage/'
+
+    elif ('lisa' in host_name) and ('login' in host_name) and ('hsilverw' in user_name):
+        machine = 'lisa_HS_login'
+        gravimage_path = '/home/hsilverw/LoDaM/darcoda/gravimage/'
+
+    elif ('lisa' in host_name) and ('login' in host_name) and ('sofia' in user_name):
+        machine = 'lisa_SS_login'
+        gravimage_path = '/home/sofia/darcoda/gravimage/'
+
+    elif ('lisa' in host_name) and ('login' not in host_name) and ('hsilverw' in user_name):
+        machine = 'lisa_HS_batch'
+        scratch_space = os.getenv("TMPDIR")
+        gravimage_path = scratch_space + '/darcoda/gravimage/'
+
+    elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
+        machine = 'lisa_SS_batch'
+        scratch_space = os.getenv("TMPDIR")
+        gravimage_path = scratch_space + '/darcoda/gravimage/'
+
+    return machine, gravimage_path

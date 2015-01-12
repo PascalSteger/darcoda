@@ -20,6 +20,7 @@ import pymultinest
 import pickle
 import gl_helper as gh
 import pdb
+import numpy.random as npr
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
@@ -72,7 +73,7 @@ def myloglike(cube, ndim, nparams):
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
     # we only store models after the initial Sigma burn-in
-    if gp.chi2_nu_converged:
+    if gp.chi2_nu_converged and npr.random()<0.001:#save only 0.1% of models
         tmp_profs.x0 = gp.z_bincenters
         tmp_profs.xbins = np.hstack([gp.z_binmins, gp.z_binmaxs[-1]])
         with open(gp.files.outdir+'pc2.save', 'ab') as fi:

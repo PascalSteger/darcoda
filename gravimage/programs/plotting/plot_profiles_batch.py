@@ -33,23 +33,23 @@ def prepare_output_folder(basename):
 # @param basename string, data folder
 
 
-def read_scale(basename, gp):
-    gp.Xscale = []
-    gp.Sig0pc = []
-    gp.maxsiglos = []
-    for pop in range(gp.pops+1):
-        # basename + 'scale_' + str(i) + '.txt'
-        A = np.loadtxt(gp.files.get_scale_file(pop),\
-                       unpack=False, skiprows=1)
-        gp.Xscale.append(A[0])  # [pc]
-        gp.Sig0pc.append(A[1])  # [Munit/pc^2]
-        # totmass_tracers is A[2] # [Munit]
-        gp.nu0pc.append(A[3])   # [Munit/pc^3]
-        gp.maxsiglos.append(A[4]) # [km/s]
-## \fn read_scale(basename, gp)
-# read scale file, store into gp.*scale
-# @param basename string
-# @param gp
+#def read_scale(basename, gp):
+#    gp.Xscale = []
+#    gp.Sig0pc = []
+#    gp.maxsiglos = []
+#    for pop in range(gp.pops+1):
+#        # basename + 'scale_' + str(i) + '.txt'
+#        A = np.loadtxt(gp.files.get_scale_file(pop),\
+#                       unpack=False, skiprows=1)
+#        gp.Xscale.append(A[0])  # [pc]
+#        gp.Sig0pc.append(A[1])  # [Munit/pc^2]
+#        # totmass_tracers is A[2] # [Munit]
+#        gp.nu0pc.append(A[3])   # [Munit/pc^3]
+#        gp.maxsiglos.append(A[4]) # [km/s]
+### \fn read_scale(basename, gp)
+## read scale file, store into gp.*scale
+## @param basename string
+## @param gp
 
 
 def correct_E_error(filename):
@@ -91,7 +91,8 @@ def pcload_single_entries(basename, gp):
         while 1:
             try:
                 MODEL = pickle.load(fi)
-                pc.add(MODEL)
+                if npr.random() < 0.001: #HS bodge to only pull in a fraction of models
+                    pc.add(MODEL)
             except EOFError:
                 break
     return pc
@@ -104,47 +105,32 @@ def pcload_single_entries(basename, gp):
 def run(timestamp, basename, gp):
     prepare_output_folder(basename)
     import gl_file as glf
-    gp.dat = glf.get_binned_data(gp)
-    read_scale(basename, gp) # store half-light radii in  gp.Xscale
+    gp.dat = glf.get_binned_data_noscale(gp)
     import gl_helper as gh
-    Radii, Binmin, Binmax, Sigdat1, Sigerr1 = gh.readcol5(gp.files.Sigfiles[0])
-    # [Xscale0], [Munit/Xscale0^2]
-    # verified that indeed the stored files in the run directory are used
-    gp.xipol = Radii * gp.Xscale[0]       # [pc]
-    maxR = max(Radii)                     # [pc]
-    minR = min(Radii)                     # [pc]
-    Radii = np.hstack([minR/8, minR/4, minR/2, Radii, 2*maxR, 4*maxR, 8*maxR])
-    gp.xepol = Radii * gp.Xscale[0]       # [pc]
+    bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
+    max_z = max(bincenters) #?
+    min_z = min(bincenters) #?
+
     pc = pcload_single_entries(basename, gp)
     if len(pc.chis) == 0:
         gh.LOG(1, 'no profiles found for plotting')
         return
     # first plot all chi^2 values in histogram
     pc.plot_profile(basename, 'chi2', 0, gp)
+
     # then select only the best models for plotting the profiles
     pc.cut_subset()
-    pc.set_x0(gp.xipol) # [pc]
-    if gp.investigate =='walk' or gp.investigate=='gaia':
-        r0analytic = np.logspace(np.log10(1.),\
-                                 np.log10(max(gp.xepol)), 100)
-        pc.set_analytic(r0analytic, gp)
-    pc.sort_profiles(gp)
-    pc.write_all(basename, gp)
-    pc.plot_profile(basename, 'rho', 0, gp)
-    if gp.investigate == 'obs':
-        pc.plot_profile(basename, 'Sig', 0, gp)
-        pc.plot_profile(basename, 'nu', 0, gp)
-        pc.plot_profile(basename, 'nrnu', 0, gp)
-    pc.plot_profile(basename, 'nr', 0, gp)
-    if gp.geom == 'sphere':
-        pc.plot_profile(basename, 'M', 0, gp)
-    for pop in np.arange(1, gp.pops+1):
-        pc.plot_profile(basename, 'betastar', pop, gp)
-        pc.plot_profile(basename, 'beta', pop, gp)
-        pc.plot_profile(basename, 'Sig', pop, gp)
-        pc.plot_profile(basename, 'nu', pop, gp)
-        pc.plot_profile(basename, 'nrnu', pop, gp)
-        pc.plot_profile(basename, 'sig', pop, gp)
+    pc.set_x0(gp.z_bincenters) # [kpc]
+    print('here')
+
+    pc.sort_profiles_disc(gp)
+    pc.write_all_disc(basename, gp)
+    pc.plot_profile(basename, 'nu_vec', 0, gp)
+    pc.plot_profile(basename, 'sig_vec', 0, gp)
+    pc.plot_profile(basename, 'rho_DM_vec', 0, gp)
+    pc.plot_profile(basename, 'kz_rho_DM_vec', 0, gp)
+    pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
+    pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string

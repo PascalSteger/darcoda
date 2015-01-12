@@ -66,7 +66,8 @@ def pcload_single_entries(basename, gp):
         while 1:
             try:
                 MODEL = pickle.load(fi)
-                pc.add(MODEL)
+                if npr.random() < 0.0001:
+                    pc.add(MODEL)
             except EOFError:
                 break
     return pc

@@ -18,7 +18,7 @@ import gl_helper as gh
 import gl_analytic as ga
 import gl_project as glp
 
-USE_ALL = True
+USE_ALL = False
 
 def unit(prof):
     if prof == 'rho' or prof == 'nu':
@@ -108,7 +108,7 @@ class ProfileCollection():
                     found_min = True
                     break
             maxchi = 10**(bins[k+1])
-        self.subset = [minchi, maxchi]
+        self.subset = [minchi, 10*minchi]# maxchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -526,6 +526,8 @@ class ProfileCollection():
             self.plot_Xscale_3D(ax, gp)
         #pdb.set_trace()
         ax.set_xlim([r0[0]/2,r0[-1]*1.0]) #HS r0[-1] previously multiplied by 1.5
+        if prof == 'kz_nu_vec':
+            ax.set_ylim(-1., 6.)
         # if gp.pops==1:
         #     ax.set_xlim([r0[0], 5*gp.Xscale[1]])
         # else:

@@ -8,8 +8,9 @@
 
 import numpy as np
 import pdb
-import socket
-import getpass
+import gl_helper as gh
+#import socket
+#import getpass
 
 def check_investigate(inv):
     if inv == 'discmock': return True
@@ -22,20 +23,7 @@ class Params():
 
         # Set machine and user variables
         # ----------------------------------------------------------------------
-        host_name = socket.gethostname()
-        user_name = getpass.getuser()
-        if 'darkside' in host_name:
-            self.machine = 'darkside'
-        elif 'pstgnt332' in host_name:
-            self.machine = 'pstgnt332'
-        elif ('lisa' in host_name) and ('login' in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS_login'
-        elif ('lisa' in host_name) and ('login' not in host_name) and ('hsilverw' in user_name):
-            self.machine = 'lisa_HS_batch'
-        elif ('lisa' in host_name) and ('login' in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS_login'
-        elif ('lisa' in host_name) and ('login' not in host_name) and ('sofia' in user_name):
-            self.machine = 'lisa_SS_batch'
+        self.machine, dummy = gh.detect_machine()
 
         # Set investigation and geometry
         if investigate != '':
@@ -94,37 +82,25 @@ class Params():
 
         #Limits for central densities (z=0)
 #        self.rho_C_max = 0.2 #Msun pc^-3, for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
-        self.rho_C_max = 0.2*1.E9  #Msun kpc^-3
+        self.rho_C_max = 0.5*1.E9  #Msun kpc^-3
         self.rho_C_min = 0.0 #Msun pc^-3
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
 
         #Limits for central kz values (z=0)
-        self.kz_rho_C_max = 10.0
+        self.kz_rho_C_max = 20.0
 #        self.kz_rho_C_min = 0.0
         self.kz_rho_C_min = -1.0 #SS
-        self.kz_nu_C_max = 10.0
+        self.kz_nu_C_max = 20.0
 #        self.kz_nu_C_min = 0.0
         self.kz_nu_C_min = -1.0 #SS
 
         #Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 5.0
+        self.max_kz_slope = 110.0
 
         #Limits for sigz central value
-        self.sigz_C_max = 30.
-        self.sigz_C_min = 10.
-
-
-
-
-
-
-
-        #HS Working Line
-        #Everthing below this line is old, and hasn't been considered for keeping
-        #deletion, or modification
-        # ----------------------------------------------------------------------
-
+        self.sigz_C_max = 50.
+        self.sigz_C_min = 5.
 
         # MultiNest options
         # ----------------------------------------------------------------------
@@ -132,30 +108,20 @@ class Params():
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
         self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
-        self.chi2_switch_mincount = 250. # demand that this number of profiles with
+        self.chi2_switch_mincount = 500. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
 
-        self.nipol = 15   # IF CHANGED => set getnewdata = True to run
-                         # data readout again
-        self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
-        self.nepol = self.nipol + 2*self.nexp     # number of parameters for
-                                                # direct mapping of nu(r)
-
-        self.nfine = 30  # number of entries in integral lookup table
-                         # gives no. log spaced points
-        self.rinfty = 5. # interpolate from last slope to slope at
-                          # 10*max(xipol), where asymptote to \infty
-                          # is reached, must be >= 11
-        self.nbeta = 0   # number of parameters for beta, in sum ofgre
-                         # polynomials
-        # TODO: if not using rhostar, subtract gp.nrho:
-
-        # +1 for norm, rho, rhostar, MtoL, [nu_i, tilt_i]
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
         self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
+
+
+        #HS Working Line
+        #Everthing below this line is old, and hasn't been considered for keeping
+        #deletion, or modification
+        # ----------------------------------------------------------------------
 
         # disc case
         # ----------------------------------------------------------------------
@@ -196,7 +162,6 @@ class Params():
         self.z_binmins = np.array([])
         self.z_binmaxs = np.array([])
         self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
-
 
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins

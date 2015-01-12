@@ -64,7 +64,10 @@ def run(gp):
 
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
-    binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data, gp.nbins)
+    if gp.binning == 'consttr':
+        binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data, gp.nbins)
+    elif gp.binning == 'linspace':
+        binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data),1), gp.nbins)
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data, nu_err_data, sig_data, sig_err_data = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data)

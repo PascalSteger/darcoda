@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -S /bin/bash
-#PBS -lnodes=1:ppn=1,walltime=00:00:60:00
+#PBS -lnodes=1:ppn=1,walltime=00:02:00:00
 
 # Copying program and data files to scratch
 
-PlotFolder=/DTdiscmock/0/201410270754/
+PlotFolder=/DTsimplenu/0/201501051700/
 
 export RUNDIR=$TMPDIR
 
@@ -38,7 +38,7 @@ echo Output/pdf contains
 cd $TMPDIR/darcoda/gravimage/$PlotFolder/output/pdf/
 ls -l
 
-# mkdir $TMPDIR/darcoda/gravimage/$PlotFolder/output/PlottedWithLisa$(date+%s)
+mkdir $TMPDIR/darcoda/gravimage/$PlotFolder/output/Plotted_via_batch_job_on_Lisa
 
 cp -r $TMPDIR/darcoda/gravimage/$PlotFolder/output $HOME/LoDaM/darcoda/gravimage/$PlotFolder/
 cp -r $TMPDIR/darcoda/gravimage/$PlotFolder/output/* $HOME/LoDaM/darcoda/gravimage/$PlotFolder/output/
