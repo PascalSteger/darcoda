@@ -50,7 +50,7 @@ def show(filepath):
 # filepath filename with full path
 
 def myprior(cube, ndim, nparams):
-    ndim, nparams
+    #ndim, nparams
     mycube = Cube(gp)
     mycube.copy(cube)
     cube = mycube.convert_to_parameter_space(gp)
@@ -99,7 +99,7 @@ def run(gp):
     pymultinest.run(myloglike,
                   myprior,
                   gp.ndim,
-                  n_params = gp.ndim+1, # None beforehands
+                  n_params = gp.ndim+1,
                   n_clustering_params = gp.ndim,# separate modes on
                   # the rho parameters
                   # only: gp.nrho
@@ -121,8 +121,7 @@ def run(gp):
                                                 # many iterations
                   null_log_evidence = -1e100,
                   max_modes = gp.nlive,   # preallocation of modes:
-                  #max. = number of live
-                  #points
+                  #max. = number of live points
                   mode_tolerance = -1.e100,   # mode tolerance in the
                                               # case where no special
                                               # value exists: highly

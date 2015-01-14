@@ -34,16 +34,24 @@ def read_data(gp):
         import grt_com
         grt_com.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM
-        grd_COM.run(gp)
         if gp.case == 0:
             # in case we work with Fornax dwarf, use deBoer data for
             #pdb.set_trace()
             import grd_COM_for
             grd_COM_for.run(gp)
-        if gp.pops > 1:
-            import grd_metalsplit
+        if gp.pops == 1:
+            import grd_COM
+            grd_COM.run(gp)
+        elif gp.pops == 2:
+            import grd_metalsplit, grd_COM
             grd_metalsplit.run(gp)
+            grd_COM.run(gp)
+        else:
+            print('implement 3 populations for observed galaxies')
+            exit(1)
+    else:
+        print('wrong investigation')
+        exit(1)
 ## \fn read_data(gp)
 # read in files with differing file formats, write out to common x, y, vz file
 # @param gp global parameters
@@ -62,17 +70,18 @@ def read_Sigdata(gp):
 # @param gp global parameters
 
 def bin_data(gp):
-    import gr_MCMCbin
     if gp.investigate == 'hern':
+        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
-        import grg_COM
+        import grg_COM, gr_MCMCbin
         grg_COM.run(gp)
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'walk':
-        import grw_COM # inside there, split by metallicity
-        grw_COM.run(gp)
-        gr_MCMCbin.run(gp)
+        if not gp.walker3D:
+            import grw_COM, gr_MCMCbin # inside there, split by metallicity
+            grw_COM.run(gp)
+            gr_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhotot_walk)
         if gp.walker3D:
             import grw_com, grw_mcmcbin
@@ -86,11 +95,8 @@ def bin_data(gp):
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM
+        import grd_COM, gr_MCMCbin
         grd_COM.run(gp)
-        if gp.pops > 1:
-            import grd_split
-            grd_split.run(gp)
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'discmock':
         import grdm_write

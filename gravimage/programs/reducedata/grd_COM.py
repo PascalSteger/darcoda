@@ -56,12 +56,25 @@ def run(gp):
       SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
                                        usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
 
-    # only use stars which are members of the dwarf
-    pm = (PM>=0.95)
+    # only use stars which have Mg measurements
+    pm = (SigMg>-1) # (PM>=0.95)*
     print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
-    ID=ID[1][pm]; RAh=RAh[pm]; RAm=RAm[pm]; RAs=RAs[pm]; DEd=DEd[pm]; DEm=DEm[pm]; DEs=DEs[pm];
-    Vmag = Vmag[pm]; VI=VI[pm]; VHel=VHel[pm]; e_VHel=e_VHel[pm];
-    SigFe=SigFe[pm]; e_SigFe=e_SigFe[pm]; SigMg=SigMg[pm]; e_SigMg=e_SigMg[pm];PM=PM[pm]
+    ID=ID[1][pm]
+    RAh=RAh[pm]
+    RAm=RAm[pm]
+    RAs=RAs[pm]
+    DEd=DEd[pm]
+    DEm=DEm[pm]
+    DEs=DEs[pm]
+    Vmag = Vmag[pm]
+    VI=VI[pm]
+    VHel=VHel[pm]
+    e_VHel=e_VHel[pm]
+    SigFe=SigFe[pm]
+    e_SigFe=e_SigFe[pm]
+    SigMg=SigMg[pm]
+    e_SigMg=e_SigMg[pm]
+    PM=PM[pm]
 
     Mg0 = SigMg
     sig = abs(RAh[0])/RAh[0]
@@ -86,21 +99,24 @@ def run(gp):
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
 
-    PM0 = np.copy(PM); x0 = np.copy(xs); y0 = np.copy(ys) # [pc]
+    PM0 = np.copy(PM)
+    x0 = np.copy(xs)
+    y0 = np.copy(ys) # [pc]
     vz0 = np.copy(VHel) # [km/s]
 
     # only use stars which are members of the dwarf: exclude pop3 by construction
-    pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
-    x0, y0, vz0, Mg0, PM0 = select_pm(x0, y0, vz0, Mg0, PM0, pm)
+    #pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
+    #x0, y0, vz0, Mg0, PM0 = select_pm(x0, y0, vz0, Mg0, PM0, pm)
 
     # assign population
     if gp.pops == 2:
         # drawing of populations based on metallicity
         # get parameters from function in pymcmetal.py
-        [p, mu1, sig1, mu2, sig2] = np.loadtxt(gp.files.dir+'metalsplit.dat')
-        [pm1, pm2] = np.loadtxt(gp.files.dir+'metalsplit_assignment.dat')
-        pm1 = (pm1>0)
-        pm2 = (pm2>0)
+        #[p, mu1, sig1, mu2, sig2] = np.loadtxt(gp.files.dir+'metalsplit.dat')
+        #[pm1, pm2] = np.loadtxt(gp.files.dir+'metalsplit_assignment.dat')
+        popass = np.loadtxt(gp.files.dir+'popass')
+        pm1 = (popass==1)
+        pm2 = (popass==2)
 
     elif gp.pops == 1:
         pm1 = (PM >= 0)
@@ -211,7 +227,7 @@ if __name__=='__main__':
     pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
     x0, y0, vz0, Mg0, PM0 = select_pm(x0, y0, vz0, Mg0, PM0, pm)
 
-    # assign population (OLD, new way is to run grd_split after grd_COM in gi_file
+    # assign population (OLD, new way is to run grd_metalsplit after grd_COM in gi_file
     # if gp.pops == 2:
     #     import pymcmetal as pmc
     #     p, mu1, sig1, mu2, sig2, M = pmc.bimodal_gauss(Mg0)

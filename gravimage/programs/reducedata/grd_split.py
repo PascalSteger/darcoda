@@ -31,7 +31,6 @@ def lp_plummer(Rad, rs):
 # @param Rad projected radius from center, [pc]
 # @param rs scale radius, [pc]
 
-
 def lp_gauss(X, Xmean, sigmaX, errorX):
     prefactor = 1./np.sqrt(2.*np.pi*(sigmaX**2+errorX**2))
     exponent = -0.5*(X-Xmean)**2/(sigmaX**2+errorX**2)
@@ -47,7 +46,6 @@ def lp_gauss(X, Xmean, sigmaX, errorX):
 # @param sigmaX spread of Gaussian
 # @param errorX observation error
 
-
 def myprior(cube, ndim, nparams):
     # convert to physical space
     off = 0
@@ -61,7 +59,7 @@ def myprior(cube, ndim, nparams):
     off += 1
     cube[off] = cube[off]*2000.-1000. # proper motion in y [mas/century], mu_delta
     off += 1
-    for pop in range(0, gp.pops+1): # no. of pops goes in here, first MW, then 1,2,..
+    for pop in range(0, 2+1): # no. of pops goes in here, all, then 1,2,..
         cube[off] = cube[off] # Rhalf_i / Rhalf
         off += 1
         cube[off] = cube[off]*6.-3. # Wmean
@@ -79,7 +77,6 @@ def myprior(cube, ndim, nparams):
 # @param ndim number of dimensions, 2*npop*nipol + nipol
 # @param nparams = ndim + additional parameters
 # stored with actual parameters
-
 
 def w(Rk):
     gh.sanitize_vector(Rk, Nsample, 0, 1e30, DEBUG)
