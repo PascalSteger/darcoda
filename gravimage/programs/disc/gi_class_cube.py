@@ -24,7 +24,6 @@ def map_tilt_slope(vec, gp):
     T = np.zeros(len(vec))
     T[0] = vec[0] # uniformly between 0 and 1
     for i in np.arange(1,len(vec)):
-        # TODO bounds and radius scaling
         T[i] = T[i-1] + \
           (vec[i]-0.5)*np.sqrt((gp.xipol[i]-gp.xipol[i-1])/(gp.xipol[-1]))
     return T
@@ -141,7 +140,6 @@ def map_nr(params, prof, pop, gp):
 
 
 def map_nu(pa, gp):
-    # TODO: assertion len(pa)=gp.nepol
     for i in range(len(pa)):
         pa[i] = 10**(pa[i]*(gp.maxlog10nu-gp.minlog10nu)+gp.minlog10nu)
     return pa

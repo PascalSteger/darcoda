@@ -1,7 +1,0 @@
-#!/usr/bin/env ipython3
-
-def dumper():
-    print("worked!")
-
-def samplefunc():
-    print("worked in sample func")

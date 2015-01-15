@@ -4,9 +4,6 @@
 # @file
 # needs Multinest from https://github.com/JohannesBuchner/MultiNest
 
-# TODO: run with mpirun -np <N> gravimage.py
-# where <N> is an integer <= number of processors
-
 # Copyright 2015 GPLv3 ETHZ, Pascal Steger, psteger@phys.ethz.ch
 
 # get latest version of PyMultiNest from
@@ -64,7 +61,6 @@ def myprior(cube, ndim, nparams):
 def myloglike(cube, ndim, nparams):
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
-    # TODO: with parallel version, need to append to CPU-based output name
     # we only store models after the initial Sigma burn-in
     if gp.chi2_Sig_converged <= 0:
         tmp_profs.x0 = gp.xepol
@@ -145,18 +141,5 @@ if __name__=="__main__":
     global Cube, geom_loglike
     from gi_class_cube import Cube
     from gi_loglike import geom_loglike
-
-    # hwmess = "Hello, World!! I am process %d of %d on %s.\n"
-    # myrank = MPI.COMM_WORLD.Get_rank()
-    # nprocs = MPI.COMM_WORLD.Get_size()
-    # procnm = MPI.Get_processor_name()
-    # import sys
-    # sys.stdout.write(hwmess % (myrank, nprocs, procnm))
-
-    # TODO MPI: wait for prepare_data to finish
-    # if MPI.COMM_WORLD.Get_rank() == 0:
-    #     # TODO: wrong: have 0 take part in sampling as well
     prepare_data(gp) # run once
-    # else:
-    #     # run with full MPI
     run(gp)

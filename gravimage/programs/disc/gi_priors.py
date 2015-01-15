@@ -14,7 +14,6 @@ def check_tilt(tmp_tilt, gp):
     return False
 ## \fn check_tilt(tmp_tilt, gp)
 # check that tilt is physically possible
-# TODO: sensible values, e.g. percentage of K_z
 # @param tmp_tilt tilt profile
 # @param gp
 
