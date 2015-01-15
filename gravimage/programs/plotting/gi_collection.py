@@ -211,7 +211,7 @@ class ProfileCollection():
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_triax(r0)
                 anbeta.append(beta)
-                nu = ga.rho_triax(r0, gp) # TODO, M/L=1 assumption
+                nu = ga.rho_triax(r0, gp) # TODO, assumes M/L=1
                 annu.append(nu)
                 anSig.append( glp.rho_INT_Sig(r0, nu, gp))
         self.analytic.set_prof('rho', anrho, 0, gp)

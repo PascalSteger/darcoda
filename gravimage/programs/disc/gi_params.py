@@ -86,7 +86,6 @@ class Params():
                           # is reached, must be >= 11
         self.nbeta = 1   # number of parameters for beta, in sum of
                          # polynomials
-        # TODO: if not using rhostar, subtract gp.nrho:
         self.ndim = 1 + 2*self.nrho + 1 + self.pops*(self.nrho + self.nbeta)
         # +1 for norm, rho, rhostar, MtoL, [nu_i, tilt_i]
         # live points, > ndim, < 2^ndim, about number of

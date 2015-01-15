@@ -19,8 +19,6 @@ import gi_helper as gh
 import gi_physics as phys
 
 def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
-    # TODO: check integration for z direction only
-
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=0}^{R} \rho(r) dr
     xmin = z0[0]/30. # tweaked. z0[0]/1e4 gives error in quad()
@@ -30,7 +28,6 @@ def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
     rhonu = phys.rho(z0nu, rhopar, pop, gp) # rho takes rho(rhalf) and n(r) parameters
     Sig = np.zeros(len(z0nu)-gp.nexp)
     for i in range(len(z0nu)-gp.nexp):
-        # TODO speed up using the same function for integrating all parts
         Sig[i] = gh.quadinflog(z0nu, rhonu, xmin, z0nu[i])
 
     gh.checkpositive(Sig, 'Sig in rho_param_INT_Sig_disc')
@@ -44,7 +41,6 @@ def rho_param_INT_Sig_disc(z0, rhopar, pop, gp):
 
 
 def nu_param_INT_Sig_disc(z0, nupar, pop, gp):
-    # TODO: check integration for z direction only
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=0}^{R} \rho(r) dr
     z0nu = z0

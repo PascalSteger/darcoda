@@ -36,7 +36,7 @@ def get_machine():
 # return string for machine
 
 
-# TODO: HS
+# HS:
 # check whether following code pasted from import_path.py.set_geometry() needs be factored in
 
 # if machine == 'darkside':

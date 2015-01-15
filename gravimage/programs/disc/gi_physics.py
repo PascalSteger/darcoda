@@ -83,7 +83,6 @@ def beta(zipol, param, gp):
     return betatmp, betatmp/(2.+betatmp)
 ## \fn beta(zipol, param, gp)
 # return sum of polynomials for tilt as fct of radius
-# TODO: get tilt size from Silvia's paper
 # @param zipol [pc]
 # @param param n_beta parameters
 # @param gp global parameters
@@ -96,7 +95,6 @@ def tilt(zipol, param, gp):
     return tilttmp
 ## \fn tilt(zipol, param, gp)
 # return sum of polynomials for tilt as fct of radius
-# TODO: get tilt size from Garbari+2011
 # @param zipol [pc]
 # @param param n_beta parameters
 # @param gp global parameters

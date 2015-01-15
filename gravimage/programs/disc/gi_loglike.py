@@ -29,7 +29,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
     off += offstep
 
-    # TODO: M
     # tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
     # tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
 

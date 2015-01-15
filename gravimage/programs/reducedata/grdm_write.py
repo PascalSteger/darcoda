@@ -94,18 +94,18 @@ def run(gp):
     z0  = 240.                                # [pc], scaleheight of first population
     z02 = 200.                                # [pc], scaleheight of second population
     D   = 250.                                # [pc], scaleheight of all stellar tracers
-    K   = 1.65                                # [TODO]
-    F   = 1.65e-4                             # [TODO]
+    K   = 1.65
+    F   = 1.65e-4
     C   = 17.**2.                             # [km/s] integration constant in sig
 
     # Draw mock data from exponential disk:
     nu_zth = np.exp(-zth/z0)                                 # [nu0] = [Msun/A/pc] 3D tracer density
-    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
+    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth)
 
     if gp.adddarkdisc:
         DD = 600                                         # [pc] scaleheight of dark disc
-        KD = 0.15 * 1.650                                # [TODO]
-        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.) # [TODO]
+        KD = 0.15 * 1.650
+        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.)
 
     # calculate sig_z^2
     inti = np.zeros(nth)
@@ -227,7 +227,7 @@ def run(gp):
     binmin0, binmax0, z_dat_bin0, sig_dat_bin0, count_bin0 = gh.binsmooth(z_dat0, vz_dat0, \
                                                                           zmin, zmax, gp.nipol, 0.)
     sig_dat_err_bin0 = np.sqrt(sig_dat_bin0)
-    # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol) # TODO: enable, get sig2
+    # binmin, binmax, z_dat_bin = gh.bin_r_const_tracers(z_dat, gp.nipol)
 
     nu_dat_bin0, nu_dat_err_bin0 = gh.bincount(z_dat0, binmax0)
     nu_dat_bin0 /= (binmax0-binmin0)
