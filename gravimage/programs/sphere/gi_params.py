@@ -83,7 +83,7 @@ class Params():
         # MultiNest options
         # ----------------------------------------------------------------------
         self.getSigdata = False   # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
-        self.chi2_switch = 40
+        self.chi2_switch = 30
         self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
@@ -141,8 +141,8 @@ class Params():
         self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
-        self.beta00prior = True  # beta(r=0)=0
-        self.minbetastar = -0.  # clipping for beta*, default: -0.99
+        self.beta00prior = False  # beta(r=0)=0
+        self.minbetastar = -0.99  # clipping for beta*, default: -0.99
         self.maxbetastar = 0.99  # clipping for beta*, default:  1.00
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
@@ -180,11 +180,7 @@ class Params():
         self.rscale=[];        self.nu0pc=[]
         self.Xscale=[];        self.Sig0pc=[]
         self.totmass_tracers=[];       self.maxsiglos=[]
-        # for investigations without data:
-        if self.investigate != 'walk' and\
-           self.investigate != 'triax' and\
-           self.investigate != 'gaia' and\
-           self.investigate != 'discmock':
+        if self.investigate == 'hern':
             # each is set for all components and first component by
             # default
             self.rscale.append(1.);           self.rscale.append(1.)

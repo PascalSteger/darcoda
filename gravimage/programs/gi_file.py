@@ -36,7 +36,6 @@ def read_data(gp):
     elif gp.investigate == 'obs':
         if gp.case == 0:
             # in case we work with Fornax dwarf, use deBoer data for
-            #pdb.set_trace()
             import grd_COM_for
             grd_COM_for.run(gp)
         if gp.pops == 1:

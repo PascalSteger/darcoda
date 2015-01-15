@@ -65,7 +65,6 @@ class Datafile:
             Sigx    = Sigx[:]    * gp.Xscale[pop]         # [pc]
             Sigdat  = Sigdat[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
             Sigerr  = Sigerr[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
-
             # take the overall bins for rbin, binmin, binmax vals
             if pop == 0:
                 self.rbin = Sigx                                 # [pc]
