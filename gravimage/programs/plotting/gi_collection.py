@@ -405,11 +405,11 @@ class ProfileCollection():
     def plot_Xscale_3D(self, ax, gp):
         if gp.investigate == 'walk':
             if gp.pops == 1:
-                rhodm, nu1 = ga.rho_walk(gp.xipol, gp)
+                rhodm, nu1 = ga.rho_walk(gp.xepol, gp)
             else:
-                rhodm, nu1, nu2 = ga.rho_walk(gp.xipol, gp)
+                rhodm, nu1, nu2 = ga.rho_walk(gp.xepol, gp)
         elif gp.investigate == 'gaia':
-            rhodm, nu1 = ga.rho_gaia(gp.xipol, gp)
+            rhodm, nu1 = ga.rho_gaia(gp.xepol, gp)
         for pop in range(gp.pops):
             # use our models
             nuprof = self.Mmedi.get_prof('nu', pop+1)
