@@ -8,6 +8,7 @@ File DTgaia/1/201408200841/programs/gi_params.py not found!
 7	DTgaia/1/201410091346	7622	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 8	DTgaia/1/201410091836	8998	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 9	DTgaia/1/201410182322	6580	 1 	 10 	 4 	 True 	 -0.99 	 	p	c
+File DTgaia/1/201410201556/ev.dat not found!
 10	DTgaia/1/201410272015	170062	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 11	DTgaia/1/201410272019	165966	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 12	DTgaia/1/201410280731	76520	 1 	 12 	 4 	 False 	 -0.99 	 	 	
@@ -26,15 +27,18 @@ File DTgaia/10/201410280741/programs/gi_params.py not found!
 4	DTgaia/2/201411262150	207030	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 5	DTgaia/2/201412112141	217490	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 File DTgaia/2/201412250925/ev.dat not found!
+File DTgaia/2/201412250927/ev.dat not found!
 6	DTgaia/2/201412250930	5400	 1 	 12 	 4 	 True 	 -0.99 	 	p	
+File DTgaia/2/201412250931/ev.dat not found!
+File DTgaia/2/201412250933/ev.dat not found!
 7	DTgaia/2/201501051645	4000	 1 	 12 	 4 	 True 	 -0.0 	 	p	
-8	DTgaia/2/201501061935	34400	 1 	 12 	 4 	 False 	 -0.99 	a	p	
+8	DTgaia/2/201501061935	39602	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 9	DTgaia/2/201501070921	43694	 1 	 12 	 4 	 True 	 -0. 	 	p	
-10	DTgaia/2/201501070935	4185	 1 	 12 	 4 	 False 	 -0. 	a	p	
-11	DTgaia/2/201501070936	33005	 1 	 12 	 4 	 False 	 -0.99 	a	p	
+10	DTgaia/2/201501070935	53640	 1 	 12 	 4 	 False 	 -0. 	a	p	
+11	DTgaia/2/201501070936	46477	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 12	DTgaia/2/201501070939	77542	 1 	 12 	 4 	 True 	 -0.99 	 	p	
-13	DTgaia/2/201501090757	9885	 1 	 12 	 4 	 False 	 -0.99 	a	 	
-14	DTgaia/2/201501091502	4065	 1 	 12 	 4 	 True 	 -0. 	 	 	
+13	DTgaia/2/201501090757	45547	 1 	 12 	 4 	 False 	 -0.99 	 	p	
+14	DTgaia/2/201501091502	4085	 1 	 12 	 4 	 True 	 -0. 	 	p	
 1	DTgaia/3/201410031557	21142	 1 	 16 	 4 	 False 	 -0.99 	 	p	c
 2	DTgaia/3/201410052147	11519	 1 	 16 	 4 	 False 	 -0.99 	 	p	c
 3	DTgaia/3/201410052202	27952	 1 	 16 	 4 	 False 	 -0.99 	 	p	c
@@ -62,8 +66,8 @@ File DTgaia/2/201412250925/ev.dat not found!
 25	DTgaia/3/201501061935	2000	 1 	 12 	 4 	 True 	 -0.99 	 	 	
 26	DTgaia/3/201501061936	2000	 1 	 12 	 4 	 False 	 -0. 	 	 	
 27	DTgaia/3/201501070922	54361	 1 	 12 	 4 	 True 	 -0. 	 	p	
-28	DTgaia/3/201501070935	14360	 1 	 12 	 4 	 False 	 -0. 	 	p	
-29	DTgaia/3/201501070936	23735	 1 	 12 	 4 	 False 	 -0.99 	 	p	
+28	DTgaia/3/201501070935	30498	 1 	 12 	 4 	 False 	 -0. 	 	p	
+29	DTgaia/3/201501070936	43922	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 30	DTgaia/3/201501070939	46336	 1 	 12 	 4 	 True 	 -0.99 	 	p	
 File DTgaia/4/201408230808/programs/gi_params.py not found!
 1	DTgaia/4/201409220744	1000	 1 	 12 	 5 		 -0.99 	 	p	
@@ -81,7 +85,7 @@ File DTgaia/4/201408230808/programs/gi_params.py not found!
 13	DTgaia/4/201410272022	173495	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 14	DTgaia/4/201410280738	479260	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 15	DTgaia/4/201412250933	30500	 1 	 12 	 4 	 True 	 -0.99 	 	 	
-16	DTgaia/4/201501051646	7100	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+16	DTgaia/4/201501051646	7100	 1 	 12 	 4 	 True 	 -0.0 	 	p	
 File DTgaia/5/201408200838/programs/gi_params.py not found!
 File DTgaia/5/201408200839/programs/gi_params.py not found!
 File DTgaia/5/201408230800/programs/gi_params.py not found!
@@ -118,7 +122,7 @@ File DTgaia/5/201409180816/programs/gi_params.py not found!
 27	DTgaia/5/201410201555	119375	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 28	DTgaia/5/201410280739	457600	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 29	DTgaia/5/201411181525	0	 1 	 12 	 5 		 -0.99 	 	 	
-30	DTgaia/5/201501051646	3500	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+30	DTgaia/5/201501051646	3500	 1 	 12 	 4 	 True 	 -0.0 	 	p	
 File DTgaia/6/201408200845/programs/gi_params.py not found!
 File DTgaia/6/201408200846/programs/gi_params.py not found!
 File DTgaia/6/201408212006/programs/gi_params.py not found!
@@ -164,7 +168,7 @@ File DTgaia/7/201408230809/programs/gi_params.py not found!
 12	DTgaia/7/201410201556	103970	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 13	DTgaia/7/201410272024	124726	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 14	DTgaia/7/201410280740	453630	 1 	 12 	 4 	 False 	 -0.99 	 	 	
-15	DTgaia/7/201501051647	3000	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+15	DTgaia/7/201501051647	3000	 1 	 12 	 4 	 True 	 -0.0 	 	p	
 File DTgaia/8/201408230810/programs/gi_params.py not found!
 1	DTgaia/8/201409220751	1000	 1 	 12 	 5 		 -0.99 	 	p	
 2	DTgaia/8/201409221832	2124	 1 	 12 	 5 		 -0.99 	 	p	
@@ -179,32 +183,36 @@ File DTgaia/8/201408230810/programs/gi_params.py not found!
 11	DTgaia/8/201410201102	1180	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 12	DTgaia/8/201410201556	101590	 8 	 12 	 4 	 False 	 -0.99 	 	 	
 13	DTgaia/8/201410272024	80660	 1 	 12 	 4 	 False 	 -0.99 	 	 	
-14	DTgaia/8/201501051648	6500	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+14	DTgaia/8/201501051648	6500	 1 	 12 	 4 	 True 	 -0.0 	 	p	
 1	DTgaia/9/201410272025	162216	 1 	 12 	 4 	 False 	 -0.99 	 	 	
 2	DTgaia/9/201410280741	455600	 1 	 12 	 4 	 False 	 -0.99 	 	 	
-File DTobs/0/201412152200/programs/gi_params.py not found!
-File DTobs/0/201412171808/programs/gi_params.py not found!
-File DTobs/0/201412171809/programs/gi_params.py not found!
-1	DTobs/0/201501051641	9300	 1 	 12 	 4 	 True 	 -0.0 	 	 	
-2	DTobs/0/201501061758	205000	 1 	 12 	 4 	 True 	 -0.0 	a	 	
-3	DTobs/0/201501061925	184800	 1 	 12 	 4 	 False 	 -0.0 	a	 	
-4	DTobs/0/201501061927	37500	 1 	 12 	 4 	 False 	 -0.99 	a	 	
-5	DTobs/0/201501061928	26400	 1 	 12 	 4 	 True 	 -0.99 	a	 	
-6	DTobs/0/201501061933	63500	 1 	 12 	 4 	 True 	 -0.99 	 	 	
-File DTobs/0/201501072216/ev.dat not found!
-7	DTobs/0/201501072222	0	 1 	 9 	 4 	 True 	 -0.99 	 	 	
-8	DTobs/0/201501072223	200	 1 	 9 	 4 	 True 	 -0. 	 	 	
-9	DTobs/0/201501072224	122912	 1 	 9 	 4 	 False 	 -0.99 	 	 	
-10	DTobs/0/201501072225	58845	 1 	 9 	 4 	 False 	 -0. 	a	 	
-11	DTobs/0/201501081647	19285	 1 	 12 	 4 	 True 	 -0.0 	a	 	
-12	DTobs/0/201501081649	45530	 1 	 12 	 4 	 True 	 -0.99 	a	 	
-13	DTobs/0/201501081650	23305	 1 	 12 	 4 	 False 	 -0.99 	a	 	
-14	DTobs/0/201501081651	17120	 1 	 12 	 4 	 False 	 -0. 	a	 	
-File DTobs/0/201501081652/ev.dat not found!
-15	DTobs/0/201501081653	150	 1 	 12 	 4 	 True 	 -0.99 	 	 	
-File DTobs/0/201501081654/ev.dat not found!
-16	DTobs/0/201501081655	29170	 1 	 12 	 4 	 True 	 -0. 	a	 	
-17	DTobs/0/201501081656	73525	 1 	 9 	 4 	 True 	 -0. 	a	 	
+File DTobs/0/201501081651/ev.dat not found!
+File DTobs/0/201501081653/ev.dat not found!
+File DTobs/0/201501081655/ev.dat not found!
+File DTobs/0/201501081656/ev.dat not found!
+File DTobs/1/201412152200/programs/gi_params.py not found!
+File DTobs/1/201412171808/programs/gi_params.py not found!
+File DTobs/1/201412171809/programs/gi_params.py not found!
+1	DTobs/1/201501051641	9300	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+2	DTobs/1/201501061758	305900	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+3	DTobs/1/201501061925	190900	 1 	 12 	 4 	 False 	 -0.0 	 	 	
+4	DTobs/1/201501061927	167000	 1 	 12 	 4 	 False 	 -0.99 	 	 	
+5	DTobs/1/201501061928	26900	 1 	 12 	 4 	 True 	 -0.99 	 	 	
+6	DTobs/1/201501061933	63500	 1 	 12 	 4 	 True 	 -0.99 	 	 	
+File DTobs/1/201501072216/ev.dat not found!
+7	DTobs/1/201501072222	0	 1 	 9 	 4 	 True 	 -0.99 	 	 	
+8	DTobs/1/201501072223	200	 1 	 9 	 4 	 True 	 -0. 	 	 	
+9	DTobs/1/201501072224	122912	 1 	 9 	 4 	 False 	 -0.99 	 	 	
+10	DTobs/1/201501072225	60635	 1 	 9 	 4 	 False 	 -0. 	 	 	
+11	DTobs/1/201501081647	20475	 1 	 12 	 4 	 True 	 -0.0 	 	 	
+12	DTobs/1/201501081649	174025	 1 	 12 	 4 	 True 	 -0.99 	 	 	
+13	DTobs/1/201501081650	32600	 1 	 12 	 4 	 False 	 -0.99 	 	 	
+14	DTobs/1/201501081651	19390	 1 	 12 	 4 	 False 	 -0. 	 	 	
+File DTobs/1/201501081652/ev.dat not found!
+15	DTobs/1/201501081653	150	 1 	 12 	 4 	 True 	 -0.99 	 	 	
+File DTobs/1/201501081654/ev.dat not found!
+16	DTobs/1/201501081655	63695	 1 	 12 	 4 	 True 	 -0. 	 	 	
+17	DTobs/1/201501081656	135200	 1 	 9 	 4 	 True 	 -0. 	 	p	
 File DTtriax/0/201501051642/ev.dat not found!
 File DTtriax/1/201407281057/programs/gi_params.py not found!
 1	DTtriax/1/201411262055	2650	 1 	 12 	 4 	 False 	 -0.99 	 	 	
@@ -225,32 +233,41 @@ File DTtriax/2/201411262059/ev.dat not found!
 5	DTtriax/2/201501051650	6800	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 6	DTtriax/2/201501062009	41162	 1 	 12 	 4 	 True 	 -0. 	 	p	
 File DTtriax/2/201501062010/ev.dat not found!
+7	DTtriax/2/201501112138	29800	 1 	 12 	 4 	 False 	 -0.99 	a	p	
 File DTtriax/3/201407281059/programs/gi_params.py not found!
 1	DTtriax/3/201501051651	5600	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 File DTtriax/3/201501051652/ev.dat not found!
 2	DTtriax/3/201501062009	94020	 1 	 12 	 4 	 True 	 -0. 	 	 	
+3	DTtriax/3/201501112139	26955	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 File DTtriax/4/201407281059/programs/gi_params.py not found!
 1	DTtriax/4/201501051652	3700	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 2	DTtriax/4/201501062006	2000	 1 	 12 	 4 	 True 	 -0.99 	 	 	
 3	DTtriax/4/201501062007	137238	 1 	 12 	 4 	 True 	 -0.99 	 	 	
-4	DTtriax/4/201501062008	23700	 1 	 12 	 4 	 False 	 -0. 	 	 	
+4	DTtriax/4/201501062008	31800	 1 	 12 	 4 	 False 	 -0. 	 	 	
 5	DTtriax/4/201501062009	107615	 1 	 12 	 4 	 True 	 -0. 	 	 	
+6	DTtriax/4/201501112140	27790	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 File DTtriax/5/201407281100/programs/gi_params.py not found!
 1	DTtriax/5/201501051652	53800	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 File DTtriax/5/201501051653/ev.dat not found!
 2	DTtriax/5/201501062010	58861	 1 	 12 	 4 	 True 	 -0. 	 	 	
 File DTtriax/5/201501062011/ev.dat not found!
+3	DTtriax/5/201501112143	24185	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 File DTtriax/6/201407281100/programs/gi_params.py not found!
 1	DTtriax/6/201501051653	8400	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 2	DTtriax/6/201501062011	71373	 1 	 12 	 4 	 True 	 -0. 	 	 	
+3	DTtriax/6/201501112143	32580	 1 	 12 	 4 	 False 	 -0.99 	 	p	
+File DTtriax/6/201501112144/ev.dat not found!
 File DTtriax/7/201407281101/programs/gi_params.py not found!
 File DTtriax/7/201501051653/ev.dat not found!
-1	DTtriax/7/201501062011	77500	 1 	 12 	 4 	 True 	 -0. 	 	 	
+1	DTtriax/7/201501062011	100953	 1 	 12 	 4 	 True 	 -0. 	 	 	
+2	DTtriax/7/201501112152	29070	 1 	 12 	 4 	 False 	 -0.99 	 	p	
 File DTtriax/8/201407281102/programs/gi_params.py not found!
 1	DTtriax/8/201501051654	13300	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 2	DTtriax/8/201501061019	4200	 1 	 12 	 4 	 True 	 -0.0 	 	 	
 File DTtriax/8/201501061020/ev.dat not found!
 3	DTtriax/8/201501062012	113959	 1 	 12 	 4 	 True 	 -0. 	 	 	
+4	DTtriax/8/201501112152	24920	 1 	 12 	 4 	 False 	 -0.99 	 	p	
+File DTtriax/8/201501112153/ev.dat not found!
 1	DTwalk/1/201407231745	8288	 2 	 10 	 4 			 	 	
 2	DTwalk/1/201407231747	7574	 2 	 10 	 4 			 	 	
 3	DTwalk/1/201407280941	8286	 2 	 10 	 4 			 	 	
@@ -293,10 +310,13 @@ File DTtriax/8/201501061020/ev.dat not found!
 File DTwalk/1/201501061938/ev.dat not found!
 40	DTwalk/1/201501062002	2000	 2 	 12 	 4 	 True 	 -0.99 	 	 	
 41	DTwalk/1/201501062005	10300	 2 	 12 	 4 	 False 	 -0.99 	 	p	
-42	DTwalk/1/201501082200	24230	 2 	 12 	 4 	 True 	 -0. 	a	 	
-43	DTwalk/1/201501082201	10470	 2 	 12 	 4 	 True 	 -0.99 	a	 	
+42	DTwalk/1/201501082200	69235	 2 	 12 	 4 	 True 	 -0. 	a	p	
+43	DTwalk/1/201501082201	10625	 2 	 12 	 4 	 True 	 -0.99 	a	p	
 File DTwalk/1/201501082202/ev.dat not found!
-44	DTwalk/1/201501091937	3655	 2 	 12 	 4 	 True 	 -0. 	 	 	
+44	DTwalk/1/201501091937	3760	 2 	 12 	 4 	 True 	 -0. 	a	p	
+45	DTwalk/1/201501112120	0	 2 	 12 	 4 	 True 	 -0. 	 	 	
+46	DTwalk/1/201501112121	3670	 2 	 12 	 4 	 True 	 -0. 	a	p	
+47	DTwalk/1/201501112129	3700	 2 	 12 	 4 	 False 	 -0.99 	a	p	
 File DTwalk/2/201409040819/programs/gi_params.py not found!
 1	DTwalk/2/201409221025	610	 2 	 12 	 5 		 -0.99 	 	p	
 2	DTwalk/2/201409221815	2022	 1 	 12 	 5 		 -0.99 	 	p	c
@@ -313,12 +333,14 @@ File DTwalk/2/201409040819/programs/gi_params.py not found!
 13	DTwalk/2/201410132032	16240	 2 	 12 	 4 	 True 	 -0. 	 	p	
 14	DTwalk/2/201410182326	13273	 2 	 10 	 4 	 True 	 -0.99 	 	p	
 15	DTwalk/2/201412250927	6100	 1 	 12 	 4 	 True 	 -0.99 	 	 	
-16	DTwalk/2/201501061938	9300	 2 	 12 	 4 	 False 	 -0. 	 	 	
-17	DTwalk/2/201501061947	9200	 2 	 12 	 4 	 False 	 -0.99 	 	p	
-18	DTwalk/2/201501061952	9500	 2 	 12 	 4 	 True 	 -0.99 	 	 	
-19	DTwalk/2/201501061957	27600	 2 	 12 	 4 	 True 	 -0. 	a	 	
-20	DTwalk/2/201501082201	24260	 2 	 12 	 4 	 True 	 -0. 	a	 	
-21	DTwalk/2/201501082202	9165	 2 	 12 	 4 	 True 	 -0.99 	 	 	
-22	DTwalk/2/201501091938	4450	 2 	 12 	 4 	 True 	 -0. 	a	 	
+16	DTwalk/2/201501061938	9300	 2 	 12 	 4 	 False 	 -0. 	 	p	
+17	DTwalk/2/201501061947	9300	 2 	 12 	 4 	 False 	 -0.99 	 	p	
+18	DTwalk/2/201501061952	49900	 2 	 12 	 4 	 True 	 -0.99 	a	p	
+19	DTwalk/2/201501061957	88700	 2 	 12 	 4 	 True 	 -0. 	a	p	
+20	DTwalk/2/201501082201	56120	 2 	 12 	 4 	 True 	 -0. 	a	p	
+21	DTwalk/2/201501082202	9810	 2 	 12 	 4 	 True 	 -0.99 	a	p	
+22	DTwalk/2/201501091938	33400	 2 	 12 	 4 	 True 	 -0. 	a	p	
+23	DTwalk/2/201501112121	17270	 2 	 12 	 4 	 True 	 -0. 	a	p	
+24	DTwalk/2/201501112130	8880	 2 	 12 	 4 	 False 	 -0.99 	a	p	
 File DTwalk/5/201409231133/ev.dat not found!
 File DTwalk/5/201409241558/ev.dat not found!
