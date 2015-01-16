@@ -1,0 +1,49 @@
+.TH "ExtractSnap.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExtractSnap.h \- 
+.PP
+All publicly known functions of \fBExtractSnap.cpp\fP.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBExtractSnap\fP (unsigned isnap)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+All publicly known functions of \fBExtractSnap.cpp\fP. 
+
+
+.PP
+Definition in file \fBExtractSnap.h\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void ExtractSnap (unsigned isnap)"analysis of one single snapshot file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIisnap\fP ID of snapshot formatted as a string of the form 'XXX' 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+error code 
+.RE
+.PP
+
+.PP
+Definition at line 42 of file ExtractSnap.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), get_particle_number(), HDFCreateFile(), HDFCreateGroup(), HDFWriteDataset(), HDFWriteDatasetVector(), HDFWriteGroupAttribute(), read_gadget_1(), read_gadget_3(), RunCommand(), Snaps(), writedebug(), writedone(), writeln(), and writelndebug().
+.PP
+Referenced by main().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

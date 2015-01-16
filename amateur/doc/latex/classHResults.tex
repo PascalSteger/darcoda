@@ -1,0 +1,258 @@
+\section{HResults Class Reference}
+\label{classHResults}\index{HResults@{HResults}}
+
+
+{\ttfamily \#include $<$HResults.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHResults_af0b4ffdf2d4406e4e4c7074df85b752a}{HResults} ()
+\item 
+\hyperlink{classHResults_a6b47e902f388186c8f41bcf8e71b8252}{$\sim$HResults} ()
+\item 
+void \hyperlink{classHResults_acaef1c57079dba4a372549c01f596fec}{setNtot} (int ntot)
+\item 
+void \hyperlink{classHResults_a7d3c50c2af764f928f8891c9685ba495}{setMtot} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Mtot)
+\item 
+void \hyperlink{classHResults_a70efb9c0b0afaa22be7d29efb601291a}{setRtot} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Rtot)
+\item 
+void \hyperlink{classHResults_a0495a311c2af6707ab8a74b7a8adaff7}{setMvir} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Mvir)
+\item 
+void \hyperlink{classHResults_ae90ebd38d753f909d52396672dd3aa84}{setRvir} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Rvir)
+\item 
+void \hyperlink{classHResults_ad67d9d232544843e465c0d25a7139815}{setXCM} (\hyperlink{classVector3}{Vector3} xcm)
+\item 
+void \hyperlink{classHResults_ab8a80c15d74b17cd1ddfb056af585f85}{setVCM} (\hyperlink{classVector3}{Vector3} vcm)
+\item 
+void \hyperlink{classHResults_ab2f4c44def844143a8ac6e158e94c445}{setXMB} (\hyperlink{classVector3}{Vector3} xmb)
+\item 
+void \hyperlink{classHResults_ab9c92139174c77e0dbfd68aca55ea958}{setVMB} (\hyperlink{classVector3}{Vector3} vmb)
+\item 
+void \hyperlink{classHResults_aa7e6a6e1f0f8bcdea511540448e63fb6}{setNpart} (int npart, int type)
+\item 
+void \hyperlink{classHResults_a98894da316321425e9eb8d064b5ab9bf}{setMpart} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} mpart, int type)
+\item 
+void \hyperlink{classHResults_a7f5dec2fe246d2e35a315edc8c4d2349}{setLambda} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} lambda, int type)
+\item 
+void \hyperlink{classHResults_a3aea44b516fd1a68983fee0f3de77ea7}{setSigma} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} sigma, int type)
+\item 
+void \hyperlink{classHResults_a0c6431cb687fd3f06c2d0d7792d76e5c}{setJ} (\hyperlink{classVector3}{Vector3} J, int type)
+\item 
+void \hyperlink{classHResults_afd0c60a0b27e380ae766a3755461e769}{setE} (\hyperlink{classEigensystem3}{Eigensystem3} E, int type)
+\item 
+std::string \hyperlink{classHResults_af4b87d0a35443db45747a606b0a2549f}{toString} ()
+\begin{DoxyCompactList}\small\item\em output a HResult as string concatenate first all global values, then all halo type specific properties \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 35 of file HResults.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{HResults@{HResults}!HResults@{HResults}}
+\index{HResults@{HResults}!HResults@{HResults}}
+\subsubsection[{HResults}]{\setlength{\rightskip}{0pt plus 5cm}HResults::HResults ()}\label{classHResults_af0b4ffdf2d4406e4e4c7074df85b752a}
+
+
+Definition at line 33 of file HResults.cpp.
+
+\index{HResults@{HResults}!$\sim$HResults@{$\sim$HResults}}
+\index{$\sim$HResults@{$\sim$HResults}!HResults@{HResults}}
+\subsubsection[{$\sim$HResults}]{\setlength{\rightskip}{0pt plus 5cm}HResults::$\sim$HResults ()}\label{classHResults_a6b47e902f388186c8f41bcf8e71b8252}
+
+
+Definition at line 37 of file HResults.cpp.
+
+
+
+\subsection{Member Function Documentation}
+\index{HResults@{HResults}!setE@{setE}}
+\index{setE@{setE}!HResults@{HResults}}
+\subsubsection[{setE}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setE ({\bf Eigensystem3} {\em E}, \/  int {\em type})}\label{classHResults_afd0c60a0b27e380ae766a3755461e769}
+
+
+Definition at line 112 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRtype().
+
+\index{HResults@{HResults}!setJ@{setJ}}
+\index{setJ@{setJ}!HResults@{HResults}}
+\subsubsection[{setJ}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setJ ({\bf Vector3} {\em J}, \/  int {\em type})}\label{classHResults_a0c6431cb687fd3f06c2d0d7792d76e5c}
+
+
+Definition at line 97 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRtype().
+
+\index{HResults@{HResults}!setLambda@{setLambda}}
+\index{setLambda@{setLambda}!HResults@{HResults}}
+\subsubsection[{setLambda}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setLambda ({\bf real} {\em lambda}, \/  int {\em type})}\label{classHResults_a7f5dec2fe246d2e35a315edc8c4d2349}
+
+
+Definition at line 102 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRtype().
+
+\index{HResults@{HResults}!setMpart@{setMpart}}
+\index{setMpart@{setMpart}!HResults@{HResults}}
+\subsubsection[{setMpart}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setMpart ({\bf real} {\em mpart}, \/  int {\em type})}\label{classHResults_a98894da316321425e9eb8d064b5ab9bf}
+
+
+Definition at line 92 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRtype().
+
+\index{HResults@{HResults}!setMtot@{setMtot}}
+\index{setMtot@{setMtot}!HResults@{HResults}}
+\subsubsection[{setMtot}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setMtot ({\bf real} {\em Mtot})}\label{classHResults_a7d3c50c2af764f928f8891c9685ba495}
+
+
+Definition at line 47 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setMvir@{setMvir}}
+\index{setMvir@{setMvir}!HResults@{HResults}}
+\subsubsection[{setMvir}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setMvir ({\bf real} {\em Mvir})}\label{classHResults_a0495a311c2af6707ab8a74b7a8adaff7}
+
+
+Definition at line 57 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setNpart@{setNpart}}
+\index{setNpart@{setNpart}!HResults@{HResults}}
+\subsubsection[{setNpart}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setNpart (int {\em npart}, \/  int {\em type})}\label{classHResults_aa7e6a6e1f0f8bcdea511540448e63fb6}
+
+
+Definition at line 87 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRtype().
+
+\index{HResults@{HResults}!setNtot@{setNtot}}
+\index{setNtot@{setNtot}!HResults@{HResults}}
+\subsubsection[{setNtot}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setNtot (int {\em ntot})}\label{classHResults_acaef1c57079dba4a372549c01f596fec}
+
+
+Definition at line 42 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setRtot@{setRtot}}
+\index{setRtot@{setRtot}!HResults@{HResults}}
+\subsubsection[{setRtot}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setRtot ({\bf real} {\em Rtot})}\label{classHResults_a70efb9c0b0afaa22be7d29efb601291a}
+
+
+Definition at line 52 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setRvir@{setRvir}}
+\index{setRvir@{setRvir}!HResults@{HResults}}
+\subsubsection[{setRvir}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setRvir ({\bf real} {\em Rvir})}\label{classHResults_ae90ebd38d753f909d52396672dd3aa84}
+
+
+Definition at line 62 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setSigma@{setSigma}}
+\index{setSigma@{setSigma}!HResults@{HResults}}
+\subsubsection[{setSigma}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setSigma ({\bf real} {\em sigma}, \/  int {\em type})}\label{classHResults_a3aea44b516fd1a68983fee0f3de77ea7}
+
+
+Definition at line 107 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRtype().
+
+\index{HResults@{HResults}!setVCM@{setVCM}}
+\index{setVCM@{setVCM}!HResults@{HResults}}
+\subsubsection[{setVCM}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setVCM ({\bf Vector3} {\em vcm})}\label{classHResults_ab8a80c15d74b17cd1ddfb056af585f85}
+
+
+Definition at line 72 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setVMB@{setVMB}}
+\index{setVMB@{setVMB}!HResults@{HResults}}
+\subsubsection[{setVMB}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setVMB ({\bf Vector3} {\em vmb})}\label{classHResults_ab9c92139174c77e0dbfd68aca55ea958}
+
+
+Definition at line 82 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setXCM@{setXCM}}
+\index{setXCM@{setXCM}!HResults@{HResults}}
+\subsubsection[{setXCM}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setXCM ({\bf Vector3} {\em xcm})}\label{classHResults_ad67d9d232544843e465c0d25a7139815}
+
+
+Definition at line 67 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!setXMB@{setXMB}}
+\index{setXMB@{setXMB}!HResults@{HResults}}
+\subsubsection[{setXMB}]{\setlength{\rightskip}{0pt plus 5cm}void HResults::setXMB ({\bf Vector3} {\em xmb})}\label{classHResults_ab2f4c44def844143a8ac6e158e94c445}
+
+
+Definition at line 77 of file HResults.cpp.
+
+
+
+Referenced by Output::fillHRglobal().
+
+\index{HResults@{HResults}!toString@{toString}}
+\index{toString@{toString}!HResults@{HResults}}
+\subsubsection[{toString}]{\setlength{\rightskip}{0pt plus 5cm}std::string HResults::toString (void)}\label{classHResults_af4b87d0a35443db45747a606b0a2549f}
+
+
+output a HResult as string concatenate first all global values, then all halo type specific properties 
+
+
+
+Definition at line 121 of file HResults.cpp.
+
+
+
+References HTotal, Eigensystem3::toString(), and Vector3::toString().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{HResults_8h}{HResults.h}\item 
+\hyperlink{HResults_8cpp}{HResults.cpp}\end{DoxyCompactItemize}

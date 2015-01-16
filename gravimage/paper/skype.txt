@@ -1,0 +1,686 @@
+3
+[11:23:52 AM] Call to Justin Read, no answer.
+[3:58:33 PM] Call to Justin Read, duration 01:32.
+[4:28:35 PM] Call from Justin Read, duration 28:15.
+[7:37:07 PM] Justin Read: Hey. Forgot to say about the Merac, I'm supposed to keep this "relatively confidential" until the press release comes out in a couple of weeks so I guess we shouldn't tell too many people.
+[7:38:32 PM] Pascal Steger: Okay, my lips will be sealed :x :)
+Friday, March 22, 2013
+[5:02:43 PM] Justin Read: hi
+[5:02:47 PM] Justin Read: just invited you to G+
+[5:02:52 PM] Justin Read: hangout
+[5:02:56 PM] Justin Read: do you still have some time?
+[5:04:05 PM] Pascal Steger: sure.
+Tuesday, May 28, 2013
+[10:30:21 AM] * Justin Read sent you a voice message.
+Friday, June 14, 2013
+[4:54:14 PM] Missed call from Justin Read.
+Friday, September 20, 2013
+[3:59:00 PM] Justin Read: Hi
+[3:59:05 PM] Justin Read: I'm here but in hotel lobby
+[3:59:15 PM] Justin Read: let me see if I can find a quieter corner
+[3:59:40 PM] Justin Read: ok found a bench
+[3:59:46 PM] Justin Read: you there/ready?
+[4:01:50 PM] Justin Read: connection seems bad ):
+[4:02:02 PM] Justin Read: maybe we should just type-chat instead?
+[4:02:14 PM] Pascal Steger: Ok, lets try  :)
+[4:02:31 PM] Justin Read: Am in Tenerife
+[4:02:34 PM] Justin Read: sucky Spanish internet
+[4:02:42 PM] Pascal Steger: I sent you a mail with two plots.
+[4:03:01 PM] Justin Read: but we should try to chat every Friday / most Fridays from now on really. I'm quite keen for you to get your first paper(s) out.
+[4:03:31 PM] Justin Read: I mailed the SNF asking about an extension for you for a year and they said that in principle it's fine but I need to write a case with support from the ETH
+[4:03:45 PM] Justin Read: I also asked Simon if he will provide said report and am waiting for a reply.
+[4:04:00 PM] Justin Read: I know he gets a zillion E-mails a day so if I don't hear anything for a week I'll try again.
+[4:04:03 PM] Pascal Steger: Great!
+[4:04:19 PM] Justin Read: What is the deal with your military money by the way? The SNF will only fund up to four years maximum
+[4:04:45 PM] Justin Read: I'm not sure what the regulations are with regards length at the ETH. I imagine not very strict as most students seem to take quite a long time. Do you know?
+[4:05:00 PM] Pascal Steger: I calculated the tim, so far thee's 85 days of service piled up.
+[4:05:01 PM] Justin Read: I am confident we can finish in four and have some good papers out to help you get a postdoc.
+[4:05:21 PM] Pascal Steger: regulations for the time are max. 6 years
+[4:05:50 PM] Justin Read: OK. So funding aside that's no barrier. The main problem is the SNF four year limit, but with you military extra that gives us a little buffer too if we need it.
+[4:06:17 PM] Justin Read: I'm hoping to get your simulations published and this mass modelling stuff within 3.5 years so that it's there for people to see when you apply for jobs.
+[4:06:27 PM] Justin Read: To make that happen it's important to get the sims running quite soon.
+[4:06:42 PM] Justin Read: We should discuss today:
+[4:07:00 PM] Justin Read: 1. What the current barrier/problems are with the sims and how to make progress
+[4:07:45 PM] Justin Read: 2. Where we are with the mass modelling and how to finish up and get out papers I and II
+[4:07:49 PM] Justin Read: Let's start with 2.
+[4:08:16 PM] Pascal Steger: ok. mass modelling is working with Hernquist profiles. have a look at the mail for two plots.
+[4:08:41 PM] Pascal Steger: the first shows all recovered profiles, where we do very well.
+[4:08:54 PM] Pascal Steger: the second shows what we get with some artificial error on rho
+[4:09:33 PM] Pascal Steger: that one's showing a good agreement on lower radii, and an error towards higher radii.
+[4:09:57 PM] Justin Read: Just to clarify.
+[4:10:01 PM] Pascal Steger: this upturn towards higher values was what hindered the run for more than 500 iterations
+[4:10:25 PM] Justin Read: What are the dots/lines?
+[4:10:31 PM] Justin Read: What exactly goes into these plots?
+[4:10:42 PM] Pascal Steger:  The two plots in the attachment show calculated profiles (in dots) of analytic profiles (lines) for the Hernquist model. All units in Msun and pc.
+[4:11:23 PM] Pascal Steger: these plots take the analytic values for nu, rho, delta and try to calculate sigma_p
+[4:12:02 PM] Pascal Steger: any errors in Sigma (surface density) or sigma_r would show up
+[4:12:09 PM] Justin Read: OK. So it's a test of your integration routines
+[4:12:10 PM] Justin Read: ?
+[4:12:30 PM] Pascal Steger: that was what helped me to figure out where we got the beta wrong
+[4:12:46 PM] Justin Read: Ok. Good. This is an excellent first test to do.
+[4:13:03 PM] Justin Read: Now, when you add the noise is this what you mean by an "analytic input profile":
+[4:13:04 PM] Justin Read: ?
+[4:13:53 PM] Pascal Steger: uhm, no, i did exactly the same thing twice, but once set rho to the analytically known Hernquist profile, and in the other case set it to the analytical + some error
+[4:14:09 PM] Pascal Steger: .. to mimick the case of bin-wise changing values of rho
+[4:14:29 PM] Pascal Steger: and see whether the velocity dispersion is affected by that
+[4:14:43 PM] Justin Read: OK.
+[4:14:47 PM] Justin Read: But is "rho"
+[4:14:55 PM] Justin Read: the mass density, or the tracer density in these plots?
+[4:14:59 PM] Pascal Steger: mass density
+[4:15:14 PM] Justin Read: OK. And doesn't our prior demand that rho monotonically decreases?
+[4:15:46 PM] Justin Read: [I know you put in those wiggles by hand; just want to understand what will happen with rho when running real problems]
+[4:16:01 PM] Pascal Steger: this is a knob to turn: how much of an upturn do we want to accept.
+[4:16:16 PM] Pascal Steger: in this case, no prior was applied, as it was a one-time only calculation.
+[4:16:19 PM] Justin Read: How do you implement the montonicity prior on rho.
+[4:16:27 PM] Justin Read: when running the real chain
+[4:16:32 PM] Pascal Steger: in the real runs, the default now is, that we do not allow any upturns anymore.
+[4:16:46 PM] Justin Read: OK. And that's still quite efficient?
+[4:18:11 PM] Pascal Steger: (rho(r_{i+1}) - rho(r_i))/rho(r_i) < tol
+[4:18:28 PM] Justin Read: Ok. That's got to work, but isn't it quite slow?
+[4:18:38 PM] Justin Read: Why not use the trick
+[4:18:52 PM] Justin Read: rho_i = reverse[sum_j a_j]
+[4:19:07 PM] Justin Read: with a_j > 0
+[4:19:13 PM] Justin Read: or is that slow anyway?
+[4:19:23 PM] Pascal Steger: i feared it, but it turns out that as long as the initial density falloff is not too flat, and the stepsizes are not changed too quickly (aka with small stepsizes), this assumption is quite often fulfilled
+[4:19:31 PM] Pascal Steger: so no, we are not too slow now.
+[4:19:37 PM] Justin Read: OK.
+[4:19:50 PM] Justin Read: But did you ever try the above trick? I thought it was one of my more cunning ideas.
+[4:19:55 PM] Justin Read: Though perhaps it's not so cunning in practice?
+[4:20:12 PM] Pascal Steger: it seems the reverse sum is extremely sensitive to the first bin
+[4:20:33 PM] Justin Read: Ah. So it favours a delta function of sorts
+[4:20:37 PM] Justin Read: And gets stuck?
+[4:20:40 PM] Pascal Steger: whenever we change the central density a little, the whole density at higher radii is changed as well
+[4:20:50 PM] Justin Read: OK.
+[4:20:56 PM] Pascal Steger: i don't know whether we get a delta function this way
+[4:20:58 PM] Justin Read: Well if you have it working, let's run with it!
+[4:21:11 PM] Pascal Steger: indeed, that's what i'm doing now
+[4:21:19 PM] Justin Read: [I meant ~delta ... basically that the inner most bin holds the others to ransom as it were]
+[4:21:29 PM] Justin Read: Anyway, it sounds like all the problems should now be fixeD?
+[4:21:37 PM] Pascal Steger: [yes]
+[4:21:39 PM] Justin Read: Have you tried another run on the mock data with the new algorithm?
+[4:21:59 PM] Justin Read: From Gaia Challenge, as I recall we had two problems to solve:
+[4:22:09 PM] Justin Read: 1. Why beta(r) wasn't fully sampled / appeared biased
+[4:22:11 PM] Justin Read: and:
+[4:22:14 PM] Pascal Steger: yes, and it seems to run further now, even on gaia challenge datasets with only one population.
+[4:22:35 PM] Justin Read: 2. For the actual Fornax data, we hadn't correctly included the sample selection function when using data split by chemistry.
+[4:22:54 PM] Justin Read: So it sounds like you've solved 1. which is all we need for paper I
+[4:23:04 PM] Justin Read: 2. is needed when we apply our method to the real data, but not before
+[4:23:13 PM] Pascal Steger: problem 1 is solved: sig_p is higher now than beforehands for the same profiles that go into calculation, so beta does not have to go below 0 at small radii to make up for the deficiency
+[4:23:20 PM] Justin Read: [the GC mock data does not have any complex selection function]
+[4:23:31 PM] Justin Read: Great.
+[4:23:47 PM] Justin Read: So can you run the GC mock data and start putting the "final" plots into your paper draft?
+[4:23:57 PM] Justin Read: Which tests are we going to include in paper I?
+[4:24:13 PM] Justin Read: We could run an endless number, but we should draw the line somewhere.
+[4:24:19 PM] Pascal Steger: yes, under way
+[4:24:34 PM] Pascal Steger: i thought for the plots we discussed back when I was in Surrey:
+[4:24:59 PM] Pascal Steger: cusped, cored,triaxial for model
+[4:25:15 PM] Pascal Steger: single, double components, 3k and 30k tracers
+[4:25:23 PM] Pascal Steger: and in the appendix the tests>
+[4:25:35 PM] Pascal Steger: 1. convergence in MCMC, after 5k, 50k, 500k iterations
+[4:25:54 PM] Pascal Steger: 2. beta<0 prior
+[4:26:25 PM] Pascal Steger: 3. convergence in mass model: change potential with otherwise fixed values
+[4:26:36 PM] Pascal Steger: that' it.
+[4:26:51 PM] Pascal Steger: if need be, we can additionally add:
+[4:27:16 PM] Pascal Steger: 1. metallicity splitting measure (minimum for distance between gaussians in metallicity distribution)
+[4:27:41 PM] Pascal Steger: 2. any integration scheme check we need. i think we can skip them, as it's probably only important for us to see
+[4:27:49 PM] Pascal Steger: that's it
+[4:28:24 PM] Justin Read: I think the last 1. might be worth adding (we can always cut later); 2. is not necessary
+[4:28:29 PM] Justin Read: Otherwise the list looks perfect.
+[4:28:33 PM] Justin Read: Some quick clarifications.
+[4:28:56 PM] Pascal Steger: is this enough? do you think any more stuff needs to be in there?
+[4:29:19 PM] Justin Read: 1. Why do we pick 3K and 30K? It would be good to pick numbers comparable to, say, 1/10th Fornax sampling; Fornax sampling; 10x Fornax sampling
+[4:29:54 PM] Justin Read: [don't remember the number of spectra in Fornax now. It keeps growing]
+[4:30:19 PM] Justin Read: 2. When population splitting, is this 2x30K or 2x15K. I think the latter would be better/fairer.
+[4:30:42 PM] Justin Read: 3. Did you mean beta > 0 prior?
+[4:30:58 PM] Justin Read: Otherwise, I think the above is plenty for a very nice paper.
+[4:31:10 PM] Pascal Steger: 1. fine
+[4:31:20 PM] Justin Read: We should consider the trixial model though along the long axis, short axis, and something in-between.
+[4:31:33 PM] Pascal Steger: 2. 2x15k, to give the same number of "observed" stars
+[4:32:04 PM] Pascal Steger: 3. no, beta < 0 prior as this would give a means as to what the density is doing in case beta is "wrong"
+[4:32:37 PM] Pascal Steger: .. given that we expect positive values of beta at high radii after stripping & energy injection from inside the dwarf
+[4:33:47 PM] Justin Read: I think the beta < 0 prior result might be better off in paper II. It doesn't really make sense as a test unless the real data have beta < 0 and we are worried that this is due to some problem.
+[4:33:56 PM] Justin Read: Let's leave that one out for now = less work for you!
+[4:34:07 PM] Justin Read: For my first question, why 3K and 30K?
+[4:34:16 PM] Justin Read: Do you remember what the Fornax sampling is?
+[4:34:37 PM] Pascal Steger: Fornax sampling is about 3000 stars
+[4:34:48 PM] Justin Read: Ah OK
+[4:34:51 PM] Justin Read: Now it makes sense.
+[4:34:56 PM] Justin Read: Then we should do all tests at 3K sampling.
+[4:35:02 PM] Pascal Steger: and 30k would be the case for "perfectly overly optimistic" data
+[4:35:10 PM] Justin Read: right OK. Perfefct.
+[4:35:18 PM] Justin Read: Let's do all tests at 3K sampling = Fornax.
+[4:35:27 PM] Pascal Steger: ok
+[4:35:40 PM] Justin Read: Then we can do one of the models (spherical cusp, say) using 30K and 300 stars to show the effect of lower and higher sampling,
+[4:35:42 PM] Justin Read: Does that sound OK?
+[4:36:24 PM] Justin Read: Population splitting test will then be 2x 1500 stars.
+[4:36:39 PM] Justin Read: And we should use the Gaia Challenge test suite as much as possible.
+[4:36:52 PM] Justin Read: The remaining of the GC tests (including the effect of tides) can go in the Gaia Challenge paper.
+[4:37:00 PM] Pascal Steger: ok. 300 is rather low for 12 bins, so that might just serve as a possible way to get constraints on observation numbers to go down to - let's say - 100 pc in the core.
+[4:37:23 PM] Justin Read: If we use a fixed number of stars per bin
+[4:37:35 PM] Justin Read: Then lower/higher sampling will automatically change the number of bins
+[4:37:36 PM] Justin Read: right
+[4:37:37 PM] Justin Read: ?
+[4:37:40 PM] Pascal Steger: right.
+[4:37:42 PM] Justin Read: So more stars = finer resolution.
+[4:37:46 PM] Justin Read: I think this is the way to do it.
+[4:38:00 PM] Justin Read: Then we can show in an appendix what happens if we vary the number of stars in a given bin
+[4:38:19 PM] Justin Read: that would be a good test to add
+[4:38:34 PM] Justin Read: For our "default" model (i.e. the one where we also look at 30K and 300 stars).
+[4:38:47 PM] Pascal Steger: agree.
+[4:39:02 PM] Justin Read: At the moment, we use the density profile from the *same* stars as we obtain kinematics right?
+[4:39:17 PM] Pascal Steger: yes, we do not split in between.
+[4:39:42 PM] Justin Read: A final test worth adding might be what happens when the surface brightness is very well constrained (e.g. by photometric data) but we use more poorly sampled data for sigma_p
+[4:39:45 PM] Justin Read: does that make sense?
+[4:39:55 PM] Justin Read: We might like to try that also for the real Fornax data.
+[4:40:14 PM] Justin Read: The number of bins should be set by the kinematic sample, but we can have a much smaller error on the tracer density this way.
+[4:40:54 PM] Justin Read: I suspect that in the mock data tests this won't gain us much. If that's the case then there is no need to do this for the real data. But if tiny errors on the tracer density while maintaining large errors on the kinematics is useful then we could/should try this.
+[4:41:13 PM] Pascal Steger: makes sense.
+[4:41:25 PM] Justin Read: It would lead to an interesting trade-off because this trick cannot be used when population splitting. It's an advantage that comes from using a single population so we should discuss its usefulness.
+[4:41:48 PM] Justin Read: You should also show results for the default model with and without kurtosis.
+[4:42:00 PM] Pascal Steger: right. question there>
+[4:42:07 PM] Justin Read: I assume that you are now allowing beta' to vary just like beta.
+[4:42:47 PM] Pascal Steger: shall I add the two beta' (which is, the anisotropy profiles for kappa) as well? started implementation, goes parallel to normal betas, but takes some time to debug
+[4:43:10 PM] Pascal Steger: up to now, kappa is determined without beta'
+[4:43:22 PM] Justin Read: i.e. you assume beta' = 0
+[4:43:25 PM] Justin Read: ?
+[4:43:26 PM] Pascal Steger: yes
+[4:43:29 PM] Justin Read: Hmmm.
+[4:43:34 PM] Justin Read: Is there any justification for that?
+[4:44:04 PM] Pascal Steger: bad enough, there does not seem to be. at least tom was quite sure we needed to take into account these two terms
+[4:44:26 PM] Pascal Steger: .. i for example do not see a flat kappa=3 (isotropic case) over all radii
+[4:44:32 PM] Justin Read: two terms? You mean one per population?
+[4:44:37 PM] Pascal Steger: yes
+[4:44:37 PM] Justin Read: Isn't there one term for kappa?
+[4:44:54 PM] Justin Read: i.e. single population => beta and (if using kurtosis) beta'
+[4:45:28 PM] Pascal Steger: that's why adding higher orders might help only a limited amount, as there are always more terms from the generalized betas that enter as well..
+[4:45:44 PM] Justin Read: Right. I was never optimistic about it.
+[4:46:04 PM] Justin Read: I don't really want you to spend another week debugging. Esp. on something that is unlikely to yield improved constraints.
+[4:46:08 PM] Justin Read: How about we do the following.
+[4:46:24 PM] Justin Read: Run the "default" model with and without kurtosis but *assuming beta' = 0*.
+[4:46:53 PM] Justin Read: We know this to be wrong but we say in the paper that this is the most "optimistic scenario" since it will surely yield stronger constraints than allowing beta' to freely vary.
+[4:47:37 PM] Justin Read: If this "optimistic scenario" does not significantly reduce the errors, then we can conclude that kurtosis does not yield significant advantages (c.f. Tom's results that say essentially the same) and we run all other models without kurtosis.
+[4:47:43 PM] Justin Read: How does that sound?
+[4:47:57 PM] Justin Read: Or did you find already that the kurtosis (using beta' = 0) does yield improved constraints?
+[4:49:56 PM] Pascal Steger: kurtosis with beta' has another term that can yield a negative integrand for kappa^4 (and thus sometime generate an unphysical kappa, from numerics at the endpoints only, that would have been to be debugged). so we're still better off neglecting beta', and keep kappa \in Reals  :)
+[4:50:33 PM] Justin Read: OK. But did you understand my idea?
+[4:51:29 PM] Pascal Steger: yes. kurtosis with beta'=0 has the effect that "wrong" combinations get penalized twice when using kappa as well for determination of chi^2, so it certainly helps keeping around the good positions in phase space
+[4:51:47 PM] Pascal Steger: so we get some benefit from using kurtosis
+[4:52:17 PM] Justin Read: Do you know how much?
+[4:52:23 PM] Pascal Steger: i would propose to have the same case done with both paths and compare them, anyhow
+[4:52:54 PM] Justin Read: OK. For the moment let's do the following in this order:
+[4:53:26 PM] Justin Read: 1. Do the work for the *appendices* first. These are important tests (like the optimal number of stars per bin to use) that could affect the parameters we use for all other tests.
+[4:53:52 PM] Justin Read: 2. Run the "default model" - let's decide that this is the "spherical cusp" case.
+[4:54:09 PM] Justin Read: I'd like to see the results for 1. and 2. before we run everything else. Then:
+[4:54:29 PM] Justin Read: 3. Run the default model with 300, 3K, 30K stars (with automatic bin size variation).
+[4:54:42 PM] Justin Read: 4. Run the defaults model with/without kurtosis (assuming beta' = 0 for now).
+[4:55:17 PM] Justin Read: 5. Run the default model with "photometric error" on the tracer density (recall that the default model has 3K kinematic tracers)
+[4:55:27 PM] Justin Read: 6. Assuming all of the above is fine, we then run the rest.
+[4:55:30 PM] Justin Read: Sounds like a plan?
+[4:55:57 PM] Pascal Steger: very well.
+[4:56:11 PM] Justin Read: So up to point 6. the above is all single component modelling first.
+[4:56:17 PM] Justin Read: Very well = agree?
+[4:56:24 PM] Pascal Steger: :) yes
+[4:56:34 PM] Justin Read: You are welcome to disagree of course. If it's efficient to run everything simultaneously please do.
+[4:56:48 PM] Justin Read: But if not, then the above order will save time if we encounter more problems.
+[4:57:11 PM] Pascal Steger: so far i saw that whenever a nasty integration was going wrong / not properly tested, the overall result was changed in a kind of confusing way.
+[4:57:12 PM] Justin Read: What is the likely timescale for you to complete 1. and 2. and send me some plots?
+[4:57:14 PM] Justin Read: Next Friday?
+[4:57:25 PM] Pascal Steger: will do.
+[4:57:35 PM] Justin Read: OK but we are confident of the integration scheme now?
+[4:57:47 PM] Pascal Steger: yes, we are. see plots :)
+[4:57:50 PM] Justin Read: If so then let's aim to have results for 1. and 2. by next Friday if that's feasible.
+[4:57:50 PM] Justin Read: (0:
+[4:58:08 PM] Justin Read: Then we can aim to get the rest done ~a week after that while working together on the paper text.
+[4:58:14 PM] Justin Read: Submit paper I in October?
+[4:58:33 PM] Pascal Steger: lets see..
+[4:58:53 PM] Justin Read: Well OK. One step at a time. Let's focus first on 1. and 2.
+[4:59:52 PM] Pascal Steger: yes, that's fine. I'm away for 3 days in between (week after next, military), and have a TA duty, and a lecture. But will work on research for 4 days a week for sure.
+[5:00:23 PM] Pascal Steger: okay. for the second point: simulations.
+[5:00:42 PM] Pascal Steger: i'm on the search for a feasible equilibrium curve
+[5:00:56 PM] Pascal Steger: that is, a curve correlating T with n_H
+[5:01:37 PM] Pascal Steger: where the temperature T is falling from 10^4K towards 10 K, and the corresponding n_H at which cooling is most efficient
+[5:02:06 PM] Pascal Steger: this is needed for:
+[5:02:42 PM] Pascal Steger: 1. given Jeans mass M_J, find the corresponding Jeans length lambda_J
+[5:03:16 PM] Pascal Steger: 2. get the mass resolution elements out of this
+[5:03:39 PM] Pascal Steger: 3. and set the max level for baryons
+[5:04:19 PM] Pascal Steger: .. my method i used beforehands turns to be independent of the cooling functions i use, only considering the critical density of the Universe, thus missing some points.
+[5:04:58 PM] Pascal Steger: without non-equilibrium chemistry, this was not a big issue.
+[5:05:08 PM] Justin Read: Ah Ok. Yes that would be problematic.
+[5:05:13 PM] Justin Read: Did you talk to Romain about this?
+[5:05:17 PM] Justin Read: What did Aaron choose?
+[5:05:21 PM] Pascal Steger: yes, i did
+[5:05:22 PM] Justin Read: Surely that is what we want?
+[5:05:54 PM] Pascal Steger: aaron dis just set a levelmax of 21, cant remember on which grounds.
+[5:06:59 PM] Justin Read: what were you assuming?
+[5:07:09 PM] Justin Read: previously when almost no stars formed?
+[5:07:38 PM] Pascal Steger: yes, where most of the stars missed
+[5:07:56 PM] Pascal Steger: romain thinks our levelmax to be too low at the moment
+[5:08:03 PM] Justin Read: what is it?
+[5:08:11 PM] Pascal Steger: 19
+[5:08:17 PM] Justin Read: OK.
+[5:08:23 PM] Justin Read: So how about calculating it this way.
+[5:08:42 PM] Justin Read: We want 200 solar masses in a single cell --> star at the resolution limit
+[5:08:44 PM] Justin Read: right?
+[5:08:57 PM] Justin Read: And we know the minimum of our cooling curve is T ~ 30K
+[5:09:00 PM] Justin Read: is that about right?
+[5:09:29 PM] Pascal Steger: wait. we want stars to be of comparable mass to 120 Msun (which is the average stellar mass needed for 1 SN)
+[5:10:02 PM] Pascal Steger: and the Jeans mass (aka the mass in the smalles cell) to be resolved by 64 of these stellar particles
+[5:10:11 PM] Pascal Steger: that's what romain tells me, rule of thumb
+[5:10:24 PM] Justin Read: OK.
+[5:10:42 PM] Justin Read: I thought we were going to spawn 200 Msun star particles that go SNe with some probability given by the IMF.
+[5:11:18 PM] Justin Read: 120 Msun is not much different, but doesn't it make more sense to make the stars at the peak stellar mass since we are not getting the collisional dynamics right anyway.
+[5:11:31 PM] Justin Read: So any less massive than ~200 Msun is computationally expensive for little gain.
+[5:11:52 PM] Pascal Steger: right, so you would suppose a similar approach as we discussed for Leo-T?
+[5:12:04 PM] Justin Read: Er ...
+[5:12:10 PM] Justin Read: ?
+[5:12:15 PM] Justin Read: I don't remember discussing a special approach for Leo-T.
+[5:12:38 PM] Justin Read: I'm just saying that we should do something very similar to what Aaron did but with higher DM particle resolution. That's all really.
+[5:12:58 PM] Justin Read: Aaron spawned 200 Msun star particles. The reason being that any smaller than that is a fiction anyway.
+[5:13:11 PM] Justin Read: And at 200 Msun we still resolve individual SNe events.
+[5:13:35 PM] Pascal Steger: ok. will scale the corresponding M_J then.
+[5:13:50 PM] Justin Read: Or are you worried that a 200 Msun star could really be ten 20 Msun stars each of which should go SNe ... ?
+[5:15:19 PM] Pascal Steger: .. i do not have a good feeling for what a pop III star should do, so I don't really know. For what "normal" stars do, I would expect only 1 supernova from a heavy star inside a star cluster of that mass. so no, i do not think we should split any further
+[5:16:08 PM] Pascal Steger: .. since what we actually are forming, and following, at z=20, must be some pop III related star
+[5:16:33 PM] Justin Read: What do we assume for pop III at the moment?
+[5:16:38 PM] Justin Read: Same as Aaron?
+[5:16:47 PM] Pascal Steger: yes, same star formation recipe as aaron
+[5:16:47 PM] Justin Read: Or do we start with some seed metals thereby skipping pop III ?
+[5:16:56 PM] Justin Read: OK.
+[5:17:02 PM] Justin Read: Then let's do something like Aaron.
+[5:17:08 PM] Justin Read: Say M_J = 200 * 64 Msun [based on Romain's recipe]
+[5:17:12 PM] Pascal Steger: ok.
+[5:17:29 PM] Justin Read: And spawn 200 Msun star particles that go pop based on the IMF a la Aaron.
+[5:17:35 PM] Justin Read: Right?
+[5:17:40 PM] Justin Read: Then the minimum of the cooling curve is what?
+[5:17:40 PM] Justin Read: T_min = ?
+[5:18:31 PM] Pascal Steger: have to look it up for the correct number, but somewhere in the order of 10K
+[5:22:32 PM] Pascal Steger: .. well, the only plots i found were stopping at 100K, but the functional form of the cooling curves defined in the NEC module go beyong that
+[5:23:13 PM] Justin Read: Yes but that may be because you turn everything into stars long before it gets to 10K.
+[5:23:18 PM] Justin Read: Let's suppose it's 10K
+[5:23:29 PM] Justin Read: Then we have M_J from above and T_min = 10K.
+[5:23:44 PM] Justin Read: This allows us to calculate the peak density from the Jeans stability criteria.
+[5:23:45 PM] Justin Read: Right?
+[5:24:00 PM] Justin Read: And from that you should be able to calculate levelmax and the density/temperature etc. at which to form stars.
+[5:24:07 PM] Justin Read: What is our star formation criteria by the way?
+[5:24:26 PM] Justin Read: [hopefully the above calculation will give levelmax > 21 a la Aaron]
+[5:24:27 PM] Pascal Steger: > 10^5 m_H/cm^3
+[5:24:48 PM] Justin Read: Right. So does the above make sense? Is this the calculation you had in mind?
+[5:25:01 PM] Justin Read: Or am I missing something?
+[5:27:41 PM] Pascal Steger: indeed, that's basically what romain wanted to do. He's additionally taking into account that the curves for constant lambda_J and M_J in the T-n_H plane have to lie on the same spot of the cooling curve, but I think this is where he got his rule of thumb from.
+[5:28:20 PM] Justin Read: OK.
+[5:28:33 PM] Justin Read: So I think we should also try to get the simulations running by next Friday if that's not too much to ask.
+[5:28:42 PM] Justin Read: I would say we need to:
+[5:28:46 PM] Justin Read: 1. Do the above calculation;
+[5:29:01 PM] Justin Read: 2. Make sure the parameter file is all set up/correct for spawning M = 200 Msun stars.
+[5:29:29 PM] Justin Read: 3. Check that the levelmax that comes out is ~21. If it's less than this, or much greater I would worry as Aaron is pretty careful and probably thought that number through.
+[5:29:47 PM] Justin Read: Then we can set the pilot run going again with the new parameters/levelmax
+[5:29:49 PM] Justin Read: Sound good?
+[5:29:58 PM] Pascal Steger: it does.
+[5:30:01 PM] Justin Read: Perfect.
+[5:30:37 PM] Justin Read: So is it reasonable to hope that by next Friday we have items 1. and 2. for the mass modelling done; the levelmax calculation complete (hopefully agreeing with Aaron); and the simulations running again?
+[5:31:19 PM] Pascal Steger: i think that might be possible, yes
+[5:31:24 PM] Justin Read: Awesome!
+[5:31:29 PM] Justin Read: Let's aim for that
+[5:31:45 PM] Justin Read: Then we'll feel like paper I is well on the way and the simulations are running at last = much to celebrate.
+[5:31:49 PM] Justin Read: OK. I've got to run now.
+[5:31:56 PM] Justin Read: But let's meet same time next Friday?
+[5:32:14 PM] Pascal Steger: ok, bye. Sure, will be online at 3pm your time :)
+[5:33:32 PM] Justin Read: Perfect. See you then.
+[5:33:32 PM] Justin Read: J.
+Friday, December 6, 2013
+[4:22:31 PM] Justin Read: Hey
+[4:22:35 PM] Justin Read: you free to chat for a few mins?
+[4:22:45 PM] Justin Read: Just saw your E-mail. Looks good but couple of quick q's.
+[4:26:02 PM] Pascal Steger: too bad, my mic is not working for some reason
+[4:26:49 PM] Pascal Steger: writing ok? otherwise, will restart computer and see you again in 5
+[4:27:11 PM] Justin Read: My computer just crashed.
+[4:27:14 PM] Justin Read: Maybe that didn't help.
+[4:27:39 PM] Justin Read: OK we type
+[4:27:59 PM] Justin Read: Plots look encouraging, but I don't know how close the distributions are to the "right" answer.
+[4:28:22 PM] Justin Read: prof_beta_2, for example. Does that refer to a single or double component model?
+[4:28:30 PM] Pascal Steger: me neither. have you looked at the profile on the astrosim wiki?
+[4:28:38 PM] Justin Read: I assume the correct answer is beta = 0
+[4:28:58 PM] Justin Read: If so, it's doing better than previously with the MCMC which is encouraging.
+[4:29:07 PM] Justin Read: But why use the astrosim models rather than the Walker ones?
+[4:29:13 PM] Pascal Steger: correct answer for beta is 0, right, isotropic model. but for rho, have another form
+[4:30:11 PM] Pascal Steger: tried the hernquist models as i had the analytic formulas there for the integration routine check
+[4:30:53 PM] Pascal Steger: both plots for 2 component model
+[4:32:39 PM] Justin Read: Ah - OK.
+[4:32:49 PM] Justin Read: But you're not using the analytic form for these recoveries?
+[4:32:59 PM] Pascal Steger: no, i'm not
+[4:33:01 PM] Justin Read: How many parameters did you allow beta to explore?
+[4:33:11 PM] Pascal Steger: only to compare to the right model
+[4:33:19 PM] Justin Read: If you allow only one then it should be constant, so I guess you allowed 2 or 3?
+[4:33:25 PM] Pascal Steger: beta used 2 parameters
+[4:33:36 PM] Justin Read: be interesting to see the results with 1 and with 3/4 parameters
+[4:33:47 PM] Pascal Steger: sure
+[4:33:51 PM] Justin Read: But we should probably do those tests with the Walker models as that's what will go in the actual paper.
+[4:34:05 PM] Justin Read: Just writing a python program to plot the unit hernquist sphere. hold on.
+[4:34:12 PM] Justin Read: trying to force myself to use python ...
+[4:34:23 PM] Pascal Steger: nice :)
+[4:40:20 PM] Pascal Steger: fine, i guess with integration running i can step forward to use walkers models
+[4:41:15 PM] Justin Read: done the plot...
+[4:44:23 PM] Justin Read: Hmm.
+[4:44:31 PM] Justin Read: Seems like your recovered density is quite far off no?
+[4:45:00 PM] Justin Read: You get rho(~0.1) = 500
+[4:45:13 PM] Justin Read: And from the formula with M = 1 = G = a = gamma
+[4:46:39 PM] Justin Read: rho = 2/(4pi) * (0.1)^(-1) * (1+0.1)^(-3) ~ 2
+[4:47:04 PM] Justin Read: which is what my program finds
+[4:47:41 PM] Pascal Steger: hm. scaling in r could not account for that fact, either.
+[4:47:42 PM] Justin Read: Also you say that you worry about nu > rho. I'm really a bit confused about that.
+[4:47:51 PM] Justin Read: What is the mass profile that you put into the jeans equation?
+[4:47:55 PM] Justin Read: I thought that was rho
+[4:48:09 PM] Justin Read: So nu should not contribution in any situation to the cumulative mass ...
+[4:48:19 PM] Pascal Steger: i think that even scaling with half-light radius of visible tracers (with r_S)=0.1 does not mitigate this
+[4:48:38 PM] Pascal Steger: mass profile in jeans eq. is rho.
+[4:48:47 PM] Justin Read: If the stellar mass density is known; let's call this rho_* then we could demand rho > rho_* but rho_* is not likely to be nu either ...
+[4:48:59 PM] Justin Read: Did you scale the models on the astrosim site then?
+[4:49:17 PM] Pascal Steger: yes
+[4:49:25 PM] Justin Read: Ah OK. With what scalings?
+[4:49:41 PM] Pascal Steger: rscale = 1000 pc, Mscale = 10^6 Msun
+[4:50:06 PM] Pascal Steger: i think i have to overplot the rho(r) directly,
+[4:50:22 PM] Justin Read: That would be nice. Save me doing it !
+[4:50:46 PM] Pascal Steger: it seems the correct exponent would be (gamma-4), right?
+[4:51:15 PM] Justin Read: Yes. I fixed it now. Thanks for spotting it.
+[4:53:15 PM] Justin Read: I'm still confused about the nu << rho thing. Maybe you can explain that?
+[4:53:36 PM] Pascal Steger: we had the baryon prior from the disc case,
+[4:53:49 PM] Justin Read: ah so then by "nu" you really mean what I call rho_*
+[4:54:09 PM] Justin Read: Ah ah .. Ok. So the rho you use is rho_tot = rho_* + rho
+[4:54:10 PM] Justin Read: ?
+[4:54:37 PM] Justin Read: In which case I think for the dwarfs, we can safely set rho_* ~ 0. Though actually this might be quite useful for Fornax. But for these tests for now, I think you can just set rho_* = 0.
+[4:55:07 PM] Justin Read: But rho_* should not be tied to nu. They may not be connected in practise so best to keep nu as the tracer density and rho_* as a min-density prior on rho
+[4:55:49 PM] Pascal Steger: ok. and rho_* >= nu, as well?
+[4:56:16 PM] Justin Read: No. the normalisation of nu is completely arbitrary so we should not constrain it. It cancels in the equations.
+[4:56:22 PM] Justin Read: This is why any prior on nu is a bit odd.
+[4:57:01 PM] Pascal Steger: ok. fine. i see. i guess i just introduced nu to be normalized to match rho_* in the center, assuming we had a 100% coverage there. will drop this, then.
+[4:57:17 PM] Justin Read: Yes. I think that sounds dangerous.
+[4:57:45 PM] Pascal Steger: .. which will not change that much, as no models were rejected due to this prior in the second run, as far as i can tell
+[4:58:13 PM] Justin Read: I would leave nu to be free and use rho_* as an entirely separate prior on rho. It may be that in some special circumstance (star cluster for example) nu = rho_* = rho.
+[4:58:17 PM] Pascal Steger: it was a problem with the one component only run, as there nu aka rho_* was getting close to rho
+[4:58:35 PM] Justin Read: But in general, we should keep nu as a *tracer* density and rho as the symbol describing the mass density.
+[4:58:36 PM] Pascal Steger: (exactly)
+[4:58:59 PM] Justin Read: OK Good. Did you manage to overplay rho analytic on your figures?
+[4:59:35 PM] Pascal Steger: not yet. radius is scaled as well, and an internal calculation assumed this to be dimensionless.
+[5:03:07 PM] Justin Read: OK. Let me know when you have it. I'm quite keen to see this working as once it is I'll know the paper will follow shortly. A bit nervous that it's not quite working yet and worried that this could drag on ... Hoping that multinest remains a good idea ...
+[5:03:56 PM] Pascal Steger: I do not think this will drag too much. most of the time went into enabling hernquist in 2 component mode.
+[5:04:08 PM] Pascal Steger: so possibly i'll switch to Walker data now.
+[5:04:23 PM] Pascal Steger: and work in physical units throughout.
+[5:05:16 PM] Pascal Steger: i still have the list of figures needed for the paper, and will work them through
+[5:05:42 PM] Pascal Steger: i think i'll get to employ multinest better as i get along
+[5:06:23 PM] Pascal Steger: when would you like to meet on 17th?
+[5:06:33 PM] Justin Read: OK. I hope you feel that it was worth it and that it is outperforming the MCMC we had previously.
+[5:06:51 PM] Pascal Steger: it certainly traces more of the parameter space.
+[5:07:02 PM] Justin Read: I should get to the ETH on the 17th by lunchtime so we can meet for lunch and get cracking. I've kept the day free to work with you.
+[5:07:20 PM] Pascal Steger: and the likelihood it's finding is getting better for the same number of iterations used, so it's certainly worth it
+[5:07:49 PM] Pascal Steger: great, thanks, will meet around 1245 at the bus stop Hoenggerberg?
+[5:08:43 PM] Justin Read: My flight gets in at 11.40am then have to get over to Honggerberg. That sounds about right. But I can just come up to the office as soon as I get there.
+[5:08:55 PM] Justin Read: Are you going to overplay the analytic curve now or are the units all screwy?
+[5:09:54 PM] Pascal Steger: units are fine from read-in to output, but missing in the analytic formulas. some of them are depending on each other, and i think it's better to get it done consistently from the beginning. will take ~30min..
+[5:10:27 PM] Pascal Steger: just come by my office, then :)
+[5:10:47 PM] Pascal Steger: (ehm, that last one was not for in 30min :))
+[5:11:26 PM] Justin Read: OK. Ping me some plots when you have it all self-consistently set up. Hopefully it now works.
+[5:11:38 PM] Justin Read: Curious to start seeing the results come in for single versus double component.
+[5:11:58 PM] Justin Read: It sounds like unfortunately, some black magic remains in multinest just as in MCMC, but at least it's faster.
+[5:12:51 PM] Pascal Steger: @parallel execution: not yet working. do you know whether alex has experience with setting up and testing mpi libraries?
+[5:14:30 PM] Pascal Steger: @simulations: some black magic there as well. i do not previously know the max number of cells, so have to tweak this parameter on the fly.
+[5:15:11 PM] Justin Read: For the simulations, please talk to Romain and if he doesn't respond let me know and I'll ping Oscar.
+[5:15:37 PM] Pascal Steger: at the moment, have a dm only sim (without the advected passive variable) run to z=30 and crashing (memory), so need to get down in max cell number..
+[5:15:42 PM] Pascal Steger: ok, will do
+[5:15:47 PM] Justin Read: There should be simple solutions to things like that. I'm sorry I don't know myself (going to run my first Ramses simulations next week), but Oscar or Romain will know for sure and this ought to save you some significant time.
+[5:16:18 PM] Justin Read: One thing that might be of interest to you is that the python analysis framework PyNbody now supports RAMSES: https://code.google.com/p/pynbody/
+[5:16:36 PM] Justin Read: I'm going to start using it for my analysis as then I can chop and change between Ramses/SPHS quite easily.
+[5:16:57 PM] Justin Read: But if you have all your own tools and these work, then don't waste time on this now.
+[5:17:34 PM] Justin Read: As for MPI libraries, that's what IT services are there for. If you're running on Brutus then ask them for help; if on darkside physics IT should do it for you etc.
+[5:17:55 PM] Justin Read: Is it just installation that's the problem? You shouldn't need to install MPI libraries - that's done for us by IT.
+[5:18:04 PM] Justin Read: And they ought to be already installed on darkside and Brutus.
+[5:19:08 PM] Pascal Steger: mpi libraries are fine, but the mpi-enabled multinest libraries (as suggested and built according to Vincent) are not being used properly.. will pester him again, then. up to now, not much investigated, was a second order "nice to have".
+[5:19:20 PM] Pascal Steger: thanks for your hints
+[5:20:04 PM] Pascal Steger: (going ahead with the analytic functions)
+[5:21:02 PM] Justin Read: OK. Don't worry about parallel yet if it's fast enough in serial. I would worry about that when it becomes mission critical. At least it's there if we need it.
+[6:00:22 PM] Pascal Steger: gave it a shot, shape looks as expected, but at a ~constant factor off in density :(
+[6:00:35 PM] Pascal Steger: see email
+[6:00:49 PM] Justin Read: Hi, 
+
+OK. I guess you should chase the bug down. Or do you think it will just go away when you switch to the Walker data? If the latter is the case, then just switch over and try one of the Gaia Challenge single component tests. 
+
+J>
+[6:01:03 PM] Justin Read: Maybe you can quickly run a Walker test with the right units throughout now?
+[6:01:08 PM] Justin Read: Or is the bug something that will apply there too?
+[6:02:28 PM] Pascal Steger: Walker should not be affected by a bug in the analytic/plotting routines, but would be if density was scaled erroneously in the beginning. guess it's a good possibility to encircle it.
+[6:03:09 PM] Justin Read: OK. It ought to be something silly if the integration routines all work and if the final chisq coming from multinest is now sensible.
+[6:03:35 PM] Justin Read: It might be good to check it's not something to do with the rho_* constraint (that you should switch off for now).
+[6:04:18 PM] Pascal Steger: ok. switched off. will start a Walker run now.
+[6:06:17 PM] Justin Read: OK. How long do you think till we have a result therE?
+[6:06:59 PM] Pascal Steger: last run with Hernquist on 2 populations was taking around 3 hours.. probably in the same order of magnitude
+[6:07:22 PM] Pascal Steger: + some adaptation time for new parameters
+[6:14:30 PM] Justin Read: OK. I'll be at home by then, but still curious to see the results if you have them!
+[6:14:38 PM] Justin Read: .png files are best as they are smartphone ready ():
+[6:14:55 PM] Pascal Steger: will do
+[7:50:13 PM] Pascal Steger: Walker models still running, increasing number of beta prior violations. Have to go. Bye and thanks again.
+Monday, January 20, 2014
+[4:08:17 PM] * Justin Read sent file prof_nr.png.
+[4:09:09 PM] Justin Read: n(r) in bins?
+[4:09:13 PM] Justin Read: 0 < n < 3
+[4:09:25 PM] Justin Read: dn/dr in bins?
+[4:10:36 PM] Justin Read: rho = rho_0 r^{-n(r)}
+[4:13:15 PM] Justin Read: n(r) = \int_0^r q(r') dr'
+[4:13:36 PM] Justin Read: --> n(r) monotonic increasing
+[4:13:42 PM] Justin Read: --> rho(r) monotonic decreasing
+[4:14:04 PM] Justin Read: --> "Primitive variable" --> q(r)
+[4:14:06 PM] Justin Read: NOT n(r)
+[4:14:12 PM] Justin Read: q(r) === dn / dr
+[4:14:22 PM] Justin Read: Therefore regularisation is EASY
+[4:14:41 PM] Justin Read: to regularise === min < q(r) < max
+[4:14:45 PM] Justin Read: min = -max
+[4:14:51 PM] Justin Read: max = ?? 10
+[4:15:17 PM] Justin Read: Final thing
+[4:15:25 PM] Justin Read: n(r) > 3 @ rcrit
+[4:15:36 PM] Justin Read: rcrit == ~ 10 * rhalf
+[4:15:42 PM] Justin Read: But ...
+[4:15:50 PM] Justin Read: rcrit ~ 1000 rhalf
+[4:15:52 PM] Justin Read: --> infty
+[4:16:59 PM] Justin Read: n(r) = \int_0^r q(r') dr' EASY --> linearly interpolated
+[4:17:09 PM] Justin Read: [==> analytic]
+[4:17:21 PM] Justin Read: Final thing ...
+[4:17:35 PM] Justin Read: Maybe we should have a couple or more bins --> 5 kpc
+[4:17:57 PM] Justin Read: To avoid bias from our prior
+[4:20:47 PM] Justin Read: n(r) = -dlnrho / dlnr
+[4:21:26 PM] Justin Read: rho = rho_0 (r/rhalf)^{-n(r)}
+[4:23:03 PM] Justin Read: n --> q
+[4:25:15 PM] Justin Read: plot: beta*(r); n(r); rho(r)
+[4:25:26 PM] Justin Read: sanity plot: nu(r); sigma_p(r)
+[4:26:23 PM] Justin Read: nu --> TRACER density
+[4:26:31 PM] Justin Read: MATTER density --> rho
+[4:26:37 PM] Justin Read: rho = rho_* + rho_dm
+[4:26:42 PM] Justin Read: (assuming no gas ... )
+[4:26:50 PM] Justin Read: rho_* = sum_i^N nu_i
+[4:27:32 PM] Justin Read: MOCK: nu_i = rho_*
+[4:27:39 PM] Justin Read: [for one component mock]
+[4:27:53 PM] Justin Read: Real data: nu_i === SUBSET of all stars
+[4:28:11 PM] Justin Read: AND rho_* === photometric measure of stellar mass (via population synthesis models)
+[4:28:44 PM] Justin Read: MOCK data -- EASY ! know rho_* exactly
+[4:28:51 PM] Justin Read: BUT mock data, rho_* is usually negligible
+[4:30:45 PM] Justin Read: L_*(R)
+[4:31:14 PM] Justin Read: rho_* = MtoL * L_*(R)
+[4:31:22 PM] Justin Read: MtoL ---> Stellar population synthesis
+[4:32:05 PM] Justin Read: rho_tot = rho_* + rho_dm
+[4:32:12 PM] Justin Read: MOCK --> rho_tot >> rho_*
+[4:32:20 PM] Justin Read: REAL DATA usually rho_tot >> rho_*
+[4:32:26 PM] Justin Read: Fornax rho_* is significant
+[4:32:53 PM] Justin Read: WANT PRIOR rho_tot > rho_*
+[4:33:02 PM] Justin Read: BUT this has nothing to do with nu
+[4:33:09 PM] Justin Read: nu is just the tracer density
+[4:33:18 PM] Justin Read: its normalisation is "irrelevant"
+[4:33:21 PM] Justin Read: BUT!!
+[4:35:02 PM] Justin Read: rho_tot > rho_*
+[4:35:06 PM] Justin Read: == yes
+[4:35:17 PM] Justin Read: BUT this is a statement about rho_tot NOT about nu
+[4:35:38 PM] Justin Read: rho_tot = rho_0 (r/rhalf)^(-n(r))
+[4:36:03 PM] Justin Read: Easiest way to implement the prior
+[4:36:06 PM] Justin Read: IS:
+[4:36:27 PM] Justin Read: rho_dm = rho_0 (r/rhalf)^(-n(r))
+[4:36:34 PM] Justin Read: rho_tot = rho_dm + rho_*
+[4:36:53 PM] Justin Read: IF rho_* = 0 or rho_* is very small --> rho_tot = rho_dm as before
+[4:37:08 PM] Justin Read: BUT if rho_* is significant --> we probe the DARK MATTER with our non para model
+[4:37:12 PM] Justin Read: which is what we want!
+[4:37:50 PM] Justin Read: TRUE: rho_* = sum_i nu_i [ + gas]
+[4:38:56 PM] Justin Read: rho_* (R) --> assumed to be MtoL * L_*(R)
+[4:39:02 PM] Justin Read: But MtoL comes from modelling
+[4:40:06 PM] Justin Read: rho_* can also have errors --> marginalise over those
+[4:42:52 PM] Justin Read: L_* (R)
+[4:43:17 PM] Justin Read: rho_* (R) = MtoL * L_*(R)
+[4:43:25 PM] Justin Read: 0 < MtoL < range
+[4:46:19 PM] Justin Read: To determine the stellar density, we use a number density
+proﬁle from Coleman et al. (2005) extending to 4590. We
+linearly extrapolate the proﬁle out to 6000—a physical radius
+of 3.9 kpc at our assumed distance. We also extrapolate the
+proﬁle inward at constant density from 90 to 1.
+To convert to a more familiar surface brightness proﬁle
+we apply an arbitrary zero-point shift in log space, adjusting
+this number so that the integrated proﬁle returns a luminosity
+consistent with the value listed in Mateo (1998). Adopting an
+ellipticity of e = 0.3 (Mateo 1998), we deproject under the
+assumption that surfaces of constant luminosity are coaxial
+spheroids (Gebhardt et al. 1996), and for an assumed inclination
+of i = 90◦.
+[4:46:32 PM] Justin Read: Jardel & Gebhardt 2012
+[4:46:35 PM] Justin Read: But .. !
+[4:46:42 PM] Justin Read: I would E-mail Mark Wilkinson for his opinion
+[4:47:58 PM] Justin Read: http://iopscience.iop.org/0004-637X/746/1/89/pdf/0004-637X_746_1_89.pdf
+[4:48:03 PM] Justin Read: Cute extra ..
+[4:48:12 PM] Justin Read: Look at maximum enclosed mass at the very centre
+[4:48:22 PM] Justin Read: --> limit on a potential IMBH at the centre
+[4:53:14 PM] Justin Read: http://adsabs.harvard.edu/abs/2014arXiv1401.1501N
+Tuesday, January 21, 2014
+[10:55:15 AM] Pascal Steger: Hi Justin, problem with q(r): you wanted q bounded by min < q(r) < max,  min=-max. This does not give n(r) = int q(r) monotonically increasing, as q(r) <0 allowed. If I am to set min=0, then this would give us monotonically increasing n(r).
+[10:55:25 AM] Pascal Steger: Do we really want only increasing n(r)?
+[10:55:53 AM] Pascal Steger: That would mean no model with cusp in center could possibly flatten out at higher radii.
+[10:57:09 AM] Justin Read: Sorry you're right about the bounds on q(r)
+[10:57:10 AM] Pascal Steger: The analytic profiles so far encountered live up to this assumption, but do we want to really disregard any models with constant density further out?
+[10:57:16 AM] Justin Read: These should be 0 < q < max
+[10:57:56 AM] Justin Read: Hmmm
+[10:58:00 AM] Justin Read: I take your point too.
+[10:58:22 AM] Justin Read: Have to pop out for 5 mins; more when I get back.
+[10:58:28 AM] Justin Read: We want rho(r) to monotonically decrease.
+[10:58:34 AM] Justin Read: That's the real constraint here.
+[10:58:39 AM] Justin Read: The rest should be only to make that happen.
+[10:58:56 AM] Justin Read: But you're right that n(r) monotonically increasing is overly restrictive.
+[10:59:12 AM] Pascal Steger: up to now (what I told you when you were visiting Zurich) we do:
+[10:59:20 AM] Pascal Steger: 1. sample n(r) in all the allowed space
+2. calculate rho starting from rho(r_half),
+
+log(rho(r)) = log(rho(r_half)) + int_{r_half}^r -n(r) dr     if r>r_half
+log(rho(r)) = log(rho(r_half)) - int_{r}^r_half -n(r) dr     if r<r_half
+[11:00:02 AM] Pascal Steger: This gives monotonically decreasing log(rho), and thus monotonically decreasing rho
+[11:00:28 AM] Pascal Steger: .. but perhaps I should integrate over d log(r) here, just saw this one
+[11:06:55 AM] Justin Read: Ah
+[11:07:06 AM] Justin Read: sorry for leading you astray then. It sounds like you're ahead of me on this one.
+[11:07:16 AM] Justin Read: Let me think about it for 5mins.
+[11:26:29 AM] Justin Read: Hi
+[11:26:42 AM] Justin Read: OK. I understand what you're doing now and it looks very nice.
+[11:26:53 AM] Justin Read: Maybe we should just run with this for now and accept that n(r) will wiggle a bit?
+[11:27:17 AM] Justin Read: That would be more powerful as we apply fewer constraints, requiring the data to smooth our n(r) rather than our prior.
+[11:27:19 AM] Justin Read: What do you think?
+[11:27:46 AM] Justin Read: Based on your previous plots, the more important thing is to add a few more bins at large radius and apply the n > 3 prior only for very large r.
+[11:27:48 AM] Justin Read: Deal?
+[11:28:07 AM] Pascal Steger: all right :)
+[11:28:20 AM] Justin Read: Then I guess you can start running some models today?
+[11:28:39 AM] Pascal Steger: yes, will do now, without any prior on q
+[11:28:52 AM] Justin Read: Be great to have some plots today if at all possible. Ideally for a spherical test case with single/double component and ... (utopia) a triaxial test
+[11:29:14 AM] Justin Read: If you could send ASCII files as previously, I can use my plotting routines to mess about with style choices.
+[11:29:21 AM] Pascal Steger: ok
+[11:29:28 AM] Justin Read: Is the above at all realistic?
+[11:29:41 AM] Justin Read: Do you understand what I mean about adding a few extra bins at large r for n(r) ?
+[11:30:49 AM] Pascal Steger: yes, I planned to add additional 3 bins at 2*rmax, 4*rmax, 8*rmax and allow all n(r) between 0 and 6, and interpolate to a very high value n(r) > 3 at least for 100 rmax
+[11:30:58 AM] Justin Read: Perfect!
+[11:31:19 AM] Pascal Steger: takes some time to implement, but should run by tonight, and possibly give preliminary plots after some 1000s of iterations.
+[11:31:26 AM] Justin Read: OK.
+[11:31:31 AM] Justin Read: And the double component models?
+[11:31:52 AM] Pascal Steger: .. this is already running on double components.
+[11:32:23 AM] Pascal Steger: have to restrict the same (Walker) mock data to just run on 1 population (switch already there, so really only a small restart)
+[11:32:29 AM] Pascal Steger: possibly in parallel, anyhow
+[11:32:36 AM] Justin Read: Ooh. Do you have a preliminary double component plot, even if with the old n(r) binning?
+[11:32:38 AM] Justin Read: I'll make a placeholder plot for my proposal based on your previous runs. I can drop in the new ones once they're ready.
+[11:33:08 AM] Pascal Steger: can try to unearth it :)
+[11:33:55 AM] Justin Read: I have all your previous runs so no need to unearth those. If you ran a double component with the new code but the n(r) binning from before Xmas, then that would be nice to see. Otherwise, better to spend your time on the new stuff.
+[11:34:28 AM] Pascal Steger: new stuff, it is then
+[11:34:36 AM] Justin Read: Good good.
+[11:34:50 AM] Justin Read: Just curious to see how strong the constraints are with two components. Quite exciting really (0:
+[11:35:02 AM] Justin Read: With one component we do OK, but the errors are large (as expected)
+[11:35:23 AM] Justin Read: Erik Tollerud is currently collecting more stellar data for LeoT by the way ..
+[11:35:34 AM] Justin Read: And I produced this for my current proposal:
+[11:36:01 AM] * Justin Read sent file pristine.pdf.
+[11:36:26 AM] Justin Read: This is a simple non-cosmo model of LeoT like we spoke about previously (run in Ramses).
+[11:36:49 AM] Justin Read: Left is the mode; middle is LeoT and right is the dark matter density profile before (black) and after (red) star formation and feedback.
+[11:37:02 AM] Pascal Steger: great
+[11:37:13 AM] Justin Read: A small core (~200pc) forms in this galaxy that is ~10^8 Msun, but it's much smaller than the one in the 10^10 system that we modelled in Teyssier et al. 2013.
+[11:37:23 AM] Justin Read: So it may be that in your simulations, we see almost no core at all ...
+[11:38:05 AM] Pascal Steger: how is the elapsed time comparing to the crossing time of the modeled dwarf? Is this a settled system already? Looks like ongoing sloshing..
+[11:38:45 AM] Justin Read: Meaning that as we push below ~10*8Msun in dynamical mass we can hope to find "pristine" dark matter. This is a cool result. Mass modelling LeoT would prove we are on the right track. If this is all correct, then there must be literally thousands of galaxies like LeoT but a little less massive that have "pristine" DM cusps, almost no stars, and lots of gas (0:
+[11:39:17 AM] Justin Read: You're right to worry about sloshing. This core seems to stick around for many Gyrs. But then there is no cosmological accretion/mergers/etc. so the simulations are certainly idealised.
+[11:39:22 AM] Justin Read: Your work will do this better.
+[11:40:06 AM] Justin Read: And if we don't see cusp-->core transformations, then we should run larger boxes pushing up an order of magnitude in dwarf galaxy mass until we do see their onset (we can publish what we have first, of course though - perhaps including these simple isolated galaxy tests to show what happens at larger mass).
+[11:40:34 AM] Justin Read: So if those simulations are running, that's good news. I think this is very timely and there could be some competition out there to do this also.
+[4:09:00 PM] Pascal Steger: short update: 3 extrapolation bins added and used for calculation of the integrals as well, but not used for comparison to data (as we really have no data there). Chasing a new bug for enormous errors on nu.
+[4:28:10 PM] Justin Read: Great.
+[4:28:12 PM] Justin Read: Keep me posted.
+[5:07:01 PM] Pascal Steger: nu had a big overall offset due to an error in the determination of the integration constant during projection from 3D model to the 2D surface density compared to data. The integration routine did not use the interpolated n(r) of the nu_i, either, so I replaced it with the one already in use for the overall surface density calculation. Turns out this one is off by 1 bin (I used 4 bins extrapolation beforehands, now I am telling it +3 bins), so it needs additional care. Will do this first thing in the morning. Cheers.
+[5:32:14 PM] Justin Read: OK. Glad you know where the issue lies
+Thursday, January 23, 2014
+[4:51:02 PM] Pascal Steger: Hi. short update:
+[4:51:31 PM] Pascal Steger: projection from 3D density to surface density is now working with all n(r) parameters
+[4:52:06 PM] Pascal Steger: bug concerning length of surface density removed (the one last mentioned)
+[4:52:36 PM] Pascal Steger: new integration routine for projection of starkly decreasing function done
+[4:53:00 PM] Pascal Steger: definition of new extended radii implemented, to be used for finer graining
+[4:53:31 PM] Pascal Steger: n(r) interpolation done in log(r) space, and integration for rho over dlog(r)
+[4:54:32 PM] Pascal Steger: still one problem left with sig_p determination: depending on the integration scheme used (spline integration or using the new integration routine borrowed from projection), I get differing results.
+[4:54:51 PM] Justin Read: It sounds like there was still more to be done than we thought.
+[4:55:10 PM] Justin Read: I guess you can check those integration routines on the known analytic input nu(r)/sigp(R)?
+[4:55:23 PM] Pascal Steger: will do, was the next planned step
+[4:55:49 PM] Pascal Steger: .. and yes, the addition of 3 bins changed the way of how to extrapolate towards infinity, so a second iteration had to be done
+[4:56:13 PM] Pascal Steger: but this is now all up, and it gets into the realm of some 20% differences
+[4:57:04 PM] Justin Read: I guess I'm surprised by that ...
+[4:57:05 PM] Justin Read: ?
+[4:57:29 PM] Justin Read:  A second iteration of code development, or a second iteration within the code to match derivatives?
+[4:57:55 PM] Pascal Steger: second iteration of development, changes that were not obvious in the first guess
+[4:58:08 PM] Justin Read: Surely the outer bins behave just like more of the inner ones?
+[4:59:09 PM] Pascal Steger: yes, they do, but the previous extension to infinity was using extrapolation from the inner bins, inventing information, whereas now I let the MCMC find some values at higher radii, and use those independently from the inner part
+[4:59:25 PM] Pascal Steger: less cheating, this way :)
+[5:00:03 PM] Justin Read: That sounds much better, yes
+[5:00:07 PM] Pascal Steger: going back to 1 pop and analytic values, now
+[5:00:37 PM] Justin Read: hope we can iron out these final creases soon
+[5:00:47 PM] Justin Read: Do we have a multipop triaxial test case by the way?
+[5:01:21 PM] Pascal Steger: I have the one by Walter, if I remember correctly
+[5:02:19 PM] Pascal Steger: with only one component of stars, I'm sorry
+[5:02:52 PM] Justin Read: Don't worry. Let's try to do triaxial single component; and a spherical single/double
+[5:03:00 PM] Justin Read: but we need to get the code working first :/
+[5:03:06 PM] Justin Read: Do you think it's close now?
+[5:03:21 PM] Justin Read: Sorry I keep shifting the goal posts a bit, but I think we needed this extra change to n(r)
+[5:04:23 PM] Pascal Steger: from the experience so far, I expect not more than one consistency check and adaptation to analytic curves, which was previously accomplished in 1.5 days or so
+[5:04:43 PM] Pascal Steger: I'm sure the above issue is fixed tomorrow :)
+[5:08:10 PM] Justin Read: I hope so!
+[5:08:14 PM] Justin Read: Fingers crossed
+Friday, January 24, 2014
+[1:28:16 PM] Pascal Steger: Hi
+[1:28:41 PM] Pascal Steger: Analytic curves fit for below r_half now, and show some dropping to higher radii, but quite modest
+[1:29:02 PM] Pascal Steger: I now analyze two component Walker models
+[1:29:47 PM] Pascal Steger: errors on nu persist to be large, due to a sampling preferring high normalizations of nu.
+[1:30:13 PM] Pascal Steger: I will either dial this one down, or just let it run for longer, s.t. it can find the right region
+[1:30:34 PM] Justin Read: Ah OK. So it's just not finding the favoured region of parameter space yet?
+[1:30:53 PM] Justin Read: I would keep running. If errors on nu are large, then MultiNest will eventually works its way out of that problem no?
+[1:30:54 PM] Pascal Steger: yes, that's a penalty on speed of convergence
+[1:31:03 PM] Pascal Steger: yes, it will
+[1:31:06 PM] Justin Read: Great!
+[1:31:12 PM] Justin Read: Looking very much forward to seeing the result.
+[1:31:20 PM] Justin Read: Do you have any single component results?
+[1:31:42 PM] Pascal Steger: just the analytic comparison for the 1 component Hernquist model.
+[1:31:54 PM] Pascal Steger: .. but this one was not run to more than one iteration :)
+[1:31:55 PM] Justin Read: Might be worth running the single component in parallel.
+[1:31:58 PM] Justin Read: Are you running on Brutus?
+[1:32:02 PM] Pascal Steger: ok, will do
+[1:32:06 PM] Pascal Steger: no, on darkside
+[1:32:11 PM] Justin Read: We have lots of CPU on Brutus / Monch if that's an issue.
+[1:32:27 PM] Justin Read: And if anyone else is clogging up darkside, you can boot them off (I said so).
+[1:32:34 PM] Pascal Steger: ok :)
+[1:32:41 PM] Justin Read: [apart from Alex who is allowed to run stuff of course (: ]
+

@@ -1,0 +1,66 @@
+.TH "Matrix33.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Matrix33.cpp \- 
+.PP
+\fBMatrix33\fP implementations.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <math.h>\fP
+.br
+\fC#include <iterator>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <iomanip>\fP
+.br
+\fC#include <list>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <cassert>\fP
+.br
+\fC#include <gsl/gsl_math.h>\fP
+.br
+\fC#include <gsl/gsl_eigen.h>\fP
+.br
+\fC#include 'Vector3.h'\fP
+.br
+\fC#include 'Matrix33.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBROTATE\fP (\fBMatrix33\fP a, int i, int j, int k, int l, double s, double tau)"
+.br
+.ti -1c
+.RI "void \fBROTATE\fP (std::vector< \fBVector3\fP > a, int i, int j, int k, int l, double s, double tau)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBMatrix33\fP implementations. 
+
+
+.PP
+Definition in file \fBMatrix33.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void ROTATE (std::vector< \fBVector3\fP > a, int i, int j, int k, int l, double s, double tau)"
+.PP
+Definition at line 202 of file Matrix33.cpp.
+.SS "void ROTATE (\fBMatrix33\fP a, int i, int j, int k, int l, double s, double tau)"
+.PP
+Definition at line 194 of file Matrix33.cpp.
+.PP
+Referenced by Matrix33::Jacobi().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

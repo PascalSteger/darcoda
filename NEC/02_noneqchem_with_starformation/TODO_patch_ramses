@@ -1,0 +1,59 @@
+The following program codes have to be ported to the new RAMSES version:
+start with the new codes from patch, add any new variables / routines from corresponding RAMSES code
+
+[ ] to be done
+[*] done
+[k] do with kdiff3!
+[c] complicated, use big screen
+
+
+
+[*] adaptive_loop.f90
+[*] amr_commons.f90
+[*] amr_parameters.f90
+[*] amr_step.f90
+[*] cooling_fine.f90
+[*] cooling_fine.f90.withpoly
+[*] cooling_module.f90
+[*] cooling_module.f90.current
+[*] cooling_module.f90.exp
+[*] cooling_module.f90.old
+[*] cooling_module.f90.overstep
+[*] cooling_module.f90.save
+[*] godunov_fine.f90.save
+[*] godunov_utils.f90
+[*] hydro_commons.f90
+[*] hydro_parameters.f90
+[*] init_amr.f90
+[*] init_flow_fine.f90
+[*] init_hydro.f90
+[*] init_time.f90
+[*] output_hydro.f90
+[*] output_part.f90
+[*] read_hydro_params.f90
+[*] read_params.f90
+[*] recomb.dat
+[*] rho_fine.f90
+[*] solveChem.py*
+[*] solveChem.py.old*
+[*] star_formation.f90
+[*] star_formation.f90.inprogress
+[*] star_formation.f90.new
+[*] star_formation.f90.popiii
+[*] star_formation.f90.save
+[*] star_formation.f90.stars
+[*] star_formation.new.f90
+[*] umuscl.f90
+[*] units.f90
+[*] update_time.f90
+[*] uplmde.f90 (method of integration, approx via min(0,..) or -..
+
+hydro_commons has eold in addition; not necessary anymore in 3.09?
+use qdp from new RAMSES version
+use fp, up pointers in amr_commons
+just take all #ifdef NONEQCHEM directly
+[*] ask aboley for version where patch was working with
+rho_fine: check for miniumum star mass
+uplmde: chose from 3.09
+output_part: 3.09
+[ ] check physical processes in star_formation: 3.10 and boley

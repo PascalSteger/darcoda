@@ -6,24 +6,21 @@
 
 # (c) 2013 Pascal Steger, psteger@phys.ethz.ch
 
-import sys, pdb
+import pdb
 import numpy as np
-#from scipy.stats import kurtosis
 from pylab import *
 ion()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/datareduction')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
 
-import gl_params as gp
-import gl_file as gf
-import gl_helper as gp
-import gl_project as glp
+import gi_params as gp
+import gi_project as glp
 
 
 def run(gp):
-    Rscale = []; Dens0Rscale = []; Dens0pc = []; Totmass_Tracers = []; Maxsiglos = []
-    rscale = []; dens0Rscale = []; dens0pc = []; totmass_tracers = []; maxsiglos = []
+    Rscale = []; Dens0Rscale = []; Dens0pc = []; Totmass_Tracers = []
+    rscale = []; dens0Rscale = []; dens0pc = []; totmass_tracers = []
 
     for pop in range(3):
         A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
@@ -109,7 +106,7 @@ def run(gp):
 
 
 if __name__=="__main__":
-    import gl_params
-    gp = gl_params.Params()
+    import gi_params
+    gp = gi_params.Params()
 
     run(gp)

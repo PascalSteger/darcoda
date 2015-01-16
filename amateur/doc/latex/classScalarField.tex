@@ -1,0 +1,397 @@
+\section{ScalarField Class Reference}
+\label{classScalarField}\index{ScalarField@{ScalarField}}
+
+
+{\ttfamily \#include $<$ScalarField.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classScalarField_a96be7ab68de0ac5b4b787a21ea0d1226}{ScalarField} (void)
+\item 
+\hyperlink{classScalarField_ac6fe0f415f8669a5c2f32bb20c4ffcdd}{ScalarField} (unsigned nx, unsigned ny, unsigned nz, float dx, int nstencil)
+\item 
+\hyperlink{classScalarField_a930ebe53ad6b9d5496d955ca57f6629f}{$\sim$ScalarField} (void)
+\item 
+\hyperlink{classScalarField}{ScalarField} $\ast$ \hyperlink{classScalarField_a318c134b9f29a00d923559389d837aba}{operator=} (\hyperlink{classScalarField}{ScalarField} $\ast$s)
+\item 
+void \hyperlink{classScalarField_a84c4451b7ba5dbdb57267ec575f8fa86}{recreate} (unsigned nx, unsigned ny, unsigned nz, float dx, int nstencil)
+\item 
+\hyperlink{classArray3}{Array3} $\ast$ \hyperlink{classScalarField_ad75a79c263b2a3eb2a9aa0962fde0e7e}{getPhi} (void)
+\item 
+void \hyperlink{classScalarField_af2cc37199c70deb64889b493b90a6d13}{setPhi} (\hyperlink{classArray3}{Array3} $\ast$phi)
+\item 
+int \hyperlink{classScalarField_abd73cd609870a92c3611e81acfb557e3}{getNx} (void)
+\item 
+int \hyperlink{classScalarField_a39ef61f0794402f2bb1dc2f9c7426968}{getNy} (void)
+\item 
+int \hyperlink{classScalarField_ade36f1afaae1779ee940510f495e54b7}{getNz} (void)
+\item 
+float \hyperlink{classScalarField_a7d89f720e1e73257d853a3f782b6c34b}{getDx} (void)
+\item 
+int \hyperlink{classScalarField_aab10b08ed6cfa14163c6faf1086acc24}{getNStencil} (void)
+\item 
+int \hyperlink{classScalarField_a77630e83e5e7e0bb67c6db08e32d7d39}{getNStencil2} (void)
+\item 
+void \hyperlink{classScalarField_a1edabc01b69868134bef0442e6cb7209}{test} (void)
+\item 
+float \hyperlink{classScalarField_ab8291579ca143400e68b82ca4f6dfe40}{getValue} (int ix, int iy, int iz)
+\item 
+void \hyperlink{classScalarField_a9627dfa6d889495e9878b908df64951d}{setValue} (int ix, int iy, int iz, float val)
+\item 
+void \hyperlink{classScalarField_a18e4f67a70252f244786b18eca1b3f6d}{ChooseStencil} (void)
+\begin{DoxyCompactList}\small\item\em Choose a stencil. Choose a stencil. \item\end{DoxyCompactList}\item 
+void \hyperlink{classScalarField_a75b8402bd2b6d403c9b624a2f122bca9}{put\_\-CIC} (unsigned npart, float $\ast$coord, float $\ast$wpar)
+\begin{DoxyCompactList}\small\item\em Put clound in cell. \item\end{DoxyCompactList}\item 
+float \hyperlink{classScalarField_a0180095878f086b9c267460867b3ffa7}{get\_\-CIC} (float coordx, float coordy, float coordz)
+\item 
+void \hyperlink{classScalarField_a3f0ba3f07c8d9b7173295dd7fafef84c}{lookup} (float $\ast$Coord, unsigned nCoord, std::vector$<$ float $>$ \&values)
+\item 
+void \hyperlink{classScalarField_a11cbe92b79dc3488bb6d300c033830b2}{lookup} (float $\ast$Coord, unsigned nCoord, float ll, unsigned N, std::vector$<$ float $>$ \&values)
+\item 
+float \hyperlink{classScalarField_acfad6a7264af1af97387a84e325b13b1}{diff1} (int ix, int iy, int iz, int i)
+\item 
+float \hyperlink{classScalarField_a2fcdbd62e44204d7ce1b056e8aa8fa55}{diff2} (int ix, int iy, int iz, int i, int j)
+\item 
+void \hyperlink{classScalarField_a41ef09b33aace34a588bc8859fe498db}{diff2atCIC} (float $\ast$Coord, unsigned nPoints, std::vector$<$ \hyperlink{classMatrix33}{Matrix33} $>$ \&t\_\-ij)
+\begin{DoxyCompactList}\small\item\em diff2atCIC \item\end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{classScalarField_a1448da2d4923dea8da2b0c61f0fe21c7}{get\_\-NGP} (T $\ast$coord)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 34 of file ScalarField.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{ScalarField@{ScalarField}!ScalarField@{ScalarField}}
+\index{ScalarField@{ScalarField}!ScalarField@{ScalarField}}
+\subsubsection[{ScalarField}]{\setlength{\rightskip}{0pt plus 5cm}ScalarField::ScalarField (void)}\label{classScalarField_a96be7ab68de0ac5b4b787a21ea0d1226}
+
+
+Definition at line 29 of file ScalarField.cpp.
+
+\index{ScalarField@{ScalarField}!ScalarField@{ScalarField}}
+\index{ScalarField@{ScalarField}!ScalarField@{ScalarField}}
+\subsubsection[{ScalarField}]{\setlength{\rightskip}{0pt plus 5cm}ScalarField::ScalarField (unsigned {\em nx}, \/  unsigned {\em ny}, \/  unsigned {\em nz}, \/  float {\em dx}, \/  int {\em nstencil})}\label{classScalarField_ac6fe0f415f8669a5c2f32bb20c4ffcdd}
+
+
+Definition at line 40 of file ScalarField.cpp.
+
+\index{ScalarField@{ScalarField}!$\sim$ScalarField@{$\sim$ScalarField}}
+\index{$\sim$ScalarField@{$\sim$ScalarField}!ScalarField@{ScalarField}}
+\subsubsection[{$\sim$ScalarField}]{\setlength{\rightskip}{0pt plus 5cm}ScalarField::$\sim$ScalarField (void)}\label{classScalarField_a930ebe53ad6b9d5496d955ca57f6629f}
+
+
+Definition at line 55 of file ScalarField.cpp.
+
+
+
+\subsection{Member Function Documentation}
+\index{ScalarField@{ScalarField}!ChooseStencil@{ChooseStencil}}
+\index{ChooseStencil@{ChooseStencil}!ScalarField@{ScalarField}}
+\subsubsection[{ChooseStencil}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::ChooseStencil (void)}\label{classScalarField_a18e4f67a70252f244786b18eca1b3f6d}
+
+
+Choose a stencil. Choose a stencil. 
+
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 436 of file ScalarField.cpp.
+
+
+
+References stencil11\_\-1, stencil11\_\-2, stencil3\_\-1, stencil3\_\-2, stencil5\_\-1, stencil5\_\-2, stencil7\_\-1, stencil7\_\-2, stencil9\_\-1, and stencil9\_\-2.
+
+
+
+Referenced by diff2atCIC().
+
+\index{ScalarField@{ScalarField}!diff1@{diff1}}
+\index{diff1@{diff1}!ScalarField@{ScalarField}}
+\subsubsection[{diff1}]{\setlength{\rightskip}{0pt plus 5cm}float ScalarField::diff1 (int {\em ix}, \/  int {\em iy}, \/  int {\em iz}, \/  int {\em i})}\label{classScalarField_acfad6a7264af1af97387a84e325b13b1}
+
+
+Definition at line 194 of file ScalarField.cpp.
+
+
+
+References getValue().
+
+
+
+Referenced by diff2().
+
+\index{ScalarField@{ScalarField}!diff2@{diff2}}
+\index{diff2@{diff2}!ScalarField@{ScalarField}}
+\subsubsection[{diff2}]{\setlength{\rightskip}{0pt plus 5cm}float ScalarField::diff2 (int {\em ix}, \/  int {\em iy}, \/  int {\em iz}, \/  int {\em i}, \/  int {\em j})}\label{classScalarField_a2fcdbd62e44204d7ce1b056e8aa8fa55}
+
+
+Definition at line 215 of file ScalarField.cpp.
+
+
+
+References diff1(), and getValue().
+
+
+
+Referenced by diff2atCIC().
+
+\index{ScalarField@{ScalarField}!diff2atCIC@{diff2atCIC}}
+\index{diff2atCIC@{diff2atCIC}!ScalarField@{ScalarField}}
+\subsubsection[{diff2atCIC}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::diff2atCIC (float $\ast$ {\em Coord}, \/  unsigned {\em nPoints}, \/  std::vector$<$ {\bf Matrix33} $>$ \& {\em t\_\-ij})}\label{classScalarField_a41ef09b33aace34a588bc8859fe498db}
+
+
+diff2atCIC 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em Coord,:}]list of coordinates \item[{\em nPoints,:}]number of points in Coord where we want to know the tensor \item[{\em t\_\-ij,:}]tensor \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 348 of file ScalarField.cpp.
+
+
+
+References ChooseStencil(), and diff2().
+
+
+
+Referenced by TidalField().
+
+\index{ScalarField@{ScalarField}!get\_\-CIC@{get\_\-CIC}}
+\index{get\_\-CIC@{get\_\-CIC}!ScalarField@{ScalarField}}
+\subsubsection[{get\_\-CIC}]{\setlength{\rightskip}{0pt plus 5cm}float ScalarField::get\_\-CIC (float {\em coordx}, \/  float {\em coordy}, \/  float {\em coordz})}\label{classScalarField_a0180095878f086b9c267460867b3ffa7}
+
+
+Definition at line 161 of file ScalarField.cpp.
+
+
+
+Referenced by TidalField().
+
+\index{ScalarField@{ScalarField}!get\_\-NGP@{get\_\-NGP}}
+\index{get\_\-NGP@{get\_\-NGP}!ScalarField@{ScalarField}}
+\subsubsection[{get\_\-NGP}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T ScalarField::get\_\-NGP (T $\ast$ {\em coord})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classScalarField_a1448da2d4923dea8da2b0c61f0fe21c7}
+
+
+Definition at line 88 of file ScalarField.h.
+
+
+
+References getValue().
+
+\index{ScalarField@{ScalarField}!getDx@{getDx}}
+\index{getDx@{getDx}!ScalarField@{ScalarField}}
+\subsubsection[{getDx}]{\setlength{\rightskip}{0pt plus 5cm}float ScalarField::getDx (void)}\label{classScalarField_a7d89f720e1e73257d853a3f782b6c34b}
+
+
+Definition at line 124 of file ScalarField.cpp.
+
+
+
+Referenced by operator=().
+
+\index{ScalarField@{ScalarField}!getNStencil@{getNStencil}}
+\index{getNStencil@{getNStencil}!ScalarField@{ScalarField}}
+\subsubsection[{getNStencil}]{\setlength{\rightskip}{0pt plus 5cm}int ScalarField::getNStencil (void)}\label{classScalarField_aab10b08ed6cfa14163c6faf1086acc24}
+
+
+Definition at line 129 of file ScalarField.cpp.
+
+
+
+Referenced by operator=().
+
+\index{ScalarField@{ScalarField}!getNStencil2@{getNStencil2}}
+\index{getNStencil2@{getNStencil2}!ScalarField@{ScalarField}}
+\subsubsection[{getNStencil2}]{\setlength{\rightskip}{0pt plus 5cm}int ScalarField::getNStencil2 (void)}\label{classScalarField_a77630e83e5e7e0bb67c6db08e32d7d39}
+
+
+Definition at line 134 of file ScalarField.cpp.
+
+
+
+Referenced by operator=().
+
+\index{ScalarField@{ScalarField}!getNx@{getNx}}
+\index{getNx@{getNx}!ScalarField@{ScalarField}}
+\subsubsection[{getNx}]{\setlength{\rightskip}{0pt plus 5cm}int ScalarField::getNx (void)}\label{classScalarField_abd73cd609870a92c3611e81acfb557e3}
+
+
+Definition at line 109 of file ScalarField.cpp.
+
+
+
+Referenced by operator=(), and PoissonSolver$<$ nstencil $>$::solve().
+
+\index{ScalarField@{ScalarField}!getNy@{getNy}}
+\index{getNy@{getNy}!ScalarField@{ScalarField}}
+\subsubsection[{getNy}]{\setlength{\rightskip}{0pt plus 5cm}int ScalarField::getNy (void)}\label{classScalarField_a39ef61f0794402f2bb1dc2f9c7426968}
+
+
+Definition at line 114 of file ScalarField.cpp.
+
+
+
+Referenced by operator=(), and PoissonSolver$<$ nstencil $>$::solve().
+
+\index{ScalarField@{ScalarField}!getNz@{getNz}}
+\index{getNz@{getNz}!ScalarField@{ScalarField}}
+\subsubsection[{getNz}]{\setlength{\rightskip}{0pt plus 5cm}int ScalarField::getNz (void)}\label{classScalarField_ade36f1afaae1779ee940510f495e54b7}
+
+
+Definition at line 119 of file ScalarField.cpp.
+
+
+
+Referenced by operator=(), and PoissonSolver$<$ nstencil $>$::solve().
+
+\index{ScalarField@{ScalarField}!getPhi@{getPhi}}
+\index{getPhi@{getPhi}!ScalarField@{ScalarField}}
+\subsubsection[{getPhi}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Array3} $\ast$ ScalarField::getPhi (void)}\label{classScalarField_ad75a79c263b2a3eb2a9aa0962fde0e7e}
+
+
+Definition at line 99 of file ScalarField.cpp.
+
+
+
+Referenced by operator=().
+
+\index{ScalarField@{ScalarField}!getValue@{getValue}}
+\index{getValue@{getValue}!ScalarField@{ScalarField}}
+\subsubsection[{getValue}]{\setlength{\rightskip}{0pt plus 5cm}float ScalarField::getValue (int {\em ix}, \/  int {\em iy}, \/  int {\em iz})}\label{classScalarField_ab8291579ca143400e68b82ca4f6dfe40}
+
+
+Definition at line 77 of file ScalarField.cpp.
+
+
+
+References Array3::getValue().
+
+
+
+Referenced by diff1(), diff2(), get\_\-NGP(), lookup(), main(), PoissonSolver$<$ nstencil $>$::solve(), and PoissonSolver$<$ nstencil $>$::test().
+
+\index{ScalarField@{ScalarField}!lookup@{lookup}}
+\index{lookup@{lookup}!ScalarField@{ScalarField}}
+\subsubsection[{lookup}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::lookup (float $\ast$ {\em Coord}, \/  unsigned {\em nCoord}, \/  float {\em ll}, \/  unsigned {\em N}, \/  std::vector$<$ float $>$ \& {\em values})}\label{classScalarField_a11cbe92b79dc3488bb6d300c033830b2}
+
+
+Definition at line 148 of file ScalarField.cpp.
+
+
+
+References getValue().
+
+\index{ScalarField@{ScalarField}!lookup@{lookup}}
+\index{lookup@{lookup}!ScalarField@{ScalarField}}
+\subsubsection[{lookup}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::lookup (float $\ast$ {\em Coord}, \/  unsigned {\em nCoord}, \/  std::vector$<$ float $>$ \& {\em values})}\label{classScalarField_a3f0ba3f07c8d9b7173295dd7fafef84c}
+
+
+Definition at line 139 of file ScalarField.cpp.
+
+
+
+References getValue().
+
+\index{ScalarField@{ScalarField}!operator=@{operator=}}
+\index{operator=@{operator=}!ScalarField@{ScalarField}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ScalarField} $\ast$ ScalarField::operator= ({\bf ScalarField} $\ast$ {\em s})}\label{classScalarField_a318c134b9f29a00d923559389d837aba}
+
+
+Definition at line 60 of file ScalarField.cpp.
+
+
+
+References getDx(), getNStencil(), getNStencil2(), getNx(), getNy(), getNz(), and getPhi().
+
+\index{ScalarField@{ScalarField}!put\_\-CIC@{put\_\-CIC}}
+\index{put\_\-CIC@{put\_\-CIC}!ScalarField@{ScalarField}}
+\subsubsection[{put\_\-CIC}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::put\_\-CIC (unsigned {\em npart}, \/  float $\ast$ {\em coord}, \/  float $\ast$ {\em wpar})}\label{classScalarField_a75b8402bd2b6d403c9b624a2f122bca9}
+
+
+Put clound in cell. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em npart}]number of particles \item[{\em coord}]positions of particles \item[{\em wpar}]mass (\char`\"{}weight\char`\"{}) of particles \end{DoxyParams}
+
+
+Definition at line 276 of file ScalarField.cpp.
+
+
+
+References Array3::addValue(), and Array3::setValue().
+
+
+
+Referenced by TidalField().
+
+\index{ScalarField@{ScalarField}!recreate@{recreate}}
+\index{recreate@{recreate}!ScalarField@{ScalarField}}
+\subsubsection[{recreate}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::recreate (unsigned {\em nx}, \/  unsigned {\em ny}, \/  unsigned {\em nz}, \/  float {\em dx}, \/  int {\em nstencil})}\label{classScalarField_a84c4451b7ba5dbdb57267ec575f8fa86}
+
+
+Definition at line 87 of file ScalarField.cpp.
+
+
+
+References Array3::recreate().
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{ScalarField@{ScalarField}!setPhi@{setPhi}}
+\index{setPhi@{setPhi}!ScalarField@{ScalarField}}
+\subsubsection[{setPhi}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::setPhi ({\bf Array3} $\ast$ {\em phi})}\label{classScalarField_af2cc37199c70deb64889b493b90a6d13}
+
+
+Definition at line 104 of file ScalarField.cpp.
+
+\index{ScalarField@{ScalarField}!setValue@{setValue}}
+\index{setValue@{setValue}!ScalarField@{ScalarField}}
+\subsubsection[{setValue}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::setValue (int {\em ix}, \/  int {\em iy}, \/  int {\em iz}, \/  float {\em val})}\label{classScalarField_a9627dfa6d889495e9878b908df64951d}
+
+
+Definition at line 82 of file ScalarField.cpp.
+
+
+
+References Array3::setValue().
+
+
+
+Referenced by main(), PoissonSolver$<$ nstencil $>$::solve(), and PoissonSolver$<$ nstencil $>$::test().
+
+\index{ScalarField@{ScalarField}!test@{test}}
+\index{test@{test}!ScalarField@{ScalarField}}
+\subsubsection[{test}]{\setlength{\rightskip}{0pt plus 5cm}void ScalarField::test (void)}\label{classScalarField_a1edabc01b69868134bef0442e6cb7209}
+
+
+Definition at line 257 of file ScalarField.cpp.
+
+
+
+References Array3::setValue().
+
+
+
+Referenced by main().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{ScalarField_8h}{ScalarField.h}\item 
+\hyperlink{ScalarField_8cpp}{ScalarField.cpp}\end{DoxyCompactItemize}

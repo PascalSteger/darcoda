@@ -1,0 +1,40 @@
+.TH "Exceptions.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Exceptions.h \- 
+.PP
+Contains the possible Exceptions that can be thrown.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdexcept>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBErrNoHalosFound\fP"
+.br
+.RI "\fIException: No halo distribution computed or found This exception is called if operations are attempted on the halo distribution, but no such halo distribution has been calculated (through FindHalos()) or loaded (not yet available). \fP"
+.ti -1c
+.RI "class \fBMaxProgenitorsExceed\fP"
+.br
+.RI "\fIException: Maximum number of halo progenitors exceeded This exception is called if a progenitor halo is added to a given halo but that halo already possesses the maximum allowed number of progenitor haloes (standard 25). This happens for memory reasons and means you have to increase the number of allowed progenitors. \fP"
+.ti -1c
+.RI "class \fBCrossProductWrongDimension\fP"
+.br
+.RI "\fIException: Wrong dimension (n!=3) in cross product computatoin This exception is called whenever a vector has a wrong dimension when it should be used in a cross product computation. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains the possible Exceptions that can be thrown. 
+
+
+.PP
+Definition in file \fBExceptions.h\fP.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

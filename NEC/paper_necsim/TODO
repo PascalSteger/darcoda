@@ -1,0 +1,51 @@
+Procedure until completion of MSc thesis on Friday, March 11, 2010
+Dark Matter in Dwarf Galaxies
+==================================================================
+
+Scientific goals
+================
+[ ] exact definition/naming of overdensity peaks
+[ ] DM density around biggest substructures
+[ ] baryon density inside substructures near biggest substructures
+[ ] Einasto profile fitting
+
+Coding goals
+============
+[ ] file management:
+  [x] scientific data on teutates
+  [ ] analysis output on brutus:/~
+  [x] organizational stuff on snowball
+[ ] format of sod output
+[x] zoom-in amr (higher level)
+[x] zoom-in DM density (with sod/octreef positions)
+
+
+to be checked
+=============
+[x] coincidence sod positions/octreef positions
+
+problems
+========
+
+
+dsph article
+============
+[ ] introduction
+  [ ] articles from reading list
+  [ ] include short intro from reading list email
+[ ] data description
+  [ ] simulation properties in table
+[ ] pipeline description
+[ ] radial dependence of AMR density
+
+Figures
+=======
+[x] DM density around 5 most massive substructures
+
+possible errors in pipeline
+===========================
+
+
+
+for final draft
+===============

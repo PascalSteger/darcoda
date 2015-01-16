@@ -1,0 +1,27 @@
+FC = mpif90 -static -fPIC -lmpi -lmpi_f90 -lgfortran
+FFLAGS = -DMPI -L. -L/usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3 -L/usr -L/usr/lib -I. -ffree-line-length-none -O3
+LIBS = -L. -L/lib -L/usr -L/usr/lib -L/usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3
+INCS = -I. -I/usr/include
+LINKLIBS = -lm -lc -llapack -lblas -lmpi -lmpi_f90 -lgfortran
+
+NSOBJECTS = utils.o utils1.o priors.o kmeans_clstr.o xmeans_clstr.o posterior.o nested.o
+
+%.o: %.f90
+	$(FC) -fPIC $(INCS) $(LIBS) $(FFLAGS) $(LINKLIBS) -c -o $@ $^
+
+%.o: %.F90
+	$(FC) -fPIC $(INCS) $(LIBS) $(FFLAGS) $(LINKLIBS) -c -o $@ $^
+
+default: libnest3.a libnest3.so Makefile
+
+all: libnest3.a libnest3.so
+	cp libnest3.* /usr/local/lib64
+
+libnest3.so: $(NSOBJECTS)
+	mpif90 -shared $(LIBS) -o $@ $^ -llapack #$(LINKLIBS)
+
+libnest3.a: $(NSOBJECTS)
+	ar r $@ $^
+
+clean:
+	-rm libnest3.*  *.o *.mod

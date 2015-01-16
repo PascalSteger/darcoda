@@ -1,0 +1,334 @@
+\section{list$<$ T $>$ Class Template Reference}
+\label{classlist}\index{list@{list}}
+
+
+{\ttfamily \#include $<$MySTL.h$>$}
+
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classlist_1_1const__iterator}{const\_\-iterator}
+\item 
+class \hyperlink{classlist_1_1iterator}{iterator}
+\item 
+struct {\bfseries Node}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlist_afe3efe55d3ee5dd698349834f7eac26b}{list} ()
+\item 
+\hyperlink{classlist_a856a032c093d96abca1ea4e96e64f05a}{list} (const \hyperlink{classlist}{list} \&L)
+\item 
+void \hyperlink{classlist_a676f28528dea1df100910363d903ad90}{reverse} ()
+\item 
+void \hyperlink{classlist_a858ae65ee54f66b557c468be53e20925}{swap} (\hyperlink{classlist}{list} \&x)
+\item 
+\hyperlink{classlist}{list} \& \hyperlink{classlist_a1d97b78ca649148987703343fab9c9f7}{operator=} (const \hyperlink{classlist}{list} \&x)
+\item 
+\hyperlink{classlist_adf352cf28624c0811f4f9b160062a88c}{$\sim$list} ()
+\item 
+void \hyperlink{classlist_a64e8edd9de8e5b2648cc4e993ae48a29}{clear} ()
+\item 
+void \hyperlink{classlist_ab6ceb52fe79372f40fc1cb559600be89}{push\_\-front} (const T \&x)
+\item 
+void \hyperlink{classlist_aa199b9d85ae081dfad54fb1c4d973aba}{push\_\-back} (const T \&x)
+\item 
+void \hyperlink{classlist_ae9c74ac5775defd29b66beb9aa956a14}{pop\_\-front} ()
+\item 
+bool \hyperlink{classlist_a4aabf08487cbc621c2c45b6f545d6420}{empty} ()
+\item 
+T \& \hyperlink{classlist_a24aee7b6c85c63311f37ce807bf3598f}{front} ()
+\item 
+const T \& \hyperlink{classlist_a6ec857bb5edd04e45aec70e0dce83cf1}{front} () const 
+\item 
+T \& \hyperlink{classlist_a724be25db9c9111f09dde385cabf2e91}{back} ()
+\item 
+const T \& \hyperlink{classlist_adee5737f4d792778a0f90ae2a286cf7b}{back} () const 
+\item 
+\hyperlink{classlist_1_1iterator}{iterator} \hyperlink{classlist_a254beaef0a23d76871212c8af2f6118c}{begin} ()
+\item 
+\hyperlink{classlist_1_1iterator}{iterator} \hyperlink{classlist_a0a0fb2870706f1a5c96500edc5fa8d51}{end} ()
+\item 
+\hyperlink{classlist_1_1const__iterator}{const\_\-iterator} \hyperlink{classlist_a82d02ae5c829958abc9782d99794c86b}{begin} () const 
+\item 
+\hyperlink{classlist_1_1const__iterator}{const\_\-iterator} \hyperlink{classlist_ac269b2013f9b85077b6269d99cd62fcd}{end} () const 
+\item 
+\hyperlink{classlist_1_1iterator}{iterator} \hyperlink{classlist_aa7a41fb4c253ddc7ebb822d581670f20}{erase} (\hyperlink{classlist_1_1iterator}{iterator} x)
+\item 
+\hyperlink{classlist_1_1iterator}{iterator} \hyperlink{classlist_a5ff2efab1931bc2857787e118b309e98}{insert} (\hyperlink{classlist_1_1iterator}{iterator} x, const T \&y)
+\item 
+void \hyperlink{classlist_a94b7f31cf58cd41726b36006a96c6bb6}{rotate} (\hyperlink{classlist_1_1iterator}{iterator} x)
+\item 
+void \hyperlink{classlist_acfa94cc4bde517b8bb5e61727262bf6f}{splice} (\hyperlink{classlist}{list}$<$ T $>$ \&other)
+\item 
+\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} \hyperlink{classlist_a2e3e44a048e07d3dd6dc814695ed64b8}{size} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$ class list$<$ T $>$}
+
+
+
+Definition at line 95 of file MySTL.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{list@{list}!list@{list}}
+\index{list@{list}!list@{list}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf list}$<$ T $>$::{\bf list} ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_afe3efe55d3ee5dd698349834f7eac26b}
+
+
+Definition at line 196 of file MySTL.h.
+
+\index{list@{list}!list@{list}}
+\index{list@{list}!list@{list}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf list}$<$ T $>$::{\bf list} (const {\bf list}$<$ T $>$ \& {\em L})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a856a032c093d96abca1ea4e96e64f05a}
+
+
+Definition at line 198 of file MySTL.h.
+
+
+
+References list$<$ T $>$::begin(), list$<$ T $>$::end(), list$<$ T $>$::push\_\-front(), and list$<$ T $>$::reverse().
+
+\index{list@{list}!$\sim$list@{$\sim$list}}
+\index{$\sim$list@{$\sim$list}!list@{list}}
+\subsubsection[{$\sim$list}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf list}$<$ T $>$::$\sim${\bf list} ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_adf352cf28624c0811f4f9b160062a88c}
+
+
+Definition at line 236 of file MySTL.h.
+
+
+
+References list$<$ T $>$::clear().
+
+
+
+\subsection{Member Function Documentation}
+\index{list@{list}!back@{back}}
+\index{back@{back}!list@{list}}
+\subsubsection[{back}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ const T\& {\bf list}$<$ T $>$::back () const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_adee5737f4d792778a0f90ae2a286cf7b}
+
+
+Definition at line 272 of file MySTL.h.
+
+\index{list@{list}!back@{back}}
+\index{back@{back}!list@{list}}
+\subsubsection[{back}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ T\& {\bf list}$<$ T $>$::back ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a724be25db9c9111f09dde385cabf2e91}
+
+
+Definition at line 271 of file MySTL.h.
+
+\index{list@{list}!begin@{begin}}
+\index{begin@{begin}!list@{list}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf const\_\-iterator} {\bf list}$<$ T $>$::begin () const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a82d02ae5c829958abc9782d99794c86b}
+
+
+Definition at line 278 of file MySTL.h.
+
+\index{list@{list}!begin@{begin}}
+\index{begin@{begin}!list@{list}}
+\subsubsection[{begin}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf iterator} {\bf list}$<$ T $>$::begin ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a254beaef0a23d76871212c8af2f6118c}
+
+
+Definition at line 274 of file MySTL.h.
+
+
+
+Referenced by convertlists(), list$<$ T $>$::front(), list$<$ T $>$::list(), list$<$ T $>$::pop\_\-front(), and list$<$ T $>$::push\_\-front().
+
+\index{list@{list}!clear@{clear}}
+\index{clear@{clear}!list@{list}}
+\subsubsection[{clear}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::clear (void)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a64e8edd9de8e5b2648cc4e993ae48a29}
+
+
+Definition at line 238 of file MySTL.h.
+
+
+
+Referenced by list$<$ T $>$::$\sim$list().
+
+\index{list@{list}!empty@{empty}}
+\index{empty@{empty}!list@{list}}
+\subsubsection[{empty}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ bool {\bf list}$<$ T $>$::empty ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a4aabf08487cbc621c2c45b6f545d6420}
+
+
+Definition at line 267 of file MySTL.h.
+
+
+
+Referenced by list$<$ T $>$::reverse().
+
+\index{list@{list}!end@{end}}
+\index{end@{end}!list@{list}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf const\_\-iterator} {\bf list}$<$ T $>$::end () const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_ac269b2013f9b85077b6269d99cd62fcd}
+
+
+Definition at line 282 of file MySTL.h.
+
+\index{list@{list}!end@{end}}
+\index{end@{end}!list@{list}}
+\subsubsection[{end}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf iterator} {\bf list}$<$ T $>$::end ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a0a0fb2870706f1a5c96500edc5fa8d51}
+
+
+Definition at line 276 of file MySTL.h.
+
+
+
+Referenced by convertlists(), list$<$ T $>$::erase(), list$<$ T $>$::list(), list$<$ T $>$::push\_\-back(), and list$<$ T $>$::rotate().
+
+\index{list@{list}!erase@{erase}}
+\index{erase@{erase}!list@{list}}
+\subsubsection[{erase}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf iterator} {\bf list}$<$ T $>$::erase ({\bf iterator} {\em x})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_aa7a41fb4c253ddc7ebb822d581670f20}
+
+
+Definition at line 287 of file MySTL.h.
+
+
+
+References list$<$ T $>$::end().
+
+
+
+Referenced by list$<$ T $>$::pop\_\-front().
+
+\index{list@{list}!front@{front}}
+\index{front@{front}!list@{list}}
+\subsubsection[{front}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ const T\& {\bf list}$<$ T $>$::front () const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a6ec857bb5edd04e45aec70e0dce83cf1}
+
+
+Definition at line 270 of file MySTL.h.
+
+
+
+References list$<$ T $>$::begin().
+
+\index{list@{list}!front@{front}}
+\index{front@{front}!list@{list}}
+\subsubsection[{front}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ T\& {\bf list}$<$ T $>$::front ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a24aee7b6c85c63311f37ce807bf3598f}
+
+
+Definition at line 269 of file MySTL.h.
+
+
+
+References list$<$ T $>$::begin().
+
+\index{list@{list}!insert@{insert}}
+\index{insert@{insert}!list@{list}}
+\subsubsection[{insert}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf iterator} {\bf list}$<$ T $>$::insert ({\bf iterator} {\em x}, \/  const T \& {\em y})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a5ff2efab1931bc2857787e118b309e98}
+
+
+Definition at line 301 of file MySTL.h.
+
+
+
+Referenced by list$<$ T $>$::push\_\-back(), and list$<$ T $>$::push\_\-front().
+
+\index{list@{list}!operator=@{operator=}}
+\index{operator=@{operator=}!list@{list}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf list}\& {\bf list}$<$ T $>$::operator= (const {\bf list}$<$ T $>$ \& {\em x})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a1d97b78ca649148987703343fab9c9f7}
+
+
+Definition at line 229 of file MySTL.h.
+
+
+
+References list$<$ T $>$::swap().
+
+\index{list@{list}!pop\_\-front@{pop\_\-front}}
+\index{pop\_\-front@{pop\_\-front}!list@{list}}
+\subsubsection[{pop\_\-front}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::pop\_\-front ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_ae9c74ac5775defd29b66beb9aa956a14}
+
+
+Definition at line 262 of file MySTL.h.
+
+
+
+References list$<$ T $>$::begin(), and list$<$ T $>$::erase().
+
+\index{list@{list}!push\_\-back@{push\_\-back}}
+\index{push\_\-back@{push\_\-back}!list@{list}}
+\subsubsection[{push\_\-back}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::push\_\-back (const T \& {\em x})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_aa199b9d85ae081dfad54fb1c4d973aba}
+
+
+Definition at line 258 of file MySTL.h.
+
+
+
+References list$<$ T $>$::end(), and list$<$ T $>$::insert().
+
+\index{list@{list}!push\_\-front@{push\_\-front}}
+\index{push\_\-front@{push\_\-front}!list@{list}}
+\subsubsection[{push\_\-front}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::push\_\-front (const T \& {\em x})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_ab6ceb52fe79372f40fc1cb559600be89}
+
+
+Definition at line 254 of file MySTL.h.
+
+
+
+References list$<$ T $>$::begin(), and list$<$ T $>$::insert().
+
+
+
+Referenced by list$<$ T $>$::list().
+
+\index{list@{list}!reverse@{reverse}}
+\index{reverse@{reverse}!list@{list}}
+\subsubsection[{reverse}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::reverse ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a676f28528dea1df100910363d903ad90}
+
+
+Definition at line 207 of file MySTL.h.
+
+
+
+References list$<$ T $>$::empty().
+
+
+
+Referenced by list$<$ T $>$::list().
+
+\index{list@{list}!rotate@{rotate}}
+\index{rotate@{rotate}!list@{list}}
+\subsubsection[{rotate}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::rotate ({\bf iterator} {\em x})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a94b7f31cf58cd41726b36006a96c6bb6}
+
+
+Definition at line 312 of file MySTL.h.
+
+
+
+References list$<$ T $>$::end().
+
+\index{list@{list}!size@{size}}
+\index{size@{size}!list@{list}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ {\bf Identifier} {\bf list}$<$ T $>$::size (void)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a2e3e44a048e07d3dd6dc814695ed64b8}
+
+
+Definition at line 354 of file MySTL.h.
+
+\index{list@{list}!splice@{splice}}
+\index{splice@{splice}!list@{list}}
+\subsubsection[{splice}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::splice ({\bf list}$<$ T $>$ \& {\em other})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_acfa94cc4bde517b8bb5e61727262bf6f}
+
+
+Definition at line 337 of file MySTL.h.
+
+\index{list@{list}!swap@{swap}}
+\index{swap@{swap}!list@{list}}
+\subsubsection[{swap}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T$>$ void {\bf list}$<$ T $>$::swap ({\bf list}$<$ T $>$ \& {\em x})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classlist_a858ae65ee54f66b557c468be53e20925}
+
+
+Definition at line 223 of file MySTL.h.
+
+
+
+Referenced by list$<$ T $>$::operator=().
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{MySTL_8h}{MySTL.h}\end{DoxyCompactItemize}

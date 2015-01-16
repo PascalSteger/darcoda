@@ -1,0 +1,101 @@
+.TH "amateur.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+amateur.cpp \- 
+.PP
+Main program, calls all subroutines.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <iostream>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <sys/resource.h>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+\fC#include 'ExtractSnap.h'\fP
+.br
+\fC#include <math.h>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <iomanip>\fP
+.br
+\fC#include <list>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <iterator>\fP
+.br
+\fC#include <cassert>\fP
+.br
+\fC#include <gsl/gsl_math.h>\fP
+.br
+\fC#include <gsl/gsl_eigen.h>\fP
+.br
+\fC#include 'Vector3.h'\fP
+.br
+\fC#include 'Matrix33.h'\fP
+.br
+\fC#include <cmath>\fP
+.br
+\fC#include 'Array3.h'\fP
+.br
+\fC#include 'fftw3.h'\fP
+.br
+\fC#include 'TidalField.h'\fP
+.br
+\fC#include 'ScalarField.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBHelpUser\fP (void)"
+.br
+.RI "\fIHelp for use of commandline arguments. example program calls: amateur 10 -t looks at tarkin_13309_CSF_45x_snap_211 and computes the tidal field amateur 1 runs all parts on tarkin_5726_10x_snap_302. \fP"
+.ti -1c
+.RI "int \fBmain\fP (int argc, char *argv[])"
+.br
+.RI "\fImain routine, calls different tools The main routine of amateur presents the user a tool to select from the different possibilities to run the program, and on which snapshot file a command should be performed. If no arguments are given, amateur prints a help message showing the command syntax with all possible snapshots \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Main program, calls all subroutines. 
+
+
+.PP
+Definition in file \fBamateur.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void HelpUser (void)"
+.PP
+Help for use of commandline arguments. example program calls: amateur 10 -t looks at tarkin_13309_CSF_45x_snap_211 and computes the tidal field amateur 1 runs all parts on tarkin_5726_10x_snap_302. program runs on nice value 15 by default attention: option -a requires a lot of CPU power, use a fast comoputer via ssh! -z requires a lot of memory -s and -x show excessive file access. For fast execution, use local computer (no ssh). 
+.PP
+Definition at line 48 of file amateur.cpp.
+.PP
+References Snaps(), and writeln().
+.PP
+Referenced by main().
+.SS "int main (int argc, char * argv[])"
+.PP
+main routine, calls different tools The main routine of amateur presents the user a tool to select from the different possibilities to run the program, and on which snapshot file a command should be performed. If no arguments are given, amateur prints a help message showing the command syntax with all possible snapshots \fBParameters:\fP
+.RS 4
+\fIargc,:\fP int; number of arguments 
+.br
+\fIargv,:\fP char* []; character array of arguments 
+.RE
+.PP
+
+.PP
+Definition at line 77 of file amateur.cpp.
+.PP
+References AHFrun(), AnalyzeSnap(), AOutput(), ExtractSnap(), ScalarField::getValue(), Array3::getValue(), HelpUser(), MergerTreeRun(), ScalarField::setValue(), Array3::setValue(), Snaps(), SubhaloMatch(), PoissonSolver< nstencil >::test(), ScalarField::test(), TidalField(), and writeln().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

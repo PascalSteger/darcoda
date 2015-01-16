@@ -1,0 +1,994 @@
+\section{HaloProperties Class Reference}
+\label{classHaloProperties}\index{HaloProperties@{HaloProperties}}
+
+
+{\ttfamily \#include $<$HaloProperties.h$>$}
+
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structHaloProperties_1_1Cosm}{Cosm}
+\item 
+class \hyperlink{classHaloProperties_1_1Distance}{Distance}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHaloProperties_abee7f4c745501bce6db44b07ceb8f276}{HaloProperties} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$pPos, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$pVel, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$pMass, unsigned nPart, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} zsnap)
+\item 
+void \hyperlink{classHaloProperties_ad5ba044f05cff83ef00e69f3b4aef0af}{SetCosmology} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} OmegaM0, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} OmegaL0, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} H0, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} G)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a06a1cd86f4973cd6c81b47a5712fcac8}{ComputeTotalMass} (void)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_af1a876c4064a4e86f74d3585b6f68030}{ComputeTotalMassExc} (std::vector$<$ bool $>$ excluded)
+\item 
+void \hyperlink{classHaloProperties_a37814d4c30aea13d79fac7f214c1bcb4}{ComputeCM} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength, \hyperlink{classVector3}{Vector3} \&xcm)
+\item 
+void \hyperlink{classHaloProperties_a79438fc145a289259c5f0f9ccd40885a}{ComputeCMExc} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength, \hyperlink{classVector3}{Vector3} \&xcm, std::vector$<$ bool $>$ excluded)
+\item 
+void \hyperlink{classHaloProperties_aabd66cd248656d59603f8b595a22ce17}{ComputeMB} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength, \hyperlink{classVector3}{Vector3} \&xmb)
+\item 
+void \hyperlink{classHaloProperties_aff8caa920de95062ee0b89e955cd49d7}{ComputeMBExc} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength, \hyperlink{classVector3}{Vector3} \&xmb, std::vector$<$ bool $>$ excluded)
+\item 
+void \hyperlink{classHaloProperties_a4a3489a22ccd05f8d1119d4a2337d053}{CenterOnCM} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength)
+\item 
+void \hyperlink{classHaloProperties_a9149e0a3d5ca614566b15e4d0bf59e96}{CenterOnCMExc} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength, std::vector$<$ bool $>$ excluded)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a93804911ced0f2b51e08626f8b4f914a}{CenterOnMB} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a3234a91e6ce19248e9a5523af439fe25}{CenterOnMB} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&rmbcm, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&alpha)
+\item 
+void \hyperlink{classHaloProperties_ade9b254c05fdc9b71cb3f93933774157}{CenterOnCoord} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$xc, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Boxlength)
+\item 
+void \hyperlink{classHaloProperties_abcee0f6284cf4991bf89cc6aafd84f60}{AverageVel} (const unsigned n, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} eps=0.0)
+\item 
+void \hyperlink{classHaloProperties_a1537fda3a25fcde3db6d16bd8ee150b6}{ComputeCenterVel} (\hyperlink{classVector3}{Vector3} \&vcm)
+\item 
+void \hyperlink{classHaloProperties_aaf32e9b882dc42e50c5609db83aa4778}{ComputeCenterVelExc} (\hyperlink{classVector3}{Vector3} \&vcm, std::vector$<$ bool $>$ excluded)
+\item 
+void \hyperlink{classHaloProperties_ab8ca12ff57d1ed55feedb3a287136745}{CenterVel} (void)
+\item 
+void \hyperlink{classHaloProperties_a1584267a0d3b6f3469bad5ead7428b94}{CenterVelOn} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$vc)
+\item 
+void \hyperlink{classHaloProperties_ab5b9df653b5053ef445381c38bd1940c}{CenterVelExc} (std::vector$<$ bool $>$ excluded)
+\item 
+void \hyperlink{classHaloProperties_a61d17e98fb59a269786264cd41746720}{ComputeAngularMomentum} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Jtot)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a15228365bc6e1546e47589a4b0403463}{ComputeAngularMomentum} (\hyperlink{classVector3}{Vector3} \&J) const 
+\item 
+void \hyperlink{classHaloProperties_a609180764606ba7ab3658b545e89c7f0}{ComputeVelocityDispersion} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Sigma)
+\item 
+void \hyperlink{classHaloProperties_a60b7ef82eee29ae676d28b9c819d1efb}{GetSortedDistances} (std::vector$<$ \hyperlink{classHaloProperties_1_1Distance}{Distance} $>$ \&dvec) const 
+\item 
+void \hyperlink{classHaloProperties_aadfc56fbb88702866ade01fc1168a53e}{ComputeMajorAxes} (\hyperlink{classVector3}{Vector3} \&Eigenvalues, std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ \&Eigenvectors) const 
+\item 
+void \hyperlink{classHaloProperties_a2fe7ded61657178551618214d0a978b8}{ComputeMajorAxesReduced} (\hyperlink{classVector3}{Vector3} \&Eigenvalues, std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ \&Eigenvectors) const 
+\item 
+void \hyperlink{classHaloProperties_afaabf0499b36b0e507a855763c6a2144}{ComputeShapeParameters} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&T, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&S) const 
+\item 
+void \hyperlink{classHaloProperties_a6191e30ad371b6cdca9ec054da9c45c6}{ComputeVirialProperties200} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir) const 
+\item 
+void \hyperlink{classHaloProperties_a21ee7112bdd7d5c77f91bbd3d87a2f7d}{ComputeVirialProperties200} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Vcmax) const 
+\item 
+void \hyperlink{classHaloProperties_a473124bc8991382b9db3137448acfec9}{ComputeVirialProperties200} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir, std::vector$<$ \hyperlink{classHaloProperties_1_1Distance}{Distance} $>$ \&dvec) const 
+\item 
+void \hyperlink{classHaloProperties_a21c2e9833f9bec47f9c452cee9752996}{ComputeVirialProperties200} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Vcmax, std::vector$<$ \hyperlink{classHaloProperties_1_1Distance}{Distance} $>$ \&dvec) const 
+\item 
+void \hyperlink{classHaloProperties_ad132159c56a38018afbe7c360803363c}{ComputeVirialProperties} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir) const 
+\item 
+void \hyperlink{classHaloProperties_ab703450a3ad8b89221ae9463e0a2d58d}{ComputeVirialProperties} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Vcmax) const 
+\item 
+void \hyperlink{classHaloProperties_a489eb6a9bcc51e46f3c3db91a4f104da}{ComputeVirialProperties} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir, std::vector$<$ \hyperlink{classHaloProperties_1_1Distance}{Distance} $>$ \&dvec) const 
+\item 
+void \hyperlink{classHaloProperties_a1363b40a961c241a3099133e79969f8a}{ComputeVirialProperties} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Rvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&Vcmax, std::vector$<$ \hyperlink{classHaloProperties_1_1Distance}{Distance} $>$ \&dvec) const 
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_ac961040b7e402a1c1aca40f1968a3387}{ComputePoormanConcentration} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&R20, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&R80)
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_ac72e7d61cf10ee11b8f72af2bf32905a}{ComputePoormanConcentration} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox)
+\item 
+void \hyperlink{classHaloProperties_a675fb78ade0e9497338464fc275c2fd5}{ComputeLambdaPrime} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&lambda, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Rvir)
+\begin{DoxyCompactList}\small\item\em computes the simplified spin parameter lambda prime computes the lambda prime (Bullock et al. 2001). ASSUMES THAT COORDINATES AND VELOCITIES ARE CENTERED ON REFERENCE POINT. so center on center of mass or something. \item\end{DoxyCompactList}\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_adb78899cbb93730081f5473c5c82608f}{ComputeKineticEnergy} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&kin) const 
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_ad5bee5f08cc37cc127185acd1ac8bdf3}{ComputeKineticEnergyNoHubble} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&kin) const 
+\item 
+void \hyperlink{classHaloProperties_a0d140ad1df53e8ebfaf0bb51c9e54029}{ComputeKineticEnergyNoHubbleExc} (std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&kin, std::vector$<$ bool $>$ excluded) const 
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a78889a58d246ccfa468569ed6eafdc68}{ComputePotentialDirect} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} plumsoft, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&phi) const 
+\item 
+void \hyperlink{classHaloProperties_a67050766e04467c84de53e83fefc139d}{ComputePotentialDirectExc} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} plumsoft, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&phi, std::vector$<$ bool $>$ excluded) const 
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a11c11cb2443bb7852e1940617e9fd61c}{ComputePotentialTree} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} theta, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} plumsoft, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&phi) const 
+\item 
+void \hyperlink{classHaloProperties_a28f6e72bab9459a79bdf665fbd42deab}{ComputePotentialTreeExc} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} theta, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} plumsoft, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&phi, std::vector$<$ bool $>$ excluded) const 
+\item 
+std::vector$<$ bool $>$ \hyperlink{classHaloProperties_a28b060c3347429056b28f7f2e7603b48}{CleanUnbound} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} boxsize)
+\item 
+void \hyperlink{classHaloProperties_acb0b10b15c1312b9431c498875a8d3f4}{CleanUnboundExc} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} boxsize, std::vector$<$ bool $>$ \&excluded)
+\item 
+void \hyperlink{classHaloProperties_ad0cd4d6507b2cd05abe9f886d3d5577f}{CleanUnboundSimple} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} boxsize, std::vector$<$ bool $>$ \&excluded)
+\item 
+int \hyperlink{classHaloProperties_a07c1aa990f6a5ecc57f88514c152f795}{ComputeDensityProfile} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, unsigned n, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&r, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&rho, std::vector$<$ \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $>$ \&sigma\_\-rho) const 
+\item 
+int \hyperlink{classHaloProperties_adfcb17cd8afa75f87274f75a79e212a4}{FitNFWProfile2} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, unsigned n, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&fdeltac, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&fedeltac, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&frs, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&fers) const 
+\item 
+int \hyperlink{classHaloProperties_a33a97caec1229a2bb58d7971e8f7f3b0}{FitNFWProfile1} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, unsigned n, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&frs, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&fers) const 
+\item 
+int \hyperlink{classHaloProperties_a6c84410c43d8174b5cd61e728bb002c3}{FitNFWProfile200} (\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} rhobox, unsigned n, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&frs, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&fers) const 
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_ad839c03623bf7980cc14a7fa5ea2fdc2}{m\_\-xcm} \mbox{[}3\mbox{]}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a3936de59491d4fb5c0688b10d9652d40}{m\_\-xmb} \mbox{[}3\mbox{]}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a367b37a34cf13626d6a6f008daadedf4}{m\_\-vcm} \mbox{[}3\mbox{]}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a17b99f065e4e45eda4a15d2cdf8adef4}{m\_\-vmb} \mbox{[}3\mbox{]}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a69b8eeefabab51e75c49e644e90e2eb6}{m\_\-rmbcm}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$ \hyperlink{classHaloProperties_a5bf86b564f3d107d35065d71c80ebf1e}{m\_\-pPos}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$ \hyperlink{classHaloProperties_a87d16b6da2b2442e69e340623a002021}{m\_\-pVel}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$ \hyperlink{classHaloProperties_ac03a9f5783b159c09a1cdadf847d2444}{m\_\-pMass}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_a49159fd8ceb9bcb6693ed3a3070320b5}{m\_\-mtot}
+\item 
+unsigned \hyperlink{classHaloProperties_afffcd47e8ef37f5e1fb5a395e1fdd6ca}{m\_\-nPart}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classHaloProperties_af1ec4657f196c3bcf725200a0f4206d9}{m\_\-alpha}
+\item 
+unsigned \hyperlink{classHaloProperties_aaf7437a2b095bad02f2c423d834fbec2}{m\_\-imostbound}
+\item 
+\hyperlink{structHaloProperties_1_1Cosm}{Cosm} \hyperlink{classHaloProperties_ac5f3f646bdff517eced133857ad03a0d}{m\_\-Cosm}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 47 of file HaloProperties.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{HaloProperties@{HaloProperties}!HaloProperties@{HaloProperties}}
+\index{HaloProperties@{HaloProperties}!HaloProperties@{HaloProperties}}
+\subsubsection[{HaloProperties}]{\setlength{\rightskip}{0pt plus 5cm}HaloProperties::HaloProperties ({\bf real} $\ast$ {\em pPos}, \/  {\bf real} $\ast$ {\em pVel}, \/  {\bf real} $\ast$ {\em pMass}, \/  unsigned {\em nPart}, \/  {\bf real} {\em zsnap})}\label{classHaloProperties_abee7f4c745501bce6db44b07ceb8f276}
+
+
+Definition at line 15 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, HaloProperties::Cosm::H0, m\_\-Cosm, m\_\-imostbound, m\_\-mtot, m\_\-nPart, m\_\-pMass, m\_\-pPos, m\_\-pVel, m\_\-vcm, m\_\-vmb, m\_\-xcm, m\_\-xmb, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+
+
+
+\subsection{Member Function Documentation}
+\index{HaloProperties@{HaloProperties}!AverageVel@{AverageVel}}
+\index{AverageVel@{AverageVel}!HaloProperties@{HaloProperties}}
+\subsubsection[{AverageVel}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::AverageVel (const unsigned {\em n}, \/  const {\bf real} {\em eps} = {\ttfamily 0.0})}\label{classHaloProperties_abcee0f6284cf4991bf89cc6aafd84f60}
+average the velocities of particles using ANN 
+
+Definition at line 325 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, m\_\-pMass, m\_\-pPos, m\_\-pVel, and SPHK3D().
+
+\index{HaloProperties@{HaloProperties}!CenterOnCM@{CenterOnCM}}
+\index{CenterOnCM@{CenterOnCM}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterOnCM}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CenterOnCM ({\bf real} {\em Boxlength})}\label{classHaloProperties_a4a3489a22ccd05f8d1119d4a2337d053}
+centers on the CM obeying periodic boundary conditions. REQUIRES THAT THE EXTENSION OF THE OBJECT DO NOT EXCEED 0.25 OF THE BOX LENGTH. 
+\begin{DoxyParams}{Parameters}
+\item[{\em Boxlength}]the length of the simulation box \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+nothing, centers the coordinates on the CM and stores the CM 
+\end{DoxyReturn}
+
+
+Definition at line 125 of file HaloProperties.cpp.
+
+
+
+References m\_\-mtot, m\_\-nPart, m\_\-pMass, m\_\-pPos, and m\_\-xcm.
+
+
+
+Referenced by CleanUnboundSimple().
+
+\index{HaloProperties@{HaloProperties}!CenterOnCMExc@{CenterOnCMExc}}
+\index{CenterOnCMExc@{CenterOnCMExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterOnCMExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CenterOnCMExc ({\bf real} {\em Boxlength}, \/  std::vector$<$ bool $>$ {\em excluded})}\label{classHaloProperties_a9149e0a3d5ca614566b15e4d0bf59e96}
+
+
+Definition at line 157 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, m\_\-pMass, m\_\-pPos, and m\_\-xcm.
+
+
+
+Referenced by CleanUnboundExc().
+
+\index{HaloProperties@{HaloProperties}!CenterOnCoord@{CenterOnCoord}}
+\index{CenterOnCoord@{CenterOnCoord}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterOnCoord}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CenterOnCoord ({\bf real} $\ast$ {\em xc}, \/  {\bf real} {\em Boxlength})}\label{classHaloProperties_ade9b254c05fdc9b71cb3f93933774157}
+centers all coordinates on specified point 
+\begin{DoxyParams}{Parameters}
+\item[{\em xc}]pointer to an array of three reals contain the point to be centered on \item[{\em Boxlength}]size of simulation (cubic) box \end{DoxyParams}
+
+
+Definition at line 314 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, and m\_\-pPos.
+
+
+
+Referenced by CenterOnMB().
+
+\index{HaloProperties@{HaloProperties}!CenterOnMB@{CenterOnMB}}
+\index{CenterOnMB@{CenterOnMB}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterOnMB}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::CenterOnMB ({\bf real} {\em Boxlength}, \/  {\bf real} \& {\em rmbcm}, \/  {\bf real} \& {\em alpha})}\label{classHaloProperties_a3234a91e6ce19248e9a5523af439fe25}
+Center on Most Bound particle. CenterOnCM( Boxlength ); \hyperlink{classHaloProperties_ab8ca12ff57d1ed55feedb3a287136745}{CenterVel()}; is needed before invoking CenterOnMB 
+\begin{DoxyParams}{Parameters}
+\item[{\em Boxlength}]\item[{\em rmbcm}]\item[{\em alpha}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 270 of file HaloProperties.cpp.
+
+
+
+References CenterOnCoord(), ComputeKineticEnergyNoHubble(), ComputePotentialDirect(), ComputePotentialTree(), FORCE\_\-DIRECT\_\-TREE\_\-SPLIT, m\_\-alpha, m\_\-imostbound, m\_\-nPart, m\_\-pPos, m\_\-rmbcm, and m\_\-xmb.
+
+\index{HaloProperties@{HaloProperties}!CenterOnMB@{CenterOnMB}}
+\index{CenterOnMB@{CenterOnMB}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterOnMB}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::CenterOnMB ({\bf real} {\em Boxlength})}\label{classHaloProperties_a93804911ced0f2b51e08626f8b4f914a}
+centers all coordinates on the MB obeying periodic boundary conditions ... centers on the MB obeying periodic boundary conditions. REQUIRES THAT THE EXTENSION OF THE OBJECT DOES NOT EXCEED 0.25 $\ast$ BOX LENGTH. 
+\begin{DoxyParams}{Parameters}
+\item[{\em Boxlength}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+distance of mb from cm, centers the coordinates on the MB and stores the MB 
+\end{DoxyReturn}
+
+
+Definition at line 257 of file HaloProperties.cpp.
+
+\index{HaloProperties@{HaloProperties}!CenterVel@{CenterVel}}
+\index{CenterVel@{CenterVel}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterVel}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CenterVel (void)}\label{classHaloProperties_ab8ca12ff57d1ed55feedb3a287136745}
+
+
+Definition at line 429 of file HaloProperties.cpp.
+
+
+
+References m\_\-mtot, m\_\-nPart, m\_\-pMass, m\_\-pVel, and m\_\-vcm.
+
+
+
+Referenced by CleanUnboundSimple().
+
+\index{HaloProperties@{HaloProperties}!CenterVelExc@{CenterVelExc}}
+\index{CenterVelExc@{CenterVelExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterVelExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CenterVelExc (std::vector$<$ bool $>$ {\em excluded})}\label{classHaloProperties_ab5b9df653b5053ef445381c38bd1940c}
+
+
+Definition at line 459 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, m\_\-pMass, m\_\-pVel, and m\_\-vcm.
+
+
+
+Referenced by CleanUnboundExc().
+
+\index{HaloProperties@{HaloProperties}!CenterVelOn@{CenterVelOn}}
+\index{CenterVelOn@{CenterVelOn}!HaloProperties@{HaloProperties}}
+\subsubsection[{CenterVelOn}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CenterVelOn ({\bf real} $\ast$ {\em vc})}\label{classHaloProperties_a1584267a0d3b6f3469bad5ead7428b94}
+
+
+Definition at line 451 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, m\_\-pVel, and m\_\-vcm.
+
+\index{HaloProperties@{HaloProperties}!CleanUnbound@{CleanUnbound}}
+\index{CleanUnbound@{CleanUnbound}!HaloProperties@{HaloProperties}}
+\subsubsection[{CleanUnbound}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ bool $>$ HaloProperties::CleanUnbound ({\bf real} {\em boxsize})}\label{classHaloProperties_a28b060c3347429056b28f7f2e7603b48}
+
+
+Definition at line 1098 of file HaloProperties.cpp.
+
+
+
+References CleanUnboundExc(), and m\_\-nPart.
+
+\index{HaloProperties@{HaloProperties}!CleanUnboundExc@{CleanUnboundExc}}
+\index{CleanUnboundExc@{CleanUnboundExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{CleanUnboundExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CleanUnboundExc ({\bf real} {\em boxsize}, \/  std::vector$<$ bool $>$ \& {\em excluded})}\label{classHaloProperties_acb0b10b15c1312b9431c498875a8d3f4}
+
+
+Definition at line 1106 of file HaloProperties.cpp.
+
+
+
+References CenterOnCMExc(), CenterVelExc(), ComputeKineticEnergyNoHubbleExc(), ComputePotentialTreeExc(), and m\_\-nPart.
+
+
+
+Referenced by CleanUnbound().
+
+\index{HaloProperties@{HaloProperties}!CleanUnboundSimple@{CleanUnboundSimple}}
+\index{CleanUnboundSimple@{CleanUnboundSimple}!HaloProperties@{HaloProperties}}
+\subsubsection[{CleanUnboundSimple}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::CleanUnboundSimple ({\bf real} {\em boxsize}, \/  std::vector$<$ bool $>$ \& {\em excluded})}\label{classHaloProperties_ad0cd4d6507b2cd05abe9f886d3d5577f}
+
+
+Definition at line 1170 of file HaloProperties.cpp.
+
+
+
+References CenterOnCM(), CenterVel(), ComputeKineticEnergyNoHubbleExc(), ComputePotentialDirectExc(), and m\_\-nPart.
+
+\index{HaloProperties@{HaloProperties}!ComputeAngularMomentum@{ComputeAngularMomentum}}
+\index{ComputeAngularMomentum@{ComputeAngularMomentum}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeAngularMomentum}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputeAngularMomentum ({\bf Vector3} \& {\em J}) const}\label{classHaloProperties_a15228365bc6e1546e47589a4b0403463}
+computes the angular momentum in internal units. assumes that coordinates and velocities are centered on a reference point \begin{DoxyReturn}{Returns}
+real Jtot, total angular momentum 
+\end{DoxyReturn}
+
+
+Definition at line 517 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, m\_\-Cosm, m\_\-nPart, m\_\-pMass, m\_\-pPos, m\_\-pVel, and Vector3::norm().
+
+\index{HaloProperties@{HaloProperties}!ComputeAngularMomentum@{ComputeAngularMomentum}}
+\index{ComputeAngularMomentum@{ComputeAngularMomentum}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeAngularMomentum}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeAngularMomentum ({\bf real} \& {\em Jtot})}\label{classHaloProperties_a61d17e98fb59a269786264cd41746720}
+computes the angular momentum in internal units. assumes that coordinates and velocities are centered on a reference point 
+\begin{DoxyParams}{Parameters}
+\item[{\em Jtot}]total angular momentum \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 492 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, m\_\-Cosm, m\_\-nPart, m\_\-pMass, m\_\-pPos, and m\_\-pVel.
+
+\index{HaloProperties@{HaloProperties}!ComputeCenterVel@{ComputeCenterVel}}
+\index{ComputeCenterVel@{ComputeCenterVel}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeCenterVel}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeCenterVel ({\bf Vector3} \& {\em vcm})}\label{classHaloProperties_a1537fda3a25fcde3db6d16bd8ee150b6}
+
+
+Definition at line 392 of file HaloProperties.cpp.
+
+
+
+References m\_\-mtot, m\_\-nPart, m\_\-pMass, m\_\-pVel, and m\_\-vcm.
+
+\index{HaloProperties@{HaloProperties}!ComputeCenterVelExc@{ComputeCenterVelExc}}
+\index{ComputeCenterVelExc@{ComputeCenterVelExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeCenterVelExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeCenterVelExc ({\bf Vector3} \& {\em vcm}, \/  std::vector$<$ bool $>$ {\em excluded})}\label{classHaloProperties_aaf32e9b882dc42e50c5609db83aa4778}
+
+
+Definition at line 408 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, m\_\-pMass, and m\_\-pVel.
+
+\index{HaloProperties@{HaloProperties}!ComputeCM@{ComputeCM}}
+\index{ComputeCM@{ComputeCM}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeCM}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeCM ({\bf real} {\em Boxlength}, \/  {\bf Vector3} \& {\em xcm})}\label{classHaloProperties_a37814d4c30aea13d79fac7f214c1bcb4}
+
+
+Definition at line 68 of file HaloProperties.cpp.
+
+
+
+References m\_\-mtot, m\_\-nPart, m\_\-pMass, and m\_\-pPos.
+
+\index{HaloProperties@{HaloProperties}!ComputeCMExc@{ComputeCMExc}}
+\index{ComputeCMExc@{ComputeCMExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeCMExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeCMExc ({\bf real} {\em Boxlength}, \/  {\bf Vector3} \& {\em xcm}, \/  std::vector$<$ bool $>$ {\em excluded})}\label{classHaloProperties_a79438fc145a289259c5f0f9ccd40885a}
+
+
+Definition at line 93 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, m\_\-pMass, and m\_\-pPos.
+
+\index{HaloProperties@{HaloProperties}!ComputeDensityProfile@{ComputeDensityProfile}}
+\index{ComputeDensityProfile@{ComputeDensityProfile}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeDensityProfile}]{\setlength{\rightskip}{0pt plus 5cm}int HaloProperties::ComputeDensityProfile ({\bf real} {\em rhobox}, \/  unsigned {\em n}, \/  std::vector$<$ {\bf real} $>$ \& {\em r}, \/  std::vector$<$ {\bf real} $>$ \& {\em rho}, \/  std::vector$<$ {\bf real} $>$ \& {\em sigma\_\-rho}) const}\label{classHaloProperties_a07c1aa990f6a5ecc57f88514c152f795}
+
+
+Definition at line 1202 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, ComputeVirialProperties(), m\_\-Cosm, m\_\-nPart, and m\_\-pMass.
+
+
+
+Referenced by FitNFWProfile1(), FitNFWProfile2(), and FitNFWProfile200().
+
+\index{HaloProperties@{HaloProperties}!ComputeKineticEnergy@{ComputeKineticEnergy}}
+\index{ComputeKineticEnergy@{ComputeKineticEnergy}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeKineticEnergy}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputeKineticEnergy (std::vector$<$ {\bf real} $>$ \& {\em kin}) const}\label{classHaloProperties_adb78899cbb93730081f5473c5c82608f}
+Compute the kinetic energies for all particles 
+\begin{DoxyParams}{Parameters}
+\item[{\em kin}]vector to be filled with kin. energies \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+total kinetic energy 
+\end{DoxyReturn}
+
+
+Definition at line 846 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::H0, m\_\-Cosm, m\_\-nPart, m\_\-pMass, m\_\-pPos, m\_\-pVel, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+
+\index{HaloProperties@{HaloProperties}!ComputeKineticEnergyNoHubble@{ComputeKineticEnergyNoHubble}}
+\index{ComputeKineticEnergyNoHubble@{ComputeKineticEnergyNoHubble}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeKineticEnergyNoHubble}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputeKineticEnergyNoHubble (std::vector$<$ {\bf real} $>$ \& {\em kin}) const}\label{classHaloProperties_ad5bee5f08cc37cc127185acd1ac8bdf3}
+Computes the kinetic energy of all particles without Hubble flow. 
+\begin{DoxyParams}{Parameters}
+\item[{\em kin}]vector with kinetic energies \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+total kinetic energy 
+\end{DoxyReturn}
+
+
+Definition at line 887 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, m\_\-Cosm, m\_\-nPart, m\_\-pMass, and m\_\-pVel.
+
+
+
+Referenced by CenterOnMB(), ComputeMB(), and ComputeMBExc().
+
+\index{HaloProperties@{HaloProperties}!ComputeKineticEnergyNoHubbleExc@{ComputeKineticEnergyNoHubbleExc}}
+\index{ComputeKineticEnergyNoHubbleExc@{ComputeKineticEnergyNoHubbleExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeKineticEnergyNoHubbleExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeKineticEnergyNoHubbleExc (std::vector$<$ {\bf real} $>$ \& {\em kin}, \/  std::vector$<$ bool $>$ {\em excluded}) const}\label{classHaloProperties_a0d140ad1df53e8ebfaf0bb51c9e54029}
+
+
+Definition at line 924 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, m\_\-Cosm, m\_\-nPart, m\_\-pMass, and m\_\-pVel.
+
+
+
+Referenced by CleanUnboundExc(), and CleanUnboundSimple().
+
+\index{HaloProperties@{HaloProperties}!ComputeLambdaPrime@{ComputeLambdaPrime}}
+\index{ComputeLambdaPrime@{ComputeLambdaPrime}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeLambdaPrime}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeLambdaPrime ({\bf real} \& {\em lambda}, \/  {\bf real} {\em Mvir}, \/  {\bf real} {\em Rvir})}\label{classHaloProperties_a675fb78ade0e9497338464fc275c2fd5}
+
+
+computes the simplified spin parameter lambda prime computes the lambda prime (Bullock et al. 2001). ASSUMES THAT COORDINATES AND VELOCITIES ARE CENTERED ON REFERENCE POINT. so center on center of mass or something. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em lambda}]storage for halo spin parameter \item[{\em Mvir}]the virial mass is returned here \item[{\em Rvir}]the virial radius is returned here \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 805 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, GetSortedDistances(), m\_\-Cosm, m\_\-nPart, m\_\-pMass, m\_\-pPos, m\_\-pVel, and Vector3::norm().
+
+\index{HaloProperties@{HaloProperties}!ComputeMajorAxes@{ComputeMajorAxes}}
+\index{ComputeMajorAxes@{ComputeMajorAxes}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeMajorAxes}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeMajorAxes ({\bf Vector3} \& {\em Eigenvalues}, \/  std::vector$<$ {\bf Vector3} $>$ \& {\em Eigenvectors}) const}\label{classHaloProperties_aadfc56fbb88702866ade01fc1168a53e}
+
+
+Definition at line 583 of file HaloProperties.cpp.
+
+
+
+References Matrix33::Eigen(), m\_\-mtot, m\_\-nPart, m\_\-pMass, and m\_\-pPos.
+
+
+
+Referenced by ComputeShapeParameters().
+
+\index{HaloProperties@{HaloProperties}!ComputeMajorAxesReduced@{ComputeMajorAxesReduced}}
+\index{ComputeMajorAxesReduced@{ComputeMajorAxesReduced}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeMajorAxesReduced}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeMajorAxesReduced ({\bf Vector3} \& {\em Eigenvalues}, \/  std::vector$<$ {\bf Vector3} $>$ \& {\em Eigenvectors}) const}\label{classHaloProperties_a2fe7ded61657178551618214d0a978b8}
+
+
+Definition at line 618 of file HaloProperties.cpp.
+
+
+
+References Matrix33::Eigen(), m\_\-imostbound, m\_\-nPart, m\_\-pMass, and m\_\-pPos.
+
+\index{HaloProperties@{HaloProperties}!ComputeMB@{ComputeMB}}
+\index{ComputeMB@{ComputeMB}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeMB}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeMB ({\bf real} {\em Boxlength}, \/  {\bf Vector3} \& {\em xmb})}\label{classHaloProperties_aabd66cd248656d59603f8b595a22ce17}
+
+
+Definition at line 197 of file HaloProperties.cpp.
+
+
+
+References ComputeKineticEnergyNoHubble(), ComputePotentialDirect(), ComputePotentialTree(), FORCE\_\-DIRECT\_\-TREE\_\-SPLIT, m\_\-nPart, and m\_\-pPos.
+
+\index{HaloProperties@{HaloProperties}!ComputeMBExc@{ComputeMBExc}}
+\index{ComputeMBExc@{ComputeMBExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeMBExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeMBExc ({\bf real} {\em Boxlength}, \/  {\bf Vector3} \& {\em xmb}, \/  std::vector$<$ bool $>$ {\em excluded})}\label{classHaloProperties_aff8caa920de95062ee0b89e955cd49d7}
+
+
+Definition at line 224 of file HaloProperties.cpp.
+
+
+
+References ComputeKineticEnergyNoHubble(), ComputePotentialDirect(), ComputePotentialTree(), FORCE\_\-DIRECT\_\-TREE\_\-SPLIT, m\_\-nPart, and m\_\-pPos.
+
+\index{HaloProperties@{HaloProperties}!ComputePoormanConcentration@{ComputePoormanConcentration}}
+\index{ComputePoormanConcentration@{ComputePoormanConcentration}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputePoormanConcentration}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputePoormanConcentration ({\bf real} {\em rhobox})}\label{classHaloProperties_ac72e7d61cf10ee11b8f72af2bf32905a}
+
+
+Definition at line 789 of file HaloProperties.cpp.
+
+
+
+References ComputePoormanConcentration().
+
+\index{HaloProperties@{HaloProperties}!ComputePoormanConcentration@{ComputePoormanConcentration}}
+\index{ComputePoormanConcentration@{ComputePoormanConcentration}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputePoormanConcentration}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputePoormanConcentration ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em R20}, \/  {\bf real} \& {\em R80})}\label{classHaloProperties_ac961040b7e402a1c1aca40f1968a3387}
+
+
+Definition at line 778 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, ComputeVirialProperties(), and m\_\-Cosm.
+
+
+
+Referenced by ComputePoormanConcentration().
+
+\index{HaloProperties@{HaloProperties}!ComputePotentialDirect@{ComputePotentialDirect}}
+\index{ComputePotentialDirect@{ComputePotentialDirect}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputePotentialDirect}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputePotentialDirect ({\bf real} {\em plumsoft}, \/  std::vector$<$ {\bf real} $>$ \& {\em phi}) const}\label{classHaloProperties_a78889a58d246ccfa468569ed6eafdc68}
+Computes the potential directly from particle positions and masses. Center on CM before invoking this routine 
+\begin{DoxyParams}{Parameters}
+\item[{\em plumsoft}]smoothing length \item[{\em phi}]potential \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+total potential energy 
+\end{DoxyReturn}
+
+
+Definition at line 940 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m\_\-Cosm, m\_\-nPart, m\_\-pMass, and m\_\-pPos.
+
+
+
+Referenced by CenterOnMB(), ComputeMB(), and ComputeMBExc().
+
+\index{HaloProperties@{HaloProperties}!ComputePotentialDirectExc@{ComputePotentialDirectExc}}
+\index{ComputePotentialDirectExc@{ComputePotentialDirectExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputePotentialDirectExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputePotentialDirectExc ({\bf real} {\em plumsoft}, \/  std::vector$<$ {\bf real} $>$ \& {\em phi}, \/  std::vector$<$ bool $>$ {\em excluded}) const}\label{classHaloProperties_a67050766e04467c84de53e83fefc139d}
+
+
+Definition at line 966 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m\_\-Cosm, m\_\-nPart, m\_\-pMass, and m\_\-pPos.
+
+
+
+Referenced by CleanUnboundSimple().
+
+\index{HaloProperties@{HaloProperties}!ComputePotentialTree@{ComputePotentialTree}}
+\index{ComputePotentialTree@{ComputePotentialTree}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputePotentialTree}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputePotentialTree ({\bf real} {\em theta}, \/  {\bf real} {\em plumsoft}, \/  std::vector$<$ {\bf real} $>$ \& {\em phi}) const}\label{classHaloProperties_a11c11cb2443bb7852e1940617e9fd61c}
+
+
+Definition at line 995 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m\_\-Cosm, m\_\-nPart, m\_\-pMass, m\_\-pPos, and OctTreeNode::traverse().
+
+
+
+Referenced by CenterOnMB(), ComputeMB(), and ComputeMBExc().
+
+\index{HaloProperties@{HaloProperties}!ComputePotentialTreeExc@{ComputePotentialTreeExc}}
+\index{ComputePotentialTreeExc@{ComputePotentialTreeExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputePotentialTreeExc}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputePotentialTreeExc ({\bf real} {\em theta}, \/  {\bf real} {\em plumsoft}, \/  std::vector$<$ {\bf real} $>$ \& {\em phi}, \/  std::vector$<$ bool $>$ {\em excluded}) const}\label{classHaloProperties_a28f6e72bab9459a79bdf665fbd42deab}
+
+
+Definition at line 1049 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, m\_\-Cosm, m\_\-nPart, m\_\-pMass, m\_\-pPos, and OctTreeNode::traverse().
+
+
+
+Referenced by CleanUnboundExc().
+
+\index{HaloProperties@{HaloProperties}!ComputeShapeParameters@{ComputeShapeParameters}}
+\index{ComputeShapeParameters@{ComputeShapeParameters}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeShapeParameters}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeShapeParameters ({\bf real} \& {\em T}, \/  {\bf real} \& {\em S}) const}\label{classHaloProperties_afaabf0499b36b0e507a855763c6a2144}
+
+
+Definition at line 658 of file HaloProperties.cpp.
+
+
+
+References ComputeMajorAxes().
+
+\index{HaloProperties@{HaloProperties}!ComputeTotalMass@{ComputeTotalMass}}
+\index{ComputeTotalMass@{ComputeTotalMass}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeTotalMass}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputeTotalMass (void)}\label{classHaloProperties_a06a1cd86f4973cd6c81b47a5712fcac8}
+
+
+Definition at line 54 of file HaloProperties.cpp.
+
+
+
+References m\_\-mtot.
+
+\index{HaloProperties@{HaloProperties}!ComputeTotalMassExc@{ComputeTotalMassExc}}
+\index{ComputeTotalMassExc@{ComputeTotalMassExc}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeTotalMassExc}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} HaloProperties::ComputeTotalMassExc (std::vector$<$ bool $>$ {\em excluded})}\label{classHaloProperties_af1a876c4064a4e86f74d3585b6f68030}
+
+
+Definition at line 59 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, and m\_\-pMass.
+
+\index{HaloProperties@{HaloProperties}!ComputeVelocityDispersion@{ComputeVelocityDispersion}}
+\index{ComputeVelocityDispersion@{ComputeVelocityDispersion}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVelocityDispersion}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVelocityDispersion ({\bf real} \& {\em Sigma})}\label{classHaloProperties_a609180764606ba7ab3658b545e89c7f0}
+computes the velocity dispersion (sigma) in internal units assumes that pos and vel be centered 
+
+Definition at line 546 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, and m\_\-pVel.
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties@{ComputeVirialProperties}}
+\index{ComputeVirialProperties@{ComputeVirialProperties}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}, \/  {\bf real} \& {\em Vcmax}, \/  std::vector$<$ {\bf Distance} $>$ \& {\em dvec}) const}\label{classHaloProperties_a1363b40a961c241a3099133e79969f8a}
+
+
+Definition at line 728 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, GetSortedDistances(), m\_\-Cosm, and m\_\-pMass.
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties@{ComputeVirialProperties}}
+\index{ComputeVirialProperties@{ComputeVirialProperties}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}, \/  std::vector$<$ {\bf Distance} $>$ \& {\em dvec}) const}\label{classHaloProperties_a489eb6a9bcc51e46f3c3db91a4f104da}
+
+
+Definition at line 761 of file HaloProperties.cpp.
+
+
+
+References ComputeVirialProperties().
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties@{ComputeVirialProperties}}
+\index{ComputeVirialProperties@{ComputeVirialProperties}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}, \/  {\bf real} \& {\em Vcmax}) const}\label{classHaloProperties_ab703450a3ad8b89221ae9463e0a2d58d}
+
+
+Definition at line 766 of file HaloProperties.cpp.
+
+
+
+References ComputeVirialProperties().
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties@{ComputeVirialProperties}}
+\index{ComputeVirialProperties@{ComputeVirialProperties}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}) const}\label{classHaloProperties_ad132159c56a38018afbe7c360803363c}
+
+
+Definition at line 771 of file HaloProperties.cpp.
+
+
+
+Referenced by ComputeDensityProfile(), ComputePoormanConcentration(), ComputeVirialProperties(), and FitNFWProfile1().
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties200@{ComputeVirialProperties200}}
+\index{ComputeVirialProperties200@{ComputeVirialProperties200}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties200}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties200 ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}, \/  {\bf real} \& {\em Vcmax}, \/  std::vector$<$ {\bf Distance} $>$ \& {\em dvec}) const}\label{classHaloProperties_a21c2e9833f9bec47f9c452cee9752996}
+
+
+Definition at line 668 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::asnap, HaloProperties::Cosm::G, GetSortedDistances(), m\_\-Cosm, m\_\-pMass, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties200@{ComputeVirialProperties200}}
+\index{ComputeVirialProperties200@{ComputeVirialProperties200}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties200}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties200 ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}, \/  std::vector$<$ {\bf Distance} $>$ \& {\em dvec}) const}\label{classHaloProperties_a473124bc8991382b9db3137448acfec9}
+
+
+Definition at line 715 of file HaloProperties.cpp.
+
+
+
+References ComputeVirialProperties200().
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties200@{ComputeVirialProperties200}}
+\index{ComputeVirialProperties200@{ComputeVirialProperties200}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties200}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties200 ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}, \/  {\bf real} \& {\em Vcmax}) const}\label{classHaloProperties_a21ee7112bdd7d5c77f91bbd3d87a2f7d}
+
+
+Definition at line 710 of file HaloProperties.cpp.
+
+
+
+References ComputeVirialProperties200().
+
+\index{HaloProperties@{HaloProperties}!ComputeVirialProperties200@{ComputeVirialProperties200}}
+\index{ComputeVirialProperties200@{ComputeVirialProperties200}!HaloProperties@{HaloProperties}}
+\subsubsection[{ComputeVirialProperties200}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::ComputeVirialProperties200 ({\bf real} {\em rhobox}, \/  {\bf real} \& {\em Mvir}, \/  {\bf real} \& {\em Rvir}) const}\label{classHaloProperties_a6191e30ad371b6cdca9ec054da9c45c6}
+
+
+Definition at line 720 of file HaloProperties.cpp.
+
+
+
+Referenced by ComputeVirialProperties200(), and FitNFWProfile200().
+
+\index{HaloProperties@{HaloProperties}!FitNFWProfile1@{FitNFWProfile1}}
+\index{FitNFWProfile1@{FitNFWProfile1}!HaloProperties@{HaloProperties}}
+\subsubsection[{FitNFWProfile1}]{\setlength{\rightskip}{0pt plus 5cm}int HaloProperties::FitNFWProfile1 ({\bf real} {\em rhobox}, \/  unsigned {\em n}, \/  {\bf real} \& {\em frs}, \/  {\bf real} \& {\em fers}) const}\label{classHaloProperties_a33a97caec1229a2bb58d7971e8f7f3b0}
+
+
+Definition at line 1345 of file HaloProperties.cpp.
+
+
+
+References ComputeDensityProfile(), ComputeVirialProperties(), and NFW\_\-fix\_\-fit().
+
+\index{HaloProperties@{HaloProperties}!FitNFWProfile2@{FitNFWProfile2}}
+\index{FitNFWProfile2@{FitNFWProfile2}!HaloProperties@{HaloProperties}}
+\subsubsection[{FitNFWProfile2}]{\setlength{\rightskip}{0pt plus 5cm}int HaloProperties::FitNFWProfile2 ({\bf real} {\em rhobox}, \/  unsigned {\em n}, \/  {\bf real} \& {\em fdeltac}, \/  {\bf real} \& {\em fedeltac}, \/  {\bf real} \& {\em frs}, \/  {\bf real} \& {\em fers}) const}\label{classHaloProperties_adfcb17cd8afa75f87274f75a79e212a4}
+
+
+Definition at line 1317 of file HaloProperties.cpp.
+
+
+
+References ComputeDensityProfile(), and NFW\_\-fit().
+
+\index{HaloProperties@{HaloProperties}!FitNFWProfile200@{FitNFWProfile200}}
+\index{FitNFWProfile200@{FitNFWProfile200}!HaloProperties@{HaloProperties}}
+\subsubsection[{FitNFWProfile200}]{\setlength{\rightskip}{0pt plus 5cm}int HaloProperties::FitNFWProfile200 ({\bf real} {\em rhobox}, \/  unsigned {\em n}, \/  {\bf real} \& {\em frs}, \/  {\bf real} \& {\em fers}) const}\label{classHaloProperties_a6c84410c43d8174b5cd61e728bb002c3}
+
+
+Definition at line 1368 of file HaloProperties.cpp.
+
+
+
+References ComputeDensityProfile(), ComputeVirialProperties200(), and NFW\_\-fix\_\-fit().
+
+\index{HaloProperties@{HaloProperties}!GetSortedDistances@{GetSortedDistances}}
+\index{GetSortedDistances@{GetSortedDistances}!HaloProperties@{HaloProperties}}
+\subsubsection[{GetSortedDistances}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::GetSortedDistances (std::vector$<$ {\bf Distance} $>$ \& {\em dvec}) const}\label{classHaloProperties_a60b7ef82eee29ae676d28b9c819d1efb}
+
+
+Definition at line 568 of file HaloProperties.cpp.
+
+
+
+References m\_\-nPart, and m\_\-pPos.
+
+
+
+Referenced by ComputeLambdaPrime(), ComputeVirialProperties(), and ComputeVirialProperties200().
+
+\index{HaloProperties@{HaloProperties}!SetCosmology@{SetCosmology}}
+\index{SetCosmology@{SetCosmology}!HaloProperties@{HaloProperties}}
+\subsubsection[{SetCosmology}]{\setlength{\rightskip}{0pt plus 5cm}void HaloProperties::SetCosmology ({\bf real} {\em OmegaM0}, \/  {\bf real} {\em OmegaL0}, \/  {\bf real} {\em H0}, \/  {\bf real} {\em G} = {\ttfamily 43011.7902})}\label{classHaloProperties_ad5ba044f05cff83ef00e69f3b4aef0af}
+Set internal units and values for cosmological constants 
+\begin{DoxyParams}{Parameters}
+\item[{\em OmegaM0}]fraction of mass density and critical density \item[{\em OmegaL0}]fraction of false vacuum density and critical density \item[{\em H0}]present day Hubble constant \item[{\em G}]gravitation constant, in internal units \end{DoxyParams}
+
+
+Definition at line 46 of file HaloProperties.cpp.
+
+
+
+References HaloProperties::Cosm::G, HaloProperties::Cosm::H0, m\_\-Cosm, HaloProperties::Cosm::OmegaL0, and HaloProperties::Cosm::OmegaM0.
+
+
+
+\subsection{Field Documentation}
+\index{HaloProperties@{HaloProperties}!m\_\-alpha@{m\_\-alpha}}
+\index{m\_\-alpha@{m\_\-alpha}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-alpha}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-alpha}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_af1ec4657f196c3bcf725200a0f4206d9}
+
+
+Definition at line 55 of file HaloProperties.h.
+
+
+
+Referenced by CenterOnMB().
+
+\index{HaloProperties@{HaloProperties}!m\_\-Cosm@{m\_\-Cosm}}
+\index{m\_\-Cosm@{m\_\-Cosm}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-Cosm}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Cosm} {\bf HaloProperties::m\_\-Cosm}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_ac5f3f646bdff517eced133857ad03a0d}
+
+
+Definition at line 62 of file HaloProperties.h.
+
+
+
+Referenced by ComputeAngularMomentum(), ComputeDensityProfile(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputePoormanConcentration(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), ComputeVirialProperties(), ComputeVirialProperties200(), HaloProperties(), and SetCosmology().
+
+\index{HaloProperties@{HaloProperties}!m\_\-imostbound@{m\_\-imostbound}}
+\index{m\_\-imostbound@{m\_\-imostbound}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-imostbound}]{\setlength{\rightskip}{0pt plus 5cm}unsigned {\bf HaloProperties::m\_\-imostbound}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_aaf7437a2b095bad02f2c423d834fbec2}
+
+
+Definition at line 56 of file HaloProperties.h.
+
+
+
+Referenced by CenterOnMB(), ComputeMajorAxesReduced(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-mtot@{m\_\-mtot}}
+\index{m\_\-mtot@{m\_\-mtot}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-mtot}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-mtot}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a49159fd8ceb9bcb6693ed3a3070320b5}
+
+
+Definition at line 52 of file HaloProperties.h.
+
+
+
+Referenced by CenterOnCM(), CenterVel(), ComputeCenterVel(), ComputeCM(), ComputeMajorAxes(), ComputeTotalMass(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-nPart@{m\_\-nPart}}
+\index{m\_\-nPart@{m\_\-nPart}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-nPart}]{\setlength{\rightskip}{0pt plus 5cm}unsigned {\bf HaloProperties::m\_\-nPart}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_afffcd47e8ef37f5e1fb5a395e1fdd6ca}
+
+
+Definition at line 53 of file HaloProperties.h.
+
+
+
+Referenced by AverageVel(), CenterOnCM(), CenterOnCMExc(), CenterOnCoord(), CenterOnMB(), CenterVel(), CenterVelExc(), CenterVelOn(), CleanUnbound(), CleanUnboundExc(), CleanUnboundSimple(), ComputeAngularMomentum(), ComputeCenterVel(), ComputeCenterVelExc(), ComputeCM(), ComputeCMExc(), ComputeDensityProfile(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputeMajorAxes(), ComputeMajorAxesReduced(), ComputeMB(), ComputeMBExc(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), ComputeTotalMassExc(), ComputeVelocityDispersion(), GetSortedDistances(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-pMass@{m\_\-pMass}}
+\index{m\_\-pMass@{m\_\-pMass}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-pMass}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} $\ast$ {\bf HaloProperties::m\_\-pMass}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_ac03a9f5783b159c09a1cdadf847d2444}
+
+
+Definition at line 51 of file HaloProperties.h.
+
+
+
+Referenced by AverageVel(), CenterOnCM(), CenterOnCMExc(), CenterVel(), CenterVelExc(), ComputeAngularMomentum(), ComputeCenterVel(), ComputeCenterVelExc(), ComputeCM(), ComputeCMExc(), ComputeDensityProfile(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputeMajorAxes(), ComputeMajorAxesReduced(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), ComputeTotalMassExc(), ComputeVirialProperties(), ComputeVirialProperties200(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-pPos@{m\_\-pPos}}
+\index{m\_\-pPos@{m\_\-pPos}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-pPos}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real}$\ast$ {\bf HaloProperties::m\_\-pPos}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a5bf86b564f3d107d35065d71c80ebf1e}
+
+
+Definition at line 51 of file HaloProperties.h.
+
+
+
+Referenced by AverageVel(), CenterOnCM(), CenterOnCMExc(), CenterOnCoord(), CenterOnMB(), ComputeAngularMomentum(), ComputeCM(), ComputeCMExc(), ComputeKineticEnergy(), ComputeLambdaPrime(), ComputeMajorAxes(), ComputeMajorAxesReduced(), ComputeMB(), ComputeMBExc(), ComputePotentialDirect(), ComputePotentialDirectExc(), ComputePotentialTree(), ComputePotentialTreeExc(), GetSortedDistances(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-pVel@{m\_\-pVel}}
+\index{m\_\-pVel@{m\_\-pVel}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-pVel}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} $\ast$ {\bf HaloProperties::m\_\-pVel}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a87d16b6da2b2442e69e340623a002021}
+
+
+Definition at line 51 of file HaloProperties.h.
+
+
+
+Referenced by AverageVel(), CenterVel(), CenterVelExc(), CenterVelOn(), ComputeAngularMomentum(), ComputeCenterVel(), ComputeCenterVelExc(), ComputeKineticEnergy(), ComputeKineticEnergyNoHubble(), ComputeKineticEnergyNoHubbleExc(), ComputeLambdaPrime(), ComputeVelocityDispersion(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-rmbcm@{m\_\-rmbcm}}
+\index{m\_\-rmbcm@{m\_\-rmbcm}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-rmbcm}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-rmbcm}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a69b8eeefabab51e75c49e644e90e2eb6}
+
+
+Definition at line 50 of file HaloProperties.h.
+
+
+
+Referenced by CenterOnMB().
+
+\index{HaloProperties@{HaloProperties}!m\_\-vcm@{m\_\-vcm}}
+\index{m\_\-vcm@{m\_\-vcm}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-vcm}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-vcm}\mbox{[}3\mbox{]}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a367b37a34cf13626d6a6f008daadedf4}
+
+
+Definition at line 49 of file HaloProperties.h.
+
+
+
+Referenced by CenterVel(), CenterVelExc(), CenterVelOn(), ComputeCenterVel(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-vmb@{m\_\-vmb}}
+\index{m\_\-vmb@{m\_\-vmb}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-vmb}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-vmb}\mbox{[}3\mbox{]}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a17b99f065e4e45eda4a15d2cdf8adef4}
+
+
+Definition at line 49 of file HaloProperties.h.
+
+
+
+Referenced by HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-xcm@{m\_\-xcm}}
+\index{m\_\-xcm@{m\_\-xcm}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-xcm}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-xcm}\mbox{[}3\mbox{]}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_ad839c03623bf7980cc14a7fa5ea2fdc2}
+
+
+Definition at line 49 of file HaloProperties.h.
+
+
+
+Referenced by CenterOnCM(), CenterOnCMExc(), and HaloProperties().
+
+\index{HaloProperties@{HaloProperties}!m\_\-xmb@{m\_\-xmb}}
+\index{m\_\-xmb@{m\_\-xmb}!HaloProperties@{HaloProperties}}
+\subsubsection[{m\_\-xmb}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf HaloProperties::m\_\-xmb}\mbox{[}3\mbox{]}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classHaloProperties_a3936de59491d4fb5c0688b10d9652d40}
+
+
+Definition at line 49 of file HaloProperties.h.
+
+
+
+Referenced by CenterOnMB(), and HaloProperties().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{HaloProperties_8h}{HaloProperties.h}\item 
+\hyperlink{HaloProperties_8cpp}{HaloProperties.cpp}\end{DoxyCompactItemize}

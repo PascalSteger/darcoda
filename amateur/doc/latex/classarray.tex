@@ -1,0 +1,254 @@
+\section{array$<$ T $>$ Class Template Reference}
+\label{classarray}\index{array@{array}}
+
+
+{\ttfamily \#include $<$MySTL.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classarray_a820c25094aa9a4c0062940cb7f77c007}{array} (void)
+\item 
+\hyperlink{classarray_a093b48b6689a9c485d9916d2f0e892f3}{array} (\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} aSize)
+\item 
+\hyperlink{classarray_a59e916c1d1edc5ac1905d2d2efdfed6c}{array} (\hyperlink{classarray}{array}$<$ T $>$ \&aArray)
+\item 
+\hyperlink{classarray_a9b08050d554bbdf83747443ce4b8b819}{$\sim$array} ()
+\item 
+\hyperlink{classarray_abbd410f20c8850c8883f36daf76f011e}{array} (T $\ast$dataptr, \hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} size)
+\item 
+void \hyperlink{classarray_a78ed6d2bf5c7ef2dc5683464f3f7c49e}{reserve} (\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} aSize)
+\item 
+void \hyperlink{classarray_af563fcf070f9303dc708442d47c3e2ff}{resize} (\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} aSize)
+\item 
+void \hyperlink{classarray_a914bed3e4fa578bbd5f4cb0968190dba}{push\_\-back} (T Elem)
+\item 
+T \& \hyperlink{classarray_a03d4de353f226903e19a4cb03a0de10e}{operator\mbox{[}$\,$\mbox{]}} (\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} i) const 
+\item 
+\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} \hyperlink{classarray_a7f1f56c3838eeb9bb371c789d8db86dc}{size} (void) const 
+\item 
+bool \hyperlink{classarray_a2a54cfb298552e30c53121d5a12b8045}{find} (T elem) const 
+\item 
+void \hyperlink{classarray_a55f66a2540b5f7633cc74b11ee18fb0c}{clear} (void)
+\item 
+T $\ast$ \hyperlink{classarray_af56fad8278e10237d7bc90651d544e6f}{data\_\-ptr} (void)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+T $\ast$ \hyperlink{classarray_a6b46d7af0bacf9258f5e8e46b2e42f28}{m\_\-Data}
+\item 
+\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} \hyperlink{classarray_a9d61b9e3d5ef2caa0aab628414b26d3a}{m\_\-Size}
+\item 
+\hyperlink{Vector3_8h_a25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier} \hyperlink{classarray_a0424dba081ebfef3032425bad0595d06}{m\_\-Backinsert}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classarray_a4af7d5c42d512b86461b9b927c143c22}{GadgetSnapshot}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$ class array$<$ T $>$}
+
+
+
+Definition at line 18 of file MySTL.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{array@{array}!array@{array}}
+\index{array@{array}!array@{array}}
+\subsubsection[{array}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf array}$<$ T $>$::{\bf array} (void)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a820c25094aa9a4c0062940cb7f77c007}
+
+
+Definition at line 25 of file MySTL.h.
+
+\index{array@{array}!array@{array}}
+\index{array@{array}!array@{array}}
+\subsubsection[{array}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf array}$<$ T $>$::{\bf array} ({\bf Identifier} {\em aSize})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a093b48b6689a9c485d9916d2f0e892f3}
+
+
+Definition at line 26 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Backinsert, array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+\index{array@{array}!array@{array}}
+\index{array@{array}!array@{array}}
+\subsubsection[{array}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf array}$<$ T $>$::{\bf array} ({\bf array}$<$ T $>$ \& {\em aArray})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a59e916c1d1edc5ac1905d2d2efdfed6c}
+
+
+Definition at line 31 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Backinsert, array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+\index{array@{array}!$\sim$array@{$\sim$array}}
+\index{$\sim$array@{$\sim$array}!array@{array}}
+\subsubsection[{$\sim$array}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf array}$<$ T $>$::$\sim${\bf array} ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a9b08050d554bbdf83747443ce4b8b819}
+
+
+Definition at line 38 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data.
+
+\index{array@{array}!array@{array}}
+\index{array@{array}!array@{array}}
+\subsubsection[{array}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf array}$<$ T $>$::{\bf array} (T $\ast$ {\em dataptr}, \/  {\bf Identifier} {\em size})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_abbd410f20c8850c8883f36daf76f011e}
+
+
+Definition at line 43 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+
+
+\subsection{Member Function Documentation}
+\index{array@{array}!clear@{clear}}
+\index{clear@{clear}!array@{array}}
+\subsubsection[{clear}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf array}$<$ T $>$::clear (void)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a55f66a2540b5f7633cc74b11ee18fb0c}
+
+
+Definition at line 81 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+\index{array@{array}!data\_\-ptr@{data\_\-ptr}}
+\index{data\_\-ptr@{data\_\-ptr}!array@{array}}
+\subsubsection[{data\_\-ptr}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T$\ast$ {\bf array}$<$ T $>$::data\_\-ptr (void)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_af56fad8278e10237d7bc90651d544e6f}
+
+
+Definition at line 86 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data.
+
+\index{array@{array}!find@{find}}
+\index{find@{find}!array@{array}}
+\subsubsection[{find}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ bool {\bf array}$<$ T $>$::find (T {\em elem}) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a2a54cfb298552e30c53121d5a12b8045}
+
+
+Definition at line 71 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+\index{array@{array}!operator\mbox{[}\mbox{]}@{operator[]}}
+\index{operator\mbox{[}\mbox{]}@{operator[]}!array@{array}}
+\subsubsection[{operator[]}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T\& {\bf array}$<$ T $>$::operator\mbox{[}$\,$\mbox{]} ({\bf Identifier} {\em i}) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a03d4de353f226903e19a4cb03a0de10e}
+
+
+Definition at line 65 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data.
+
+\index{array@{array}!push\_\-back@{push\_\-back}}
+\index{push\_\-back@{push\_\-back}!array@{array}}
+\subsubsection[{push\_\-back}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf array}$<$ T $>$::push\_\-back (T {\em Elem})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a914bed3e4fa578bbd5f4cb0968190dba}
+
+
+Definition at line 62 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Backinsert, and array$<$ T $>$::m\_\-Data.
+
+\index{array@{array}!reserve@{reserve}}
+\index{reserve@{reserve}!array@{array}}
+\subsubsection[{reserve}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf array}$<$ T $>$::reserve ({\bf Identifier} {\em aSize})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a78ed6d2bf5c7ef2dc5683464f3f7c49e}
+
+
+Definition at line 47 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+\index{array@{array}!resize@{resize}}
+\index{resize@{resize}!array@{array}}
+\subsubsection[{resize}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ void {\bf array}$<$ T $>$::resize ({\bf Identifier} {\em aSize})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_af563fcf070f9303dc708442d47c3e2ff}
+
+
+Definition at line 53 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Data, and array$<$ T $>$::m\_\-Size.
+
+\index{array@{array}!size@{size}}
+\index{size@{size}!array@{array}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf Identifier} {\bf array}$<$ T $>$::size (void) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classarray_a7f1f56c3838eeb9bb371c789d8db86dc}
+
+
+Definition at line 68 of file MySTL.h.
+
+
+
+References array$<$ T $>$::m\_\-Size.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\index{array@{array}!GadgetSnapshot@{GadgetSnapshot}}
+\index{GadgetSnapshot@{GadgetSnapshot}!array@{array}}
+\subsubsection[{GadgetSnapshot}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ friend class GadgetSnapshot\hspace{0.3cm}{\ttfamily  \mbox{[}friend\mbox{]}}}\label{classarray_a4af7d5c42d512b86461b9b927c143c22}
+
+
+Definition at line 19 of file MySTL.h.
+
+
+
+\subsection{Field Documentation}
+\index{array@{array}!m\_\-Backinsert@{m\_\-Backinsert}}
+\index{m\_\-Backinsert@{m\_\-Backinsert}!array@{array}}
+\subsubsection[{m\_\-Backinsert}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf Identifier} {\bf array}$<$ T $>$::{\bf m\_\-Backinsert}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classarray_a0424dba081ebfef3032425bad0595d06}
+
+
+Definition at line 23 of file MySTL.h.
+
+
+
+Referenced by array$<$ T $>$::array(), and array$<$ T $>$::push\_\-back().
+
+\index{array@{array}!m\_\-Data@{m\_\-Data}}
+\index{m\_\-Data@{m\_\-Data}!array@{array}}
+\subsubsection[{m\_\-Data}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T$\ast$ {\bf array}$<$ T $>$::{\bf m\_\-Data}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classarray_a6b46d7af0bacf9258f5e8e46b2e42f28}
+
+
+Definition at line 21 of file MySTL.h.
+
+
+
+Referenced by array$<$ T $>$::array(), array$<$ T $>$::clear(), array$<$ T $>$::data\_\-ptr(), array$<$ T $>$::find(), array$<$ T $>$::operator\mbox{[}$\,$\mbox{]}(), array$<$ T $>$::push\_\-back(), array$<$ T $>$::reserve(), array$<$ T $>$::resize(), and array$<$ T $>$::$\sim$array().
+
+\index{array@{array}!m\_\-Size@{m\_\-Size}}
+\index{m\_\-Size@{m\_\-Size}!array@{array}}
+\subsubsection[{m\_\-Size}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf Identifier} {\bf array}$<$ T $>$::{\bf m\_\-Size}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classarray_a9d61b9e3d5ef2caa0aab628414b26d3a}
+
+
+Definition at line 22 of file MySTL.h.
+
+
+
+Referenced by array$<$ T $>$::array(), array$<$ T $>$::clear(), array$<$ T $>$::find(), array$<$ T $>$::reserve(), array$<$ T $>$::resize(), and array$<$ T $>$::size().
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{MySTL_8h}{MySTL.h}\end{DoxyCompactItemize}

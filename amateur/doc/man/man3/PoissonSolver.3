@@ -1,0 +1,132 @@
+.TH "PoissonSolver" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PoissonSolver \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <PoissonSolver.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPoissonSolver\fP (\fBScalarField\fP *prho, \fBScalarField\fP *pphi)"
+.br
+.ti -1c
+.RI "double \fBGauss3D\fP (const double &k, const double &sigma)"
+.br
+.RI "\fIGaussian kernel. \fP"
+.ti -1c
+.RI "double \fBTopHat3D\fP (const double &k, const double &R)"
+.br
+.ti -1c
+.RI "void \fBtest\fP ()"
+.br
+.ti -1c
+.RI "void \fBsolve\fP (double Boxlength, double sigma)"
+.br
+.ti -1c
+.RI "\fBPoissonSolver\fP (\fBScalarField\fP *prho)"
+.br
+.ti -1c
+.RI "double \fBGauss3D\fP (const double &k, const double &sigma)"
+.br
+.ti -1c
+.RI "double \fBTopHat3D\fP (const double &k, const double &R)"
+.br
+.ti -1c
+.RI "void \fBsolve\fP (\fBScalarField\fP *pphi, double Boxlength, double sigma)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBScalarField\fP * \fBprho_\fP"
+.br
+.ti -1c
+.RI "\fBScalarField\fP * \fBpphi_\fP"
+.br
+.ti -1c
+.RI "\fBScalarField\fP * \fBm_prho\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<int nstencil> class PoissonSolver< nstencil >"
+implementation of Poisson equation solver using Fourier transformation of the cloud-in-cell density field, templated for the number of stencils 
+.PP
+Definition at line 52 of file PoissonSolver.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<int nstencil> \fBPoissonSolver\fP< nstencil >::\fBPoissonSolver\fP (\fBScalarField\fP * prho, \fBScalarField\fP * pphi)\fC [inline]\fP"
+.PP
+Definition at line 58 of file PoissonSolver.h.
+.PP
+References PoissonSolver< nstencil >::pphi_, and PoissonSolver< nstencil >::prho_.
+.SS "template<int nstencil> \fBPoissonSolver\fP< nstencil >::\fBPoissonSolver\fP (\fBScalarField\fP * prho)\fC [inline]\fP"
+.PP
+Definition at line 60 of file PoissonSolver_new.h.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<int nstencil> double \fBPoissonSolver\fP< nstencil >::Gauss3D (const double & k, const double & sigma)\fC [inline]\fP"
+.PP
+Definition at line 63 of file PoissonSolver_new.h.
+.SS "template<int nstencil> double \fBPoissonSolver\fP< nstencil >::Gauss3D (const double & k, const double & sigma)\fC [inline]\fP"
+.PP
+Gaussian kernel. 
+.PP
+Definition at line 64 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "template<int nstencil> void \fBPoissonSolver\fP< nstencil >::solve (\fBScalarField\fP * pphi, double Boxlength, double sigma)\fC [inline]\fP"
+.PP
+Definition at line 79 of file PoissonSolver_new.h.
+.PP
+References ACC_C, ACC_R, c_im, c_re, PoissonSolver< nstencil >::Gauss3D(), PoissonSolver< nstencil >::m_prho, ScalarField::recreate(), and PoissonSolver< nstencil >::TopHat3D().
+.SS "template<int nstencil> void \fBPoissonSolver\fP< nstencil >::solve (double Boxlength, double sigma)\fC [inline]\fP"invoke solver 
+.PP
+Definition at line 101 of file PoissonSolver.h.
+.PP
+References ACC_C, ACC_R, GreensFunction< nOrder >::apply(), fftw_real, PoissonSolver< nstencil >::Gauss3D(), ScalarField::getNx(), ScalarField::getNy(), ScalarField::getNz(), ScalarField::getValue(), ofs, PoissonSolver< nstencil >::pphi_, PoissonSolver< nstencil >::prho_, ScalarField::setValue(), and PoissonSolver< nstencil >::TopHat3D().
+.PP
+Referenced by TidalField().
+.SS "template<int nstencil> void \fBPoissonSolver\fP< nstencil >::test ()\fC [inline]\fP"little test routine for access to prho_ and pphi_ 
+.PP
+Definition at line 85 of file PoissonSolver.h.
+.PP
+References ScalarField::getValue(), PoissonSolver< nstencil >::pphi_, PoissonSolver< nstencil >::prho_, and ScalarField::setValue().
+.PP
+Referenced by main().
+.SS "template<int nstencil> double \fBPoissonSolver\fP< nstencil >::TopHat3D (const double & k, const double & R)\fC [inline]\fP"
+.PP
+Definition at line 69 of file PoissonSolver_new.h.
+.SS "template<int nstencil> double \fBPoissonSolver\fP< nstencil >::TopHat3D (const double & k, const double & R)\fC [inline]\fP"top hat kernel: all points inside radius R are fully accounted for, all points outside are not 
+.PP
+Definition at line 74 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SH "Field Documentation"
+.PP 
+.SS "template<int nstencil> \fBScalarField\fP* \fBPoissonSolver\fP< nstencil >::\fBm_prho\fP\fC [protected]\fP"
+.PP
+Definition at line 57 of file PoissonSolver_new.h.
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "template<int nstencil> \fBScalarField\fP* \fBPoissonSolver\fP< nstencil >::\fBpphi_\fP\fC [protected]\fP"
+.PP
+Definition at line 55 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::PoissonSolver(), PoissonSolver< nstencil >::solve(), and PoissonSolver< nstencil >::test().
+.SS "template<int nstencil> \fBScalarField\fP* \fBPoissonSolver\fP< nstencil >::\fBprho_\fP\fC [protected]\fP"
+.PP
+Definition at line 54 of file PoissonSolver.h.
+.PP
+Referenced by PoissonSolver< nstencil >::PoissonSolver(), PoissonSolver< nstencil >::solve(), and PoissonSolver< nstencil >::test().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

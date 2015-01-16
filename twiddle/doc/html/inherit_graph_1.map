@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node3" href="$a00006.html" title="interact.MainWindow" alt="" coords="116,5,260,35"/>
+<area shape="rect" id="node5" href="$a00001.html" title="label.ExampleFrame" alt="" coords="117,59,259,88"/>
+<area shape="rect" id="node7" href="$a00007.html" title="menubar.MainWindow" alt="" coords="113,112,263,141"/>
+<area shape="rect" id="node9" href="$a00008.html" title="sizers.MainWindow" alt="" coords="120,165,256,195"/>
+<area shape="rect" id="node11" href="$a00011.html" title="sizex.MyFrame" alt="" coords="132,219,244,248"/>
+<area shape="rect" id="node13" href="$a00010.html" title="We simply derive a new class of Frame. " alt="" coords="127,272,249,301"/>
+<area shape="rect" id="node15" href="$a00005.html" title="Frame that holds all other widgets. " alt="" coords="113,325,263,355"/>
+</map>

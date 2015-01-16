@@ -1,0 +1,209 @@
+.TH "Simulation" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Simulation \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Simulation.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSimulation\fP ()"
+.br
+.ti -1c
+.RI "\fBSimulation\fP (\fBSimulation\fP &sim)"
+.br
+.ti -1c
+.RI "\fB~Simulation\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetCosmology\fP (\fBCosmology\fP c)"
+.br
+.ti -1c
+.RI "void \fBsetIsnap\fP (int isnap)"
+.br
+.ti -1c
+.RI "void \fBsetAsnap\fP (\fBreal\fP asnap)"
+.br
+.ti -1c
+.RI "void \fBsetZsnap\fP (\fBreal\fP zsnap)"
+.br
+.ti -1c
+.RI "void \fBsetNhalo\fP (int nhalo)"
+.br
+.ti -1c
+.RI "void \fBsetMass\fP (\fBreal\fP mass)"
+.br
+.ti -1c
+.RI "void \fBsetTarkinOmega\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetBoxlength\fP (\fBreal\fP boxlength)"
+.br
+.ti -1c
+.RI "int \fBgetIsnap\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetAsnap\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetZsnap\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetNhalo\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetMass\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetBoxlength\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetRhobox\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetH0\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetG\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaL\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaM\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaR\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetOmegaK\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 7 of file Simulation.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Simulation::Simulation ()"
+.PP
+Definition at line 13 of file Simulation.cpp.
+.SS "Simulation::Simulation (\fBSimulation\fP & sim)"
+.PP
+Definition at line 18 of file Simulation.cpp.
+.SS "Simulation::~Simulation ()"
+.PP
+Definition at line 22 of file Simulation.cpp.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBreal\fP Simulation::getAsnap ()"
+.PP
+Definition at line 101 of file Simulation.cpp.
+.PP
+Referenced by Halo::calcJ(), and Halo::calcLambda().
+.SS "\fBreal\fP Simulation::getBoxlength ()"
+.PP
+Definition at line 121 of file Simulation.cpp.
+.PP
+Referenced by Output::writeHR().
+.SS "\fBreal\fP Simulation::getG ()"
+.PP
+Definition at line 136 of file Simulation.cpp.
+.PP
+References Cosmology::getG().
+.PP
+Referenced by Halo::calcLambda().
+.SS "\fBreal\fP Simulation::getH0 ()"
+.PP
+Definition at line 131 of file Simulation.cpp.
+.PP
+References Cosmology::getH0().
+.SS "int Simulation::getIsnap ()"
+.PP
+Definition at line 96 of file Simulation.cpp.
+.PP
+Referenced by Output::getAR(), Output::writeAR(), Output::writeHR(), and Output::writeHRstripped().
+.SS "\fBreal\fP Simulation::getMass ()"
+.PP
+Definition at line 116 of file Simulation.cpp.
+.SS "int Simulation::getNhalo ()"
+.PP
+Definition at line 111 of file Simulation.cpp.
+.PP
+Referenced by Output::getAR(), Output::writeAR(), Output::writeHR(), and Output::writeHRstripped().
+.SS "\fBreal\fP Simulation::getOmegaK ()"
+.PP
+Definition at line 156 of file Simulation.cpp.
+.PP
+References Cosmology::getOmegaK().
+.SS "\fBreal\fP Simulation::getOmegaL ()"
+.PP
+Definition at line 141 of file Simulation.cpp.
+.PP
+References Cosmology::getOmegaL().
+.SS "\fBreal\fP Simulation::getOmegaM ()"
+.PP
+Definition at line 146 of file Simulation.cpp.
+.PP
+References Cosmology::getOmegaM().
+.SS "\fBreal\fP Simulation::getOmegaR ()"
+.PP
+Definition at line 151 of file Simulation.cpp.
+.PP
+References Cosmology::getOmegaR().
+.SS "\fBreal\fP Simulation::getRhobox ()"
+.PP
+Definition at line 126 of file Simulation.cpp.
+.PP
+Referenced by Halo::Halo().
+.SS "\fBreal\fP Simulation::getZsnap ()"
+.PP
+Definition at line 106 of file Simulation.cpp.
+.PP
+Referenced by Output::writeHR().
+.SS "void Simulation::setAsnap (\fBreal\fP asnap)"
+.PP
+Definition at line 43 of file Simulation.cpp.
+.SS "void Simulation::setBoxlength (\fBreal\fP boxlength)"
+.PP
+Definition at line 66 of file Simulation.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Simulation::setCosmology (\fBCosmology\fP c)"
+.PP
+Definition at line 27 of file Simulation.cpp.
+.SS "void Simulation::setIsnap (int isnap)"
+.PP
+Definition at line 38 of file Simulation.cpp.
+.PP
+Referenced by AnalyzeSnap(), and AOutput().
+.SS "void Simulation::setMass (\fBreal\fP mass)"
+.PP
+Definition at line 60 of file Simulation.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Simulation::setNhalo (int nhalo)"
+.PP
+Definition at line 55 of file Simulation.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Simulation::setTarkinOmega ()"
+.PP
+Definition at line 33 of file Simulation.cpp.
+.PP
+References Cosmology::setTarkinOmega().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Simulation::setZsnap (\fBreal\fP zsnap)"
+.PP
+Definition at line 49 of file Simulation.cpp.
+.PP
+Referenced by AnalyzeSnap().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

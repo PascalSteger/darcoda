@@ -4,10 +4,16 @@
 # @file
 # select a completed or still running MCMC run for plotting
 
-# (c) 2013 ETHZ, psteger@phys.ethz.ch
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
-import os, sys, time, glob, shutil, pdb, socket, getpass
+import os
+import glob
+import shutil
+import pdb
+import re
+
 import numpy as np
+import gi_base as gb
 
 def bufcount(filename):
     f = open(filename)
@@ -21,6 +27,7 @@ def bufcount(filename):
     return lines
 ## \fn bufcount(filename)
 # determine no. lines optimally
+# not used anymore
 # @param filename filename
 
 
@@ -35,15 +42,15 @@ def removeDir(path):
 def remove_empty_folders(fdl):
     for x in fdl:
         try:
-            with open(x[0]+"/ev.dat"):
+            with open(x[0]+"ev.dat"):
                 # delete any folder that has empty ev.dat
-                if bufcount(x[0]+'/ev.dat') <= 0:
+                if bufcount(x[0]+'ev.dat') <= 0:
                     #removeDir(x[0])
-                    print('empty '+x[0]+'/ev.dat, remove dir?')
+                    print('empty '+x[0]+'ev.dat, remove dir?')
                 continue
         except IOError:
             #removeDir(x[0])
-            print(x[0]+'/ev.dat does not exist, remove empty directory '+x[0]+'?')
+            print(x[0]+'ev.dat does not exist, remove empty directory '+x[0]+'?')
     return
 ## \fn remove_empty_folders(fdl)
 # remove all folders in list fdl without any ev.dat file in it = where
@@ -57,25 +64,25 @@ def list_files(basedir):
     from datetime import datetime
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
                                  '%Y%m%d%H%M')) for x in dirs]
-    remove_empty_folders(fdl)
+    #remove_empty_folders(fdl)
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
     fdl = []
     for x in dirs:
-        ts = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
+        timestamp = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
         try:
-            co = bufcount(x+'/ev.dat')
-        except FileNotFoundError:
+            co = bufcount(x+'ev.dat')
+        except:
             print('file not found')
             co = 0
-        fdl.append((x, ts, co ))
+        fdl.append((x, timestamp, co ))
 
     fdl.sort(key=lambda x: x[1])
 
     for i in range(len(fdl)):
         try:
-            fil = open(fdl[i][0]+'/programs/gl_params.py','r')
-        except FileNotFoundError:
-            print('missing '+fdl[i][0]+'/programs/gl_params.py')
+            fil = open(fdl[i][0]+'programs/gi_params.py','r')
+        except:
+            print('missing '+fdl[i][0]+'programs/gi_params.py')
             continue
         pops = 0                # default: 0 populations, error
         nipol = 0
@@ -101,8 +108,27 @@ def list_files(basedir):
     return out
 ## \fn list_files(basedir)
 # return all working or completed MCMC run directories
+# NOT USED ANYMORE
 # @param basedir string of directory
 
+
+def list_files_readout(basedir, investigate, case):
+    bp = gb.get_basepath()
+    fil = open(bp+"/run_info", "r")
+    fdl=[]
+    for line in fil:
+        if re.search("DT"+str(investigate)+"/"+str(case)+"/", line):
+            line2 = re.sub(r'\n', '', line)
+            print(line2)
+            if not re.search("File ", line2):
+                fdl.append(line2)
+    fil.close()
+    return fdl
+## \fn list_files_readout(basedir, investigate, case)
+# return list of MCMC run directories
+# @param basedir string of base directory, e.g. DTgaia/3/
+# @param investigate str investigation, gaia, walk, ..
+# @param case int for case to look at
 
 def get_investigate():
     default = 'gaia'
@@ -165,7 +191,7 @@ def get_case(investigate):
         #    sel = choose_obs(sel)
     return sel
 ## \fn get_case()
-# ask user for choice on case number (see gl_params and gl_class_files
+# ask user for choice on case number (see gi_params and gi_class_files
 # for definitions)
 # @return sel integer for case number
 
@@ -250,7 +276,7 @@ def get_prof():
 
 def get_pops(basename):
     pops = 1
-    with open(basename+'/programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gi_params.py', 'r') as f:
         for line in f:
             lss = line.split()
             if len(lss) == 0:
@@ -261,35 +287,35 @@ def get_pops(basename):
                 # pops = int(re.split('[=\n]', line)[-2])
     return pops
 ## \fn get_pops(basename)
-# return number of populations from gl_params stored in output directory
+# return number of populations from gi_params stored in output directory
 # @param basename string of output dir
 # @return integer number of populations
 
 
 def get_nipol(basename):
     nipol = 0
-    with open(basename+'/programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gi_params.py', 'r') as f:
         for line in f:
             if 'nipol      = ' in line:
                 import re
                 nipol = int(re.split('[=\n]', line)[-2])
     return nipol
 ## \fn get_nipol(basename)
-# return number bins from gl_params stored in output directory
+# return number bins from gi_params stored in output directory
 # @param basename string of output dir
 # @return integer number of bins
 
 
 def get_nbeta(basename):
     nbeta = 0
-    with open(basename+'/programs/gl_params.py', 'r') as f:
+    with open(basename+'programs/gi_params.py', 'r') as f:
         for line in f:
             if 'nbeta      = ' in line:
                 import re
-                nipol = int(re.split('[=\n]', line)[-2])
+                nbeta = int(re.split('[=\n]', line)[-2])
     return nbeta
 ## \fn get_nbeta(basename)
-# return number of beta parameters  from gl_params stored in output directory
+# return number of beta parameters  from gi_params stored in output directory
 # @param basename string of output dir
 # @return integer number of beta* parameters
 
@@ -299,37 +325,28 @@ def run(investigate="", case=-1, latest=False):
         investigate = get_investigate()
     if case == -1:
         case = get_case(investigate)
+    basepath = gb.get_basepath()
+    basedir = os.path.abspath(basepath+'DT'+investigate+'/'+str(case)+'/')
 
-    host_name = socket.gethostname()
-    user_name = getpass.getuser()
-    if 'pstgnt332' in host_name:
-        basepath = '/home/psteger/sci/darcoda/gravimage/'
-    elif 'darkside' in host_name:
-        basepath = '/home/ast/read/dark/gravimage/'
-    elif ('lisa' in host_name) and ('hsilverw' in user_name):
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
-    elif ('lisa' in host_name) and ('sofia' in user_name):
-        basepath = '/home/sofia/darcoda/gravimage/'
-    basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
-
+    print(' - searching directory ', basedir, ' for output files')
     if latest:
-        fdl = list_files(basedir)
+        fdl = list_files_readout(basedir, investigate, case)
         sel = -1
     else:
-        # import import_path as ip
-        # ip.import_path(basedir+'/programs/gl_params.py')
         action = 'k'
         while(action == 'k'):
-            fdl = list_files(basedir)
+            fdl = list_files_readout(basedir, investigate, case)
             sel = get_run(len(fdl))
             action = get_action()
             if action == 'k':
                 import shutil
-                shutil.rmtree(fdl[sel])
+                basename = re.split('\t', fdl[sel])[1]
+                shutil.rmtree(basepath+basename)
 
-    basename = fdl[sel] # full directory path, without '/'
-    timestamp = basename.split('/')[-1] # extract last bit
-    return timestamp, basename+'/', investigate#, prof #, pop
+    line = fdl[sel] # full directory path, without '/'
+    basename = re.split('\t', line)[1]
+    timestamp = re.split('/', basename)[2]
+    return timestamp, basepath+basename+'/'
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one
 # @param investigate string of investigation case, hern, gaia, walk, discmock
@@ -338,5 +355,5 @@ def run(investigate="", case=-1, latest=False):
 # @return basename, prof (string)
 
 if __name__ == '__main__':
-    # default: take overall gl_params for parameters
+    # default: take overall gi_params for parameters
     run()

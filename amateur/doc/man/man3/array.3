@@ -1,0 +1,173 @@
+.TH "array" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+array \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <MySTL.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBarray\fP (void)"
+.br
+.ti -1c
+.RI "\fBarray\fP (\fBIdentifier\fP aSize)"
+.br
+.ti -1c
+.RI "\fBarray\fP (\fBarray\fP< T > &aArray)"
+.br
+.ti -1c
+.RI "\fB~array\fP ()"
+.br
+.ti -1c
+.RI "\fBarray\fP (T *dataptr, \fBIdentifier\fP size)"
+.br
+.ti -1c
+.RI "void \fBreserve\fP (\fBIdentifier\fP aSize)"
+.br
+.ti -1c
+.RI "void \fBresize\fP (\fBIdentifier\fP aSize)"
+.br
+.ti -1c
+.RI "void \fBpush_back\fP (T Elem)"
+.br
+.ti -1c
+.RI "T & \fBoperator[]\fP (\fBIdentifier\fP i) const "
+.br
+.ti -1c
+.RI "\fBIdentifier\fP \fBsize\fP (void) const "
+.br
+.ti -1c
+.RI "bool \fBfind\fP (T elem) const "
+.br
+.ti -1c
+.RI "void \fBclear\fP (void)"
+.br
+.ti -1c
+.RI "T * \fBdata_ptr\fP (void)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "T * \fBm_Data\fP"
+.br
+.ti -1c
+.RI "\fBIdentifier\fP \fBm_Size\fP"
+.br
+.ti -1c
+.RI "\fBIdentifier\fP \fBm_Backinsert\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBGadgetSnapshot\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T> class array< T >"
+
+.PP
+Definition at line 18 of file MySTL.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T> \fBarray\fP< T >::\fBarray\fP (void)\fC [inline]\fP"
+.PP
+Definition at line 25 of file MySTL.h.
+.SS "template<typename T> \fBarray\fP< T >::\fBarray\fP (\fBIdentifier\fP aSize)\fC [inline]\fP"
+.PP
+Definition at line 26 of file MySTL.h.
+.PP
+References array< T >::m_Backinsert, array< T >::m_Data, and array< T >::m_Size.
+.SS "template<typename T> \fBarray\fP< T >::\fBarray\fP (\fBarray\fP< T > & aArray)\fC [inline]\fP"
+.PP
+Definition at line 31 of file MySTL.h.
+.PP
+References array< T >::m_Backinsert, array< T >::m_Data, and array< T >::m_Size.
+.SS "template<typename T> \fBarray\fP< T >::~\fBarray\fP ()\fC [inline]\fP"
+.PP
+Definition at line 38 of file MySTL.h.
+.PP
+References array< T >::m_Data.
+.SS "template<typename T> \fBarray\fP< T >::\fBarray\fP (T * dataptr, \fBIdentifier\fP size)\fC [inline]\fP"
+.PP
+Definition at line 43 of file MySTL.h.
+.PP
+References array< T >::m_Data, and array< T >::m_Size.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T> void \fBarray\fP< T >::clear (void)\fC [inline]\fP"
+.PP
+Definition at line 81 of file MySTL.h.
+.PP
+References array< T >::m_Data, and array< T >::m_Size.
+.SS "template<typename T> T* \fBarray\fP< T >::data_ptr (void)\fC [inline]\fP"
+.PP
+Definition at line 86 of file MySTL.h.
+.PP
+References array< T >::m_Data.
+.SS "template<typename T> bool \fBarray\fP< T >::find (T elem) const\fC [inline]\fP"
+.PP
+Definition at line 71 of file MySTL.h.
+.PP
+References array< T >::m_Data, and array< T >::m_Size.
+.SS "template<typename T> T& \fBarray\fP< T >::operator[] (\fBIdentifier\fP i) const\fC [inline]\fP"
+.PP
+Definition at line 65 of file MySTL.h.
+.PP
+References array< T >::m_Data.
+.SS "template<typename T> void \fBarray\fP< T >::push_back (T Elem)\fC [inline]\fP"
+.PP
+Definition at line 62 of file MySTL.h.
+.PP
+References array< T >::m_Backinsert, and array< T >::m_Data.
+.SS "template<typename T> void \fBarray\fP< T >::reserve (\fBIdentifier\fP aSize)\fC [inline]\fP"
+.PP
+Definition at line 47 of file MySTL.h.
+.PP
+References array< T >::m_Data, and array< T >::m_Size.
+.SS "template<typename T> void \fBarray\fP< T >::resize (\fBIdentifier\fP aSize)\fC [inline]\fP"
+.PP
+Definition at line 53 of file MySTL.h.
+.PP
+References array< T >::m_Data, and array< T >::m_Size.
+.SS "template<typename T> \fBIdentifier\fP \fBarray\fP< T >::size (void) const\fC [inline]\fP"
+.PP
+Definition at line 68 of file MySTL.h.
+.PP
+References array< T >::m_Size.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "template<typename T> friend class GadgetSnapshot\fC [friend]\fP"
+.PP
+Definition at line 19 of file MySTL.h.
+.SH "Field Documentation"
+.PP 
+.SS "template<typename T> \fBIdentifier\fP \fBarray\fP< T >::\fBm_Backinsert\fP\fC [protected]\fP"
+.PP
+Definition at line 23 of file MySTL.h.
+.PP
+Referenced by array< T >::array(), and array< T >::push_back().
+.SS "template<typename T> T* \fBarray\fP< T >::\fBm_Data\fP\fC [protected]\fP"
+.PP
+Definition at line 21 of file MySTL.h.
+.PP
+Referenced by array< T >::array(), array< T >::clear(), array< T >::data_ptr(), array< T >::find(), array< T >::operator[](), array< T >::push_back(), array< T >::reserve(), array< T >::resize(), and array< T >::~array().
+.SS "template<typename T> \fBIdentifier\fP \fBarray\fP< T >::\fBm_Size\fP\fC [protected]\fP"
+.PP
+Definition at line 22 of file MySTL.h.
+.PP
+Referenced by array< T >::array(), array< T >::clear(), array< T >::find(), array< T >::reserve(), array< T >::resize(), and array< T >::size().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

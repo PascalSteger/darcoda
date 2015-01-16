@@ -1,0 +1,1 @@
+../bin/vis_centers.py

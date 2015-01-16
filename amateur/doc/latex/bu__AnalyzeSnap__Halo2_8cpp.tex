@@ -1,0 +1,586 @@
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp}{
+\section{bu\_\-AnalyzeSnap\_\-Halo2.cpp File Reference}
+\label{bu__AnalyzeSnap__Halo2_8cpp}\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+}
+{\tt \#include $<$cassert$>$}\par
+{\tt \#include $<$fstream$>$}\par
+{\tt \#include $<$iostream$>$}\par
+{\tt \#include $<$limits$>$}\par
+{\tt \#include $<$map$>$}\par
+{\tt \#include $<$numeric$>$}\par
+{\tt \#include $<$string$>$}\par
+{\tt \#include $<$vector$>$}\par
+{\tt \#include \char`\"{}SystemCharacteristics.h\char`\"{}}\par
+{\tt \#include \char`\"{}Vector3.h\char`\"{}}\par
+{\tt \#include \char`\"{}Matrix33.h\char`\"{}}\par
+{\tt \#include \char`\"{}ReadGadget.h\char`\"{}}\par
+{\tt \#include \char`\"{}Simulation.h\char`\"{}}\par
+{\tt \#include \char`\"{}Halo.h\char`\"{}}\par
+{\tt \#include \char`\"{}HDFIO.h\char`\"{}}\par
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef std::vector$<$ double $>$ \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble}
+\item 
+typedef std::vector$<$ std::vector$<$ double $>$ $>$ \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_17b47e9a9db78ab1b79cf7e9d1129864}{Vhp\_\-Mass} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_1b74c34227af982ff3c462d364f736b0}{Vhp\_\-LambdaPrime} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_3d18c3e0a6db300e8b17ea98912cf7ec}{Vhp\_\-Sigma} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_952cb70c46e37a1ed847239256014843}{Vhp\_\-J} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_c22e03994e3f040ae96f09d559a03403}{Vhp\_\-EVa} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_143a3c5fc9ad57cfebfd30407b724ae6}{Vhp\_\-EVb} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_43081fbd56759f36ad8fbcfd47a79742}{Vhp\_\-EVc} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{VecVecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_ebad48c238b8c0839e65d3a5c02233ba}{Vhp\_\-Eigenvalues} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+std::vector$<$ std::vector$<$ unsigned $>$ $>$ \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_4cc4c3c5072e41f7d7c15a24248aa20b}{Vhp\_\-HaloParticlesTypesCount} (\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal})
+\item 
+{\footnotesize template$<$typename T$>$ }\\T \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_5f4ec08ca17aee191961be83ac9d1e48}{byteorder} (T v)
+\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_46c32ccad62a2215cbf8c0d9311e9094}{Storeahf} (int isnap)
+\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_83176b9b9f1be1130b6d6ea1492db992}{WriteHDF5} (std::string filename, double Boxsize, double Redshift, double HaloTotCount)
+\begin{CompactList}\small\item\em write all calculated properties into a HDF5 file This function takes all publicly known variables and writes them to disk \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_fae3a184f26b7f4398f94e4927188291}{GetOffsets} (unsigned $\ast$ParticleIDOffsets, unsigned $\ast$npart)
+\begin{CompactList}\small\item\em Return offsets of particle types inside snapshot. \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_97d48ae1026d702b6dcfec81079475a2}{ReadDataBlocks} (std::string SnapshotFilename, int TotalNOParticles, int $\ast$\&id, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&pos, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&vel, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&mass)
+\begin{CompactList}\small\item\em Read snapshot data. \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_cff9f390ba24b053759db4cd5a6f4423}{openParticlesFile} (unsigned isnap, std::ifstream \&SnapshotParticles)
+\begin{CompactList}\small\item\em Open the ahf\_\-out\_\-particles file take ifstream and open particles file with it. \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_ac7f4e8e49192d6ed40adaa5bd066a18}{PushBackHPoutput} (unsigned HaloTypeIterator, \hyperlink{classVector3}{Vector3} J, std::vector$<$ \hyperlink{classVector3}{Vector3} $>$ Eigenvectors, \hyperlink{classVector3}{Vector3} Eigenvalues, double lambda, double Mtot, double Sigma)
+\begin{CompactList}\small\item\em Push back all HP outputs for the different halos Push back onto the Vhp\_\- vectors the respective values. \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_5c8deb1c4b5f6c449b45b8af345d0333}{ReadSnapParticlesBunch} (std::ifstream \&SnapshotParticles, unsigned HaloPopulation, unsigned $\ast$\&ParticleIndexID, int $\ast$\&ParticleIndexType)
+\begin{CompactList}\small\item\em Read a halo full of snapshot particles from ahf\_\-out\_\-particles Read in a slab of HaloPopulation particles. \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_e961128092ad9650ca0d54b8a2879a67}{GenerateHalo2} (unsigned HaloPopulation, std::ifstream \&SnapshotParticles, const std::map$<$ int, unsigned $>$ \&DoubleIndexMapi, unsigned $\ast$\&ParticleCounter, unsigned $\ast$\&ParticleOffset, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&pos, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&vel, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&mass, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&pos2, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&vel2, \hyperlink{SystemCharacteristics_8h_031f8951175b43076c2084a6c2173410}{real} $\ast$\&mass2)
+\begin{CompactList}\small\item\em preparing halo2 change position of values in pos, vel, mass according to particle type, should go into \hyperlink{classHalo}{Halo} as SubhaloCreation \item\end{CompactList}\item 
+void \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_deb9f0fc17baa68b04ea3e4f96764400}{AnalyzeSnap} (unsigned isnap)
+\begin{CompactList}\small\item\em Analysis of one single snapshot file Analyzes a single snapshot file. \item\end{CompactList}\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+const int \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal} = 4
+\item 
+const int \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_26cdc03eddc01de73d2183283e42f8ca}{ParticleTypeTotal} = 6
+\item 
+const double \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_a98e0d80cca1b249538737548e6d83ac}{Omega\_\-M} = 0.3
+\item 
+const double \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_a6e8e201edf24007dc075bfef6e8210c}{h} = 0.7
+\item 
+double \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_1b7c170e9ea3a3ed47046eb467ec54fc}{rhobox} = 0.0
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_374a2ca2afb5f5b9be0d0038f6542b4e}{Vhp\_\-PosCM}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_22ce34b612f732f61f992e25cead92b2}{Vhp\_\-PosMB}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_b153b283e92c789466ce2a8c5be63b0e}{Vhp\_\-VelCM}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_d85588f3aa5d2312c9153ae8cb68040a}{Vhp\_\-Rvir}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_d59448f336981875af49216ae63e804b}{Vhp\_\-Mvir}
+\item 
+std::vector$<$ unsigned $>$ \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_84c1a863defbb13a0e3680b2570cedb0}{Vhp\_\-HaloParticlesCount}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_ad96b2a42991f6956c12e35c4bf01dd0}{Vahf\_\-npart}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_3f8d65150bf509236f89098a1b213498}{Vahf\_\-nvpart}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_4866184861c779ebd03c7a2a59792e18}{Vahf\_\-ovdens}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_fd89d1cd3478c9dd65f7d4dc0eb424a8}{Vahf\_\-sigV}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_01db9d90778cbdd28cbd51875c38d81e}{Vahf\_\-J}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_e39583c0417263714eb8bc3d4983f023}{Vahf\_\-EW}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_9aecabf7780ee5ec41fbb1c206ead97f}{Vahf\_\-EVa}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_8b9fdf27c6a6599b3eebbf1a341ee06b}{Vahf\_\-EVb}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_3209f2ce3fa58c57f03cb4d8e32369c7}{Vahf\_\-EVc}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_55e8d1b30c655163152d328cd3ab48d6}{Vahf\_\-Ekin}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_a9ec80f3bd3fbc9d1b83bae057ad23dc}{Vahf\_\-Epot}
+\item 
+\hyperlink{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{VecDouble} \hyperlink{bu__AnalyzeSnap__Halo2_8cpp_e06a67a2e2ed1c9ba4cb75ea791cb64a}{Vahf\_\-xc}
+\end{CompactItemize}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!VecDouble@{VecDouble}}
+\index{VecDouble@{VecDouble}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[VecDouble]{\setlength{\rightskip}{0pt plus 5cm}typedef std::vector$<$double$>$ {\bf VecDouble}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_00624963fadb9859c2785372d78dbf7d}
+
+
+
+
+Definition at line 51 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!VecVecDouble@{VecVecDouble}}
+\index{VecVecDouble@{VecVecDouble}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[VecVecDouble]{\setlength{\rightskip}{0pt plus 5cm}typedef std::vector$<$std::vector $<$double$>$ $>$ {\bf VecVecDouble}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_19eaba2936536c4981d32fb3556862a5}
+
+
+
+
+Definition at line 52 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+\subsection{Function Documentation}
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_deb9f0fc17baa68b04ea3e4f96764400}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!AnalyzeSnap@{AnalyzeSnap}}
+\index{AnalyzeSnap@{AnalyzeSnap}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[AnalyzeSnap]{\setlength{\rightskip}{0pt plus 5cm}void AnalyzeSnap (unsigned {\em isnap})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_deb9f0fc17baa68b04ea3e4f96764400}
+
+
+Analysis of one single snapshot file Analyzes a single snapshot file. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em isnap}]unsigned snapshot ID \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]void \end{Desc}
+
+
+Definition at line 391 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References Halo::calcABC(), Halo::calcEV(), Halo::calcJ(), Halo::calcLambda(), Halo::calcSigma(), DEBUG, Folder(), GenerateHalo(), GenerateHalo2(), get\_\-particle\_\-number(), Halo::getMtot(), Halo::getMvir(), GetOffsets(), Halo::getRvir(), Halo::getVCM(), Halo::getXCM(), Halo::getXMB(), HaloTypeTotal, openParticlesFile(), ParticleTypeTotal, PushBackHPoutput(), ReadDataBlocks(), Simulation::setZsnap(), Snaps(), Storeahf(), Matrix33::toVecVector3(), Vhp\_\-HaloParticlesCount, Vhp\_\-Mvir, Vhp\_\-PosCM, Vhp\_\-PosMB, Vhp\_\-Rvir, Vhp\_\-VelCM, writedebug(), WriteHDF5(), writeln(), and writelndebug().\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_5f4ec08ca17aee191961be83ac9d1e48}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!byteorder@{byteorder}}
+\index{byteorder@{byteorder}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[byteorder]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ T byteorder (T {\em v})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_5f4ec08ca17aee191961be83ac9d1e48}
+
+
+conversion between little/big endian \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em v}]\end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]\end{Desc}
+
+
+Definition at line 85 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_e961128092ad9650ca0d54b8a2879a67}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!GenerateHalo2@{GenerateHalo2}}
+\index{GenerateHalo2@{GenerateHalo2}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[GenerateHalo2]{\setlength{\rightskip}{0pt plus 5cm}void GenerateHalo2 (unsigned {\em HaloPopulation}, \/  std::ifstream \& {\em SnapshotParticles}, \/  const std::map$<$ int, unsigned $>$ \& {\em DoubleIndexMapi}, \/  unsigned $\ast$\& {\em ParticleCounter}, \/  unsigned $\ast$\& {\em ParticleOffset}, \/  {\bf real} $\ast$\& {\em pos}, \/  {\bf real} $\ast$\& {\em vel}, \/  {\bf real} $\ast$\& {\em mass}, \/  {\bf real} $\ast$\& {\em pos2}, \/  {\bf real} $\ast$\& {\em vel2}, \/  {\bf real} $\ast$\& {\em mass2})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_e961128092ad9650ca0d54b8a2879a67}
+
+
+preparing halo2 change position of values in pos, vel, mass according to particle type, should go into \hyperlink{classHalo}{Halo} as SubhaloCreation 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em HaloPopulation,:}]unsigned particles total \item[{\em SnapshotParticles,:}]std::ifstream of ahf\_\-out\_\-particles \item[{\em DoubleIndexMap,:}]map with reverse lookup possibility \item[{\em particleCounter,:}]unsigned $\ast$\&, holds of particles per type \item[{\em ParticleOffset,:}]unsigned $\ast$\&, holds relevant parts of accumulated particleCounter \item[{\em pos,vel,mass,:}]const double $\ast$\&, original data \item[{\em pos2,vel2,mass2,:}]double $\ast$\&, data for this halo, sorted by particle type \end{description}
+\end{Desc}
+
+
+Definition at line 331 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References HaloTypeTotal, ParticleTypeTotal, ReadSnapParticlesBunch(), and Vhp\_\-HaloParticlesTypesCount().
+
+Referenced by AnalyzeSnap().\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_fae3a184f26b7f4398f94e4927188291}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!GetOffsets@{GetOffsets}}
+\index{GetOffsets@{GetOffsets}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[GetOffsets]{\setlength{\rightskip}{0pt plus 5cm}void GetOffsets (unsigned $\ast$ {\em ParticleIDOffsets}, \/  unsigned $\ast$ {\em npart})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_fae3a184f26b7f4398f94e4927188291}
+
+
+Return offsets of particle types inside snapshot. 
+
+
+
+Definition at line 208 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References ParticleTypeTotal.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_cff9f390ba24b053759db4cd5a6f4423}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!openParticlesFile@{openParticlesFile}}
+\index{openParticlesFile@{openParticlesFile}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[openParticlesFile]{\setlength{\rightskip}{0pt plus 5cm}void openParticlesFile (unsigned {\em isnap}, \/  std::ifstream \& {\em SnapshotParticles})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_cff9f390ba24b053759db4cd5a6f4423}
+
+
+Open the ahf\_\-out\_\-particles file take ifstream and open particles file with it. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em isnap,:}]unsigned of which snapshot, see SystemCharacteristics \item[{\em SnapshotParticles,:}]ifstream by ref \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]void \end{Desc}
+
+
+Definition at line 263 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References Folder(), and Snaps().\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_ac7f4e8e49192d6ed40adaa5bd066a18}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!PushBackHPoutput@{PushBackHPoutput}}
+\index{PushBackHPoutput@{PushBackHPoutput}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[PushBackHPoutput]{\setlength{\rightskip}{0pt plus 5cm}void PushBackHPoutput (unsigned {\em HaloTypeIterator}, \/  {\bf Vector3} {\em J}, \/  std::vector$<$ {\bf Vector3} $>$ {\em Eigenvectors}, \/  {\bf Vector3} {\em Eigenvalues}, \/  double {\em lambda}, \/  double {\em Mtot}, \/  double {\em Sigma})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_ac7f4e8e49192d6ed40adaa5bd066a18}
+
+
+Push back all HP outputs for the different halos Push back onto the Vhp\_\- vectors the respective values. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em HaloTypeIterator,:}]particle type in halo \item[{\em J,:}]angular momentum \item[{\em Eigenvectors}]\item[{\em Eigenvalues}]\item[{\em lambda,:}]dimensionless spin parameter, between 0 (no ordered rotation) to 0.425 (razor-thin, cold, exponential disk) \item[{\em Mtot,:}]total mass \item[{\em Sigma,:}]velocity dispersion \end{description}
+\end{Desc}
+
+
+Definition at line 283 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References Vhp\_\-Eigenvalues(), Vhp\_\-EVa(), Vhp\_\-EVb(), Vhp\_\-EVc(), Vhp\_\-J(), Vhp\_\-LambdaPrime(), Vhp\_\-Mass(), and Vhp\_\-Sigma().\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_97d48ae1026d702b6dcfec81079475a2}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!ReadDataBlocks@{ReadDataBlocks}}
+\index{ReadDataBlocks@{ReadDataBlocks}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[ReadDataBlocks]{\setlength{\rightskip}{0pt plus 5cm}void ReadDataBlocks (std::string {\em SnapshotFilename}, \/  int {\em TotalNOParticles}, \/  int $\ast$\& {\em id}, \/  {\bf real} $\ast$\& {\em pos}, \/  {\bf real} $\ast$\& {\em vel}, \/  {\bf real} $\ast$\& {\em mass})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_97d48ae1026d702b6dcfec81079475a2}
+
+
+Read snapshot data. 
+
+Fill in all information from snapshot data file (id, pos, vel, mass) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em SnapshotFilename}]is string \item[{\em id}]is int \& \item[{\em pos}]is double \& (3d) \item[{\em vel}]is double \& (3d) \item[{\em mass}]is double \& (1d) \end{description}
+\end{Desc}
+
+
+Definition at line 230 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References read\_\-gadget\_\-1(), and read\_\-gadget\_\-3().\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_5c8deb1c4b5f6c449b45b8af345d0333}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!ReadSnapParticlesBunch@{ReadSnapParticlesBunch}}
+\index{ReadSnapParticlesBunch@{ReadSnapParticlesBunch}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[ReadSnapParticlesBunch]{\setlength{\rightskip}{0pt plus 5cm}void ReadSnapParticlesBunch (std::ifstream \& {\em SnapshotParticles}, \/  unsigned {\em HaloPopulation}, \/  unsigned $\ast$\& {\em ParticleIndexID}, \/  int $\ast$\& {\em ParticleIndexType})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_5c8deb1c4b5f6c449b45b8af345d0333}
+
+
+Read a halo full of snapshot particles from ahf\_\-out\_\-particles Read in a slab of HaloPopulation particles. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em SnapshotParticles,:}]ifstream of ahf\_\-out\_\-particles \item[{\em HaloPopulation,:}]int of particles in this halo \item[{\em ParticleIndexID,:}]holds the output, all identifiers \item[{\em ParticleIndexType,:}]holds the output, all types, in accordance with ParticleIndexID \end{description}
+\end{Desc}
+
+
+Definition at line 306 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+Referenced by GenerateHalo2().\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_46c32ccad62a2215cbf8c0d9311e9094}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Storeahf@{Storeahf}}
+\index{Storeahf@{Storeahf}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Storeahf]{\setlength{\rightskip}{0pt plus 5cm}void Storeahf (int {\em isnap})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_46c32ccad62a2215cbf8c0d9311e9094}
+
+
+
+
+Definition at line 103 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References Folder(), Snaps(), Vahf\_\-Ekin, Vahf\_\-Epot, Vahf\_\-EVa, Vahf\_\-EVb, Vahf\_\-EVc, Vahf\_\-EW, Vahf\_\-J, Vahf\_\-npart, Vahf\_\-nvpart, Vahf\_\-ovdens, Vahf\_\-sigV, and Vahf\_\-xc.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_ebad48c238b8c0839e65d3a5c02233ba}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-Eigenvalues@{Vhp\_\-Eigenvalues}}
+\index{Vhp\_\-Eigenvalues@{Vhp\_\-Eigenvalues}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-Eigenvalues]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-Eigenvalues ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_ebad48c238b8c0839e65d3a5c02233ba}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_c22e03994e3f040ae96f09d559a03403}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-EVa@{Vhp\_\-EVa}}
+\index{Vhp\_\-EVa@{Vhp\_\-EVa}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-EVa]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-EVa ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_c22e03994e3f040ae96f09d559a03403}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_143a3c5fc9ad57cfebfd30407b724ae6}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-EVb@{Vhp\_\-EVb}}
+\index{Vhp\_\-EVb@{Vhp\_\-EVb}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-EVb]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-EVb ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_143a3c5fc9ad57cfebfd30407b724ae6}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_43081fbd56759f36ad8fbcfd47a79742}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-EVc@{Vhp\_\-EVc}}
+\index{Vhp\_\-EVc@{Vhp\_\-EVc}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-EVc]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-EVc ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_43081fbd56759f36ad8fbcfd47a79742}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_4cc4c3c5072e41f7d7c15a24248aa20b}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-HaloParticlesTypesCount@{Vhp\_\-HaloParticlesTypesCount}}
+\index{Vhp\_\-HaloParticlesTypesCount@{Vhp\_\-HaloParticlesTypesCount}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-HaloParticlesTypesCount]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ std::vector $<$ unsigned $>$ $>$ Vhp\_\-HaloParticlesTypesCount ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_4cc4c3c5072e41f7d7c15a24248aa20b}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_952cb70c46e37a1ed847239256014843}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-J@{Vhp\_\-J}}
+\index{Vhp\_\-J@{Vhp\_\-J}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-J]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-J ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_952cb70c46e37a1ed847239256014843}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_1b74c34227af982ff3c462d364f736b0}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-LambdaPrime@{Vhp\_\-LambdaPrime}}
+\index{Vhp\_\-LambdaPrime@{Vhp\_\-LambdaPrime}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-LambdaPrime]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-LambdaPrime ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_1b74c34227af982ff3c462d364f736b0}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_17b47e9a9db78ab1b79cf7e9d1129864}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-Mass@{Vhp\_\-Mass}}
+\index{Vhp\_\-Mass@{Vhp\_\-Mass}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-Mass]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-Mass ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_17b47e9a9db78ab1b79cf7e9d1129864}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_3d18c3e0a6db300e8b17ea98912cf7ec}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-Sigma@{Vhp\_\-Sigma}}
+\index{Vhp\_\-Sigma@{Vhp\_\-Sigma}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-Sigma]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecVecDouble} Vhp\_\-Sigma ({\bf HaloTypeTotal})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_3d18c3e0a6db300e8b17ea98912cf7ec}
+
+
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_83176b9b9f1be1130b6d6ea1492db992}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!WriteHDF5@{WriteHDF5}}
+\index{WriteHDF5@{WriteHDF5}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[WriteHDF5]{\setlength{\rightskip}{0pt plus 5cm}void WriteHDF5 (std::string {\em filename}, \/  double {\em Boxsize}, \/  double {\em Redshift}, \/  double {\em HaloTotCount})}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_83176b9b9f1be1130b6d6ea1492db992}
+
+
+write all calculated properties into a HDF5 file This function takes all publicly known variables and writes them to disk 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]string of the HDF5 output file \item[{\em Boxsize}]boxsize of simulation volume in Mpc/h \item[{\em Redshift}]simulation snapshot redshift \item[{\em HaloTotCount}]total number of halos \end{description}
+\end{Desc}
+
+
+Definition at line 159 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.
+
+References HaloTypeTotal, HDFCreateFile(), HDFCreateGroup(), HDFWriteDataset(), HDFWriteDatasetVector(), HDFWriteGroupAttribute(), Vahf\_\-Ekin, Vahf\_\-Epot, Vahf\_\-EVa, Vahf\_\-EVb, Vahf\_\-EVc, Vahf\_\-EW, Vahf\_\-J, Vahf\_\-npart, Vahf\_\-nvpart, Vahf\_\-ovdens, Vahf\_\-sigV, Vahf\_\-xc, Vhp\_\-Eigenvalues(), Vhp\_\-EVa(), Vhp\_\-EVb(), Vhp\_\-EVc(), Vhp\_\-HaloParticlesCount, Vhp\_\-HaloParticlesTypesCount(), Vhp\_\-J(), Vhp\_\-LambdaPrime(), Vhp\_\-Mass(), Vhp\_\-Mvir, Vhp\_\-PosCM, Vhp\_\-PosMB, Vhp\_\-Rvir, Vhp\_\-Sigma(), and Vhp\_\-VelCM.
+
+\subsection{Variable Documentation}
+\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_a6e8e201edf24007dc075bfef6e8210c}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!h@{h}}
+\index{h@{h}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[h]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf h} = 0.7}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_a6e8e201edf24007dc075bfef6e8210c}
+
+
+
+
+Definition at line 58 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!HaloTypeTotal@{HaloTypeTotal}}
+\index{HaloTypeTotal@{HaloTypeTotal}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[HaloTypeTotal]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf HaloTypeTotal} = 4}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_8473fa3d28febd7487db0967e19fc5bf}
+
+
+
+
+Definition at line 54 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_a98e0d80cca1b249538737548e6d83ac}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Omega\_\-M@{Omega\_\-M}}
+\index{Omega\_\-M@{Omega\_\-M}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Omega\_\-M]{\setlength{\rightskip}{0pt plus 5cm}const double {\bf Omega\_\-M} = 0.3}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_a98e0d80cca1b249538737548e6d83ac}
+
+
+
+
+Definition at line 57 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_26cdc03eddc01de73d2183283e42f8ca}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!ParticleTypeTotal@{ParticleTypeTotal}}
+\index{ParticleTypeTotal@{ParticleTypeTotal}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[ParticleTypeTotal]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf ParticleTypeTotal} = 6}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_26cdc03eddc01de73d2183283e42f8ca}
+
+
+
+
+Definition at line 55 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_1b7c170e9ea3a3ed47046eb467ec54fc}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!rhobox@{rhobox}}
+\index{rhobox@{rhobox}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[rhobox]{\setlength{\rightskip}{0pt plus 5cm}double {\bf rhobox} = 0.0}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_1b7c170e9ea3a3ed47046eb467ec54fc}
+
+
+
+
+Definition at line 61 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_55e8d1b30c655163152d328cd3ab48d6}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-Ekin@{Vahf\_\-Ekin}}
+\index{Vahf\_\-Ekin@{Vahf\_\-Ekin}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-Ekin]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-Ekin}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_55e8d1b30c655163152d328cd3ab48d6}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_a9ec80f3bd3fbc9d1b83bae057ad23dc}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-Epot@{Vahf\_\-Epot}}
+\index{Vahf\_\-Epot@{Vahf\_\-Epot}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-Epot]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-Epot}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_a9ec80f3bd3fbc9d1b83bae057ad23dc}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_9aecabf7780ee5ec41fbb1c206ead97f}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-EVa@{Vahf\_\-EVa}}
+\index{Vahf\_\-EVa@{Vahf\_\-EVa}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-EVa]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-EVa}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_9aecabf7780ee5ec41fbb1c206ead97f}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_8b9fdf27c6a6599b3eebbf1a341ee06b}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-EVb@{Vahf\_\-EVb}}
+\index{Vahf\_\-EVb@{Vahf\_\-EVb}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-EVb]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-EVb}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_8b9fdf27c6a6599b3eebbf1a341ee06b}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_3209f2ce3fa58c57f03cb4d8e32369c7}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-EVc@{Vahf\_\-EVc}}
+\index{Vahf\_\-EVc@{Vahf\_\-EVc}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-EVc]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-EVc}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_3209f2ce3fa58c57f03cb4d8e32369c7}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_e39583c0417263714eb8bc3d4983f023}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-EW@{Vahf\_\-EW}}
+\index{Vahf\_\-EW@{Vahf\_\-EW}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-EW]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-EW}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_e39583c0417263714eb8bc3d4983f023}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_01db9d90778cbdd28cbd51875c38d81e}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-J@{Vahf\_\-J}}
+\index{Vahf\_\-J@{Vahf\_\-J}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-J]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-J}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_01db9d90778cbdd28cbd51875c38d81e}
+
+
+
+
+Definition at line 75 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_ad96b2a42991f6956c12e35c4bf01dd0}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-npart@{Vahf\_\-npart}}
+\index{Vahf\_\-npart@{Vahf\_\-npart}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-npart]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-npart}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_ad96b2a42991f6956c12e35c4bf01dd0}
+
+
+
+
+Definition at line 75 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_3f8d65150bf509236f89098a1b213498}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-nvpart@{Vahf\_\-nvpart}}
+\index{Vahf\_\-nvpart@{Vahf\_\-nvpart}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-nvpart]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-nvpart}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_3f8d65150bf509236f89098a1b213498}
+
+
+
+
+Definition at line 75 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_4866184861c779ebd03c7a2a59792e18}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-ovdens@{Vahf\_\-ovdens}}
+\index{Vahf\_\-ovdens@{Vahf\_\-ovdens}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-ovdens]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-ovdens}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_4866184861c779ebd03c7a2a59792e18}
+
+
+
+
+Definition at line 75 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_fd89d1cd3478c9dd65f7d4dc0eb424a8}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-sigV@{Vahf\_\-sigV}}
+\index{Vahf\_\-sigV@{Vahf\_\-sigV}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-sigV]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-sigV}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_fd89d1cd3478c9dd65f7d4dc0eb424a8}
+
+
+
+
+Definition at line 75 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_e06a67a2e2ed1c9ba4cb75ea791cb64a}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vahf\_\-xc@{Vahf\_\-xc}}
+\index{Vahf\_\-xc@{Vahf\_\-xc}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vahf\_\-xc]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vahf\_\-xc}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_e06a67a2e2ed1c9ba4cb75ea791cb64a}
+
+
+
+
+Definition at line 76 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_84c1a863defbb13a0e3680b2570cedb0}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-HaloParticlesCount@{Vhp\_\-HaloParticlesCount}}
+\index{Vhp\_\-HaloParticlesCount@{Vhp\_\-HaloParticlesCount}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-HaloParticlesCount]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ unsigned $>$ {\bf Vhp\_\-HaloParticlesCount}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_84c1a863defbb13a0e3680b2570cedb0}
+
+
+
+
+Definition at line 72 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_d59448f336981875af49216ae63e804b}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-Mvir@{Vhp\_\-Mvir}}
+\index{Vhp\_\-Mvir@{Vhp\_\-Mvir}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-Mvir]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vhp\_\-Mvir}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_d59448f336981875af49216ae63e804b}
+
+
+
+
+Definition at line 67 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_374a2ca2afb5f5b9be0d0038f6542b4e}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-PosCM@{Vhp\_\-PosCM}}
+\index{Vhp\_\-PosCM@{Vhp\_\-PosCM}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-PosCM]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vhp\_\-PosCM}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_374a2ca2afb5f5b9be0d0038f6542b4e}
+
+
+
+
+Definition at line 67 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_22ce34b612f732f61f992e25cead92b2}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-PosMB@{Vhp\_\-PosMB}}
+\index{Vhp\_\-PosMB@{Vhp\_\-PosMB}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-PosMB]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vhp\_\-PosMB}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_22ce34b612f732f61f992e25cead92b2}
+
+
+
+
+Definition at line 67 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_d85588f3aa5d2312c9153ae8cb68040a}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-Rvir@{Vhp\_\-Rvir}}
+\index{Vhp\_\-Rvir@{Vhp\_\-Rvir}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-Rvir]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vhp\_\-Rvir}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_d85588f3aa5d2312c9153ae8cb68040a}
+
+
+
+
+Definition at line 67 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.\hypertarget{bu__AnalyzeSnap__Halo2_8cpp_b153b283e92c789466ce2a8c5be63b0e}{
+\index{bu\_\-AnalyzeSnap\_\-Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}!Vhp\_\-VelCM@{Vhp\_\-VelCM}}
+\index{Vhp\_\-VelCM@{Vhp\_\-VelCM}!bu_AnalyzeSnap_Halo2.cpp@{bu\_\-AnalyzeSnap\_\-Halo2.cpp}}
+\subsubsection[Vhp\_\-VelCM]{\setlength{\rightskip}{0pt plus 5cm}{\bf VecDouble} {\bf Vhp\_\-VelCM}}}
+\label{bu__AnalyzeSnap__Halo2_8cpp_b153b283e92c789466ce2a8c5be63b0e}
+
+
+
+
+Definition at line 67 of file bu\_\-AnalyzeSnap\_\-Halo2.cpp.

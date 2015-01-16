@@ -1,0 +1,90 @@
+.TH "MergerTreeRun.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MergerTreeRun.cpp \- 
+.PP
+Rewrite of MergerTree of AMIGA, implements -m of amateur.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+\fC#include <map>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBRewriteParticleNumbers\fP (unsigned isnap)"
+.br
+.ti -1c
+.RI "void \fBCreateMergeParameterFile\fP (unsigned isnap)"
+.br
+.ti -1c
+.RI "void \fBRunMergerTree\fP (void)"
+.br
+.ti -1c
+.RI "void \fBRunOwnMergerTree\fP (int isnap)"
+.br
+.ti -1c
+.RI "void \fBMoveMergeOut\fP (unsigned isnap)"
+.br
+.ti -1c
+.RI "void \fBMergerTreeRun\fP (unsigned isnap)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Rewrite of MergerTree of AMIGA, implements -m of amateur. 
+
+
+.PP
+Definition in file \fBMergerTreeRun.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void CreateMergeParameterFile (unsigned isnap)"
+.PP
+Definition at line 65 of file MergerTreeRun.cpp.
+.PP
+References Folder(), Snaps(), and writedone().
+.SS "void MergerTreeRun (unsigned isnap)"
+.PP
+Definition at line 192 of file MergerTreeRun.cpp.
+.PP
+References RunOwnMergerTree().
+.PP
+Referenced by main().
+.SS "void MoveMergeOut (unsigned isnap)"
+.PP
+Definition at line 184 of file MergerTreeRun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), RunCommand(), Snaps(), and writedebug().
+.SS "void RewriteParticleNumbers (unsigned isnap)"
+.PP
+Definition at line 31 of file MergerTreeRun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), Snaps(), and writedebug().
+.SS "void RunMergerTree (void)"
+.PP
+Definition at line 85 of file MergerTreeRun.cpp.
+.PP
+References DEBUG, Folder(), RunCommand(), and writelndebug().
+.SS "void RunOwnMergerTree (int isnap)"
+.PP
+Definition at line 97 of file MergerTreeRun.cpp.
+.PP
+References DEBUG, donedebug(), Folder(), Snaps(), writedebug(), and writelndebug().
+.PP
+Referenced by MergerTreeRun().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

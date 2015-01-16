@@ -1,0 +1,323 @@
+.TH "AnalyzeSnap.cpp" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AnalyzeSnap.cpp \- 
+.PP
+Analyzes a given snapshot with \fBHalo\fP, for all particle types.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cassert>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <limits>\fP
+.br
+\fC#include <map>\fP
+.br
+\fC#include <numeric>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+\fC#include 'Vector3.h'\fP
+.br
+\fC#include 'Matrix33.h'\fP
+.br
+\fC#include 'Eigensystem3.h'\fP
+.br
+\fC#include 'ReadGadget.h'\fP
+.br
+\fC#include 'Cosmology.h'\fP
+.br
+\fC#include 'Simulation.h'\fP
+.br
+\fC#include <stack>\fP
+.br
+\fC#include <queue>\fP
+.br
+\fC#include <cmath>\fP
+.br
+\fC#include <stdexcept>\fP
+.br
+\fC#include <stdio.h>\fP
+.br
+\fC#include <stdlib.h>\fP
+.br
+\fC#include <sstream>\fP
+.br
+\fC#include <typeinfo>\fP
+.br
+\fC#include 'hdf5.h'\fP
+.br
+\fC#include 'AResults.h'\fP
+.br
+\fC#include 'HResults.h'\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef std::vector< double > \fBVecDouble\fP"
+.br
+.ti -1c
+.RI "typedef std::vector< std::vector< double > > \fBVecVecDouble\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename T > T \fBbyteorder\fP (T v)"
+.br
+.RI "\fIlittle/big endian conversion conversion between little/big endian \fP"
+.ti -1c
+.RI "void \fBGetOffsets\fP (unsigned *ParticleIDOffsets, unsigned *npart)"
+.br
+.RI "\fIReturn offsets of particle types inside snapshot. Get the particle ID offsets of the different particle types. \fP"
+.ti -1c
+.RI "void \fBreadDataBlocks\fP (int isnap, int TotalNOParticles, int *&id, \fBreal\fP *&pos, \fBreal\fP *&vel, \fBreal\fP *&mass)"
+.br
+.RI "\fIRead snapshot data Fill in all information from snapshot data file (id, pos, vel, mass). \fP"
+.ti -1c
+.RI "void \fBopenParticlesFile\fP (unsigned isnap, std::ifstream &ParticlesFile)"
+.br
+.RI "\fIOpen the ahf_out_particles file take ifstream and open particles file with it. \fP"
+.ti -1c
+.RI "void \fBReadSnapIdType\fP (std::ifstream &ParticlesFile, unsigned HaloPopulation, unsigned *&pid, int *&ptype)"
+.br
+.RI "\fIRead a halo full of snapshot particles from ahf_out_particles Read in a slab of HaloPopulation particles. \fP"
+.ti -1c
+.RI "void \fBGenerateHalo\fP (std::ifstream &ParticlesFile, unsigned HaloPopulation, const std::map< int, unsigned > &DoubleIndexMapi, \fBreal\fP *pos, \fBreal\fP *vel, \fBreal\fP *mass, \fBreal\fP *hpos, \fBreal\fP *hvel, \fBreal\fP *hmass, int *htype)"
+.br
+.RI "\fIpreparing halo extract new lists from pos, vel, mass based on id (AHF_particles) \fP"
+.ti -1c
+.RI "void \fBGenerateDIM\fP (unsigned TotalNOParticles, int *&id, std::map< int, unsigned > &DIM)"
+.br
+.RI "\fIgenerate doubly indexed map DIM for particle ID to occurence position \fP"
+.ti -1c
+.RI "void \fBAnalyzeSnap\fP (unsigned isnap)"
+.br
+.RI "\fIAnalysis of one single snapshot file Analyzes a single snapshot file. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const int \fBHaloTypeTotal\fP = 5"
+.br
+.ti -1c
+.RI "const int \fBParticleTypeTotal\fP = 6"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Analyzes a given snapshot with \fBHalo\fP, for all particle types. 
+
+
+.PP
+Definition in file \fBAnalyzeSnap.cpp\fP.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef std::vector<double> \fBVecDouble\fP"
+.PP
+Definition at line 55 of file AnalyzeSnap.cpp.
+.SS "typedef std::vector<std::vector <double> > \fBVecVecDouble\fP"
+.PP
+Definition at line 56 of file AnalyzeSnap.cpp.
+.SH "Function Documentation"
+.PP 
+.SS "void AnalyzeSnap (unsigned isnap)"
+.PP
+Analysis of one single snapshot file Analyzes a single snapshot file. \fBParameters:\fP
+.RS 4
+\fIisnap\fP unsigned snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+properties depending on halo type all: 1 1 1 1 15 dec dm: 0 0 1 1 3 dec gas: 0 1 0 0 4 dec stars: 1 0 0 0 8 dec bary: 1 1 0 0 12 dec
+.PP
+Definition at line 240 of file AnalyzeSnap.cpp.
+.PP
+References Output::appendHR(), Halo::calcJ(), Halo::calcLambda(), Halo::calcMpart(), Halo::calcNpart(), Halo::calcShape(), Halo::calcSigma(), DEBUG, Output::fillHRglobal(), Output::fillHRtype(), Folder(), GenerateDIM(), GenerateHalo(), get_particle_number(), Eigensystem3::getEval(), Halo::getMtot(), Halo::getMvir(), Halo::getRtot(), Halo::getRvir(), Halo::getVCM(), Halo::getVMB(), Halo::getXCM(), Halo::getXMB(), openParticlesFile(), ParticleTypeTotal, readDataBlocks(), Simulation::setBoxlength(), Simulation::setIsnap(), Simulation::setMass(), Simulation::setNhalo(), Simulation::setTarkinOmega(), Simulation::setZsnap(), Snaps(), Output::writeHR(), Output::writeHRstripped(), writeln(), and writelndebug().
+.PP
+Referenced by main().
+.SS "template<typename T > T byteorder (T v)\fC [inline]\fP"
+.PP
+little/big endian conversion conversion between little/big endian \fBParameters:\fP
+.RS 4
+\fIv\fP 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+templated T value, in other byteorder 
+.RE
+.PP
+
+.PP
+Definition at line 67 of file AnalyzeSnap.cpp.
+.SS "void GenerateDIM (unsigned TotalNOParticles, int *& id, std::map< int, unsigned > & DIM)"
+.PP
+generate doubly indexed map DIM for particle ID to occurence position \fBParameters:\fP
+.RS 4
+\fITotalNOParticles;\fP unsigned 
+.br
+\fIid,:\fP int* &; identification int for all particles in simulation 
+.br
+\fIDIM,:\fP std::map<int,unsigned>&; output 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 225 of file AnalyzeSnap.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "void GenerateHalo (std::ifstream & ParticlesFile, unsigned HaloPopulation, const std::map< int, unsigned > & DoubleIndexMapi, \fBreal\fP * pos, \fBreal\fP * vel, \fBreal\fP * mass, \fBreal\fP * hpos, \fBreal\fP * hvel, \fBreal\fP * hmass, int * htype)"
+.PP
+preparing halo extract new lists from pos, vel, mass based on id (AHF_particles) \fBParameters:\fP
+.RS 4
+\fIParticlesFile,:\fP std::ifstream& of ahf_out_particles 
+.br
+\fIHaloPopulation,:\fP unsigned; number of particles total 
+.br
+\fIDoubleIndexMapi,:\fP map with reverse lookup possibility 
+.br
+\fIpos,vel,mass,:\fP const real *&, original data 
+.br
+\fIhpos,hvel,hmass,:\fP real *&, data for halo 
+.br
+\fIhtype,:\fP particle type for halo 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 190 of file AnalyzeSnap.cpp.
+.PP
+References ReadSnapIdType().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void GetOffsets (unsigned * ParticleIDOffsets, unsigned * npart)"
+.PP
+Return offsets of particle types inside snapshot. Get the particle ID offsets of the different particle types. \fBParameters:\fP
+.RS 4
+\fIParticleIDOffsets,:\fP unsigned*; where the offsets are stored 
+.br
+\fInpart,:\fP unsigned*; counts of particles types 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 88 of file AnalyzeSnap.cpp.
+.PP
+References ParticleTypeTotal.
+.SS "void openParticlesFile (unsigned isnap, std::ifstream & ParticlesFile)"
+.PP
+Open the ahf_out_particles file take ifstream and open particles file with it. \fBParameters:\fP
+.RS 4
+\fIisnap,:\fP unsigned of which snapshot, see SystemCharacteristics 
+.br
+\fIParticlesFile,:\fP ifstream by ref 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 145 of file AnalyzeSnap.cpp.
+.PP
+References Folder(), and Snaps().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void readDataBlocks (int isnap, int TotalNOParticles, int *& id, \fBreal\fP *& pos, \fBreal\fP *& vel, \fBreal\fP *& mass)"
+.PP
+Read snapshot data Fill in all information from snapshot data file (id, pos, vel, mass). \fBParameters:\fP
+.RS 4
+\fIisnap,:\fP int; snapshot number 
+.br
+\fITotalNOParticles,:\fP int 
+.br
+\fIid,:\fP is int & 
+.br
+\fIpos,:\fP is double & (3d) 
+.br
+\fIvel,:\fP is double & (3d) 
+.br
+\fImass,:\fP is double & (1d) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 111 of file AnalyzeSnap.cpp.
+.PP
+References Folder(), read_gadget_1(), read_gadget_3(), and Snaps().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void ReadSnapIdType (std::ifstream & ParticlesFile, unsigned HaloPopulation, unsigned *& pid, int *& ptype)"
+.PP
+Read a halo full of snapshot particles from ahf_out_particles Read in a slab of HaloPopulation particles. \fBParameters:\fP
+.RS 4
+\fIParticlesFile,:\fP ifstream of ahf_out_particles 
+.br
+\fIHaloPopulation,:\fP unsigned int of number of particles in this halo 
+.br
+\fIpid,:\fP holds the output, all identifiers 
+.br
+\fIptype,:\fP holds the output, all types, in accordance with ParticleIndexID 
+.RE
+.PP
+
+.PP
+Definition at line 163 of file AnalyzeSnap.cpp.
+.PP
+Referenced by GenerateHalo().
+.SH "Variable Documentation"
+.PP 
+.SS "const int \fBHaloTypeTotal\fP = 5"
+.PP
+Definition at line 58 of file AnalyzeSnap.cpp.
+.SS "const int \fBParticleTypeTotal\fP = 6"
+.PP
+Definition at line 59 of file AnalyzeSnap.cpp.
+.PP
+Referenced by AnalyzeSnap(), and GetOffsets().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

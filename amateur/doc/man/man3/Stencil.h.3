@@ -1,0 +1,191 @@
+.TH "Stencil.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Stencil.h \- 
+.PP
+contains class for stencils used for TidalField  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "float \fBstencil11_1\fP [11]"
+.br
+.ti -1c
+.RI "float \fBstencil11_2\fP [11]"
+.br
+.ti -1c
+.RI "float \fBstencil9_1\fP [9]"
+.br
+.ti -1c
+.RI "float \fBstencil9_2\fP [9]"
+.br
+.ti -1c
+.RI "float \fBstencil7_1\fP [7]"
+.br
+.ti -1c
+.RI "float \fBstencil7_2\fP [7]"
+.br
+.ti -1c
+.RI "float \fBstencil5_1\fP [5] = { 0.0833333333, -0.6666666667, 0.0, 0.6666666667, -0.0833333333 }"
+.br
+.ti -1c
+.RI "float \fBstencil5_2\fP [5] = { -0.0833333333, 1.3333333333, -2.5, 1.3333333333, -0.0833333333 }"
+.br
+.ti -1c
+.RI "float \fBstencil3_1\fP [3]"
+.br
+.ti -1c
+.RI "float \fBstencil3_2\fP [3]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+contains class for stencils used for TidalField 
+
+
+.PP
+Definition in file \fBStencil.h\fP.
+.SH "Variable Documentation"
+.PP 
+.SS "float \fBstencil11_1\fP[11]"\fBInitial value:\fP
+.PP
+.nf
+ { -7.9365079365e-04,
+                  9.9206349206e-03,
+                  -5.9523809524e-02,
+                  2.3809523810e-01,
+                  -8.3333333333e-01,
+                  0.0,
+                  8.3333333333e-01,
+                  -2.3809523810e-01,
+                  5.9523809524e-02,
+                  -9.9206349206e-03,
+                  7.9365079365e-04 }
+.fi
+.PP
+Definition at line 11 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil11_2\fP[11]"\fBInitial value:\fP
+.PP
+.nf
+ { 3.1746031746e-04,
+                  -4.9603174603e-03,
+                  3.9682539683e-02,
+                  -2.3809523810e-01,
+                  1.6666666667e+00,
+                  -2.9272222222e+00,
+                  1.6666666667e+00,
+                  -2.3809523810e-01,
+                  3.9682539683e-02,
+                  -4.9603174603e-03,
+                  3.1746031746e-04 }
+.fi
+.PP
+Definition at line 22 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil3_1\fP[3]"\fBInitial value:\fP
+.PP
+.nf
+ { -0.5,
+                0.0,
+                0.5 }
+.fi
+.PP
+Definition at line 69 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil3_2\fP[3]"\fBInitial value:\fP
+.PP
+.nf
+ { 1.0,
+                -2.0,
+                1.0 }
+.fi
+.PP
+Definition at line 72 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil5_1\fP[5] = { 0.0833333333, -0.6666666667, 0.0, 0.6666666667, -0.0833333333 }"
+.PP
+Definition at line 66 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil5_2\fP[5] = { -0.0833333333, 1.3333333333, -2.5, 1.3333333333, -0.0833333333 }"
+.PP
+Definition at line 67 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil7_1\fP[7]"\fBInitial value:\fP
+.PP
+.nf
+ { -0.0166666667,
+                0.1500000000,
+                -0.7500000000,
+                0.0,
+                0.7500000000,
+                -0.1500000000,
+                0.0166666667 }
+.fi
+.PP
+Definition at line 51 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil7_2\fP[7]"\fBInitial value:\fP
+.PP
+.nf
+ { 0.0111111111,
+                -0.1500000000,
+                1.5000000000,
+                -2.7222222222,
+                1.5000000000,
+                -0.1500000000,
+                0.0111111111 }
+.fi
+.PP
+Definition at line 58 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil9_1\fP[9]"\fBInitial value:\fP
+.PP
+.nf
+ { 3.5714285714e-03,
+                -3.8095238095e-02,
+                0.2000000000,
+                -0.8000000000,
+                0.0,
+                0.8000000000,
+                -0.2000000000,
+                3.8095238095e-02,
+                -3.5714285714e-03 }
+.fi
+.PP
+Definition at line 33 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SS "float \fBstencil9_2\fP[9]"\fBInitial value:\fP
+.PP
+.nf
+ { -1.7857142857e-03,
+                2.5396825397e-02,
+                -2.0000000000e-01,
+                1.6000000000e+00,
+                -2.8472222222e+00,
+                1.6000000000e+00,
+                -2.0000000000e-01,
+                2.5396825397e-02,
+                -1.7857142857e-03 }
+.fi
+.PP
+Definition at line 42 of file Stencil.h.
+.PP
+Referenced by ScalarField::ChooseStencil().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

@@ -1,0 +1,101 @@
+To be done:
+===========
+
+Scientific goals
+================
+* mass bin function of single halos in the outskirts
+* run AnalyzeSnap with exclusion of unbound particles
+* search correlation between j_stars and j_dm, as it is important to be able to track the dm halo properties by the stars
+* mass buildup history as fct of z for the three main halos in one graph. if too different, forget addup
+* history of e_1_dm,e_1_stars before/after infall: should evolve to bigger numbers, as torquing is important for short time
+* galaxy rotationally supported? random motion?
+* new fitting formula for lambda (not only -x^2 in log-log-plot)
+* is there disagreement between COM for baryonic and dm? >10" from Shan+2010
+
+* is there a possibility for generating "cold spots" 
+  from lensing of early matter distributions?
+
+Coding goals
+============
+* creation of sample simulation output for use in order to verify code
+* HaloTracker invoked by amateur directly using another commandline option
+* variable names the same in Halo, TidalField, AnalyzeSnap, Matlab
+* check of bndry handling
+* Halo: percentage of low resolution particles
+* Halo: gas mass fraction
+* Halo: add lambda_R parameter given in Emsellem+2007
+* Halo: T,S parameters
+
+Nice to do
+==========
+* include wrapper #ID_PARTICLEINFO => MergerTree in AMIGA
+* include subhalo matcher for autocorrelation runs in AMIGA
+* use SM to generate plots, use big plots in draft versions of article
+
+Final steps for amd report
+==========================
+* add info: field halos have too little gas
+  to be included appropriately in the analysis
+* fig.4 as fct of #particles
+* stars: a/c vs n_particles: numerical effect? for all galaxies/subhalos
+* nice output for tidal field eigenvectors
+* 4 panels for (Jgas,Jdm) correlation as fct of radius; check statistics
+* panel of (ea,t3) with exponential fit for right part
+* 4 panels for (r,ea) (massbins, dm/gas)
+
+to be checked
+=============
+* gas have smallest velocity dispersion
+
+problems
+========
+* Aprop.txt has no useful entries (-o not working)
+* halos with 200000 particles have no stars? no gas? 
+  => particle ID problem?
+* no proper input from Hprop.txt
+
+insert into main.bib:
+
+@ARTICLE{2010arXiv1005.4231L,
+   author = {{Li}, B. and {Barrow}, J.~D.},
+    title = "{N-Body Simulations for Coupled Scalar Field Cosmology}",
+  journal = {ArXiv e-prints},
+archivePrefix = "arXiv",
+   eprint = {1005.4231},
+ keywords = {Astrophysics - Cosmology and Extragalactic Astrophysics, High Energy Physics - Phenomenology},
+     year = 2010,
+    month = may,
+   adsurl = {http://adsabs.harvard.edu/abs/2010arXiv1005.4231L},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+@ARTICLE{2010arXiv1005.4058G,
+   author = {{Genel}, S. and {Bouch{\'e}}, N. and {Naab}, T. and {Sternberg}, A. and 
+	{Genzel}, R.},
+    title = "{The growth of dark matter halos: evidence for significant smooth accretion}",
+  journal = {ArXiv e-prints},
+archivePrefix = "arXiv",
+   eprint = {1005.4058},
+ keywords = {Astrophysics - Cosmology and Extragalactic Astrophysics},
+     year = 2010,
+    month = may,
+   adsurl = {http://adsabs.harvard.edu/abs/2010arXiv1005.4058G},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+@ARTICLE{2010arXiv1005.4406Z,
+   author = {{Zu}, Y. and {Weinberg}, D.~H. and {Dav{\'e}}, R. and 
+{Fardal}, M. and 
+	{Katz}, N. and {Keres}, D. and {Oppenheimer}, B.~D.},
+    title = "{Intergalactic Dust Extinction in Hydrodynamic Cosmological 
+Simulations}",
+  journal = {ArXiv e-prints},
+archivePrefix = "arXiv",
+   eprint = {1005.4406},
+ keywords = {Astrophysics - Cosmology and Extragalactic Astrophysics},
+     year = 2010,
+    month = may,
+   adsurl = {http://adsabs.harvard.edu/abs/2010arXiv1005.4406Z},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+

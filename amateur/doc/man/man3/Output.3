@@ -1,0 +1,111 @@
+.TH "Output" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Output \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Output.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBOutput\fP ()"
+.br
+.ti -1c
+.RI "\fBOutput\fP (\fBSimulation\fP sim)"
+.br
+.ti -1c
+.RI "\fB~Output\fP ()"
+.br
+.ti -1c
+.RI "void \fBgetAR\fP (void)"
+.br
+.ti -1c
+.RI "void \fBwriteAR\fP (void)"
+.br
+.ti -1c
+.RI "void \fBfillHRglobal\fP (int Ntot, \fBreal\fP Mtot, \fBreal\fP Rtot, \fBreal\fP Mvir, \fBreal\fP Rvir, \fBVector3\fP xcm, \fBVector3\fP vcm, \fBVector3\fP xmb, \fBVector3\fP vmb)"
+.br
+.ti -1c
+.RI "void \fBfillHRtype\fP (int type, int npart, \fBreal\fP mpart, \fBreal\fP lambda, \fBreal\fP sigma, \fBVector3\fP J, \fBEigensystem3\fP E)"
+.br
+.ti -1c
+.RI "void \fBappendHR\fP (void)"
+.br
+.ti -1c
+.RI "void \fBwriteHR\fP (void)"
+.br
+.ti -1c
+.RI "void \fBwriteHRstripped\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file Output.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Output::Output (void)"
+.PP
+Definition at line 34 of file Output.cpp.
+.SS "Output::Output (\fBSimulation\fP sim)"
+.PP
+Definition at line 38 of file Output.cpp.
+.SS "Output::~Output (void)"
+.PP
+Definition at line 42 of file Output.cpp.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Output::appendHR (void)"
+.PP
+Definition at line 138 of file Output.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Output::fillHRglobal (int Ntot, \fBreal\fP Mtot, \fBreal\fP Rtot, \fBreal\fP Mvir, \fBreal\fP Rvir, \fBVector3\fP xcm, \fBVector3\fP vcm, \fBVector3\fP xmb, \fBVector3\fP vmb)"
+.PP
+Definition at line 113 of file Output.cpp.
+.PP
+References HResults::setMtot(), HResults::setMvir(), HResults::setNtot(), HResults::setRtot(), HResults::setRvir(), HResults::setVCM(), HResults::setVMB(), HResults::setXCM(), and HResults::setXMB().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Output::fillHRtype (int type, int npart, \fBreal\fP mpart, \fBreal\fP lambda, \fBreal\fP sigma, \fBVector3\fP J, \fBEigensystem3\fP E)"
+.PP
+Definition at line 127 of file Output.cpp.
+.PP
+References HResults::setE(), HResults::setJ(), HResults::setLambda(), HResults::setMpart(), HResults::setNpart(), and HResults::setSigma().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Output::getAR (void)"
+.PP
+Definition at line 48 of file Output.cpp.
+.PP
+References Folder(), Simulation::getIsnap(), Simulation::getNhalo(), and Snaps().
+.PP
+Referenced by AOutput().
+.SS "void Output::writeAR (void)"
+.PP
+Definition at line 101 of file Output.cpp.
+.PP
+References Folder(), Simulation::getIsnap(), Simulation::getNhalo(), and Snaps().
+.PP
+Referenced by AOutput().
+.SS "void Output::writeHR (void)"
+.PP
+Definition at line 143 of file Output.cpp.
+.PP
+References Folder(), Simulation::getBoxlength(), Simulation::getIsnap(), Simulation::getNhalo(), Simulation::getZsnap(), and Snaps().
+.PP
+Referenced by AnalyzeSnap().
+.SS "void Output::writeHRstripped (void)"
+.PP
+Definition at line 158 of file Output.cpp.
+.PP
+References Folder(), Simulation::getIsnap(), Simulation::getNhalo(), and Snaps().
+.PP
+Referenced by AnalyzeSnap().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

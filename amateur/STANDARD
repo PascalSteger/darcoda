@@ -1,0 +1,21 @@
+Coding Guidelines
++++++++++++++++++
+
+Pascal S.P. Steger <psteger@phys.ethz.ch>
+
+base: Kernighan & Ritchie
+base: Linux Kernel Coding Style Guideline
+
+
+
+* private variables have a "_" at the end
+* parameters have the same name as private variables, but not "_"
+* getVariable() and setVariable() for each variable that should be accessed from outside class
+
+Research process
+++++++++++++++++
+* all halo-based extractions using C++, preferably in Halo.h
+* analysis looking over all halos: MATLAB
+* basic statistics: R
+* visualization using S/M
+* computations with analytical fitting, unit conversions in Mathematica

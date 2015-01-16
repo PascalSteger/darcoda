@@ -1,0 +1,217 @@
+\section{HDFIO\_\-new.h File Reference}
+\label{HDFIO__new_8h}\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}}
+
+
+Some templated C++ HDF5 front-\/end functions, for new HDF5 versions.  
+
+
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$stdexcept$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$sstream$>$}\par
+{\ttfamily \#include $<$typeinfo$>$}\par
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include \char`\"{}hdf5.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classHDFException}{HDFException}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\hid\_\-t \hyperlink{HDFIO__new_8h_ae29c5c82995b302af2502eb19bb78490}{GetDataType} (void)
+\item 
+bool \hyperlink{HDFIO__new_8h_a5c60b85cf0c953cb2868ba5e01e66771}{DoesFileExist} (std::string Filename)
+\item 
+void \hyperlink{HDFIO__new_8h_a11e198795c8dc7e0753daa6b57083645}{AssertFileOpen} (std::string Filename)
+\item 
+void \hyperlink{HDFIO__new_8h_aa4eeddaee70eb3ce64662c7d5a0e3687}{HDFCreateFile} (std::string Filename)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a7a9e328246922cdfce8ad23cb4040e9b}{HDFReadVector} (const std::string Filename, const std::string ObjName, std::vector$<$ T $>$ \&Data)
+\item 
+void \hyperlink{HDFIO__new_8h_a285070bd55644602c9a8ac1830d44c39}{HDFGetDatasetExtent} (const std::string Filename, const std::string ObjName, std::vector$<$ int $>$ \&Extent)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_aa9021278db454aa0b55e9d45db4d1732}{HDFReadDataset} (const std::string Filename, const std::string ObjName, std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a7cb9cfc97460cc46d8958d73abf37401}{HDFReadSelect} (const std::string Filename, const std::string ObjName, const std::vector$<$ unsigned $>$ \&ii, std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a5ad5843a221c83e26337a48786e1ef4f}{HDFReadVectorSelect} (const std::string Filename, const std::string ObjName, const std::vector$<$ unsigned $>$ \&ii, std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a3a874f1791e49402424d5067b1d42182}{HDFReadVectorSlab} (const std::string Filename, const std::string ObjName, unsigned nStart, unsigned nCount, std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_ac10c67494671661d5466ff2258154c8a}{HDFReadDatasetSlab} (const std::string Filename, const std::string ObjName, unsigned nStart, unsigned nCount, std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_ab2ce05626da8d9a7d059795c4d5f02cc}{HDFReadGroupAttribute} (const std::string Filename, const std::string GroupName, const std::string ObjName, T \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_aa73c5851b1f8ae24364803f9578b1d8f}{HDFReadGroupAttribute} (const std::string Filename, const std::string GroupName, const std::string ObjName, std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_aa73a8d13c03b62b0a709d7e7248f0ca7}{HDFWriteDataset} (const std::string Filename, const std::string ObjName, const std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a913817631ba066e8204abbacb6eb6b9f}{HDFWriteDataset2D} (const std::string Filename, const std::string ObjName, const std::vector$<$ std::vector$<$ T $>$ $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a2beb19611043d3393a282ae7a2810075}{HDFWriteDatasetVector} (const std::string Filename, const std::string ObjName, const std::vector$<$ T $>$ \&Data)
+\item 
+void \hyperlink{HDFIO__new_8h_adfafd5685316cd050ad282b7837e7f05}{HDFCreateGroup} (const std::string Filename, const std::string GroupName)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a93cc34de059a978c3b65e4a2fdd8bbc8}{HDFWriteGroupAttribute} (const std::string Filename, const std::string GroupName, const std::string ObjName, const std::vector$<$ T $>$ \&Data)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{HDFIO__new_8h_a63d06b2c68f083f2a15b63f95b228a9b}{HDFWriteGroupAttribute} (const std::string Filename, const std::string GroupName, const std::string ObjName, T Data)
+\item 
+{\footnotesize template$<$$>$ }\\void \hyperlink{HDFIO__new_8h_a1e82999f4bd8497304ff6571d9566781}{HDFWriteGroupAttribute$<$ std::string $>$} (const std::string Filename, const std::string GroupName, const std::string ObjName, std::string Data)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Some templated C++ HDF5 front-\/end functions, for new HDF5 versions. 
+
+Definition in file \hyperlink{HDFIO__new_8h_source}{HDFIO\_\-new.h}.
+
+
+
+\subsection{Function Documentation}
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!AssertFileOpen@{AssertFileOpen}}
+\index{AssertFileOpen@{AssertFileOpen}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{AssertFileOpen}]{\setlength{\rightskip}{0pt plus 5cm}void AssertFileOpen (std::string {\em Filename})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a11e198795c8dc7e0753daa6b57083645}
+
+
+Definition at line 72 of file HDFIO\_\-new.h.
+
+
+
+References DoesFileExist().
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!DoesFileExist@{DoesFileExist}}
+\index{DoesFileExist@{DoesFileExist}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{DoesFileExist}]{\setlength{\rightskip}{0pt plus 5cm}bool DoesFileExist (std::string {\em Filename})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a5c60b85cf0c953cb2868ba5e01e66771}
+
+
+Definition at line 62 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!GetDataType@{GetDataType}}
+\index{GetDataType@{GetDataType}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{GetDataType}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ hid\_\-t GetDataType (void)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_ae29c5c82995b302af2502eb19bb78490}
+
+
+Definition at line 38 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFCreateFile@{HDFCreateFile}}
+\index{HDFCreateFile@{HDFCreateFile}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFCreateFile}]{\setlength{\rightskip}{0pt plus 5cm}void HDFCreateFile (std::string {\em Filename})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_aa4eeddaee70eb3ce64662c7d5a0e3687}
+
+
+Definition at line 80 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFCreateGroup@{HDFCreateGroup}}
+\index{HDFCreateGroup@{HDFCreateGroup}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFCreateGroup}]{\setlength{\rightskip}{0pt plus 5cm}void HDFCreateGroup (const std::string {\em Filename}, \/  const std::string {\em GroupName})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_adfafd5685316cd050ad282b7837e7f05}
+
+
+Definition at line 709 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFGetDatasetExtent@{HDFGetDatasetExtent}}
+\index{HDFGetDatasetExtent@{HDFGetDatasetExtent}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFGetDatasetExtent}]{\setlength{\rightskip}{0pt plus 5cm}void HDFGetDatasetExtent (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  std::vector$<$ int $>$ \& {\em Extent})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a285070bd55644602c9a8ac1830d44c39}
+
+
+Definition at line 94 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadDataset@{HDFReadDataset}}
+\index{HDFReadDataset@{HDFReadDataset}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadDataset}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadDataset (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_aa9021278db454aa0b55e9d45db4d1732}
+
+
+Definition at line 143 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadDatasetSlab@{HDFReadDatasetSlab}}
+\index{HDFReadDatasetSlab@{HDFReadDatasetSlab}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadDatasetSlab}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadDatasetSlab (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  unsigned {\em nStart}, \/  unsigned {\em nCount}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_ac10c67494671661d5466ff2258154c8a}
+
+
+Definition at line 432 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadGroupAttribute@{HDFReadGroupAttribute}}
+\index{HDFReadGroupAttribute@{HDFReadGroupAttribute}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadGroupAttribute}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadGroupAttribute (const std::string {\em Filename}, \/  const std::string {\em GroupName}, \/  const std::string {\em ObjName}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_aa73c5851b1f8ae24364803f9578b1d8f}
+
+
+Definition at line 544 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadGroupAttribute@{HDFReadGroupAttribute}}
+\index{HDFReadGroupAttribute@{HDFReadGroupAttribute}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadGroupAttribute}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadGroupAttribute (const std::string {\em Filename}, \/  const std::string {\em GroupName}, \/  const std::string {\em ObjName}, \/  T \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_ab2ce05626da8d9a7d059795c4d5f02cc}
+
+
+Definition at line 500 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadSelect@{HDFReadSelect}}
+\index{HDFReadSelect@{HDFReadSelect}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadSelect}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadSelect (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  const std::vector$<$ unsigned $>$ \& {\em ii}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a7cb9cfc97460cc46d8958d73abf37401}
+
+
+Definition at line 216 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadVector@{HDFReadVector}}
+\index{HDFReadVector@{HDFReadVector}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadVector}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadVector (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a7a9e328246922cdfce8ad23cb4040e9b}
+
+
+Definition at line 88 of file HDFIO\_\-new.h.
+
+
+
+References HDFReadDataset().
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadVectorSelect@{HDFReadVectorSelect}}
+\index{HDFReadVectorSelect@{HDFReadVectorSelect}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadVectorSelect}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadVectorSelect (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  const std::vector$<$ unsigned $>$ \& {\em ii}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a5ad5843a221c83e26337a48786e1ef4f}
+
+
+Definition at line 277 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFReadVectorSlab@{HDFReadVectorSlab}}
+\index{HDFReadVectorSlab@{HDFReadVectorSlab}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFReadVectorSlab}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFReadVectorSlab (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  unsigned {\em nStart}, \/  unsigned {\em nCount}, \/  std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a3a874f1791e49402424d5067b1d42182}
+
+
+Definition at line 367 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFWriteDataset@{HDFWriteDataset}}
+\index{HDFWriteDataset@{HDFWriteDataset}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFWriteDataset}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFWriteDataset (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  const std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_aa73a8d13c03b62b0a709d7e7248f0ca7}
+
+
+Definition at line 605 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFWriteDataset2D@{HDFWriteDataset2D}}
+\index{HDFWriteDataset2D@{HDFWriteDataset2D}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFWriteDataset2D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFWriteDataset2D (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  const std::vector$<$ std::vector$<$ T $>$ $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a913817631ba066e8204abbacb6eb6b9f}
+
+
+Definition at line 633 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFWriteDatasetVector@{HDFWriteDatasetVector}}
+\index{HDFWriteDatasetVector@{HDFWriteDatasetVector}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFWriteDatasetVector}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFWriteDatasetVector (const std::string {\em Filename}, \/  const std::string {\em ObjName}, \/  const std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a2beb19611043d3393a282ae7a2810075}
+
+
+Definition at line 674 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFWriteGroupAttribute@{HDFWriteGroupAttribute}}
+\index{HDFWriteGroupAttribute@{HDFWriteGroupAttribute}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFWriteGroupAttribute}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFWriteGroupAttribute (const std::string {\em Filename}, \/  const std::string {\em GroupName}, \/  const std::string {\em ObjName}, \/  T {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a63d06b2c68f083f2a15b63f95b228a9b}
+
+
+Definition at line 750 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFWriteGroupAttribute@{HDFWriteGroupAttribute}}
+\index{HDFWriteGroupAttribute@{HDFWriteGroupAttribute}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFWriteGroupAttribute}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void HDFWriteGroupAttribute (const std::string {\em Filename}, \/  const std::string {\em GroupName}, \/  const std::string {\em ObjName}, \/  const std::vector$<$ T $>$ \& {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a93cc34de059a978c3b65e4a2fdd8bbc8}
+
+
+Definition at line 721 of file HDFIO\_\-new.h.
+
+\index{HDFIO\_\-new.h@{HDFIO\_\-new.h}!HDFWriteGroupAttribute$<$ std::string $>$@{HDFWriteGroupAttribute$<$ std::string $>$}}
+\index{HDFWriteGroupAttribute$<$ std::string $>$@{HDFWriteGroupAttribute$<$ std::string $>$}!HDFIO_new.h@{HDFIO\_\-new.h}}
+\subsubsection[{HDFWriteGroupAttribute$<$ std::string $>$}]{\setlength{\rightskip}{0pt plus 5cm}template$<$$>$ void HDFWriteGroupAttribute$<$ std::string $>$ (const std::string {\em Filename}, \/  const std::string {\em GroupName}, \/  const std::string {\em ObjName}, \/  std::string {\em Data})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{HDFIO__new_8h_a1e82999f4bd8497304ff6571d9566781}

@@ -1,0 +1,168 @@
+.TH "HResults" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HResults \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <HResults.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHResults\fP ()"
+.br
+.ti -1c
+.RI "\fB~HResults\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetNtot\fP (int ntot)"
+.br
+.ti -1c
+.RI "void \fBsetMtot\fP (\fBreal\fP Mtot)"
+.br
+.ti -1c
+.RI "void \fBsetRtot\fP (\fBreal\fP Rtot)"
+.br
+.ti -1c
+.RI "void \fBsetMvir\fP (\fBreal\fP Mvir)"
+.br
+.ti -1c
+.RI "void \fBsetRvir\fP (\fBreal\fP Rvir)"
+.br
+.ti -1c
+.RI "void \fBsetXCM\fP (\fBVector3\fP xcm)"
+.br
+.ti -1c
+.RI "void \fBsetVCM\fP (\fBVector3\fP vcm)"
+.br
+.ti -1c
+.RI "void \fBsetXMB\fP (\fBVector3\fP xmb)"
+.br
+.ti -1c
+.RI "void \fBsetVMB\fP (\fBVector3\fP vmb)"
+.br
+.ti -1c
+.RI "void \fBsetNpart\fP (int npart, int type)"
+.br
+.ti -1c
+.RI "void \fBsetMpart\fP (\fBreal\fP mpart, int type)"
+.br
+.ti -1c
+.RI "void \fBsetLambda\fP (\fBreal\fP lambda, int type)"
+.br
+.ti -1c
+.RI "void \fBsetSigma\fP (\fBreal\fP sigma, int type)"
+.br
+.ti -1c
+.RI "void \fBsetJ\fP (\fBVector3\fP J, int type)"
+.br
+.ti -1c
+.RI "void \fBsetE\fP (\fBEigensystem3\fP E, int type)"
+.br
+.ti -1c
+.RI "std::string \fBtoString\fP ()"
+.br
+.RI "\fIoutput a HResult as string concatenate first all global values, then all halo type specific properties \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file HResults.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HResults::HResults ()"
+.PP
+Definition at line 33 of file HResults.cpp.
+.SS "HResults::~HResults ()"
+.PP
+Definition at line 37 of file HResults.cpp.
+.SH "Member Function Documentation"
+.PP 
+.SS "void HResults::setE (\fBEigensystem3\fP E, int type)"
+.PP
+Definition at line 112 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRtype().
+.SS "void HResults::setJ (\fBVector3\fP J, int type)"
+.PP
+Definition at line 97 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRtype().
+.SS "void HResults::setLambda (\fBreal\fP lambda, int type)"
+.PP
+Definition at line 102 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRtype().
+.SS "void HResults::setMpart (\fBreal\fP mpart, int type)"
+.PP
+Definition at line 92 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRtype().
+.SS "void HResults::setMtot (\fBreal\fP Mtot)"
+.PP
+Definition at line 47 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setMvir (\fBreal\fP Mvir)"
+.PP
+Definition at line 57 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setNpart (int npart, int type)"
+.PP
+Definition at line 87 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRtype().
+.SS "void HResults::setNtot (int ntot)"
+.PP
+Definition at line 42 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setRtot (\fBreal\fP Rtot)"
+.PP
+Definition at line 52 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setRvir (\fBreal\fP Rvir)"
+.PP
+Definition at line 62 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setSigma (\fBreal\fP sigma, int type)"
+.PP
+Definition at line 107 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRtype().
+.SS "void HResults::setVCM (\fBVector3\fP vcm)"
+.PP
+Definition at line 72 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setVMB (\fBVector3\fP vmb)"
+.PP
+Definition at line 82 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setXCM (\fBVector3\fP xcm)"
+.PP
+Definition at line 67 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "void HResults::setXMB (\fBVector3\fP xmb)"
+.PP
+Definition at line 77 of file HResults.cpp.
+.PP
+Referenced by Output::fillHRglobal().
+.SS "std::string HResults::toString (void)"
+.PP
+output a HResult as string concatenate first all global values, then all halo type specific properties 
+.PP
+Definition at line 121 of file HResults.cpp.
+.PP
+References HTotal, Eigensystem3::toString(), and Vector3::toString().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

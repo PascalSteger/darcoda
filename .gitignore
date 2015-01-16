@@ -1,4 +1,5 @@
 backup
+doc
 
 DTgaia
 DTcoll
@@ -11,12 +12,32 @@ DTdisc
 DTdiscmock
 DTdiscsim
 
-
 \#*
 \.\#*
+*.pdf
 *.png
 *~
 *.orig
+*.rip
+
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
+
+*.svn
+amiga
+
+CVS
+*.o
+auto
+*.el
+ramses
+/NEC/ramses
+
+
 *.log
 RunJob*
 *DS_Store*

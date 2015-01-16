@@ -6,15 +6,15 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import pdb
-import gl_params
-gp = gl_params.Params()
-import gl_file as gf
+import gi_params
+gp = gi_params.Params()
+import gi_file as gf
 gf.get_binned_data(gp)
 
 import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
-import gl_analytic as ga
-import gl_physics as phys
+import gi_analytic as ga
+import gi_physics as phys
 
 def analytic_beta(x):
     # gaia 1 pop

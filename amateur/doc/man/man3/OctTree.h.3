@@ -1,0 +1,98 @@
+.TH "OctTree.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OctTree.h \- 
+.PP
+Build trees as new class.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <vector>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <stack>\fP
+.br
+\fC#include <queue>\fP
+.br
+\fC#include <cmath>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBBody\fP"
+.br
+.ti -1c
+.RI "class \fBPseudoBody\fP"
+.br
+.ti -1c
+.RI "class \fBkDTreeNode\fP"
+.br
+.ti -1c
+.RI "class \fBOctTreeNode\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBEPS\fP   1.0e-8"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSPLINEQ\fP (double invr, double r2, double twoh, double &a, double &b, double &c, double &d)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "std::ofstream * \fBofs\fP"
+.br
+.ti -1c
+.RI "const \fBreal\fP \fBg_geomfac\fP = 2.0 / sqrt( 3.0 )"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Build trees as new class. 
+
+
+.PP
+Definition in file \fBOctTree.h\fP.
+.SH "Define Documentation"
+.PP 
+.SS "#define EPS   1.0e-8"
+.PP
+Definition at line 39 of file OctTree.h.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SH "Function Documentation"
+.PP 
+.SS "void SPLINEQ (double invr, double r2, double twoh, double & a, double & b, double & c, double & d)\fC [inline]\fP"
+.PP
+Definition at line 45 of file OctTree.h.
+.PP
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+.SH "Variable Documentation"
+.PP 
+.SS "const \fBreal\fP \fBg_geomfac\fP = 2.0 / sqrt( 3.0 )"
+.PP
+Definition at line 42 of file OctTree.h.
+.SS "std::ofstream* \fBofs\fP"
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

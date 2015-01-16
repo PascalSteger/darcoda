@@ -1,0 +1,142 @@
+.TH "NFWFit.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NFWFit.h \- 
+.PP
+Fit of a Navarro-Frenk-White potential.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <cassert>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <gsl/gsl_vector.h>\fP
+.br
+\fC#include <gsl/gsl_blas.h>\fP
+.br
+\fC#include <gsl/gsl_multifit_nlin.h>\fP
+.br
+\fC#include <gsl/gsl_errno.h>\fP
+.br
+\fC#include 'Global.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBfitdata\fP"
+.br
+.ti -1c
+.RI "struct \fBfitdata_fix\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprint_state\fP (size_t iter, gsl_multifit_fdfsolver *s)"
+.br
+.ti -1c
+.RI "int \fBNFW_f\fP (const gsl_vector *p, void *data, gsl_vector *f)"
+.br
+.ti -1c
+.RI "int \fBNFW_fix_f\fP (const gsl_vector *p, void *data, gsl_vector *f)"
+.br
+.ti -1c
+.RI "int \fBNFW_df\fP (const gsl_vector *p, void *data, gsl_matrix *J)"
+.br
+.ti -1c
+.RI "int \fBNFW_fix_df\fP (const gsl_vector *p, void *data, gsl_matrix *J)"
+.br
+.ti -1c
+.RI "int \fBNFW_fdf\fP (const gsl_vector *x, void *data, gsl_vector *f, gsl_matrix *J)"
+.br
+.ti -1c
+.RI "int \fBNFW_fix_fdf\fP (const gsl_vector *x, void *data, gsl_vector *f, gsl_matrix *J)"
+.br
+.ti -1c
+.RI "int \fBNFW_fit\fP (const std::vector< \fBreal\fP > &r, const std::vector< \fBreal\fP > &rho, const std::vector< \fBreal\fP > &sigma_rho, \fBreal\fP deltac0, \fBreal\fP rs0, \fBreal\fP &deltac, \fBreal\fP &edeltac, \fBreal\fP &rs, \fBreal\fP &ers)"
+.br
+.ti -1c
+.RI "int \fBNFW_fix_fit\fP (const std::vector< \fBreal\fP > &r, const std::vector< \fBreal\fP > &rho, const std::vector< \fBreal\fP > &sigma_rho, \fBreal\fP rvir, \fBreal\fP mvir, \fBreal\fP rs0, \fBreal\fP &rs, \fBreal\fP &ers)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Fit of a Navarro-Frenk-White potential. 
+
+
+.PP
+Definition in file \fBNFWFit.h\fP.
+.SH "Function Documentation"
+.PP 
+.SS "int NFW_df (const gsl_vector * p, void * data, gsl_matrix * J)"
+.PP
+Definition at line 118 of file NFWFit.h.
+.PP
+References fitdata::n, fitdata::sigma, and fitdata::x.
+.PP
+Referenced by NFW_fdf(), and NFW_fit().
+.SS "int NFW_f (const gsl_vector * p, void * data, gsl_vector * f)"
+.PP
+Definition at line 74 of file NFWFit.h.
+.PP
+References fitdata::n, fitdata::sigma, fitdata::x, and fitdata::y.
+.PP
+Referenced by NFW_fdf(), and NFW_fit().
+.SS "int NFW_fdf (const gsl_vector * x, void * data, gsl_vector * f, gsl_matrix * J)"
+.PP
+Definition at line 195 of file NFWFit.h.
+.PP
+References NFW_df(), and NFW_f().
+.PP
+Referenced by NFW_fit().
+.SS "int NFW_fit (const std::vector< \fBreal\fP > & r, const std::vector< \fBreal\fP > & rho, const std::vector< \fBreal\fP > & sigma_rho, \fBreal\fP deltac0, \fBreal\fP rs0, \fBreal\fP & deltac, \fBreal\fP & edeltac, \fBreal\fP & rs, \fBreal\fP & ers)"
+.PP
+Definition at line 209 of file NFWFit.h.
+.PP
+References fitdata_fix::n, NFW_df(), NFW_f(), NFW_fdf(), print_state(), and fitdata::x.
+.PP
+Referenced by HaloProperties::FitNFWProfile2().
+.SS "int NFW_fix_df (const gsl_vector * p, void * data, gsl_matrix * J)"
+.PP
+Definition at line 172 of file NFWFit.h.
+.PP
+References fitdata_fix::mvir, fitdata_fix::n, fitdata_fix::rvir, fitdata_fix::sigma, and fitdata_fix::x.
+.PP
+Referenced by NFW_fix_fdf(), and NFW_fix_fit().
+.SS "int NFW_fix_f (const gsl_vector * p, void * data, gsl_vector * f)"
+.PP
+Definition at line 94 of file NFWFit.h.
+.PP
+References fitdata_fix::mvir, fitdata_fix::n, fitdata_fix::rvir, fitdata_fix::sigma, fitdata_fix::x, and fitdata_fix::y.
+.PP
+Referenced by NFW_fix_fdf(), and NFW_fix_fit().
+.SS "int NFW_fix_fdf (const gsl_vector * x, void * data, gsl_vector * f, gsl_matrix * J)"
+.PP
+Definition at line 202 of file NFWFit.h.
+.PP
+References NFW_fix_df(), and NFW_fix_f().
+.PP
+Referenced by NFW_fix_fit().
+.SS "int NFW_fix_fit (const std::vector< \fBreal\fP > & r, const std::vector< \fBreal\fP > & rho, const std::vector< \fBreal\fP > & sigma_rho, \fBreal\fP rvir, \fBreal\fP mvir, \fBreal\fP rs0, \fBreal\fP & rs, \fBreal\fP & ers)"
+.PP
+Definition at line 289 of file NFWFit.h.
+.PP
+References fitdata::n, NFW_fix_df(), NFW_fix_f(), NFW_fix_fdf(), print_state(), and fitdata_fix::x.
+.PP
+Referenced by HaloProperties::FitNFWProfile1(), and HaloProperties::FitNFWProfile200().
+.SS "void print_state (size_t iter, gsl_multifit_fdfsolver * s)"
+.PP
+Definition at line 68 of file NFWFit.h.
+.PP
+Referenced by NFW_fit(), and NFW_fix_fit().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

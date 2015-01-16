@@ -1,0 +1,89 @@
+.TH "HaloProperties.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HaloProperties.h \- 
+.PP
+Class definition with all publicly known functions from \fBHaloProperties\fP.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <iostream>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <algorithm>\fP
+.br
+\fC#include <cassert>\fP
+.br
+\fC#include <cmath>\fP
+.br
+\fC#include <ctime>\fP
+.br
+\fC#include 'DataStruct.h'\fP
+.br
+\fC#include 'OctTree.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBHaloProperties\fP"
+.br
+.ti -1c
+.RI "struct \fBHaloProperties::Cosm\fP"
+.br
+.ti -1c
+.RI "class \fBHaloProperties::Distance\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBOCTTREE\fP"
+.br
+.ti -1c
+.RI "#define \fBFORCE_DIRECT_TREE_SPLIT\fP   4000"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBreal\fP \fBfbmod\fP (\fBreal\fP x, \fBreal\fP m)"
+.br
+.ti -1c
+.RI "template<typename real_t > real_t \fBSPHK3D\fP (const real_t r, const real_t h)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Class definition with all publicly known functions from \fBHaloProperties\fP. 
+
+
+.PP
+Definition in file \fBHaloProperties.h\fP.
+.SH "Define Documentation"
+.PP 
+.SS "#define FORCE_DIRECT_TREE_SPLIT   4000"
+.PP
+Definition at line 22 of file HaloProperties.h.
+.SS "#define OCTTREE"
+.PP
+Definition at line 21 of file HaloProperties.h.
+.SH "Function Documentation"
+.PP 
+.SS "\fBreal\fP fbmod (\fBreal\fP x, \fBreal\fP m)\fC [inline]\fP"
+.PP
+Definition at line 28 of file HaloProperties.h.
+.SS "template<typename real_t > real_t SPHK3D (const real_t r, const real_t h)\fC [inline]\fP"
+.PP
+Definition at line 34 of file HaloProperties.h.
+.PP
+References PI.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

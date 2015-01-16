@@ -1,0 +1,904 @@
+
+AHFrun.cpp,112
+CreateAHFParameterFile(39,1776
+RunAHFstep(71,2704
+MoveAHFout(86,3116
+RenameAHFout(104,3565
+AHFrun(139,4608
+
+AOutput.cpp,17
+AOutput(32,1635
+
+AResults.cpp,113
+AResults::AResults(32,1657
+AResults::AResults(36,1683
+AResults::~AResults(75,2886
+AResults::toString(80,2925
+
+AnalyzeSnap.cpp,392
+typedef std::vector<double> VecDouble;55,2158
+typedef std::vector<std::vector <double> > VecVecDouble;56,2197
+const int HaloTypeTotal 58,2255
+const int ParticleTypeTotal 59,2284
+template < typename T > T byteorder(67,2466
+GetOffsets(88,3214
+readDataBlocks(111,3867
+openParticlesFile(145,4913
+ReadSnapIdType(163,5639
+GenerateHalo(190,6479
+GenerateDIM(225,7646
+AnalyzeSnap(240,8042
+
+Array3.cpp,273
+Array3::Array3(30,1600
+Array3::Array3(38,1709
+Array3::Array3(47,1910
+Array3::~Array3(59,2185
+Array3::operator=(Array3::operator=66,2264
+Array3::getValue(82,2578
+Array3::setValue(87,2664
+Array3::addValue(93,2790
+Array3::get_size(99,2917
+Array3::recreate(104,3001
+
+Cosmology.cpp,603
+Cosmology::Cosmology(4,44
+Cosmology::Cosmology(10,139
+Cosmology::Cosmology(16,229
+Cosmology::Cosmology(25,411
+Cosmology::setConcordanceH0(35,597
+Cosmology::setConcordanceG(40,650
+Cosmology::setConcordanceOmega(45,707
+Cosmology::setTarkinOmega(53,831
+Cosmology::setOmegaK(61,934
+Cosmology::setH0(66,1013
+Cosmology::getH0(71,1060
+Cosmology::setG(76,1102
+Cosmology::getG(81,1145
+Cosmology::setOmegaL(86,1185
+Cosmology::getOmegaL(92,1263
+Cosmology::setOmegaM(97,1313
+Cosmology::getOmegaM(103,1392
+Cosmology::setOmegaR(108,1442
+Cosmology::getOmegaR(114,1520
+Cosmology::getOmegaK(119,1570
+
+Distance.cpp,125
+Distance::Distance(4,43
+Distance::Distance(9,108
+Distance::operator<(15,191
+Distance::getr(20,272
+Distance::geti(25,328
+
+Eigensystem3.cpp,427
+Eigensystem3::Eigensystem3(34,1697
+Eigensystem3::Eigensystem3(38,1748
+Eigensystem3::Eigensystem3(47,1917
+Eigensystem3::Eigensystem3(51,1984
+Eigensystem3::calcEV(58,2120
+Eigensystem3::getEval(70,2410
+Eigensystem3::getEval(76,2517
+Eigensystem3::setEval(82,2646
+Eigensystem3::getEvec(87,2734
+Eigensystem3::getEvec(93,2844
+Eigensystem3::setEvec(99,2973
+Eigensystem3::normalize(104,3047
+Eigensystem3::toString(121,3562
+
+ExtractSnap.cpp,21
+ExtractSnap(42,1879
+
+Global.cpp,459
+bool DoesFileExist(40,1820
+printMinMaxValues(55,2182
+void write(110,6105
+void writeln(119,6332
+void writedone(127,6468
+void writelndone(135,6580
+void donedebug(143,6719
+void writedebug(154,7024
+void writelndebug(165,7409
+void RunCommand(174,7639
+unsigned GetLineNumber(184,7868
+void reverse(203,8248
+void itoa(221,8607
+std::string IntToString(243,9137
+std::string Folder(262,9567
+std::string Snaps(291,10446
+fbmod(319,11212
+SPHK3D(325,11310
+
+GreensFunction.cpp,45
+GreensFunction<nOrder>::apply(apply31,1639
+
+HResults.cpp,489
+HResults::HResults(33,1720
+HResults::~HResults(37,1746
+HResults::setNtot(42,1778
+HResults::setMtot(47,1831
+HResults::setRtot(52,1885
+HResults::setMvir(57,1939
+HResults::setRvir(62,1993
+HResults::setXCM(67,2047
+HResults::setVCM(72,2100
+HResults::setXMB(77,2153
+HResults::setVMB(82,2206
+HResults::setNpart(87,2259
+HResults::setMpart(92,2332
+HResults::setJ(97,2406
+HResults::setLambda(102,2467
+HResults::setSigma(107,2545
+HResults::setE(112,2619
+HResults::toString(121,2816
+
+Halo.cpp,729
+Halo::Halo(36,1891
+Halo::~Halo(40,1926
+Halo::Halo(44,1971
+Halo::calcMtot(67,2556
+Halo::calcVir(85,3002
+Halo::centerOnCoord(146,4617
+Halo::centerCM(161,5041
+Halo::centerMB(195,5794
+Halo::centerVel(233,6617
+Halo::calcDvec(262,7288
+Halo::getMtot(282,7784
+Halo::getRtot(287,7825
+Halo::getMvir(292,7867
+Halo::getRvir(297,7909
+Halo::getXCM(302,7953
+Halo::getVCM(307,7995
+Halo::getXMB(312,8037
+Halo::getVMB(317,8079
+Halo::consider(328,8425
+Halo::calcEkin(370,9123
+Halo::calcEkinNoHubble(403,9923
+Halo::calcPotDirect(435,10651
+Halo::calcPotTree(469,11591
+Halo::calcNpart(529,13313
+Halo::calcMpart(545,13599
+Halo::calcSigma(563,13887
+Halo::calcLambda(612,15084
+Halo::calcJ(662,16352
+Halo::calcShape(695,17174
+
+HaloProperties.cpp,2396
+HaloProperties::HaloProperties(15,311
+HaloProperties::SetCosmology(46,1157
+HaloProperties::ComputeTotalMass(54,1356
+HaloProperties::ComputeTotalMassExc(59,1425
+HaloProperties::ComputeCM(68,1636
+HaloProperties::ComputeCMExc(93,2247
+HaloProperties::CenterOnCM(125,3224
+HaloProperties::CenterOnCMExc(157,4155
+HaloProperties::ComputeMB(197,5206
+HaloProperties::ComputeMBExc(224,5886
+HaloProperties::CenterOnMB(257,6938
+HaloProperties::CenterOnMB(270,7231
+HaloProperties::CenterOnCoord(314,8324
+HaloProperties::AverageVel(325,8625
+HaloProperties::ComputeCenterVel(392,10337
+HaloProperties::ComputeCenterVelExc(408,10716
+HaloProperties::CenterVel(429,11153
+HaloProperties::CenterVelOn(451,11800
+HaloProperties::CenterVelExc(459,12018
+HaloProperties::ComputeAngularMomentum(492,12774
+HaloProperties::ComputeAngularMomentum(517,13762
+HaloProperties::ComputeVelocityDispersion(546,14770
+HaloProperties::GetSortedDistances(568,15338
+HaloProperties::ComputeMajorAxes(583,15776
+HaloProperties::ComputeMajorAxesReduced(618,17252
+HaloProperties::ComputeShapeParameters(658,18995
+HaloProperties::ComputeVirialProperties200(668,19242
+HaloProperties::ComputeVirialProperties200(710,20476
+HaloProperties::ComputeVirialProperties200(715,20682
+HaloProperties::ComputeVirialProperties200(720,20888
+HaloProperties::ComputeVirialProperties(728,21097
+HaloProperties::ComputeVirialProperties(761,22299
+HaloProperties::ComputeVirialProperties(766,22499
+HaloProperties::ComputeVirialProperties(771,22699
+HaloProperties::ComputePoormanConcentration(778,22901
+HaloProperties::ComputePoormanConcentration(789,23296
+HaloProperties::ComputeLambdaPrime(805,23847
+HaloProperties::ComputeKineticEnergy(846,25222
+HaloProperties::ComputeKineticEnergyNoHubble(887,26405
+HaloProperties::ComputeKineticEnergyNoHubbleExc(924,27363
+HaloProperties::ComputePotentialDirect(940,27999
+HaloProperties::ComputePotentialDirectExc(966,28853
+HaloProperties::ComputePotentialTree(995,29914
+HaloProperties::ComputePotentialTreeExc(1049,31612
+HaloProperties::CleanUnbound(1098,33414
+HaloProperties::CleanUnboundExc(1106,33571
+HaloProperties::CleanUnboundSimple(1170,35654
+HaloProperties::ComputeDensityProfile(1202,36531
+HaloProperties::ComputeDensityProfile(1253,37970
+HaloProperties::FitNFWProfile2(1317,39732
+HaloProperties::FitNFWProfile1(1345,40265
+HaloProperties::FitNFWProfile200(1368,40765
+
+HaloTrackerRun.cpp,151
+WrapperParticleNumbers(32,1631
+CreateHaloTrackerParameterFile(63,2420
+RunHaloTracker(78,3022
+MoveHaloTrackerOutput(87,3285
+HaloTrackerRun(95,3497
+
+Matrix33.cpp,708
+Matrix33::Matrix33(41,1798
+Matrix33::Matrix33(45,1855
+Matrix33::~Matrix33(51,1996
+Matrix33::operator() Matrix33::operator()57,2061
+Matrix33::operator() Matrix33::operator()63,2159
+Matrix33::operator() Matrix33::operator()69,2264
+Matrix33::operator= Matrix33::operator=78,2426
+Matrix33::operator= Matrix33::operator=87,2578
+Matrix33::operator+=(Matrix33::operator+=105,2870
+Matrix33::operator-=(Matrix33::operator-=113,3020
+Matrix33::operator*(121,3169
+Matrix33::operator/(130,3343
+Matrix33::set_diag(140,3537
+Matrix33::Eigen(148,3677
+Matrix33::det(172,4545
+Matrix33::get_invariants(183,4761
+ROTATE(194,5037
+ROTATE(202,5205
+Matrix33::Jacobi(215,5555
+Matrix33::toVecVector3(301,7850
+
+MergerTreeRun.cpp,192
+void RewriteParticleNumbers(31,1646
+void CreateMergeParameterFile(65,2666
+void RunMergerTree(85,3286
+void RunOwnMergerTree(97,3569
+void MoveMergeOut(184,6425
+void MergerTreeRun(192,6626
+
+Output.cpp,269
+Output::Output(34,1700
+Output::Output(38,1803
+Output::~Output(42,1852
+Output::getAR(48,1915
+Output::writeAR(101,3440
+Output::fillHRglobal(113,3752
+Output::fillHRtype(127,4089
+Output::appendHR(138,4371
+Output::writeHR(143,4428
+Output::writeHRstripped(158,4823
+
+ScalarField.cpp,777
+ScalarField::ScalarField(29,1560
+ScalarField::ScalarField(40,1765
+ScalarField::~ScalarField(55,2206
+ScalarField::operator=(ScalarField::operator=60,2273
+ScalarField::getValue(77,2609
+ScalarField::setValue(82,2701
+ScalarField::recreate(87,2798
+ScalarField::getPhi(99,3051
+ScalarField::setPhi(104,3104
+ScalarField::getNx(109,3161
+ScalarField::getNy(114,3210
+ScalarField::getNz(119,3259
+ScalarField::getDx(124,3310
+ScalarField::getNStencil(129,3359
+ScalarField::getNStencil2(134,3420
+ScalarField::lookup(139,3483
+ScalarField::lookup(148,3730
+ScalarField::get_CIC(161,4090
+ScalarField::diff1(194,5127
+ScalarField::diff2(215,5629
+ScalarField::test(257,6708
+ScalarField::put_CIC(276,7118
+ScalarField::diff2atCIC(348,8764
+ScalarField::ChooseStencil(436,10990
+
+Simulation.cpp,804
+Simulation::Simulation(13,175
+Simulation::Simulation(18,223
+Simulation::~Simulation(22,283
+Simulation::setCosmology(27,345
+Simulation::setTarkinOmega(33,439
+Simulation::setIsnap(38,500
+Simulation::setAsnap(43,560
+Simulation::setZsnap(49,647
+Simulation::setNhalo(55,735
+Simulation::setMass(60,794
+Simulation::setBoxlength(66,867
+Simulation::calcRhobox(72,959
+Simulation::setRhobox(78,1107
+Simulation::getIsnap(96,1609
+Simulation::getAsnap(101,1658
+Simulation::getZsnap(106,1708
+Simulation::getNhalo(111,1756
+Simulation::getMass(116,1805
+Simulation::getBoxlength(121,1852
+Simulation::getRhobox(126,1909
+Simulation::getH0(131,1960
+Simulation::getG(136,2010
+Simulation::getOmegaL(141,2058
+Simulation::getOmegaM(146,2116
+Simulation::getOmegaR(151,2174
+Simulation::getOmegaK(156,2232
+
+SubhaloMatch.cpp,84
+void GetMtreeFile(32,1726
+void WriteMtree2File(46,2189
+void SubhaloMatch(61,2743
+
+TidalField.cpp,109
+const float G_const 22,364
+void TidalField(25,400
+void TidalField(49,1381
+void StoreTensorField(217,6325
+
+Vector3.cpp,1190
+typedef unsigned long Identifier;44,1829
+typedef unsigned long Size;45,1863
+#define HDF_UINT 46,1891
+#define MPI_UINT 47,1926
+typedef unsigned Identifier;50,1968
+typedef unsigned Size;51,1997
+#define HDF_UINT 52,2020
+#define MPI_UINT 53,2053
+#define HDF_FLOAT 55,2090
+typedef float Scalar;56,2125
+typedef float Weight;57,2147
+#define FIX(59,2170
+Vector3::Vector3(61,2206
+Vector3::Vector3(67,2320
+Vector3::Vector3(73,2455
+Vector3::Vector3(79,2567
+Vector3::Vector3(87,2724
+Vector3::~Vector3(93,2854
+Vector3::operator=(Vector3::operator=99,2916
+Vector3::operator=(Vector3::operator=107,3064
+Vector3::operator-(115,3198
+Vector3::operator+(123,3331
+Vector3::operator-(132,3517
+Vector3::operator*(141,3703
+Vector3::operator/(150,3869
+Vector3::operator+=(Vector3::operator+=159,4036
+Vector3::operator-=(Vector3::operator-=167,4186
+Vector3::operator*=(Vector3::operator*=175,4336
+Vector3::operator/=(Vector3::operator/=183,4472
+Vector3::operator() Vector3::operator()191,4605
+Vector3::operator*(198,4703
+Vector3::operator^(208,4898
+Vector3::norm(220,5229
+Vector3::norm2(226,5317
+Vector3::normalize(232,5403
+Vector3::toString(247,5726
+operator<<(257,5879
+
+amateur.cpp,41
+void HelpUser(48,1525
+int main 77,2891
+
+AHFrun.h,25
+#define AHFRUN_H27,1581
+
+AOutput.h,26
+#define AOUTPUT_H27,1544
+
+AResults.h,1028
+#define ARESULTS_H27,1552
+class AResults{AResults34,1658
+  unsigned npart_;AResults::npart_36,1684
+  unsigned nvpart_;AResults::nvpart_37,1703
+  Vector3 xcm_;AResults::xcm_38,1723
+  Vector3 vcm_;AResults::vcm_39,1739
+  float Mvir_,AResults::Mvir_40,1755
+  float Mvir_, Rvir_,AResults::Rvir_40,1755
+  float Mvir_, Rvir_, Vmax_,AResults::Vmax_40,1755
+  float Mvir_, Rvir_, Vmax_, Rmax_,AResults::Rmax_40,1755
+  float Mvir_, Rvir_, Vmax_, Rmax_, sigV_;AResults::sigV_40,1755
+  float lambda_;AResults::lambda_41,1798
+  Vector3 J_;AResults::J_42,1815
+  Eigensystem3 E_;AResults::E_43,1829
+  float ovdens_,AResults::ovdens_44,1848
+  float ovdens_, Redge_;AResults::Redge_44,1848
+  int nbins_;AResults::nbins_45,1873
+  float Ekin_,AResults::Ekin_46,1887
+  float Ekin_, Epot_;AResults::Epot_46,1887
+  float mbp_offset_,AResults::mbp_offset_47,1909
+  float mbp_offset_, com_offset_;AResults::com_offset_47,1909
+  float r2_,AResults::r2_48,1943
+  float r2_, lambdaE_;AResults::lambdaE_48,1943
+
+AnalyzeSnap.h,30
+#define ANALYZESNAP_H26,1576
+
+Array3.h,452
+#define ARRAY3_H27,1552
+class Array3 31,1591
+  float *data_;Array3::data_33,1618
+  int nx_,Array3::nx_34,1634
+  int nx_, ny_,Array3::ny_34,1634
+  int nx_, ny_, nz_;Array3::nz_34,1634
+  bool RealContainer_;Array3::RealContainer_35,1655
+  int getNx(Array3::getNx46,1945
+  int getNy(Array3::getNy47,1974
+  int getNz(Array3::getNz48,2003
+  float* getData(Array3::getData49,2032
+  bool getRealContainer(Array3::getRealContainer50,2068
+
+Cosmology.h,293
+#define COSMOLOGY_H7,90
+class Cosmology{Cosmology11,132
+  real H0_;Cosmology::H0_14,160
+  real G_;Cosmology::G_15,172
+  real OmegaL_;Cosmology::OmegaL_16,183
+  real OmegaM_;Cosmology::OmegaM_17,199
+  real OmegaR_;Cosmology::OmegaR_18,215
+  real OmegaK_;Cosmology::OmegaK_19,231
+
+Distance.h,107
+#define DISTANCE_H2,19
+class Distance 6,60
+  real r_;Distance::r_8,87
+  unsigned i_;Distance::i_9,98
+
+Eigensystem3.h,256
+#define EIGENSYSTEM3_H27,1613
+class Eigensystem3 35,1720
+  bool eigen_;Eigensystem3::eigen_37,1751
+  std::vector<real> Eval_;Eigensystem3::Eval_38,1766
+  std::vector<Vector3> Evec_;Eigensystem3::Evec_39,1793
+  Matrix33 M_;Eigensystem3::M_40,1823
+
+Exceptions.h,366
+#define EXCEPTIONS_H27,1580
+class ErrNoHalosFound 37,1883
+  ErrNoHalosFound(ErrNoHalosFound::ErrNoHalosFound39,1944
+class MaxProgenitorsExceed 50,2396
+  MaxProgenitorsExceed(MaxProgenitorsExceed::MaxProgenitorsExceed52,2462
+class CrossProductWrongDimension 60,2778
+  CrossProductWrongDimension(CrossProductWrongDimension::CrossProductWrongDimension62,2850
+
+ExtractSnap.h,30
+#define EXTRACTSNAP_H27,1577
+
+Global.h,178
+#define GLOBAL_H27,1564
+using std::cout;32,1621
+using std::cin;33,1638
+using std::endl;34,1654
+const bool DEBUG 36,1672
+const double PI 37,1701
+typedef float real;40,1810
+
+GreensFunction.h,427
+#define GREENSFUNCTION_H26,1571
+class GreensFunction 32,1640
+  float dx_;GreensFunction::dx_33,1663
+  GreensFunction(GreensFunction::GreensFunction35,1685
+inline float GreensFunction<3>::apply(apply40,1766
+inline float GreensFunction<5>::apply(apply46,1895
+inline float GreensFunction<7>::apply(apply53,2108
+inline float GreensFunction<9>::apply(apply61,2341
+inline float GreensFunction<11>::apply(apply70,2650
+
+HDFIO.h,690
+#define HDFIO_H25,1391
+GetDataType(40,1637
+class HDFException 57,2070
+  HDFException(HDFException::HDFException59,2128
+DoesFileExist(64,2225
+AssertFileOpen(74,2445
+HDFCreateFile(82,2639
+HDFReadVector(90,2851
+HDFGetDatasetExtent(96,3008
+HDFReadDataset(145,4382
+HDFReadSelect(218,6382
+HDFReadVectorSelect(279,8171
+HDFReadVectorSlab(373,11015
+HDFReadDatasetSlab(438,12700
+HDFReadGroupAttribute(506,14400
+HDFReadGroupAttribute(550,15696
+HDFWriteDataset(611,17508
+HDFWriteDataset2D(639,18224
+HDFWriteDatasetVector(680,19233
+HDFCreateGroup(715,20187
+HDFWriteGroupAttribute(727,20525
+HDFWriteGroupAttribute(756,21383
+HDFWriteGroupAttribute<HDFWriteGroupAttribute781,22137
+
+HDFIO_new.h,690
+#define HDFIO_H25,1452
+GetDataType(38,1659
+class HDFException 55,2092
+  HDFException(HDFException::HDFException57,2150
+DoesFileExist(62,2247
+AssertFileOpen(72,2467
+HDFCreateFile(80,2661
+HDFReadVector(88,2873
+HDFGetDatasetExtent(94,3030
+HDFReadDataset(143,4408
+HDFReadSelect(216,6412
+HDFReadVectorSelect(277,8205
+HDFReadVectorSlab(367,11024
+HDFReadDatasetSlab(432,12713
+HDFReadGroupAttribute(500,14417
+HDFReadGroupAttribute(544,15717
+HDFWriteDataset(605,17533
+HDFWriteDataset2D(633,18250
+HDFWriteDatasetVector(674,19260
+HDFCreateGroup(709,20215
+HDFWriteGroupAttribute(721,20554
+HDFWriteGroupAttribute(750,21414
+HDFWriteGroupAttribute<HDFWriteGroupAttribute775,22170
+
+HResults.h,658
+#define HRESULTS_H27,1562
+const int HTotal 33,1650
+class HResults 35,1673
+  int ntot_;HResults::ntot_37,1700
+  real Mtot_;HResults::Mtot_39,1714
+  real Rtot_;HResults::Rtot_40,1728
+  real Mvir_;HResults::Mvir_41,1742
+  real Rvir_;HResults::Rvir_42,1756
+  Vector3 xcm_;HResults::xcm_43,1770
+  Vector3 vcm_;HResults::vcm_44,1786
+  Vector3 xmb_;HResults::xmb_45,1802
+  Vector3 vmb_;HResults::vmb_46,1818
+  int npart_[HResults::npart_48,1835
+  real mpart_[HResults::mpart_49,1857
+  real lambda_[HResults::lambda_50,1880
+  real sigma_[HResults::sigma_51,1904
+  Vector3 J_[HResults::J_52,1927
+  Eigensystem3 E_[HResults::E_53,1949
+
+Halo.h,630
+#define HALO_H10,301
+#define OCTTREE23,516
+#define FORCE_DIRECT_TREE_SPLIT 24,532
+class Halo 26,570
+  Simulation sim_;Halo::sim_28,593
+  real* pos_;Halo::pos_30,613
+  real* vel_;Halo::vel_31,627
+  real* mass_;Halo::mass_32,641
+  int*  type_;Halo::type_33,656
+  unsigned npart_;Halo::npart_34,671
+  real mtot_;Halo::mtot_36,691
+  real rtot_;Halo::rtot_37,705
+  real mvir_;Halo::mvir_38,719
+  real rvir_;Halo::rvir_39,733
+  std::vector<Distance> dvec_;Halo::dvec_41,748
+  Vector3 xcm_;Halo::xcm_42,779
+  Vector3 vcm_;Halo::vcm_43,795
+  Vector3 xmb_;Halo::xmb_44,811
+  Vector3 vmb_;Halo::vmb_45,827
+
+HaloProperties.h,1685
+#define HALOPROPERTIES_H9,202
+#define OCTTREE21,387
+#define FORCE_DIRECT_TREE_SPLIT 22,403
+fbmod(28,505
+SPHK3D(34,616
+class HaloProperties 47,876
+  real m_xcm[HaloProperties::m_xcm49,911
+  real m_xcm[ 3 ], m_xmb[HaloProperties::m_xmb49,911
+  real m_xcm[ 3 ], m_xmb[ 3 ], m_vcm[HaloProperties::m_vcm49,911
+  real m_xcm[ 3 ], m_xmb[ 3 ], m_vcm[ 3 ], m_vmb[HaloProperties::m_vmb49,911
+  real m_rmbcm;HaloProperties::m_rmbcm50,966
+  real *m_pPos,HaloProperties::m_pPos51,982
+  real *m_pPos, *m_pVel,HaloProperties::m_pVel51,982
+  real *m_pPos, *m_pVel, *m_pMass;HaloProperties::m_pMass51,982
+  real m_mtot;HaloProperties::m_mtot52,1017
+  unsigned m_nPart;HaloProperties::m_nPart53,1032
+  real m_alpha;HaloProperties::m_alpha55,1053
+  unsigned m_imostbound;HaloProperties::m_imostbound56,1069
+  struct Cosm HaloProperties::Cosm58,1095
+    real OmegaM0,HaloProperties::Cosm::OmegaM059,1111
+    real OmegaM0, OmegaL0,HaloProperties::Cosm::OmegaL059,1111
+    real OmegaM0, OmegaL0, H0,HaloProperties::Cosm::H059,1111
+    real OmegaM0, OmegaL0, H0, G,HaloProperties::Cosm::G59,1111
+    real OmegaM0, OmegaL0, H0, G, asnap;HaloProperties::Cosm::asnap59,1111
+  Cosm m_Cosm;HaloProperties::m_Cosm62,1158
+  class Distance HaloProperties::Distance66,1184
+    real m_r;HaloProperties::Distance::m_r67,1203
+    unsigned m_i;HaloProperties::Distance::m_i68,1217
+    Distance(HaloProperties::Distance::Distance70,1245
+    Distance(HaloProperties::Distance::Distance71,1305
+    bool operator<(HaloProperties::Distance::operator<72,1372
+    real getr(HaloProperties::Distance::getr75,1454
+    unsigned geti(HaloProperties::Distance::geti78,1508
+
+HaloTrackerRun.h,33
+#define HALOTRACKERRUN_H27,1585
+
+Matrix33.h,92
+#define MATRIX33_H28,1593
+class Matrix33 45,1859
+  double *data_;Matrix33::data_47,1888
+
+MergerTreeRun.h,32
+#define MERGERTREERUN_H27,1585
+
+MySTL.h,4162
+#define MYSTL_H9,129
+typedef unsigned Identifier;15,202
+class array{array18,253
+  T *m_Data;array::m_Data21,309
+  Identifier m_Size;array::m_Size22,322
+  Identifier m_Backinsert;array::m_Backinsert23,343
+  array(array::array25,379
+  array(array::array26,443
+  array(array::array31,545
+  ~array(array::~array38,738
+  array(array::array43,836
+  inline void reserve(array::reserve47,921
+  inline void resize(array::resize53,1063
+  inline void push_back(array::push_back62,1291
+  inline Identifier size(array::size68,1437
+  inline bool find(array::find71,1500
+  inline void clear(array::clear81,1698
+  inline T* data_ptr(array::data_ptr86,1788
+class list95,1890
+  struct Nodelist::Node97,1903
+    Node(list::Node::Node99,1921
+    T m_data;list::Node::m_data100,1976
+    Node* m_next;list::Node::m_next101,1990
+  Node* m_node;list::m_node104,2014
+  Identifier m_n;list::m_n105,2030
+  class iteratorlist::iterator111,2131
+      Node* m_rep;list::iterator::m_rep114,2211
+      typedef T value_type;list::iterator::value_type118,2302
+      typedef T& reference;list::iterator::reference119,2330
+      typedef T* pointer;list::iterator::pointer120,2358
+      typedef int difference_type;list::iterator::difference_type121,2384
+      typedef std::forward_iterator_tag iterator_category;list::iterator::iterator_category122,2419
+      inline iterator(list::iterator::iterator124,2479
+      inline iterator(list::iterator::iterator125,2523
+      inline iterator& operator=(list::iterator::operator=126,2582
+      inline iterator& operator++(list::iterator::operator++130,2674
+      inline iterator operator++(list::iterator::operator++134,2758
+      inline reference operator*(list::iterator::operator*138,2863
+      inline pointer operator->(list::iterator::operator->139,2938
+      inline bool operator==(list::iterator::operator==140,3004
+      inline bool operator!=(list::iterator::operator!=144,3094
+  class const_iteratorlist::const_iterator151,3193
+      const Node* m_rep;list::const_iterator::m_rep154,3285
+      typedef T value_type;list::const_iterator::value_type158,3376
+      typedef T& reference;list::const_iterator::reference159,3404
+      typedef T* pointer;list::const_iterator::pointer160,3432
+      inline const_iterator(list::const_iterator::const_iterator161,3458
+      inline const_iterator(list::const_iterator::const_iterator162,3514
+      inline const_iterator(list::const_iterator::const_iterator163,3585
+      inline const_iterator& operator=(list::const_iterator::operator=164,3649
+      inline const_iterator& operator=(list::const_iterator::operator=168,3753
+      inline const_iterator& operator++(list::const_iterator::operator++172,3853
+      inline const_iterator operator++(list::const_iterator::operator++176,3943
+      inline reference operator*(list::const_iterator::operator*180,4060
+      inline pointer operator->(list::const_iterator::operator->181,4135
+      inline bool operator==(list::const_iterator::operator==182,4201
+      inline bool operator!=(list::const_iterator::operator!=186,4296
+  list(list::list196,4403
+  list(list::list198,4472
+  void reverse(list::reverse207,4670
+  void swap(list::swap223,4958
+  list& operator=(list::operator=229,5109
+  ~list(list::~list236,5211
+  inline void clear(list::clear238,5301
+  inline void push_front(list::push_front254,5584
+  inline void push_back(list::push_back258,5658
+  inline void pop_front(list::pop_front262,5730
+  inline bool empty(list::empty267,5851
+  inline T& front(list::front269,5895
+  inline const T& front(list::front270,5936
+  inline T& back(list::back271,5989
+  inline const T& back(list::back272,6033
+  inline iterator begin(list::begin274,6090
+  inline iterator end(list::end276,6217
+  inline const_iterator begin(list::begin278,6322
+  inline const_iterator end(list::end282,6420
+  iterator erase list::erase287,6509
+  iterator insert list::insert301,6771
+  void rotate list::rotate312,7003
+  inline void splice(list::splice337,7541
+  inline Identifier size(list::size354,7918
+convertlists(363,8013
+
+NFWFit.h,576
+#define NFWFIT_H27,1558
+struct fitdata 40,1772
+  const size_t n;42,1790
+  const real *x;x43,1808
+  const real *y;y44,1825
+  const real *sigma;sigma45,1842
+  fitdata(47,1864
+struct fitdata_fix 52,2002
+  const size_t n;53,2023
+  const real *x;x54,2041
+  const real *y;y55,2058
+  const real *sigma;sigma56,2075
+  const real rvir;57,2096
+  const real mvir;58,2115
+  fitdata_fix(60,2135
+print_state 68,2358
+NFW_f(74,2582
+NFW_fix_f(94,3128
+NFW_df(118,3863
+NFW_fix_df(172,5429
+NFW_fdf(195,6265
+NFW_fix_fdf(202,6417
+NFW_fit(209,6581
+NFW_fix_fit(289,8461
+
+OctTree.h,3053
+#define OCTTREE_H27,1547
+#define EPS 39,1697
+const real g_geomfac 42,1744
+SPLINEQ(45,1800
+class Body 76,3086
+  real mass;Body::mass78,3111
+  real x,Body::x79,3124
+  real x, y,Body::y79,3124
+  real x, y, z;Body::z79,3124
+  Body(Body::Body82,3150
+  Body(Body::Body85,3218
+  Body(Body::Body101,3606
+  Body(Body::Body104,3686
+  inline real getx(Body::getx108,3787
+  inline real gety(Body::gety111,3840
+  inline real getz(Body::getz114,3893
+  inline real getmass(Body::getmass117,3946
+class PseudoBody 122,4009
+  real mass;PseudoBody::mass124,4040
+  real x,PseudoBody::x125,4053
+  real x, y,PseudoBody::y125,4053
+  real x, y, z;PseudoBody::z125,4053
+  real xx,PseudoBody::xx127,4090
+  real xx, yy,PseudoBody::yy127,4090
+  real xx, yy, zz,PseudoBody::zz127,4090
+  real xx, yy, zz, xy,PseudoBody::xy127,4090
+  real xx, yy, zz, xy, xz,PseudoBody::xz127,4090
+  real xx, yy, zz, xy, xz, yz;PseudoBody::yz127,4090
+  PseudoBody(PseudoBody::PseudoBody130,4131
+  PseudoBody(PseudoBody::PseudoBody133,4271
+  PseudoBody(PseudoBody::PseudoBody137,4447
+  PseudoBody(PseudoBody::PseudoBody174,5437
+  inline real getx(PseudoBody::getx180,5610
+  inline real gety(PseudoBody::gety183,5663
+  inline real getz(PseudoBody::getz186,5716
+  inline real getmass(PseudoBody::getmass190,5770
+  inline real getxx(PseudoBody::getxx194,5830
+  inline real getyy(PseudoBody::getyy197,5885
+  inline real getzz(PseudoBody::getzz200,5940
+  inline real getxy(PseudoBody::getxy203,5995
+  inline real getyx(PseudoBody::getyx206,6050
+  inline real getxz(PseudoBody::getxz209,6105
+  inline real getzx(PseudoBody::getzx212,6160
+  inline real getyz(PseudoBody::getyz215,6215
+  inline real getzy(PseudoBody::getzy218,6270
+class kDTreeNode 224,6330
+  kDTreeNode *m_nleft,kDTreeNode::m_nleft226,6361
+  kDTreeNode *m_nleft, *m_nright;kDTreeNode::m_nright226,6361
+  PseudoBody m_body;kDTreeNode::m_body228,6396
+  real m_l;kDTreeNode::m_l230,6450
+  bool m_bleaf;kDTreeNode::m_bleaf232,6487
+  int m_axis;kDTreeNode::m_axis233,6503
+  void partition(kDTreeNode::partition235,6518
+  void getBoundingBox(kDTreeNode::getBoundingBox266,7392
+  ~kDTreeNode(kDTreeNode::~kDTreeNode303,8211
+  kDTreeNode(kDTreeNode::kDTreeNode310,8334
+  kDTreeNode(kDTreeNode::kDTreeNode323,8552
+  real traverse(kDTreeNode::traverse385,10060
+class OctTreeNode 476,12107
+  OctTreeNode **m_subnodes;OctTreeNode::m_subnodes479,12140
+  PseudoBody m_body;OctTreeNode::m_body481,12169
+  real m_xc,OctTreeNode::m_xc484,12192
+  real m_xc, m_yc,OctTreeNode::m_yc484,12192
+  real m_xc, m_yc, m_zc;OctTreeNode::m_zc484,12192
+  real m_l;OctTreeNode::m_l485,12217
+  bool m_bleaf;OctTreeNode::m_bleaf486,12229
+  void partition(OctTreeNode::partition488,12246
+  void getBoundingBox(OctTreeNode::getBoundingBox512,12865
+  OctTreeNode(OctTreeNode::OctTreeNode544,13732
+  OctTreeNode(OctTreeNode::OctTreeNode554,13953
+  ~OctTreeNode(OctTreeNode::~OctTreeNode614,15676
+  real traverse(OctTreeNode::traverse626,15903
+
+Output.h,230
+#define OUTPUT_H27,1580
+class Output{Output35,1705
+  Simulation sim_;Output::sim_37,1729
+  std::vector<AResults> ar_;Output::ar_39,1751
+  std::vector<HResults> hr_;Output::hr_40,1780
+  HResults tmp_;Output::tmp_41,1809
+
+PoissonSolver.h,516
+#define POISSONSOLVER_H27,1580
+#define fftw_real 35,1748
+#define POSdouble(36,1773
+#define ACC_R(37,1847
+#define ACC_C(38,1911
+class PoissonSolver 52,2326
+  ScalarField* prho_;PoissonSolver::prho_54,2360
+  ScalarField* pphi_;PoissonSolver::pphi_55,2382
+  PoissonSolver(PoissonSolver::PoissonSolver58,2414
+  inline double Gauss3D(PoissonSolver::Gauss3D64,2546
+  inline double TopHat3D(PoissonSolver::TopHat3D74,2879
+  void test(PoissonSolver::test85,3129
+  void solve(PoissonSolver::solve101,3506
+
+PoissonSolver_new.h,448
+#define POISSONSOLVER_H28,1638
+#define POSdouble(34,1733
+#define ACC_R(35,1807
+#define ACC_C(36,1868
+#define c_re(41,2066
+#define c_im(42,2091
+class PoissonSolver 55,2384
+  ScalarField *m_prho;PoissonSolver::m_prho57,2418
+  PoissonSolver(PoissonSolver::PoissonSolver60,2451
+    inline double Gauss3D(PoissonSolver::Gauss3D63,2514
+    inline double TopHat3D(PoissonSolver::TopHat3D69,2724
+    void solve(PoissonSolver::solve79,2911
+
+ReadGadget.h,29
+#define READGADGET_H27,1603
+
+ScalarField.h,546
+#define SCALARFIELD_H27,1533
+class ScalarField 34,1640
+  Array3 phi_;ScalarField::phi_36,1670
+  float dx_;ScalarField::dx_38,1720
+  unsigned nx_,ScalarField::nx_39,1733
+  unsigned nx_, ny_,ScalarField::ny_39,1733
+  unsigned nx_, ny_, nz_;ScalarField::nz_39,1733
+  int nStencil_,ScalarField::nStencil_40,1759
+  int nStencil_, nStencil2_;ScalarField::nStencil2_40,1759
+  float *pStencil1_,ScalarField::pStencil1_42,1824
+  float *pStencil1_, *pStencil2_;ScalarField::pStencil2_42,1824
+    T get_NGP(ScalarField::get_NGP88,3196
+
+Simulation.h,390
+#define SIMULATION_H2,21
+class Simulation{Simulation7,87
+  Cosmology c_;Simulation::c_9,115
+  int isnap_;Simulation::isnap_10,131
+  real asnap_;Simulation::asnap_11,145
+  real zsnap_;Simulation::zsnap_12,160
+  int nhalo_;Simulation::nhalo_13,175
+  real mass_;Simulation::mass_14,189
+  real boxlength_;Simulation::boxlength_15,203
+  real rhobox_;Simulation::rhobox_16,222
+
+Stencil.h,414
+#define STENCIL_H8,105
+  float stencil11_1[stencil11_111,125
+  float stencil11_2[stencil11_222,437
+  float stencil9_1[stencil9_133,762
+  float stencil9_2[stencil9_242,985
+  float stencil7_1[stencil7_151,1238
+  float stencil7_2[stencil7_258,1384
+  float stencil5_1[stencil5_166,1560
+  float stencil5_2[stencil5_267,1653
+  float stencil3_1[stencil3_169,1750
+  float stencil3_2[stencil3_272,1810
+
+SubhaloMatch.h,31
+#define SUBHALOMATCH_H27,1580
+
+TidalField.h,54
+#define TIDALFIELD_H27,1578
+#define EPS_ACC 29,1600
+
+Vector3.h,445
+#define VECTOR3_H28,1603
+typedef unsigned long Identifier;45,1862
+typedef unsigned long Size;46,1896
+#define HDF_UINT 47,1924
+#define MPI_UINT 48,1959
+typedef unsigned Identifier;51,2001
+typedef unsigned Size;52,2030
+#define HDF_UINT 53,2053
+#define MPI_UINT 54,2086
+#define HDF_FLOAT 57,2124
+typedef float Scalar;58,2159
+typedef float Weight;59,2181
+#define FIX(61,2204
+class Vector3 63,2280
+  real* data_;Vector3::data_65,2308
+
+PoissonSolver.cpp,0

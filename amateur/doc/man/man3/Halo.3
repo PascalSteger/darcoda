@@ -1,0 +1,236 @@
+.TH "Halo" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Halo \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Halo.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHalo\fP ()"
+.br
+.ti -1c
+.RI "\fB~Halo\fP ()"
+.br
+.ti -1c
+.RI "\fBHalo\fP (\fBSimulation\fP sim, \fBreal\fP *pos, \fBreal\fP *vel, \fBreal\fP *mass, int *type, unsigned npart)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetMtot\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetRtot\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetMvir\fP ()"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetRvir\fP ()"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBgetXCM\fP ()"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBgetVCM\fP ()"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBgetXMB\fP ()"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBgetVMB\fP ()"
+.br
+.ti -1c
+.RI "int \fBcalcNpart\fP (int htype)"
+.br
+.RI "\fIreturn number of particles of a given halo type \fP"
+.ti -1c
+.RI "\fBreal\fP \fBcalcMpart\fP (int htype)"
+.br
+.RI "\fIreturn mass of particles of a given halo type \fP"
+.ti -1c
+.RI "\fBreal\fP \fBcalcSigma\fP (int htype)"
+.br
+.RI "\fIcalculate velocity dispersion sigma^2 = mean(v^2) - mean(v)^2 \fP"
+.ti -1c
+.RI "\fBreal\fP \fBcalcLambda\fP (int htype)"
+.br
+.RI "\fIcomputes the simplified spin parameter lambda prime computes the halo spin parameter lambda' (Bullock et al. 2001). assumption: POS AND VEL CENTERED ON REFERENCE POINT (centerCM, centerMB) \fP"
+.ti -1c
+.RI "\fBVector3\fP \fBcalcJ\fP (int htype)"
+.br
+.RI "\fIcalculate angular momentum Angular momentum without considering Hubble flow (ASS: too short scales) \fP"
+.ti -1c
+.RI "\fBEigensystem3\fP \fBcalcShape\fP (int htype)"
+.br
+.RI "\fIcalculate halo shape determine inertia tensor of all particles of a given type, search eigensystem \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 26 of file Halo.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Halo::Halo ()"
+.PP
+Definition at line 36 of file Halo.cpp.
+.SS "Halo::~Halo ()"
+.PP
+Definition at line 40 of file Halo.cpp.
+.SS "Halo::Halo (\fBSimulation\fP sim, \fBreal\fP * pos, \fBreal\fP * vel, \fBreal\fP * mass, int * type, unsigned npart)"
+.PP
+Definition at line 44 of file Halo.cpp.
+.PP
+References Simulation::getRhobox().
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBVector3\fP Halo::calcJ (int htype)"
+.PP
+calculate angular momentum Angular momentum without considering Hubble flow (ASS: too short scales) \fBParameters:\fP
+.RS 4
+\fIhtype,:\fP int 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+J: \fBVector3\fP 
+.RE
+.PP
+
+.PP
+Definition at line 659 of file Halo.cpp.
+.PP
+References Simulation::getAsnap().
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::calcLambda (int htype)"
+.PP
+computes the simplified spin parameter lambda prime computes the halo spin parameter lambda' (Bullock et al. 2001). assumption: POS AND VEL CENTERED ON REFERENCE POINT (centerCM, centerMB) \fBParameters:\fP
+.RS 4
+\fIhtype,:\fP int 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+lambda' 
+.RE
+.PP
+
+.PP
+Definition at line 609 of file Halo.cpp.
+.PP
+References Simulation::getAsnap(), Simulation::getG(), and Vector3::norm().
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::calcMpart (int htype)"
+.PP
+return mass of particles of a given halo type \fBParameters:\fP
+.RS 4
+\fIhtype,:\fP int 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total mass of htype particles 
+.RE
+.PP
+
+.PP
+Definition at line 542 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "int Halo::calcNpart (int htype)"
+.PP
+return number of particles of a given halo type \fBParameters:\fP
+.RS 4
+\fIhtype,:\fP int 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+total number of htype particles 
+.RE
+.PP
+
+.PP
+Definition at line 526 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBEigensystem3\fP Halo::calcShape (int htype)"
+.PP
+calculate halo shape determine inertia tensor of all particles of a given type, search eigensystem \fBParameters:\fP
+.RS 4
+\fIhtype,:\fP int 
+.RE
+.PP
+
+.PP
+Definition at line 692 of file Halo.cpp.
+.PP
+References Eigensystem3::calcEV(), Eigensystem3::normalize(), and Matrix33::set_diag().
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::calcSigma (int htype)"
+.PP
+calculate velocity dispersion sigma^2 = mean(v^2) - mean(v)^2 \fBParameters:\fP
+.RS 4
+\fIhtype,:\fP int 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+sigma: real 
+.RE
+.PP
+
+.PP
+Definition at line 560 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::getMtot ()"
+.PP
+Definition at line 279 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::getMvir ()"
+.PP
+Definition at line 289 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::getRtot ()"
+.PP
+Definition at line 284 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBreal\fP Halo::getRvir ()"
+.PP
+Definition at line 294 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBVector3\fP Halo::getVCM ()"
+.PP
+Definition at line 304 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBVector3\fP Halo::getVMB ()"
+.PP
+Definition at line 314 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBVector3\fP Halo::getXCM ()"
+.PP
+Definition at line 299 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+.SS "\fBVector3\fP Halo::getXMB ()"
+.PP
+Definition at line 309 of file Halo.cpp.
+.PP
+Referenced by AnalyzeSnap().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

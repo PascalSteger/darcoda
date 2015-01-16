@@ -5,27 +5,35 @@
 # check deprojection and projection of nu
 # with analytic Hernquist profiles
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
-import sys
 import numpy as np
-from scipy.interpolate import splrep, splev, splint
+from scipy.interpolate import splrep, splint
 from pylab import *
 ion()
 
 import import_path as ip
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/datareduction')
-ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
+ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
 
-#from gl_timing import *
+#from gi_timing import *
 import time
-import gl_params as gp
+import gi_params as gp
 gp.rinfty = 5
 gp.nexp = 3
-import gl_helper as gh
-import gl_int as gi
-import gl_project as glp
-import gl_analytic as ga
+import gi_helper as gh
+import gi_project as glp
+import gi_analytic as ga
+
+
+def introduce_points_in_between(r0):
+    rmin = np.log10(min(r0))
+    rmax = np.log10(max(r0))
+    return np.logspace(rmin, rmax, Nfine)
+## \fn introduce_points_in_between(r0)
+# get gp.fine points logarithmically spaced points
+# @param r0 3D radius
+
 
 # unitsXS
 G1  = 6.67398e-11                # [m^3 kg^-1 s^-2]
@@ -36,15 +44,6 @@ G1  = G1*msun/km**2/pc
 
 Nfine = 30
 MtoL = 100000. # constant
-
-def introduce_points_in_between(r0):
-    rmin = np.log10(min(r0))
-    rmax = np.log10(max(r0))
-    return np.logspace(rmin, rmax, Nfine)
-## \fn introduce_points_in_between(r0)
-# get gp.fine points logarithmically spaced points
-# @param r0 3D radius
-
 
 r0 = np.logspace(-2, 2, 10)
 nuanf  = ga.rho_hern(r0, 1, 1) # 1/MtoL
@@ -117,7 +116,6 @@ gh.checkpositive(yint, 'yint sigr2')
 # use quadinflog or quadinfloglog here
 sigr2nu = np.zeros(len(rfine))
 for i in range(len(rfine)):
-    # TODO: check quadinflog with walker profiles
     sigr2nu[i] = np.exp(-idnu[i])/nunu[i]*\
                  gh.quadinflog(xint, yint, rfine[i], gp.rinfty*rfine[-1], True)
     #if sigr2nu[i] == np.inf:
@@ -131,12 +129,10 @@ sigr2anf = ga.sigr2_hern(rfine, 1, 1, G1)
 # project back to LOS values
 # sigl2sold = np.zeros(len(rfine)-gp.nexp
 
-### TODO: find error in here!
-
 sigl2s = np.zeros(len(rfine)-gp.nexp)
 for i in range(len(rfine)-gp.nexp): # get sig_los^2
     xnew = np.sqrt(rfine[i:]**2-rfine[i]**2)             # [pc]
-    ynew = 2.*(1-betanu[i]*(rfine[i]**2)/(rfine[i:]**2)) # TODO check
+    ynew = 2.*(1-betanu[i]*(rfine[i]**2)/(rfine[i:]**2))
     ynew *= nunu[i:] * sigr2nu[i:]
     gh.checkpositive(ynew, 'ynew in sigl2s') # is hit several times..
     # check sigr2nu: has too many entries of inf!

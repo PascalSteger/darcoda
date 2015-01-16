@@ -4,11 +4,14 @@
 # import file with full path specification, only once, setting back sys.path
 # you need to specify PYTHONPATH to include the gravimage/programs
 
+# (c) GPL v3 2015 Pascal Steger, psteger@phys.ethz.ch
+
 import os
 import sys
 import pdb
 from imp import reload
 
+import gi_base as gb
 
 def insert_sys_path(fullpath):
     sys.path.insert(0, fullpath)
@@ -42,19 +45,9 @@ def import_path(fullpath):
 
 def set_geometry(geom, machine):
     print('Machine = ', machine)
-    if machine == 'pstgnt332':
-        basepath = '/home/psteger/sci/darcoda/gravimage/programs/'
-    elif machine == 'darkside':
-        basepath = '/home/ast/read/user/psteger/software/darcoda/gravimage/programs/'
-    elif machine == 'lisa_HS_login':
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/programs/'
-    elif machine == 'lisa_SS_login':
-        basepath = '/home/sofia/darcoda/gravimage/programs/'
-    elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-        scratch_space = os.getenv("TMPDIR")
-        basepath = scratch_space + '/darcoda/gravimage/programs/'
-    print('basepath = ', basepath)
-    insert_sys_path(basepath + 'datareduction/')
+    basepath = gb.get_basepath()+'programs/'
+
+    insert_sys_path(basepath + 'reducedata/')
     insert_sys_path(basepath + geom)
 ## \fn set_geometry(geom, machine)
 # get right directory for geometry-dependent imports

@@ -1,0 +1,217 @@
+\section{OctTreeNode Class Reference}
+\label{classOctTreeNode}\index{OctTreeNode@{OctTreeNode}}
+
+
+{\ttfamily \#include $<$OctTree.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classOctTreeNode_a103c388aea6f83cce81b8d7433b8982c}{OctTreeNode} (std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ $\ast$Bodies)
+\item 
+\hyperlink{classOctTreeNode_a1bfe8b77ca90832454010d5e1a06aec0}{OctTreeNode} (std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ \&Bodies, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} min\_\-size)
+\item 
+\hyperlink{classOctTreeNode_a6d6f8ebcf5b873195ea89ae4c0597fab}{$\sim$OctTreeNode} ()
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classOctTreeNode_a0e30d64e4e7e5d525ff57656b9f570b0}{traverse} (const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&x, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&y, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&z, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&theta, const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&plumsoft)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classOctTreeNode_a5ad5e6ccfc85d5c027dc7d64fc87c5c2}{partition} (const std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ \&All, std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ $\ast$$\ast$$\ast$Bodies)
+\item 
+void \hyperlink{classOctTreeNode_a8a0338ba7c40a65744ed5bfec17bd80c}{getBoundingBox} (const std::vector$<$ \hyperlink{classPseudoBody}{PseudoBody} $>$ \&bodies, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&xc, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&yc, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&zc, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \&l)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classOctTreeNode}{OctTreeNode} $\ast$$\ast$ \hyperlink{classOctTreeNode_aa778da4b6fd434a63e0e4513c41b72a6}{m\_\-subnodes}
+\item 
+\hyperlink{classPseudoBody}{PseudoBody} \hyperlink{classOctTreeNode_a0ab5b2f366573315d029dcdc5016cf97}{m\_\-body}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classOctTreeNode_a20fc5c24ea0fbc484e172a4b1e01984b}{m\_\-xc}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classOctTreeNode_a53921672607551866f5d6d681b65da3c}{m\_\-yc}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classOctTreeNode_ac305397d3ca59d857d8bf2775f8172dc}{m\_\-zc}
+\item 
+\hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{classOctTreeNode_a361560ebacba06e8c838277643b1a713}{m\_\-l}
+\item 
+bool \hyperlink{classOctTreeNode_a372678b0c96bb5a49b9b5eb7838a0ca3}{m\_\-bleaf}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 476 of file OctTree.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{OctTreeNode@{OctTreeNode}!OctTreeNode@{OctTreeNode}}
+\index{OctTreeNode@{OctTreeNode}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{OctTreeNode}]{\setlength{\rightskip}{0pt plus 5cm}OctTreeNode::OctTreeNode (std::vector$<$ {\bf PseudoBody} $>$ $\ast$ {\em Bodies})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classOctTreeNode_a103c388aea6f83cce81b8d7433b8982c}
+
+
+Definition at line 544 of file OctTree.h.
+
+
+
+References getBoundingBox(), m\_\-l, m\_\-xc, m\_\-yc, and m\_\-zc.
+
+
+
+Referenced by OctTreeNode().
+
+\index{OctTreeNode@{OctTreeNode}!OctTreeNode@{OctTreeNode}}
+\index{OctTreeNode@{OctTreeNode}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{OctTreeNode}]{\setlength{\rightskip}{0pt plus 5cm}OctTreeNode::OctTreeNode (std::vector$<$ {\bf PseudoBody} $>$ \& {\em Bodies}, \/  {\bf real} {\em min\_\-size})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classOctTreeNode_a1bfe8b77ca90832454010d5e1a06aec0}
+
+
+Definition at line 554 of file OctTree.h.
+
+
+
+References getBoundingBox(), m\_\-bleaf, m\_\-l, m\_\-subnodes, m\_\-xc, m\_\-yc, m\_\-zc, OctTreeNode(), and partition().
+
+\index{OctTreeNode@{OctTreeNode}!$\sim$OctTreeNode@{$\sim$OctTreeNode}}
+\index{$\sim$OctTreeNode@{$\sim$OctTreeNode}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{$\sim$OctTreeNode}]{\setlength{\rightskip}{0pt plus 5cm}OctTreeNode::$\sim$OctTreeNode ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classOctTreeNode_a6d6f8ebcf5b873195ea89ae4c0597fab}
+
+
+Definition at line 614 of file OctTree.h.
+
+
+
+References m\_\-subnodes.
+
+
+
+\subsection{Member Function Documentation}
+\index{OctTreeNode@{OctTreeNode}!getBoundingBox@{getBoundingBox}}
+\index{getBoundingBox@{getBoundingBox}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{getBoundingBox}]{\setlength{\rightskip}{0pt plus 5cm}void OctTreeNode::getBoundingBox (const std::vector$<$ {\bf PseudoBody} $>$ \& {\em bodies}, \/  {\bf real} \& {\em xc}, \/  {\bf real} \& {\em yc}, \/  {\bf real} \& {\em zc}, \/  {\bf real} \& {\em l})\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}\label{classOctTreeNode_a8a0338ba7c40a65744ed5bfec17bd80c}
+
+
+Definition at line 512 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode().
+
+\index{OctTreeNode@{OctTreeNode}!partition@{partition}}
+\index{partition@{partition}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{partition}]{\setlength{\rightskip}{0pt plus 5cm}void OctTreeNode::partition (const std::vector$<$ {\bf PseudoBody} $>$ \& {\em All}, \/  std::vector$<$ {\bf PseudoBody} $>$ $\ast$$\ast$$\ast$ {\em Bodies})\hspace{0.3cm}{\ttfamily  \mbox{[}inline, protected\mbox{]}}}\label{classOctTreeNode_a5ad5e6ccfc85d5c027dc7d64fc87c5c2}
+
+
+Definition at line 488 of file OctTree.h.
+
+
+
+References m\_\-xc, m\_\-yc, and m\_\-zc.
+
+
+
+Referenced by OctTreeNode().
+
+\index{OctTreeNode@{OctTreeNode}!traverse@{traverse}}
+\index{traverse@{traverse}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{traverse}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} OctTreeNode::traverse (const {\bf real} \& {\em x}, \/  const {\bf real} \& {\em y}, \/  const {\bf real} \& {\em z}, \/  const {\bf real} \& {\em theta}, \/  const {\bf real} \& {\em plumsoft})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classOctTreeNode_a0e30d64e4e7e5d525ff57656b9f570b0}
+
+
+Definition at line 626 of file OctTree.h.
+
+
+
+References EPS, PseudoBody::getmass(), PseudoBody::getx(), PseudoBody::getxx(), PseudoBody::getxy(), PseudoBody::getxz(), PseudoBody::gety(), PseudoBody::getyy(), PseudoBody::getyz(), PseudoBody::getz(), PseudoBody::getzz(), m\_\-bleaf, m\_\-body, m\_\-l, m\_\-subnodes, and SPLINEQ().
+
+
+
+Referenced by HaloProperties::ComputePotentialTree(), and HaloProperties::ComputePotentialTreeExc().
+
+
+
+\subsection{Field Documentation}
+\index{OctTreeNode@{OctTreeNode}!m\_\-bleaf@{m\_\-bleaf}}
+\index{m\_\-bleaf@{m\_\-bleaf}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-bleaf}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf OctTreeNode::m\_\-bleaf}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_a372678b0c96bb5a49b9b5eb7838a0ca3}
+
+
+Definition at line 486 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode(), and traverse().
+
+\index{OctTreeNode@{OctTreeNode}!m\_\-body@{m\_\-body}}
+\index{m\_\-body@{m\_\-body}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-body}]{\setlength{\rightskip}{0pt plus 5cm}{\bf PseudoBody} {\bf OctTreeNode::m\_\-body}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_a0ab5b2f366573315d029dcdc5016cf97}
+
+
+Definition at line 481 of file OctTree.h.
+
+
+
+Referenced by traverse().
+
+\index{OctTreeNode@{OctTreeNode}!m\_\-l@{m\_\-l}}
+\index{m\_\-l@{m\_\-l}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-l}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf OctTreeNode::m\_\-l}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_a361560ebacba06e8c838277643b1a713}
+
+
+Definition at line 485 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode(), and traverse().
+
+\index{OctTreeNode@{OctTreeNode}!m\_\-subnodes@{m\_\-subnodes}}
+\index{m\_\-subnodes@{m\_\-subnodes}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-subnodes}]{\setlength{\rightskip}{0pt plus 5cm}{\bf OctTreeNode}$\ast$$\ast$ {\bf OctTreeNode::m\_\-subnodes}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_aa778da4b6fd434a63e0e4513c41b72a6}
+
+
+Definition at line 479 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode(), traverse(), and $\sim$OctTreeNode().
+
+\index{OctTreeNode@{OctTreeNode}!m\_\-xc@{m\_\-xc}}
+\index{m\_\-xc@{m\_\-xc}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-xc}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf OctTreeNode::m\_\-xc}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_a20fc5c24ea0fbc484e172a4b1e01984b}
+
+
+Definition at line 484 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode(), and partition().
+
+\index{OctTreeNode@{OctTreeNode}!m\_\-yc@{m\_\-yc}}
+\index{m\_\-yc@{m\_\-yc}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-yc}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf OctTreeNode::m\_\-yc}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_a53921672607551866f5d6d681b65da3c}
+
+
+Definition at line 484 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode(), and partition().
+
+\index{OctTreeNode@{OctTreeNode}!m\_\-zc@{m\_\-zc}}
+\index{m\_\-zc@{m\_\-zc}!OctTreeNode@{OctTreeNode}}
+\subsubsection[{m\_\-zc}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} {\bf OctTreeNode::m\_\-zc}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classOctTreeNode_ac305397d3ca59d857d8bf2775f8172dc}
+
+
+Definition at line 484 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode(), and partition().
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{OctTree_8h}{OctTree.h}\end{DoxyCompactItemize}

@@ -1,0 +1,52 @@
+.TH "AnalyzeSnap.h" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AnalyzeSnap.h \- 
+.PP
+All publicly known functions of \fBAnalyzeSnap.cpp\fP.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBAnalyzeSnap\fP (unsigned isnap)"
+.br
+.RI "\fIAnalysis of one single snapshot file Analyzes a single snapshot file. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+All publicly known functions of \fBAnalyzeSnap.cpp\fP. 
+
+
+.PP
+Definition in file \fBAnalyzeSnap.h\fP.
+.SH "Function Documentation"
+.PP 
+.SS "int AnalyzeSnap (unsigned isnap)"
+.PP
+Analysis of one single snapshot file Analyzes a single snapshot file. \fBParameters:\fP
+.RS 4
+\fIisnap\fP unsigned snapshot ID 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+properties depending on halo type all: 1 1 1 1 15 dec dm: 0 0 1 1 3 dec gas: 0 1 0 0 4 dec stars: 1 0 0 0 8 dec bary: 1 1 0 0 12 dec
+.PP
+Definition at line 240 of file AnalyzeSnap.cpp.
+.PP
+References Output::appendHR(), Halo::calcJ(), Halo::calcLambda(), Halo::calcMpart(), Halo::calcNpart(), Halo::calcShape(), Halo::calcSigma(), DEBUG, Output::fillHRglobal(), Output::fillHRtype(), Folder(), GenerateDIM(), GenerateHalo(), get_particle_number(), Eigensystem3::getEval(), Halo::getMtot(), Halo::getMvir(), Halo::getRtot(), Halo::getRvir(), Halo::getVCM(), Halo::getVMB(), Halo::getXCM(), Halo::getXMB(), openParticlesFile(), ParticleTypeTotal, readDataBlocks(), Simulation::setBoxlength(), Simulation::setIsnap(), Simulation::setMass(), Simulation::setNhalo(), Simulation::setTarkinOmega(), Simulation::setZsnap(), Snaps(), Output::writeHR(), Output::writeHRstripped(), writeln(), and writelndebug().
+.PP
+Referenced by main().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

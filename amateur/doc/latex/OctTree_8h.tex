@@ -1,0 +1,94 @@
+\section{OctTree.h File Reference}
+\label{OctTree_8h}\index{OctTree.h@{OctTree.h}}
+
+
+Build trees as new class.  
+
+
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$stack$>$}\par
+{\ttfamily \#include $<$queue$>$}\par
+{\ttfamily \#include $<$cmath$>$}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classBody}{Body}
+\item 
+class \hyperlink{classPseudoBody}{PseudoBody}
+\item 
+class \hyperlink{classkDTreeNode}{kDTreeNode}
+\item 
+class \hyperlink{classOctTreeNode}{OctTreeNode}
+\end{DoxyCompactItemize}
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{OctTree_8h_a6ebf6899d6c1c8b7b9d09be872c05aae}{EPS}~1.0e-\/8
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{OctTree_8h_aa28798c3377498cc832f71c04c1b74bd}{SPLINEQ} (double invr, double r2, double twoh, double \&a, double \&b, double \&c, double \&d)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std::ofstream $\ast$ \hyperlink{OctTree_8h_afdd46b61e5c98d5faed15f63c63096e6}{ofs}
+\item 
+const \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} \hyperlink{OctTree_8h_a2289db72f053c67352cb6864b5a12fde}{g\_\-geomfac} = 2.0 / sqrt( 3.0 )
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Build trees as new class. 
+
+Definition in file \hyperlink{OctTree_8h_source}{OctTree.h}.
+
+
+
+\subsection{Define Documentation}
+\index{OctTree.h@{OctTree.h}!EPS@{EPS}}
+\index{EPS@{EPS}!OctTree.h@{OctTree.h}}
+\subsubsection[{EPS}]{\setlength{\rightskip}{0pt plus 5cm}\#define EPS~1.0e-\/8}\label{OctTree_8h_a6ebf6899d6c1c8b7b9d09be872c05aae}
+
+
+Definition at line 39 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+
+
+
+\subsection{Function Documentation}
+\index{OctTree.h@{OctTree.h}!SPLINEQ@{SPLINEQ}}
+\index{SPLINEQ@{SPLINEQ}!OctTree.h@{OctTree.h}}
+\subsubsection[{SPLINEQ}]{\setlength{\rightskip}{0pt plus 5cm}void SPLINEQ (double {\em invr}, \/  double {\em r2}, \/  double {\em twoh}, \/  double \& {\em a}, \/  double \& {\em b}, \/  double \& {\em c}, \/  double \& {\em d})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{OctTree_8h_aa28798c3377498cc832f71c04c1b74bd}
+
+
+Definition at line 45 of file OctTree.h.
+
+
+
+Referenced by OctTreeNode::traverse(), and kDTreeNode::traverse().
+
+
+
+\subsection{Variable Documentation}
+\index{OctTree.h@{OctTree.h}!g\_\-geomfac@{g\_\-geomfac}}
+\index{g\_\-geomfac@{g\_\-geomfac}!OctTree.h@{OctTree.h}}
+\subsubsection[{g\_\-geomfac}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf real} {\bf g\_\-geomfac} = 2.0 / sqrt( 3.0 )}\label{OctTree_8h_a2289db72f053c67352cb6864b5a12fde}
+
+
+Definition at line 42 of file OctTree.h.
+
+\index{OctTree.h@{OctTree.h}!ofs@{ofs}}
+\index{ofs@{ofs}!OctTree.h@{OctTree.h}}
+\subsubsection[{ofs}]{\setlength{\rightskip}{0pt plus 5cm}std::ofstream$\ast$ {\bf ofs}}\label{OctTree_8h_afdd46b61e5c98d5faed15f63c63096e6}
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+

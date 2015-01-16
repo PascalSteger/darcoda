@@ -1,0 +1,119 @@
+.TH "Eigensystem3" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Eigensystem3 \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Eigensystem3.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBEigensystem3\fP ()"
+.br
+.ti -1c
+.RI "\fBEigensystem3\fP (\fBMatrix33\fP M)"
+.br
+.ti -1c
+.RI "\fBEigensystem3\fP (const \fBEigensystem3\fP &E)"
+.br
+.ti -1c
+.RI "\fBEigensystem3\fP (std::vector< \fBreal\fP > Eval, std::vector< \fBVector3\fP > Evec)"
+.br
+.ti -1c
+.RI "bool \fBgetEigen\fP ()"
+.br
+.ti -1c
+.RI "std::vector< \fBreal\fP > \fBgetEval\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetEval\fP (std::vector< \fBreal\fP > Eval)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetEval\fP (int index) const "
+.br
+.ti -1c
+.RI "std::vector< \fBVector3\fP > \fBgetEvec\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetEvec\fP (std::vector< \fBVector3\fP > Evec)"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBgetEvec\fP (int index) const "
+.br
+.ti -1c
+.RI "void \fBcalcEV\fP ()"
+.br
+.ti -1c
+.RI "void \fBnormalize\fP (\fBreal\fP factor)"
+.br
+.ti -1c
+.RI "std::string \fBtoString\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file Eigensystem3.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Eigensystem3::Eigensystem3 ()"
+.PP
+Definition at line 34 of file Eigensystem3.cpp.
+.SS "Eigensystem3::Eigensystem3 (\fBMatrix33\fP M)"
+.PP
+Definition at line 38 of file Eigensystem3.cpp.
+.SS "Eigensystem3::Eigensystem3 (const \fBEigensystem3\fP & E)"
+.PP
+Definition at line 47 of file Eigensystem3.cpp.
+.SS "Eigensystem3::Eigensystem3 (std::vector< \fBreal\fP > Eval, std::vector< \fBVector3\fP > Evec)"
+.PP
+Definition at line 51 of file Eigensystem3.cpp.
+.SH "Member Function Documentation"
+.PP 
+.SS "void Eigensystem3::calcEV ()"
+.PP
+Definition at line 58 of file Eigensystem3.cpp.
+.PP
+References Matrix33::Eigen().
+.PP
+Referenced by Halo::calcShape().
+.SS "bool Eigensystem3::getEigen ()"
+.SS "\fBreal\fP Eigensystem3::getEval (int index) const"
+.PP
+Definition at line 76 of file Eigensystem3.cpp.
+.SS "std::vector< \fBreal\fP > Eigensystem3::getEval () const"
+.PP
+Definition at line 70 of file Eigensystem3.cpp.
+.PP
+Referenced by AnalyzeSnap(), and StoreTensorField().
+.SS "\fBVector3\fP Eigensystem3::getEvec (int index) const"
+.PP
+Definition at line 93 of file Eigensystem3.cpp.
+.SS "std::vector< \fBVector3\fP > Eigensystem3::getEvec () const"
+.PP
+Definition at line 87 of file Eigensystem3.cpp.
+.PP
+Referenced by StoreTensorField().
+.SS "void Eigensystem3::normalize (\fBreal\fP factor)"
+.PP
+Definition at line 104 of file Eigensystem3.cpp.
+.PP
+Referenced by Halo::calcShape().
+.SS "void Eigensystem3::setEval (std::vector< \fBreal\fP > Eval)"
+.PP
+Definition at line 82 of file Eigensystem3.cpp.
+.SS "void Eigensystem3::setEvec (std::vector< \fBVector3\fP > Evec)"
+.PP
+Definition at line 99 of file Eigensystem3.cpp.
+.SS "std::string Eigensystem3::toString (void)"
+.PP
+Definition at line 120 of file Eigensystem3.cpp.
+.PP
+Referenced by HResults::toString(), and AResults::toString().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

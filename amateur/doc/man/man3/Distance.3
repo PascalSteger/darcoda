@@ -1,0 +1,63 @@
+.TH "Distance" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Distance \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Distance.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDistance\fP (\fBreal\fP r, unsigned i)"
+.br
+.ti -1c
+.RI "\fBDistance\fP (const \fBDistance\fP &d)"
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const \fBDistance\fP &d) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBgetr\fP (void) const "
+.br
+.ti -1c
+.RI "unsigned \fBgeti\fP (void) const "
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 6 of file Distance.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Distance::Distance (\fBreal\fP r, unsigned i)"
+.PP
+Definition at line 4 of file Distance.cpp.
+.SS "Distance::Distance (const \fBDistance\fP & d)"
+.PP
+Definition at line 9 of file Distance.cpp.
+.PP
+References geti(), and getr().
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned Distance::geti (void) const"
+.PP
+Definition at line 25 of file Distance.cpp.
+.PP
+Referenced by Distance().
+.SS "\fBreal\fP Distance::getr (void) const"
+.PP
+Definition at line 20 of file Distance.cpp.
+.PP
+Referenced by Distance(), and operator<().
+.SS "bool Distance::operator< (const \fBDistance\fP & d) const"
+.PP
+Definition at line 15 of file Distance.cpp.
+.PP
+References getr().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

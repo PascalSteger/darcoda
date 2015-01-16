@@ -1,0 +1,25 @@
+AUTHOR
+======
+
+This file lists all files inside amateur/src together with who did what:
+
+AHFrun.*		: Pascal Steger
+amateur.cpp		: Pascal Steger
+AnalyzeSnap.*		: Pascal Steger
+DataStruct.*		: Oliver Hahn, Pascal Steger
+Doxyfile		: Pascal Steger
+Exceptions.*		: Oliver Hahn
+ExtractSnap.*		: Pascal Steger
+HaloProperties.*	: Oliver Hahn, Pascal Steger
+HaloTrackerRun.*	: Pascal Steger
+HDFIO.h			: Oliver Hahn
+Makefile		: Pascal Steger, Oliver Hahn
+MergerTreeRun.*		: Pascal Steger
+MySTL.h			: Oliver Hahn
+NFWFit.h		: Oliver Hahn
+OctTree.h		: Oliver Hahn
+PoissonSolver.*		: Oliver Hahn
+ReadGadget.*		: Volker Springel, Pascal Steger
+SubhaloMatch.*		: Pascal Steger
+SystemCharacteristics.* : Pascal Steger
+TidalField.*		: Oliver Hahn, Pascal Steger

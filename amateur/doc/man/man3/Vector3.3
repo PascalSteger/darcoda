@@ -1,0 +1,233 @@
+.TH "Vector3" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Vector3 \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Vector3.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBVector3\fP (void)"
+.br
+.ti -1c
+.RI "\fBVector3\fP (const \fBVector3\fP &v)"
+.br
+.ti -1c
+.RI "\fBVector3\fP (\fBreal\fP x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP (\fBreal\fP x, \fBreal\fP y, \fBreal\fP z)"
+.br
+.ti -1c
+.RI "template<typename real_t > \fBVector3\fP (const real_t *x0)"
+.br
+.ti -1c
+.RI "\fB~Vector3\fP ()"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator=\fP (const \fBVector3\fP &b)"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator=\fP (const \fBreal\fP &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator-\fP (void)"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator+\fP (const \fBVector3\fP &x) const "
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator-\fP (const \fBVector3\fP &x) const "
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator*\fP (const \fBreal\fP &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator/\fP (const \fBreal\fP &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator+=\fP (const \fBVector3\fP &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator-=\fP (const \fBVector3\fP &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator*=\fP (const \fBreal\fP &x)"
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBoperator/=\fP (const \fBreal\fP &x)"
+.br
+.ti -1c
+.RI "\fBreal\fP & \fBoperator()\fP (const unsigned i)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBoperator*\fP (const \fBVector3\fP &vb) const "
+.br
+.ti -1c
+.RI "\fBVector3\fP \fBoperator^\fP (const \fBVector3\fP &vb) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBnorm\fP (void) const "
+.br
+.ti -1c
+.RI "\fBreal\fP \fBnorm2\fP (void) const "
+.br
+.ti -1c
+.RI "\fBVector3\fP & \fBnormalize\fP (void)"
+.br
+.ti -1c
+.RI "std::string \fBtoString\fP (void)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBreal\fP * \fBdata_\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 63 of file Vector3.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Vector3::Vector3 (void)"
+.PP
+Definition at line 61 of file Vector3.cpp.
+.PP
+References data_.
+.SS "Vector3::Vector3 (const \fBVector3\fP & v)"
+.PP
+Definition at line 67 of file Vector3.cpp.
+.PP
+References data_.
+.SS "Vector3::Vector3 (\fBreal\fP x)"
+.PP
+Definition at line 73 of file Vector3.cpp.
+.PP
+References data_.
+.SS "Vector3::Vector3 (\fBreal\fP x, \fBreal\fP y, \fBreal\fP z)"
+.PP
+Definition at line 79 of file Vector3.cpp.
+.PP
+References data_.
+.SS "template<typename real_t > Vector3::Vector3 (const real_t * x0)\fC [inline]\fP"
+.PP
+Definition at line 87 of file Vector3.cpp.
+.PP
+References data_.
+.SS "Vector3::~Vector3 ()"
+.PP
+Definition at line 93 of file Vector3.cpp.
+.PP
+References data_.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBreal\fP Vector3::norm (void) const"
+.PP
+Definition at line 220 of file Vector3.cpp.
+.PP
+Referenced by Halo::calcLambda(), HaloProperties::ComputeAngularMomentum(), HaloProperties::ComputeLambdaPrime(), and normalize().
+.SS "\fBreal\fP Vector3::norm2 (void) const"
+.PP
+Definition at line 226 of file Vector3.cpp.
+.PP
+Referenced by normalize().
+.SS "\fBVector3\fP & Vector3::normalize (void)"
+.PP
+Definition at line 232 of file Vector3.cpp.
+.PP
+References norm(), and norm2().
+.SS "\fBreal\fP & Vector3::operator() (const unsigned i)"
+.PP
+Definition at line 191 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBreal\fP Vector3::operator* (const \fBVector3\fP & vb) const"
+.PP
+Definition at line 198 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP Vector3::operator* (const \fBreal\fP & x)"
+.PP
+Definition at line 141 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator*= (const \fBreal\fP & x)"
+.PP
+Definition at line 175 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP Vector3::operator+ (const \fBVector3\fP & x) const"
+.PP
+Definition at line 123 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator+= (const \fBVector3\fP & x)"
+.PP
+Definition at line 159 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP Vector3::operator- (const \fBVector3\fP & x) const"
+.PP
+Definition at line 132 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator- (void)"
+.PP
+Definition at line 115 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator-= (const \fBVector3\fP & x)"
+.PP
+Definition at line 167 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP Vector3::operator/ (const \fBreal\fP & x)"
+.PP
+Definition at line 150 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator/= (const \fBreal\fP & x)"
+.PP
+Definition at line 183 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator= (const \fBreal\fP & x)"
+.PP
+Definition at line 107 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP & Vector3::operator= (const \fBVector3\fP & b)"
+.PP
+Definition at line 99 of file Vector3.cpp.
+.PP
+References data_.
+.SS "\fBVector3\fP Vector3::operator^ (const \fBVector3\fP & vb) const"
+.PP
+Definition at line 208 of file Vector3.cpp.
+.PP
+References data_.
+.SS "std::string Vector3::toString (void)"
+.PP
+Definition at line 247 of file Vector3.cpp.
+.PP
+References data_.
+.PP
+Referenced by HResults::toString(), and AResults::toString().
+.SH "Field Documentation"
+.PP 
+.SS "\fBreal\fP* \fBVector3::data_\fP\fC [protected]\fP"
+.PP
+Definition at line 65 of file Vector3.h.
+.PP
+Referenced by operator()(), operator*(), operator*=(), operator+(), operator+=(), operator-(), operator-=(), operator/(), operator/=(), operator=(), operator^(), toString(), Vector3(), and ~Vector3().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

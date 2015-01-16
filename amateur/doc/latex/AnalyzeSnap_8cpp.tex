@@ -1,0 +1,295 @@
+\section{AnalyzeSnap.cpp File Reference}
+\label{AnalyzeSnap_8cpp}\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+
+
+Analyzes a given snapshot with \hyperlink{classHalo}{Halo}, for all particle types.  
+
+
+{\ttfamily \#include $<$cassert$>$}\par
+{\ttfamily \#include $<$fstream$>$}\par
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$limits$>$}\par
+{\ttfamily \#include $<$map$>$}\par
+{\ttfamily \#include $<$numeric$>$}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include \char`\"{}Global.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Vector3.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Matrix33.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Eigensystem3.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}ReadGadget.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Cosmology.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Simulation.h\char`\"{}}\par
+{\ttfamily \#include $<$stack$>$}\par
+{\ttfamily \#include $<$queue$>$}\par
+{\ttfamily \#include $<$cmath$>$}\par
+{\ttfamily \#include $<$stdexcept$>$}\par
+{\ttfamily \#include $<$stdio.h$>$}\par
+{\ttfamily \#include $<$stdlib.h$>$}\par
+{\ttfamily \#include $<$sstream$>$}\par
+{\ttfamily \#include $<$typeinfo$>$}\par
+{\ttfamily \#include \char`\"{}hdf5.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}AResults.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}HResults.h\char`\"{}}\par
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std::vector$<$ double $>$ \hyperlink{AnalyzeSnap_8cpp_a00624963fadb9859c2785372d78dbf7d}{VecDouble}
+\item 
+typedef std::vector$<$ std::vector$<$ double $>$ $>$ \hyperlink{AnalyzeSnap_8cpp_a19eaba2936536c4981d32fb3556862a5}{VecVecDouble}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{AnalyzeSnap_8cpp_a5f4ec08ca17aee191961be83ac9d1e48}{byteorder} (T v)
+\begin{DoxyCompactList}\small\item\em little/big endian conversion conversion between little/big endian \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_afae3a184f26b7f4398f94e4927188291}{GetOffsets} (unsigned $\ast$ParticleIDOffsets, unsigned $\ast$npart)
+\begin{DoxyCompactList}\small\item\em Return offsets of particle types inside snapshot. Get the particle ID offsets of the different particle types. \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_a5e23ce523297aeb1c2f118568cefb975}{readDataBlocks} (int isnap, int TotalNOParticles, int $\ast$\&id, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$\&pos, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$\&vel, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$\&mass)
+\begin{DoxyCompactList}\small\item\em Read snapshot data Fill in all information from snapshot data file (id, pos, vel, mass). \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_a07f732b0c1b2b63a40dd8ae52850f50b}{openParticlesFile} (unsigned isnap, std::ifstream \&ParticlesFile)
+\begin{DoxyCompactList}\small\item\em Open the ahf\_\-out\_\-particles file take ifstream and open particles file with it. \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_a4c813ec7d70ddf16a008d578b587b2e4}{ReadSnapIdType} (std::ifstream \&ParticlesFile, unsigned HaloPopulation, unsigned $\ast$\&pid, int $\ast$\&ptype)
+\begin{DoxyCompactList}\small\item\em Read a halo full of snapshot particles from ahf\_\-out\_\-particles Read in a slab of HaloPopulation particles. \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_ab9fb580fd4661772d21457471910d0c1}{GenerateHalo} (std::ifstream \&ParticlesFile, unsigned HaloPopulation, const std::map$<$ int, unsigned $>$ \&DoubleIndexMapi, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$pos, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$vel, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$mass, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$hpos, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$hvel, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} $\ast$hmass, int $\ast$htype)
+\begin{DoxyCompactList}\small\item\em preparing halo extract new lists from pos, vel, mass based on id (AHF\_\-particles) \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_acfcefc58f51f28a6592e2f50e067881a}{GenerateDIM} (unsigned TotalNOParticles, int $\ast$\&id, std::map$<$ int, unsigned $>$ \&DIM)
+\begin{DoxyCompactList}\small\item\em generate doubly indexed map DIM for particle ID to occurence position \item\end{DoxyCompactList}\item 
+void \hyperlink{AnalyzeSnap_8cpp_adeb9f0fc17baa68b04ea3e4f96764400}{AnalyzeSnap} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em Analysis of one single snapshot file Analyzes a single snapshot file. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \hyperlink{AnalyzeSnap_8cpp_a8473fa3d28febd7487db0967e19fc5bf}{HaloTypeTotal} = 5
+\item 
+const int \hyperlink{AnalyzeSnap_8cpp_a26cdc03eddc01de73d2183283e42f8ca}{ParticleTypeTotal} = 6
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Analyzes a given snapshot with \hyperlink{classHalo}{Halo}, for all particle types. 
+
+Definition in file \hyperlink{AnalyzeSnap_8cpp_source}{AnalyzeSnap.cpp}.
+
+
+
+\subsection{Typedef Documentation}
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!VecDouble@{VecDouble}}
+\index{VecDouble@{VecDouble}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{VecDouble}]{\setlength{\rightskip}{0pt plus 5cm}typedef std::vector$<$double$>$ {\bf VecDouble}}\label{AnalyzeSnap_8cpp_a00624963fadb9859c2785372d78dbf7d}
+
+
+Definition at line 55 of file AnalyzeSnap.cpp.
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!VecVecDouble@{VecVecDouble}}
+\index{VecVecDouble@{VecVecDouble}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{VecVecDouble}]{\setlength{\rightskip}{0pt plus 5cm}typedef std::vector$<$std::vector $<$double$>$ $>$ {\bf VecVecDouble}}\label{AnalyzeSnap_8cpp_a19eaba2936536c4981d32fb3556862a5}
+
+
+Definition at line 56 of file AnalyzeSnap.cpp.
+
+
+
+\subsection{Function Documentation}
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!AnalyzeSnap@{AnalyzeSnap}}
+\index{AnalyzeSnap@{AnalyzeSnap}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{AnalyzeSnap}]{\setlength{\rightskip}{0pt plus 5cm}void AnalyzeSnap (unsigned {\em isnap})}\label{AnalyzeSnap_8cpp_adeb9f0fc17baa68b04ea3e4f96764400}
+
+
+Analysis of one single snapshot file Analyzes a single snapshot file. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]unsigned snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+properties depending on halo type all: 1 1 1 1 15 dec dm: 0 0 1 1 3 dec gas: 0 1 0 0 4 dec stars: 1 0 0 0 8 dec bary: 1 1 0 0 12 dec
+
+
+
+Definition at line 240 of file AnalyzeSnap.cpp.
+
+
+
+References Output::appendHR(), Halo::calcJ(), Halo::calcLambda(), Halo::calcMpart(), Halo::calcNpart(), Halo::calcShape(), Halo::calcSigma(), DEBUG, Output::fillHRglobal(), Output::fillHRtype(), Folder(), GenerateDIM(), GenerateHalo(), get\_\-particle\_\-number(), Eigensystem3::getEval(), Halo::getMtot(), Halo::getMvir(), Halo::getRtot(), Halo::getRvir(), Halo::getVCM(), Halo::getVMB(), Halo::getXCM(), Halo::getXMB(), openParticlesFile(), ParticleTypeTotal, readDataBlocks(), Simulation::setBoxlength(), Simulation::setIsnap(), Simulation::setMass(), Simulation::setNhalo(), Simulation::setTarkinOmega(), Simulation::setZsnap(), Snaps(), Output::writeHR(), Output::writeHRstripped(), writeln(), and writelndebug().
+
+
+
+Referenced by main().
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!byteorder@{byteorder}}
+\index{byteorder@{byteorder}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{byteorder}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T byteorder (T {\em v})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{AnalyzeSnap_8cpp_a5f4ec08ca17aee191961be83ac9d1e48}
+
+
+little/big endian conversion conversion between little/big endian 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em v}]\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+templated T value, in other byteorder 
+\end{DoxyReturn}
+
+
+Definition at line 67 of file AnalyzeSnap.cpp.
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!GenerateDIM@{GenerateDIM}}
+\index{GenerateDIM@{GenerateDIM}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{GenerateDIM}]{\setlength{\rightskip}{0pt plus 5cm}void GenerateDIM (unsigned {\em TotalNOParticles}, \/  int $\ast$\& {\em id}, \/  std::map$<$ int, unsigned $>$ \& {\em DIM})}\label{AnalyzeSnap_8cpp_acfcefc58f51f28a6592e2f50e067881a}
+
+
+generate doubly indexed map DIM for particle ID to occurence position 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em TotalNOParticles;}]unsigned \item[{\em id,:}]int$\ast$ \&; identification int for all particles in simulation \item[{\em DIM,:}]std::map$<$int,unsigned$>$\&; output \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 225 of file AnalyzeSnap.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!GenerateHalo@{GenerateHalo}}
+\index{GenerateHalo@{GenerateHalo}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{GenerateHalo}]{\setlength{\rightskip}{0pt plus 5cm}void GenerateHalo (std::ifstream \& {\em ParticlesFile}, \/  unsigned {\em HaloPopulation}, \/  const std::map$<$ int, unsigned $>$ \& {\em DoubleIndexMapi}, \/  {\bf real} $\ast$ {\em pos}, \/  {\bf real} $\ast$ {\em vel}, \/  {\bf real} $\ast$ {\em mass}, \/  {\bf real} $\ast$ {\em hpos}, \/  {\bf real} $\ast$ {\em hvel}, \/  {\bf real} $\ast$ {\em hmass}, \/  int $\ast$ {\em htype})}\label{AnalyzeSnap_8cpp_ab9fb580fd4661772d21457471910d0c1}
+
+
+preparing halo extract new lists from pos, vel, mass based on id (AHF\_\-particles) 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em ParticlesFile,:}]std::ifstream\& of ahf\_\-out\_\-particles \item[{\em HaloPopulation,:}]unsigned; number of particles total \item[{\em DoubleIndexMapi,:}]map with reverse lookup possibility \item[{\em pos,vel,mass,:}]const real $\ast$\&, original data \item[{\em hpos,hvel,hmass,:}]real $\ast$\&, data for halo \item[{\em htype,:}]particle type for halo \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 190 of file AnalyzeSnap.cpp.
+
+
+
+References ReadSnapIdType().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!GetOffsets@{GetOffsets}}
+\index{GetOffsets@{GetOffsets}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{GetOffsets}]{\setlength{\rightskip}{0pt plus 5cm}void GetOffsets (unsigned $\ast$ {\em ParticleIDOffsets}, \/  unsigned $\ast$ {\em npart})}\label{AnalyzeSnap_8cpp_afae3a184f26b7f4398f94e4927188291}
+
+
+Return offsets of particle types inside snapshot. Get the particle ID offsets of the different particle types. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em ParticleIDOffsets,:}]unsigned$\ast$; where the offsets are stored \item[{\em npart,:}]unsigned$\ast$; counts of particles types \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 88 of file AnalyzeSnap.cpp.
+
+
+
+References ParticleTypeTotal.
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!openParticlesFile@{openParticlesFile}}
+\index{openParticlesFile@{openParticlesFile}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{openParticlesFile}]{\setlength{\rightskip}{0pt plus 5cm}void openParticlesFile (unsigned {\em isnap}, \/  std::ifstream \& {\em ParticlesFile})}\label{AnalyzeSnap_8cpp_a07f732b0c1b2b63a40dd8ae52850f50b}
+
+
+Open the ahf\_\-out\_\-particles file take ifstream and open particles file with it. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap,:}]unsigned of which snapshot, see SystemCharacteristics \item[{\em ParticlesFile,:}]ifstream by ref \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 145 of file AnalyzeSnap.cpp.
+
+
+
+References Folder(), and Snaps().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!readDataBlocks@{readDataBlocks}}
+\index{readDataBlocks@{readDataBlocks}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{readDataBlocks}]{\setlength{\rightskip}{0pt plus 5cm}void readDataBlocks (int {\em isnap}, \/  int {\em TotalNOParticles}, \/  int $\ast$\& {\em id}, \/  {\bf real} $\ast$\& {\em pos}, \/  {\bf real} $\ast$\& {\em vel}, \/  {\bf real} $\ast$\& {\em mass})}\label{AnalyzeSnap_8cpp_a5e23ce523297aeb1c2f118568cefb975}
+
+
+Read snapshot data Fill in all information from snapshot data file (id, pos, vel, mass). 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap,:}]int; snapshot number \item[{\em TotalNOParticles,:}]int \item[{\em id,:}]is int \& \item[{\em pos,:}]is double \& (3d) \item[{\em vel,:}]is double \& (3d) \item[{\em mass,:}]is double \& (1d) \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 111 of file AnalyzeSnap.cpp.
+
+
+
+References Folder(), read\_\-gadget\_\-1(), read\_\-gadget\_\-3(), and Snaps().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!ReadSnapIdType@{ReadSnapIdType}}
+\index{ReadSnapIdType@{ReadSnapIdType}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{ReadSnapIdType}]{\setlength{\rightskip}{0pt plus 5cm}void ReadSnapIdType (std::ifstream \& {\em ParticlesFile}, \/  unsigned {\em HaloPopulation}, \/  unsigned $\ast$\& {\em pid}, \/  int $\ast$\& {\em ptype})}\label{AnalyzeSnap_8cpp_a4c813ec7d70ddf16a008d578b587b2e4}
+
+
+Read a halo full of snapshot particles from ahf\_\-out\_\-particles Read in a slab of HaloPopulation particles. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em ParticlesFile,:}]ifstream of ahf\_\-out\_\-particles \item[{\em HaloPopulation,:}]unsigned int of number of particles in this halo \item[{\em pid,:}]holds the output, all identifiers \item[{\em ptype,:}]holds the output, all types, in accordance with ParticleIndexID \end{DoxyParams}
+
+
+Definition at line 163 of file AnalyzeSnap.cpp.
+
+
+
+Referenced by GenerateHalo().
+
+
+
+\subsection{Variable Documentation}
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!HaloTypeTotal@{HaloTypeTotal}}
+\index{HaloTypeTotal@{HaloTypeTotal}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{HaloTypeTotal}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf HaloTypeTotal} = 5}\label{AnalyzeSnap_8cpp_a8473fa3d28febd7487db0967e19fc5bf}
+
+
+Definition at line 58 of file AnalyzeSnap.cpp.
+
+\index{AnalyzeSnap.cpp@{AnalyzeSnap.cpp}!ParticleTypeTotal@{ParticleTypeTotal}}
+\index{ParticleTypeTotal@{ParticleTypeTotal}!AnalyzeSnap.cpp@{AnalyzeSnap.cpp}}
+\subsubsection[{ParticleTypeTotal}]{\setlength{\rightskip}{0pt plus 5cm}const int {\bf ParticleTypeTotal} = 6}\label{AnalyzeSnap_8cpp_a26cdc03eddc01de73d2183283e42f8ca}
+
+
+Definition at line 59 of file AnalyzeSnap.cpp.
+
+
+
+Referenced by AnalyzeSnap(), and GetOffsets().
+

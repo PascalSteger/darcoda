@@ -1,0 +1,137 @@
+.TH "list::iterator" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+list::iterator \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <MySTL.h>\fP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef T \fBvalue_type\fP"
+.br
+.ti -1c
+.RI "typedef T & \fBreference\fP"
+.br
+.ti -1c
+.RI "typedef T * \fBpointer\fP"
+.br
+.ti -1c
+.RI "typedef int \fBdifference_type\fP"
+.br
+.ti -1c
+.RI "typedef std::forward_iterator_tag \fBiterator_category\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBiterator\fP (Node *x=0)"
+.br
+.ti -1c
+.RI "\fBiterator\fP (const \fBiterator\fP &x)"
+.br
+.ti -1c
+.RI "\fBiterator\fP & \fBoperator=\fP (const \fBiterator\fP &x)"
+.br
+.ti -1c
+.RI "\fBiterator\fP & \fBoperator++\fP ()"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBoperator++\fP (int)"
+.br
+.ti -1c
+.RI "\fBreference\fP \fBoperator*\fP () const "
+.br
+.ti -1c
+.RI "\fBpointer\fP \fBoperator->\fP () const "
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBiterator\fP &x) const "
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBiterator\fP &x) const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBlist\fP"
+.br
+.ti -1c
+.RI "class \fBconst_iterator\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<class T> class list< T >::iterator"
+
+.PP
+Definition at line 111 of file MySTL.h.
+.SH "Member Typedef Documentation"
+.PP 
+.SS "template<class T> typedef int \fBlist\fP< T >::\fBiterator::difference_type\fP"
+.PP
+Definition at line 121 of file MySTL.h.
+.SS "template<class T> typedef std::forward_iterator_tag \fBlist\fP< T >::\fBiterator::iterator_category\fP"
+.PP
+Definition at line 122 of file MySTL.h.
+.SS "template<class T> typedef T* \fBlist\fP< T >::\fBiterator::pointer\fP"
+.PP
+Definition at line 120 of file MySTL.h.
+.SS "template<class T> typedef T& \fBlist\fP< T >::\fBiterator::reference\fP"
+.PP
+Definition at line 119 of file MySTL.h.
+.SS "template<class T> typedef T \fBlist\fP< T >::\fBiterator::value_type\fP"
+.PP
+Definition at line 118 of file MySTL.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<class T> \fBlist\fP< T >::iterator::iterator (Node * x = \fC0\fP)\fC [inline]\fP"
+.PP
+Definition at line 124 of file MySTL.h.
+.SS "template<class T> \fBlist\fP< T >::iterator::iterator (const \fBiterator\fP & x)\fC [inline]\fP"
+.PP
+Definition at line 125 of file MySTL.h.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class T> bool \fBlist\fP< T >::iterator::operator!= (const \fBiterator\fP & x) const\fC [inline]\fP"
+.PP
+Definition at line 144 of file MySTL.h.
+.SS "template<class T> \fBreference\fP \fBlist\fP< T >::iterator::operator* () const\fC [inline]\fP"
+.PP
+Definition at line 138 of file MySTL.h.
+.SS "template<class T> \fBiterator\fP \fBlist\fP< T >::iterator::operator++ (int)\fC [inline]\fP"
+.PP
+Definition at line 134 of file MySTL.h.
+.SS "template<class T> \fBiterator\fP& \fBlist\fP< T >::iterator::operator++ ()\fC [inline]\fP"
+.PP
+Definition at line 130 of file MySTL.h.
+.SS "template<class T> \fBpointer\fP \fBlist\fP< T >::iterator::operator-> () const\fC [inline]\fP"
+.PP
+Definition at line 139 of file MySTL.h.
+.SS "template<class T> \fBiterator\fP& \fBlist\fP< T >::iterator::operator= (const \fBiterator\fP & x)\fC [inline]\fP"
+.PP
+Definition at line 126 of file MySTL.h.
+.SS "template<class T> bool \fBlist\fP< T >::iterator::operator== (const \fBiterator\fP & x) const\fC [inline]\fP"
+.PP
+Definition at line 140 of file MySTL.h.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "template<class T> friend class \fBconst_iterator\fP\fC [friend]\fP"
+.PP
+Definition at line 117 of file MySTL.h.
+.SS "template<class T> friend class \fBlist\fP\fC [friend]\fP"
+.PP
+Definition at line 116 of file MySTL.h.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

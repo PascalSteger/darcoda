@@ -1,0 +1,41 @@
+
+
+Here is some information on the simulations:
+
+
+The best resource is the website: http://dipastro.pd.astro.it/~cosmo/
+which contains all the relevant information for the Tarkin simulation 
+outputs contained in this directory. At the bottom of that page there 
+is a link called "Kenobi" which contains among many other things, sample 
+codes that read the snapshot outputs in IDL, fortran 90 and C. 
+
+The directories in the SIM directory are:
+
+- Documentation/: README           : This file
+  		 SIMconnection.txt: The information on how to ftp 
+				    simulations from the Padova site
+		 Tarkin_snaps.txt : a list of the snapshot number (in the 
+    				    snap/, gv/ and gi/ directories) and  
+				    the corresponding redshift
+                 tarkin_redshift.txt: A list from Padova with all snapshots 
+                                      and their corresponding redshift
+
+- snap/: snap_XXX are the binary files corresponding to the XXX snapshot 
+	outputs. In order to read them, start by looking at one of the 
+        read_GADGET codes in the Kenobi site (see above). 
+
+- gi/ : SO.XXX.gi, the binary files that list the particle id's that belong to 
+        each identified halo. The reading format is given on the Kenobi 
+        website.
+
+- gv/ : SO.XXX.gv, the ASCII files from the halo finder with the information 
+        about each identified halo in a given snapshot. Again, look at the 
+        Kenobi site for a description of the different columns. 
+
+
+Let me know if there is anything else I can do. 
+
+Good luck playing with these, 
+
+Savvas
+

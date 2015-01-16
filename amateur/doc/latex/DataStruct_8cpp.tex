@@ -1,0 +1,161 @@
+\hypertarget{DataStruct_8cpp}{
+\section{DataStruct.cpp File Reference}
+\label{DataStruct_8cpp}\index{DataStruct.cpp@{DataStruct.cpp}}
+}
+\hyperlink{classVector3}{Vector3} and \hyperlink{classMatrix33}{Matrix33} implementations. 
+
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$iterator$>$}\par
+{\tt \#include $<$fstream$>$}\par
+{\tt \#include $<$iostream$>$}\par
+{\tt \#include $<$iomanip$>$}\par
+{\tt \#include $<$list$>$}\par
+{\tt \#include $<$vector$>$}\par
+{\tt \#include $<$cassert$>$}\par
+{\tt \#include $<$gsl/gsl\_\-math.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-eigen.h$>$}\par
+{\tt \#include \char`\"{}DataStruct.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \hyperlink{DataStruct_8cpp_c366362734c04742f3c0777e399648af}{HDF\_\-UINT}~H5T\_\-NATIVE\_\-UINT
+\item 
+\#define \hyperlink{DataStruct_8cpp_36f55c7359c730c7b6be07a113c6af7b}{MPI\_\-UINT}~MPI\_\-UNSIGNED
+\item 
+\#define \hyperlink{DataStruct_8cpp_669eec24b7fa0bce364dc2d08724da7b}{HDF\_\-FLOAT}~H5T\_\-NATIVE\_\-FLOAT
+\item 
+\#define \hyperlink{DataStruct_8cpp_740431a9a1d25e39e670cd5f48454ce4}{FIX}(x)~(\hyperlink{MySTL_8h_25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier})(x+0.5)
+\item 
+\#define \hyperlink{DataStruct_8cpp_4d48db51350a8c2c6086c09771f782df}{ROTATE}(a, i, j, k, l)
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef unsigned \hyperlink{DataStruct_8cpp_25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier}
+\item 
+typedef unsigned \hyperlink{DataStruct_8cpp_772b762114e74538c967388931c4a5e9}{Size}
+\item 
+typedef float \hyperlink{DataStruct_8cpp_acf5954d048aaaaef04620896706921d}{Scalar}
+\item 
+typedef float \hyperlink{DataStruct_8cpp_d8909b856fa70c7731c787994276fb03}{Weight}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+std::ostream \& \hyperlink{DataStruct_8cpp_751d7222f22f7264709359319164fdcd}{operator$<$$<$} (std::ostream \&s, \hyperlink{classVector3}{Vector3} v)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classVector3}{Vector3} and \hyperlink{classMatrix33}{Matrix33} implementations. 
+
+
+
+Definition in file \hyperlink{DataStruct_8cpp-source}{DataStruct.cpp}.
+
+\subsection{Define Documentation}
+\hypertarget{DataStruct_8cpp_740431a9a1d25e39e670cd5f48454ce4}{
+\index{DataStruct.cpp@{DataStruct.cpp}!FIX@{FIX}}
+\index{FIX@{FIX}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[FIX]{\setlength{\rightskip}{0pt plus 5cm}\#define FIX(x)~({\bf Identifier})(x+0.5)}}
+\label{DataStruct_8cpp_740431a9a1d25e39e670cd5f48454ce4}
+
+
+
+
+Definition at line 56 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_669eec24b7fa0bce364dc2d08724da7b}{
+\index{DataStruct.cpp@{DataStruct.cpp}!HDF\_\-FLOAT@{HDF\_\-FLOAT}}
+\index{HDF\_\-FLOAT@{HDF\_\-FLOAT}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[HDF\_\-FLOAT]{\setlength{\rightskip}{0pt plus 5cm}\#define HDF\_\-FLOAT~H5T\_\-NATIVE\_\-FLOAT}}
+\label{DataStruct_8cpp_669eec24b7fa0bce364dc2d08724da7b}
+
+
+
+
+Definition at line 52 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_c366362734c04742f3c0777e399648af}{
+\index{DataStruct.cpp@{DataStruct.cpp}!HDF\_\-UINT@{HDF\_\-UINT}}
+\index{HDF\_\-UINT@{HDF\_\-UINT}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[HDF\_\-UINT]{\setlength{\rightskip}{0pt plus 5cm}\#define HDF\_\-UINT~H5T\_\-NATIVE\_\-UINT}}
+\label{DataStruct_8cpp_c366362734c04742f3c0777e399648af}
+
+
+
+
+Definition at line 49 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_36f55c7359c730c7b6be07a113c6af7b}{
+\index{DataStruct.cpp@{DataStruct.cpp}!MPI\_\-UINT@{MPI\_\-UINT}}
+\index{MPI\_\-UINT@{MPI\_\-UINT}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[MPI\_\-UINT]{\setlength{\rightskip}{0pt plus 5cm}\#define MPI\_\-UINT~MPI\_\-UNSIGNED}}
+\label{DataStruct_8cpp_36f55c7359c730c7b6be07a113c6af7b}
+
+
+
+
+Definition at line 50 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_4d48db51350a8c2c6086c09771f782df}{
+\index{DataStruct.cpp@{DataStruct.cpp}!ROTATE@{ROTATE}}
+\index{ROTATE@{ROTATE}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[ROTATE]{\setlength{\rightskip}{0pt plus 5cm}\#define ROTATE(a, \/  i, \/  j, \/  k, \/  l)}}
+\label{DataStruct_8cpp_4d48db51350a8c2c6086c09771f782df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}g=(a)(i,j);h=(a)(k,l);(a)(i,j)=g-s*(h+g*tau);\
+    (a)(k,l)=h+s*(g-h*tau);
+\end{verbatim}
+\end{Code}
+
+
+Definition at line 404 of file DataStruct.cpp.
+
+Referenced by Matrix33::Jacobi().
+
+\subsection{Typedef Documentation}
+\hypertarget{DataStruct_8cpp_25e0b8ddd193bb84ebf6c0eeff6b1c82}{
+\index{DataStruct.cpp@{DataStruct.cpp}!Identifier@{Identifier}}
+\index{Identifier@{Identifier}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[Identifier]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned {\bf Identifier}}}
+\label{DataStruct_8cpp_25e0b8ddd193bb84ebf6c0eeff6b1c82}
+
+
+
+
+Definition at line 47 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_acf5954d048aaaaef04620896706921d}{
+\index{DataStruct.cpp@{DataStruct.cpp}!Scalar@{Scalar}}
+\index{Scalar@{Scalar}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[Scalar]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Scalar}}}
+\label{DataStruct_8cpp_acf5954d048aaaaef04620896706921d}
+
+
+
+
+Definition at line 53 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_772b762114e74538c967388931c4a5e9}{
+\index{DataStruct.cpp@{DataStruct.cpp}!Size@{Size}}
+\index{Size@{Size}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[Size]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned {\bf Size}}}
+\label{DataStruct_8cpp_772b762114e74538c967388931c4a5e9}
+
+
+
+
+Definition at line 48 of file DataStruct.cpp.\hypertarget{DataStruct_8cpp_d8909b856fa70c7731c787994276fb03}{
+\index{DataStruct.cpp@{DataStruct.cpp}!Weight@{Weight}}
+\index{Weight@{Weight}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[Weight]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Weight}}}
+\label{DataStruct_8cpp_d8909b856fa70c7731c787994276fb03}
+
+
+
+
+Definition at line 54 of file DataStruct.cpp.
+
+\subsection{Function Documentation}
+\hypertarget{DataStruct_8cpp_751d7222f22f7264709359319164fdcd}{
+\index{DataStruct.cpp@{DataStruct.cpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!DataStruct.cpp@{DataStruct.cpp}}
+\subsubsection[operator$<$$<$]{\setlength{\rightskip}{0pt plus 5cm}std::ostream\& operator$<$$<$ (std::ostream \& {\em s}, \/  {\bf Vector3} {\em v})}}
+\label{DataStruct_8cpp_751d7222f22f7264709359319164fdcd}
+
+
+
+
+Definition at line 245 of file DataStruct.cpp.

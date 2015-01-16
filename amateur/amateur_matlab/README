@@ -1,0 +1,10 @@
+Figure naming conventions
+=========================
+
+Each Matlab script gets a number and a description in the format
+
+> fig0110_some_nice_plot_but_with_errors.m
+
+and a corresponding entry in figures.txt. Each time there is a graph
+worth publication, there is a *.eps in ../report/fig/ together with
+output prepared for S/M.

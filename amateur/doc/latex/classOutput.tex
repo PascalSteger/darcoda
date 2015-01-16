@@ -1,0 +1,170 @@
+\section{Output Class Reference}
+\label{classOutput}\index{Output@{Output}}
+
+
+{\ttfamily \#include $<$Output.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classOutput_a428c663520336477a12f1a33504eb067}{Output} ()
+\item 
+\hyperlink{classOutput_aebd7037654639cea281a35d81ca8aaa5}{Output} (\hyperlink{classSimulation}{Simulation} sim)
+\item 
+\hyperlink{classOutput_a61d0840daf98bea49e4dc471f235eeab}{$\sim$Output} ()
+\item 
+void \hyperlink{classOutput_a17fff27847f8925c27d3a394ab7fee52}{getAR} (void)
+\item 
+void \hyperlink{classOutput_a4b6aca71978b0dcd4a40be86239d37f5}{writeAR} (void)
+\item 
+void \hyperlink{classOutput_a10e9ba492da5d302af6e295364b6da6c}{fillHRglobal} (int Ntot, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Mtot, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Rtot, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Mvir, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} Rvir, \hyperlink{classVector3}{Vector3} xcm, \hyperlink{classVector3}{Vector3} vcm, \hyperlink{classVector3}{Vector3} xmb, \hyperlink{classVector3}{Vector3} vmb)
+\item 
+void \hyperlink{classOutput_aee8f2718ff8e649941e3a7b9612e2a73}{fillHRtype} (int type, int npart, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} mpart, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} lambda, \hyperlink{Global_8h_a031f8951175b43076c2084a6c2173410}{real} sigma, \hyperlink{classVector3}{Vector3} J, \hyperlink{classEigensystem3}{Eigensystem3} E)
+\item 
+void \hyperlink{classOutput_a71850dc1d6b1910f23554a658dbdaf43}{appendHR} (void)
+\item 
+void \hyperlink{classOutput_adbb20b34ba5579ab43ec53b242219a7d}{writeHR} (void)
+\item 
+void \hyperlink{classOutput_abcbbba75272c18b1bb8e50de77d17dd6}{writeHRstripped} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 35 of file Output.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Output@{Output}!Output@{Output}}
+\index{Output@{Output}!Output@{Output}}
+\subsubsection[{Output}]{\setlength{\rightskip}{0pt plus 5cm}Output::Output (void)}\label{classOutput_a428c663520336477a12f1a33504eb067}
+
+
+Definition at line 34 of file Output.cpp.
+
+\index{Output@{Output}!Output@{Output}}
+\index{Output@{Output}!Output@{Output}}
+\subsubsection[{Output}]{\setlength{\rightskip}{0pt plus 5cm}Output::Output ({\bf Simulation} {\em sim})}\label{classOutput_aebd7037654639cea281a35d81ca8aaa5}
+
+
+Definition at line 38 of file Output.cpp.
+
+\index{Output@{Output}!$\sim$Output@{$\sim$Output}}
+\index{$\sim$Output@{$\sim$Output}!Output@{Output}}
+\subsubsection[{$\sim$Output}]{\setlength{\rightskip}{0pt plus 5cm}Output::$\sim$Output (void)}\label{classOutput_a61d0840daf98bea49e4dc471f235eeab}
+
+
+Definition at line 42 of file Output.cpp.
+
+
+
+\subsection{Member Function Documentation}
+\index{Output@{Output}!appendHR@{appendHR}}
+\index{appendHR@{appendHR}!Output@{Output}}
+\subsubsection[{appendHR}]{\setlength{\rightskip}{0pt plus 5cm}void Output::appendHR (void)}\label{classOutput_a71850dc1d6b1910f23554a658dbdaf43}
+
+
+Definition at line 138 of file Output.cpp.
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Output@{Output}!fillHRglobal@{fillHRglobal}}
+\index{fillHRglobal@{fillHRglobal}!Output@{Output}}
+\subsubsection[{fillHRglobal}]{\setlength{\rightskip}{0pt plus 5cm}void Output::fillHRglobal (int {\em Ntot}, \/  {\bf real} {\em Mtot}, \/  {\bf real} {\em Rtot}, \/  {\bf real} {\em Mvir}, \/  {\bf real} {\em Rvir}, \/  {\bf Vector3} {\em xcm}, \/  {\bf Vector3} {\em vcm}, \/  {\bf Vector3} {\em xmb}, \/  {\bf Vector3} {\em vmb})}\label{classOutput_a10e9ba492da5d302af6e295364b6da6c}
+
+
+Definition at line 113 of file Output.cpp.
+
+
+
+References HResults::setMtot(), HResults::setMvir(), HResults::setNtot(), HResults::setRtot(), HResults::setRvir(), HResults::setVCM(), HResults::setVMB(), HResults::setXCM(), and HResults::setXMB().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Output@{Output}!fillHRtype@{fillHRtype}}
+\index{fillHRtype@{fillHRtype}!Output@{Output}}
+\subsubsection[{fillHRtype}]{\setlength{\rightskip}{0pt plus 5cm}void Output::fillHRtype (int {\em type}, \/  int {\em npart}, \/  {\bf real} {\em mpart}, \/  {\bf real} {\em lambda}, \/  {\bf real} {\em sigma}, \/  {\bf Vector3} {\em J}, \/  {\bf Eigensystem3} {\em E})}\label{classOutput_aee8f2718ff8e649941e3a7b9612e2a73}
+
+
+Definition at line 127 of file Output.cpp.
+
+
+
+References HResults::setE(), HResults::setJ(), HResults::setLambda(), HResults::setMpart(), HResults::setNpart(), and HResults::setSigma().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Output@{Output}!getAR@{getAR}}
+\index{getAR@{getAR}!Output@{Output}}
+\subsubsection[{getAR}]{\setlength{\rightskip}{0pt plus 5cm}void Output::getAR (void)}\label{classOutput_a17fff27847f8925c27d3a394ab7fee52}
+
+
+Definition at line 48 of file Output.cpp.
+
+
+
+References Folder(), Simulation::getIsnap(), Simulation::getNhalo(), and Snaps().
+
+
+
+Referenced by AOutput().
+
+\index{Output@{Output}!writeAR@{writeAR}}
+\index{writeAR@{writeAR}!Output@{Output}}
+\subsubsection[{writeAR}]{\setlength{\rightskip}{0pt plus 5cm}void Output::writeAR (void)}\label{classOutput_a4b6aca71978b0dcd4a40be86239d37f5}
+
+
+Definition at line 101 of file Output.cpp.
+
+
+
+References Folder(), Simulation::getIsnap(), Simulation::getNhalo(), and Snaps().
+
+
+
+Referenced by AOutput().
+
+\index{Output@{Output}!writeHR@{writeHR}}
+\index{writeHR@{writeHR}!Output@{Output}}
+\subsubsection[{writeHR}]{\setlength{\rightskip}{0pt plus 5cm}void Output::writeHR (void)}\label{classOutput_adbb20b34ba5579ab43ec53b242219a7d}
+
+
+Definition at line 143 of file Output.cpp.
+
+
+
+References Folder(), Simulation::getBoxlength(), Simulation::getIsnap(), Simulation::getNhalo(), Simulation::getZsnap(), and Snaps().
+
+
+
+Referenced by AnalyzeSnap().
+
+\index{Output@{Output}!writeHRstripped@{writeHRstripped}}
+\index{writeHRstripped@{writeHRstripped}!Output@{Output}}
+\subsubsection[{writeHRstripped}]{\setlength{\rightskip}{0pt plus 5cm}void Output::writeHRstripped (void)}\label{classOutput_abcbbba75272c18b1bb8e50de77d17dd6}
+
+
+Definition at line 158 of file Output.cpp.
+
+
+
+References Folder(), Simulation::getIsnap(), Simulation::getNhalo(), and Snaps().
+
+
+
+Referenced by AnalyzeSnap().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Output_8h}{Output.h}\item 
+\hyperlink{Output_8cpp}{Output.cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,13 @@
+% vis_a_over_c_asfct_npart_stars.m
+
+nbins = 20;
+figprep('a/c for halos with stars only','log_{10}n_{part}','log_{10}a/c');
+
+exl = m_exc;
+scatter(log10(m_hp_npart(exl,1,4)),...
+        log10(m_hp_eatot(exl,1,4)./m_hp_ectot(exl,1,4)),...
+        5*ones(size(m_hp_mtot(exl,1,4))),...
+        log10(m_hp_lambda(exl,1,4)),...
+        '.');
+
+legend('hp');

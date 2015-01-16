@@ -1,0 +1,192 @@
+\section{PoissonSolver$<$ nstencil $>$ Class Template Reference}
+\label{classPoissonSolver}\index{PoissonSolver@{PoissonSolver}}
+
+
+{\ttfamily \#include $<$PoissonSolver.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classPoissonSolver_a7ddd43d24b62636d55f26332b5d34dbc}{PoissonSolver} (\hyperlink{classScalarField}{ScalarField} $\ast$prho, \hyperlink{classScalarField}{ScalarField} $\ast$pphi)
+\item 
+double \hyperlink{classPoissonSolver_ae2e90b5bf9b5fc2069a3cafc17471714}{Gauss3D} (const double \&k, const double \&sigma)
+\begin{DoxyCompactList}\small\item\em Gaussian kernel. \item\end{DoxyCompactList}\item 
+double \hyperlink{classPoissonSolver_a291b425d9549b3cede155db6780e0566}{TopHat3D} (const double \&k, const double \&R)
+\item 
+void \hyperlink{classPoissonSolver_a403a4e00c0fbb7bcce4c1a55eb5414c9}{test} ()
+\item 
+void \hyperlink{classPoissonSolver_abb577e8f1d0e33f07aa330a50462dcb4}{solve} (double Boxlength, double sigma)
+\item 
+\hyperlink{classPoissonSolver_a238d58c904311240b50b03d872d42cf8}{PoissonSolver} (\hyperlink{classScalarField}{ScalarField} $\ast$prho)
+\item 
+double \hyperlink{classPoissonSolver_ae2e90b5bf9b5fc2069a3cafc17471714}{Gauss3D} (const double \&k, const double \&sigma)
+\item 
+double \hyperlink{classPoissonSolver_a291b425d9549b3cede155db6780e0566}{TopHat3D} (const double \&k, const double \&R)
+\item 
+void \hyperlink{classPoissonSolver_a2582095d916f844e0b7af838536e695b}{solve} (\hyperlink{classScalarField}{ScalarField} $\ast$pphi, double Boxlength, double sigma)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classScalarField}{ScalarField} $\ast$ \hyperlink{classPoissonSolver_ae63b29dc18467f15d9258dd1d6869c6f}{prho\_\-}
+\item 
+\hyperlink{classScalarField}{ScalarField} $\ast$ \hyperlink{classPoissonSolver_a3dc6dd8a072a8b59733a193d8795f04c}{pphi\_\-}
+\item 
+\hyperlink{classScalarField}{ScalarField} $\ast$ \hyperlink{classPoissonSolver_abc1e13ccea710525220e970d74397ff4}{m\_\-prho}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$int nstencil$>$ class PoissonSolver$<$ nstencil $>$}
+
+implementation of Poisson equation solver using Fourier transformation of the cloud-\/in-\/cell density field, templated for the number of stencils 
+
+Definition at line 52 of file PoissonSolver.h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{PoissonSolver@{PoissonSolver}!PoissonSolver@{PoissonSolver}}
+\index{PoissonSolver@{PoissonSolver}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{PoissonSolver}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ {\bf PoissonSolver}$<$ nstencil $>$::{\bf PoissonSolver} ({\bf ScalarField} $\ast$ {\em prho}, \/  {\bf ScalarField} $\ast$ {\em pphi})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_a7ddd43d24b62636d55f26332b5d34dbc}
+
+
+Definition at line 58 of file PoissonSolver.h.
+
+
+
+References PoissonSolver$<$ nstencil $>$::pphi\_\-, and PoissonSolver$<$ nstencil $>$::prho\_\-.
+
+\index{PoissonSolver@{PoissonSolver}!PoissonSolver@{PoissonSolver}}
+\index{PoissonSolver@{PoissonSolver}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{PoissonSolver}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ {\bf PoissonSolver}$<$ nstencil $>$::{\bf PoissonSolver} ({\bf ScalarField} $\ast$ {\em prho})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_a238d58c904311240b50b03d872d42cf8}
+
+
+Definition at line 60 of file PoissonSolver\_\-new.h.
+
+
+
+\subsection{Member Function Documentation}
+\index{PoissonSolver@{PoissonSolver}!Gauss3D@{Gauss3D}}
+\index{Gauss3D@{Gauss3D}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{Gauss3D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ double {\bf PoissonSolver}$<$ nstencil $>$::Gauss3D (const double \& {\em k}, \/  const double \& {\em sigma})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_ae2e90b5bf9b5fc2069a3cafc17471714}
+
+
+Definition at line 63 of file PoissonSolver\_\-new.h.
+
+\index{PoissonSolver@{PoissonSolver}!Gauss3D@{Gauss3D}}
+\index{Gauss3D@{Gauss3D}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{Gauss3D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ double {\bf PoissonSolver}$<$ nstencil $>$::Gauss3D (const double \& {\em k}, \/  const double \& {\em sigma})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_ae2e90b5bf9b5fc2069a3cafc17471714}
+
+
+Gaussian kernel. 
+
+
+
+Definition at line 64 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver@{PoissonSolver}!solve@{solve}}
+\index{solve@{solve}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{solve}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ void {\bf PoissonSolver}$<$ nstencil $>$::solve ({\bf ScalarField} $\ast$ {\em pphi}, \/  double {\em Boxlength}, \/  double {\em sigma})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_a2582095d916f844e0b7af838536e695b}
+
+
+Definition at line 79 of file PoissonSolver\_\-new.h.
+
+
+
+References ACC\_\-C, ACC\_\-R, c\_\-im, c\_\-re, PoissonSolver$<$ nstencil $>$::Gauss3D(), PoissonSolver$<$ nstencil $>$::m\_\-prho, ScalarField::recreate(), and PoissonSolver$<$ nstencil $>$::TopHat3D().
+
+\index{PoissonSolver@{PoissonSolver}!solve@{solve}}
+\index{solve@{solve}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{solve}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ void {\bf PoissonSolver}$<$ nstencil $>$::solve (double {\em Boxlength}, \/  double {\em sigma})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_abb577e8f1d0e33f07aa330a50462dcb4}
+invoke solver 
+
+Definition at line 101 of file PoissonSolver.h.
+
+
+
+References ACC\_\-C, ACC\_\-R, GreensFunction$<$ nOrder $>$::apply(), fftw\_\-real, PoissonSolver$<$ nstencil $>$::Gauss3D(), ScalarField::getNx(), ScalarField::getNy(), ScalarField::getNz(), ScalarField::getValue(), ofs, PoissonSolver$<$ nstencil $>$::pphi\_\-, PoissonSolver$<$ nstencil $>$::prho\_\-, ScalarField::setValue(), and PoissonSolver$<$ nstencil $>$::TopHat3D().
+
+
+
+Referenced by TidalField().
+
+\index{PoissonSolver@{PoissonSolver}!test@{test}}
+\index{test@{test}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{test}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ void {\bf PoissonSolver}$<$ nstencil $>$::test ()\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_a403a4e00c0fbb7bcce4c1a55eb5414c9}
+little test routine for access to prho\_\- and pphi\_\- 
+
+Definition at line 85 of file PoissonSolver.h.
+
+
+
+References ScalarField::getValue(), PoissonSolver$<$ nstencil $>$::pphi\_\-, PoissonSolver$<$ nstencil $>$::prho\_\-, and ScalarField::setValue().
+
+
+
+Referenced by main().
+
+\index{PoissonSolver@{PoissonSolver}!TopHat3D@{TopHat3D}}
+\index{TopHat3D@{TopHat3D}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{TopHat3D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ double {\bf PoissonSolver}$<$ nstencil $>$::TopHat3D (const double \& {\em k}, \/  const double \& {\em R})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_a291b425d9549b3cede155db6780e0566}
+
+
+Definition at line 69 of file PoissonSolver\_\-new.h.
+
+\index{PoissonSolver@{PoissonSolver}!TopHat3D@{TopHat3D}}
+\index{TopHat3D@{TopHat3D}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{TopHat3D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ double {\bf PoissonSolver}$<$ nstencil $>$::TopHat3D (const double \& {\em k}, \/  const double \& {\em R})\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}\label{classPoissonSolver_a291b425d9549b3cede155db6780e0566}
+top hat kernel: all points inside radius R are fully accounted for, all points outside are not 
+
+Definition at line 74 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+
+
+\subsection{Field Documentation}
+\index{PoissonSolver@{PoissonSolver}!m\_\-prho@{m\_\-prho}}
+\index{m\_\-prho@{m\_\-prho}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{m\_\-prho}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ {\bf ScalarField}$\ast$ {\bf PoissonSolver}$<$ nstencil $>$::{\bf m\_\-prho}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classPoissonSolver_abc1e13ccea710525220e970d74397ff4}
+
+
+Definition at line 57 of file PoissonSolver\_\-new.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver@{PoissonSolver}!pphi\_\-@{pphi\_\-}}
+\index{pphi\_\-@{pphi\_\-}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{pphi\_\-}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ {\bf ScalarField}$\ast$ {\bf PoissonSolver}$<$ nstencil $>$::{\bf pphi\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classPoissonSolver_a3dc6dd8a072a8b59733a193d8795f04c}
+
+
+Definition at line 55 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::PoissonSolver(), PoissonSolver$<$ nstencil $>$::solve(), and PoissonSolver$<$ nstencil $>$::test().
+
+\index{PoissonSolver@{PoissonSolver}!prho\_\-@{prho\_\-}}
+\index{prho\_\-@{prho\_\-}!PoissonSolver@{PoissonSolver}}
+\subsubsection[{prho\_\-}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int nstencil$>$ {\bf ScalarField}$\ast$ {\bf PoissonSolver}$<$ nstencil $>$::{\bf prho\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}\label{classPoissonSolver_ae63b29dc18467f15d9258dd1d6869c6f}
+
+
+Definition at line 54 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::PoissonSolver(), PoissonSolver$<$ nstencil $>$::solve(), and PoissonSolver$<$ nstencil $>$::test().
+
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{PoissonSolver_8h}{PoissonSolver.h}\item 
+\hyperlink{PoissonSolver__new_8h}{PoissonSolver\_\-new.h}\end{DoxyCompactItemize}

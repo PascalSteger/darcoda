@@ -1,0 +1,279 @@
+.TH "SystemCharacteristics.cpp" 3 "22 Mar 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SystemCharacteristics.cpp \- Implementation of all system-wide properties that all parts of the program should know. 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <string.h>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <fstream>\fP
+.br
+\fC#include <stdlib.h>\fP
+.br
+\fC#include <limits>\fP
+.br
+\fC#include <math.h>\fP
+.br
+\fC#include 'SystemCharacteristics.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprintMinMaxValues\fP ()"
+.br
+.RI "\fIprint characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double \fP"
+.ti -1c
+.RI "void \fBwrite\fP (std::string text)"
+.br
+.ti -1c
+.RI "void \fBwriteln\fP (std::string text)"
+.br
+.ti -1c
+.RI "void \fBwritedone\fP (void)"
+.br
+.ti -1c
+.RI "void \fBwritelndone\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdonedebug\fP (bool DebugLevelActivated)"
+.br
+.ti -1c
+.RI "void \fBwritedebug\fP (bool DebugLevelActivated, std::string text)"
+.br
+.ti -1c
+.RI "void \fBwritelndebug\fP (bool DebugLevelActivated, std::string text)"
+.br
+.ti -1c
+.RI "void \fBRunCommand\fP (std::string command)"
+.br
+.ti -1c
+.RI "unsigned \fBGetLineNumber\fP (std::string filename)"
+.br
+.ti -1c
+.RI "void \fBreverse\fP (char s[])"
+.br
+.ti -1c
+.RI "void \fBitoa\fP (int n, char s[])"
+.br
+.ti -1c
+.RI "std::string \fBIntToString\fP (int intValue)"
+.br
+.ti -1c
+.RI "std::string \fBFolder\fP (std::string where)"
+.br
+.ti -1c
+.RI "std::string \fBSnaps\fP (unsigned SnapNo)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBfbmod\fP (\fBreal\fP x, \fBreal\fP m)"
+.br
+.ti -1c
+.RI "template<typename real_t> real_t \fBSPHK3D\fP (const real_t r, const real_t \fBh\fP)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Implementation of all system-wide properties that all parts of the program should know. 
+
+
+.PP
+Definition in file \fBSystemCharacteristics.cpp\fP.
+.SH "Function Documentation"
+.PP 
+.SS "void donedebug (bool DebugLevelActivated)"
+.PP
+Definition at line 128 of file SystemCharacteristics.cpp.
+.PP
+References writelndone().
+.PP
+Referenced by CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+.SS "\fBreal\fP fbmod (\fBreal\fP x, \fBreal\fP m)\fC [inline]\fP"
+.PP
+Definition at line 304 of file SystemCharacteristics.cpp.
+.SS "std::string Folder (std::string where)"
+.PP
+Returns the paths to all important folders. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwhere,:\fP which folder? allowed: amd, snap, amateur, output, parameters 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+std::string full path 
+.RE
+.PP
+
+.PP
+Definition at line 247 of file SystemCharacteristics.cpp.
+.PP
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), RunOwnMergerTree(), Storeahf(), SubhaloMatch(), TidalField(), and WrapperParticleNumbers().
+.SS "unsigned GetLineNumber (std::string filename)"
+.PP
+count the lines of a given file 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename,:\fP path to the file 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+unsigned number of lines 
+.RE
+.PP
+
+.PP
+Definition at line 169 of file SystemCharacteristics.cpp.
+.PP
+Referenced by SubhaloMatch().
+.SS "std::string IntToString (int intValue)"
+.PP
+Convert an integer into a string. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIintValue,:\fP integer to be converted 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+std::string of that integer value 
+.RE
+.PP
+
+.PP
+Definition at line 228 of file SystemCharacteristics.cpp.
+.PP
+References itoa().
+.PP
+Referenced by TidalField().
+.SS "void itoa (int n, char s[])"
+.PP
+Converts an integer into a char[ ]. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIn,:\fP integer that should be printed as a character \fBarray\fP 
+.br
+\fIs,:\fP char \fBarray\fP that should hold the number 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 206 of file SystemCharacteristics.cpp.
+.PP
+References reverse().
+.PP
+Referenced by IntToString().
+.SS "void printMinMaxValues (void)"
+.PP
+print characteristics of basic types Show Minimum, Maximum, Sign, Bits, Inf for bool, char, int, long, unsigned, unsigned long, float, double 
+.PP
+\fBReturns:\fP
+.RS 4
+: void 
+.RE
+.PP
+
+.PP
+Definition at line 40 of file SystemCharacteristics.cpp.
+.PP
+Referenced by HelpUser().
+.SS "void reverse (char s[])"
+.PP
+Reverse the order of characters in a string 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs,:\fP \fBarray\fP of chars (<=> string) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 188 of file SystemCharacteristics.cpp.
+.PP
+Referenced by itoa().
+.SS "void RunCommand (std::string command)"
+.PP
+Definition at line 159 of file SystemCharacteristics.cpp.
+.PP
+Referenced by ExtractSnap(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RunAHFstep(), RunHaloTracker(), and RunMergerTree().
+.SS "std::string Snaps (unsigned SnapNo)"
+.PP
+Returns the full path to an AMATEUR snapshot 
+.PP
+\fBParameters:\fP
+.RS 4
+\fISnapNo,:\fP ID of snapshot 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+std::string full_path 
+.RE
+.PP
+
+.PP
+Definition at line 276 of file SystemCharacteristics.cpp.
+.PP
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), HelpUser(), main(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), openParticlesFile(), RenameAHFout(), RewriteParticleNumbers(), RunAHFstep(), RunOwnMergerTree(), Storeahf(), SubhaloMatch(), TidalField(), and WrapperParticleNumbers().
+.SS "template<typename real_t> real_t SPHK3D (const real_t r, const real_t h)\fC [inline]\fP"
+.PP
+Definition at line 310 of file SystemCharacteristics.cpp.
+.PP
+References PI.
+.SS "void write (std::string text)"
+.PP
+Definition at line 95 of file SystemCharacteristics.cpp.
+.PP
+Referenced by TidalField(), and writedebug().
+.SS "void writedebug (bool DebugLevelActivated, std::string text)"
+.PP
+Definition at line 139 of file SystemCharacteristics.cpp.
+.PP
+References write().
+.PP
+Referenced by AnalyzeSnap(), CreateAHFParameterFile(), ExtractSnap(), GetMtreeFile(), MoveAHFout(), MoveHaloTrackerOutput(), MoveMergeOut(), RenameAHFout(), RewriteParticleNumbers(), RunOwnMergerTree(), SubhaloMatch(), WrapperParticleNumbers(), and WriteMtree2File().
+.SS "void writedone (void)"
+.PP
+Definition at line 112 of file SystemCharacteristics.cpp.
+.PP
+Referenced by CreateHaloTrackerParameterFile(), CreateMergeParameterFile(), ExtractSnap(), and TidalField().
+.SS "void writeln (std::string text)"
+.PP
+Definition at line 104 of file SystemCharacteristics.cpp.
+.PP
+Referenced by AnalyzeSnap(), ExtractSnap(), HelpUser(), main(), TidalField(), and writelndebug().
+.SS "void writelndebug (bool DebugLevelActivated, std::string text)"
+.PP
+Definition at line 150 of file SystemCharacteristics.cpp.
+.PP
+References writeln().
+.PP
+Referenced by AnalyzeSnap(), ExtractSnap(), RunAHFstep(), RunHaloTracker(), RunMergerTree(), and RunOwnMergerTree().
+.SS "void writelndone (void)"
+.PP
+Definition at line 120 of file SystemCharacteristics.cpp.
+.PP
+Referenced by donedebug().
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

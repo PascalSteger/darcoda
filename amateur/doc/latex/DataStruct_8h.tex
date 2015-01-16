@@ -1,0 +1,148 @@
+\hypertarget{DataStruct_8h}{
+\section{DataStruct.h File Reference}
+\label{DataStruct_8h}\index{DataStruct.h@{DataStruct.h}}
+}
+All publicly known functions of \hyperlink{DataStruct_8cpp}{DataStruct.cpp} DataStruct presents \hyperlink{classVector3}{Vector3} and \hyperlink{classMatrix33}{Matrix33}. 
+
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$iterator$>$}\par
+{\tt \#include $<$fstream$>$}\par
+{\tt \#include $<$iostream$>$}\par
+{\tt \#include $<$iomanip$>$}\par
+{\tt \#include $<$list$>$}\par
+{\tt \#include $<$vector$>$}\par
+{\tt \#include $<$cassert$>$}\par
+{\tt \#include $<$gsl/gsl\_\-math.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-eigen.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classVector3}{Vector3}
+\item 
+class \hyperlink{classMatrix33}{Matrix33}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \hyperlink{DataStruct_8h_c366362734c04742f3c0777e399648af}{HDF\_\-UINT}~H5T\_\-NATIVE\_\-UINT
+\item 
+\#define \hyperlink{DataStruct_8h_36f55c7359c730c7b6be07a113c6af7b}{MPI\_\-UINT}~MPI\_\-UNSIGNED
+\item 
+\#define \hyperlink{DataStruct_8h_669eec24b7fa0bce364dc2d08724da7b}{HDF\_\-FLOAT}~H5T\_\-NATIVE\_\-FLOAT
+\item 
+\#define \hyperlink{DataStruct_8h_740431a9a1d25e39e670cd5f48454ce4}{FIX}(x)~(\hyperlink{MySTL_8h_25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier})(x+0.5)
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef unsigned \hyperlink{DataStruct_8h_25e0b8ddd193bb84ebf6c0eeff6b1c82}{Identifier}
+\item 
+typedef unsigned \hyperlink{DataStruct_8h_772b762114e74538c967388931c4a5e9}{Size}
+\item 
+typedef float \hyperlink{DataStruct_8h_acf5954d048aaaaef04620896706921d}{Scalar}
+\item 
+typedef float \hyperlink{DataStruct_8h_d8909b856fa70c7731c787994276fb03}{Weight}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+std::ostream \& \hyperlink{DataStruct_8h_751d7222f22f7264709359319164fdcd}{operator$<$$<$} (std::ostream \&s, \hyperlink{classVector3}{Vector3} v)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+All publicly known functions of \hyperlink{DataStruct_8cpp}{DataStruct.cpp} DataStruct presents \hyperlink{classVector3}{Vector3} and \hyperlink{classMatrix33}{Matrix33}. 
+
+
+
+Definition in file \hyperlink{DataStruct_8h-source}{DataStruct.h}.
+
+\subsection{Define Documentation}
+\hypertarget{DataStruct_8h_740431a9a1d25e39e670cd5f48454ce4}{
+\index{DataStruct.h@{DataStruct.h}!FIX@{FIX}}
+\index{FIX@{FIX}!DataStruct.h@{DataStruct.h}}
+\subsubsection[FIX]{\setlength{\rightskip}{0pt plus 5cm}\#define FIX(x)~({\bf Identifier})(x+0.5)}}
+\label{DataStruct_8h_740431a9a1d25e39e670cd5f48454ce4}
+
+
+
+
+Definition at line 59 of file DataStruct.h.\hypertarget{DataStruct_8h_669eec24b7fa0bce364dc2d08724da7b}{
+\index{DataStruct.h@{DataStruct.h}!HDF\_\-FLOAT@{HDF\_\-FLOAT}}
+\index{HDF\_\-FLOAT@{HDF\_\-FLOAT}!DataStruct.h@{DataStruct.h}}
+\subsubsection[HDF\_\-FLOAT]{\setlength{\rightskip}{0pt plus 5cm}\#define HDF\_\-FLOAT~H5T\_\-NATIVE\_\-FLOAT}}
+\label{DataStruct_8h_669eec24b7fa0bce364dc2d08724da7b}
+
+
+
+
+Definition at line 55 of file DataStruct.h.\hypertarget{DataStruct_8h_c366362734c04742f3c0777e399648af}{
+\index{DataStruct.h@{DataStruct.h}!HDF\_\-UINT@{HDF\_\-UINT}}
+\index{HDF\_\-UINT@{HDF\_\-UINT}!DataStruct.h@{DataStruct.h}}
+\subsubsection[HDF\_\-UINT]{\setlength{\rightskip}{0pt plus 5cm}\#define HDF\_\-UINT~H5T\_\-NATIVE\_\-UINT}}
+\label{DataStruct_8h_c366362734c04742f3c0777e399648af}
+
+
+
+
+Definition at line 52 of file DataStruct.h.\hypertarget{DataStruct_8h_36f55c7359c730c7b6be07a113c6af7b}{
+\index{DataStruct.h@{DataStruct.h}!MPI\_\-UINT@{MPI\_\-UINT}}
+\index{MPI\_\-UINT@{MPI\_\-UINT}!DataStruct.h@{DataStruct.h}}
+\subsubsection[MPI\_\-UINT]{\setlength{\rightskip}{0pt plus 5cm}\#define MPI\_\-UINT~MPI\_\-UNSIGNED}}
+\label{DataStruct_8h_36f55c7359c730c7b6be07a113c6af7b}
+
+
+
+
+Definition at line 53 of file DataStruct.h.
+
+\subsection{Typedef Documentation}
+\hypertarget{DataStruct_8h_25e0b8ddd193bb84ebf6c0eeff6b1c82}{
+\index{DataStruct.h@{DataStruct.h}!Identifier@{Identifier}}
+\index{Identifier@{Identifier}!DataStruct.h@{DataStruct.h}}
+\subsubsection[Identifier]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned {\bf Identifier}}}
+\label{DataStruct_8h_25e0b8ddd193bb84ebf6c0eeff6b1c82}
+
+
+
+
+Definition at line 50 of file DataStruct.h.\hypertarget{DataStruct_8h_acf5954d048aaaaef04620896706921d}{
+\index{DataStruct.h@{DataStruct.h}!Scalar@{Scalar}}
+\index{Scalar@{Scalar}!DataStruct.h@{DataStruct.h}}
+\subsubsection[Scalar]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Scalar}}}
+\label{DataStruct_8h_acf5954d048aaaaef04620896706921d}
+
+
+
+
+Definition at line 56 of file DataStruct.h.\hypertarget{DataStruct_8h_772b762114e74538c967388931c4a5e9}{
+\index{DataStruct.h@{DataStruct.h}!Size@{Size}}
+\index{Size@{Size}!DataStruct.h@{DataStruct.h}}
+\subsubsection[Size]{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned {\bf Size}}}
+\label{DataStruct_8h_772b762114e74538c967388931c4a5e9}
+
+
+
+
+Definition at line 51 of file DataStruct.h.\hypertarget{DataStruct_8h_d8909b856fa70c7731c787994276fb03}{
+\index{DataStruct.h@{DataStruct.h}!Weight@{Weight}}
+\index{Weight@{Weight}!DataStruct.h@{DataStruct.h}}
+\subsubsection[Weight]{\setlength{\rightskip}{0pt plus 5cm}typedef float {\bf Weight}}}
+\label{DataStruct_8h_d8909b856fa70c7731c787994276fb03}
+
+
+
+
+Definition at line 57 of file DataStruct.h.
+
+\subsection{Function Documentation}
+\hypertarget{DataStruct_8h_751d7222f22f7264709359319164fdcd}{
+\index{DataStruct.h@{DataStruct.h}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!DataStruct.h@{DataStruct.h}}
+\subsubsection[operator$<$$<$]{\setlength{\rightskip}{0pt plus 5cm}std::ostream\& operator$<$$<$ (std::ostream \& {\em s}, \/  {\bf Vector3} {\em v})}}
+\label{DataStruct_8h_751d7222f22f7264709359319164fdcd}
+
+
+
+
+Definition at line 245 of file DataStruct.cpp.

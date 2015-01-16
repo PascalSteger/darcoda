@@ -1,0 +1,137 @@
+.TH "kDTreeNode" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+kDTreeNode \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <OctTree.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~kDTreeNode\fP ()"
+.br
+.ti -1c
+.RI "\fBkDTreeNode\fP (std::vector< \fBPseudoBody\fP > *Bodies)"
+.br
+.ti -1c
+.RI "\fBkDTreeNode\fP (std::vector< \fBPseudoBody\fP > &Bodies)"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBtraverse\fP (const \fBreal\fP &x, const \fBreal\fP &y, const \fBreal\fP &z, const \fBreal\fP &theta, const \fBreal\fP &plumsoft)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBpartition\fP (std::vector< \fBPseudoBody\fP > &All, std::vector< \fBPseudoBody\fP > **bleft, std::vector< \fBPseudoBody\fP > **bright)"
+.br
+.ti -1c
+.RI "void \fBgetBoundingBox\fP (const std::vector< \fBPseudoBody\fP > &bodies)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBkDTreeNode\fP * \fBm_nleft\fP"
+.br
+.ti -1c
+.RI "\fBkDTreeNode\fP * \fBm_nright\fP"
+.br
+.ti -1c
+.RI "\fBPseudoBody\fP \fBm_body\fP"
+.br
+.ti -1c
+.RI "\fBreal\fP \fBm_l\fP"
+.br
+.ti -1c
+.RI "bool \fBm_bleaf\fP"
+.br
+.ti -1c
+.RI "int \fBm_axis\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 224 of file OctTree.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "kDTreeNode::~kDTreeNode ()\fC [inline]\fP"
+.PP
+Definition at line 303 of file OctTree.h.
+.PP
+References m_nleft, and m_nright.
+.SS "kDTreeNode::kDTreeNode (std::vector< \fBPseudoBody\fP > * Bodies)\fC [inline]\fP"
+.PP
+Definition at line 310 of file OctTree.h.
+.PP
+References getBoundingBox().
+.PP
+Referenced by kDTreeNode().
+.SS "kDTreeNode::kDTreeNode (std::vector< \fBPseudoBody\fP > & Bodies)\fC [inline]\fP"
+.PP
+Definition at line 323 of file OctTree.h.
+.PP
+References getBoundingBox(), kDTreeNode(), m_axis, m_bleaf, m_nleft, m_nright, and partition().
+.SH "Member Function Documentation"
+.PP 
+.SS "void kDTreeNode::getBoundingBox (const std::vector< \fBPseudoBody\fP > & bodies)\fC [inline, protected]\fP"
+.PP
+Definition at line 266 of file OctTree.h.
+.PP
+References m_l.
+.PP
+Referenced by kDTreeNode().
+.SS "void kDTreeNode::partition (std::vector< \fBPseudoBody\fP > & All, std::vector< \fBPseudoBody\fP > ** bleft, std::vector< \fBPseudoBody\fP > ** bright)\fC [inline, protected]\fP"
+.PP
+Definition at line 235 of file OctTree.h.
+.PP
+References PseudoBody::getx(), PseudoBody::gety(), PseudoBody::getz(), m_axis, and m_body.
+.PP
+Referenced by kDTreeNode().
+.SS "\fBreal\fP kDTreeNode::traverse (const \fBreal\fP & x, const \fBreal\fP & y, const \fBreal\fP & z, const \fBreal\fP & theta, const \fBreal\fP & plumsoft)\fC [inline]\fP"
+.PP
+Definition at line 385 of file OctTree.h.
+.PP
+References EPS, PseudoBody::getmass(), PseudoBody::getx(), PseudoBody::getxx(), PseudoBody::getxy(), PseudoBody::getxz(), PseudoBody::gety(), PseudoBody::getyy(), PseudoBody::getyz(), PseudoBody::getz(), PseudoBody::getzz(), m_bleaf, m_body, m_l, m_nleft, m_nright, and SPLINEQ().
+.SH "Field Documentation"
+.PP 
+.SS "int \fBkDTreeNode::m_axis\fP\fC [protected]\fP"
+.PP
+Definition at line 233 of file OctTree.h.
+.PP
+Referenced by kDTreeNode(), and partition().
+.SS "bool \fBkDTreeNode::m_bleaf\fP\fC [protected]\fP"
+.PP
+Definition at line 232 of file OctTree.h.
+.PP
+Referenced by kDTreeNode(), and traverse().
+.SS "\fBPseudoBody\fP \fBkDTreeNode::m_body\fP\fC [protected]\fP"
+.PP
+Definition at line 228 of file OctTree.h.
+.PP
+Referenced by partition(), and traverse().
+.SS "\fBreal\fP \fBkDTreeNode::m_l\fP\fC [protected]\fP"
+.PP
+Definition at line 230 of file OctTree.h.
+.PP
+Referenced by getBoundingBox(), and traverse().
+.SS "\fBkDTreeNode\fP* \fBkDTreeNode::m_nleft\fP\fC [protected]\fP"
+.PP
+Definition at line 226 of file OctTree.h.
+.PP
+Referenced by kDTreeNode(), traverse(), and ~kDTreeNode().
+.SS "\fBkDTreeNode\fP * \fBkDTreeNode::m_nright\fP\fC [protected]\fP"
+.PP
+Definition at line 226 of file OctTree.h.
+.PP
+Referenced by kDTreeNode(), traverse(), and ~kDTreeNode().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

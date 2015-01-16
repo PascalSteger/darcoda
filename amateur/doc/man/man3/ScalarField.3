@@ -1,0 +1,272 @@
+.TH "ScalarField" 3 "10 May 2010" "Version 0.1" "amateur" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ScalarField \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ScalarField.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBScalarField\fP (void)"
+.br
+.ti -1c
+.RI "\fBScalarField\fP (unsigned nx, unsigned ny, unsigned nz, float dx, int nstencil)"
+.br
+.ti -1c
+.RI "\fB~ScalarField\fP (void)"
+.br
+.ti -1c
+.RI "\fBScalarField\fP * \fBoperator=\fP (\fBScalarField\fP *s)"
+.br
+.ti -1c
+.RI "void \fBrecreate\fP (unsigned nx, unsigned ny, unsigned nz, float dx, int nstencil)"
+.br
+.ti -1c
+.RI "\fBArray3\fP * \fBgetPhi\fP (void)"
+.br
+.ti -1c
+.RI "void \fBsetPhi\fP (\fBArray3\fP *phi)"
+.br
+.ti -1c
+.RI "int \fBgetNx\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetNy\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetNz\fP (void)"
+.br
+.ti -1c
+.RI "float \fBgetDx\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetNStencil\fP (void)"
+.br
+.ti -1c
+.RI "int \fBgetNStencil2\fP (void)"
+.br
+.ti -1c
+.RI "void \fBtest\fP (void)"
+.br
+.ti -1c
+.RI "float \fBgetValue\fP (int ix, int iy, int iz)"
+.br
+.ti -1c
+.RI "void \fBsetValue\fP (int ix, int iy, int iz, float val)"
+.br
+.ti -1c
+.RI "void \fBChooseStencil\fP (void)"
+.br
+.RI "\fIChoose a stencil. Choose a stencil. \fP"
+.ti -1c
+.RI "void \fBput_CIC\fP (unsigned npart, float *coord, float *wpar)"
+.br
+.RI "\fIPut clound in cell. \fP"
+.ti -1c
+.RI "float \fBget_CIC\fP (float coordx, float coordy, float coordz)"
+.br
+.ti -1c
+.RI "void \fBlookup\fP (float *Coord, unsigned nCoord, std::vector< float > &values)"
+.br
+.ti -1c
+.RI "void \fBlookup\fP (float *Coord, unsigned nCoord, float ll, unsigned N, std::vector< float > &values)"
+.br
+.ti -1c
+.RI "float \fBdiff1\fP (int ix, int iy, int iz, int i)"
+.br
+.ti -1c
+.RI "float \fBdiff2\fP (int ix, int iy, int iz, int i, int j)"
+.br
+.ti -1c
+.RI "void \fBdiff2atCIC\fP (float *Coord, unsigned nPoints, std::vector< \fBMatrix33\fP > &t_ij)"
+.br
+.RI "\fIdiff2atCIC \fP"
+.ti -1c
+.RI "template<typename T > T \fBget_NGP\fP (T *coord)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 34 of file ScalarField.h.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ScalarField::ScalarField (void)"
+.PP
+Definition at line 29 of file ScalarField.cpp.
+.SS "ScalarField::ScalarField (unsigned nx, unsigned ny, unsigned nz, float dx, int nstencil)"
+.PP
+Definition at line 40 of file ScalarField.cpp.
+.SS "ScalarField::~ScalarField (void)"
+.PP
+Definition at line 55 of file ScalarField.cpp.
+.SH "Member Function Documentation"
+.PP 
+.SS "void ScalarField::ChooseStencil (void)"
+.PP
+Choose a stencil. Choose a stencil. \fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 436 of file ScalarField.cpp.
+.PP
+References stencil11_1, stencil11_2, stencil3_1, stencil3_2, stencil5_1, stencil5_2, stencil7_1, stencil7_2, stencil9_1, and stencil9_2.
+.PP
+Referenced by diff2atCIC().
+.SS "float ScalarField::diff1 (int ix, int iy, int iz, int i)"
+.PP
+Definition at line 194 of file ScalarField.cpp.
+.PP
+References getValue().
+.PP
+Referenced by diff2().
+.SS "float ScalarField::diff2 (int ix, int iy, int iz, int i, int j)"
+.PP
+Definition at line 215 of file ScalarField.cpp.
+.PP
+References diff1(), and getValue().
+.PP
+Referenced by diff2atCIC().
+.SS "void ScalarField::diff2atCIC (float * Coord, unsigned nPoints, std::vector< \fBMatrix33\fP > & t_ij)"
+.PP
+diff2atCIC \fBParameters:\fP
+.RS 4
+\fICoord,:\fP list of coordinates 
+.br
+\fInPoints,:\fP number of points in Coord where we want to know the tensor 
+.br
+\fIt_ij,:\fP tensor 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+void 
+.RE
+.PP
+
+.PP
+Definition at line 348 of file ScalarField.cpp.
+.PP
+References ChooseStencil(), and diff2().
+.PP
+Referenced by TidalField().
+.SS "float ScalarField::get_CIC (float coordx, float coordy, float coordz)"
+.PP
+Definition at line 161 of file ScalarField.cpp.
+.PP
+Referenced by TidalField().
+.SS "template<typename T > T ScalarField::get_NGP (T * coord)\fC [inline]\fP"
+.PP
+Definition at line 88 of file ScalarField.h.
+.PP
+References getValue().
+.SS "float ScalarField::getDx (void)"
+.PP
+Definition at line 124 of file ScalarField.cpp.
+.PP
+Referenced by operator=().
+.SS "int ScalarField::getNStencil (void)"
+.PP
+Definition at line 129 of file ScalarField.cpp.
+.PP
+Referenced by operator=().
+.SS "int ScalarField::getNStencil2 (void)"
+.PP
+Definition at line 134 of file ScalarField.cpp.
+.PP
+Referenced by operator=().
+.SS "int ScalarField::getNx (void)"
+.PP
+Definition at line 109 of file ScalarField.cpp.
+.PP
+Referenced by operator=(), and PoissonSolver< nstencil >::solve().
+.SS "int ScalarField::getNy (void)"
+.PP
+Definition at line 114 of file ScalarField.cpp.
+.PP
+Referenced by operator=(), and PoissonSolver< nstencil >::solve().
+.SS "int ScalarField::getNz (void)"
+.PP
+Definition at line 119 of file ScalarField.cpp.
+.PP
+Referenced by operator=(), and PoissonSolver< nstencil >::solve().
+.SS "\fBArray3\fP * ScalarField::getPhi (void)"
+.PP
+Definition at line 99 of file ScalarField.cpp.
+.PP
+Referenced by operator=().
+.SS "float ScalarField::getValue (int ix, int iy, int iz)"
+.PP
+Definition at line 77 of file ScalarField.cpp.
+.PP
+References Array3::getValue().
+.PP
+Referenced by diff1(), diff2(), get_NGP(), lookup(), main(), PoissonSolver< nstencil >::solve(), and PoissonSolver< nstencil >::test().
+.SS "void ScalarField::lookup (float * Coord, unsigned nCoord, float ll, unsigned N, std::vector< float > & values)"
+.PP
+Definition at line 148 of file ScalarField.cpp.
+.PP
+References getValue().
+.SS "void ScalarField::lookup (float * Coord, unsigned nCoord, std::vector< float > & values)"
+.PP
+Definition at line 139 of file ScalarField.cpp.
+.PP
+References getValue().
+.SS "\fBScalarField\fP * ScalarField::operator= (\fBScalarField\fP * s)"
+.PP
+Definition at line 60 of file ScalarField.cpp.
+.PP
+References getDx(), getNStencil(), getNStencil2(), getNx(), getNy(), getNz(), and getPhi().
+.SS "void ScalarField::put_CIC (unsigned npart, float * coord, float * wpar)"
+.PP
+Put clound in cell. \fBParameters:\fP
+.RS 4
+\fInpart\fP number of particles 
+.br
+\fIcoord\fP positions of particles 
+.br
+\fIwpar\fP mass ('weight') of particles 
+.RE
+.PP
+
+.PP
+Definition at line 276 of file ScalarField.cpp.
+.PP
+References Array3::addValue(), and Array3::setValue().
+.PP
+Referenced by TidalField().
+.SS "void ScalarField::recreate (unsigned nx, unsigned ny, unsigned nz, float dx, int nstencil)"
+.PP
+Definition at line 87 of file ScalarField.cpp.
+.PP
+References Array3::recreate().
+.PP
+Referenced by PoissonSolver< nstencil >::solve().
+.SS "void ScalarField::setPhi (\fBArray3\fP * phi)"
+.PP
+Definition at line 104 of file ScalarField.cpp.
+.SS "void ScalarField::setValue (int ix, int iy, int iz, float val)"
+.PP
+Definition at line 82 of file ScalarField.cpp.
+.PP
+References Array3::setValue().
+.PP
+Referenced by main(), PoissonSolver< nstencil >::solve(), and PoissonSolver< nstencil >::test().
+.SS "void ScalarField::test (void)"
+.PP
+Definition at line 257 of file ScalarField.cpp.
+.PP
+References Array3::setValue().
+.PP
+Referenced by main().
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for amateur from the source code.

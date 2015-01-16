@@ -1,0 +1,76 @@
+\section{PoissonSolver.h File Reference}
+\label{PoissonSolver_8h}\index{PoissonSolver.h@{PoissonSolver.h}}
+
+
+Functions to solve the Poisson problem for rho.  
+
+
+{\ttfamily \#include \char`\"{}fftw3.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}TidalField.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}ScalarField.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classPoissonSolver}{PoissonSolver$<$ nstencil $>$}
+\end{DoxyCompactItemize}
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{PoissonSolver_8h_a5829f775aff7b5e2c04c4ec77020f4ac}{fftw\_\-real}~double
+\item 
+\#define \hyperlink{PoissonSolver_8h_a57c2f618d21bf58344c3d10ce4eb0425}{POSdouble}(ix, iy, iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ (2$\ast$((nz)/2+1)) + (iz))
+\item 
+\#define \hyperlink{PoissonSolver_8h_a2893f2854bb6eb4f81510181ef7da98d}{ACC\_\-R}(ix, iy, iz)~(( (ix) $\ast$ (ny) + (iy) ) $\ast$ (nz) + (iz) )
+\item 
+\#define \hyperlink{PoissonSolver_8h_aa0ec3c1fa56accaf6945ccf59d19ec4a}{ACC\_\-C}(ix, iy, iz)~(( (ix) $\ast$ (ny) + (iy) ) $\ast$ ((nz)/2+1) + (iz))
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Functions to solve the Poisson problem for rho. 
+
+Definition in file \hyperlink{PoissonSolver_8h_source}{PoissonSolver.h}.
+
+
+
+\subsection{Define Documentation}
+\index{PoissonSolver.h@{PoissonSolver.h}!ACC\_\-C@{ACC\_\-C}}
+\index{ACC\_\-C@{ACC\_\-C}!PoissonSolver.h@{PoissonSolver.h}}
+\subsubsection[{ACC\_\-C}]{\setlength{\rightskip}{0pt plus 5cm}\#define ACC\_\-C(ix, \/  iy, \/  iz)~(( (ix) $\ast$ (ny) + (iy) ) $\ast$ ((nz)/2+1) + (iz))}\label{PoissonSolver_8h_aa0ec3c1fa56accaf6945ccf59d19ec4a}
+
+
+Definition at line 38 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver.h@{PoissonSolver.h}!ACC\_\-R@{ACC\_\-R}}
+\index{ACC\_\-R@{ACC\_\-R}!PoissonSolver.h@{PoissonSolver.h}}
+\subsubsection[{ACC\_\-R}]{\setlength{\rightskip}{0pt plus 5cm}\#define ACC\_\-R(ix, \/  iy, \/  iz)~(( (ix) $\ast$ (ny) + (iy) ) $\ast$ (nz) + (iz) )}\label{PoissonSolver_8h_a2893f2854bb6eb4f81510181ef7da98d}
+
+
+Definition at line 37 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver.h@{PoissonSolver.h}!fftw\_\-real@{fftw\_\-real}}
+\index{fftw\_\-real@{fftw\_\-real}!PoissonSolver.h@{PoissonSolver.h}}
+\subsubsection[{fftw\_\-real}]{\setlength{\rightskip}{0pt plus 5cm}\#define fftw\_\-real~double}\label{PoissonSolver_8h_a5829f775aff7b5e2c04c4ec77020f4ac}
+
+
+Definition at line 35 of file PoissonSolver.h.
+
+
+
+Referenced by PoissonSolver$<$ nstencil $>$::solve().
+
+\index{PoissonSolver.h@{PoissonSolver.h}!POSdouble@{POSdouble}}
+\index{POSdouble@{POSdouble}!PoissonSolver.h@{PoissonSolver.h}}
+\subsubsection[{POSdouble}]{\setlength{\rightskip}{0pt plus 5cm}\#define POSdouble(ix, \/  iy, \/  iz)~(((ix)$\ast$(ny) + (iy)) $\ast$ (2$\ast$((nz)/2+1)) + (iz))}\label{PoissonSolver_8h_a57c2f618d21bf58344c3d10ce4eb0425}
+
+
+Definition at line 36 of file PoissonSolver.h.
+

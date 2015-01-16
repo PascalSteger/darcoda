@@ -1,0 +1,47 @@
+\section{AHFrun.h File Reference}
+\label{AHFrun_8h}\index{AHFrun.h@{AHFrun.h}}
+
+
+Header file with all publicly known functions from \hyperlink{AHFrun_8cpp}{AHFrun.cpp}.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{AHFrun_8h_a4dfcaa53f6208d77814e562b7dab7d94}{AHFrun} (unsigned isnap)
+\begin{DoxyCompactList}\small\item\em Controls execution of AHFstep. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Header file with all publicly known functions from \hyperlink{AHFrun_8cpp}{AHFrun.cpp}. 
+
+Definition in file \hyperlink{AHFrun_8h_source}{AHFrun.h}.
+
+
+
+\subsection{Function Documentation}
+\index{AHFrun.h@{AHFrun.h}!AHFrun@{AHFrun}}
+\index{AHFrun@{AHFrun}!AHFrun.h@{AHFrun.h}}
+\subsubsection[{AHFrun}]{\setlength{\rightskip}{0pt plus 5cm}void AHFrun (unsigned {\em isnap})}\label{AHFrun_8h_a4dfcaa53f6208d77814e562b7dab7d94}
+
+
+Controls execution of AHFstep. 
+
+Creates the parameter file, invokes AHFstep, moves output files and renames them 
+\begin{DoxyParams}{Parameters}
+\item[{\em isnap}]snapshot ID \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+Definition at line 139 of file AHFrun.cpp.
+
+
+
+References CreateAHFParameterFile(), MoveAHFout(), RenameAHFout(), and RunAHFstep().
+
+
+
+Referenced by main().
+
