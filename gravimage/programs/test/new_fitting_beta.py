@@ -14,6 +14,7 @@ ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/sphere/')
 import gi_analytic as ga
 
 def analytic_beta(x, gp):
+    #r_a1 = 1000
     # gaia 1 pop
     return ga.beta_gaia(x, gp)[0]
     # Hern: return x**2/(x**2+r_a1**2)

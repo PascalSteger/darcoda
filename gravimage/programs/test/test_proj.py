@@ -5,7 +5,7 @@
 # check deprojection and projection of nu
 # with analytic Hernquist profiles
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import numpy as np
 from scipy.interpolate import splrep, splint
@@ -44,7 +44,6 @@ G1  = G1*msun/km**2/pc
 
 Nfine = 30
 MtoL = 100000. # constant
-
 
 r0 = np.logspace(-2, 2, 10)
 nuanf  = ga.rho_hern(r0, 1, 1) # 1/MtoL

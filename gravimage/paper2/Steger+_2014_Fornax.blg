@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2012)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Steger+_2014_Fornax.aux
+The style file: mn2e.bst
+Database file #1: thesis.bib
+Warning--I didn't find a database entry for "Steger+2014"
+Warning--I didn't find a database entry for "DeBoer2013"
+You've used 1 entry,
+            2938 wiz_defined-function locations,
+            616 strings with 4302 characters,
+and the built_in function-call counts, 420 in all, are:
+= -- 36
+> -- 23
+< -- 0
++ -- 8
+- -- 8
+* -- 32
+:= -- 84
+add.period$ -- 0
+call.type$ -- 1
+change.case$ -- 6
+chr.to.int$ -- 1
+cite$ -- 1
+duplicate$ -- 17
+empty$ -- 26
+format.name$ -- 10
+if$ -- 78
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 1
+newline$ -- 7
+num.names$ -- 4
+pop$ -- 5
+preamble$ -- 1
+purify$ -- 6
+quote$ -- 0
+skip$ -- 17
+stack$ -- 0
+substring$ -- 18
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 9
+warning$ -- 0
+while$ -- 5
+width$ -- 0
+write$ -- 13
+(There were 2 warnings)

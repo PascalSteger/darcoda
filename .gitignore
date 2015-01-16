@@ -1,15 +1,16 @@
+backup
+doc
+
 DTgaia
 DTcoll
 DTwalk
 DTobs
+DTtriax
+DThern
 DTclus
 DTdisc
-DTtriax
 DTdiscmock
 DTdiscsim
-DThern
-backup
-doc
 
 \#*
 \.\#*
@@ -35,3 +36,14 @@ auto
 *.el
 ramses
 /NEC/ramses
+
+
+*.log
+RunJob*
+*DS_Store*
+__pycache__
+*.pyc
+._*
+holding_stack
+
+*.o
