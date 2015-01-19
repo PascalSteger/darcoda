@@ -213,6 +213,7 @@ if __name__ == '__main__':
     import import_path as ip
     # load stored parameters
     ip.insert_sys_path(basename+'programs/')
+    ip.insert_sys_path(basename+'programs/sphere')
     import gi_params as glp
     #ip.remove_first() # uncomment if current program names should be used
     # uncomment following to use stored collection, loglike, all other modules
