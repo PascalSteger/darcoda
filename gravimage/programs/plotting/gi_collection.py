@@ -541,7 +541,7 @@ class ProfileCollection():
                 self.plot_data(ax, basename, prof, pop, gp)
 
             if (gp.investigate == 'walk' or gp.investigate == 'gaia' or gp.investigate=='triax') \
-               and prof != 'Sig' and prof != 'nu':
+               and prof != 'Sig' and prof != 'sig' and prof != 'nu':
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
                 ax.plot(r0, y0, 'b--', lw=2)
