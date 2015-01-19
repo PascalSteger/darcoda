@@ -1,0 +1,38 @@
+* gaia
+** 1
+|    Timestamp | beta | plotted | outcome                                 |
+|--------------+------+---------+-----------------------------------------|
+| 201501051644 | 00 0 | p       | n(r) too shallow, beta* fine till rhalf |
+| 201412250929 | -    | -       | no scale_0.txt                          |
+| 201412112140 | -    | -       | no module gl_class_profiles             |
+| 201412112138 |      |         |                                         |
+| 201410280736 |      |         |                                         |
+
+** 2
+|    Timestamp | beta | plotted | outcome                                   |
+|--------------+------+---------+-------------------------------------------|
+| 201501091502 | 00 0 | p       | n(r) too steep, beta* too flat, chi^2 off |
+| 201501090757 | -    | p       | n(r) too steep, beta* at 0, wrong         |
+| 201501070939 | 00   | p       |                                           |
+
+
+** 3
+** 4
+** 5
+** 6
+** 7
+** 8
+
+* walk
+** 1
+** 2
+
+
+* triax
+** 1 = cusp along intermediate axis
+** 2 = cusp along x
+** 3 = cusp along y
+** 4 = cusp along z
+
+* obs
+** 1 = Fornax
