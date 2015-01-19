@@ -1,6 +1,6 @@
 * gaia
 ** 1
-|    Timestamp | beta | plotted | outcome                                 |
+|    Timestamp | beta | status | outcome                                 |
 |--------------+------+---------+-----------------------------------------|
 | 201501051644 | 00 0 | p       | n(r) too shallow, beta* fine till rhalf |
 | 201412250929 | -    | -       | no scale_0.txt                          |
@@ -9,30 +9,123 @@
 | 201410280736 |      |         |                                         |
 
 ** 2
-|    Timestamp | beta | plotted | outcome                                   |
+|    Timestamp | beta | status | outcome                                   |
 |--------------+------+---------+-------------------------------------------|
 | 201501091502 | 00 0 | p       | n(r) too steep, beta* too flat, chi^2 off |
 | 201501090757 | -    | p       | n(r) too steep, beta* at 0, wrong         |
 | 201501070939 | 00   | p       |                                           |
 
-
 ** 3
+|    Timestamp | beta | status | outcome                                                           |
+|--------------+------+--------+-------------------------------------------------------------------|
+| 201501070939 | 00   | pc     | n(r) not curved enough, beta negative at high radii, otherwise ok |
+| 201501070936 | -    | pc     | good, n_nu(r) slightly too high in extension bins                 |
+
 ** 4
+|    Timestamp | beta | status | outcome                                     |
+|--------------+------+--------+---------------------------------------------|
+| 201501051646 |  000 | p      | n(r) too broad, beta too high at high radii |
+| 201512250933 |   00 |        | no scale_0.txt                              |
+
 ** 5
+|    Timestamp | beta | status | outcome            |
+|--------------+------+--------+--------------------|
+| 201501051646 | 000  | p      | n(r) too broad     |
+| 201411181525 | ?    | -      | no get_binned_data |
+|              |      |        |                    |
+|              |      |        |                    |
+
 ** 6
+|    Timestamp | beta | status | outcome              |
+|--------------+------+--------+----------------------|
+| 201501051647 | 000  | p      | good, but broad n(r) |
+| 201410272023 | -    | -      | no scale_0           |
+|              |      |        |                      |
+|              |      |        |                      |
+|              |      |        |                      |
+
 ** 7
+|    Timestamp | beta | status | outcome                                     |
+|--------------+------+--------+---------------------------------------------|
+| 201501051647 | 000  | p      | broad n(r), beta too positive at high radii |
+| 201410280740 | -    | -      | no scale_0                                  |
+|              |      |        |                                             |
+
 ** 8
+|    Timestamp | beta | status | outcome                                           |
+|--------------+------+--------+---------------------------------------------------|
+| 201501051648 | 000  | p      | broad n(r), peak is n_nu, beta too high at high r |
+| 201410272024 | -    | -      | no scale_0                                        |
+|              |      |        |                                                   |
+|              |      |        |                                                   |
+|              |      |        |                                                   |
+
+** 9
+|    Timestamp | beta | status | outcome    |
+|--------------+------+--------+------------|
+| 201410280741 | -    | -      | no scale_0 |
+| 201410272025 | -    | -      | no scale_0 |
+
+** 10
+| Timestamp | beta | status | outcome |
+|-----------+------+--------+---------|
+| -         |      |        |         |
+|           |      |        |         |
+
 
 * walk
 ** 1
+|    Timestamp | beta | status | outcome                                        |
+|--------------+------+--------+------------------------------------------------|
+| 201501112129 | -    | apc    | good, n(r) consistently too high, beta too low |
+| 201501112121 | 000  | ap(c)  | very good, n(r) fine, beta slightly too low    |
+
 ** 2
+|    Timestamp | beta | status | outcome              |
+|--------------+------+--------+----------------------|
+| 201501112130 | -    | ap     | good, beta too low   |
+| 201501112121 | 000  | apc    | very good, n(r) fine |
+|              |      |        |                      |
 
 
 * triax
 ** 1 = cusp along intermediate axis
+|    Timestamp | beta | status | outcome                                         |
+|--------------+------+--------+-------------------------------------------------|
+| 201501062010 |  000 | p      | M, nu, sig fine, rest wrong                     |
+| 201501051650 |  000 | p      | rho(half) fine, M fine, sig, nu fine, beta fine |
+|              |      |        |                                                 |
+
 ** 2 = cusp along x
+|    Timestamp | beta | status | outcome                            |
+|--------------+------+--------+------------------------------------|
+| 201501112138 | -    | ap     | rho fine, beta too small in center |
+| 201501062009 | 000  | p      | all wrong, M fine a bit            |
+|              |      |        |                                    |
+
 ** 3 = cusp along y
+|    Timestamp | beta | status | outcome                                    |
+|--------------+------+--------+--------------------------------------------|
+| 201501112139 | -    | p      | M fine, beta gets negative, n_nu too steep |
+| 201501062009 | 000  | p      | bad                                        |
+
 ** 4 = cusp along z
+|    Timestamp | beta | status | outcome                                |
+|--------------+------+--------+----------------------------------------|
+| 201501112140 |    - | p      | n(r) too high, beta too high in center |
+| 201501062009 |  000 | -      | no profiles                            |
+| 201501062008 |    0 |        | n(r) wrong, beta too high in center    |
+
 
 * obs
-** 1 = Fornax
+** 1 = Fornax with one pop
+|    Timestamp | beta | status | outcome                                                |
+|--------------+------+--------+--------------------------------------------------------|
+| 201502151319 | -    | ap     | beta goes from 0 to negative values, pinchpoint in rho |
+|              |      |        |                                                        |
+
+** 1 = Fornax with split pops
+|    Timestamp | beta | status | outcome     |
+|--------------+------+--------+-------------|
+| 201501151319 | -    | ap     | no profiles |
+|              |      |        |             |
