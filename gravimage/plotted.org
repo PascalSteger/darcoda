@@ -122,7 +122,7 @@
 |    Timestamp | beta | status | outcome                                                |
 |--------------+------+--------+--------------------------------------------------------|
 | 201502151319 | -    | ap     | beta goes from 0 to negative values, pinchpoint in rho |
-|              |      |        |                                                        |
+| 201501081656 | 000  | p      | no scale_0                                             |
 
 ** 1 = Fornax with split pops
 |    Timestamp | beta | status | outcome     |
