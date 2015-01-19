@@ -545,7 +545,7 @@ class ProfileCollection():
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
                 ax.plot(r0, y0, 'b--', lw=2)
-                ax.ylim([min(y0-0.5), max(y0+0.5)])
+                ax.set_ylim([min(y0-0.5), max(y0+0.5)])
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')
