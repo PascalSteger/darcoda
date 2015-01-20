@@ -18,7 +18,7 @@ import subprocess
 import numpy as np
 import pymultinest
 import pickle
-import gl_helper as gh
+import gi_helper as gh
 import pdb
 import numpy.random as npr
 # increment NICEness of process by 1, CPU usage shall not block others
@@ -34,12 +34,12 @@ parser.add_option("-c", "--case", dest="case",
                       default=-1, help="case: 1, 2, ..")
 (options, args) = parser.parse_args()
 print('gravimage.py '+str(options.investigation)+' '+str(options.case))
-import gl_params
+import gi_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
 ts = '' # empty timestamp means: create new timestamp with folder
-gp = gl_params.Params(ts, options.investigation, int(options.case))
-import gl_file as gf
+gp = gi_params.Params(ts, options.investigation, int(options.case))
+import gi_file as gf
 
 def show(filepath):
     subprocess.call(('xdg-open', filepath))
@@ -99,6 +99,7 @@ def prepare_data(gp):
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
+
 def run(gp):
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
@@ -116,7 +117,7 @@ def run(gp):
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.95,
+                    sampling_efficiency = 0.5,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -139,13 +140,13 @@ def run(gp):
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
-                    init_MPI = True,     # use MPI
+                    init_MPI = False,     # use MPI
                     dump_callback = None)
 
 if __name__=="__main__":
     global Cube, geom_loglike
-    from gl_class_cube import Cube
-    from gl_loglike import geom_loglike
+    from gi_class_cube import Cube
+    from gi_loglike import geom_loglike
 
     # hwmess = "Hello, World!! I am process %d of %d on %s.\n"
     # myrank = MPI.COMM_WORLD.Get_rank()
