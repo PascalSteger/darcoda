@@ -24,6 +24,7 @@ class Profiles:
         self.betastar = np.zeros((pops+1)*nepol)
         self.beta = np.zeros((pops+1)*nepol) # (pops+1) for overall (rho*), 1, 2, ...
         self.nu   = np.zeros((pops+1)*nepol) # dito
+        self.jfac = np.zeros((pops+1)*nepol)
         self.nrnu = np.zeros((pops+1)*nepol)
         self.Sig  = np.zeros((pops+1)*nepol)
         self.sig  = np.zeros((pops+1)*nepol)
@@ -45,6 +46,8 @@ class Profiles:
             self.M = vec
         elif prof == 'nu':
             self.nu[pop*self.nepol:(pop+1)*self.nepol] = vec # vec has nrho-3 entries
+        elif prof == 'jfac':
+            self.jfac[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'nrnu':
             self.nrnu[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'betastar':
@@ -82,7 +85,6 @@ class Profiles:
     # @param zetab second virial parameter
     # @param pop 1,2,...
 
-
     def get_prof(self, prof, pop):
         if prof == 'rho':
             return self.rho
@@ -94,6 +96,8 @@ class Profiles:
             return self.Sig[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nu':
             return self.nu[pop*self.nepol:(pop+1)*self.nepol]
+        elif prof == 'jfac':
+            return self.jfac[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nrnu':
             return self.nrnu[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'betastar':
@@ -111,13 +115,11 @@ class Profiles:
     # @param prof of this profile
     # @param pop and of this population (if applicable)
 
-
     def get_zeta(self, pop):
         return self.zetaa, self.zetab
     ## \fn get_zeta(self, pop)
     # return zeta parameters, scalar
     # @param pop int 1,2,... for population
-
 
     def __repr__(self):
         return "Profiles: "+str(self.pops)+" populations, "+str(self.nepol)+" nepol, "+" chi2 = "+str(self.chi2)

@@ -36,7 +36,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'obs' # determine which data set to work on
+            self.investigate  = 'gaia' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -125,7 +125,6 @@ class Params():
         # ----------------------------------------------------------------------
         self.last_plot = -1    # timestamp of last automatic plot, set to -1
         self.plot_after = 3600  # [s] to elapse before automatic plotting called again
-
         # parameter spaces
         # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at

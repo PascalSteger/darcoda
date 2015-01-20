@@ -82,11 +82,10 @@ class Datafile:
             # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
             # already normalized to same total mass
             if gp.geom == 'sphere':
+                # TODO: look at where the high last steep decline comes from
                 Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, \
                                                     Sigdat, Sigerr, gp.xfine)
-                dummyx, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
-                                                                Sigdatnu, Sigerrnu,\
-                                                                gp)
+                dummyx, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, Sigdatnu, Sigerrnu, gp)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
                 self.nuerr_epol.append(gh.linipollog(gp.xfine, nuerrnu, gp.xepol))
                 nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
@@ -154,9 +153,12 @@ class Datafile:
                                             extright,
                                             nre[-1]]))
                 errnre = np.ones(1+len(extleft)+len(nre)+len(extright)+1)*maxnre/10.
+                for k in range(5):
+                    errnre[k] *= 5
+                    errnre[-k] *= 5
                 self.nrnuerr.append(np.hstack([nuhalf/3.,
                                                errnre]))
-
+                pdb.set_trace()
                 # import gi_physics as phys
                 # from pylab import loglog, axvline, axhline, plot, xscale, clf
                 # loglog(gp.xepol, self.nu_epol[0], 'b.-', lw=1)

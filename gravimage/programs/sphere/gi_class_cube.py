@@ -178,11 +178,16 @@ def map_nr_tracers(params, pop, gp):
             nr[k] = nr[k-1] + dnrdlrparams[k] * nrscale/2. * deltalogr
         else:
             # use pa => [-1, 1] for full interval
-            nr[k] = nr[k-1] + (dnrdlrparams[k]-0.5)*2. * nrscale * deltalogr
+            scal = nrscale
+            # check whether we are in extension bins
+            if k<3 or k>=gp.nepol-3:
+                # if so, increase nrscale 5-fold
+                scal = 5*nrscale
+            nr[k] = nr[k-1] + (dnrdlrparams[k]-0.5)*2. * scal * deltalogr
 
         # cut at zero: we do not want to have density rising outwards
+    for k in range(0, gp.nepol):
         nr[k] = max(0., nr[k])
-
     # rho slope for asymptotically reaching r = \infty is given directly
     # must lie below -3, thus n(r)>3
     #deltalogrlast = (np.log(gp.xepol[-1])-np.log(gp.xepol[-2]))

@@ -54,7 +54,6 @@ def rho(r0, rhodmpar, pop, gp):
 
     # get spline representation on gp.xepol, where rhodmpar are defined on
     spline_n = nr(gp.xepol, vec, pop, gp)
-    #pdb.set_trace()
     # and apply it to these radii, which may be anything in between
     # self.Xscale is determined in 2D, not 3D
     # use gp.dat.rhalf[0]

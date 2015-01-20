@@ -58,6 +58,8 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('Sig', Signu, 0, gp)
         tmp_profs.set_MtoL(MtoL)
 
+        # if gp.pops=1:
+        #     tmp_profs.set_prof('nu', rhostar, 1, gp) # TODO enable!
     else:
         lbaryonpar = np.zeros(gp.nrho)
         MtoL = 0.

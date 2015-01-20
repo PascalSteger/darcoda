@@ -207,7 +207,6 @@ def rho_INT_Sum_MR(r0, rho, gp):
 
 def Sig_NORM_rho(R0, Sig, Sigerr, gp):
     rho =  Sig_INT_rho(R0, Sig, gp)         # [Munit/lunit^3]
-
     if min(rho)<0.:
         gh.LOG(1, '*** Sig_NORM_rho: got bin with negative 3D density! ***')
         for i in range(len(rho)):
@@ -241,7 +240,6 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
 # @param Sig 2D density, [Munit/pc^2]
 # @param Sigerr 2D density error, [Munit/pc^2]
 # @param gp global parameters
-
 
 def Sig_INT_rho(R0, Sig, gp):
     splpar_Sig = splrep(R0, np.log(Sig)) # get spline in log space to circumvent flattening
