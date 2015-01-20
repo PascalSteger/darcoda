@@ -109,7 +109,7 @@ def run(gp):
                   sampling_efficiency = 0.25, # 0.05 according to
                                               # MultiNest README for >
                                               # 30 params
-                  n_iter_before_update = 5, # output after this
+                  n_iter_before_update = 20, # output after this
                                                 # many iterations
                   null_log_evidence = -1e100,
                   max_modes = gp.nlive,   # preallocation of modes:
@@ -137,18 +137,5 @@ if __name__=="__main__":
     global Cube, geom_loglike
     from gi_class_cube import Cube
     from gi_loglike import geom_loglike
-
-    # hwmess = "Hello, World!! I am process %d of %d on %s.\n"
-    # myrank = MPI.COMM_WORLD.Get_rank()
-    # nprocs = MPI.COMM_WORLD.Get_size()
-    # procnm = MPI.Get_processor_name()
-    # import sys
-    # sys.stdout.write(hwmess % (myrank, nprocs, procnm))
-
-    # TODO MPI: wait for prepare_data to finish
-    # if MPI.COMM_WORLD.Get_rank() == 0:
-    #     # TODO: wrong: have 0 take part in sampling as well
-    prepare_data(gp) # run once
-    # else:
-    #     # run with full MPI
+    prepare_data(gp)
     run(gp)
