@@ -17,7 +17,7 @@ from gi_class_profiles import Profiles
 import gi_output as go
 import gi_helper as gh
 import gi_analytic as ga
-import gi_project as glp
+import gi_project as gip
 
 USE_ALL=False
 
@@ -54,11 +54,13 @@ class ProfileCollection():
         self.binmin = np.array([])
         self.binmax = np.array([])
         self.Mmin  = Profiles(pops, nepol)
+        self.M99lo = Profiles(pops, nepol)
         self.M95lo = Profiles(pops, nepol)
         self.M68lo = Profiles(pops, nepol)
         self.Mmedi = Profiles(pops, nepol)
         self.M68hi = Profiles(pops, nepol)
         self.M95hi = Profiles(pops, nepol)
+        self.M99hi = Profiles(pops, nepol)
         self.Mmax  = Profiles(pops, nepol)
         self.analytic = Profiles(pops, 100)
     ## \fn __init__(self, pops, nepol)
@@ -98,11 +100,13 @@ class ProfileCollection():
         self.binmax = Binmax
         self.x0 = x0
         self.Mmin.x0  = x0
+        self.M99lo.x0 = x0
         self.M95lo.x0 = x0
         self.M68lo.x0 = x0
         self.Mmedi.x0 = x0
         self.M68hi.x0 = x0
         self.M95hi.x0 = x0
+        self.M99hi.x0 = x0
         self.Mmax.x0  = x0
     ## \fn set_x0(self, x0)
     # set radii for 1sigma, 2sigma profiles
@@ -123,11 +127,13 @@ class ProfileCollection():
         #if prof == 'Sig':
         #    norm = gh.ipol_rhalf_log(gp.xepol, tmp[ll/2], gp.Xscale[0])
         self.Mmin.set_prof(prof,  tmp[0],       pop, gp)
+        self.M99lo.set_prof(prof, tmp[ll*0.01], pop, gp)
         self.M95lo.set_prof(prof, tmp[ll*0.05], pop, gp)
         self.M68lo.set_prof(prof, tmp[ll*0.32], pop, gp)
         self.Mmedi.set_prof(prof, tmp[ll/2],    pop, gp)
         self.M68hi.set_prof(prof, tmp[ll*0.68], pop, gp)
         self.M95hi.set_prof(prof, tmp[ll*0.95], pop, gp)
+        self.M99hi.set_prof(prof, tmp[ll*0.99], pop, gp)
         self.Mmax.set_prof(prof,  tmp[-1],      pop, gp)
         return tmp
     ## \fn sort_prof(self, prof, pop, gp)
@@ -140,10 +146,10 @@ class ProfileCollection():
     def calculate_M(self, gp):
         if len(self.profs)>0:
             for i in range(len(self.profs)):
-                Mprof = glp.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 1))
+                Mprof = gip.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 1))
                 self.profs[i].set_prof('M', Mprof, 1, gp)
                 if gp.pops == 2:
-                    Mprof = glp.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 2))
+                    Mprof = gip.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 2))
                     self.profs[i].set_prof('M', Mprof, 2, gp)
         else:
             gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.M')
@@ -177,43 +183,43 @@ class ProfileCollection():
         anbeta = []; annu = [];  anSig = []
         if gp.investigate == 'gaia':
             anrho = ga.rho_gaia(r0, gp)[0]
-            anM = glp.rho_SUM_Mr(r0, anrho)
+            anM = gip.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_gaia(r0, gp)
             tmp_annu = ga.rho_gaia(r0, gp)[1]
             annu.append( tmp_annu )
-            anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp) )
+            anSig.append( gip.rho_INT_Sig(r0, tmp_annu, gp) )
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_gaia(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_gaia(r0,gp)[pop]
                 annu.append(nu)
-                anSig.append(glp.rho_INT_Sig(r0, nu, gp))
+                anSig.append(gip.rho_INT_Sig(r0, nu, gp))
         elif gp.investigate == 'walk':
             anrho = ga.rho_walk(r0, gp)[0]
-            anM = glp.rho_SUM_Mr(r0, anrho)
+            anM = gip.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_deriv_walk(r0, gp) # TODO too high in case of core
             tmp_annu = ga.rho_walk(r0, gp)[1]
             annu.append( tmp_annu )
-            anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp) )
+            anSig.append( gip.rho_INT_Sig(r0, tmp_annu, gp) )
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_walk(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_walk(r0, gp)[pop]
                 annu.append(nu)
-                anSig.append(glp.rho_INT_Sig(r0, nu, gp))
+                anSig.append(gip.rho_INT_Sig(r0, nu, gp))
         elif gp.investigate == 'triax':
             anrho = ga.rho_triax(r0, gp) # one and only
-            anM = glp.rho_SUM_Mr(r0, anrho)
+            anM = gip.rho_SUM_Mr(r0, anrho)
             annr = ga.nr3Dtot_deriv_triax(r0, gp)
             tmp_annu = ga.rho_triax(r0, gp) # TODO, M/L=1 assumed here, wrong
             annu.append(tmp_annu)
-            anSig.append( glp.rho_INT_Sig(r0, tmp_annu, gp))
+            anSig.append( gip.rho_INT_Sig(r0, tmp_annu, gp))
             for pop in np.arange(1, gp.pops+1):
                 beta = ga.beta_triax(r0)
                 anbeta.append(beta)
                 nu = ga.rho_triax(r0, gp) # TODO, assumes M/L=1
                 annu.append(nu)
-                anSig.append( glp.rho_INT_Sig(r0, nu, gp))
+                anSig.append( gip.rho_INT_Sig(r0, nu, gp))
         self.analytic.set_prof('rho', anrho, 0, gp)
         self.analytic.set_prof('M', anM, 0, gp)
         self.analytic.set_prof('nr', annr, 0, gp)
@@ -238,11 +244,13 @@ class ProfileCollection():
         output = go.Output()
         uni = unit(prof)
         output.add('radius (models) [pc]', gp.xepol)
+        output.add('M 99% CL low ' + uni, self.M99lo.get_prof(prof, pop))
         output.add('M 95% CL low ' + uni, self.M95lo.get_prof(prof, pop))
         output.add('M 68% CL low ' + uni, self.M68lo.get_prof(prof, pop))
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
         output.add('M 68% CL high '+ uni, self.M68hi.get_prof(prof, pop))
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
+        output.add('M 99% CL high '+ uni, self.M99hi.get_prof(prof, pop))
         output.write(basename+'output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
         if (gp.investigate =='walk' or gp.investigate=='gaia') \
            and (prof != 'Sig'):
@@ -420,7 +428,7 @@ class ProfileCollection():
                 elif pop == 1:
                     nuprof = nu2
             if gp.geom == 'sphere':
-                Mprof = glp.rho_SUM_Mr(gp.xepol, nuprof)
+                Mprof = gip.rho_SUM_Mr(gp.xepol, nuprof)
                 Mmax = max(Mprof) # Mprof[-1]
                 ihalf = -1
                 for kk in range(len(Mprof)):
@@ -465,14 +473,19 @@ class ProfileCollection():
     # @param gp
 
     def fill_nice(self, ax, prof, pop, gp):
+        M99lo = self.M99lo.get_prof(prof, pop)
         M95lo = self.M95lo.get_prof(prof, pop)
         M68lo = self.M68lo.get_prof(prof, pop)
         Mmedi = self.Mmedi.get_prof(prof, pop)
         r0    = gp.xepol
         M68hi = self.M68hi.get_prof(prof, pop)
         M95hi = self.M95hi.get_prof(prof, pop)
+        M99hi = self.M99hi.get_prof(prof, pop)
         print('lengths:', len(r0), len(M95lo), len(M95hi))
         print('min max M95: ', min(M95lo), max(M95lo), prof)
+        ax.fill_between(r0, M99lo, M99hi, color='black', alpha=0.1, lw=0.1)
+        ax.plot(r0, M99lo, color='black', lw=0.4)
+        ax.plot(r0, M99hi, color='black', lw=0.3)
         ax.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
         ax.plot(r0, M95lo, color='black', lw=0.4)
         ax.plot(r0, M95hi, color='black', lw=0.3)
@@ -486,9 +499,11 @@ class ProfileCollection():
         else:
             self.plot_Xscale_3D(ax, gp)
         ax.set_xlim([r0[0], r0[-1]])
-        if prof=='beta' or prof=='betastar':
+        if prof == 'beta' or prof == 'betastar':
             ax.set_ylim([-1,1])
-        elif prof=='nr' or prof=='nrnu':
+        elif prof == 'nr':
+            ax.set_ylim([-0.5, 5])
+        elif prof == 'nrnu':
             ax.set_ylim([0., max(M95hi)])
         else:
             ax.set_ylim([min(M68lo), max(M68hi)])
@@ -540,8 +555,7 @@ class ProfileCollection():
             if prof == 'Sig' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
 
-            if (gp.investigate == 'walk' or gp.investigate == 'gaia' or gp.investigate=='triax') \
-               and prof != 'Sig' and prof != 'sig' and prof != 'nu':
+            if (gp.investigate == 'walk' or gp.investigate == 'gaia' or gp.investigate=='triax') and prof != 'sig':
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
                 ax.plot(r0, y0, 'b--', lw=2)

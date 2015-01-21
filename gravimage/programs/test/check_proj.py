@@ -15,7 +15,7 @@ import import_path as ip
 ip.insert_sys_path('/home/psteger/sci/darcoda/gravimage/programs/reducedata/')
 
 import gi_params as gp
-import gi_project as glp
+import gi_project as gip
 
 
 def run(gp):
@@ -71,8 +71,8 @@ def run(gp):
         ax1.set_ylabel(r'$\nu_{2D}(R)/\nu_{2D}(0)$')
 
         try:
-            ax1.plot(Rbin, glp.rho_INT_Sig(Rbin, dens, denserr, gp))
-            ax1.plot(Rbin, glp.rho_INT_Sig(Rbin, Sig_INT_rho(Rbin,Dens,Denserr),denserr, gp))
+            ax1.plot(Rbin, gip.rho_INT_Sig(Rbin, dens, denserr, gp))
+            ax1.plot(Rbin, gip.rho_INT_Sig(Rbin, Sig_INT_rho(Rbin,Dens,Denserr),denserr, gp))
         except Exception as detail:
             print('rho_INT_Sig giving NaN in plotting')
         draw()
@@ -96,7 +96,7 @@ def run(gp):
         # projSig = test(rbin, binmin, binmax, dens)
         # ax1.plot(rbin, projSig)
 
-        ax2.plot(rbin, glp.Sig_INT_rho(Rbin,Dens,Denserr),color='green')
+        ax2.plot(rbin, gip.Sig_INT_rho(Rbin,Dens,Denserr),color='green')
         draw()
 
         ioff(); show()

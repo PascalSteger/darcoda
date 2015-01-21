@@ -12,7 +12,7 @@ import pdb
 import numpy as np
 import gi_file as gf
 import gi_helper as gh
-import gi_project as glp
+import gi_project as gip
 
 def run(gp):
     import gr_params
@@ -100,9 +100,9 @@ def run(gp):
         f_mass.close()
 
         # deproject Sig to get nu
-        numedi = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*p_dens, gp)
-        numin  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(p_dens-p_edens), gp)
-        numax  = glp.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(p_dens+p_edens), gp)
+        numedi = gip.Sig_INT_rho(Rbin*Rscalei, Dens0pc*p_dens, gp)
+        numin  = gip.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(p_dens-p_edens), gp)
+        numax  = gip.Sig_INT_rho(Rbin*Rscalei, Dens0pc*(p_dens+p_edens), gp)
 
         nu0pc  = numedi[0]
         gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)

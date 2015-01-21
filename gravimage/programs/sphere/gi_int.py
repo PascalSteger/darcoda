@@ -15,7 +15,7 @@ import gi_units as gu
 import gi_helper as gh
 import gi_analytic as ga
 import gi_physics as phys
-import gi_project as glp
+import gi_project as gip
 
 import matplotlib
 matplotlib.use('pdf')
@@ -174,7 +174,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # \Sigma
     # ---------------------------------------------------------------
-    Sigfine  = glp.rho_param_INT_Sig_theta(r0fine, nupar, pop, gp)
+    Sigfine  = gip.rho_param_INT_Sig_theta(r0fine, nupar, pop, gp)
     if gp.checksig and gp.stopstep <= 4:
         clf()
         anSig = ga.Sigma(r0fine, gp)[pop]

@@ -9,7 +9,7 @@
 import pdb
 import numpy as np
 import gi_helper as gh
-import gi_project as glp
+import gi_project as gip
 from scipy.interpolate import splrep, splev
 
 def introduce_points_in_between(r0, gp):
@@ -85,7 +85,7 @@ class Datafile:
                 # TODO: look at where the high last steep decline comes from
                 Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, \
                                                     Sigdat, Sigerr, gp.xfine)
-                dummyx, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, Sigdatnu, Sigerrnu, gp)
+                dummyx, nudatnu, nuerrnu, Mrnu = gip.Sig_NORM_rho(gp.xfine, Sigdatnu, Sigerrnu, gp)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
                 self.nuerr_epol.append(gh.linipollog(gp.xfine, nuerrnu, gp.xepol))
                 nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)

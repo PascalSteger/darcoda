@@ -29,9 +29,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
     off += offstep
 
-    # tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
-    # tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
-
     offstep = gp.nrho
     lbaryonpar = np.array(cube[off:off+offstep]) #SS cube[1+nrho:1+2*nrho]
     tmp_rhostar = phys.rho(gp.xepol, lbaryonpar, 0, gp)[gp.nexp:-gp.nexp]

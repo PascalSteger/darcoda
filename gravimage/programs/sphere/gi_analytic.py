@@ -11,7 +11,7 @@ import numpy as np
 import pdb
 
 import gi_units as gu
-import gi_project as glp
+import gi_project as gip
 import gi_helper as gh
 
 asech = lambda x: np.arccosh(1./x)
@@ -166,8 +166,8 @@ def M_gaia(rad, gp):
         s = rad/r_DM
         Mstar = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
     else:
-        #Mdm = glp.rho_INT_Sum_MR(rad, rhodm, gp)
-        Mstar = glp.rho_INT_Sum_MR(rad, rhostar, gp)
+        #Mdm = gip.rho_INT_Sum_MR(rad, rhodm, gp)
+        Mstar = gip.rho_INT_Sum_MR(rad, rhostar, gp)
     # from here on, we assume to work on 2D radii
     return Mstar, Mstar
 ## \fn M_gaia(rad, gp)
@@ -187,8 +187,8 @@ def rhotot_gaia(rad, gp):
 
 def Sig_gaia(rad, gp):
     rhodm, rhostar1 = rho_gaia(rad, gp)
-    Sigdm = glp.rho_INT_Sig(rad, rhodm, gp)
-    Sigstar = glp.rho_INT_Sig(rad, rhostar1, gp)
+    Sigdm = gip.rho_INT_Sig(rad, rhodm, gp)
+    Sigstar = gip.rho_INT_Sig(rad, rhostar1, gp)
     return Sigdm, Sigstar
 ## \fn Sig_gaia(rad, gp)
 # get projected surface density for Gaia tracer population
@@ -298,7 +298,7 @@ def rhotot_walk(rad, gp, mf1=1, mf2=1):
 def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
     # based on underlying binned data
     # rhotot = rhotot_walk(rad, gp, mf1, mf2)
-    # Mtot = glp.rho_SUM_Mr(rad, rhotot)
+    # Mtot = gip.rho_SUM_Mr(rad, rhotot)
 
     # better method using quad numeric integration scheme with continuous rhotot_walk
     from scipy.integrate import quad
@@ -326,8 +326,8 @@ def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
 def Sig_walk(rad, gp, mf1=1, mf2=1):
     rhodm, rhostar1, rhostar2 = rho_walk(rad, gp, mf1, mf2)     # 3* [msun/pc^3]
 
-    Sig_star1 = glp.rho_INT_Sig(rad, rhostar1, gp) # [msun/pc^2]
-    Sig_star2 = glp.rho_INT_Sig(rad, rhostar2, gp) # [msun/pc^2]
+    Sig_star1 = gip.rho_INT_Sig(rad, rhostar1, gp) # [msun/pc^2]
+    Sig_star2 = gip.rho_INT_Sig(rad, rhostar2, gp) # [msun/pc^2]
 
     return Sig_star1+Sig_star2, Sig_star1, Sig_star2               # 3* [msun/pc^2]
 ## \fn Sig_walk(rad, gp, mf1, mf2)

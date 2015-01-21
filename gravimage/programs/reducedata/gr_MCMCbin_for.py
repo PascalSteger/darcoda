@@ -15,7 +15,7 @@ from scipy.stats import kurtosis
 
 import gi_file as gf
 import gi_helper as gh
-import gi_project as glp
+import gi_project as gip
 from BiWeight import meanbiweight
 
 def run(gp):
@@ -121,9 +121,9 @@ def run(gp):
 
 
     # deproject Sig to get nu
-    numedi = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
-    #numin  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
-    numax  = glp.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens+P_edens), gp)
+    numedi = gip.Sig_INT_rho(Rbin*Rscalei, Sig0pc*P_dens, gp)
+    #numin  = gip.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens-P_edens), gp)
+    numax  = gip.Sig_INT_rho(Rbin*Rscalei, Sig0pc*(P_dens+P_edens), gp)
 
     nu0pc  = numedi[0]
     gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)

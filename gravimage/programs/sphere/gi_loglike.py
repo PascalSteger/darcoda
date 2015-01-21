@@ -21,7 +21,7 @@ from gi_class_profiles import Profiles
 from gi_priors import check_beta
 from gi_chi import calc_chi2
 import gi_helper as gh
-import gi_project as glp
+import gi_project as gip
 
 
 def geom_loglike(cube, ndim, nparams, gp):
@@ -34,7 +34,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         # rhodmpar hold [rho(rhalf), nr to be used for integration
         # from halflight radius, defined on gp.xepol]
         # (only calculate) M, check
-        tmp_M0 = glp.rho_SUM_Mr(gp.xepol, tmp_rho0)
+        tmp_M0 = gip.rho_SUM_Mr(gp.xepol, tmp_rho0)
          # store profiles
         tmp_profs.set_prof('nr', 1.*rhodmpar[1+1:-1], 0, gp)
         tmp_profs.set_prof('rho', tmp_rho0, 0, gp)
@@ -49,7 +49,7 @@ def geom_loglike(cube, ndim, nparams, gp):
         rhostar = phys.rho(gp.xepol, lbaryonpar, 0, gp)
 
         off += offstep
-        Signu = glp.rho_param_INT_Sig(gp.xepol, lbaryonpar, 0, gp) # [Munit/pc^2]
+        Signu = gip.rho_param_INT_Sig(gp.xepol, lbaryonpar, 0, gp) # [Munit/pc^2]
         MtoL = cube[off]
         off += 1
 
@@ -71,9 +71,9 @@ def geom_loglike(cube, ndim, nparams, gp):
 
 
         tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)
-        tmp_Signu = glp.rho_param_INT_Sig(gp.xepol, nupar, pop, gp)
+        tmp_Signu = gip.rho_param_INT_Sig(gp.xepol, nupar, pop, gp)
         #tmp_nu = pool.apply_async(phys.rho, [gp.xepol, nupar, pop, gp])
-        #tmp_Signu = pool.apply_async(glp.rho_param_INT_Sig, [gp.xepol, nupar, pop, gp])
+        #tmp_Signu = pool.apply_async(gip.rho_param_INT_Sig, [gp.xepol, nupar, pop, gp])
 
 
         off += offstep

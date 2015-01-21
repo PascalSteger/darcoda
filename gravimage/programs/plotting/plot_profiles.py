@@ -56,7 +56,6 @@ def correct_E_error(filename):
 # replace 3.4230210-301 and ...+301 by 3.4230210E-301 and ...+301 the sed way
 # @param filename string
 
-
 def read_models(basename):
     # read in all accepted models
     print(basename+'{ev.dat, phys_live.points}')
@@ -76,7 +75,6 @@ def read_models(basename):
 ## \fn read_models(basename)
 # read in all models, concatenate them
 # @param basename string
-
 
 def pcload_single_entries(basename, gp):
     import gi_collection as glc
@@ -171,6 +169,7 @@ def run(timestamp, basename, gp, evince=False):
         pc.plot_profile(basename, 'beta', pop, gp)
         pc.plot_profile(basename, 'Sig', pop, gp)
         pc.plot_profile(basename, 'nu', pop, gp)
+        pc.plot_profile(basename, 'jfac', pop, gp)
         pc.plot_profile(basename, 'nrnu', pop, gp)
         pc.plot_profile(basename, 'sig', pop, gp)
 
@@ -214,13 +213,13 @@ if __name__ == '__main__':
     # load stored parameters
     ip.insert_sys_path(basename+'programs/')
     ip.insert_sys_path(basename+'programs/sphere')
-    import gi_params as glp
+    import gi_params as gip
     #ip.remove_first() # uncomment if current program names should be used
     # uncomment following to use stored collection, loglike, all other modules
     #ip.insert_sys_path(basename+'sphere')
     #import gi_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
-    gp = glp.Params(timestamp)
+    gp = gip.Params(timestamp)
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
     run(timestamp, basename, gp, True)

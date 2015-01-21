@@ -287,8 +287,7 @@ def run(gp):
     R1.sort()
     R2.sort()
 
-    import gi_project as glp
-    #clf()
+    import gi_project as gip
     for pop in np.arange(2)+1:
         if pop == 1:
             R0 = R1 # [pc]
@@ -337,7 +336,7 @@ def run(gp):
                               2*maxr, 4*maxr, 8*maxr]) # [pc]
         gp.xfine = introduce_points_in_between(gp.xepol, gp)
         Sigdatnu, Sigerrnu = gh.complete_nu(Rbin, Sig_phot, Sig_phot/10., gp.xfine)
-        dummyx, nudatnu, nuerrnu, Mrnu = glp.Sig_NORM_rho(gp.xfine, \
+        dummyx, nudatnu, nuerrnu, Mrnu = gip.Sig_NORM_rho(gp.xfine, \
                                                           Sigdatnu, Sigerrnu,\
                                                           gp)
         nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)

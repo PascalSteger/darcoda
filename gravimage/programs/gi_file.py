@@ -214,7 +214,7 @@ def write_headers_2D(gp, pop):
           'kappa_los(R) [1];','error [1]', file=f_kap)
 
     f_zeta = open(gp.files.zetafiles[pop], 'w')
-    print('zeta_A [1],  zeta_B [1]')
+    print('zeta_A [1],  zeta_B [1]', file=f_zeta)
 
     return f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta
 ## \fn write_headers_2D(gp, pop)
