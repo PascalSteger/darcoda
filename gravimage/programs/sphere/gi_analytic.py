@@ -21,12 +21,10 @@ def X(s0):
     Xout = np.zeros(len(s0))
     for i in range(len(s0)):
         s = s0[i]                       # [1]
-
         if s<=1.:
             Xout[i] = (1.-s**2)**(-0.5)*asech(s) # [1]
         else:
             Xout[i] = (s**2-1.)**(-0.5)*asec(s) # [1]
-
     return Xout                         # [1]
 ## \fn X(s0)
 # equation 33, 34 from Hernquist 1990
@@ -61,7 +59,6 @@ def rho_triax(rad, gp):
         rhos  = 5.522E-2                # [Munit/pc^3]
     else:
         raise Exception('wrong case for triax system')
-
     rho = rhos
     rho /= (rad/rs)**gamma
     rho /= (1+(rad/rs)**(1/alpha))**(alpha*(beta-gamma))
@@ -77,42 +74,33 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
     #             (1+(r/r_DM)^alpha_DM)^((gamma_DM-beta_DM)/alpha_DM)
     # need values for rho0, r_DM, alpha_DM, beta_DM, gamma_DM
     # and the corresponding variables for the stellar component
-
     A = np.loadtxt(gp.files.analytic, unpack=False)
-
     gamma_star1 = A[7]
     beta_star1  = A[8]
     alpha_star1 = 2.0
     r_star1     = 1000*A[9] #[pc] # both description of filename and file content is wrong
     # name is rstar/10 in three digits, file content is given in kpc
-
     gamma_star2 = A[11]
     beta_star2  = A[12]
     alpha_star2 = 2.0
     r_star2     = 1000.*A[13] #[pc]
-
     gamma_DM    = A[15]
     beta_DM     = A[16]
     r_DM        = A[17] # [pc]
     alpha_DM    = A[18]
     rho0        = A[19] # [Munit/pc^3]
-
     # attention: the stellar tracers in Walker's datasets do not have mass density profile!
     rho0star1    = rho0*mf1
-
     # rho(r, rscale, rho0, alpha, beta, gamma):
     #  (2*[pc], or 2*[rcore]), [Munit/pc^3], 3*[1]
     rhodm    = rho_general(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM) # [msun/pc^3]
     rhostar1 = rho_general(rad, r_star1, rho0star1, alpha_star1, beta_star1, gamma_star1)
-
     if gp.pops==1:
         return rhodm, rhostar1
     # [msun/pc^3]
-
     #ntracer2  = gp.ntracer[2]
     rho0star2 = rho0*mf2#/1.e6*ntracer2
     rhostar2  = rho_general(rad, r_star2, rho0star2, alpha_star2, beta_star2, gamma_star2)
-
     return rhodm, rhostar1, rhostar2                 # 3* [Munit/pc^3]
 ## \fn rho_walk(rad, gp, mf1, mf2)
 # Walker model: read values from theoretical params file,
@@ -123,7 +111,6 @@ def rho_walk(rad, gp, mf1=1, mf2=1):
 # @param mf2 factor to go from rho to rho_star2
 # @return 3D density in [Munit/pc^3], for each DM, stellar pop 1, stellar pop 2 (if available)
 
-
 def rho_gaia(rad, gp):
     if gp.investigate != 'gaia':
         raise Exception('wrong investigation!')
@@ -133,10 +120,8 @@ def rho_gaia(rad, gp):
     if gp.case == 9 or gp.case == 10:
         alpha_star1 = 0.5
         beta_DM = 4.
-
     beta_star1, r_DM, gamma_star1, r_star1, r_a1,\
         gamma_DM,rho0 = gp.files.params
-
     if gamma_star1 == 0.1:
         nu0 = 2.2e7/r_star1**3
     elif gamma_star1 == 1.0:
@@ -145,7 +130,6 @@ def rho_gaia(rad, gp):
     gh.LOG(2, '   rho0 = ',rho0)
     gh.LOG(2, '   r_DM = ', r_DM)
     gh.LOG(2, '   r_star1 = ', r_star1)
-
     rhodm = rho_general(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
     rhostar1 = rho_general(rad, r_star1, nu0, \
                    alpha_star1, beta_star1, gamma_star1)
@@ -156,11 +140,9 @@ def rho_gaia(rad, gp):
 # @param gp global parameters
 # @return 3D densities (DM+stellar population) in [Munit/pc^3]
 
-
 def M_gaia(rad, gp):
     rhodm, rhostar = rho_gaia(rad, gp)
     # 3D radius here
-
     beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
     if gamma_DM == 1:
         s = rad/r_DM
@@ -175,7 +157,6 @@ def M_gaia(rad, gp):
 # @param rad radius in pc, 3D
 # @param gp global parameters
 
-
 def rhotot_gaia(rad, gp):
     rhodm, rhostar1 = rho_gaia(rad, gp)
     return rhodm
@@ -183,7 +164,6 @@ def rhotot_gaia(rad, gp):
 # return total mass density for Gaia challenge models
 # @param rad radii in [pc]
 # @param gp global parameters
-
 
 def Sig_gaia(rad, gp):
     rhodm, rhostar1 = rho_gaia(rad, gp)
@@ -195,7 +175,6 @@ def Sig_gaia(rad, gp):
 # not based on analytic integral
 # @param rad radii in [pc]
 # @param gp global parameters
-
 
 def nu3Dtot_gaia(rad, gp):
     if gp.investigate != 'gaia':
@@ -214,7 +193,6 @@ def nu3Dtot_gaia(rad, gp):
 # @param rad radius in [pc]
 # @param gp global parameters
 # @return 3D overall density (DM+stellar population) in [Munit/pc^3]
-
 
 def nr3Dtot_deriv_walk(rad, gp):
     # TODO too high for walk1, core
@@ -421,7 +399,6 @@ def Phi(r,alpha,beta,gamma,rho0):
 
 def read_abc(gp):
     A = np.loadtxt(gp.files.analytic, unpack=False)
-
     alpha_star1 = 2
     beta_star1  = int(A[8])
     gamma_star1 = int(A[7])
@@ -452,7 +429,7 @@ def Mabc_analytic(r, gp):
 def PhiBeta(r,beta,C):
     return -C/r*(1.-(1.+r)**(3-beta))
 ## \fn PhiBeta(r,beta,C):
-# equation in Zhang table p.2
+# equation in Zhao1996 table p.2
 # @param r in [pc]
 # @param beta [1]
 # @param C
