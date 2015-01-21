@@ -158,7 +158,6 @@ class Datafile:
                     errnre[-k] *= 5
                 self.nrnuerr.append(np.hstack([nuhalf/3.,
                                                errnre]))
-                pdb.set_trace()
                 # import gi_physics as phys
                 # from pylab import loglog, axvline, axhline, plot, xscale, clf
                 # loglog(gp.xepol, self.nu_epol[0], 'b.-', lw=1)
@@ -183,7 +182,6 @@ class Datafile:
                 dummy1, dummy2, dummy3, nudat, nuerr = \
                         gh.readcol5(gp.files.nufiles[pop])
                 self.nuhalf.append(nudat[round(len(nudat)/2)]) #HS ToDo: check validity of this
-
             self.Sig.append(Sigdat)    # [Munit/pc^2]
             self.Sigerr.append(Sigerr) # [Munit/pc^2]
             self.nu.append(nudat)      # [Munit/pc^3]
