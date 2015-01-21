@@ -23,7 +23,6 @@ from gi_chi import calc_chi2
 import gi_helper as gh
 import gi_project as gip
 
-
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.pops, gp.nepol)
     off = 0
@@ -31,6 +30,13 @@ def geom_loglike(cube, ndim, nparams, gp):
     if gp.chi2_Sig_converged <= 0:
         rhodmpar = np.array(cube[off:off+offstep])
         tmp_rho0 = phys.rho(gp.xepol, rhodmpar, 0, gp)
+        tmp_rhofine = phys.rho(gp.xfine, rhodmpar, 0, gp)
+
+
+        tmp_Jfine = gip.Jpar(gp.xfine, tmp_rhofine, gp)
+        tck = splrep(gp.xfine[:-3], tmp_Jfine)
+        tmp_J = splev(gp.xepol, tck)
+        #tmp_D = gip.Dpar(gp.xfine, tmp_rhofine, gp.xepol)
         # rhodmpar hold [rho(rhalf), nr to be used for integration
         # from halflight radius, defined on gp.xepol]
         # (only calculate) M, check
@@ -38,8 +44,8 @@ def geom_loglike(cube, ndim, nparams, gp):
          # store profiles
         tmp_profs.set_prof('nr', 1.*rhodmpar[1+1:-1], 0, gp)
         tmp_profs.set_prof('rho', tmp_rho0, 0, gp)
+        tmp_profs.set_prof('jfac', tmp_J, 0, gp)
         tmp_profs.set_prof('M', tmp_M0, 0, gp)
-
     off += offstep # anyhow, even if Sig not yet converged
 
     # get profile for rho*
@@ -47,34 +53,28 @@ def geom_loglike(cube, ndim, nparams, gp):
         offstep = gp.nrho
         lbaryonpar = np.array(cube[off:off+offstep])
         rhostar = phys.rho(gp.xepol, lbaryonpar, 0, gp)
-
         off += offstep
         Signu = gip.rho_param_INT_Sig(gp.xepol, lbaryonpar, 0, gp) # [Munit/pc^2]
         MtoL = cube[off]
         off += 1
-
         # store these profiles every time
         tmp_profs.set_prof('nu', rhostar, 0, gp)
         tmp_profs.set_prof('Sig', Signu, 0, gp)
         tmp_profs.set_MtoL(MtoL)
-
         # if gp.pops=1:
         #     tmp_profs.set_prof('nu', rhostar, 1, gp) # TODO enable!
     else:
         lbaryonpar = np.zeros(gp.nrho)
         MtoL = 0.
-
     for pop in np.arange(1, gp.pops+1):  # [1, 2, ..., gp.pops]
         offstep = gp.nrho
         nupar = np.array(cube[off:off+offstep])
         tmp_nrnu = 1.*nupar[1+1:-1]
 
-
         tmp_nu = phys.rho(gp.xepol, nupar, pop, gp)
         tmp_Signu = gip.rho_param_INT_Sig(gp.xepol, nupar, pop, gp)
         #tmp_nu = pool.apply_async(phys.rho, [gp.xepol, nupar, pop, gp])
         #tmp_Signu = pool.apply_async(gip.rho_param_INT_Sig, [gp.xepol, nupar, pop, gp])
-
 
         off += offstep
         offstep = gp.nbeta

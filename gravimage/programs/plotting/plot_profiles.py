@@ -169,7 +169,7 @@ def run(timestamp, basename, gp, evince=False):
         pc.plot_profile(basename, 'beta', pop, gp)
         pc.plot_profile(basename, 'Sig', pop, gp)
         pc.plot_profile(basename, 'nu', pop, gp)
-        pc.plot_profile(basename, 'jfac', pop, gp)
+        #pc.plot_profile(basename, 'jfac', pop, gp) # TODO: enable
         pc.plot_profile(basename, 'nrnu', pop, gp)
         pc.plot_profile(basename, 'sig', pop, gp)
 

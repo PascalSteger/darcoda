@@ -11,19 +11,23 @@
 ** 2
 |    Timestamp | beta | status | outcome                                                     |
 |--------------+------+--------+-------------------------------------------------------------|
-| 201501091502 | 00 0 | p      | n(r) too steep, beta* too flat, chi^2 off                   |
-| 201501090757 | -    | p      | n(r) too steep, beta* at 0, wrong                           |
-| 201501070939 | 00   | p      | n(r) too high, beta* too flat, wrong                        |
-| 201501070936 | -    | p      | n(r) too high, beta* too flat, wrong                        |
-| 201501070935 | 0    | p      | central slope too high, beta little too small at high radii |
-| 201501070921 | 000  | p      | n(r) too high, beta* too flat at high radii                 |
+| 201501202212 |  000 | p      | early stage of convergence, negative n_nu(r)                |
+| 201501202211 |    - | p      | early stage of convergence, get down scale in delta n(r)    |
+| 201501091502 |  000 | p      | n(r) too steep, beta* too flat, chi^2 off                   |
+| 201501090757 |    - | p      | n(r) too steep, beta* at 0, wrong                           |
+| 201501070939 |   00 | p      | n(r) too high, beta* too flat, wrong                        |
+| 201501070936 |    - | p      | n(r) too high, beta* too flat, wrong                        |
+| 201501070935 |    0 | p      | central slope too high, beta little too small at high radii |
+| 201501070921 |  000 | p      | n(r) too high, beta* too flat at high radii                 |
 |              |      |        |                                                             |
 
 ** 3
 |    Timestamp | beta | status | outcome                                                           |
 |--------------+------+--------+-------------------------------------------------------------------|
-| 201501070939 | 00   | pc     | n(r) not curved enough, beta negative at high radii, otherwise ok |
-| 201501070936 | -    | pc     | good, n_nu(r) slightly too high in extension bins                 |
+| 201501202212 |  000 | p      | early stage, beta too high                                        |
+| 201501212211 |    - | p      | early stage, beta bang on, n(r) too steep, siglos off             |
+| 201501070939 |   00 | pc     | n(r) not curved enough, beta negative at high radii, otherwise ok |
+| 201501070936 |    - | pc     | good, n_nu(r) slightly too high in extension bins                 |
 
 ** 4
 |    Timestamp | beta | status | outcome                                     |
@@ -81,15 +85,17 @@
 ** 1
 |    Timestamp | beta | status | outcome                                        |
 |--------------+------+--------+------------------------------------------------|
+| 201501202215 | -    | ap     | TODO: Sigma analytic too far off               |
 | 201501112129 | -    | apc    | good, n(r) consistently too high, beta too low |
 | 201501112121 | 000  | ap(c)  | very good, n(r) fine, beta slightly too low    |
 
 ** 2
-|    Timestamp | beta | status | outcome              |
-|--------------+------+--------+----------------------|
-| 201501112130 | -    | ap     | good, beta too low   |
-| 201501112121 | 000  | apc    | very good, n(r) fine |
-|              |      |        |                      |
+|    Timestamp | beta | status | outcome                      |
+|--------------+------+--------+------------------------------|
+| 201501202216 | -    | ap     | TODO: Sigma analytic profile |
+| 201501112130 | -    | ap     | good, beta too low           |
+| 201501112121 | 000  | apc    | very good, n(r) fine         |
+|              |      |        |                              |
 
 
 * triax

@@ -82,9 +82,9 @@ class Params():
 
         # MultiNest options
         # ----------------------------------------------------------------------
-        self.getSigdata = False   # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
+        self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 30
-        self.chi2_Sig_converged = 1000 # how many times do we have to be below that threshold?
+        self.chi2_Sig_converged = -1 # TODO 1000 how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run
