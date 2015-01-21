@@ -151,12 +151,12 @@ def run(LogLikelihood,
 # Runs MultiNest
 # The most important parameters are the two log-probability functions Prior
 # and LogLikelihood. They are called by MultiNest.
-# Prior should transform the unit cube into the parameter cube. Here
+# @param Prior should transform the unit cube into the parameter cube. Here
 # is an example for a uniform prior::
 #    def Prior(cube, ndim, nparams):
 #        for i in range(ndim):
 #            cube[i] = cube[i] * 10 * math.pi
-# The LogLikelihood function gets this parameter cube and should
+# @param LogLikelihood The LogLikelihood function gets this parameter cube and should
 # return the logarithm of the likelihood.
 # Here is the example for the eggbox problem::
 #    def Loglike(cube, ndim, nparams, lnew):
@@ -164,8 +164,17 @@ def run(LogLikelihood,
 #        for i in range(ndim):
 #            chi *= math.cos(cube[i] / 2.)
 #        return math.pow(2. + chi, 5)
-# Some of the parameters are explained below. Otherwise consult the
-# MultiNest documentation.
+# @param nest_ndims number of dimensions
+# @param wrapped_params [array]
+# @param nest_mmodal split by modes
+# @param nest_ceff constant efficiency?
+# @param nest_nlive number of live points
+# @param nest_updInt update interval
+# @param outputfiles_basename string
+# @param seed random seed
+# @param nest_fb ?
+# @param nest_resume boolean whether to resume earlier run
+# @param context ?
 # @param nest_IS  If True, Multinest will use Importance Nested Sampling (INS). Read http://arxiv.org/abs/1306.2144
 # for more details on INS. Please read the MultiNest README file before using the INS in MultiNest v3.0.
 #@param nest_totPar Total no. of parameters, should be equal to ndims in most cases

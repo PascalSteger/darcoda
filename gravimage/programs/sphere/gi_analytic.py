@@ -279,7 +279,6 @@ def nr3Dtot_gaia(rad, gp):
 # @param rad radius in pc, not log.
 # @param gp global parameters
 
-
 def rhotot_walk(rad, gp, mf1=1, mf2=1):
     if gp.pops==1:
         rhodm, rhostar1 = rho_walk(rad, gp, mf1, mf2)         # 3* [msun/pc^3]
@@ -294,18 +293,14 @@ def rhotot_walk(rad, gp, mf1=1, mf2=1):
 # @param gp global parameters
 # @return total 3D density in [Munit/pc^3]. in case of Walker dataset, we have that the tracer particles do not contribute to the overall density, thus we use the DM density only
 
-
 def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
     # based on underlying binned data
     # rhotot = rhotot_walk(rad, gp, mf1, mf2)
     # Mtot = gip.rho_SUM_Mr(rad, rhotot)
-
     # better method using quad numeric integration scheme with continuous rhotot_walk
     from scipy.integrate import quad
-
     def igra(r):
         return 4.*np.pi*r**2*rhotot_walk(r, gp, mf1, mf2)
-
     Mtot = np.zeros(gp.nipol)
     meps = np.zeros(gp.nipol)
     for i in range(gp.nipol):
@@ -325,10 +320,8 @@ def Mtot_walk(rbin, gp, mf1 = 1, mf2 = 1):
 
 def Sig_walk(rad, gp, mf1=1, mf2=1):
     rhodm, rhostar1, rhostar2 = rho_walk(rad, gp, mf1, mf2)     # 3* [msun/pc^3]
-
     Sig_star1 = gip.rho_INT_Sig(rad, rhostar1, gp) # [msun/pc^2]
     Sig_star2 = gip.rho_INT_Sig(rad, rhostar2, gp) # [msun/pc^2]
-
     return Sig_star1+Sig_star2, Sig_star1, Sig_star2               # 3* [msun/pc^2]
 ## \fn Sig_walk(rad, gp, mf1, mf2)
 # calculate 2D surface density from radius for pop 0, 1, 2
@@ -336,7 +329,6 @@ def Sig_walk(rad, gp, mf1=1, mf2=1):
 # @param gp global parameters
 # @param mf1 factor rho0 pop 1
 # @param mf2 factor rho0 pop 2
-
 
 def beta_walk(rad, gp):
     # Osipkov-Merritt anisotropy profile with r_a/r_* = 10^4 for isotropic models
@@ -346,18 +338,15 @@ def beta_walk(rad, gp):
     rs1    = A[9] * 1000. # [pc]
     rbyrs1 = rad/rs1
     beta1  = rbyrs1**2 / (rars1**2+rbyrs1**2)
-
     rars2  = A[14]
     rs2    = A[13] * 1000. # [pc]
     rbyrs2 = rad/rs2
     beta2  = rbyrs2**2 / (rars2**2+rbyrs2**2)
-
     return -1, beta1, beta2
 ## \fn beta_walk(rad, gp)
 # calculate Osipkov-Merritt velocity anisotropy profile, for pop 0 (dummy), 1, 2
 # @param rad radius in [pc]
 # @param gp
-
 
 def q(i,j):
     from scipy.misc import factorial
@@ -371,7 +360,6 @@ def q(i,j):
 # @param j second integer parameter
 # @return q quantity (see paper)
 
-
 def apar(i, alpha, beta, gamma, rho0):
     C = rho0
     return 4.*np.pi*alpha*C/(alpha*(3-gamma)+i)*q(alpha*(beta-3.)-1.,i)
@@ -382,7 +370,6 @@ def apar(i, alpha, beta, gamma, rho0):
 # @param beta see Zhao 1996
 # @param gamma see Zhao 1996
 # @param rho0 central density
-
 
 def bpar(i, alpha, beta, gamma, rho0):
     out = 0.
@@ -399,7 +386,6 @@ def bpar(i, alpha, beta, gamma, rho0):
 # @param gamma see Zhao 1996
 # @param rho0 central density
 
-
 def S(i,chi):
     if i==0:
         return -np.log(chi)
@@ -410,7 +396,6 @@ def S(i,chi):
 # @param i
 # @param chi
 
-
 def chi(r,alpha):
     ra = r**(1./alpha)
     return ra/(1.+ra)
@@ -418,7 +403,6 @@ def chi(r,alpha):
 # chi
 # @param r radius in [pc]
 # @param alpha
-
 
 def Phi(r,alpha,beta,gamma,rho0):
     out=0.
@@ -435,8 +419,7 @@ def Phi(r,alpha,beta,gamma,rho0):
 # @param gamma [1]
 # @param rho0 [Munit/pc^3]
 
-
-def read_abc():
+def read_abc(gp):
     A = np.loadtxt(gp.files.analytic, unpack=False)
 
     alpha_star1 = 2
@@ -444,31 +427,27 @@ def read_abc():
     gamma_star1 = int(A[7])
     r_star1     = 1000*A[9] #[pc] # both description of filename and file contents are wrong
     # name is rstar/10 in three digits, file content is given in kpc
-
     alpha_star2 = 2
     beta_star2  = int(A[12])
     gamma_star2 = int(A[11])
     r_star2     = 1000.*A[13] #[pc]
-
     alpha_DM    = int(A[18])
     beta_DM     = int(A[16])
     gamma_DM    = int(A[15])
     r_DM        = A[17] # [pc]
-
     rho0        = A[19] # [Munit/pc^3]
     return alpha_DM, beta_DM, gamma_DM, rho0, r_DM
-## \fn read_abc()
+## \fn read_abc(gp)
 # read analytic values for Walker mock data
+# @param gp global parameters
 
-
-def Mabc_analytic(r):
+def Mabc_analytic(r, gp):
     # read in rho0, alpha, beta, gamma
-    alpha,beta,gamma,rho0,r_DM = read_abc()
-
+    alpha,beta,gamma,rho0,r_DM = read_abc(gp)
     return -Phi(r,alpha,beta,gamma,rho0)*r/gu.G1__pcMsun_1km2s_2    # [Munit]
 ## \fn Mabc_analytic(r)
 # calculate enclosed mass
-
+# @param gp global parameters
 
 def PhiBeta(r,beta,C):
     return -C/r*(1.-(1.+r)**(3-beta))
@@ -478,23 +457,22 @@ def PhiBeta(r,beta,C):
 # @param beta [1]
 # @param C
 
-
-def MBetaAnalytic(r):
-    alpha,beta,gamma,rho0,r_DM = read_abc()
+def MBetaAnalytic(r, gp):
+    alpha,beta,gamma,rho0,r_DM = read_abc(gp)
     r /= r_DM
     return -PhiBeta(r,beta,rho0)*r/gu.G1__pcMsun_1km2s_2 # [Munit]
 ## \fn MBetaAnalytic(r)
 # MBetaAnalytic
 # @param r in [pc]
+# @param gp global parameters
 
-
-def Manalytic(r):
-    alpha,beta,gamma,rho0,r_DM = read_abc()
+def Manalytic(r, gp):
+    alpha,beta,gamma,rho0,r_DM = read_abc(gp)
     return 4*np.pi*rho0*(1./(1.+r/r_DM)+np.log(1.+r/r_DM)-1.)
 ## \fn Manalytic(r)
 # analytic mass profile
 # @param r radius in [pc]
-
+# @param gp global parameters
 
 def beta_gaia(rad, gp):
     if gp.investigate != 'gaia':
@@ -510,13 +488,11 @@ def beta_gaia(rad, gp):
 # @param rad radius in [pc]
 # @param gp global parameters
 
-
 def beta_hern(rad):
     return 0.*rad, 0.*rad
 ## \fn beta_hern(rad)
 # analytic value for beta in Hernquist case
 # @param rad radius [pc]
-
 
 def beta_triax(rad):
     eta = 0.5
@@ -584,7 +560,6 @@ def rho(r0, gp):
 # @param rad radii in pc
 # @param gp global parameters
 
-
 def M_hern(r0, gp):
     s = r0/gp.ana                            # [1]
     Mr =  gp.anM*s**2/(1.+s)**2             # [Munit]
@@ -594,7 +569,6 @@ def M_hern(r0, gp):
 # @param r0 radius in [pc]
 # @param gp global parameters
 # @return 3D mass in [Munit]
-
 
 def Mr(r0, gp):
     if gp.investigate == 'hern':
@@ -609,7 +583,6 @@ def Mr(r0, gp):
 # @param rad radii in pc
 # @param gp global parameters
 
-
 def Sig_hern(r0, gp):
     s = np.array(r0)/gp.ana                                          # [1]
     Sigma =  gp.anM/(2.*np.pi*gp.ana**2)*((2.+s**2)*X(s)-3.)/((1.-s**2)**2) # [Munit/pc^2]
@@ -619,7 +592,6 @@ def Sig_hern(r0, gp):
 # @param r0 radius in [pc]
 # @param gp global parameters
 # @return 2D surface density in [Munit/pc^2]
-
 
 def Sigma(r0, gp):
     if gp.investigate == 'hern':
@@ -637,7 +609,6 @@ def Sigma(r0, gp):
 # @param gp global parameters
 # @return Sigma_0, Sigma_1
 
-
 def sigr2_hern(r0, gp):
     s = np.array(r0)/gp.ana          # [pc/1000pc]
     G1 = 1
@@ -648,7 +619,6 @@ def sigr2_hern(r0, gp):
 # @param r0 radius in [pc]
 # @param gp global parameters
 # @return sig_r^2 in [(km/s)^2]
-
 
 def sigr2(r0, gp):
     if gp.investigate == 'hern':
@@ -662,7 +632,6 @@ def sigr2(r0, gp):
 # @param gp global parameters
 # @return sigr2
 
-
 def sig_los_hern(r0, gp):
     return np.sqrt(Sig_sig_los_2_hern(r0, gp)/Sig_hern(r0, gp)[1])
 ## \fn sig_los_hern(r0, gp)
@@ -670,7 +639,6 @@ def sig_los_hern(r0, gp):
 # @param r0 radius in [pc]
 # @param gp global parameters
 # @return sig_LOS for pop  in [km/s]
-
 
 def sig_los(r0, gp):
     if gp.investigate == 'hern':
@@ -683,14 +651,12 @@ def sig_los(r0, gp):
 # @param r0 radii in pc
 # @param gp global parameters
 
-
 def kappa_hern(r0):
     return 3.*np.ones(len(r0))          # [1]
 ## \fn kappa_hern(r0)
 # analyitc value for the fourth order momentum of the LOS velocity
 # @param r0 radius in [pc]
 # @return 3 for Gaussian velocity distribution
-
 
 def Sig_sig_los_2_hern(r0, gp):
     # \sigma_p = \sigma_projected = \sigma_{LOS}
@@ -709,7 +675,6 @@ def Sig_sig_los_2_hern(r0, gp):
 # @param r0 radius in [pc]
 # @param gp global parameters
 # @return surface density * sig_LOS^2 in [(km/s)^2 * Munit/pc^2]
-
 
 def Sig_sig_los_2(r0, gp):
     if gp.investigate == 'hern':
