@@ -82,7 +82,7 @@ class Params():
 
         #Limits for central densities (z=0)
 #        self.rho_C_max = 0.2 #Msun pc^-3, for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
-        self.rho_C_max = 0.5*1.E9  #Msun kpc^-3
+        self.rho_C_max = 0.5E9  #Msun kpc^-3
         self.rho_C_min = 0.0 #Msun pc^-3
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
@@ -96,7 +96,7 @@ class Params():
         self.kz_nu_C_min = -1.0 #SS
 
         #Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 110.0
+        self.max_kz_slope = 90.0
 
         #Limits for sigz central value
         self.sigz_C_max = 50.
@@ -117,6 +117,9 @@ class Params():
         self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
+        #fraction of profiles to save, set <0 for no profile saving
+        self.save_fraction = -1.0
+
 
         #HS Working Line
         #Everthing below this line is old, and hasn't been considered for keeping
@@ -129,8 +132,8 @@ class Params():
         # at zmin instead of 0 norm2 = 10.**2 # and for the second
         # component, if there is one
         self.quadratic = False    # linear or quad interpol.
-        self.monotonic = False    # mono-prior on rho(z)
-        self.monotonic_nu = False # mono-prior on nu(z)
+        self.monotonic_rho = True    # mono-prior on rho(z)
+        self.monotonic_nu = True # mono-prior on nu(z)
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
         self.baryonmodel = 'sim' # read in surface density from
                                  # corresponding surfden file

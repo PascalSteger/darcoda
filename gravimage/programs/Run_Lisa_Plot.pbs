@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -S /bin/bash
-#PBS -lnodes=1:ppn=1,walltime=00:02:00:00
+#PBS -lnodes=1:ppn=1,walltime=00:00:30:00
 
 # Copying program and data files to scratch
 
-PlotFolder=/DTsimplenu/0/201501051700/
+PlotFolder=/DTsimplenu/0/201501161127/
 
 export RUNDIR=$TMPDIR
 

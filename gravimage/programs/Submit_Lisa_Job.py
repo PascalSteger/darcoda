@@ -18,7 +18,7 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='00:16:00:00'
+walltime='00:08:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
@@ -34,6 +34,9 @@ holding_number = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
 #Copy code to holding area with timestamp
 shutil.copytree(gravimage_path + '/programs', holding_stack_path + holding_number + '/programs/')
+
+#Remove __pycache__ from the holding area
+shutil.rmtree(holding_stack_path + holding_number + '/programs/__pycache__', ignore_errors=True)
 
 #Create PBS file
 pbs_filename = holding_stack_path + holding_number + '/programs/PBS_LisaSubmit_' + holding_number + '.pbs'

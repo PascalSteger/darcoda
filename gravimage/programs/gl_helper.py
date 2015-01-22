@@ -16,7 +16,7 @@ import getpass
 import os
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
-DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
+DEBUGLEVEL = 0 # 0: none, 1: some, 2: more, 3: all
 
 def LOG(level, message, var=''):
     if level > DEBUGLEVEL:
@@ -845,7 +845,6 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 
         #Calculate velocity dispersion and Poisson error (sqrt(sigma_z))
         sig_vec.append(np.sqrt(np.mean(v_list_temp**2) - (np.mean(v_list_temp))**2))
-        print('Mean velocity = ', np.mean(v_list_temp))
         sig_err_vec.append(np.sqrt(np.sqrt(np.mean(v_list_temp**2) - np.mean(v_list_temp)**2))) #HS TODO: think about this error calculation
     return nu_vec, nu_err_vec, sig_vec, sig_err_vec
 

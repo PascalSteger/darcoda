@@ -376,7 +376,7 @@ class ProfileCollection():
             output.add('data + error [Msun/pc^2]', nudat+nuerr)
             ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
                             color='blue', alpha=0.3, lw=1)
-            ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)])
+            #ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)]) #bodge
         elif prof == 'sig' or prof == 'sig_vec':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
@@ -390,7 +390,7 @@ class ProfileCollection():
             output.add('data + error [km/s]', sigdat+sigerr)
             ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, \
                             color='blue', alpha=0.3, lw=1)
-            ax.set_ylim([0., 2.*max(sigdat+sigerr)])
+            #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
         output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
         return
     ## \fn plot_data(self, ax, basename, prof, pop, gp)
@@ -439,16 +439,22 @@ class ProfileCollection():
             ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\\quad[\\rm{km}/\\rm{s}]$')
         elif prof == 'nu_vec':
             ax.set_ylabel('$\\nu_{\\rm{Tr},'+str(pop)+'}\\quad[\\rm{stars}/\\rm{kpc}^3]$')
+            ax.set_ylim(1.0E3, 4.0E4)
         elif prof == 'sig_vec':
             ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
+            ax.set_ylim(10., 40.)
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            ax.set_ylim(10., 1E9)
         elif prof == 'kz_nu_vec':
             ax.set_ylabel('$k(z)_{\\nu}$')
+            ax.set_ylim(0., 6.)
         elif prof == 'kz_rho_DM_vec':
             ax.set_ylabel('$k(z)_{\\rho, \\rm{DM}}$')
+            ax.set_ylim(0., 40.)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
+            ax.set_ylim(0,1.0E8)
 
 
 
@@ -526,8 +532,8 @@ class ProfileCollection():
             self.plot_Xscale_3D(ax, gp)
         #pdb.set_trace()
         ax.set_xlim([r0[0]/2,r0[-1]*1.0]) #HS r0[-1] previously multiplied by 1.5
-        if prof == 'kz_nu_vec':
-            ax.set_ylim(-1., 6.)
+        #if prof == 'kz_nu_vec':
+        #    ax.set_ylim(-1., 6.)
         # if gp.pops==1:
         #     ax.set_xlim([r0[0], 5*gp.Xscale[1]])
         # else:
@@ -613,10 +619,11 @@ class ProfileCollection():
 
             self.fill_nice(ax, prof, pop, gp)
             self.plot_N_samples(ax, prof, pop)
+            self.plot_bins(ax, prof, gp)
             if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
-            if prof == 'Sig_DM_vec' or prof == 'nu_vec':
+            if prof == 'Sig_DM_vec' or prof == 'nu_vec' or prof == 'kz_rho_DM_vec' or prof == 'rho_DM_vec':
                 self.plot_model_simplenu(ax, basename, prof, gp)
 
             if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
@@ -625,7 +632,8 @@ class ProfileCollection():
                 y0 = self.analytic.get_prof(prof, pop)
                 ax.plot(r0, y0, 'b--', lw=2)
 
-            ax.set_xlim(0, gp.z_bincenters[-1])
+            #ax.set_xlim(0, gp.z_bincenters[-1]) #bodge
+            ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')
@@ -689,21 +697,33 @@ class ProfileCollection():
 
         nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
 
-        zvec=np.linspace(0, 1.0, 100)
+        zvec=np.linspace(0, zmax, 100)
 
         nuvec = nu0*np.exp(-zvec/z0)
 
         Kzvec = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Sigma_z = (1000.**2)*abs(Kzvec)/(2*np.pi*4.299) #Msun kpc^-1
+        pdb.set_trace()
+        rho_z = (1000.**2/(2*np.pi*4.299)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2*F)
+
+        k_z_rho = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5) + 2*F))
 
         if prof == 'Sig_DM_vec':
             ax.plot(zvec, Sigma_z, 'g-', alpha=0.5)
-            ax.set_ylim(0,1.0E8)
         elif prof == 'nu_vec':
             ax.plot(zvec, nuvec, 'g-', alpha=0.5)
+        elif prof == 'kz_rho_DM_vec':
+            ax.plot(zvec, k_z_rho, 'g-', alpha = 0.5)
+        elif prof == 'rho_DM_vec':
+            ax.plot(zvec, rho_z, 'g-', alpha = 0.5)
+
 
         return
 
+
+    def plot_bins(self, ax, prof, gp):
+        [ax.axvline(x, color='c', linewidth=0.1) for x in gp.z_bincenters]
+        return
 
 
 

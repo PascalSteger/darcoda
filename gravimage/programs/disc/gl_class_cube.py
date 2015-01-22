@@ -60,17 +60,13 @@ def map_kr(params, prof, pop, gp):
         rhonu_C_min = gp.rho_C_min
         kz_C_max = gp.kz_rho_C_max
         kz_C_min = gp.kz_rho_C_min
-        monotonic = gp.monotonic
+        monotonic = gp.monotonic_rho
     elif prof == 'nu':
         rhonu_C_max = gp.nu_C_max
         rhonu_C_min = gp.nu_C_min
         kz_C_max = gp.kz_nu_C_max
         kz_C_min = gp.kz_nu_C_min
         monotonic = gp.monotonic_nu
-
-    monotonic_multiplier = 1.0
-    if monotonic:
-        monotonic_multiplier = 0.0
 
     # rho or nu central value
     rhonu_C = rhonu_C_min + (rhonu_C_max-rhonu_C_min)*params[0]
@@ -86,7 +82,9 @@ def map_kr(params, prof, pop, gp):
     for jter in range(0, gp.nbins):
         z_diff = gp.z_all_pts[jter+1] - gp.z_all_pts[jter]
         kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
-        kz_min = kz_i_m1 - gp.max_kz_slope*z_diff*monotonic_multiplier
+        kz_min = kz_i_m1 - gp.max_kz_slope*z_diff
+        if monotonic:
+            kz_min=max(kz_min, 0.)
         kz_i = kz_min + (kz_max - kz_min)*params[2+jter]
         kz_i_m1 = kz_i
         kz_vector.append(kz_i)

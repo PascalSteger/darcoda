@@ -85,7 +85,7 @@ def read_models(basename):
 
 def pcload_single_entries(basename, gp):
     import gl_collection as glc
-    pc = glc.ProfileCollection(gp.pops, gp.nipol)
+    pc = glc.ProfileCollection(gp.ntracer_pops, gp.nbins)
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         while 1:

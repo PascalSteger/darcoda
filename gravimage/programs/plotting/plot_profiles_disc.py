@@ -58,16 +58,21 @@ def read_models(basename):
 # @param basename string
 
 
-def pcload_single_entries(basename, gp):
+def pcload_single_entries(basename, profile_source, gp):
     import gl_collection as glc
     pc = glc.ProfileCollection(gp.ntracer_pops, gp.nbins)
-    with open(basename+'pc2.save', 'rb') as fi:
+
+    if profile_source =='standard':
+        filename = 'pc2.save'
+    elif profile_source == 'livepoints':
+        filename = 'phys_live_profiles.save'
+
+    with open(basename+filename, 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         while 1:
             try:
                 MODEL = pickle.load(fi)
-                if npr.random() < 0.0001:
-                    pc.add(MODEL)
+                pc.add(MODEL)
             except EOFError:
                 break
     return pc
@@ -77,7 +82,7 @@ def pcload_single_entries(basename, gp):
 # @param gp global parameters
 
 
-def run(timestamp, basename, gp):
+def run(timestamp, basename, profile_source, gp):
     prepare_output_folder(basename)
     import gl_file as glf
     gp.dat = glf.get_binned_data_noscale(gp)
@@ -86,7 +91,10 @@ def run(timestamp, basename, gp):
     max_z = max(bincenters) #?
     min_z = min(bincenters) #?
 
-    pc = pcload_single_entries(basename, gp)
+    #Generate profiles from livepoints if necessary
+    #if profile_source == 'livepoints'
+
+    pc = pcload_single_entries(basename, profile_source, gp)
     if len(pc.chis) == 0:
         gh.LOG(1, 'no profiles found for plotting')
         return
@@ -107,29 +115,6 @@ def run(timestamp, basename, gp):
     pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)
 
-    #HS Working Line
-    #Everthing below this line is old, and hasn't been considered for keeping
-    #deletion, or modification
-    # ----------------------------------------------------------------------
-
-#
-#
-#
-#    pc.plot_profile(basename, 'rho', 0, gp)
-#    if gp.investigate == 'obs':
-#        pc.plot_profile(basename, 'Sig', 0, gp)
-#        pc.plot_profile(basename, 'nu', 0, gp)
-#        pc.plot_profile(basename, 'nrnu', 0, gp)
-#    pc.plot_profile(basename, 'nr', 0, gp)
-#    if gp.geom == 'sphere':
-#        pc.plot_profile(basename, 'M', 0, gp)
-#    for pop in np.arange(1, gp.pops+1):
-#        pc.plot_profile(basename, 'betastar', pop, gp)
-#        pc.plot_profile(basename, 'beta', pop, gp)
-#        pc.plot_profile(basename, 'Sig', pop, gp)
-#        pc.plot_profile(basename, 'nu', pop, gp)
-#        pc.plot_profile(basename, 'nrnu', pop, gp)
-#        pc.plot_profile(basename, 'sig', pop, gp)
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string
@@ -152,10 +137,10 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     gh.LOG(1, 'plot_profiles '+str(options.investigate)+' '+str(options.case)+' '+str(options.latest))
     import select_run as sr
-    timestamp, basename, investigate = sr.run(options.investigate, \
+    timestamp, basename, investigate, profile_source = sr.run(options.investigate, \
                                  options.case,\
                                  options.latest)
-
+    #pdb.set_trace()
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
     # load stored parameters
@@ -169,4 +154,4 @@ if __name__ == '__main__':
     gp = glp.Params(timestamp, investigate)
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
-    run(timestamp, basename, gp)
+    run(timestamp, basename, profile_source, gp)

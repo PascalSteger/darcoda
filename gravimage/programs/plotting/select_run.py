@@ -293,12 +293,35 @@ def get_nbeta(basename):
 # @param basename string of output dir
 # @return integer number of beta* parameters
 
+def get_profile_source():
+    default = 'standard'
+    invalid = True
+    while(invalid):
+        try:
+            user_input = input('Profile source: (default: '+str(default)+\
+                               ", standard, livepoints, rejectedpoints): ")
+            if not user_input:
+                user_input = str(default)
+            sel = user_input
+        except ValueError:
+            print("error in input")
+        invalid = True
+        if sel == 'standard' or sel == 'livepoints' or sel == 'rejectedpoints':
+            invalid = False
+    return sel
+## \fn get_investigate(default)
+# ask user for choice on investigation
+# (walk, gaia, triax, fornax, hern, discsim, discmock)
+# @return string
+
 
 def run(investigate="", case=-1, latest=False):
     if investigate == "":
         investigate = get_investigate()
     if case == -1:
         case = get_case(investigate)
+
+    profile_source = get_profile_source()
 
     host_name = socket.gethostname()
     user_name = getpass.getuser()
@@ -329,7 +352,7 @@ def run(investigate="", case=-1, latest=False):
 
     basename = fdl[sel] # full directory path, without '/'
     timestamp = basename.split('/')[-1] # extract last bit
-    return timestamp, basename+'/', investigate#, prof #, pop
+    return timestamp, basename+'/', investigate, profile_source#, prof #, pop
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one
 # @param investigate string of investigation case, hern, gaia, walk, discmock
