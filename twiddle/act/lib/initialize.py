@@ -227,7 +227,11 @@ def sqlcu(cmd, co, cu):
     except MySQLdb.Error, e:
         print("Error %d: %s" % (e.args[0],e.args[1]))
         sys.exit(1)
-
+## \fn sqlcu(cmd, co, cu)
+# execute a SQL command
+# @param cmd string to be executed, in MySQl format
+# @param co connection
+# @param cu cursor
 
 def sql(cmd):
     co, cu = sqlstart()
@@ -241,7 +245,9 @@ def sql(cmd):
         print("Error %d: %s" % (e.args[0],e.args[1]))
         sqlstop(co,cu)
         sys.exit(1)
-
+## \fn sql(cmd)
+# execute cmd with sql, starting connection inside function
+# @param cmd command, string
 
 def sqlout(cmd):
     row = sql(cmd)
@@ -249,10 +255,15 @@ def sqlout(cmd):
     for i in range(numrows):
         print(row[i][0])
     return
-
+## \fn sqlout(cmd)
+# show output
+# @param cmd string for SQL to be executed within function
 
 def done():
     while(threading.active_count()>1):
         time.sleep(1)
     print("all done, ",threading.active_count())
     print(" ")
+    return
+## \fn done()
+# print done after end of threading
