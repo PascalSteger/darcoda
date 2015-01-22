@@ -19,12 +19,12 @@ class Profiles:
         self.chi2 = 0.0
         self.rho  = np.zeros(nepol)
         self.nr   = np.zeros(nepol)
+        self.J = np.zeros(nepol)
         self.M    = np.zeros(nepol)
         self.MtoL = -1.0
         self.betastar = np.zeros((pops+1)*nepol)
         self.beta = np.zeros((pops+1)*nepol) # (pops+1) for overall (rho*), 1, 2, ...
         self.nu   = np.zeros((pops+1)*nepol) # dito
-        self.jfac = np.zeros((pops+1)*nepol)
         self.nrnu = np.zeros((pops+1)*nepol)
         self.Sig  = np.zeros((pops+1)*nepol)
         self.sig  = np.zeros((pops+1)*nepol)
@@ -42,13 +42,13 @@ class Profiles:
             self.rho = vec
         elif prof == 'nr':
             self.nr = vec
+        elif prof == 'J':
+            self.J = vec
         elif prof == 'M':
             self.M = vec
         elif prof == 'nu':
             self.nu[pop*self.nepol:(pop+1)*self.nepol] = vec # vec has nrho-3 entries
-        elif prof == 'jfac':
-            self.jfac[pop*self.nepol:(pop+1)*self.nepol] = vec
-        elif prof == 'nrnu':
+         elif prof == 'nrnu':
             self.nrnu[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'betastar':
             self.betastar[pop*self.nepol:(pop+1)*self.nepol] = vec
@@ -92,12 +92,12 @@ class Profiles:
             return self.nr
         elif prof == 'M':
             return self.M
+        elif prof == 'J':
+            return self.J
         elif prof == 'Sig':
             return self.Sig[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nu':
             return self.nu[pop*self.nepol:(pop+1)*self.nepol]
-        elif prof == 'jfac':
-            return self.jfac[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nrnu':
             return self.nrnu[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'betastar':

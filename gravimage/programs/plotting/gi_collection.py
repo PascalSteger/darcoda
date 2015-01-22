@@ -146,17 +146,27 @@ class ProfileCollection():
     def calculate_M(self, gp):
         if len(self.profs)>0:
             for i in range(len(self.profs)):
-                Mprof = gip.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 1))
-                self.profs[i].set_prof('M', Mprof, 1, gp)
-                if gp.pops == 2:
-                    Mprof = gip.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 2))
-                    self.profs[i].set_prof('M', Mprof, 2, gp)
+                Mprof = gip.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 0))
+                self.profs[i].set_prof('M', Mprof, 0, gp)
         else:
             gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.M')
         return
     ## \fn calculate_M(self, gp)
     # calculate M profiles from rho, as this has not been done prior to pc2.save
+    # NOT NEEDED ANYMORE, calculated during run-time (TODO: no good idea, time!)
     # @param gp global parameters0
+
+    def calculate_J(self, gp):
+        if len(self.profs)>0:
+            for i in range(len(self.profs)):
+                Sigprof = gip.rho_INT_Sig(gp.xepol, self.profs[i].get_prof('rho', 0))
+                Jprof = gip.Jpar(gp.xepol, Sigprof, gp)
+                self.profs[i].set_prof('J', Jprof, 0, gp)
+        else:
+            gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.J')
+    ## \fn calculate_J(self, gp)
+    # calculate J from Sig from rho
+    # @param gp global parameters
 
     def sort_profiles(self, gp):
         self.sort_prof('rho', 0, gp)
@@ -279,6 +289,7 @@ class ProfileCollection():
 
     def write_all(self, basename, gp):
         self.write_prof(basename, 'rho', 0, gp)
+        self.write_prof(basename, 'J', 0, gp)
         if gp.geom == 'sphere':
             self.write_prof(basename, 'M', 0, gp)
         self.write_prof(basename, 'Sig', 0, gp)
@@ -519,14 +530,11 @@ class ProfileCollection():
         gh.LOG(1, 'prof '+str(prof)+', pop '+str(pop)+', run '+basename)
         fig = plt.figure()
         ax  = fig.add_subplot(111)
-
         if prof != 'chi2':
             ax.set_xscale('log')
-
-        if prof == 'rho' or prof == 'Sig' or\
+        if prof == 'rho' or prof == 'J' or prof == 'Sig' or\
            prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
-
         self.plot_labels(ax, prof, pop, gp)
         if len(self.profs)>0:
             if prof == 'chi2':

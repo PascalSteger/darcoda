@@ -30,13 +30,11 @@ def geom_loglike(cube, ndim, nparams, gp):
     if gp.chi2_Sig_converged <= 0:
         rhodmpar = np.array(cube[off:off+offstep])
         tmp_rho0 = phys.rho(gp.xepol, rhodmpar, 0, gp)
-        tmp_rhofine = phys.rho(gp.xfine, rhodmpar, 0, gp)
-
-
-        tmp_Jfine = gip.Jpar(gp.xfine, tmp_rhofine, gp)
-        tck = splrep(gp.xfine[:-3], tmp_Jfine)
-        tmp_J = splev(gp.xepol, tck)
-        #tmp_D = gip.Dpar(gp.xfine, tmp_rhofine, gp.xepol)
+        # for J factor calculation (has been deferred to output routine)
+        #tmp_rhofine = phys.rho(gp.xfine, rhodmpar, 0, gp)
+        #tmp_Jfine = gip.Jpar(gp.xfine, tmp_rhofine, gp) #tmp_rhofine
+        #tck = splrep(gp.xfine[:-3], tmp_Jfine)
+        #tmp_J = splev(gp.xepol, tck)
         # rhodmpar hold [rho(rhalf), nr to be used for integration
         # from halflight radius, defined on gp.xepol]
         # (only calculate) M, check
@@ -44,7 +42,7 @@ def geom_loglike(cube, ndim, nparams, gp):
          # store profiles
         tmp_profs.set_prof('nr', 1.*rhodmpar[1+1:-1], 0, gp)
         tmp_profs.set_prof('rho', tmp_rho0, 0, gp)
-        tmp_profs.set_prof('jfac', tmp_J, 0, gp)
+        #tmp_profs.set_prof('J', tmp_J, 0, gp)
         tmp_profs.set_prof('M', tmp_M0, 0, gp)
     off += offstep # anyhow, even if Sig not yet converged
 

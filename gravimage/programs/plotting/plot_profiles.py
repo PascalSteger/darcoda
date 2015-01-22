@@ -141,6 +141,8 @@ def run(timestamp, basename, gp, evince=False):
     pc.cut_subset()
 
     pc.set_x0(gp.xepol, Binmin*gp.Xscale[0], Binmax*gp.Xscale[0]) # [pc]
+    pc.calculate_J(gp)
+
     if gp.investigate =='walk' or gp.investigate=='gaia' or gp.investigate =='triax':
         r0analytic = np.logspace(np.log10(1.),\
                                  np.log10(max(gp.xepol)), 100)
@@ -158,6 +160,7 @@ def run(timestamp, basename, gp, evince=False):
 
     pc.plot_profile(basename, 'rho', 0, gp)
     pc.plot_profile(basename, 'nr', 0, gp)
+    pc.plot_profile(basename, 'J', 0, gp)
     if gp.investigate == 'obs':
         pc.plot_profile(basename, 'Sig', 0, gp)
         pc.plot_profile(basename, 'nu', 0, gp)
@@ -169,7 +172,6 @@ def run(timestamp, basename, gp, evince=False):
         pc.plot_profile(basename, 'beta', pop, gp)
         pc.plot_profile(basename, 'Sig', pop, gp)
         pc.plot_profile(basename, 'nu', pop, gp)
-        #pc.plot_profile(basename, 'jfac', pop, gp) # TODO: enable
         pc.plot_profile(basename, 'nrnu', pop, gp)
         pc.plot_profile(basename, 'sig', pop, gp)
 

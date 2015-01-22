@@ -229,6 +229,7 @@ def run(gp):
     cubeMLphys=myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
     #myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
     pML, mu1ML, sig1ML, mu2ML, sig2ML = cubeMLphys
+    #pdb.set_trace()
     g1 = pML*gh.gauss(x, mu1ML, sig1ML)
     g2 = (1-pML)*gh.gauss(x, mu2ML, sig2ML)
     gtot = g1+g2
@@ -339,15 +340,13 @@ def run(gp):
         dummyx, nudatnu, nuerrnu, Mrnu = gip.Sig_NORM_rho(gp.xfine, \
                                                           Sigdatnu, Sigerrnu,\
                                                           gp)
-        nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
-        nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
-
+        #nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
+        #nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
         #loglog(gp.xipol, nudat, co)
         #axvline(Rhalf, color=co)
         #xlim([min(gp.xipol), max(gp.xipol)])
         #xlabel(r'$R$')
         #ylabel(r'$\nu(R)$')
-
         #plum = 100*gh.plummer(gp.xipol, Rhalf, len(R0))
         #loglog(gp.xipol, plum, color=co, linestyle='--')
         #ylim([min(plum), max(plum)])
