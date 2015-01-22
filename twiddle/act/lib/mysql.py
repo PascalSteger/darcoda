@@ -15,28 +15,31 @@ def clear():
 
 def clear_sim():
     my.sql('DROP TABLE IF EXISTS sim;')
-
+## \fn clear_sim()
+# remove table sim
 
 def clear_snapshot():
     my.sql('DROP TABLE IF EXISTS snapshot;')
-
+## \fn clear_snapshot()
+# remove table snapshot
 
 def clear_halo():
     my.sql('DROP TABLE IF EXISTS halo;')
-
+## \fn clear_halo()
+# remove table halo
 
 def setup():
     # sample statement
     # print('Server version:')
     # cmd = "select version();"
     # my.sqlout(cmd)
-
     # set up tables
     setup_sim();
     setup_snapshot();
     setup_halo();
     print('sim, snapshot, halo set up')
-
+## \fn setup()
+# setup sim, snapshot, halo
 
 def setup_sim():
     my.sql('CREATE TABLE if not exists sim (\
@@ -50,9 +53,10 @@ def setup_sim():
                   dmonly BOOL DEFAULT FALSE,\
                   atime TIMESTAMP DEFAULT NOW()\
                   );')
-#                  id INT NOT NULL AUTO_INCREMENT,\
-
-
+    #                  id INT NOT NULL AUTO_INCREMENT,\
+    return
+## \fn setup_sim()
+# create table sim
 
 def setup_snapshot():
     my.sql('CREATE TABLE if not exists snapshot (\
@@ -64,8 +68,8 @@ def setup_snapshot():
                   xms float, yms float, zms float, rms float,\
                   atime TIMESTAMP DEFAULT NOW()\
                   );')
-
-
+## \fn setup_snapshot()
+# create table snapshot
 
 def setup_halo():
     my.sql('CREATE TABLE if not exists halo (\
@@ -117,7 +121,8 @@ def setup_halo():
                   Ekin_star float, Epot_star float, lambdaE_star float,\
                   m_dm float\
                   );')
-
+## \fn setup_snapshot()
+# create table snapshot
 
 def get_nstart():
     cmd = "SELECT nstart FROM sim WHERE active=1;"
@@ -125,7 +130,8 @@ def get_nstart():
         return 1
     nstart = my.sql(cmd)[0][0]
     return nstart
-
+## \fn get_nstart()
+# get start output number from active simulation
 
 def get_lma():
     cmd = "SELECT lma FROM sim WHERE active=1;"
@@ -223,7 +229,7 @@ def fill_halo(snap, buhid, val, co, cu):
     npart = int(val[5-1]);
     fmhires = float(val[38-1])
 
-    mvir = float(val[4-1]); 
+    mvir = float(val[4-1]);
     if(is_dmonly()):
         m_gas = 0.0
         m_star = 0.0
@@ -232,7 +238,7 @@ def fill_halo(snap, buhid, val, co, cu):
         m_star = 0.0
         m_star=float(val[65-1])
     m_dm  = mvir-m_gas-m_star
-    
+
     cmd  = "UPDATE halo SET "
     cmd += "npart='"      +val[5-1]+"', "
     cmd += "fmhires='"    +str(fmhires)+"', "
@@ -263,7 +269,7 @@ def fill_halo(snap, buhid, val, co, cu):
         cmd += "c_gas='"+val[52-1]+"', ecx_gas='"+val[59-1]+"',ecy_gas='"+val[60-1]+"',ecz_gas='"+val[61-1]+"', "
         cmd += "ekin_gas='"+val[62-1]+"', epot_gas='"+val[63-1]+"', "
         cmd += "lambdae_gas='"+val[47-1]+"', "
-        
+
         cmd += "n_star='"+val[64-1]+"', "
         cmd += "m_star='"+val[65-1]+"', "
         cmd += "lambda_star='"+val[66-1]+"', "
@@ -340,7 +346,7 @@ def set_ss_stars(snap,hid,xs_star,ys_star,zs_star,rs_star):
 def physical_xcm(snap, h):
     actsim = my.sql("SELECT name FROM sim WHERE active=1;")
     actsim = actsim[0][0]
-    
+
     sh  = str(h);
     cmd  = "UPDATE halo SET xc=xc/"+sh+", yc=yc/"+sh+", zc=zc/"+sh
     cmd += ", rvir=rvir/"+sh+", atime=now() WHERE snap="+str(snap)+" and sim like '"+actsim+"';"
@@ -391,7 +397,7 @@ def set_rhalf_star(snap,hid,r):
 def getxyzmr(snap,typ):
     actsim=my.sql("SELECT name FROM sim WHERE active=1;")
     actsim=actsim[0][0]
-    
+
     if(typ==1):
         xc=my.sql("SELECT xc FROM halo WHERE snap="+str(snap)+" AND sim LIKE '"+actsim+"';")
         yc=my.sql("SELECT yc FROM halo WHERE snap="+str(snap)+" AND sim LIKE '"+actsim+"';")
@@ -415,7 +421,7 @@ def getxyzmr(snap,typ):
     order = m.argsort()
     x = x[order]; y = y[order]; z = z[order];
     r = r[order]; m = m[order]
-        
+
     return x[::-1],y[::-1],z[::-1],m[::-1],r[::-1]
 
 
@@ -434,7 +440,7 @@ def get_M_dm(snap):
     m=[]
     for i in range(len(mstar)):
         m.append(mstar[i][0])
-        
+
     return m
 
 
@@ -453,7 +459,7 @@ def get_rhalf_star(snap):
     r=[]
     for i in range(len(r2s)):
         r.append(r2s[i][0])
-        
+
     return r
 
 
@@ -472,7 +478,7 @@ def getxyzrsnap(snap):
         z.append(zm[i][0])
         r.append(rm[i][0])
         s.append(sm[i][0])
-        
+
     return x,y,z,r,s
 
 
@@ -492,7 +498,7 @@ def mt_xyzrsnap(start,stop):
         z.append(zm[i][0])
         r.append(rm[i][0])
         s.append(sm[i][0])
-        
+
     return x,y,z,r,s
 
 
@@ -550,7 +556,7 @@ def getxyzrstars(snap,typ):
         y.append(ys[i][0])
         z.append(zs[i][0])
         r.append(rs[i][0])
-        
+
     return x,y,z,r
 
 
@@ -602,4 +608,3 @@ def get_sims():
     p=np.array(o)
     q=np.transpose(p)[0]
     return q
-    

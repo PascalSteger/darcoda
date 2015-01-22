@@ -4,11 +4,11 @@
 # GUI for all tools needed to work with ramses outputs
 # TODO: check out pymses
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2015 ETHZ, Pascal Steger, psteger@phys.ethz.ch
 
 import numpy as np
 import wx
- 
+
 from act.TabMySQL import *
 from act.TabAHF import *
 from act.TabMergerTree import *
@@ -23,7 +23,7 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, None, wx.ID_ANY,
                           "twiddle with cosmological simulations",
                           size=(600,400))
-        
+
         panelnb = wx.Panel(self,-1)
         nb = wx.Notebook(panelnb)
 
@@ -58,7 +58,7 @@ class MainFrame(wx.Frame):
 
         # choose snapshot span
         nstart = mys.get_nstart()
-        nstop = mys.get_nstop()        
+        nstop = mys.get_nstop()
         self.start = wx.TextCtrl(self, value=str(nstart), size=(-1,-1))
         self.stop = wx.TextCtrl(self, value=str(nstop), size=(-1,-1))
         vbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -70,7 +70,7 @@ class MainFrame(wx.Frame):
 
         vemp = wx.BoxSizer(wx.VERTICAL)
         hbox.Add(vemp,10,wx.EXPAND)
-        
+
         panelsim.SetSizer(hbox)
 
         box = wx.BoxSizer(wx.HORIZONTAL)
@@ -81,7 +81,7 @@ class MainFrame(wx.Frame):
         self.Show(True)
 
     def ChooseSim(self,event):
-        sim = event.GetString()        
+        sim = event.GetString()
         # print( 'set sim to:',sim)
         mys.set_active_sim(sim)
         sm = mys.get_active_sim()
@@ -90,7 +90,7 @@ class MainFrame(wx.Frame):
         nstop  = mys.get_nstop()
         self.start.SetValue(str(nstart))
         self.stop.SetValue(str(nstop))
-        
+
 
     def setStart(self,event):
         nstart = int(event.GetString())
@@ -103,7 +103,7 @@ class MainFrame(wx.Frame):
         mys.set_nstop(nstop)
 ## \class MainFrame()
 # Frame that holds all other widgets
-        
+
 class MyApp(wx.App):
     def OnInit(self):
         frame = MainFrame()
@@ -113,7 +113,7 @@ class MyApp(wx.App):
 ## \class MyApp()
 # basic application
 
-    
+
 def main():
     app = MyApp(False)
     app.MainLoop()
@@ -123,4 +123,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

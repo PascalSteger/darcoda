@@ -1,7 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
 import os, os.path, pdb
 import sys, time, threading
-import Image, ImageDraw, ImageFont
+import PIL
+import PIL.Image, PIL.ImageDraw, PIL.ImageFont
 import MySQLdb
 import hashlib
 import mysql as mys
@@ -16,7 +17,6 @@ def mv(a,b):
 # move a file a to b
 # a string filename
 # b string filename or folder
-
 
 def read_a(snap):
     num5=str(snap).zfill(5)
@@ -35,7 +35,6 @@ def read_a(snap):
 ## \fn read_a(snap)
 # read expansion factor of an output
 # @param snap int snapshot
-
 
 def read_z(snap):
     num5=str(snap).zfill(5)
@@ -65,7 +64,6 @@ def md5(snap,hid):
 # @param snap int snapshot number
 # @param hid int TODO
 
-
 def run_command(cmd):
     with semaphore:
         os.system(cmd)
@@ -73,14 +71,12 @@ def run_command(cmd):
 # run system command
 # @param cmd string to be executed
 
-
 def thread(cmd):
     #print("threading: ",cmd)
     threading.Thread(target=run_command, args=(cmd, )).start()
 ## \fn thread(cmd)
 # start a command as a new thread
 # @param cmd string of a command
-
 
 def runif(cmd1, cmd2, calc, show, runi):
     if(calc):
@@ -131,17 +127,17 @@ def txt2img(fi,text,bg="#ffffff",fg="#000000",font="FreeSans.ttf",FontSize=14):
     font_dir = "/usr/share/fonts/truetype/freefont/"
     img_name = fi#+".jpg"
     font_size = FontSize
-    fnt = ImageFont.truetype(font_dir+font, font_size)
+    fnt = PIL.ImageFont.truetype(font_dir+font, font_size)
     lineWidth = 20
-    img = Image.open(fi)
+    img = PIL.Image.open(fi)
     # make an entirely black image
-    imgbg = Image.new('RGBA', img.size, "#000000")
+    imgbg = PIL.Image.new('RGBA', img.size, "#000000")
     # make a mask that masks out all
-    mask = Image.new('L',img.size,"#000000")
+    mask = PIL.Image.new('L',img.size,"#000000")
     # setup to draw on the main image
-    draw = ImageDraw.Draw(img)
+    draw = PIL.ImageDraw.Draw(img)
     # setup to draw on the mask
-    drawmask = ImageDraw.Draw(mask)
+    drawmask = PIL.ImageDraw.Draw(mask)
     # draw a line on the mask to allow some bg through
     drawmask.line((0, lineWidth/2, img.size[0],lineWidth/2),
                   fill="#999999", width=10)
@@ -156,12 +152,12 @@ def txt2imgpos(fi,text,x,y,bg="#ffffff",fg="#000000",font="FreeSans.ttf",FontSiz
     font_dir = "/usr/share/fonts/truetype/freefont/"
     img_name = fi#+".jpg"
     font_size = FontSize
-    fnt = ImageFont.truetype(font_dir+font, font_size)
+    fnt = PIL.ImageFont.truetype(font_dir+font, font_size)
 #    lineWidth = 20
-    img = Image.open(fi)
+    img = PIL.Image.open(fi)
 
     # setup to draw on the main image
-    draw = ImageDraw.Draw(img)
+    draw = PIL.ImageDraw.Draw(img)
 
     # add some text to the main
     draw.text((x,y), text, font=fnt, fill=bg)
@@ -206,10 +202,12 @@ def get_xyzr(snap):
 
 
 def sqlstart():
-    # TODO: ask for username and password
-    user = input("Enter mySQL username: ")
-    somesecstring = input(" .. and his little secret: ")
-    connection = MySQLdb.connect('http://steger.aero', user, somesecstring, user)
+    # ask for username and password
+    #user = raw_input("Enter mySQL username: ")
+    #somesecstring = raw_input(" .. and his little secret: ")
+    user = "mangaloi_astro"
+    somesecstring = "Pinux10"
+    connection = MySQLdb.connect('108.167.143.108', user, somesecstring, user)
     cursor = connection.cursor()
     return connection, cursor
 
