@@ -83,8 +83,7 @@ class Datafile:
             # already normalized to same total mass
             if gp.geom == 'sphere':
                 # TODO: look at where the high last steep decline comes from
-                Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, \
-                                                    Sigdat, Sigerr, gp.xfine)
+                Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, Sigdat, Sigerr, gp.xfine)
                 dummyx, nudatnu, nuerrnu, Mrnu = gip.Sig_NORM_rho(gp.xfine, Sigdatnu, Sigerrnu, gp)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
                 self.nuerr_epol.append(gh.linipollog(gp.xfine, nuerrnu, gp.xepol))
@@ -146,12 +145,18 @@ class Datafile:
                 extleft = splev(gp.xepol[0:3], spl_nrpar) # np.array([nrpar[0], nrpar[0], nrpar[0]])
                 extright = splev(gp.xepol[-3:], spl_nrpar) #[nrpar[-1], nrpar[-1], nrpar[-1]])
                 maxnre = max(nre)
-                self.nrnu.append(np.hstack([nuhalf,
-                                            nre[0],
-                                            extleft,
-                                            nre,
-                                            extright,
-                                            nre[-1]]))
+                self.nrnu.append(np.hstack([nuhalf, nre[0], extleft, nre, extright, nre[-1]]))
+
+                # checking for correct n(r) profile, have to wait for pop==1
+                # if pop==1:
+                # from pylab import plot, xscale
+                # import gi_analytic as ga
+                # testnu = ga.rho_gaia(gp.xfine,gp)[pop]
+                # testnrnu = -gh.derivipol(np.log(testnu), np.log(gp.xfine))
+                # plot(gp.xfine, testnrnu, 'b-')
+                # plot(gp.xfine[:-1], nrpar, 'r.-')
+                # xscale('log')
+
                 errnre = np.ones(1+len(extleft)+len(nre)+len(extright)+1)*maxnre/10.
                 for k in range(5):
                     errnre[k] *= 5
@@ -169,13 +174,12 @@ class Datafile:
                 # loglog(gp.xepol, rh, 'r.-', linewidth=2)
                 # loglog(gp.xepol, rhmin, 'g.-')
                 # loglog(gp.xepol, rhmax, 'g--')
-                # pdb.set_trace()
+
                 # clf()
                 # plot(gp.xfine[:-1], nrpar, '.-')
                 # plot(gp.xipol, nre, '.-')
                 # xscale('log')
                 # axvline(r_half)
-                # pdb.set_trace()
                 # print(nrpar)
             else:
                 gh.LOG(1, 'working in disc symmetry: reading nu directly')

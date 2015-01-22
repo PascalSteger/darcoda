@@ -36,7 +36,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'obs' # determine which data set to work on
+            self.investigate  = 'gaia' # determine which data set to work on
                                        # 'hern': check simple Hernquist prof. from simwiki
                                        # 'walk': check with full obs. cont. data from Walker
                                        # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
@@ -49,7 +49,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -84,7 +84,7 @@ class Params():
         # ----------------------------------------------------------------------
         self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 30
-        self.chi2_Sig_converged = -1 # TODO 1000 how many times do we have to be below that threshold?
+        self.chi2_Sig_converged = 1000 #  how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run

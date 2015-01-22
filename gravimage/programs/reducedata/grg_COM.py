@@ -5,11 +5,10 @@
 # calculate approximative center of mass, assuming constant stellar mass
 # 3D version, see grw_COM for 2D
 
-# (c) GPL v3 2014 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
 
 import numpy as np
 import pdb
-
 
 def select_pm(x, y, z, vz, pm):
     return x[pm], y[pm], z[pm], vz[pm]
@@ -21,11 +20,9 @@ def select_pm(x, y, z, vz, pm):
 # @param vz
 # @param pm
 
-
 def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
-
     print('input:',gpr.fil)
     x0, y0, z0, vx, vy, vz = np.transpose(np.loadtxt(gpr.fil))
     # for purely tangential beta=-0.5 models, have units of kpc instead of pc
@@ -33,7 +30,6 @@ def run(gp):
         x0 *= 1000. # [pc]
         y0 *= 1000. # [pc]
         z0 *= 1000. # [pc]
-
     # cutting pm_i to a maximum of ntracers particles:
     import gi_helper as gh
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
@@ -42,10 +38,8 @@ def run(gp):
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
     import gi_centering as glc
     com_x, com_y, com_z, com_vz = glc.com_shrinkcircle_v(x0, y0, z0, vz, PM)
-
     # from now on, work with 2D data only;
     # z0 was only used to get center in (x,y) better
-
     x0 -= com_x  # [pc]
     y0 -= com_y  # [pc]
     vz -= com_vz # [km/s]
@@ -63,7 +57,6 @@ def run(gp):
         # print("x y z" on first line, to interprete data later on)
         gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei)
         gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, vz, Rscalei)
-
         #if gpr.showplots:
         #    gpr.show_part_pos(x, y, pmn, Rscale)
 

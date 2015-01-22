@@ -48,7 +48,7 @@ class Profiles:
             self.M = vec
         elif prof == 'nu':
             self.nu[pop*self.nepol:(pop+1)*self.nepol] = vec # vec has nrho-3 entries
-         elif prof == 'nrnu':
+        elif prof == 'nrnu':
             self.nrnu[pop*self.nepol:(pop+1)*self.nepol] = vec
         elif prof == 'betastar':
             self.betastar[pop*self.nepol:(pop+1)*self.nepol] = vec

@@ -361,20 +361,13 @@ def run(gp):
     #xlabel(r'\Delta R')
     #ylabel('pdf')
     #pdb.set_trace()
-
     np.savetxt(gp.files.dir+'popass', popass)
-
-
+    return
 ## \fn run(gp)
 # run MultiNest
 # @param gp global parameters defined in gi_params.py
 
 if __name__=="__main__":
-#    from mpi4py import MPI
-#    comm = MPI.Comm.Get_parent()
-#    size = comm.Get_size()
-#    rank = comm.Get_rank()
-
     import gi_params
     global gp
     gp = gi_params.Params()
@@ -382,5 +375,4 @@ if __name__=="__main__":
         gh.LOG(1, " population splitting needs 2 or more populations, corrected")
         gp.pops = 2
     # convention: directory names have ending "/"
-
     run(gp)

@@ -69,9 +69,9 @@ def rho_INT_Sig(r0, rho, gp):
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
     gh.checknan(rho, 'rho_INT_Sig')
     # >= 0.1 against rising in last bin. previous: k=2, s=0.1
-    splpar_rho = splrep(r0, np.log(rho), k=3, s=0.01)
+    splpar_rho = splrep(r0, np.log(rho), k=3, s=0.01) # 0.01?
     r0ext = np.array([0., r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
-    dR = r0[1:]-r0[:-1]
+    #dR = r0[1:]-r0[:-1]
     r0nu = np.hstack([r0ext,r0])
     # points in between possible, but not helping much:
     # ,dR*0.25+r0[:-1],dR*0.50+r0[:-1],dR*0.75+r0[:-1]])
@@ -193,8 +193,7 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
     # and convert it into [Munit/lunit^3]
     Mr = rho_SUM_Mr(R0, rho)                   # [Munit]
     # R0 != r0, too bad
-    # TODO: correction for 3D radii
-    r0  = R0
+    r0  = R0 # use the same radii for 3D as for the 2D projection
     MR = Sig_SUM_MR(R0, Sig)                   # [Munit]
     corr = MR[-1]/Mr[-1]
     gh.LOG(2, ' * Sig_NORM_rho:  no correction by ', corr)
@@ -212,7 +211,7 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
 # @param gp global parameters
 
 def Jpar(R0, Sig, gp):
-    splpar_Sig = splrep(R0, np.log(Sig)) # get spline in log space to circumvent flattening
+    splpar_Sig = splrep(R0, np.log(Sig),k=1,s=0.1) # get spline in log space to circumvent flattening
     J = np.zeros(len(Sig)-gp.nexp)
     for i in range(len(Sig)-gp.nexp):
         xint = np.sqrt(R0[i:]**2-R0[i]**2)
