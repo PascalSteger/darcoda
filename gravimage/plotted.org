@@ -11,6 +11,7 @@
 ** 2
 |    Timestamp | beta | status | outcome                                                     |
 |--------------+------+--------+-------------------------------------------------------------|
+| 201501221049 |  000 |        |                                                             |
 | 201501202212 |  000 | p      | early stage of convergence, negative n_nu(r)                |
 | 201501202211 |    - | p      | early stage of convergence, get down scale in delta n(r)    |
 | 201501091502 |  000 | p      | n(r) too steep, beta* too flat, chi^2 off                   |

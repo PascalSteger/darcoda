@@ -159,7 +159,7 @@ class ProfileCollection():
     def calculate_J(self, gp):
         if len(self.profs)>0:
             for i in range(len(self.profs)):
-                Sigprof = gip.rho_INT_Sig(gp.xepol, self.profs[i].get_prof('rho', 0))
+                Sigprof = gip.rho_INT_Sig(gp.xepol, self.profs[i].get_prof('rho', 0), gp)
                 Jprof = gip.Jpar(gp.xepol, Sigprof, gp)
                 self.profs[i].set_prof('J', Jprof, 0, gp)
         else:
