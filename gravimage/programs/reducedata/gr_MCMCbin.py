@@ -87,11 +87,11 @@ def run(gp):
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ', gp.files.get_com_file(pop))
-
-        if gp.investigate == "obs" and pop==0:
+        # exclude second condition if self-consistent approach wished
+        if gp.investigate == "obs" and (pop==0 or (pop==1 and gp.pops==1 and (not gp.selfconsistent))):
             # for Fornax, overwrite first Sigma with deBoer data
             import gr_MCMCbin_for
-            gr_MCMCbin_for.run(gp)
+            gr_MCMCbin_for.run(gp, pop)
             continue
 
         # start from data centered on COM already:

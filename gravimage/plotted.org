@@ -26,10 +26,14 @@
 ** 3
 |    Timestamp | beta | status | outcome                                                           |
 |--------------+------+--------+-------------------------------------------------------------------|
-| 201501202212 |  000 | p      | early stage, beta too high                                        |
-| 201501212211 |    - | p      | early stage, beta bang on, n(r) too steep, siglos off             |
-| 201501070939 |   00 | pc     | n(r) not curved enough, beta negative at high radii, otherwise ok |
-| 201501070936 |    - | pc     | good, n_nu(r) slightly too high in extension bins                 |
+| 201501222145 | -    | -      | no profiles found                                                 |
+| 201501222144 | -    | -      | no profiles found                                                 |
+| 201501221050 | 000  | -      | no profiles found                                                 |
+| 201501221048 | -    | -      | no profiles found                                                 |
+| 201501202212 | 000  | p      | old nrnu, early stage, beta too high                              |
+| 201501212211 | -    | p      | old nrnu, early stage, beta bang on, n(r) too steep, siglos off   |
+| 201501070939 | 00   | pc     | n(r) not curved enough, beta negative at high radii, otherwise ok |
+| 201501070936 | -    | pc     | good, n_nu(r) slightly too high in extension bins                 |
 
 ** 4
 |    Timestamp | beta | status | outcome                                     |
@@ -85,11 +89,14 @@
 
 * walk
 ** 1
-|    Timestamp | beta | status | outcome                                        |
-|--------------+------+--------+------------------------------------------------|
-| 201501202215 | -    | ap     | TODO: Sigma analytic too far off               |
-| 201501112129 | -    | apc    | good, n(r) consistently too high, beta too low |
-| 201501112121 | 000  | ap(c)  | very good, n(r) fine, beta slightly too low    |
+|    Timestamp | beta | status | outcome                                                            |
+|--------------+------+--------+--------------------------------------------------------------------|
+| 201501221116 | -    | p      | 1pop, nu and Sig not on analytic profile, still converging         |
+| 201501221109 | 000  | p      | 1pop, nu, Sig not on analytic profile, still converging, beta fine |
+| 201501221108 | 000  | -      | no profiles                                                        |
+| 201501202215 | -    | ap     | TODO: Sigma analytic too far off, beta broad                       |
+| 201501112129 | -    | apc    | good, n(r) consistently too high, beta too low                     |
+| 201501112121 | 000  | ap(c)  | very good, n(r) fine, beta slightly too low                        |
 
 ** 2
 |    Timestamp | beta | status | outcome                      |

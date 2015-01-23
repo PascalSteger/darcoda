@@ -30,8 +30,10 @@ class Datafile:
         ## biggest radius of the data bins, in [pc]
         self.binmax = []
         ## keep mass profile
-        self.Mr = []; self.Mrerr = []
-        self.Mhalf = []; self.rhalf = []
+        self.Mr = []
+        self.Mrerr = []
+        self.Mhalf = []
+        self.rhalf = []
         ## keep radial profile of the tracer density, averaged in 2D-rings
         self.nu = []
         self.nuerr = []
@@ -60,7 +62,6 @@ class Datafile:
             Sigx, binmin, binmax, Sigdat, Sigerr = \
                     gh.readcol5(gp.files.Sigfiles[pop])
             # 3*[rscale], [Sig0], [Sig0]
-
             # switch to Munit (msun) and pc here
             Sigx    = Sigx[:]    * gp.Xscale[pop]         # [pc]
             Sigdat  = Sigdat[:]  * gp.Sig0pc[pop]          # [Munit/pc^2]
@@ -71,7 +72,6 @@ class Datafile:
                 self.binmin = binmin * gp.Xscale[pop]           # [pc]
                 self.binmax = binmax * gp.Xscale[pop]           # [pc]
                 gp.xipol = self.rbin                            # [pc]
-
                 minr = min(self.rbin)                           # [pc]
                 maxr = max(self.rbin)                           # [pc]
                 gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
@@ -82,7 +82,6 @@ class Datafile:
             # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],
             # already normalized to same total mass
             if gp.geom == 'sphere':
-                # TODO: look at where the high last steep decline comes from
                 Sigdatnu, Sigerrnu = gh.complete_nu(self.rbin, Sigdat, Sigerr, gp.xfine)
                 dummyx, nudatnu, nuerrnu, Mrnu = gip.Sig_NORM_rho(gp.xfine, Sigdatnu, Sigerrnu, gp)
                 self.nu_epol.append(gh.linipollog(gp.xfine, nudatnu, gp.xepol))
@@ -93,18 +92,15 @@ class Datafile:
                 self.Mr.append(Mr) # [Munit]
                 Mhalf = Mr[-1]/2.     # [Munit]
                 self.Mhalf.append(Mhalf) # [Munit]
-
                 # spline interpolation with M as x axis, to get half-mass of system:
                 splpar_M = splrep(np.log(Mr), np.log(self.binmax), s=0.01)
                 r_half = np.exp(splev(np.log(Mhalf), splpar_M)) # [pc]
                 self.rhalf.append(r_half) # [pc]
-
                 # spline interpolation of nu at r_half:
                 splpar_nu = splrep(np.log(gp.xipol), np.log(nudat), s=0.01)
                 nuhalf = np.exp(splev(np.log(r_half), splpar_nu)) # [pc]
                 self.nuhalf.append(nuhalf)
                 # [Munit/pc^3]
-
                 # calculate n(r) parameters as used in gi_physics from the nu(r) profile
                 rleft = gp.xfine[gp.xfine <= r_half]
                 rleft = rleft[::-1]
@@ -112,7 +108,6 @@ class Datafile:
                 nuleft = nudatnu[gp.xfine <= r_half]
                 nuleft = nuleft[::-1]
                 nuright = nudatnu[gp.xfine > r_half]
-
                 rlast = 1.*r_half
                 nulast = 1.*nuhalf
                 sloperight = []
@@ -174,7 +169,6 @@ class Datafile:
                 # loglog(gp.xepol, rh, 'r.-', linewidth=2)
                 # loglog(gp.xepol, rhmin, 'g.-')
                 # loglog(gp.xepol, rhmax, 'g--')
-
                 # clf()
                 # plot(gp.xfine[:-1], nrpar, '.-')
                 # plot(gp.xipol, nre, '.-')

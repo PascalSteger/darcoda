@@ -65,6 +65,7 @@ class Params():
         if self.restart: self.getnewdata = False
         self.getnewpos  = True # get new positions of particles, important for Hernquist runs
         if self.getnewdata == False: self.getnewpos = False
+        self.selfconsistent = False # use tracer star density profile for dwarf galaxies?
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
@@ -73,12 +74,6 @@ class Params():
                      # types. do not use second type (DM) as
                      # population
         self.maxR = 5.            # [Xscale], max range in radial bins
-
-        # debug options
-        # ----------------------------------------------------------------------
-        self.debug = False # enable calling debug routines during run. Turn off for production runs!
-        self.checksig = False # check sigma_LOS calculation steps in gi_int
-        self.stopstep = 1 # step to stop at by default
 
         # MultiNest options
         # ----------------------------------------------------------------------
@@ -121,10 +116,6 @@ class Params():
         self.nlive = 10*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
-        # automatic plotting options
-        # ----------------------------------------------------------------------
-        self.last_plot = -1    # timestamp of last automatic plot, set to -1
-        self.plot_after = 3600  # [s] to elapse before automatic plotting called again
         # parameter spaces
         # ----------------------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at
@@ -155,17 +146,26 @@ class Params():
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
 
+        # automatic plotting options
+        # ----------------------------------------------------------------------
+        self.last_plot = -1    # timestamp of last automatic plot, set to -1
+        self.plot_after = 3600  # [s] to elapse before automatic plotting called again
+
         # filesystem-related
         # ----------------------------------------------------------------------
         self.machine = gb.get_machine()
         import import_path as ip
-        ip.set_geometry(self.geom, self.machine) # load spherical or
-                                                 # disc version
-                                                 # of the code
+        ip.set_geometry(self.geom, self.machine) # load spherical or disc version of the code
         import gi_class_files
         self.files = gi_class_files.Files(self, timestamp)
         from gi_data import Datafile
         self.dat = Datafile()
+
+        # debug options
+        # ----------------------------------------------------------------------
+        self.debug = False # enable calling debug routines during run. Turn off for production runs!
+        self.checksig = False # check sigma_LOS calculation steps in gi_int
+        self.stopstep = 1 # step to stop at by default
 
         # global arrays
         # ----------------------------------------------------------------------

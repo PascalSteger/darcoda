@@ -47,7 +47,6 @@ def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
     gpr.fil = gpr.dir+"/deBoer/table1.dat"
-
     ALL = np.loadtxt(gpr.fil)
     RAh = ALL[:,0]
     RAm = ALL[:,1]
@@ -61,13 +60,10 @@ def run(gp):
     sig = abs(RAh[0])/RAh[0]
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
-
     sig = abs(DEd[0])/DEd[0]
     DEd = DEd/sig
     ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
-
     arcsec = 2.*np.pi/(360.*60.*60) # [pc]
-
     kpc = 1000 # [pc]
     DL = {0: lambda x: x * (138),#+/- 8 for Fornax
           1: lambda x: x * (101),#+/- 5 for Carina
@@ -77,28 +73,21 @@ def run(gp):
 
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
-
     x0 = np.copy(xs)
     y0 = np.copy(ys) # [pc]
-
     com_x, com_y = com_shrinkcircle_2D(x0, y0) # [pc], [km/s]
     # from now on, work with 2D data only; z0 was only used to get center in (x,y) better
     # x0 -= com_x; y0 -= com_y # [pc]
     # vz0 -= com_vz #[km/s]
-
     R0 = np.sqrt(x0**2+y0**2) # [pc]
     Rhalf = np.median(R0) # [pc]
     Rscale = Rhalf # [pc] overall
-
     pop = 0
-    pmr = (R0<(gp.maxR*Rscale)) # read max extension for data
-                                    # (rprior*Rscale) from gi_params
+    pmr = (R0<(gp.maxR*Rscale)) # read max extension for data (rprior*Rscale) from gi_params
     x=1.*x0[pmr]
     y=1.*y0[pmr]
-
     R = np.sqrt(x*x+y*y)            # [pc]
     Rscalei = np.median(R)          # [pc]
-    #pdb.set_trace()
     gf.write_Xscale(gp.files.get_scale_file(pop), Rscalei) # [pc]
     gf.write_data_output(gp.files.get_com_file(pop), x/Rscalei, y/Rscalei, np.zeros(len(x)), Rscalei) # [pc]
 ## \fn run(gp)
