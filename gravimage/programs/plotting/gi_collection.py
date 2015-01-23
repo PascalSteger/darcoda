@@ -64,10 +64,39 @@ class ProfileCollection():
         self.M99hi = Profiles(pops, nepol)
         self.Mmax  = Profiles(pops, nepol)
         self.analytic = Profiles(pops, 100)
+        initrange = [1e30, -1e30]
+        self.ranges = {'rho0': initrange,
+                       'nr0': initrange,
+                       'M0': initrange,
+                       'nu1': initrange,
+                       'nu2': initrange,
+                       'Sig1': initrange,
+                       'Sig2': initrange,
+                       'sig1': initrange,
+                       'sig2': initrange,
+                       'nrnu1': initrange,
+                       'nrnu2': initrange,
+                       'beta1': initrange,
+                       'beta2': initrange,
+                       'betastar1': initrange,
+                       'betastar2': initrange}
     ## \fn __init__(self, pops, nepol)
     # constructor
     # @param pops number of populations
     # @param nepol number of bins
+
+    def broaden_lim(self, prof, pop, mini, maxi):
+        dmin, dmax = self.ranges[prof+str(pop)]
+        dmin = min(dmin, mini)
+        dmax = max(dmax, maxi)
+        self.ranges[prof+str(pop)] = [dmin, dmax]
+        return
+    ## \fn broaden_lim(self, prof, pop, mini, maxi)
+    # broaden the plotting range
+    # @param prof string
+    # @param pop int
+    # @param mini new minimum
+    # @param maxi new maximum
 
     def add(self, prof):
         if np.isnan(prof.chi2):
@@ -347,9 +376,8 @@ class ProfileCollection():
             output.add('error [Msun/pc^2]', Sigerr)
             output.add('data - error [Msun/pc^2]', Sigdat-Sigerr)
             output.add('data + error [Msun/pc^2]', Sigdat+Sigerr)
-            ax.fill_between(r0, Sigdat-Sigerr, Sigdat+Sigerr, \
-                            color='blue', alpha=0.3, lw=1)
-            ax.set_ylim([min(Sigdat-Sigerr)/2., 2.*max(Sigdat+Sigerr)])
+            ax.fill_between(r0, Sigdat-Sigerr, Sigdat+Sigerr, color='blue', alpha=0.3, lw=1)
+            self.broaden_lim('Sig', pop, min(Sigdat-Sigerr)/2, 2*max(Sigdat+Sigerr))
         elif prof == 'nu':
             # get 3D data here
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], nu(R)/nu(0) [1], error [1]
@@ -363,7 +391,7 @@ class ProfileCollection():
             output.add('data + error [Msun/pc^2]', nudat+nuerr)
             ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
                             color='blue', alpha=0.3, lw=1)
-            ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)])
+            self.broaden_lim('nu', pop, min(nudat-nuerr)/2., 2*max(nudat+nuerr))
         elif prof == 'sig':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
@@ -375,9 +403,8 @@ class ProfileCollection():
             output.add('error [km/s]', sigerr)
             output.add('data - error [km/s]', sigdat-sigerr)
             output.add('data + error [km/s]', sigdat+sigerr)
-            ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, \
-                            color='blue', alpha=0.3, lw=1)
-            ax.set_ylim([0., 2.*max(sigdat+sigerr)])
+            ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, color='blue', alpha=0.3, lw=1)
+            self.broaden_lim('sig', pop, 0., 2*max(sigdat+sigerr))
         output.write(basename+'output/data/prof_'+prof+'_'+str(pop)+'.data')
         return
     ## \fn plot_data(self, ax, basename, prof, pop, gp)
@@ -398,16 +425,15 @@ class ProfileCollection():
             ax.set_ylabel('$\\rho\\quad[\\rm{M}_\\odot/\\rm{pc}^3]$')
         elif prof == 'M':
             ax.set_ylabel('$M(r)$')
-            ax.set_ylim([1e5, 1e11])
         elif prof == 'nr':
             ax.set_ylabel('$n(r)$')
-            ax.set_ylim([-1,5])
+            self.broaden_lim('nr', 0, -1, 5)
         elif prof == 'beta':
             ax.set_ylabel('$\\beta_'+str(pop)+'$')
-            ax.set_ylim([-1.05,1.05])
+            self.broaden_lim('beta', pop, -1.05, 1.05)
         elif prof == 'betastar':
             ax.set_ylabel('$\\beta^*_'+str(pop)+'$')
-            ax.set_ylim([-1.05,1.05])
+            self.broaden_lim('betastar', pop, -1.05, 1.05)
         elif prof == 'Sig' and pop > 0:
             ax.set_ylabel('$\\Sigma_'+str(pop)+'\\quad[\\rm{M}_\\odot/\\rm{pc}^2]$')
         elif prof == 'Sig' and pop == 0:
@@ -518,13 +544,16 @@ class ProfileCollection():
             self.plot_Xscale_3D(ax, gp)
         ax.set_xlim([r0[0], r0[-1]])
         if prof == 'beta' or prof == 'betastar':
-            ax.set_ylim([-1,1])
+            self.broaden_lim('beta', pop, -1, 1)
+            self.broaden_lim('betastar', pop, -1, 1)
         elif prof == 'nr':
-            ax.set_ylim([-0.5, 5])
+            self.broaden_lim('nr', pop, -0.5, 5)
         elif prof == 'nrnu':
-            ax.set_ylim([0., max(M95hi)])
-        else:
-            ax.set_ylim([min(M68lo), max(M68hi)])
+            self.broaden_lim('nrnu', pop, 0., max(M95hi))
+        elif prof == 'M':
+            self.broaden_lim('M', 0, min(M68lo), max(M68hi))
+        elif prof == 'rho':
+            self.broaden_lim('rho', 0, min(M68lo), max(M68hi))
         return
     ## \fn fill_nice(self, ax, prof, pop, gp)
     # plot filled region for 1sigma and 2sigma confidence interval
@@ -561,7 +590,7 @@ class ProfileCollection():
 
             self.fill_nice(ax, prof, pop, gp)
             # TODO: replace above with full distribution plot (has bugs,
-            #   File "/home/ast/read/dark/darcoda/gravimage/programs/plotting/gi_collection.py", line 466, in plot_full_distro
+            # File "programs/plotting/gi_collection.py", line 466, in plot_full_distro
             # ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
             # ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
             #self.plot_full_distro(ax, prof, pop, gp)
@@ -573,9 +602,9 @@ class ProfileCollection():
             if (gp.investigate == 'walk' or gp.investigate == 'gaia' or gp.investigate=='triax') and prof != 'sig':
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
+                self.broaden_lim(prof, pop, min(y0), max(y0))
                 ax.plot(r0, y0, 'b--', lw=2)
-                if prof == 'beta' or prof == 'betastar':
-                    ax.set_ylim([-1, 1])
+            ax.set_ylim(self.ranges[prof+str(pop)])
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')

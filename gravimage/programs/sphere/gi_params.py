@@ -65,7 +65,7 @@ class Params():
         if self.restart: self.getnewdata = False
         self.getnewpos  = True # get new positions of particles, important for Hernquist runs
         if self.getnewdata == False: self.getnewpos = False
-        self.selfconsistent = False # use tracer star density profile for dwarf galaxies?
+        self.selfconsistentnu = False # use tracer star density profile for dwarf galaxies?
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.metalpop   = False # split metallicities with a separate
                                 # MCMC
