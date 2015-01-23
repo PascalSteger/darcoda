@@ -94,7 +94,6 @@ def grep(s,pattern):
 # @param pattern
 
 def sanitize_vector(vec, length, mini, maxi, debug):
-    debug = True # TODO: remove
     if length > -1 and len(vec) != length:
         LOG(1, 'vec has wrong length')
         if debug:
