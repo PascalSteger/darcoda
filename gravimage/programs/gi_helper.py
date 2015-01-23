@@ -94,6 +94,7 @@ def grep(s,pattern):
 # @param pattern
 
 def sanitize_vector(vec, length, mini, maxi, debug):
+    debug = True # TODO: remove
     if length > -1 and len(vec) != length:
         LOG(1, 'vec has wrong length')
         if debug:
@@ -353,8 +354,8 @@ def checknan(vec, place=''):
         LOG(1, 'NaN found! '+place)
         raise Exception('NaN', 'found')
         # not executed anymore :)
-        traceback.print_tb(sys.exc_info()[2])
-        return True
+        #traceback.print_tb(sys.exc_info()[2])
+        #return True
     else:
         return False
 ## \fn checknan(vec, place):
@@ -362,7 +363,6 @@ def checknan(vec, place=''):
 # @param vec array of float values
 # @param place = '' show user where to search
 # @return True if NaN found
-
 
 def checkpositive(vec, place=''):
     if checknan(vec, place):

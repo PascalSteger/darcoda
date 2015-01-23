@@ -11,6 +11,7 @@ import pdb
 #from multiprocessing import Process
 
 import matplotlib.pyplot as plt
+from scipy.interpolate import splrep, splev
 plt.ioff()
 
 from gi_class_profiles import Profiles
@@ -161,7 +162,13 @@ class ProfileCollection():
             for i in range(len(self.profs)):
                 Sigprof = gip.rho_INT_Sig(gp.xepol, self.profs[i].get_prof('rho', 0), gp)
                 Jprof = gip.Jpar(gp.xepol, Sigprof, gp)
-                self.profs[i].set_prof('J', Jprof, 0, gp)
+                # add 3 extension bins
+                tck = splrep(np.log(gp.xepol[:-gp.nexp]), np.log(Jprof), k=1, s=0.1)
+                Jext = np.exp(splev(np.log(gp.xepol[-gp.nexp:]), tck))
+                Jfull = np.hstack([Jprof, Jext])
+                for k in range(gp.nepol):
+                    Jfull[k] = max(0, Jfull[k])
+                self.profs[i].set_prof('J', Jfull, 0, gp)
         else:
             gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.J')
     ## \fn calculate_J(self, gp)

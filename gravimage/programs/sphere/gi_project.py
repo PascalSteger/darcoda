@@ -14,7 +14,7 @@
 
 import numpy as np
 import pdb
-from scipy.integrate import cumtrapz, romberg, simps, quad
+from scipy.integrate import simps, quad
 from scipy.interpolate import splrep, splev, splint
 import gi_helper as gh
 import gi_physics as phys
@@ -67,8 +67,11 @@ def rho_INTDIRECT_Sig(r0, rho):
 def rho_INT_Sig(r0, rho, gp):
     # use splines on variable transformed integral
     # \Sigma(R) = \int_{r=R}^{R=\infty} \rho(r) d \sqrt(r^2-R^2)
+    if rho[0] <= 1e-100:
+        return np.zeros(gp.nepol)
     gh.checknan(rho, 'rho_INT_Sig')
     # >= 0.1 against rising in last bin. previous: k=2, s=0.1
+    # TODO: check use of np.log(r0) here
     splpar_rho = splrep(r0, np.log(rho), k=3, s=0.01) # 0.01?
     r0ext = np.array([0., r0[0]*0.25, r0[0]*0.50, r0[0]*0.75])
     #dR = r0[1:]-r0[:-1]
@@ -211,6 +214,8 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
 # @param gp global parameters
 
 def Jpar(R0, Sig, gp):
+    if Sig[0] < 1e-100:
+        return np.ones(len(R0)-gp.nexp)
     splpar_Sig = splrep(R0, np.log(Sig),k=1,s=0.1) # get spline in log space to circumvent flattening
     J = np.zeros(len(Sig)-gp.nexp)
     for i in range(len(Sig)-gp.nexp):
@@ -230,6 +235,7 @@ def Jpar(R0, Sig, gp):
 # @param R0 radii where Sig is defined on
 # @param Sig surface density
 # @param gp global parameters
+# @return len(R0)-3 length array of J parameter
 
 def Sig_INT_rho(R0, Sig, gp):
     J = Jpar(R0, Sig, gp)
