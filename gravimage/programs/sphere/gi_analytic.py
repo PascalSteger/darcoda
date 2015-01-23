@@ -195,7 +195,6 @@ def nu3Dtot_gaia(rad, gp):
 # @return 3D overall density (DM+stellar population) in [Munit/pc^3]
 
 def nr3Dtot_deriv_walk(rad, gp):
-    # TODO too high for walk1, core
     lrho = np.log(rhotot_walk(rad, gp))
     lr   = np.log(rad)
     import gi_helper as gh

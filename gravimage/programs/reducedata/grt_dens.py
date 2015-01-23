@@ -4,9 +4,8 @@
 # @file
 # calculate surface mass density falloff of circular rings around center of mass
 # for triaxial systems
-# TODO: enable ellipsoidal bins
 
-# (c) 2014 GPL v.3 Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) 2015 GPL v.3 Pascal S.P. Steger, pascal@steger.aero
 
 import pdb
 import numpy as np

@@ -9,11 +9,7 @@
 
 import numpy as np
 import pdb
-#from pylab import *
-#ion()
 
-# TODO find missing modules
-import gi_class_files as gcf
 import gi_centering as gc
 
 def run(gp):

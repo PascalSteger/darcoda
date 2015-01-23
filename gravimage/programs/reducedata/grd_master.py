@@ -137,7 +137,7 @@ delta_s /= gu.rad__arcsec  # [rad]
 Vd = np.sum(Vhel * PM)/np.sum(PM)    # [km/s]
 ad = np.sum(alpha_s * PM)/np.sum(PM) # [arcsec]
 dd = np.sum(delta_s * PM)/np.sum(PM) # [arcsec]
-# determine distance to dwarf TODO reference
+# determine distance to dwarf
 xs = alpha_s*DL # [pc]
 ys = delta_s*DL # [pc]
 PM0 = 1.*np.copy(PM)

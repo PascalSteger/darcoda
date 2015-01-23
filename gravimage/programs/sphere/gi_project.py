@@ -202,7 +202,6 @@ def Sig_NORM_rho(R0, Sig, Sigerr, gp):
     gh.LOG(2, ' * Sig_NORM_rho:  no correction by ', corr)
     # rho *= corr                                      # [Munit/lunit^3]
     # fractional error propagation
-    # TODO right error determination needs to be included in Sig_INT_rho()
     rhoerr = rho * Sigerr/Sig                        # [Munit/lunit^3]
     # [pc], [Munit/lunit^3], [Munit/lunit^3]
     return r0, rho, rhoerr, Mr

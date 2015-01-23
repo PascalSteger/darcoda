@@ -173,19 +173,6 @@ class ProfileCollection():
     # @param gp global parameters
     # @return tmp profiles sorted binwise
 
-    def calculate_M(self, gp):
-        if len(self.profs)>0:
-            for i in range(len(self.profs)):
-                Mprof = gip.rho_SUM_Mr(gp.xipol, self.profs[i].get_prof('rho', 0))
-                self.profs[i].set_prof('M', Mprof, 0, gp)
-        else:
-            gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.M')
-        return
-    ## \fn calculate_M(self, gp)
-    # calculate M profiles from rho, as this has not been done prior to pc2.save
-    # NOT NEEDED ANYMORE, calculated during run-time (TODO: no good idea, time!)
-    # @param gp global parameters0
-
     def calculate_J(self, gp):
         if len(self.profs)>0:
             for i in range(len(self.profs)):
@@ -279,7 +266,7 @@ class ProfileCollection():
             nrnu = -gh.derivipol(np.log(annu[pop]), np.log(r0))
             self.analytic.set_prof('nrnu', nrnu, pop, gp)
             self.analytic.set_prof('Sig', anSig[pop] , pop, gp)#/ Signorm, pop, gp)
-            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp) # TODO: find analytic profile
+            self.analytic.set_prof('sig', -np.ones(len(r0)), pop, gp)
         return
     ## \fn set_analytic(x0, gp)
     # set analytic curves (later shown in blue)

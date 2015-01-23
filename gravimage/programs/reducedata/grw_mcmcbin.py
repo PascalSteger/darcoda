@@ -12,19 +12,9 @@
 
 import pdb
 import numpy as np
-#from scipy.stats import kurtosis
-#from pylab import *
-#ion()
 
 import gi_file as gf
-#from gi_helper import bin_r_linear, bin_r_log
-#from gi_helper import bin_r_const_tracers
-# TODO determine missing modules
-import gi_class_files as gcf
-
-# from BiWeight import meanbiweight
 import gi_analytic as ga
-
 
 def volume_spherical_shell(binmin, binmax, gp):
     vol = np.zeros(gp.nipol)
@@ -34,7 +24,9 @@ def volume_spherical_shell(binmin, binmax, gp):
     return vol
 ## \fn volume_spherical_shell(binmin, binmax, gp)
 # volume of a circular ring from binmin to binmax
-
+# @param binmin
+# @param binmax
+# @param gp global parameters
 
 def run(gp):
     import gr_params

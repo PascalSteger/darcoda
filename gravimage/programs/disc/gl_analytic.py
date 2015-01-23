@@ -26,20 +26,20 @@ def get_prof(prof, pop, gp):
     z0  = 240.                                # [pc], scaleheight of first population
     z02 = 200.                                # [pc], scaleheight of second population
     D   = 250.                                # [pc], scaleheight of all stellar tracers
-    K   = 1.65                                # [TODO]
-    F   = 1.65e-4                             # [TODO]
+    K   = 1.65
+    F   = 1.65e-4
     C   = 17.**2.                             # [km/s] integration constant in sig
 
     # Draw mock data from exponential disk:
     nu_zth = np.exp(-zth/z0)                                 # [nu0] = [Msun/A/pc] 3D tracer density
     if prof == 'nu' and pop==1:
         return zth, nu_zth
-    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
+    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth)
 
     if gp.adddarkdisc:
         DD = 600                                         # [pc] scaleheight of dark disc
-        KD = 0.15 * 1.650                                # [TODO]
-        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.) # [TODO]
+        KD = 0.15 * 1.650
+        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.)
 
     # calculate sig_z^2
     inti = np.zeros(nth)

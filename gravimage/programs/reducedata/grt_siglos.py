@@ -4,9 +4,8 @@
 # @file
 # calculate velocity dispersion of 2D rings from a Walker dataset'''
 # for triaxial systems
-### TODO: extend method to work with elliptical bins // introduce tensors (cf Agnello)
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 #from pylab import *
 #ion()
@@ -15,10 +14,6 @@ import numpy as np
 from BiWeight import meanbiweight
 import gi_helper as gh
 import gi_file as gf
-import gi_class_files as gcf
-# TODO: find functions with missing module name
-#from gi_class_files import *
-# from gi_helper import bin_r_const_tracers # bin_r_linear, bin_r_log
 
 def run(gp):
     import gr_params

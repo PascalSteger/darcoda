@@ -11,7 +11,6 @@ import random
 import pdb
 
 import gi_units as gu
-# TODO hernquist gp.G1 replacement in gu
 import gi_helper as gh
 from gi_centering import com_shrinkcircle_v
 

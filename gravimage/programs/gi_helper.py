@@ -885,8 +885,3 @@ def starred(R0, X, Sigma, Ntot, gp):
 # @param Sigma surface density at these radii, in [Munit/pc^2]
 # @param Ntot total number of stars
 # @param gp global parameters
-
-
-if __name__=="__main__":
-    # TODO: define tests
-    print("calling tests from gi_helper")

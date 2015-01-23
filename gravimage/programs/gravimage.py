@@ -59,7 +59,6 @@ def myprior(cube, ndim, nparams):
 def myloglike(cube, ndim, nparams):
     tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     # store tmp_prof by appending it to pc2.save
-    # TODO: with parallel version, need to append to CPU-based output name
     # we only store models after the initial Sigma burn-in
     if gp.chi2_Sig_converged <= 0:
         tmp_profs.x0 = gp.xepol

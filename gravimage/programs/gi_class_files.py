@@ -486,7 +486,3 @@ class Files:
 
 ## \class Files
 # Common base class for all filename sets
-
-if __name__=="__main__":
-    # TODO: call test
-    print("calling test")

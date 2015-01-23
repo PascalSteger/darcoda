@@ -230,7 +230,7 @@ def disc_sim(gp):
         elif gp.baryonmodel == 'simple':
             zvis = gp.xipol                   # [pc]
             D = 250.                          # [pc]
-            K = 1.65                          # [TODO]
+            K = 1.65
             sigusevis = K*zvis/sqrt(zvis**2.+D**2.) / (2.0*np.pi*G1)
             siguseviserr = sigusevis*0.01
 

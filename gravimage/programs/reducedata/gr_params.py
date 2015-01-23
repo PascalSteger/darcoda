@@ -8,20 +8,6 @@
 
 import pdb
 
-def rhodm(r, r_DM, rho0, alpha_DM, beta_DM, gamma_DM):
-    # TODO beta_DM: define up here somewhere
-    exp = ((1.*gamma_DM-beta_DM)/alpha_DM)
-    rho = rho0*(r/r_DM)**(-gamma_DM)*(1.+(r/r_DM)**alpha_DM)**exp
-    return rho
-## \fn rhodm(r,r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
-# in walker case, calculate rho_DM profile
-# @param r radii [pc]
-# @param r_DM dark matter scale radius [pc]
-# @param rho0 central density in [Msun/pc^3]
-# @param alpha_DM profile parameter, outer slope
-# @param beta_DM  profile parameter, transition strength
-# @param gamma_DM profile parameter, central slope
-
 import gi_helper as gh
 class grParams():
     def __init__(self, gp):
