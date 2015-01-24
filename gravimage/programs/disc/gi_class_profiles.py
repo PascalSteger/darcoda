@@ -4,7 +4,7 @@
 # @file
 # store profiles
 
-# (c) GPL v3 2014 ETHZ psteger@phys.ethz.ch
+# (c) GPL v3 2014 ETHZ pascal@steger.aero
 
 import pdb
 import numpy as np

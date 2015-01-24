@@ -4,7 +4,7 @@
 # implement MySQL related commands
 # needs a MySQL server running on (another) computer, see act/lib/initialize for details
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import os, pdb, wx
 

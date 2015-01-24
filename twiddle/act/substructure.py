@@ -4,7 +4,7 @@
 # find shared particles between two snapshots
 # can be used with twice the same snapshot to get subhalo tree
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import sys
 from numpy import zeros

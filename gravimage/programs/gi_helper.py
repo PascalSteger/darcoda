@@ -4,10 +4,10 @@
 # @file
 # all helper functions
 
-# (c) GPL v3 2014 Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal S.P. Steger, pascal@steger.aero
+
 import sys
 import time
-import traceback
 import pdb
 import re
 import numpy as np

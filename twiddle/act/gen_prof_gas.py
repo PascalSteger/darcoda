@@ -7,7 +7,7 @@
 # - plot_prof
 # for dm only
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import sys, os
 import lib.mysql as mys

@@ -4,7 +4,7 @@
 # define log likelihood function to be called by multinest
 # spherical version
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import pdb

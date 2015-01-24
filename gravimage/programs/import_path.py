@@ -4,7 +4,7 @@
 # import file with full path specification, only once, setting back sys.path
 # you need to specify PYTHONPATH to include the gravimage/programs
 
-# (c) GPL v3 2015 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import os
 import sys

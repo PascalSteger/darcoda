@@ -3,7 +3,7 @@
 ## \file
 # after AHF has finished, fill found halo values into MySQL database
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import os, sys
 import lib.mysql as mys

@@ -10,7 +10,7 @@
 #   May 2011
 #
 # extended for 4th order moment by Pascal Steger,
-# ETH Zurich, psteger@phys.ethz.ch
+# ETH Zurich, pascal@steger.aero
 #------------------------------------------------------------------
 #
 # PURPOSE:
@@ -31,7 +31,7 @@
 #   V1.0 -- Created by Glenn van de Ven, Leiden, 12 November 2003.
 #   python version by Silvia Garbari, ITP UZH Zurich silvia@physik.uzh.ch
 #           May 2011
-#   fourth order moment by Pascal Steger, ETH Zurich, psteger@phys.ethz.ch
+#   fourth order moment by Pascal Steger, ETH Zurich, pascal@steger.aero
 #------------------------------------------------------------------
 
 

@@ -5,7 +5,7 @@
 # calculate approximative center of mass, assuming constant stellar mass
 # 3D version, see grw_COM for 2D
 
-# (c) GPL v3 2015 ETHZ Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger, pascal@steger.aero
 
 import numpy as np
 import pdb

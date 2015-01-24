@@ -4,7 +4,7 @@
 # @file
 # check deprojection and projection of nu
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) 2015 Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np

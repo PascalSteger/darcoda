@@ -4,7 +4,7 @@
 # @file
 # check all parameters for prior constraints
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np

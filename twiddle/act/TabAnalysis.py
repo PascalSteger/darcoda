@@ -4,7 +4,7 @@
 # implement all analysis routines
 # all done via external tools called from the command line
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
 import wx
 import lib.mysql as mys
@@ -15,15 +15,12 @@ amr2map="amr2map_8byte"
 class TabAnalysis(wx.Panel):
     def __init__(self, parent):
         self.radio=0; self.movie=0; self.loop=1; self.calc=1; self.fix=0
-
         wx.Panel.__init__(self, parent=parent)
         #self.SetBackgroundColour("gray")
- 
         mainSizer = wx.BoxSizer(wx.VERTICAL)
         grid      = wx.GridBagSizer(hgap=5, vgap=5)
         hsiz1     = wx.BoxSizer(wx.HORIZONTAL)
         hsiz2     = wx.BoxSizer(wx.HORIZONTAL)
-
         radioList = [
             'density',    'pressure',  'temperature',
             'DM contour', 'metal',     'phase diag',
@@ -41,57 +38,54 @@ class TabAnalysis(wx.Panel):
         hsiz2.Add(self.hagcalc, 2, wx.ALL, 2)
         self.Bind(wx.EVT_CHECKBOX, self.checkCalc, self.hagcalc)
         self.hagcalc.SetValue(1)
-
         # compile plots into movie?
         self.hagmovie = wx.CheckBox(self, label="movie")
         hsiz2.Add(self.hagmovie, 2, wx.ALL, 2)
         self.Bind(wx.EVT_CHECKBOX, self.checkMovie, self.hagmovie)
-
         #set fix comoving scale, do not use virial radius
         self.hagfix = wx.CheckBox(self, label="fix r")
         hsiz2.Add(self.hagfix, 2, wx.ALL, 2)
         self.Bind(wx.EVT_CHECKBOX, self.checkFix, self.hagfix)
-
         # loop?
         self.hagloop = wx.CheckBox(self, label="loop")
         hsiz2.Add(self.hagloop, 2, wx.ALL, 2)
         self.Bind(wx.EVT_CHECKBOX, self.checkLoop, self.hagloop)
         self.hagloop.SetValue(1)
-        
         self.buttonPlot =wx.Button(self, label="Plot!")
         self.Bind(wx.EVT_BUTTON, self.OnPlot,self.buttonPlot)
         hsiz2.Add(self.buttonPlot, 2, wx.ALL, 2)
-
         mainSizer.Add(hsiz1, 0, wx.ALL, 5); mainSizer.Add(hsiz2, 0, wx.ALL, 5)
-
         # maximal gas level
         lmaval = mys.get_lma()
         self.lma = wx.TextCtrl(self, value=str(lmaval), size=(-1,-1))
         vbox = wx.BoxSizer(wx.HORIZONTAL)
         vbox.Add(self.lma, 1,wx.ALL)
         self.Bind(wx.EVT_TEXT, self.setLMA, self.lma)
-
         mainSizer.Add(vbox, 0, wx.ALL, 5)
-
         self.SetSizerAndFit(mainSizer)
+    ## \fn __init__(self, parent)
+    # populate window
+    # @param event
 
     def EvtRadioBox(self, event):
         print('plot: %d\n' % event.GetInt())
         self.radio=event.GetInt()
-    def OnPlot(self,event):
+    ## \fn EvtRadioBox(self, event)
+    # radio button for event
+    # @param event
+
+    def OnPlot(self, event):
         print("plot")
         f=1 # scaling of sphere wrt rvir
         vis  = True; show = True; run  = True;
-
         my.mkdir(mys.simdir()+"/ana")
         ddm  = mys.simdir() + "/ana/dm/";    my.mkdir(ddm)
         dgas = mys.simdir() + "/ana/gas/";   my.mkdir(dgas)
         dstar= mys.simdir() + "/ana/stars/"; my.mkdir(dstar)
         dpd  = mys.simdir() + "/phasediag/"; my.mkdir(dpd)
-
         nstart,nstop=mys.get_range()
         x,y,z,r,snap=mys.getxyzrsnap(nstop)#TODO: nstart,nstop
-#        xs,ys,zs,rs,snap=mys.getxyzrsnap_stars(nstart,nstop)
+        xs,ys,zs,rs,snap=mys.getxyzrsnap_stars(nstart,nstop)
         #x,y,z,r,snap=mys.mt_xyzrsnap(nstart,nstop)
         #xs,ys,zs,rs,snap=mys.mt_xyzrsnap_stars(nstart,nstop)
         for i in range(nstop-nstart+1):
@@ -105,13 +99,18 @@ class TabAnalysis(wx.Panel):
             print(z[i], zs[i])
             print(r[i], rs[i])
             d = mys.d(nc)
-
             # scale
             if self.fix:
                 r[i]=0.002; rs[i]=0.002;
 
-            sx = str(x[i]); sy = str(y[i]); sz = str(z[i]); sr = str(r[i])
-            ssx= str(sx[i]);ssy= str(ys[i]);ssz= str(sz[i]);ssr= str(rs[i])
+            sx = str(x[i])
+            sy = str(y[i])
+            sz = str(z[i])
+            sr = str(r[i])
+            ssx= str(sx[i])
+            ssy= str(ys[i])
+            ssz= str(sz[i])
+            ssr= str(rs[i])
             lma = str(mys.get_lma())
             bndry  = " "+sx+" "+sy+" "+sz+" "+sr+" "
             bndryc =" -xc "+sx+" -yc "+sy+" -zc "+sz+" -rc "+sr+" "
@@ -221,18 +220,38 @@ class TabAnalysis(wx.Panel):
                 break
         my.done()
         #TODO: if movie, concat and save as avi
-            
+    ## \fn OnPlot(self, event)
+    # call plotting routine based on radio button selection
+    # @param event
+
     def checkMovie(self, event):
         self.movie=self.hagmovie.GetValue()
+    ## \fn checkMovie(self, event)
+    # get value of movie
+    # @param event
 
     def checkLoop(self, event):
         self.loop=self.hagloop.GetValue()
+    ## \fn checkLoop(self, event)
+    # get value of loop
+    # @param event
+
     def checkFix(self, event):
         self.fix=self.hagfix.GetValue()
+    ## \fn checkFix(self, event)
+    # get value of fix
+    # @param event
+
     def checkCalc(self, event):
         self.calc=self.hagcalc.GetValue()
-    def setLMA(self,event):
+    ## \fn checkCalc(self, event)
+    # get value of calc, whether to calculate anew
+    # @param event
+
+    def setLMA(self, event):
         lma = int(event.GetString())
         mys.set_lma(lma)
         print('maximum level lma = ', lma)
-
+    ## \fn setLMA(self, event)
+    # get value of maximum level to refine plot to
+    # @param eventt

@@ -3,7 +3,7 @@
 ## \file
 # get profile, write out to prof.dat
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import sys
 from numpy import sqrt,array

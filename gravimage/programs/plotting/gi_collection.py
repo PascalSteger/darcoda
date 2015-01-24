@@ -3,7 +3,7 @@
 ## @file
 # collect profiles and perform actions on them
 
-# (c) 2014 ETHZ Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import numpy.random as npr

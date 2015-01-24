@@ -5,7 +5,7 @@
 # MCMC to split stellar tracers into two populations
 # assuming split by age is traced by age and thus metallicity only
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import pdb

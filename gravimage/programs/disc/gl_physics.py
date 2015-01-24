@@ -5,7 +5,7 @@
 # calculations for velocity dispersion
 # disc version
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) 2013 Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np

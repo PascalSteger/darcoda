@@ -4,7 +4,7 @@
 # GUI for all tools needed to work with ramses outputs
 # TODO: check out pymses
 
-# (c) 2015 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import wx

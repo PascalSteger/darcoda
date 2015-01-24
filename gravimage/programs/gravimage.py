@@ -4,7 +4,7 @@
 # @file
 # needs Multinest from https://github.com/JohannesBuchner/MultiNest
 
-# Copyright 2015 GPLv3 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# Copyright 2015 GPLv3 ETHZ, Pascal Steger, pascal@steger.aero
 
 # get latest version of PyMultiNest from
 # svn checkout http://lisasolve.googlecode.com/svn/trunk/ lisasolve-read-only
