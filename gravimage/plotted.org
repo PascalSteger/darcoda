@@ -26,8 +26,8 @@
 ** 3
 |    Timestamp | beta | status | outcome                                                           |
 |--------------+------+--------+-------------------------------------------------------------------|
-| 201501222145 | -    | -      | no profiles found                                                 |
-| 201501222144 | -    | -      | no profiles found                                                 |
+| 201501222145 | -    | -      | 8 bins, no profiles found                                         |
+| 201501222144 | -    | -      | 18 bins, no profiles found                                        |
 | 201501221050 | 000  | -      | no profiles found                                                 |
 | 201501221048 | -    | -      | no profiles found                                                 |
 | 201501202212 | 000  | p      | old nrnu, early stage, beta too high                              |
