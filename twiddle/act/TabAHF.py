@@ -9,7 +9,7 @@ import wx
 import lib.mysql as mys
 import lib.initialize as my
 import get_halopos_rezoom
-    
+
 class TabAHF(wx.Panel):
     def __init__(self, parent):
         self.sim = mys.get_active_sim()
@@ -39,7 +39,7 @@ class TabAHF(wx.Panel):
         btnHalos = wx.Button(self, label="show AHF halos")
         sizer.Add(btnHalos, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onShowHalos,btnHalos)
-        
+
         # get three most massive substructures
         #   for resimulation with zoom
         #   we want no structure with m>mvir/2 inside 5rvir
@@ -63,8 +63,11 @@ class TabAHF(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.onGenAOI, btnGenAOI)
 
         self.SetSizer(sizer)
+    ## \fn __init__(self, parent)
+    # fill tab for AHF control
+    # @parent parent
 
-    def onRunR2G(self,event):
+    def onRunR2G(self, event):
         nstart,nstop=mys.get_range()
         print('nstart, nstop = ', nstart, nstop)
         for nc in range(nstop-nstart+1):
@@ -81,6 +84,9 @@ class TabAHF(wx.Panel):
             my.thread(cmd)
         self.SetBackgroundColour("darkgreen")
         my.done()
+    ## \fn onRunR2G(self, event)
+    # start ramses2gadget
+    # @param event
 
     def onRunAHF(self,event):
         nstart,nstop=mys.get_range()
@@ -90,7 +96,7 @@ class TabAHF(wx.Panel):
                 continue
             d  = mys.d(nsnap)
             f = open(d+"AHFinput","w")
-            
+
             f.write("[AHF]\n\
 \n\
 # (stem of the) filename from which to read the data to be analysed\n\
@@ -160,8 +166,11 @@ GADGET_MUNIT      = 1.0E10\n")
             print(cmd)
             my.thread(cmd)
         my.done()
+    ## \fn onRunAHF(self, event)
+    # start Amiga Halo Finder
+    # @param event
 
-    def onFillAHF(self,event):
+    def onFillAHF(self, event):
         nstart,nstop=mys.get_range()
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
@@ -172,10 +181,13 @@ GADGET_MUNIT      = 1.0E10\n")
             my.thread(cmd)
             exit
         my.done()
+    ## \fn onFillAHF(self, event)
+    # fill AHF output to MySQL database
+    # @param event
 
-    def onShowHalos(self,event):
-        nstart,nstop=mys.get_range()
-        nstart=nstop #! show only latest snapshot
+    def onShowHalos(self, event):
+        nstart,nstop = mys.get_range()
+        nstart = nstop #! show only latest snapshot
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
             if(not mys.snap_exists(nsnap)):
@@ -184,12 +196,18 @@ GADGET_MUNIT      = 1.0E10\n")
             print(cmd)
             my.thread(cmd)
             exit
+    ## \fn onShowHalos(self, event)
+    # plot AHF halo positions
+    # @param event
 
-    def onGet3Halos(self,event):
+    def onGet3Halos(self, event):
         get_halopos_rezoom.snap(mys.get_nstop())
         my.done()
+    ## \fn onGet3Halos(self, event)
+    # output positions of 3 most massive halos in simulation
+    # @param event
 
-    def onGenSpheres(self,event):
+    def onGenSpheres(self, event):
         nstart,nstop=mys.get_range()
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
@@ -203,8 +221,11 @@ GADGET_MUNIT      = 1.0E10\n")
             my.run(cmd)
         my.done()
         #TODO: remove empty octree output files
-        
-    def onShrink(self,event):
+    ## \fn onGenSpheres(self, event)
+    # find particles inside virial radius
+    # @param event
+
+    def onShrink(self, event):
         nstart,nstop=mys.get_range()
         # have xs,xs_star set in the end
         for nc in range(nstop-nstart+1):
@@ -223,8 +244,11 @@ GADGET_MUNIT      = 1.0E10\n")
                     my.run(cmd)
                 # TODO: if empty xs (shrinking sphere algorithm did not succeed: use xc)
         my.done()
-        
-    def onGenAOI(self,event):
+    ## \fn onShrink(self, event)
+    # shrinking sphere algorithm to find exact center
+    # @param event
+
+    def onGenAOI(self, event):
         nstart,nstop=mys.get_range()
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
@@ -235,3 +259,6 @@ GADGET_MUNIT      = 1.0E10\n")
             cmd = "gen_spheres.py "+str(nsnap)+" 2"
             my.run(cmd)
         my.done()
+    ## \fn onGenAOI(self, event)
+    # generate area of interest
+    # @param event
