@@ -417,21 +417,17 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 # @param gp global parameters
 # @return sig_los^2, correspondingly for 4th order kappa, zetaa, zetab
 
-
 def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     # common parameters
     N = gh.Ntot(r0fine, Sigfine, gp)
     # vr2 = sigr2nu
     # dPhidr = gu.G1__pcMsun_1km2s_2*Mrfine/r0fine**2
-
     # zetaa scalar
     #xint = r0fine
     #yint = nufine*(5-2*betafine)*vr2*dPhidr*r0fine**3
     #nom = gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
-
     #yint = nufine*dPhidr*r0fine**3
     #denom = (gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False))**2
-
     theta = np.arccos(r0min/r0fine)
     cth = np.cos(theta)
     sth = np.sin(theta)
@@ -439,12 +435,10 @@ def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     yint = gu.G1__pcMsun_1km2s_2*(5-2*betainterp)*sigr2
     yint *= Minterp*rmin**2/cth**3*sth
     nom = quad(theta, yint, 0, np.pi/2)
-
     yint = gu.G1__pcMsun_1km2s_2**2*nuinterp*Mrinterp
     yint *= rmin**2/cth**3*sth
     denom = quad(theta, yint, 0, np.pi/2)
     zetaa = 9*N/10. * nom/denom
-
     # zetab scalar
     #------------------------------------------------------------
     #yint = nufine*(7-6*betafine)*vr2*dPhidr*r0fine**5

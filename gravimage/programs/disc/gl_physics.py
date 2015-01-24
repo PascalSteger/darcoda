@@ -51,7 +51,6 @@ def sigz(zvec,Sigvec,nuvec,C):
 # all arrays (zvec,Sigvec,nuvec) are required to be numpy arrays.
 # outputs sigvec at z = zvec[1:], eg discards first z point
 
-
 def tilt(zipol, param, gp):
     tilttmp = 0.
     for i in range(gp.nbeta):
@@ -62,7 +61,6 @@ def tilt(zipol, param, gp):
 # @param zipol [pc]
 # @param param n_beta parameters
 # @param gp global parameters
-
 
 def kappa(xipol, Kz):
     z0 = xipol

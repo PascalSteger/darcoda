@@ -51,14 +51,14 @@ def get_prof(prof, pop, gp):
         return zth, sigzth
     # project back to positions of stars
     ran = npr.uniform(size=int(gp.ntracer[1-1]))                 # [1]
-    zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions, exponential falloff
+    #zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions, exponential falloff
 
-    sigzstar = gh.ipol(zth, sigzth, zstar)
+    #sigzstar = gh.ipol(zth, sigzth, zstar)
     # > 0 ((IDL, Justin)) stellar velocity dispersion
 
     # assign [0,1] * maxsig
     ran2 = npr.normal(size=int(gp.ntracer[2-1]))  # [1]
-    vzstar = ran2 * sigzstar                      # [km/s]
+    #vzstar = ran2 * sigzstar                      # [km/s]
 
     # Add second population [thick-disc like]:
     if gp.pops == 2:

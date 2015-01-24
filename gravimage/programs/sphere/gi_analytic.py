@@ -204,7 +204,6 @@ def nr3Dtot_deriv_walk(rad, gp):
 # @param rad radius in pc, not in log
 # @param gp global parameters
 
-
 def nr3Dtot_deriv_triax(rad, gp):
     lrho = np.log(rho_triax(rad, gp))
     lr   = np.log(rad)
@@ -224,10 +223,8 @@ def nr3Dtot_deriv_gaia(rad):
 # plot d log rho/d log r
 # @param rad radius in pc, not in log
 
-
-def nr3Dtot_walk(rad):
-    beta_star1, r_DM, gamma_star1, r_star1, r_a1, \
-      gamma_DM, rho0 = gp.files.params
+def nr3Dtot_walk(rad, gp):
+    beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
     if gamma_DM == 0:
         nr = 3*rad/(r_DM+rad)
     elif gamma_DM == 1:
@@ -236,10 +233,10 @@ def nr3Dtot_walk(rad):
         gh.LOG(1, 'unknown gamma_DM = ', gamma_DM)
         nr = 0.*rad
     return nr
-## \fn nr3Dtot_walk(rad)
+## \fn nr3Dtot_walk(rad, gp)
 # plot - d log rho/ d log r for Walker models
 # @param rad radius in pc, not log.
-
+# @param gp global parameters
 
 def nr3Dtot_gaia(rad, gp):
     beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
