@@ -11,8 +11,8 @@
 ** 2
 |    Timestamp | beta | status | outcome                                                     |
 |--------------+------+--------+-------------------------------------------------------------|
-| 201501221049 |  000 | p      | new nrnu, broad still, nr too high                          |
-| 201501221045 |    - | p      | new nrnu, broad still, nr too high                          |
+| 201501221049 |  000 | p      | new nrnu, broad still, nr too high, redo                    |
+| 201501221045 |    - | p      | new nrnu, broad still, nr too high, redo                    |
 | 201501202212 |  000 | p      | early stage of convergence, negative n_nu(r)                |
 | 201501202211 |    - | p      | early stage of convergence, get down scale in delta n(r)    |
 | 201501091502 |  000 | p      | n(r) too steep, beta* too flat, chi^2 off                   |
@@ -26,7 +26,7 @@
 ** 3
 |    Timestamp | beta | status | outcome                                                           |
 |--------------+------+--------+-------------------------------------------------------------------|
-| 201501222145 | -    | -      | 8 bins, no profiles found                                         |
+| 201501222145 | -    | -      | 8 bins, no profiles found, redo                                   |
 | 201501222144 | -    | -      | 18 bins, no profiles found                                        |
 | 201501221050 | 000  | -      | no profiles found                                                 |
 | 201501221048 | -    | -      | no profiles found                                                 |
@@ -91,20 +91,25 @@
 ** 1
 |    Timestamp | beta | status | outcome                                                            |
 |--------------+------+--------+--------------------------------------------------------------------|
+| 201501240517 | 000  | p      | still converging, broad sigma                                      |
+| 201501240500 | -    | p      | still converging, rhohalf fine                                     |
+| 201501202215 | -    | p      | still converging, rhohalf fine                                     |
 | 201501221116 | -    | p      | 1pop, nu and Sig not on analytic profile, still converging         |
 | 201501221109 | 000  | p      | 1pop, nu, Sig not on analytic profile, still converging, beta fine |
 | 201501221108 | 000  | -      | no profiles                                                        |
 | 201501202215 | -    | ap     | TODO: Sigma analytic too far off, beta broad                       |
-| 201501112129 | -    | apc    | good, n(r) consistently too high, beta too low                     |
+| 201501112129 | -    | apc    | good, n(r) consistently too high, beta going negative              |
 | 201501112121 | 000  | ap(c)  | very good, n(r) fine, beta slightly too low                        |
 
 ** 2
-|    Timestamp | beta | status | outcome                      |
-|--------------+------+--------+------------------------------|
-| 201501202216 | -    | ap     | TODO: Sigma analytic profile |
-| 201501112130 | -    | ap     | good, beta too low           |
-| 201501112121 | 000  | apc    | very good, n(r) fine         |
-|              |      |        |                              |
+|    Timestamp | beta | status | outcome                                                        |
+|--------------+------+--------+----------------------------------------------------------------|
+| 201501240518 | 000  | ap     | new nrnu, good rho, analytical profile off                     |
+| 201501240500 | -    | ap     | new nrnu, beta not yet converged                               |
+| 201501202216 | -    | ap     | TODO: Sigma analytic profile, new nrnu, beta not yet converged |
+| 201501112130 | -    | ap     | good, beta too low                                             |
+| 201501112121 | 000  | apc    | very good, n(r) fine                                           |
+|              |      |        |                                                                |
 
 
 * triax

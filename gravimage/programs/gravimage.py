@@ -9,33 +9,29 @@
 # get latest version of PyMultiNest from
 # svn checkout http://lisasolve.googlecode.com/svn/trunk/ lisasolve-read-only
 
-
-### imports
 import subprocess
 import pymultinest
 import pickle
 import numpy as np
 import pdb
-from multiprocessing import Pool
+#from multiprocessing import Pool
 
-# increment NICEness of process by 1, CPU usage shall not block others
+# increment NICEness of process by 1, if CPU usage shall not block others
 # import os
 # os.nice(1)
 
 # optionally start with -i and -c switches, to batch start gaia and walk runs
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option("-i", "--investigation", dest="investigation",
-                      default="", help="investigation to run: gaia, walk, hern, triax, discmock")
-parser.add_option("-c", "--case", dest="case",
-                      default=-1, help="case: 1, 2, ..")
+parser.add_option("-i", "--investigation", dest="investigation", default="", help="investigation to run: gaia, walk, hern, triax, discmock")
+parser.add_option("-c", "--case", dest="case", default=-1, help="case: 1, 2, ..")
+parser.add_option("-t", "--timestamp", dest="timestamp", default=-1, help="timestamp: 201501221224")
 (options, args) = parser.parse_args()
-print('gravimage.py '+str(options.investigation)+' '+str(options.case))
+print('gravimage.py '+str(options.investigation)+' '+str(options.case)+' '+str(options.timestamp))
 import gi_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
-ts = '' # empty timestamp means: create new timestamp with folder
-gp = gi_params.Params(ts, options.investigation, int(options.case))
+gp = gi_params.Params(options.timestamp, options.investigation, int(options.case))
 import gi_file as gf
 
 def show(filepath):
@@ -90,47 +86,26 @@ def prepare_data(gp):
 # @param gp global parameters
 
 def run(gp):
-    pymultinest.run(myloglike,
-                  myprior,
-                  gp.ndim,
-                  n_params = gp.ndim+1,
-                  n_clustering_params = gp.ndim,# separate modes on
-                  # the rho parameters
-                  # only: gp.nrho
-                  wrapped_params = [ gp.pops, gp.nipol, gp.nrho],
-                  importance_nested_sampling = True, # INS enabled
-                  multimodal = True,           # separate modes
-                  const_efficiency_mode = True, # use const sampling efficiency
-                  n_live_points = gp.nlive,
-                  evidence_tolerance = 0.0, # set to 0 to keep
-                  # algorithm working
-                  # indefinitely
-                  sampling_efficiency = 0.25, # 0.05 according to
-                                              # MultiNest README for >
-                                              # 30 params
-                  n_iter_before_update = 20, # output after this
-                                                # many iterations
-                  null_log_evidence = -1e100,
-                  max_modes = gp.nlive,   # preallocation of modes:
-                  #max. = number of live points
-                  mode_tolerance = -1.e100,   # mode tolerance in the
-                                              # case where no special
-                                              # value exists: highly
-                                              # negative
-                  outputfiles_basename = gp.files.outdir,
-                  seed = -1,
-                  verbose = True,
-                  resume = gp.restart,   # TODO check
-                  context = 0,
-                  write_output = True,
-                  log_zero = -1e500,    # points with log likelihood
-                  #< log_zero will be
-                  #neglected
-                  max_iter = 0,         # set to 0 for never reaching max_iter (no
-                  #stopping criterium based on
-                  #number of iterations)
-                  init_MPI = False,     # use MPI
-                  dump_callback = None)
+    pymultinest.run(myloglike, myprior, gp.ndim, n_params = gp.ndim+1,
+                    n_clustering_params = gp.ndim,# separate modes on the rho parameters only: gp.nrho
+                    wrapped_params = [ gp.pops, gp.nipol, gp.nrho],
+                    importance_nested_sampling = True, # INS enabled
+                    multimodal = True,           # separate modes
+                    const_efficiency_mode = True, # use const sampling efficiency
+                    n_live_points = gp.nlive,
+                    evidence_tolerance = 0.0,   # 0 to keep algorithm working indefinitely
+                    sampling_efficiency = 0.25, # 0.05, MultiNest README for >30 params
+                    n_iter_before_update = 20,  # output after this many iterations
+                    null_log_evidence = -1e100,
+                    max_modes = gp.nlive, # preallocation of modes: max=number of live points
+                    mode_tolerance = -1.e100,   # mode tolerance in the case where no special value exists: highly negative
+                    outputfiles_basename = gp.files.outdir,
+                    seed = -1, verbose = True,
+                    resume = gp.restart, # TODO check
+                    context = 0, write_output = True,
+                    log_zero = -1e500, # points with log likelihood<log_zero will be neglected
+                    max_iter = 0, # set to 0 for never reaching max_iter (no stopping criterium based on number of iterations)
+                    init_MPI = False, dump_callback = None)
 
 if __name__=="__main__":
     global Cube, geom_loglike
