@@ -1,12 +1,12 @@
 * gaia
 ** 1
-|    Timestamp | beta | status | outcome                                 |
-|--------------+------+---------+-----------------------------------------|
-| 201501051644 | 00 0 | p       | n(r) too shallow, beta* fine till rhalf |
-| 201412250929 | -    | -       | no scale_0.txt                          |
-| 201412112140 | -    | -       | no module gl_class_profiles             |
-| 201412112138 |      |         |                                         |
-| 201410280736 |      |         |                                         |
+|    Timestamp | beta | status | outcome                                           |
+|--------------+------+--------+---------------------------------------------------|
+| 201501051644 | 00 0 | p      | n(r) too shallow, old nrnu, beta* fine till rhalf |
+| 201412250929 | -    | -      | no scale_0.txt                                    |
+| 201412112140 | -    | -      | no module gl_class_profiles                       |
+| 201412112138 |      |        |                                                   |
+| 201410280736 |      |        |                                                   |
 
 ** 2
 |    Timestamp | beta | status | outcome                                                     |

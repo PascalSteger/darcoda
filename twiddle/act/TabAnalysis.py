@@ -255,3 +255,6 @@ class TabAnalysis(wx.Panel):
     ## \fn setLMA(self, event)
     # get value of maximum level to refine plot to
     # @param eventt
+## \class TabAnalysis(wx.Panel)
+# tab for starting analysis
+# @param wx.Panel where to draw to
