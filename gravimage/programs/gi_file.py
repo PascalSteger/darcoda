@@ -34,7 +34,7 @@ def read_data(gp):
         import grt_com
         grt_com.run(gp)
     elif gp.investigate == 'obs':
-        if gp.case == 0:
+        if gp.case == 1:
             # in case we work with Fornax dwarf, use deBoer data for
             import grd_COM_for
             grd_COM_for.run(gp)
@@ -57,7 +57,6 @@ def read_data(gp):
 
 def read_Sigdata(gp):
     gh.LOG(1, 'reading Sig converged parameters')
-    # put together filename
     Sigconvparamsfn = gp.files.modedir+str(gp.case)+'/Sig_conv.stats'
     # read first line into nuparam_min
     # read second line into nuparam_median
@@ -154,7 +153,6 @@ def get_rhohalfs(gp):
 # and M_half = M(<r_half) for rho
 # @param gp global parameters
 
-
 def arraydump(fname, arrays, app='a', narr=1):
     fn=open(fname,app)
     if narr == 1:
@@ -181,7 +179,6 @@ def bufcount(filename):
     lines = 0
     buf_size = 1024 * 1024
     read_f = f.read # loop optimization
-
     buf = read_f(buf_size)
     while buf:
         lines += buf.count('\n')

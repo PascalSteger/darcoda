@@ -12,7 +12,9 @@
 import subprocess
 import pymultinest
 import pickle
+import warnings
 import numpy as np
+import sys
 import pdb
 #from multiprocessing import Pool
 
@@ -28,10 +30,18 @@ parser.add_option("-c", "--case", dest="case", default=-1, help="case: 1, 2, .."
 parser.add_option("-t", "--timestamp", dest="timestamp", default=-1, help="timestamp: 201501221224")
 (options, args) = parser.parse_args()
 print('gravimage.py '+str(options.investigation)+' '+str(options.case)+' '+str(options.timestamp))
+if options.timestamp != -1:
+    import gi_base as gb
+    basepath = gb.get_basepath()
+    import import_path as ip
+    ip.insert_sys_path(basepath+"DT/"+options.investigation+"/"+options.case+"/"+options.timestamp)
+    #sys.cmd("cd "+basepath+"DT/"+options.investigation+"/"+options.case+"/"+options.timestamp)
 import gi_params
-import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
 gp = gi_params.Params(options.timestamp, options.investigation, int(options.case))
+if options.timestamp != -1:
+    gp.getnewpos = False
+    #ip.remove_first()
 import gi_file as gf
 
 def show(filepath):
@@ -77,6 +87,7 @@ def prepare_data(gp):
             gf.read_data(gp)
         gf.bin_data(gp)
     if gp.getSigdata:
+        # if Sig convergence finished already
         gf.read_Sigdata(gp)
     gf.get_binned_data(gp)
     gp.files.populate_output_dir(gp)
