@@ -35,9 +35,12 @@ class TabMergerTree(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.onFboss, btnFboss)
 
         self.SetSizer(sizer)
+    ## \fn TabMergerTree(wx.Panel)
+    # populate tab for run of merger tree
+    # @param wx.Panel where to draw to
 
-    def onPlist(self,event):
-        nstart,nstop=mys.get_range()
+    def onPlist(self, event):
+        nstart, nstop = mys.get_range()
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
             # for all halos:
@@ -47,7 +50,10 @@ class TabMergerTree(wx.Panel):
             # if(not loop):
             # break
         my.done()
-            
+    ## \fn onPlist(self, event)
+    # list particles inside snapshot span
+    # @param event click
+
     def onMtree(self, event):
         nstart,nstop=mys.get_range()
         if(nstart==nstop):
@@ -60,6 +66,9 @@ class TabMergerTree(wx.Panel):
                 cmd+= "&& substructure.py "+str(nstop-nc)
                 my.thread(cmd)
         my.done()
+    ## \fn onMtree(self, event)
+    # find merger tree
+    # @param event click
 
     def onFboss(self, event):
         nstart,nstop=mys.get_range()
@@ -70,3 +79,9 @@ class TabMergerTree(wx.Panel):
         #my.run("fix_shrink_spheres.py")
         my.run("fill_snap_xyz.py "+str(nstart)+" "+str(nstop))
         my.done()
+    ## \fn onFboss(self, event)
+    # follow most massive halo backwards in time
+    # @param event click
+## \class TabMergerTree(wx.Panel)
+# class with functionality to establish a merger tree
+# @param wx.Panel
