@@ -262,3 +262,6 @@ GADGET_MUNIT      = 1.0E10\n")
     ## \fn onGenAOI(self, event)
     # generate area of interest
     # @param event
+## \class TabAHF(wx.Panel)
+# populate tab for running Amiga Halo Finder
+# @param wx.Panel where to fill it
