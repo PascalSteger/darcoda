@@ -139,7 +139,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     # determine log likelihood
 
     chi2 = calc_chi2(tmp_profs, gp)
-    gh.LOG(-1, '  ln L = ', gh.pretty(-chi2/2.))
+    gh.LOG(-1, gp.investigation+'/'+str(gp.case)+'/'+gp.timestamp+':  ln L = ', gh.pretty(-chi2/2.))
     # x=gp.dat.rbin
     # linedat,=ax.loglog(x, gp.dat.Sig[1], 'b')
     # line,=ax.loglog(x, tmp_profs.get_prof("Sig", 1), 'r', alpha=0.1)

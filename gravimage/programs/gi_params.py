@@ -8,9 +8,6 @@
 
 import numpy as np
 import pdb
-import socket
-import getpass
-
 import gi_base as gb
 
 def check_investigate(inv):
