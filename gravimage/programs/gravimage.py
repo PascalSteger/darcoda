@@ -33,16 +33,17 @@ if options.timestamp != '-1':
     import gi_base as gb
     basepath = gb.get_basepath()
     import import_path as ip
-    ip.insert_sys_path(basepath+"DT/"+options.investigation+"/"+options.case+"/"+options.timestamp)
-
+    ip.insert_sys_path(basepath+"DT"+options.investigation+"/"+options.case+"/"+options.timestamp+"/programs/")
 import gi_params
 warnings.simplefilter('ignore') # set to 'error' when debugging
 gp = gi_params.Params(options.timestamp, options.investigation, int(options.case))
 if options.timestamp != '-1':
     gp.getnewpos = False
     ip.remove_third()
-    import os
-    os.system('cd '+basepath+'DT'+gp.investigate+'/'+str(gp.case)+'/'+options.timestamp)
+    #import os
+    #os.system('cd '+basepath+'DT'+options.investigation+'/'+options.case+'/'+options.timestamp)
+    gp.restart = True
+    gp.chi2_Sig_converged = 0
 import gi_file as gf
 
 def show(filepath):
@@ -91,7 +92,8 @@ def prepare_data(gp):
         # if Sig convergence finished already
         gf.read_Sigdata(gp)
     gf.get_binned_data(gp)
-    gp.files.populate_output_dir(gp)
+    if not gp.restart:
+        gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run

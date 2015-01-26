@@ -262,7 +262,6 @@ def run(gp):
 
 
 if __name__ == '__main__':
-    gpr.showplots = True
     import gi_params
     gp = gi_params.Params()
     run(gp)

@@ -34,18 +34,3 @@ def get_machine():
     return machine
 ## \fn get_machine()
 # return string for machine
-
-
-# HS:
-# check whether following code pasted from import_path.py.set_geometry() needs be factored in
-
-# if machine == 'darkside':
-#     basepath = '/home/ast/read/dark/darcoda/gravimage/programs/'
-# elif machine == 'lisa_HS_login':
-#     basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/programs/'
-# elif machine == 'lisa_SS_login':
-#     basepath = '/home/sofia/darcoda/gravimage/programs/'
-# elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-#     scratch_space = os.getenv("TMPDIR")
-#     basepath = scratch_space + '/darcoda/gravimage/programs/'
-#print('basepath = ', basepath)

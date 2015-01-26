@@ -76,23 +76,17 @@ class Params():
         # ----------------------------------------------------------------------
         self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 10
-        self.chi2_Sig_converged = 1000 #  how many times do we have to be below that threshold?
-        # Set number of terms for enclosedmass+tracer+anisotropy bins
-        # = model parameters:
-        self.nipol = 8   # IF CHANGED => set getnewdata = True to run
-                         # data readout again
+        self.chi2_Sig_converged = 1000 #how many times to be below that threshold?
+        # Set number of terms for enclosedmass+tracer+anisotropy bins = model parameters:
+        self.nipol = 5   # IF CHANGED => set getnewdata = True to run data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)
         self.nrho = self.nipol + 2*self.nexp + 3 # +3 means 1 more
-                                                # parameter for the
-                                                # density at half
-                                                # light radius, 1 more
-                                                # parameter for the
-                                                # asymptote to 0, 1
-                                                # more parameter for
-                                                # the asymptote to
-                                                # \infty
+                                                # parameter for the density at half
+                                                # light radius, 1 more parameter for the
+                                                # asymptote to 0, 1 more parameter for
+                                                # the asymptote to \infty
         self.nfine = 10*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
         self.rinfty = 5. # interpolate from last slope to slope at

@@ -297,8 +297,6 @@ def quadinflog(x, y, A, B, stop = False):
     dropoffint = romberg(invexp, A, B, rtol=1e-3, divmax=15, vec_func=True)
     #elapsed = (time.time()-start)/N
     #print('one iteration romberg takes ', elapsed, 's')
-    #pdb.set_trace()
-
     return dropoffint
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x for strongly decaying function, using splines

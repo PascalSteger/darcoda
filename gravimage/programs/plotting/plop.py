@@ -96,7 +96,6 @@ def pcload_single_entries(basename, gp):
     current = 0
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
-        dum*=1
         try:
             while True:
                 current += 1

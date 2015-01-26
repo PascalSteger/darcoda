@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ -d /home/ast ]; then
     cd /home/ast/read/dark/darcoda/gravimage
 else
@@ -11,7 +10,6 @@ extract_active_runs.sh > active_runs
 
 # enable extended globbing
 shopt -s extglob
-
 
 for inv in DT*
 do

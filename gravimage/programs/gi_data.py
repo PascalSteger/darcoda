@@ -59,8 +59,8 @@ class Datafile:
 
     def read_Sig(self, gp):
         for pop in np.arange(gp.pops+1):
-            Sigx, binmin, binmax, Sigdat, Sigerr = \
-                    gh.readcol5(gp.files.Sigfiles[pop])
+            print('read_Sig on file ', gp.files.Sigfiles[pop])
+            Sigx, binmin, binmax, Sigdat, Sigerr = gh.readcol5(gp.files.Sigfiles[pop])
             # 3*[rscale], [Sig0], [Sig0]
             # switch to Munit (msun) and pc here
             Sigx    = Sigx[:]    * gp.Xscale[pop]         # [pc]
