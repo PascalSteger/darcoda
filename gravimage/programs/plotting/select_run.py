@@ -30,14 +30,12 @@ def bufcount(filename):
 # not used anymore
 # @param filename filename
 
-
 def removeDir(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
 ## \fn removeDir(path)
 # delete directory recursively, if it exists
 # @param path path to directory
-
 
 def remove_empty_folders(fdl):
     for x in fdl:
@@ -57,10 +55,8 @@ def remove_empty_folders(fdl):
 # no iterations of the MultiNest algorithm were stored
 # @param fdl [(name, datestamp)] of all dirs in current mode
 
-
 def list_files(basedir):
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
-
     from datetime import datetime
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
                                  '%Y%m%d%H%M')) for x in dirs]
@@ -75,9 +71,7 @@ def list_files(basedir):
             print('file not found')
             co = 0
         fdl.append((x, timestamp, co ))
-
     fdl.sort(key=lambda x: x[1])
-
     for i in range(len(fdl)):
         try:
             fil = open(fdl[i][0]+'programs/gi_params.py','r')
@@ -110,7 +104,6 @@ def list_files(basedir):
 # return all working or completed MCMC run directories
 # NOT USED ANYMORE
 # @param basedir string of directory
-
 
 def list_files_readout(basedir, investigate, case):
     bp = gb.get_basepath()

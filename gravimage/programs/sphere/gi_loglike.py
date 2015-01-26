@@ -8,9 +8,8 @@
 
 import numpy as np
 import pdb
-import time
 from scipy.interpolate import splev, splrep
-from multiprocessing import Pool
+#from multiprocessing import Pool
 
 # import matplotlib.pyplot as plt
 # fig, ax=plt.subplots()
@@ -115,7 +114,6 @@ def geom_loglike(cube, ndim, nparams, gp):
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)
                 return tmp_profs
-
             # now store the profiles
             gh.sanitize_vector(tmp_beta, len(tmp_profs.x0), -200, 1, gp.debug)
             tmp_profs.set_prof('beta', tmp_beta, pop, gp)
@@ -137,9 +135,8 @@ def geom_loglike(cube, ndim, nparams, gp):
         pdb.set_trace()
 
     # determine log likelihood
-
     chi2 = calc_chi2(tmp_profs, gp)
-    gh.LOG(-1, gp.investigation+'/'+str(gp.case)+'/'+gp.timestamp+':  ln L = ', gh.pretty(-chi2/2.))
+    gh.LOG(-1, gp.investigate+'/'+str(gp.case)+'/'+gp.files.timestamp+':  ln L = ', gh.pretty(-chi2/2.))
     # x=gp.dat.rbin
     # linedat,=ax.loglog(x, gp.dat.Sig[1], 'b')
     # line,=ax.loglog(x, tmp_profs.get_prof("Sig", 1), 'r', alpha=0.1)

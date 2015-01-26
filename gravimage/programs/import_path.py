@@ -27,6 +27,11 @@ def remove_first():
 # remove first entry in sys.path
 # and thus reverse insert_sys_path
 
+def remove_third():
+    sys.path[2] = ''
+## \fn remove_third()
+# remove third entry (where gi_params was stored for timestamped restart runs)
+
 def import_path(fullpath):
     path, filename = os.path.split(fullpath)
     filename, ext = os.path.splitext(filename)

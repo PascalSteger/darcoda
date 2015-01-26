@@ -42,7 +42,7 @@ class Files:
     # pop==0 for all tracer populations together
     # pop==1 for first tracer population
     # pop==2 for second tracer population, and so on
-    def __init__ (self, gp, timestamp=-1):
+    def __init__ (self, gp, timestamp='-1'):
         ## set which computer we are working on
         self.basepath = ''
         ## set base directory, link version for short filenames
@@ -93,7 +93,7 @@ class Files:
             print(' wrong investigation in Files()')
             pdb.set_trace()
         ## directory and basename of all output files
-        if timestamp < 0:
+        if timestamp == '-1':
             import datetime
             self.timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
         else:
@@ -139,10 +139,10 @@ class Files:
     # get simulation names in the Hernquist case
     # @param gp global parameters
 
-    def set_hern(self, gp, timestamp=-1):
+    def set_hern(self, gp, timestamp='-1'):
         self.dir = self.basepath + 'DThern/'
-        if timestamp > 0:
-            self.dir += str(timestamp) + '/'
+        if timestamp != '-1':
+            self.dir += timestamp + '/'
         sim = self.get_sim_name(gp)
         self.massfiles.append(self.dir + 'M/'+sim+'M_0.txt')
         self.massfiles.append(self.dir + 'M/'+sim+'M_1.txt')
@@ -169,7 +169,7 @@ class Files:
     # @param gp global parameters
     # @param timestamp for analysis
 
-    def set_gaia(self, gp, timestamp=-1):
+    def set_gaia(self, gp, timestamp='-1'):
         beta_star1 = 5; r_DM = 1000
         if gp.case == 1:
             gamma_star1=0.1;
@@ -236,8 +236,8 @@ class Files:
         elif gp.case == 10:
             self.longdir = 'data_c_rh4_rs175_gs10_ra0_b05n_10k/'
         self.dir = self.modedir + self.longdir
-        if timestamp > 0:
-            self.dir += str(timestamp) + '/'
+        if timestamp != '-1':
+            self.dir += timestamp + '/'
         ## new variable to hold the .dat input file
         self.datafile = self.dir + 'dat'
         #self.analytic = self.dir + 'samplepars'
@@ -255,7 +255,7 @@ class Files:
     # @param gp global parameters
     # @param timestamp for analysis
 
-    def set_walk(self, gp, timestamp=-1):
+    def set_walk(self, gp, timestamp='-1'):
         self.dir = self.basepath + 'DTwalk/'
         if gp.case == 0:
             gamma_star1 =   0.1;    gamma_star2 =   1.0 # 1. or 0.1
@@ -311,8 +311,8 @@ class Files:
         NNN = gh.myfill(rno)                   # 003    # realization (1..10)
         self.longdir = "c1_"+AAA+"_"+BBB+"_"+CCC+"_"+DDD+"_"+EEE+"_c2_"+FFF+"_"+GGG+"_"+HHH+"_"+III+"_"+JJJ+"_"+NNN+"_6d/"
         self.dir = self.modedir + self.longdir
-        if timestamp > 0:
-            self.dir += str(timestamp) + '/'
+        if timestamp != '-1':
+            self.dir += timestamp + '/'
         self.analytic = self.dir + 'samplepars'
         LINE = np.loadtxt(self.analytic, skiprows=0, unpack=False)
         rho0        = LINE[19] # read from the corresp. samplepars file
@@ -332,14 +332,14 @@ class Files:
     # @param timestamp for analysis
 
 
-    def set_triax(self, gp, timestamp=-1):
+    def set_triax(self, gp, timestamp='-1'):
         if gp.pops == 2:
             print('IMPLEMENT 2 tracer populations for triaxial dataset')
             sys.exit(1)
         self.longdir = str(gp.case) + '/'
         self.dir = self.modedir + self.longdir
-        if timestamp > -1:
-            self.dir += str(timestamp) + '/'
+        if timestamp != '-1':
+            self.dir += timestamp + '/'
         for pop in np.arange(gp.pops+1):
             spop = str(pop)
             self.massfiles.append(self.dir  + 'M/M_'+spop+'.txt')
@@ -354,9 +354,9 @@ class Files:
     # @param gp parameters
     # @param timestamp for analysis
 
-    def set_obs(self, gp, timestamp=-1):
+    def set_obs(self, gp, timestamp='-1'):
         self.dir = self.basepath + 'DTobs/'+str(gp.case)+'/'
-        if timestamp > 0:
+        if timestamp != '-1':
             self.dir += timestamp + '/'
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             spop = str(pop)
@@ -374,7 +374,7 @@ class Files:
 
     def set_coll(self, gp, timestamp=''):
         self.dir = self.basepath + 'DTcoll/'+str(gp.case)+'/'
-        if timestamp > 0:
+        if timestamp != '-1':
             self.dir += timestamp + '/'
         for pop in np.arange(gp.pops+1): # 0, 1, 2 for gp.pops=2
             spop = str(pop)
@@ -417,7 +417,7 @@ class Files:
     ## \fn get_ntracer_file(self, i)
     # get filename with attached tracer information
 
-    def set_discsim(self, gp, timestamp=''):
+    def set_discsim(self, gp, timestamp='-1'):
         # entry for "all components" as the first entry. Convention: 0. all 1. pop, 2. pop, 3. pop = background
         self.dir = self.basepath + 'DTdiscsim/mwhr/'
         self.dir += timestamp + '/'
@@ -443,7 +443,7 @@ class Files:
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
 
-    def set_discmock(self, gp, timestamp=''):
+    def set_discmock(self, gp, timestamp='-1'):
         self.dir = self.basepath + 'DTdiscmock/0/'
         self.dir += timestamp + '/'
         self.massfiles.append(self.dir + 'M/M_0.txt')
@@ -479,8 +479,6 @@ class Files:
         return "Files: "+self.dir
     ## \fn __repr__(self)
     # string representation
-
-
 
 ## \class Files
 # Common base class for all filename sets
