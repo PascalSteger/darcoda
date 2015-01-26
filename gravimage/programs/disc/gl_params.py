@@ -114,7 +114,7 @@ class Params():
 
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
-        self.nlive = 100*self.ndim
+        self.nlive = 1000*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
         #fraction of profiles to save, set <0 for no profile saving
