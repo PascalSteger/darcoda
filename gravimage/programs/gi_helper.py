@@ -653,10 +653,8 @@ def bin_r_const_tracers(x0, nbin):
     x0 = np.array(x0)[order]
     # generate indices for all entries
     ind = np.arange(len(x0))
-
     # split along indices, having the last bin underfilled if no exact splitting possible
     spl = np.array_split(ind, nbin)
-
     binmin = []
     binmax = []
     binmin.append(x0[0]/2)
@@ -669,27 +667,21 @@ def bin_r_const_tracers(x0, nbin):
     binmax.append(x0[-1]*1.01) # last bin stops after last datapoint
     binmin = np.array(binmin)
     binmax = np.array(binmax)
-
     # define bin center to be at center in linear space
     #bincenterlin = (binmin+binmax)/2
-
     # define bin center to be at center in log space
     #bincenterlog = np.exp((np.log(binmin)+np.log(binmax))/2)
-
     # define bin center to be at median radius
     bincentermed = []
     for bini in range(len(spl)):
         bincentermed.append(np.median(x0[spl[bini]]))
     bincentermed = np.array(bincentermed)
-
     return binmin, binmax, bincentermed
 ## \fn bin_r_const_tracers(x0, no)
 # split interval into bins of constant particle number
 # @param x0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
-
-
 
 def sort_profiles_binwise(profs):
     for i in range(len(profs)):
@@ -700,7 +692,6 @@ def sort_profiles_binwise(profs):
 # take array of profiles, sort along each bin
 # @param profs array [prof1, prof2, ..., profN]
 # @return [bin1 bin2 .. binN]_min .. [bin1 bin2 .. binN]_max
-
 
 def get_median_1_2_sig(profs):
     bins = len(profs)
@@ -722,19 +713,16 @@ def get_median_1_2_sig(profs):
 # @param profs bin-wise sorted profiles
 # @return  Mmin, M95lo, M68lo, Mmedi, M68hi, M95hi, Mmax
 
-
 def binsmooth(r, array, low, high, nbin, nanreplace):
     # sort r and array in ascending r order
     index = np.argsort(r)
     r = r[index]
     array = array[index]
-
     # determine linearly spaced bins
     binsize = (high-low)/(1.*nbin)
     rout = np.arange(nbin)*binsize + low
     binmin = rout - binsize/2.
     binmax = rout + binsize/2.
-
     # prepare run
     arrayout = np.zeros(nbin)
     arrayout1 = np.zeros(nbin)
@@ -742,7 +730,6 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
     count_bin = np.zeros(nbin)
     j=0
     siz = len(r)
-
     for i in range(nbin):
         count = 0
         while (binmax[i] > r[j]):
@@ -754,7 +741,6 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
                 j = j + 1
             else:
                 break
-
         if (count > 0):
             arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sig
         else:
@@ -771,12 +757,10 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
 # @param nanreplace if there is no data in a particular bin, it assigns a value of array(r)=nanreplace
 # @return sqrt(avg(x**2)-avg(x)**2) from each bin, with dim [array]
 
-
 def bincount(r, rmax):
     # sort radial bins
     index = np.argsort(r)
     r = r[index]
-
     # prepare
     nbin = len(rmax)
     arrayout  = np.zeros(nbin)
@@ -784,7 +768,6 @@ def bincount(r, rmax):
     std       = np.zeros(nbin)
     j = 0
     siz = len(r)
-
     for i in range(nbin):
         while (rmax[i] > r[j]):
             arrayout[i] = arrayout[i] + 1.
@@ -794,7 +777,6 @@ def bincount(r, rmax):
                 break
         count_bin[i] = arrayout[i]
         std[i] = np.sqrt(count_bin[i])
-
     return arrayout, std
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
@@ -819,7 +801,6 @@ def moments(data):
     var  = 0.0
     skew = 0.0
     curt = 0.0
-
     # Second pass to get the first (absolute), second, third, and fourth moments
     # of the deviation from the mean.
     for j in range(n):
@@ -832,7 +813,6 @@ def moments(data):
         skew += p
         p *= s
         curt += p
-
     adev /= n
     var = (var-ep*ep/n)/(n-1)
     # Corrected two-pass formula.
@@ -850,12 +830,10 @@ def moments(data):
 # from Numerical Recipes
 # @param data 1d array
 
-
 def Ntot(R0, Sigma, gp):
     xint = R0
     yint = Sigma*R0
     Ntot = quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
-
     # new integration routine with cos(theta) substitution
     R0min = min(R0)#/gp.rinfty
     theta = np.arccos(R0min/R0)
@@ -869,7 +847,6 @@ def Ntot(R0, Sigma, gp):
 # @param R0 radial bins [pc]
 # @param Sigma surface density profile, [Msun/pc^2]
 # @param gp global parameters
-
 
 def starred(R0, X, Sigma, Ntot, gp):
     xint = R0 # plus extension with 3 bins, to infinity

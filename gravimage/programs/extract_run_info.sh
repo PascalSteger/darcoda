@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -d /home/ast ]; then
+if [ -d /home/ast/read/dark ]; then
     cd /home/ast/read/dark/darcoda/gravimage
 else
     cd /home/psteger/sci/darcoda/gravimage
