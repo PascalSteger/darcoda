@@ -27,8 +27,8 @@ def check_investigate(inv):
 # @param inv string
 
 class Params():
-    def __init__(self, timestamp = '', investigate = '', case = -1):
-        if timestamp == '':
+    def __init__(self, timestamp = -1, investigate = '', case = -1):
+        if timestamp < 0:
             self.restart = False
         else:
             self.restart = True
@@ -78,11 +78,11 @@ class Params():
         # MultiNest options
         # ----------------------------------------------------------------------
         self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
-        self.chi2_switch = 30
+        self.chi2_switch = 10
         self.chi2_Sig_converged = 1000 #  how many times do we have to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run
+        self.nipol = 8   # IF CHANGED => set getnewdata = True to run
                          # data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
