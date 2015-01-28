@@ -46,7 +46,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -60,8 +60,6 @@ class Params():
         # ----------------------------------------------------------------------
         self.getnewdata = True # get new data computed from observations before burn-in
         if self.restart: self.getnewdata = False
-        self.getnewpos  = True # get new positions of particles, important for Hernquist runs
-        if self.getnewdata == False: self.getnewpos = False
         self.selfconsistentnu = False # use tracer star density profile for dwarf galaxies?
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.metalpop   = False # split metallicities with a separate

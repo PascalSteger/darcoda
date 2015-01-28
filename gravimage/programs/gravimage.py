@@ -38,7 +38,6 @@ import gi_params
 warnings.simplefilter('ignore') # set to 'error' when debugging
 gp = gi_params.Params(options.timestamp, options.investigation, int(options.case))
 if options.timestamp != '-1':
-    gp.getnewpos = False
     ip.remove_third()
     #import os
     #os.system('cd '+basepath+'DT'+options.investigation+'/'+options.case+'/'+options.timestamp)
@@ -85,8 +84,7 @@ def myloglike(cube, ndim, nparams):
 
 def prepare_data(gp):
     if gp.getnewdata:
-        if gp.getnewpos:
-            gf.read_data(gp)
+        gf.get_pos_and_COM(gp)
         gf.bin_data(gp)
     if gp.getSigdata:
         # if Sig convergence finished already

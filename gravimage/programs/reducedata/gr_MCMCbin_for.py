@@ -17,24 +17,24 @@ import gi_file as gf
 import gi_helper as gh
 import gi_project as gip
 
-def run(gp, pop):
+def run(gp):
+    pop = 0
     import gr_params
     gpr = gr_params.grParams(gp)
-    xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, \
-                           usecols=(0,1), unpack=True)
+    xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, usecols=(0,1), unpack=True)
     # 2*[Rscale0]
     R = np.sqrt(xall**2+yall**2) # [Rscale0]
     # set number and size of (linearly spaced) bins
-    Rmin = 0. #[Rscale0]
+    Rmin = 0. # [Rscale0]
     Rmax = max(R) if gp.maxR < 0 else 1.0*gp.maxR # [Rscale0]
     R = R[(R<Rmax)] # [Rscale0]
     Binmin, Binmax, Rbin = gh.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     gp.xipol = Rbin
-    minr = min(Rbin)                           # [pc]
-    maxr = max(Rbin)                           # [pc]
+    minr = min(Rbin) # [pc]
+    maxr = max(Rbin) # [pc]
     gp.xepol = np.hstack([minr/8., minr/4., minr/2., Rbin, 2*maxr, 4*maxr, 8*maxr]) # [pc]
     Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
-    Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
+    Rscale0 = float(gf.read_Xscale(gp.files.get_scale_file(0))) # [pc]
     print('#######  working on component ',pop)
     print('input: ', gp.files.get_com_file(pop))
     # start from data centered on COM already:

@@ -12,7 +12,7 @@ import numpy as np
 import gi_helper as gh
 import gi_units as gu
 
-def read_data(gp):
+def get_pos_and_COM(gp):
     if gp.investigate == 'hern':
         import grh_com
         grh_com.run(gp)
@@ -34,27 +34,30 @@ def read_data(gp):
         import grt_com
         grt_com.run(gp)
     elif gp.investigate == 'obs':
-        if gp.case == 1:
-            # in case we work with Fornax dwarf, use deBoer data for
-            import grd_COM_for
-            grd_COM_for.run(gp)
-            #import grd_COM
-            #grd_COM.run(gp)
-        elif gp.case == 5:
-            print('TODO: include photometric data for Draco')
-            #import grd_COM_dra_photo
-            #grd_COM_dra_photo.run(gp)
+        if gp.pops == 1:
+            if gp.case == 1:
+                # in case we work with Fornax dwarf, use deBoer data
+                import grd_photo_for
+                grd_photo_for.run(gp)
+                import grd_COM
+                grd_COM.run(gp)
+            elif gp.case == 5:
+                print('TODO: include photometric data for Draco')
+                #import grd_photo_dra
+                #grd_photo_dra.run(gp)
+                import grd_COM_dra
+                grd_COM_dra.run(gp)
         elif gp.pops == 2:
             import grd_metalsplit, grd_COM
             grd_metalsplit.run(gp)
             grd_COM.run(gp)
         else:
-            print('implement 3 populations for observed galaxies')
+            print('implement >2 populations for observed galaxies')
             exit(1)
     else:
         print('wrong investigation')
         exit(1)
-## \fn read_data(gp)
+## \fn get_pos_and_COM(gp)
 # read in files with differing file formats, write out to common x, y, vz file
 # @param gp global parameters
 
@@ -75,33 +78,22 @@ def bin_data(gp):
         import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
-        import grg_COM, gr_MCMCbin
-        grg_COM.run(gp)
+        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'walk':
         if not gp.walker3D:
-            import grw_COM, gr_MCMCbin # inside there, split by metallicity
-            grw_COM.run(gp)
+            import gr_MCMCbin # inside there, split by metallicity
             gr_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhotot_walk)
         if gp.walker3D:
-            import grw_com, grw_mcmcbin
-            grw_com.run(gp)
+            import grw_mcmcbin
             grw_mcmcbin.run(gp)
     elif gp.investigate == 'triax':
-        import grt_com
-        grt_com.run(gp)
         import grt_dens
         grt_dens.run(gp)
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        if gp.case < 5:
-            import grd_COM
-            grd_COM.run(gp)
-        elif gp.case == 5:
-            import grd_COM_dra
-            grd_COM_dra.run(gp)
         import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'discmock':
@@ -253,7 +245,7 @@ def empty(filename):
 
 def read_Xscale(filename):
     crscale = open(filename, 'r')
-    Xscale = np.array(np.loadtxt(crscale, comments='#', unpack=False))
+    Xscale = np.loadtxt(crscale, comments='#', unpack=False)
     crscale.close()
     return Xscale
 ## \fn read_Xscale(filename)

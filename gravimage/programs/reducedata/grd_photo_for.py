@@ -3,9 +3,9 @@
 ##
 # @file
 # calculate approximative center of mass, assuming constant stellar mass
-# 2D version for Fornax only, based on deBoer+2013 data
+# 2D version for Fornax only, based on photometric deBoer+2013 data
 
-# (c) GPL v3 2015 Pascal S.P. Steger
+# (c) GPL v3 2015 Pascal S.P. Steger, pascal@steger.aero
 
 import numpy as np
 import pdb

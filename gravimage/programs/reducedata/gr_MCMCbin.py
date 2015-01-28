@@ -61,8 +61,7 @@ def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
 def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
-    xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, \
-                           usecols=(0,1), unpack=True)
+    xall,yall = np.loadtxt(gp.files.get_com_file(0), skiprows=1, usecols=(0,1), unpack=True)
     # 2*[Rscale0]
     R = np.sqrt(xall**2+yall**2) # [Rscale0]
     # set number and size of (linearly spaced) bins
@@ -71,29 +70,26 @@ def run(gp):
     R = R[(R<Rmax)] # [Rscale0]
     Binmin, Binmax, Rbin = gh.determine_radius(R, Rmin, Rmax, gp) # [Rscale0]
     gp.xipol = Rbin
-    minr = min(Rbin)                           # [pc]
-    maxr = max(Rbin)                           # [pc]
-    gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
-                          Rbin, \
-                          2*maxr, 4*maxr, 8*maxr]) # [pc]
+    minr = min(Rbin) # [pc]
+    maxr = max(Rbin) # [pc]
+    gp.xepol = np.hstack([minr/8., minr/4., minr/2., Rbin, 2*maxr, 4*maxr, 8*maxr]) # [pc]
     Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [Rscale0^2]
     Rscale0 = gf.read_Xscale(gp.files.get_scale_file(0)) # [pc]
     for pop in range(gp.pops+1):
         print('#######  working on component ',pop)
         print('input: ', gp.files.get_com_file(pop))
         # exclude second condition if self-consistent approach wished
-        if gp.investigate == "obs" and gp.case==1 and (pop==0 or (pop==1 and gp.pops==1 and (not gp.selfconsistentnu))):
+        if gp.investigate == "obs" and gp.case==1 and pop==0:
             # for Fornax, overwrite first Sigma with deBoer data
             import gr_MCMCbin_for
-            gr_MCMCbin_for.run(gp, pop)
+            gr_MCMCbin_for.run(gp)
             continue
         # start from data centered on COM already:
         if gf.bufcount(gp.files.get_com_file(pop))<2:
             continue
         # only read in data if needed: pops = 1: reuse data from pop=0 part
         if (gp.pops == 1 and pop < 1 or gp.pops == 2) or gp.investigate == 'obs':
-            x,y,v = np.loadtxt(gp.files.get_com_file(pop),\
-                               skiprows=1,usecols=(0,1,2),unpack=True)
+            x,y,v = np.loadtxt(gp.files.get_com_file(pop), skiprows=1,usecols=(0,1,2),unpack=True)
             # [Rscalei], [Rscalei], [km/s]
             # calculate 2D radius on the skyplane
             R = np.sqrt(x**2+y**2) #[Rscalei]
@@ -203,9 +199,7 @@ def run(gp):
         gf.write_nu_scale(gp.files.get_scale_file(pop), nu0pc)
         nuerr  = numax-numedi
         for b in range(gp.nipol):
-            print(Rbin[b], Binmin[b], Binmax[b],\
-                  numedi[b]/nu0pc, nuerr[b]/nu0pc, \
-                  file = f_nu)
+            print(Rbin[b], Binmin[b], Binmax[b], numedi[b]/nu0pc, nuerr[b]/nu0pc, file = f_nu)
         f_nu.close()
         # calculate and output siglos
         # --------------------------------------------
@@ -261,6 +255,14 @@ def run(gp):
             if gp.usekappa:
                 gpr.show_plots_kappa(Rbin*Rscalei, p_kappa, p_ekappa)
 
+        # overwrite Sig profile if photometric data is used
+        if gp.investigate == 'obs' and gp.case==1 and pop==1 and not gp.selfconsistentnu:
+            import os
+            os.system('cp '+gp.files.get_scale_file(0)+' '+gp.files.get_scale_file(1))
+            # replace last line with actual maxsiglos from tracer particles
+            os.system("sed -i '$s/^.*/"+str(maxsiglos)+"/' "+gp.files.get_scale_file(1))
+            os.system('cp '+gp.files.Sigfiles[0]+' '+gp.files.Sigfiles[1])
+            continue
 
 if __name__ == '__main__':
     import gi_params
