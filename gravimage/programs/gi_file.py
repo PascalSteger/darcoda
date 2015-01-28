@@ -38,9 +38,12 @@ def read_data(gp):
             # in case we work with Fornax dwarf, use deBoer data for
             import grd_COM_for
             grd_COM_for.run(gp)
-        if gp.pops == 1:
-            import grd_COM
-            grd_COM.run(gp)
+            #import grd_COM
+            #grd_COM.run(gp)
+        elif gp.case == 5:
+            print('TODO: include photometric data for Draco')
+            #import grd_COM_dra_photo
+            #grd_COM_dra_photo.run(gp)
         elif gp.pops == 2:
             import grd_metalsplit, grd_COM
             grd_metalsplit.run(gp)
@@ -93,8 +96,13 @@ def bin_data(gp):
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM, gr_MCMCbin
-        grd_COM.run(gp)
+        if gp.case < 5:
+            import grd_COM
+            grd_COM.run(gp)
+        elif gp.case == 5:
+            import grd_COM_dra
+            grd_COM_dra.run(gp)
+        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'discmock':
         import grdm_write

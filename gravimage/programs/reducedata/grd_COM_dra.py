@@ -32,8 +32,8 @@ def concat_pops(x1, x2, y1, y2, vz1, vz2, gp):
 # @param vz1
 # @param vz2
 
-def select_pm(x, y, vz, Mg, PM, pm):
-    return x[pm], y[pm], vz[pm], Mg[pm], PM[pm]
+def select_pm(x, y, vz, Fe, PM, pm):
+    return x[pm], y[pm], vz[pm], Fe[pm], PM[pm]
 ## \fn select_pm(x, y, comp, vz, Mg, PM, pm)
 # extract only parts of the arrays given
 # @param x
@@ -47,32 +47,27 @@ def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
     gpr.fil = gpr.dir+"/data/tracers.dat"
-    delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-    ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=(0,1),delimiter=delim)
-
-    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI, VHel,e_VHel,SigFe,e_SigFe, SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
-
+    A = np.loadtxt(gpr.fil, skiprows=25)
+    RAh,RAm,RAs,DEd,DEm,DEs,Vlos,e_Vlos,Teff,e_Teff,logg,e_logg,Fe,e_Fe,Nobs = A.T
     # only use stars which have Mg measurements
-    pm = (SigMg>-1) # (PM>=0.95)*
+    pm = (Teff>0) # (PM>=0.95)*
     print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
-    ID=ID[1][pm]
     RAh=RAh[pm]
     RAm=RAm[pm]
     RAs=RAs[pm]
     DEd=DEd[pm]
     DEm=DEm[pm]
     DEs=DEs[pm]
-    Vmag = Vmag[pm]
-    VI=VI[pm]
-    VHel=VHel[pm]
-    e_VHel=e_VHel[pm]
-    SigFe=SigFe[pm]
-    e_SigFe=e_SigFe[pm]
-    SigMg=SigMg[pm]
-    e_SigMg=e_SigMg[pm]
-    PM=PM[pm]
+    Vlos=Vlos[pm]
+    e_Vlos=e_Vlos[pm]
+    Teff=Teff[pm]
+    e_Teff=e_Teff[pm]
+    logg=logg[pm]
+    e_logg=e_logg[pm]
+    Fe=Fe[pm]
+    e_Fe=e_Fe[pm]
+    Nobs = Nobs[pm]
 
-    Mg0 = SigMg
     sig = abs(RAh[0])/RAh[0]
     #print('RAh: signum = ',gh.pretty(sig))
     RAh = RAh/sig
@@ -96,10 +91,10 @@ def run(gp):
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
 
-    PM0 = np.copy(PM)
     x0 = np.copy(xs)
-    y0 = np.copy(ys) # [pc]
-    vz0 = np.copy(VHel) # [km/s]
+    y0 = np.copy(ys)    # [pc]
+    vz0 = np.copy(Vlos) # [km/s]
+    Fe0 = np.copy(Fe)
 
     # only use stars which are members of the dwarf: exclude pop3 by construction
     #pm = (PM0 >= gpr.pmsplit) # exclude foreground contamination, outliers
@@ -116,11 +111,11 @@ def run(gp):
         pm2 = (popass==2)
 
     elif gp.pops == 1:
-        pm1 = (PM >= 0)
-        pm2 = (PM <  0) # assign none, but of same length as xs
+        pm1 = (Teff >= 0)
+        pm2 = (Teff <  0) # assign none, but of same length as xs
 
-    x1, y1, vz1, Mg1, PM1 = select_pm(x0, y0, vz0, Mg0, PM0, pm1)
-    x2, y2, vz2, Mg2, PM2 = select_pm(x0, y0, vz0, Mg0, PM0, pm2)
+    x1, y1, vz1, Fe1, PM1 = select_pm(x0, y0, vz0, Fe, pm, pm1)
+    x2, y2, vz2, Fe2, PM2 = select_pm(x0, y0, vz0, Fe, pm, pm2)
 
     # cutting pm_i to a maximum of ntracers_i particles each:
     ind1 = np.arange(len(x1))
@@ -131,8 +126,8 @@ def run(gp):
     np.random.shuffle(ind2)     # random.shuffle already changes ind
     ind2 = ind2[:gp.ntracer[2-1]]
 
-    x1, y1, vz1, Mg1, PMS1 = select_pm(x1, y1, vz1, Mg1, PM1, ind1)
-    x2, y2, vz2, Mg2, PMS2 = select_pm(x2, y2, vz2, Mg2, PM2, ind2)
+    x1, y1, vz1, Fe1, PMS1 = select_pm(x1, y1, vz1, Fe1, PM1, ind1)
+    x2, y2, vz2, Fe2, PMS2 = select_pm(x2, y2, vz2, Fe2, PM2, ind2)
 
     x0, y0, vz0, pm1, pm2, pm = concat_pops(x1, x2, y1, y2, vz1, vz2, gp)
 
@@ -157,7 +152,7 @@ def run(gp):
         pmn = pmn*pmr                   # [1]
         print("fraction of members = ", 1.0*sum(pmn)/len(pmn))
 
-        x, y, vz, Mg, PMN = select_pm(x0, y0, vz0, Mg0, PM0, pmn)
+        x, y, vz, Fe, PMN = select_pm(x0, y0, vz0, Fe0, pm, pmn)
 
         R = np.sqrt(x*x+y*y)            # [pc]
         Rscalei = np.median(R)          # [pc]

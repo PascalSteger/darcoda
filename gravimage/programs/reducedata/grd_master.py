@@ -86,7 +86,7 @@ k2 = {0: lambda x: x * (339),#+/-36 for Fornax
       3: lambda x: x * (294) #+/-38 for Sextans
   }[gp.case](1)
 
-gpr.fil = gpr.dir+"/table_merged.bin"
+gpr.fil = gpr.dir+"/data/tracers.dat"
 delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
 #ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
 # usecols=(0,1),delimiter=delim)
@@ -97,10 +97,21 @@ RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
                                    delimiter=delim, filling_values=-1)
 # exclude 0 probability of memory models, so we can weight by PM later on
 sel = (PM>0)
-RAh=RAh[sel]; RAm=RAm[sel]; RAs=RAs[sel]; DEd=DEd[sel]; DEm=DEm[sel]; DEs=DEs[sel]
-Vmag=Vmag[sel]; VI=VI[sel]; Vhel=Vhel[sel]; Vhel_err=Vhel_err[sel]
-Mg=Mg[sel]; Mg_err=Mg_err[sel]; PM=PM[sel]
-Mg_min = min(Mg); Mg_max = max(Mg)
+RAh=RAh[sel]
+RAm=RAm[sel]
+RAs=RAs[sel]
+DEd=DEd[sel]
+DEm=DEm[sel]
+DEs=DEs[sel]
+Vmag=Vmag[sel]
+VI=VI[sel]
+Vhel=Vhel[sel]
+Vhel_err=Vhel_err[sel]
+Mg=Mg[sel]
+Mg_err=Mg_err[sel]
+PM=PM[sel]
+Mg_min = min(Mg)
+Mg_max = max(Mg)
 
 # attention, we miss Mg measurements for 501 stars in Fornax,
 #  visible by missing SigMg values, set to -1

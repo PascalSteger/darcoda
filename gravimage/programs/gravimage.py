@@ -53,12 +53,12 @@ def show(filepath):
 # filepath filename with full path
 
 def myprior(cube, ndim, nparams):
-    #ndim, nparams
     mycube = Cube(gp)
     mycube.copy(cube)
     cube = mycube.convert_to_parameter_space(gp)
     return
-## \fn myprior(cube, ndim, nparams) priors
+## \fn myprior(cube, ndim, nparams)
+# priors
 # @param cube [0,1]^ndim cube, array of dimension ndim
 # @param ndim number of dimensions, 2*npop*nipol + nipol
 # @param nparams = ndim + additional parameters

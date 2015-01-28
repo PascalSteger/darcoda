@@ -9,7 +9,6 @@
 
 import numpy as np
 import pdb
-import gi_helper as gh
 import gi_file as gf
 from gi_centering import com_shrinkcircle_2D
 
@@ -93,11 +92,6 @@ def run(gp):
 ## \fn run(gp)
 # main functionality: get center of mass of deBoer data
 # @param gp global parameters
-
-
-
-
-
 
 if __name__=='__main__':
     # for debugging input issues here:

@@ -23,10 +23,11 @@ def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
     for kbin in range(gp.nipol):
         Rw = (Binmax[kbin]-Binmin[kbin])*Rscale0 # [pc]
         kpc = 1000 # [pc]
-        DL = {0: lambda x: x * (138),#+/- 8 for Fornax
-              1: lambda x: x * (101),#+/- 5 for Carina
-              2: lambda x: x * (79),  #+/- 4 for Sculptor
-              3: lambda x: x * (86) #+/- 4 for Sextans
+        DL = {1: lambda x: x * (138),#+/- 8 for Fornax
+              2: lambda x: x * (101),#+/- 5 for Carina
+              3: lambda x: x * (79), #+/- 4 for Sculptor
+              4: lambda x: x * (86), #+/- 4 for Sextans
+              5: lambda x: x * (80)  #+/- 10 for Draco
         }[gp.case](kpc)
         arcmin = 2.*np.pi* DL / (360 * 60) # [pc] at distance 138 kpc for Fornax
         width = (Binmax[kbin]-Binmin[kbin])*Rscale0/arcmin # [arcmin]
@@ -81,7 +82,7 @@ def run(gp):
         print('#######  working on component ',pop)
         print('input: ', gp.files.get_com_file(pop))
         # exclude second condition if self-consistent approach wished
-        if gp.investigate == "obs" and (pop==0 or (pop==1 and gp.pops==1 and (not gp.selfconsistentnu))):
+        if gp.investigate == "obs" and gp.case==1 and (pop==0 or (pop==1 and gp.pops==1 and (not gp.selfconsistentnu))):
             # for Fornax, overwrite first Sigma with deBoer data
             import gr_MCMCbin_for
             gr_MCMCbin_for.run(gp, pop)
@@ -160,7 +161,7 @@ def run(gp):
                     zetab[k] = gh.starred(Rbin, v4[:,k]*Rbin**2, Sigma, Ntot[k], gp)
                     zetab[k] /= v2denom
                     zetab[k] /= (gh.starred(Rbin, Rbin, Sigma, Ntot[k], gp))**2
-            if gp.investigate == 'obs':
+            if gp.investigate == 'obs' and gp.case < 5:
                 Sig_phot = obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr)
             else:
                 Sig_phot = Sig_kin

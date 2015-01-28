@@ -19,11 +19,11 @@ if(len(sys.argv)<2):
 # choose simulation
 dwarf = sys.argv[1]
 dir = gp.files.machine
-print(dir+dwarf+"/table_merged.bin")
+print(dir+dwarf+"/data/tracers.dat")
 
 delim=[0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-ID=numpy.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=(0,1),delimiter=delim,dtype="string")
-RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe,SigMg,e_SigMg,PM=numpy.genfromtxt(dir+dwarf+"/table_merged.bin",skiprows=29,unpack=True,usecols=tuple(range(2,17)),delimiter=delim,filling_values=-1)
+ID=numpy.genfromtxt(dir+dwarf+"/data/tracers.dat",skiprows=29,unpack=True,usecols=(0,1),delimiter=delim,dtype="string")
+RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe,SigMg,e_SigMg,PM=numpy.genfromtxt(dir+dwarf+"/data/tracers.dat",skiprows=29,unpack=True,usecols=tuple(range(2,17)),delimiter=delim,filling_values=-1)
 
 print('Vmag = ',Vmag[0:10])
 

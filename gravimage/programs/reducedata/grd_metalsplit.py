@@ -143,7 +143,7 @@ def run(gp):
 
     #globs = comm.bcast(globs, root=0)
     global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
-    gpr.fil = gpr.dir+"table_merged.bin"
+    gpr.fil = gpr.dir+"data/tracers.dat"
     # number of measured tracer stars
     Nsample = bufcount(gpr.fil)
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
