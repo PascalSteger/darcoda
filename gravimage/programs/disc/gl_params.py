@@ -66,7 +66,7 @@ class Params():
         #deletion, or modification
         # ----------------------------------------------------------------------
 
-        self.nbins=15 # Number of bins to split tracer stars into
+        self.nbins=20 # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
         self.nbaryon_pops = 0 # Number of baryon populations to look at
@@ -104,6 +104,7 @@ class Params():
 
         # MultiNest options
         # ----------------------------------------------------------------------
+        self.map_priors = False
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
@@ -114,7 +115,7 @@ class Params():
 
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
-        self.nlive = 1000*self.ndim
+        self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
         #fraction of profiles to save, set <0 for no profile saving

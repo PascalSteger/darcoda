@@ -12,10 +12,7 @@ import sys
 sys.path.insert(0, 'plotting/')
 from plot_profiles import correct_E_error
 
-
-
-
-def paracube_to_profile(run_basepath, paracube_filename, profile_filename, investigation, case, timestamp):
+def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, investigation, case, timestamp):
     # Takes a file with points defined in the multinest cube, output file with profiles
     # as per the pc2.save type
 
@@ -23,7 +20,7 @@ def paracube_to_profile(run_basepath, paracube_filename, profile_filename, inves
     #Pull in parameters from the run basepath
     import import_path as ip
     # load stored parameters
-    ip.insert_sys_path(run_basepath+'programs/')
+    ip.insert_sys_path(basepath_ts+'programs/')
     import gl_params as glp
     ip.remove_first()
     gp = glp.Params(timestamp, investigation, int(case))
@@ -43,14 +40,9 @@ def paracube_to_profile(run_basepath, paracube_filename, profile_filename, inves
     gp.z_binmaxs = nu_1_data[:,2]
     gp.z_all_pts = np.append([0.0], gp.z_bincenters)
 
-
-
-
     correct_E_error(basepath_ts + paracube_filename)
 
     paracube_data = np.loadtxt(basepath_ts + paracube_filename, dtype='a')
-
-
 
     for iter in range(0, len(paracube_data[:,0])):
         #print('Iter = ', iter)
@@ -68,5 +60,12 @@ def paracube_to_profile(run_basepath, paracube_filename, profile_filename, inves
 
 
 if __name__=="__main__":
-    basepath_ts='/home/hsilverw/LoDaM/darcoda/gravimage/DTsimplenu/0/201501231959/'
-    paracube_to_profile(basepath_ts, "phys_live.point", "phys_live_profiles.save", 'simplenu', 0, "201501231959")
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-i", "--investigation", dest="investigation", default="")
+    parser.add_option("-c", "--case", dest="case", default=0)
+    parser.add_option("-t", "--timestamp", dest="timestamp", default="")
+    (options, args) = parser.parse_args()
+
+    basepath_ts='/home/hsilverw/LoDaM/darcoda/gravimage/DT' + str(options.investigation) + '/' + str(options.case) + '/' + str(options.timestamp) +'/'
+    paracube_to_profile(basepath_ts, "phys_live.point", "phys_live_profiles.save", 'simplenu', options.case, str(options.timestamp))

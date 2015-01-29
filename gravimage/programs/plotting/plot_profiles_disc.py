@@ -16,6 +16,7 @@ import time
 npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
 import gl_helper as gh
+import gl_multinest_helper as glmh
 
 def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/data/')
@@ -88,11 +89,6 @@ def run(timestamp, basename, profile_source, gp):
     gp.dat = glf.get_binned_data_noscale(gp)
     import gl_helper as gh
     bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
-    max_z = max(bincenters) #?
-    min_z = min(bincenters) #?
-
-    #Generate profiles from livepoints if necessary
-    #if profile_source == 'livepoints'
 
     pc = pcload_single_entries(basename, profile_source, gp)
     if len(pc.chis) == 0:
@@ -154,4 +150,12 @@ if __name__ == '__main__':
     gp = glp.Params(timestamp, investigate)
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
+
+    if profile_source == 'livepoints':
+        try:
+            open(basename+"phys_live_profiles.save")
+        except OSError:
+            gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
+            glmh.paracube_to_profile(basename, "phys_live.point", "phys_live_profiles.save", investigate, options.case, timestamp)
+
     run(timestamp, basename, profile_source, gp)

@@ -30,8 +30,10 @@ def chi2red(model, data, sig, dof):
 def calc_chi2(profs, gp):
     chi2 = 0.
 
-    #Tracer population comparison
+    if gp.map_priors:
+        return 1.0
 
+    #Tracer population comparison
     for pop in range(0, gp.ntracer_pops):
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]
