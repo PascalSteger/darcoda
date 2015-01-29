@@ -47,6 +47,9 @@ def get_pos_and_COM(gp):
                 #grd_photo_dra.run(gp)
                 import grd_COM_dra
                 grd_COM_dra.run(gp)
+            else:
+                import grd_COM
+                grd_COM.run(gp)
         elif gp.pops == 2:
             import grd_metalsplit, grd_COM
             grd_metalsplit.run(gp)

@@ -98,7 +98,10 @@ def run(gp):
             Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR # [Rscale0]
             print('Rmax [Rscale0] = ', Rmax)
             sel = (R * Rscalei <= Rmax * Rscale0)
-            x = x[sel]; y = y[sel]; v = v[sel]; R = R[sel] # [Rscalei]
+            x = x[sel]
+            y = y[sel]
+            v = v[sel]
+            R = R[sel] # [Rscalei]
             totmass_tracers = float(len(x)) # [Munit], Munit = 1/star
             Rs = R                   # + possible starting offset, [Rscalei]
             vlos = v                 # + possible starting offset, [km/s]
@@ -123,8 +126,7 @@ def run(gp):
                 Rsi   = gh.add_errors(Rs,   gpr.Rerr)   # [Rscalei]
                 vlosi = gh.add_errors(vlos, gpr.vrerr)   # [km/s]
                 for i in range(gp.nipol):
-                    ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, \
-                                                  Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
+                    ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
                     tpb[i][k] = float(len(ind1)) #[1]
                     Sig_kin[i][k] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/rscale**2]
                     if(len(ind1)<=1):
