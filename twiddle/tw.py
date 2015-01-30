@@ -115,13 +115,11 @@ class MyApp(wx.App):
 ## \class MyApp()
 # basic application
 
-
 def main():
     app = MyApp(False)
     app.MainLoop()
 ## \fn main()
 # start application and wait for user input
-
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,7 @@
 # implement MySQL related commands
 # needs a MySQL server running on (another) computer, see act/lib/initialize for details
 
-# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
 import os, pdb, wx
 
@@ -149,7 +149,7 @@ class TabMySQL(wx.Panel):
         print("m_dm = ")
         my.run_command("get_sphere_dm -inp "+d+" -xc 0.5 -yc 0.5 -zc 0.5 -rc 0.001|head -n1|cut -d'.' -f1,2|rev|cut -d' ' -f2-|rev")
         print("m_star = ")
-        my.run_command("get_sphere_stars -inp "+d+" -xc 0.5 -yc 0.5 -zc 0.5 -rc 0.001|head -n1|cut -d'.' -f1,2|rev|cut -d' ' -f2-|rev")
+        my.run_command("get_sphere_stars -inp "+d+" -xc 0.5 -yc 0.5 -zc 0.5 -rc 0.01|head -n1|cut -d'.' -f1,2|rev|cut -d' ' -f2-|rev")
         my.done()
     ## \fn onMass(self, event)
     # find DM mass and star mass

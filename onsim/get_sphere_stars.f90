@@ -12,21 +12,16 @@ program get_sphere_stars
   real(kind=8)::massconv,vscale
   real(kind=8)::aexp,t,omega_m,omega_l,omega_b,omega_k,h0,unit_l,unit_t,unit_d
   real(kind=8),dimension(:),allocatable::aexp_frw,hexp_frw,tau_frw,t_frw
- 
-#ifndef NPRE
-  integer,parameter::dp=kind(1.0E0) ! default: real*4
+#if NPRE==8
+  integer, parameter :: dp = selected_real_kind(15, 307)
 #else
-#if NPRE==4
-  integer,parameter::dp=kind(1.0E0) ! real*4
-#else
-  integer,parameter::dp=kind(1.0D0) ! real*8
-#endif
+  integer, parameter :: dp = selected_real_kind(6, 37)
 #endif
   real(dp),dimension(:,:),allocatable::x,v
   real(dp),dimension(:),allocatable::m,age,metal
   integer*4,dimension(:),allocatable::id,level
 
-  real*8,dimension(:,:),allocatable::map 
+  real*8,dimension(:,:),allocatable::map
   character(LEN=5)::nchar,ncharcpu
   character(LEN=80)::ordering
   character(LEN=128)::nomfich,repository,filetype='bin'
@@ -47,14 +42,14 @@ program get_sphere_stars
   ipos=INDEX(repository,'output_')
   nchar=repository(ipos+7:ipos+13)
   nomfich=TRIM(repository)//'/part/part_'//TRIM(nchar)//'.out00001'
-  inquire(file=nomfich, exist=ok) ! verify input file 
+  inquire(file=nomfich, exist=ok) ! verify input file
   if ( .not. ok ) then
      print *,TRIM(nomfich)//' not found.'
      stop
   endif
 
   nomfich=TRIM(repository)//'/info_'//TRIM(nchar)//'.txt'
-  inquire(file=nomfich, exist=ok) ! verify input file 
+  inquire(file=nomfich, exist=ok) ! verify input file
   if ( .not. ok ) then
      print *,TRIM(nomfich)//' not found.'
      stop
@@ -105,12 +100,12 @@ program get_sphere_stars
   n_frw=1000
   allocate(aexp_frw(0:n_frw),hexp_frw(0:n_frw))
   allocate(tau_frw(0:n_frw),t_frw(0:n_frw))
-  
+
   ! Compute Friedman model look up table
   !print *,'#Computing Friedman model'
   call friedman(dble(omega_m),dble(omega_l),dble(omega_k), &
        & 1.d-6,1.d-3,aexp_frw,hexp_frw,tau_frw,t_frw,n_frw,time_tot)
-  
+
   ! Find neighboring expansion factors
   i=1
   do while(aexp_frw(i)>aexp.and.i<n_frw)
@@ -222,10 +217,10 @@ program get_sphere_stars
         read(1)metal
      endif
 #endif
-  
+
      !print *,'# success reading'
      close(1)
-     
+
      do i=1,npart2
         weight=1.
         drx = x(i,1)-xc
@@ -233,7 +228,7 @@ program get_sphere_stars
         drz = x(i,3)-zc
         dd2 = drx**2 + dry**2 + drz**2
         ok_part=(dd2<rc**2)
-        
+
         if(nstar>0)then
            !print *,"part ",i,"/",npart2," age:",age(i)," metal: ",metal(i)
            ok_part=ok_part.and.(age(i).ne.0.0d0)
@@ -256,7 +251,7 @@ program get_sphere_stars
               age(i)=time!*weight
            endif
         endif
-        
+
         if(ok_part)then
            npart_actual=npart_actual+1
            print "(4(1pe15.8,1X),2(1pe15.8,1X),3(1pe15.8,1X))",&
@@ -272,7 +267,7 @@ program get_sphere_stars
   end do
   !print *,'#Total mass=',mtot
   !if(.not. star)print *,'#npart tot=',npart_actual
-  
+
 contains
 
   subroutine read_params
@@ -283,7 +278,7 @@ contains
       integer       :: iargc
       character(len=4)   :: opt
       character(len=128) :: arg
-      
+
       n = iargc()
       if (n < 4) then
          print *, 'usage: get_sphere_stars -inp input_dir'
@@ -503,20 +498,20 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   tau = 0.0D0
   t = 0.0D0
   nstep = 0
-  
-  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) ) 
-     
+
+  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) )
+
      nstep = nstep + 1
      dtau = alpha * axp_tau / dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)
      axp_tau_pre = axp_tau - dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)*dtau/2.d0
      axp_tau = axp_tau - dadtau(axp_tau_pre,O_mat_0,O_vac_0,O_k_0)*dtau
      tau = tau - dtau
-     
+
      dt = alpha * axp_t / dadt(axp_t,O_mat_0,O_vac_0,O_k_0)
      axp_t_pre = axp_t - dadt(axp_t,O_mat_0,O_vac_0,O_k_0)*dt/2.d0
      axp_t = axp_t - dadt(axp_t_pre,O_mat_0,O_vac_0,O_k_0)*dt
      t = t - dt
-     
+
   end do
 
   age_tot=-t
@@ -524,7 +519,7 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   !666 format('#Age of the Universe (in unit of 1/H0)=',1pe10.3)
 
   nskip=nstep/ntable
-  
+
   axp_t = 1.d0
   t = 0.d0
   axp_tau = 1.d0
@@ -536,8 +531,8 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   axp_out(nout)=axp_tau
   hexp_out(nout)=dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)/axp_tau
 
-  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) ) 
-     
+  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) )
+
      nstep = nstep + 1
      dtau = alpha * axp_tau / dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)
      axp_tau_pre = axp_tau - dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)*dtau/2.d0
@@ -548,7 +543,7 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
      axp_t_pre = axp_t - dadt(axp_t,O_mat_0,O_vac_0,O_k_0)*dt/2.d0
      axp_t = axp_t - dadt(axp_t_pre,O_mat_0,O_vac_0,O_k_0)*dt
      t = t - dt
-     
+
      if(mod(nstep,nskip)==0)then
         nout=nout+1
         t_out(nout)=t
@@ -565,7 +560,7 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
 
 end subroutine friedman
 
-function dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0) 
+function dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)
   real(kind=8)::dadtau,axp_tau,O_mat_0,O_vac_0,O_k_0
   dadtau = axp_tau*axp_tau*axp_tau *  &
        &   ( O_mat_0 + &

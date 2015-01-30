@@ -77,9 +77,9 @@ class TabAHF(wx.Panel):
             d = mys.d(nsnap)
             my.mkdir(d+"/r2g")
             if(mys.is_dmonly()):
-                cmd = "mpirun -np 16 r2g -d "+d
+                cmd = "mpirun -np 8 r2g -d "+d
             else:
-                cmd = "mpirun -np 16 r2g -i "+d
+                cmd = "mpirun -np 8 r2g -i "+d
             print(cmd)
             my.thread(cmd)
         self.SetBackgroundColour("darkgreen")
