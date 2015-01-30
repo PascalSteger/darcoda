@@ -28,7 +28,6 @@ DTdiscsim
 *.out
 
 *.svn
-amiga
 
 CVS
 *.o
