@@ -72,6 +72,7 @@ class TabAHF(wx.Panel):
         print('nstart, nstop = ', nstart, nstop)
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
+            print('nsnap = ', nsnap)
             if(not mys.snap_exists(nsnap)):
                 continue
             d = mys.d(nsnap)
@@ -92,6 +93,7 @@ class TabAHF(wx.Panel):
         nstart,nstop=mys.get_range()
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
+            print('nsnap = ', nsnap)
             if(not mys.snap_exists(nsnap)):
                 continue
             d  = mys.d(nsnap)
