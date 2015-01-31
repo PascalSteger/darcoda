@@ -16,47 +16,38 @@ class TabAHF(wx.Panel):
         """Tab with all things to setup for a new"""
         wx.Panel.__init__(self, parent=parent)
         self.SetBackgroundColour("darkred")
-
         sizer = wx.BoxSizer(wx.VERTICAL)
-
         # choose sim, nstart, nstop (same as in TabAnalysis)
         # run r2g
         btnR2G = wx.Button(self, label="ramses2gadget")
         sizer.Add(btnR2G, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onRunR2G,btnR2G)
-
         # run AHF
         btnAHF = wx.Button(self, label="run AHF")
         sizer.Add(btnAHF, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onRunAHF,btnAHF)
-
         # fill into DB
         btnFillAHF = wx.Button(self, label="fill AHF into DB")
         sizer.Add(btnFillAHF, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onFillAHF, btnFillAHF)
-
         # show DM density and AHF halos
         btnHalos = wx.Button(self, label="show AHF halos")
         sizer.Add(btnHalos, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onShowHalos,btnHalos)
-
         # get three most massive substructures
         #   for resimulation with zoom
         #   we want no structure with m>mvir/2 inside 5rvir
         btnGet3Halos = wx.Button(self, label="get 3 halos")
         sizer.Add(btnGet3Halos, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onGet3Halos, btnGet3Halos)
-
         # generate spheres
         btnGenSpheres = wx.Button(self, label="gen spheres")
         sizer.Add(btnGenSpheres, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onGenSpheres, btnGenSpheres)
-
         # center with shrinking spheres
         btnShrink = wx.Button(self, label="shrink spheres")
         sizer.Add(btnShrink, 0, wx.ALL, 3)
         self.Bind(wx.EVT_BUTTON, self.onShrink, btnShrink)
-
         # generate spheres with new center
         btnGenAOI = wx.Button(self, label="get sphere AOI")
         sizer.Add(btnGenAOI, 0, wx.ALL, 3)

@@ -6,7 +6,9 @@
 
 # (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
-import os, pdb, wx
+import os
+import wx
+import pdb
 
 import lib.mysql as mys
 import lib.initialize as my

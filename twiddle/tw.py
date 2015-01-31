@@ -9,32 +9,31 @@
 import numpy as np
 import wx
 
-from act.TabMySQL import *
-from act.TabAHF import *
-from act.TabMergerTree import *
-from act.TabAnalysis import *
+import act.TabMySQL as tms
+import act.TabAHF as tah
+import act.TabMergerTree as tmt
+import act.TabAnalysis as tas
+import lib.mysql as mys
 
 class MainFrame(wx.Frame):
     def __init__(self):
         mys.setup_sim()
         mys.setup_halo()
         mys.setup_snapshot()
-        wx.Frame.__init__(self, None, wx.ID_ANY,
-                          "twiddle with cosmological simulations",
-                          size=(600,400))
+        wx.Frame.__init__(self, None, wx.ID_ANY, "twiddle with cosmological simulations", size=(600,400))
         panelnb = wx.Panel(self,-1)
         nb = wx.Notebook(panelnb)
 #1
-        tabAnalysis = TabAnalysis(nb)
+        tabAnalysis = tas.TabAnalysis(nb)
         nb.AddPage(tabAnalysis, "Analysis")
 #2
-        tabMtree = TabMergerTree(nb)
+        tabMtree = tmt.TabMergerTree(nb)
         nb.AddPage(tabMtree, "MergerTree")
 #3
-        tabAHF = TabAHF(nb)
+        tabAHF = tah.TabAHF(nb)
         nb.AddPage(tabAHF, "AHF")
 #4
-        tabMySQL = TabMySQL(nb)
+        tabMySQL = tms.TabMySQL(nb)
         nb.AddPage(tabMySQL, "MySQL")
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(nb, 1, wx.ALL|wx.EXPAND, 0)
@@ -74,7 +73,7 @@ class MainFrame(wx.Frame):
         sim = event.GetString()
         # print( 'set sim to:',sim)
         mys.set_active_sim(sim)
-        sm = mys.get_active_sim()
+        #sm = mys.get_active_sim()
         # print('active sim:',sim)
         nstart = mys.get_nstart()
         nstop  = mys.get_nstop()
