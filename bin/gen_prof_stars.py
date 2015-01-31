@@ -10,8 +10,8 @@ import os
 
 i=len(sys.argv)
 if i!=6:
-    print "usage: gen_prof_stars.py sim xc yc zc r"
-    print "example: gen_prof_stars.py 270 0.5 0.5 0.5 0.05"
+    print("usage: gen_prof_stars.py sim xc yc zc r")
+    print("example: gen_prof_stars.py 270 0.5 0.5 0.5 0.05")
     sys.exit()
 
 rout = 1 # * rvir from AHF for maximal radial distance to include particles from

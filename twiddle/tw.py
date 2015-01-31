@@ -13,7 +13,7 @@ import act.TabMySQL as tms
 import act.TabAHF as tah
 import act.TabMergerTree as tmt
 import act.TabAnalysis as tas
-import lib.mysql as mys
+import act.lib.mysql as mys
 
 class MainFrame(wx.Frame):
     def __init__(self):

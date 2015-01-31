@@ -6,6 +6,8 @@
 # (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import wx
+import pdb
+
 import lib.mysql as mys
 import lib.initialize as my
 import get_halopos_rezoom
@@ -82,6 +84,7 @@ class TabAHF(wx.Panel):
 
     def onRunAHF(self,event):
         nstart,nstop=mys.get_range()
+        print('nstart, nstop: ',nstart, nstop)
         for nc in range(nstop-nstart+1):
             nsnap = nc + nstart
             print('nsnap = ', nsnap)
@@ -148,7 +151,7 @@ GADGET_LUNIT      = 0.001\n\
 GADGET_MUNIT      = 1.0E10\n")
             f.close()
 
-            # print("TODO: AHFinput written?")
+            print("TODO: AHFinput written?")
             cmd = "cd "+d+" && AHF AHFinput"
             cmd += " && mv "+d+"*_halos "+d+"halos"
             cmd += " && mv "+d+"*_centres "+"centres"

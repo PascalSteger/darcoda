@@ -117,7 +117,7 @@ class TabMySQL(wx.Panel):
         print(" ")
         print("setup DB with "+self.sim)
         # get simdir, max output
-        self.simdir="/scratch/psteger/sim/"+self.sim
+        self.simdir="/library/home/psteger/sci/sim/"+self.sim
         dirlist=os.listdir(self.simdir)
         mx=0
         for fname in dirlist:
@@ -146,8 +146,8 @@ class TabMySQL(wx.Panel):
     def onMass(self, event):
         print(" ")
         print("find DM mass and star mass (if present)")
-        nstop=mys.get_nstop()
-        d=mys.d(nstop)
+        nstop = mys.get_nstop()
+        d = mys.d(nstop)
         print("m_dm = ")
         my.run_command("get_sphere_dm -inp "+d+" -xc 0.5 -yc 0.5 -zc 0.5 -rc 0.001|head -n1|cut -d'.' -f1,2|rev|cut -d' ' -f2-|rev")
         print("m_star = ")
