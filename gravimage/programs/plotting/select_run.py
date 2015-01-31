@@ -145,21 +145,21 @@ def get_investigate():
 # (walk, gaia, triax, fornax, hern, discsim, discmock)
 # @return string
 
-
 def choose_obs(sel):
-    if sel == '0':
-        return 'for'
     if sel == '1':
-        return 'car'
+        return 'for'
     if sel == '2':
-        return 'scl'
+        return 'car'
     if sel == '3':
+        return 'scl'
+    if sel == '4':
         return 'sex'
+    if sel == '5':
+        return 'dra'
     return 'for'
 ## \fn choose_obs(sel)
 # mapping of selection (int) to directory name (string of length 3)
 # @param sel selection (int)
-
 
 def get_case(investigate):
     default = 1
@@ -174,7 +174,7 @@ def get_case(investigate):
             print("error in input")
         if 0<=sel and ((sel <= 5 and investigate == 'walk') or \
                        (sel <= 10 and investigate == 'gaia') or \
-                       (sel < 4 and investigate == 'obs') or \
+                       (sel < 5 and investigate == 'obs') or \
                        (sel <= 8 and investigate == 'triax') or \
                        (sel == 0 and investigate == 'discmock') or\
                        (sel == 0 and investigate == 'simplenu')):
