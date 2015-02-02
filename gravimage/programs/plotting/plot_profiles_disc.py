@@ -104,11 +104,11 @@ def run(timestamp, basename, profile_source, gp):
 
     pc.sort_profiles_disc(gp)
     pc.write_all_disc(basename, gp)
+    pc.plot_profile(basename, 'kz_rho_DM_vec', 0, gp)
+    pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
     pc.plot_profile(basename, 'nu_vec', 0, gp)
     pc.plot_profile(basename, 'sig_vec', 0, gp)
     pc.plot_profile(basename, 'rho_DM_vec', 0, gp)
-    pc.plot_profile(basename, 'kz_rho_DM_vec', 0, gp)
-    pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)
 
 ## \fn run(timestamp, basename, gp)

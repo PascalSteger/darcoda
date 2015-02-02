@@ -63,9 +63,8 @@ def myprior(cube, ndim, nparams):
 # stored with actual parameters
 
 def myloglike(cube, ndim, nparams):
-    #pdb.set_trace()
-    #if min(cube) == -9999:  # parameters not fulfilling prior requirements,
-    #    return -1e300       #      return very large chi2 #HS SEGFAULT CHECK THIS AGAIN
+    if min(cube[0:ndim]) == -9999:  # parameters not fulfilling prior requirements,
+        return -1e300       #      return very large chi2
     try:
         tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     except ValueError:

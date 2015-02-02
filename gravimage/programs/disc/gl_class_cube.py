@@ -86,8 +86,8 @@ def map_kr(params, prof, pop, gp):
         #if monotonic:
         #    kz_min=max(kz_min, 0.)
         kz_i = kz_min + (kz_max - kz_min)*params[2+jter]
-        if monotonic:
-            kz_i = max(kz_i, 0.) #Alternate method for monotonic implementation
+        #if monotonic:
+        #    kz_i = max(kz_i, 0.) #Alternate method for monotonic implementation
         kz_i_m1 = kz_i
         kz_vector.append(kz_i)
 
