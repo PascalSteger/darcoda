@@ -13,12 +13,10 @@ import gl_physics as phys
 import gl_helper as gh
 
 class Profiles:
-    def __init__(self, ntracer_pops, nbins):#, nrhonu, nbaryon_pops, nbaryon_params):
+    def __init__(self, ntracer_pops, nbins):#, nrhonu,  nbaryon_pops, nbaryon_params):
         self.ntracer_pops = ntracer_pops
         self.nbins = nbins
         #self.nrhonu = nrhonu #?
-        #self.nbaryon_pops = nbaryon_pops #?
-        #self.nbaryon_params = nbaryon_params #?
 
         #z-profile points
         self.z_C = 0.0
@@ -41,11 +39,11 @@ class Profiles:
         #self.Sig_DM_LS     = 0.0               #Derived from phys
 
         #Baryon mass density and parameters
-        #self.baryon_params  = 0.0 #Currently DUMMY
-        #self.rho_baryon_C   = 0.0
-        #self.rho_baryon_vec = np.zeros(nbins)
+        #self.baryon_params  = np.zeros(nbaryon_pops*nbaryon_params)
+        self.rho_baryon_C   = 0.0
+        self.rho_baryon_vec = np.zeros(nbins)
         #self.rho_baryon_LS  = 0.0
-        #self.Sig_baryon_vec = np.zeros(nbins)
+        self.Sig_baryon_vec = np.zeros(nbins)
         #self.Sig_baryon_LS  = 0.0
 
         #Tracer profile parameters and derived mass density
@@ -80,9 +78,16 @@ class Profiles:
             self.rho_DM_vec = vec
         elif prof == 'Sig_DM_vec':
             self.Sig_DM_vec = vec
+
         #Baryons
         elif prof == 'baryon_params':
-            print("Baryons aren't implemented yet you muppet")
+            print("Still working on baryons, might be a tad dodgy")
+            self.baryon_params = vec
+        elif prof == 'rho_baryon_vec':
+            self.rho_baryon_vec = vec
+        elif prof == 'Sig_baryon_vec':
+            self.Sig_baryon_vec = vec
+
         #Tracer stars
         elif prof == 'kz_nu_vec':
             self.kz_nu_vec = vec
@@ -130,9 +135,16 @@ class Profiles:
             return self.rho_DM_vec
         elif prof == 'Sig_DM_vec':
             return self.Sig_DM_vec
+
         #Baryons
         elif prof == 'baryon_params':
-            print("Baryons aren't implemented yet you muppet")
+            print("Still working on baryons, might be a tad dodgy")
+            return self.baryon_params
+        elif prof == 'rho_baryon_vec':
+            return self.rho_baryon_vec
+        elif prof == 'Sig_baryon_vec':
+            return self.Sig_baryon_vec
+
         #Tracer stars
         elif prof == 'kz_nu_vec':
             return self.kz_nu_vec

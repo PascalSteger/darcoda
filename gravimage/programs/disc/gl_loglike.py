@@ -15,7 +15,7 @@ from pylab import *
 ion()
 
 def geom_loglike(cube, ndim, nparams, gp):
-    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins)#, gp.nrhonu, gp.nbaryon_pops, gp.nbaryon_params)
+    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins, gp.nbaryon_pops, gp.nbaryon_params)#, gp.nrhonu, )
 
     #Normalisation constant C for sigz calculation
     off = 0
@@ -29,6 +29,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     rho_DM_C = rho_DM_params[0] #rho_C
     kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres]
     tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C) #outputs rho across all points
+    tmp_rho_total_allz = tmp_rho_DM_allz #Total mass density
 
     tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
     #tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:-1], 0, gp)
@@ -42,9 +43,17 @@ def geom_loglike(cube, ndim, nparams, gp):
     off += offstep
 
     #Baryons
-    for bary_pop in range(0, gp.nbaryon_pops):
+    for baryon_pop in range(0, gp.nbaryon_pops):
         offstep = gp.nbaryon_params
-        bary_params = np.array(cube[off:off+offstep])
+        baryon_params = np.array(cube[off:off+offstep])
+        if gp.baryonmodel == 'simplenu_baryon':
+            tmp_rho_baryon_allz = phys.rho_baryon_simplenu(gp.z_all_pts, baryon_params)
+        elif gp.baryonmodel == 'kz_baryon':
+            print('Not implemented yet')
+        tmp_profs.rho_baryon_C = tmp_rho_baryon_allz[0]
+        tmp_profs.set_prof('rho_baryon_vec', tmp_rho_baryon_allz[1:], baryon_pop, gp)
+        tmp_rho_total_allz += tmp_rho_baryon_allz # add the baryon density to the total density
+
         off += offstep
 
     #Tracer params, nu_C, kz_nu_C, kz_nu_vector
@@ -70,8 +79,9 @@ def geom_loglike(cube, ndim, nparams, gp):
         gh.LOG(1,'wrong subscripts in gl_class_cube')
         raise Exception('wrong subscripts in gl_class_cube')
 
+
     #Calculate Sigma (surface density)
-    Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_DM_allz) #SS not orrect zvec
+    Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_total_allz) #SS not orrect zvec
     tmp_profs.Sig_DM_C = Sig_DM_allz[0]
     #tmp_profs.set_prof('Sig_DM_vec', Sig_DM_allz[1:-1], 0, gp)
     #tmp_profs.Sig_DM_LS = Sig_DM_allz[-1]

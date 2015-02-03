@@ -99,6 +99,19 @@ def map_kr(params, prof, pop, gp):
     return np.hstack([rhonu_C, kz_C, kz_vector])
 
 
+def map_simplenu_baryon(params, gp):
+    # Input: two multinest cube params, [0,1]
+    # Output: K and D parameters for simplenu baryon model
+    # H Silverwood 3/02/15
+
+    K_range = gp.simplenu_baryon_K_max - gp.simplenu_baryon_K_min
+    K = gp.simplenu_baryon_K_min + K_range*params[0]
+    D_range = gp.simplenu_baryon_D_max - gp.simplenu_baryon_D_min
+    D = gp.simplenu_baryon_D_min + D_range*params[1]
+
+    return np.array([K, D])
+
+
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
@@ -228,14 +241,15 @@ class Cube:
 
         #Baryon mass profile parameters
         #Redo this when we introduce baryons
-        for bary_pop in range(0, gp.nbaryon_pops):
+        for baryon_pop in range(0, gp.nbaryon_pops):
             offstep = gp.nbaryon_params
-            tmp_bary = map_kr(pc[off:off+offstep], 'rho', bary_pop, gp)
+            if gp.baryonmodel == 'simplenu_baryon':
+                tmp_baryon = map_simplenu_baryon(pc[off:off+offstep], gp)
+            elif gp.baryonmodel == 'kz_baryon':
+                tmp_baryon = map_kr(pc[off:off+offstep], 'rho', baryon_pop, gp)
             for i in range(offstep):
-                pc[off+i] = tmp_bary[i]
+                pc[off+i] = tmp_baryon[i]
             off += offstep
-        #pdb.set_trace()
-
 
         #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector, kz_nu_LS
         for tracer_pop in range(0, gp.ntracer_pops):

@@ -353,8 +353,8 @@ class ProfileCollection():
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], Sig(R)/Sig(0) [1], error [1]
             dum,dum,dum,Sigdat,Sigerr = np.transpose(np.loadtxt(gp.files.Sigfiles[pop], \
                                                               unpack=False, skiprows=1))
-            Sigdat *= gp.Sig0pc[pop] # [Msun/pc^2]
-            Sigerr *= gp.Sig0pc[pop] # [Msun/pc^2]
+            #Sigdat *= gp.Sig0pc[pop] # [Msun/pc^2]
+            #Sigerr *= gp.Sig0pc[pop] # [Msun/pc^2]
             #Signorm = gh.ipol_rhalf_log(gp.xipol, Sigdat, gp.Xscale[pop])
             output.add('data [Msun/pc^2]', Sigdat)
             output.add('error [Msun/pc^2]', Sigerr)
@@ -368,8 +368,8 @@ class ProfileCollection():
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], nu(R)/nu(0) [1], error [1]
             dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], \
                                                               unpack=False, skiprows=1))
-            nudat *= gp.nu0pc[pop] # [Msun/pc^2]
-            nuerr *= gp.nu0pc[pop] # [Msun/pc^2]
+            #nudat *= gp.nu0pc[pop] # [Msun/pc^2]
+            #nuerr *= gp.nu0pc[pop] # [Msun/pc^2]
             output.add('data [Msun/pc^3]', nudat)
             output.add('error [Msun/pc^3]', nuerr)
             output.add('data - error [Msun/pc^2]', nudat-nuerr)
@@ -382,8 +382,8 @@ class ProfileCollection():
                                            unpack=False, skiprows=1))
             sigdat = DATA[4-1] # [maxsiglosi]
             sigerr = DATA[5-1] # [maxsiglosi]
-            sigdat *= gp.maxsiglos[pop]  # [km/s]
-            sigerr *= gp.maxsiglos[pop]  # [km/s]
+            #sigdat *= gp.maxsiglos[pop]  # [km/s]
+            #sigerr *= gp.maxsiglos[pop]  # [km/s]
             output.add('data [km/s]', sigdat)
             output.add('error [km/s]', sigerr)
             output.add('data - error [km/s]', sigdat-sigerr)

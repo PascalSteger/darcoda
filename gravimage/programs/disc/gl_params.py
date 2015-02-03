@@ -63,15 +63,16 @@ class Params():
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
 
         #Baryon options
-        self.baryonmodel = 'none' #set baryon model
+        self.baryonmodel = 'simplenu_baryon' #set baryon model
                                     # none = all mass in DM
                                     # simplenu_baryon = model used to generate simplenu mock data
-        self.nbaryon_pops = 0 # Number of baryon populations to look at
-                               # =0 if doing simple mass model (eg DM profile describes
-                               # all mmass)
-        self.nbaryon_params = 0 # Number of parameters to describe baryon population
-                                 #  Holmberg & Flynn = 15
-                                 #  with baryon observational information = nrho
+        self.nbaryon_pops = 1 # Number of baryon populations to look at
+                                    # =0 if doing simple mass model (eg DM profile describes
+                                    # all mmass)
+        self.nbaryon_params = 2 # Number of parameters to describe baryon population
+                                    #  simplenu_baryon = 2
+                                    #  Holmberg & Flynn = ?
+                                    #  with baryon observational information = nrho
 
         #Total dimensions count
         self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
@@ -82,28 +83,34 @@ class Params():
 
         # Priors
         # ----------------------------------------------------------------------
-        #Limits for central densities (z=0)
+        # Limits for central densities (z=0)
         self.rho_C_max = 0.5E9  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
         self.rho_C_min = 0.0 #Msun pc^-3
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
 
-        #Limits for central kz values (z=0)
-        self.kz_rho_C_max = 20.0
+        # Limits for central kz values (z=0)
+        self.kz_rho_C_max = 5.#20.0
         self.kz_rho_C_min = -1.0 #SS
-        self.kz_nu_C_max = 20.0
+        self.kz_nu_C_max = 5.#20.0
         self.kz_nu_C_min = -1.0 #SS
 
-        #Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 90.0
+        # Maximum kz_slope (=dk/dz)
+        self.max_kz_slope = 5.#90.0
 
-        #Limits for sigz central value
+        # Limits for sigz central value
         self.sigz_C_max = 50.
         self.sigz_C_min = 5.
 
-        #Monotonicity priors
+        # Monotonicity priors
         self.monotonic_rho = True    # mono-prior on rho(z)
         self.monotonic_nu = True # mono-prior on nu(z)
+
+        # Simplenu Baryon model priors
+        self.simplenu_baryon_K_max = 2000. #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1000.
+        self.simplenu_baryon_D_max = 1. #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.
 
 
         # MultiNest options

@@ -98,3 +98,17 @@ def sig_rz(z, zpars, tpars):
 # @param z [pc]
 # @param zpars [pc] z, on which sig is defined
 # @param tpars tilt parameters: Rsun, hr, hsig
+
+
+def rho_baryon_simplenu(zvec, params):
+    G1 = 4.299e-6 # Newton's constant in (km)^2*kpc/(Msun*s^2)
+    K=params[0]
+    D=params[1]
+    return (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+
+
+## \fn rho_baryon_simplenu(zvec, K, D)
+# Calculate baryon density from the model used to generate the simplenu mock data
+# @param zvec [kpc]
+# @param K [kpc s^-2], baryon force parameter
+# @param D [kpc], baryon disc scale height
