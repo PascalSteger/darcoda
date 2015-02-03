@@ -113,7 +113,7 @@ def run(gp):
                     mode_tolerance = -1.e100,   # mode tolerance in the case where no special value exists: highly negative
                     outputfiles_basename = gp.files.outdir,
                     seed = -1, verbose = True,
-                    resume = gp.restart, # TODO check
+                    resume = gp.restart,
                     context = 0, write_output = True,
                     log_zero = -1e500, # points with log likelihood<log_zero will be neglected
                     max_iter = 0, # set to 0 for never reaching max_iter (no stopping criterium based on number of iterations)

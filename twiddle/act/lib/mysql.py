@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 import initialize as my
 import numpy as np
-from numpy import array,sqrt
-
+import pdb
 
 def clear():
     clear_sim();
@@ -11,7 +10,6 @@ def clear():
     clear_halo();
 ## \fn clear()
 # clear simulations, snapshots, and halos
-
 
 def clear_sim():
     my.sql('DROP TABLE IF EXISTS sim;')
@@ -287,6 +285,7 @@ def fill_snapshot(snap):
     my.sql("ALTER TABLE snapshot ORDER BY snap DESC;")
 
 def exists_snap(snap):
+    pdb.set_trace()
     c = my.sql("SELECT snap FROM snapshot WHERE snap="+str(snap)+";")
     if(len(c)==0):
         return False;
@@ -382,7 +381,11 @@ def getxyzmr(snap,typ):
         z.append(zc[i][0])
         r.append(rvir[i][0])
         m.append(mvir[i][0])
-    x=array(x);y=array(y);z=array(z);r=array(r);m=array(m)
+    x=np.array(x)
+    y=np.array(y)
+    z=np.array(z)
+    r=np.array(r)
+    m=np.array(m)
     order = m.argsort()
     x = x[order]
     y = y[order]
