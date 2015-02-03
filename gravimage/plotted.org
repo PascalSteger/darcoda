@@ -9,18 +9,18 @@
 | 201410280736 |      |        |                                                   |
 
 ** 2
-|    Timestamp | beta | status | outcome                                                     |
-|--------------+------+--------+-------------------------------------------------------------|
-| 201501221049 |  000 | p    r | new nrnu, broad still, nr too high, redo                    |
-| 201501221045 |    - | p    r | new nrnu, broad still, nr too high, redo                    |
-| 201501202212 |  000 | p    r | early stage of convergence, n(r) too high                   |
-| 201501202211 |    - | p    r | early stage of convergence, get down scale in delta n(r)    |
-| 201501091502 |  000 | p    r | n(r) too steep, beta* too flat, chi^2 off                   |
-| 201501090757 |    - | p      | n(r) too steep, beta* at 0, wrong                           |
-| 201501070939 |   00 | p      | n(r) too high, beta* too flat, wrong                        |
-| 201501070936 |    - | p    r | n(r) too high, beta* going negative, wrong                  |
-| 201501070935 |    0 | pc   r | central slope too high, beta little too small at high radii |
-| 201501070921 |  000 | ppc  r | n(r) too high, beta* too flat at high radii                 |
+|    Timestamp | beta | status | outcome                                                               |
+|--------------+------+--------+-----------------------------------------------------------------------|
+| 201501221049 |  000 | p    r | new nrnu, broad still, nr too high, redo                              |
+| 201501221045 |    - | p    r | new nrnu, broad still, nr too high, beta too low                      |
+| 201501202212 |  000 | p    r | early stage of convergence, n(r) too high                             |
+| 201501202211 |    - | p    r | early stage of convergence, get down scale in delta n(r)              |
+| 201501091502 |  000 | p    r | n(r) too steep, beta* too flat, chi^2 off                             |
+| 201501090757 |    - | p      | n(r) too steep, beta* at 0, wrong                                     |
+| 201501070939 |   00 | p      | n(r) too high, beta* too flat, wrong                                  |
+| 201501070936 |    - | p    r | n(r) too high, beta* going negative, wrong                            |
+| 201501070935 |    0 | pc   r | old nrnu, central slope too high, beta little too small at high radii |
+| 201501070921 |  000 | ppc  r | n(r) too high, beta* too flat at high radii                           |
 
 ** 3
 |    Timestamp | beta | status | outcome                                                         |
@@ -113,13 +113,15 @@
 ** 1 = cusp along intermediate axis
 |    Timestamp | beta | status | outcome                                         |
 |--------------+------+--------+-------------------------------------------------|
-| 201501062010 |  000 | p    r | M, nu, sig fine, rest wrong                     |
+| 201501242133 |    - | -      | no profiles found                               |
+| 201501062010 |  000 | p    r | old nrnu, M, nu, sig fine, rest wrong           |
 | 201501051650 |  000 | p    r | rho(half) fine, M fine, sig, nu fine, beta fine |
 |              |      |        |                                                 |
 
 ** 2 = cusp along x
 |    Timestamp | beta | status | outcome                            |
 |--------------+------+--------+------------------------------------|
+| 201501242133 | -    | -      | pickle.load error                  |
 | 201501112138 | -    | p    r | rho fine, beta too small in center |
 | 201501062009 | 000  | p      | all wrong, M fine a bit            |
 |              |      |        |                                    |
