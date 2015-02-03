@@ -174,7 +174,7 @@ def get_case(investigate):
             print("error in input")
         if 0<=sel and ((sel <= 5 and investigate == 'walk') or \
                        (sel <= 10 and investigate == 'gaia') or \
-                       (sel < 5 and investigate == 'obs') or \
+                       (sel <= 5 and investigate == 'obs') or \
                        (sel <= 8 and investigate == 'triax') or \
                        (sel == 0 and investigate == 'discmock') or\
                        (sel == 0 and investigate == 'simplenu')):
