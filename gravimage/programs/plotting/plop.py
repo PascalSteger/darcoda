@@ -97,7 +97,7 @@ def pcload_single_entries(basename, gp):
     with open(basename+'pc2.save', 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         try:
-            while True:
+            while True and current<22360:
                 current += 1
                 if current%100 == 0:
                     gh.progressbar((1.0*current)/numofmodels)
