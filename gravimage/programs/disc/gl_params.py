@@ -90,13 +90,13 @@ class Params():
         self.nu_C_min = 10.0 # no. stars pc^-3
 
         # Limits for central kz values (z=0)
-        self.kz_rho_C_max = 5.#20.0
+        self.kz_rho_C_max = 20.0
         self.kz_rho_C_min = -1.0 #SS
-        self.kz_nu_C_max = 5.#20.0
+        self.kz_nu_C_max = 20.0
         self.kz_nu_C_min = -1.0 #SS
 
         # Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 5.#90.0
+        self.max_kz_slope = 90.0
 
         # Limits for sigz central value
         self.sigz_C_max = 50.

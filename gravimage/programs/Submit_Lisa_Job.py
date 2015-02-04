@@ -18,7 +18,7 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='00:01:00:00'
+walltime='00:06:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
