@@ -11,29 +11,33 @@
 ** 2
 |    Timestamp | beta | status | outcome                                                               |
 |--------------+------+--------+-----------------------------------------------------------------------|
-| 201501290812 |  000 | -      | no pc2.save                                                           |
-| 201501221049 |  000 | p    r | new nrnu, broad still, nr too high, redo                              |
-| 201501221045 |    - | p    r | new nrnu, broad still, nr too high, beta too low                      |
-| 201501202212 |  000 | p    r | early stage of convergence, n(r) too high. restart!                   |
-| 201501202211 |    - | p    r | early stage of convergence, get down scale in delta n(r)              |
-| 201501091502 |  000 | p    r | old nrnu, n(r) too steep, beta* too flat, mass off           |
-| 201501090757 |    - | p      | n(r) too steep, beta* at 0, wrong                                     |
-| 201501070939 |   00 | p      | n(r) too high, beta* too flat, wrong                                  |
+| 201501221045 |    - | p  f r | good, new nrnu, nr too high, beta too low                             |
 | 201501070936 |    - | p    r | n(r) too high, beta* going negative, wrong                            |
+| 201501090757 |    - | p      | n(r) too steep, beta* at 0, wrong                                     |
+| 201501202211 |    - | p    r | early stage of convergence, get down scale in delta n(r)              |
 | 201501070935 |    0 | pc   r | old nrnu, central slope too high, beta little too small at high radii |
-| 201501070921 |  000 | ppc  r | n(r) too high, beta* too flat at high radii                           |
+| 201501070939 |   00 | p      | n(r) too high, beta* too flat, wrong                                  |
+| 201501091502 |  000 | p    r | old nrnu, n(r) too steep, beta* too flat, mass off                    |
+| 201501202212 |  000 | p    r | early stage of convergence, n(r) too high. restart!                   |
+| 201501221049 |  000 | p    r | new nrnu, broad still, nr too high, redo                              |
+| 201501290812 |  000 | -      | no pc2.save                                                           |
+| 201501070921 |  000 | pc   r | n(r) too high, beta* too flat at high radii                           |
+| 201502031848 |  000 | p  f   | good, new nrnu, still broad                                           |
+|              |      |        |                                                                       |
 
 ** 3
 |    Timestamp | beta | status | outcome                                                         |
 |--------------+------+--------+-----------------------------------------------------------------|
 | 201501222145 | -    | -      | 8 bins, no profiles found, redo                                 |
 | 201501222144 | -    | -      | 18 bins, no profiles found                                      |
-| 201501221050 | 000  | -      | no profiles found                                               |
 | 201501221048 | -    | -      | no profiles found                                               |
-| 201501202212 | 000  | p    r | old nrnu, early stage, beta too high                            |
 | 201501212211 | -    | p    r | old nrnu, early stage, beta bang on, n(r) too steep, siglos off |
-| 201501070939 | 00   | pc   r | ok, n(r) not curved enough, beta negative at high radii         |
-| 201501070936 | -    | pc   r | perfect, n_nu(r) slightly too high in extension bins        |
+| 201501070936 | -    | pc f r | perfect, n_nu(r) slightly too high in extension bins            |
+| 201501070939 | 00   | pc f r | ok, n(r) not curved enough, beta negative at high radii         |
+| 201501202212 | 000  | p    r | old nrnu, early stage, beta too high                            |
+| 201501221050 | 000  | p      | bad nrnu, Sig, chi2                                             |
+| 201502031849 | 000  | -      | no pc2.save                                                     |
+| 201501070922 | 000  | p      | old nrnu, beta off                                              |
 
 ** 4
 |    Timestamp | beta | status | outcome                                     |
@@ -89,25 +93,26 @@
 
 * walk
 ** 1
-|    Timestamp | beta | status | outcome                                                            |
-|--------------+------+--------+--------------------------------------------------------------------|
-| 201501240517 | 000  | pc  r  | good, rho too steep, still converging                              |
-| 201501240500 | -    | p   r  | good, new nrnu, rho fine, beta broad                               |
-| 201501221116 | -    | p      | 1pop, nu and Sig not on analytic profile, still converging         |
-| 201501221109 | 000  | p      | 1pop, nu, Sig not on analytic profile, still converging, beta fine |
-| 201501221108 | 000  | -      | no profiles                                                        |
-| 201501202215 | -    | p   r  | still converging, beta broad                                       |
-| 201501112129 | -    | pc  r  | fine, n(r) consistently too high, beta going negative              |
-| 201501112121 | 000  | pc  r  | perfect, n(r) fine, beta slightly too low                          |
+|    Timestamp | beta | status  | outcome                                                            |
+|--------------+------+---------+--------------------------------------------------------------------|
+| 201501240500 | -    | p   r   | good, new nrnu, rho fine, beta broad                               |
+| 201501221116 | -    | p       | 1pop, nu and Sig not on analytic profile, still converging         |
+| 201501112129 | -    | pc  r   | fine, n(r) consistently too high, beta going negative              |
+| 201501202215 | -    | p   r   | still converging, beta broad                                       |
+| 201501221108 | 000  | -       | no profiles                                                        |
+| 201501221109 | 000  | p       | 1pop, nu, Sig not on analytic profile, still converging, beta fine |
+| 201501240517 | 000  | pc  r   | good, rho too steep, still converging                              |
+| 201501112121 | 000  | pc f  r | perfect, n(r) fine, beta slightly too low                          |
 
 ** 2
-|    Timestamp | beta | status | outcome                                         |
-|--------------+------+--------+-------------------------------------------------|
-| 201501240518 | 000  |     r  | no pc2.save?!                                   |
-| 201501240500 | -    | p   r  | new nrnu, beta not yet converged                |
-| 201501202216 | -    | p   r  | new nrnu, beta not yet converged                |
-| 201501112130 | -    | pc  r  | good, beta fine, slightly too low               |
-| 201501112121 | 000  | pc  r  | very good, n(r) fine, a bit too turned too flat |
+|    Timestamp | beta | status | outcome                                                   |
+|--------------+------+--------+-----------------------------------------------------------|
+| 201501240500 | -    | p   r  | new nrnu, beta not yet converged                          |
+| 201501202216 | -    | p   r  | new nrnu, beta not yet converged                          |
+| 201501112130 | -    | pc  r  | good, beta fine, slightly too low                         |
+| 201501112121 | 000  | pc  r  | very good, old nrnu, n(r) fine, a bit too turned too flat |
+| 201501240518 | 000  | r      | no pc2.save?!                                             |
+| 201501270837 | 000  | apf    | good, beta too low, n(r) tilted                           |
 
 
 * triax
@@ -143,29 +148,32 @@
 
 * obs
 ** 1 = Fornax with one pop
-|    Timestamp | beta | status | outcome                                                     |
-|--------------+------+--------+-------------------------------------------------------------|
-| 201501151319 | -    | ap     | beta goes from 0 to negative values, pinchpoint in rho      |
-| 201501081656 | 000  | p      | no scale_0                                                  |
-| 201501281758 | -    | p      | 1pop new nrnu, jump in nrnu, beta goes negative at r>rhalf  |
-| 201501281757 | 000  | ap     | 1pop raising nu, sig still converging                       |
-| 201501281756 | 000  | p      | 1pop raising nu, sig still converging                       |
-| 201501281755 | -    | ap     | 1pop raising nu, sig converged, beta goes negative at rhalf |
-|              |      |        |                                                             |
-
+|    Timestamp | beta | status | outcome                                                    |
+|--------------+------+--------+------------------------------------------------------------|
+| 201501151319 |    - | ap     | beta goes from 0 to negative values, pinchpoint in rho     |
+| 201501281758 |    - |  p     | 1pop new nrnu, jump in nrnu, beta goes negative at r>rhalf |
+| 201501281755 |    - | ap     | good, sig converged, beta goes negative at rhalf           |
+| 201501281757 |  000 | ap     | sig still converging                                       |
+| 201501281756 |  000 |  p     | sig still converging                                       |
+| 201501081656 |  000 |  p     | no scale_0                                                 |
+| 201501222133 |  000 |  pc    | good, core                                                 |
 
 ** 1 = Fornax with split pops
-|    Timestamp | beta | status | outcome     |
-|--------------+------+--------+-------------|
-| 201501151319 | -    | ap     | no profiles |
-|              |      |        |             |
+|    Timestamp | beta | status | outcome                                      |
+|--------------+------+--------+----------------------------------------------|
+| 201501151319 | -    | ap     | no profiles                                  |
+| 201501221707 | -    |  p     | negative beta, core                          |
+| 201501200824 | -    |  p     | beta going negative, core                    |
+| 201501200754 | -    |  pc    | good, old nrnu, close rhalf, beta going down |
+| 201501222134 | 000  | apc    | good, beta increases after rhalf, core!      |
+|              |      |        |                                              |
 
 
 ** 2 = Carina
 |    Timestamp | beta | status | outcome                 |
 |--------------+------+--------+-------------------------|
-| 201501290924 | 000  | p      | kink in nrnu, nu rising |
-| 201501290920 | -    | p      | kink in nrnu, nu rising |
+| 201501290924 | 000  |  p     | kink in nrnu, nu rising |
+| 201501290920 | -    |  p     | kink in nrnu, nu rising |
 
 
 ** 3 = Sculptor
@@ -175,12 +183,12 @@
 | 201501290922 | -    | p      | new nrnu, sig still conv. |
 
 ** 4 = Sextans
-|    Timestamp | beta | status | outcome         |
-|--------------+------+--------+-----------------|
-| 201501290928 | 000  | -      | no pc2.save     |
-| 201501290923 | -    | -      | no pc2.save     |
-|              | -    | a      | 9bins, chi2 50, |
-|              | 000  | a      | 9bins, chi2 50, |
+|    Timestamp | beta | status | outcome                       |
+|--------------+------+--------+-------------------------------|
+| 201501290928 | 000  | -      | no pc2.save                   |
+| 201501290923 | -    | -      | no pc2.save                   |
+| 201502040947 | -    | a      | 9bins, cusp, still converging |
+|              | 000  | a      | 9bins, chi2 50,               |
 
 ** 5 = Draco with one pop
 |    Timestamp | beta | status | outcome                         |
