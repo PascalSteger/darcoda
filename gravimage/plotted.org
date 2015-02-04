@@ -159,3 +159,33 @@
 |--------------+------+--------+-------------|
 | 201501151319 | -    | ap     | no profiles |
 |              |      |        |             |
+
+
+** 2 = Carina
+|    Timestamp | beta | status | outcome                 |
+|--------------+------+--------+-------------------------|
+| 201501290924 | 000  | p      | kink in nrnu, nu rising |
+| 201501290920 | -    | p      | kink in nrnu, nu rising |
+
+
+** 3 = Sculptor
+|    Timestamp | beta | status | outcome                   |
+|--------------+------+--------+---------------------------|
+| 201501290926 | 000  | p      | new nrnu, sig still conv. |
+| 201501290922 | -    | p      | new nrnu, sig still conv. |
+
+** 4 = Sextans
+|    Timestamp | beta | status | outcome         |
+|--------------+------+--------+-----------------|
+| 201501290928 | 000  | -      | no pc2.save     |
+| 201501290923 | -    | -      | no pc2.save     |
+|              | -    | a      | 9bins, chi2 50, |
+|              | 000  | a      | 9bins, chi2 50, |
+
+** 5 = Draco with one pop
+|    Timestamp | beta | status | outcome                         |
+|--------------+------+--------+---------------------------------|
+| 201501281800 | 000  |        | no pc2.save                     |
+| 201501281302 | -    | p      | still converging, nu increasing |
+| 201501281158 | -    |        | no pc2.save                     |
+|              |      |        |                                 |
