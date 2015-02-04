@@ -46,7 +46,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 4 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (0:for, 1: car, scl, sex)
         print(' case : ', self.case)
         self.pops = 1 # number of stellar tracer populations
@@ -73,10 +73,10 @@ class Params():
         # MultiNest options
         # ----------------------------------------------------------------------
         self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
-        self.chi2_switch = 10
+        self.chi2_switch = 50
         self.chi2_Sig_converged = 1000 #how many times to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run data readout again
+        self.nipol = 9   # IF CHANGED => set getnewdata = True to run data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)
@@ -106,7 +106,7 @@ class Params():
         self.err = 1e300    # chi^2 for models which are impossible
 
         # parameter spaces
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at
                               # half-light radius of tracers
                               # calculated in gi_data
@@ -116,7 +116,7 @@ class Params():
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxnuslope = 5   # same for nrnu
-        self.nrtol  = 2.     # scale of change of dn/dr
+        self.nrtol  = 1.5     # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
@@ -138,7 +138,7 @@ class Params():
         # automatic plotting options
         # ----------------------------------------------------------------------
         self.last_plot = -1    # timestamp of last automatic plot, set to -1
-        self.plot_after = 3600  # [s] to elapse before automatic plotting called again
+        self.plot_after = 36000  # [s] to elapse before automatic plotting called again
 
         # filesystem-related
         # ----------------------------------------------------------------------
