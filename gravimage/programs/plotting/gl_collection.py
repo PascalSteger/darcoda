@@ -530,7 +530,6 @@ class ProfileCollection():
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
         else:
             self.plot_Xscale_3D(ax, gp)
-        #pdb.set_trace()
         ax.set_xlim([r0[0]/2,r0[-1]*1.0]) #HS r0[-1] previously multiplied by 1.5
         #if prof == 'kz_nu_vec':
         #    ax.set_ylim(-1., 6.)
@@ -550,7 +549,6 @@ class ProfileCollection():
     def plot_full_distro(self, ax, prof, pop, gp):
         x = self.x0
         y = self.sort_prof(prof, pop, gp) # gives [Nmodels, Nbin] shape matrix
-        pdb.set_trace()
         Nvertbin = np.sqrt(len(y[:,0]))
         xbins = np.hstack([self.binmin, self.binmax[-1]])
         ybins = np.linspace(min(y[:,:]), max(y[:,:]), num=Nvertbin)
@@ -634,6 +632,7 @@ class ProfileCollection():
 
             #ax.set_xlim(0, gp.z_bincenters[-1]) #bodge
             ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
+
             plt.draw()
         else:
             gh.LOG(1, 'empty self.profs')

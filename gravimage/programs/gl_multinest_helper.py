@@ -48,8 +48,12 @@ def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, invest
         #print('Iter = ', iter)
         paracube = paracube_data[iter,:]
         paracube = paracube.astype('float')
+        #pdb.set_trace()
 
-        temp_profile = geom_loglike(paracube, gp.ndim, gp.ndim+1, gp)
+        try:
+            temp_profile = geom_loglike(paracube, gp.ndim, gp.ndim+1, gp)
+        except ValueError:
+            continue
 
         temp_profile.x0 = gp.z_bincenters
         temp_profile.xbins = np.hstack([gp.z_binmins, gp.z_binmaxs[-1]])
