@@ -95,14 +95,14 @@
 ** 1
 |    Timestamp | beta | status  | outcome                                                            |
 |--------------+------+---------+--------------------------------------------------------------------|
-| 201501240500 | -    | p   r   | good, new nrnu, rho fine, beta broad                               |
+| 201501240500 | -    | ap  r   | good, new nrnu, rho fine, beta broad                               |
 | 201501221116 | -    | p       | 1pop, nu and Sig not on analytic profile, still converging         |
 | 201501112129 | -    | pc  r   | fine, n(r) consistently too high, beta going negative              |
 | 201501202215 | -    | p   r   | still converging, beta broad                                       |
 | 201501221108 | 000  | -       | no profiles                                                        |
 | 201501221109 | 000  | p       | 1pop, nu, Sig not on analytic profile, still converging, beta fine |
 | 201501240517 | 000  | pc  r   | good, rho too steep, still converging                              |
-| 201501112121 | 000  | pc f  r | perfect, n(r) fine, beta slightly too low                          |
+| 201501112121 | 000  | pc fr   | perfect, n(r) fine, beta slightly too low, plotted for 3e2,3,4,5   |
 
 ** 2
 |    Timestamp | beta | status | outcome                                                   |
@@ -130,7 +130,7 @@
 | 201501242133 | -    | -      | pickle.load error                  |
 | 201501112138 | -    | p    r | rho fine, beta too small in center |
 | 201501062009 | 000  | p      | all wrong, M fine a bit            |
-|              |      |        |                                    |
+| 201501242133 | 000  | pf     | good nr, rho, M, beta increasing as should |
 
 ** 3 = cusp along y
 |    Timestamp | beta | status | outcome                                    |
@@ -152,11 +152,11 @@
 |--------------+------+--------+------------------------------------------------------------|
 | 201501151319 |    - | ap     | beta goes from 0 to negative values, pinchpoint in rho     |
 | 201501281758 |    - |  p     | 1pop new nrnu, jump in nrnu, beta goes negative at r>rhalf |
-| 201501281755 |    - | ap     | good, sig converged, beta goes negative at rhalf           |
+| 201501281755 |    - | ap f   | good, sig converged, beta goes negative at rhalf           |
 | 201501281757 |  000 | ap     | sig still converging                                       |
 | 201501281756 |  000 |  p     | sig still converging                                       |
 | 201501081656 |  000 |  p     | no scale_0                                                 |
-| 201501222133 |  000 |  pc    | good, core                                                 |
+| 201501222133 |  000 |  pcf   | good, core                                                 |
 
 ** 1 = Fornax with split pops
 |    Timestamp | beta | status | outcome                                      |
