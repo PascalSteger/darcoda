@@ -93,8 +93,9 @@ class ProfileCollection():
         dmin = min(dmin, mini)
         dmax = max(dmax, maxi)
         self.ranges[prof+str(pop)] = [dmin, dmax]
+        # overrule settings for n(r) plot
         if prof=='nr':
-            self.ranges = [-0.5, 4.0]
+            self.ranges[prof+str(pop)] = [-0.5, 4.0]
         return
     ## \fn broaden_lim(self, prof, pop, mini, maxi)
     # broaden the plotting range
