@@ -230,7 +230,7 @@ def Jpar(R0, Sig, gp):
     gh.checkpositive(J)
     return J
 ## \fn Jpar(R0, Sig, gp)
-# J parameter profile, \int \int \rho^2 dl d\Omega
+# J parameter profile, int int rho^2 dl dOmega
 # @param R0 radii where Sig is defined on
 # @param Sig surface density
 # @param gp global parameters
