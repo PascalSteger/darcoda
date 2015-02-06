@@ -64,10 +64,11 @@ def run(gp):
     ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
     arcsec = 2.*np.pi/(360.*60.*60) # [pc]
     kpc = 1000 # [pc]
-    DL = {0: lambda x: x * (138),#+/- 8 for Fornax
-          1: lambda x: x * (101),#+/- 5 for Carina
-          2: lambda x: x * (79),  #+/- 4 for Sculptor
-          3: lambda x: x * (86) #+/- 4 for Sextans
+    DL = {1: lambda x: x * (138),#+/- 8 for Fornax
+          2: lambda x: x * (101),#+/- 5 for Carina
+          3: lambda x: x * (79), #+/- 4 for Sculptor
+          4: lambda x: x * (86), #+/- 4 for Sextans
+          5: lambda x: x * (80)  #+/- 10 for Draco
       }[gp.case](kpc)
 
     xs *= (arcsec*DL) # [pc]

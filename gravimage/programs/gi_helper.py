@@ -121,7 +121,6 @@ def sanitize_vector(vec, length, mini, maxi, debug):
 # @param maxi maximum allowed value
 # @param debug bool
 
-
 def determine_radius(R, Rmin, Rmax, gp):
     if gp.binning == 'linspace':
         LOG(2, ' bins in linear spacings: ', gp.nipol)
@@ -144,7 +143,6 @@ def determine_radius(R, Rmin, Rmax, gp):
 # @param Rmax float
 # @param gp global parameters
 
-
 def volume_circular_ring(Binmin, Binmax, gp):
     Vol = np.zeros(gp.nipol)
     for k in range(gp.nipol):
@@ -155,8 +153,6 @@ def volume_circular_ring(Binmin, Binmax, gp):
 # @param Binmin in [Rscale] or [pc]
 # @param Binmax in [Rscale] or [pc]
 # @param gp global parameters
-
-
 
 def sanitize_scalar(var, mini, maxi, debug):
     if var < mini:
@@ -179,7 +175,6 @@ def sanitize_scalar(var, mini, maxi, debug):
 # @param maxi maximum value allowed
 # @param debug
 
-
 def myfill(x, N=3):
     if x==np.inf or x==-np.inf:
         return "inf"
@@ -189,7 +184,6 @@ def myfill(x, N=3):
 # @param x integer
 # @param N number of paddings
 # @return 00x or 0xy or xyz
-
 
 def ipol_rhalf_log(X, Y, rhalf):
     for i in range(len(X)):
@@ -201,7 +195,6 @@ def ipol_rhalf_log(X, Y, rhalf):
             highi = len(X)-i-1
     dr = np.log(highr) - np.log(lowr)
     dy = np.log(Y[highi]) - np.log(Y[lowi])
-
     Yhalf = np.exp(np.log(Y[lowi]) + (np.log(rhalf)-np.log(lowr))*dy/dr)
     return Yhalf
 # \fn ipol_rhalf_log(X, Y, rhalf)
@@ -210,7 +203,6 @@ def ipol_rhalf_log(X, Y, rhalf):
 # @param X radii, usually gp.xipol in our case, in [pc]
 # @param Y values, usually Sig(gp.xipol) here, in [arb. units]
 # @param rhalf half-light radius in [pc]
-
 
 def print_summary(Xscale, Rc):
     LOG(2, 'Xscale/pc = ', Xscale)
@@ -223,7 +215,6 @@ def print_summary(Xscale, Rc):
 # @param Xscale
 # @param Rc
 
-
 def draw_random_subset(x, ntracer):
     ind = np.arange(len(x))
     np.random.shuffle(ind)     # random.shuffle already changes ind
@@ -232,14 +223,12 @@ def draw_random_subset(x, ntracer):
 # take an array, and return shuffled array of ntracer entries
 # no entry will be repeated
 
-
 def add_errors(R, error):
     return R + error*np.random.randn(len(R))
 ## \fn add_errors(R, error)
 # add procentual error to any quantity
 # @param R array
 # @param error in percent
-
 
 def quadinf(x, y, A, B, stop = False):
     splpar_nul = splrep(x, y, k=1, s=0.) # s=0 needed for intbeta idnu
@@ -257,7 +246,6 @@ def quadinf(x, y, A, B, stop = False):
 # @param B right boundary
 # @param stop = True
 
-
 def quadinflog(x, y, A, B, stop = False):
     if max(y) <= 0:
         LOG(1, 'integration over 0', y)
@@ -267,20 +255,17 @@ def quadinflog(x, y, A, B, stop = False):
     minlog = min(np.log(y[y>0])) # exclude y==0 to circumvent error
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible
     # otherwise we get divergent integrals for high radii (low length of x and y)
-
     # replace 0 values with 1e-XX
     yshift = y * shiftlog
     for i in range(len(yshift)):
         if yshift[i] == 0:
             yshift[i] = 10**(-10*i)
-
     #N = 1000
     splpar_nul = splrep(x, np.log(yshift), k=1, s=0.1)
     #maxy = max(y)
     ## invexp = lambda x: min(maxy, np.exp(splev(x,splpar_nul))/shiftlog)
     invexp = lambda x: np.exp(splev(x, splpar_nul))/shiftlog
     ##invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x, splpar_nul))/shiftlog)
-
     # integration with robust quad method (can take np.inf as boundary)
     #start = time.time()
     #for its in range(N):
@@ -291,7 +276,6 @@ def quadinflog(x, y, A, B, stop = False):
     #    print(1, 'warning by quad in quadinflog')
     #elapsed = (time.time()-start)/N
     #print('one iteration quad takes ', elapsed, 's')
-
     # integration with Romberg (can take vector input in function)
     #start = time.time()
     #for its in range(N):
@@ -306,7 +290,6 @@ def quadinflog(x, y, A, B, stop = False):
 # @param A left boundary
 # @param B right boundary
 # @param stop = True
-
 
 def quadinfloglog(x, y, A, B, stop = True):
     # work in log(x), log(y) space to enable smoother interpolating functions
@@ -326,14 +309,12 @@ def quadinfloglog(x, y, A, B, stop = True):
 # @param A left boundary
 # @param B right boundary
 
-
 def quadinflog2(x, y, A, B):
     # work in logarithmic space to enable smoother interpolating functions
     # scale to avoid any values <= 1 (such that a second log step can be taken)
     minlog = min(np.log(y))
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible,
     # otherwise we get divergent integrals for high radii (low length of x and y)
-
     splpar_nul = splrep(x,np.log(np.log(y*shiftlog)), k=1, s=0.1)
     invexp = lambda x: min(y[0], np.exp(np.exp(splev(x, splpar_nul)))/shiftlog)
     dropoffint = quad(invexp, A, B)
@@ -345,7 +326,6 @@ def quadinflog2(x, y, A, B):
 # @param A left boundary
 # @param B right boundary
 # @return integrated y
-
 
 def checknan(vec, place=''):
     if np.isnan(np.sum(vec)):
@@ -382,8 +362,6 @@ def checkpositive(vec, place=''):
 # @param place = '' tell user what to do better
 # @return Exception if (non-physical) negative value found
 
-
-
 def expolpowerlaw(R0, Sigdat, Rnuright, minp = -2.001):
     alpha = (np.log(Sigdat[-3])-np.log(Sigdat[-1]))/(np.log(R0[-3])-np.log(R0[-1]))
     alpha = min(alpha, minp) # assert finite mass
@@ -397,28 +375,22 @@ def expolpowerlaw(R0, Sigdat, Rnuright, minp = -2.001):
 # @param Rnuright extrapolation radii
 # @param minp minimum powerlaw .. extrapolation has to fall at least as much
 
-
 def complete_nu(R0, Sigdat, Sigerr, Rnu):
     Rnuleft = Rnu[Rnu<R0[0]]   # extension of radii to the left
     Rnuright = Rnu[Rnu>R0[-1]] # extension of radii to the right
     R0nu = Rnu[(Rnu>=R0[0]) * (Rnu<=R0[-1])] # [pc]
-
     # cannot use powerlaw to smaller radii, as we only have data on specific points
     Sigdatleft = np.exp(expol(R0, np.log(Sigdat), Rnuleft, 'linear'))
     Sigerrleft = (Sigerr[0]/Sigdat[0])*Sigdatleft
-
     Sigdatnu = linipollog(R0, Sigdat, R0nu)
     Sigerrnu = linipollog(R0, Sigerr, R0nu)
-
     #Sigdatright = np.exp(expol(R0, np.log(Sigdat), Rnuright, 'linear'))
     #Sigerrright = (Sigerr[-1]/Sigdat[-1])*Sigdatright
     # powerlaw extension to highest radii from last 3 binned points
     Sigdatright = expolpowerlaw(R0, Sigdat, Rnuright)
     Sigerrright = (Sigerr[-1]/Sigdat[-1])*Sigdatright
-
     Sigdatnu = np.hstack([Sigdatleft, Sigdatnu, Sigdatright])
     Sigerrnu = np.hstack([Sigerrleft, Sigerrnu, Sigerrright])
-
     return Sigdatnu, Sigerrnu
 ## \fn complete_nu(R0, Sigdat, Sigerr, Rnu)
 # inter- and extrapolate Sigdat and Signu to Rnu (gp.xfine, generally)
@@ -426,7 +398,6 @@ def complete_nu(R0, Sigdat, Sigerr, Rnu):
 # @param Sigdat surface density
 # @param Sigerr error
 # @param Rnu new radii [pc]
-
 
 def derivative(f):
     def df(x, h=0.1e-5):

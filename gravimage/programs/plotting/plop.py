@@ -3,7 +3,7 @@
 ## @file
 # plot all profiles of a given run
 
-# (c) 2014 ETHZ Pascal Steger, pascal@steger.aero
+# (c) 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 # start off with plotting/ in front of path
 #import sys

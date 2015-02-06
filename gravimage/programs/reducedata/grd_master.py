@@ -75,15 +75,17 @@ gp = gi_params.Params()
 import gr_params
 gpr = gr_params.grParams(gp)
 
-DL = {0: lambda x: x * (138),#+/- 8 for Fornax
-      1: lambda x: x * (101),#+/- 5 for Carina
-      2: lambda x: x * (79), #+/- 4 for Sculptor
-      3: lambda x: x * (86)  #+/- 4 for Sextans
+DL = {1: lambda x: x * (138),#+/- 8 for Fornax
+      2: lambda x: x * (101),#+/- 5 for Carina
+      3: lambda x: x * (79), #+/- 4 for Sculptor
+      4: lambda x: x * (86),  #+/- 4 for Sextans
+      5: lambda x: x * (80)  #+/- 10 for Draco
   }[gp.case](gu.kpc__pc)
-k2 = {0: lambda x: x * (339),#+/-36 for Fornax
-      1: lambda x: x * (137),#+/-22 for Carina
-      2: lambda x: x * (94), #+/-26 for Sculptor
-      3: lambda x: x * (294) #+/-38 for Sextans
+k2 = {1: lambda x: x * (339),#+/-36 for Fornax
+      2: lambda x: x * (137),#+/-22 for Carina
+      3: lambda x: x * (94), #+/-26 for Sculptor
+      4: lambda x: x * (294), #+/-38 for Sextans
+      5: lambda x: x * (-1)  # TODO: look up for Draco
   }[gp.case](1)
 
 gpr.fil = gpr.dir+"/data/tracers.dat"

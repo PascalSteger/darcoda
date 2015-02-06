@@ -5,7 +5,7 @@
 # based on metallicity, and Mg index, but no v_LOS nor position
 # convention:       1, 2 is for first, second component
 
-# (c) 2014 Pascal S.P. Steger, pascal@steger.aero
+# (c) 2015 Pascal S.P. Steger, pascal@steger.aero
 
 import pdb
 import sys
@@ -19,7 +19,6 @@ DEBUG = True
 
 try:
     from mpi4py import MPI
-
     myrank = MPI.COMM_WORLD.Get_rank()
     nprocs = MPI.COMM_WORLD.Get_size()
     procnm = MPI.Get_processor_name()
@@ -28,11 +27,10 @@ except:
     nprocs = 1
     procnm = 'localhost'
 
-
-#import matplotlib
-#matplotlib.use('pdf')
-#from pylab import *
-#ion()
+import matplotlib
+matplotlib.use('pdf')
+from pylab import ion,plot,xlabel,ylabel,loglog,axvline,xlim,ylim,hist,clf,savefig
+ion()
 
 sys.stdout.write("Hello, World!! I am process %d of %d on %s.\n" % (myrank, nprocs, procnm))
 sys.stdout.flush()
@@ -147,12 +145,8 @@ def run(gp):
     # number of measured tracer stars
     Nsample = bufcount(gpr.fil)
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-    ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True,\
-                       usecols=(0,1),delimiter=delim)
-    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,\
-      VHel,e_VHel,SigFe,e_SigFe,\
-      Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, \
-                                   usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+    ID = np.genfromtxt(gpr.fil,skiprows=29,unpack=True,usecols=(0,1),delimiter=delim)
+    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe, Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
 
 
     sel = (Mg>-1)  # exclude missing data on Mg
@@ -229,7 +223,6 @@ def run(gp):
     cubeMLphys=myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
     #myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
     pML, mu1ML, sig1ML, mu2ML, sig2ML = cubeMLphys
-    #pdb.set_trace()
     g1 = pML*gh.gauss(x, mu1ML, sig1ML)
     g2 = (1-pML)*gh.gauss(x, mu2ML, sig2ML)
     gtot = g1+g2
@@ -239,12 +232,8 @@ def run(gp):
     #plot(x, gtot, 'r')
     #xlabel('Mg')
     #ylabel('pdf')
+    #pdb.set_trace()
 
-    # get center of photometric measurements by deBoer
-    # for Fornax, we have
-    com_x = 96203.736358393697
-    com_y = -83114.080684733024
-        # only use stars which are members of the dwarf
     sig = abs(RAh[0])/RAh[0]
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
@@ -253,20 +242,24 @@ def run(gp):
     ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
     arcsec = 2.*np.pi/(360.*60.*60) # [pc]
     kpc = 1000 # [pc]
-    DL = {0: lambda x: x * (138),#+/- 8 for Fornax
-          1: lambda x: x * (101),#+/- 5 for Carina
-          2: lambda x: x * (79),  #+/- 4 for Sculptor
-          3: lambda x: x * (86) #+/- 4 for Sextans
+    DL = {1: lambda x: x * (138),#+/- 8 for Fornax
+          2: lambda x: x * (101),#+/- 5 for Carina
+          3: lambda x: x * (79), #+/- 4 for Sculptor
+          4: lambda x: x * (86), #+/- 4 for Sextans
+          5: lambda x: x * (80)  #+/- 10 for Draco
       }[gp.case](kpc)
-
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
-
-
+    # alternative: get center of photometric measurements by deBoer
+    # for Fornax, we have
+    com_x = 96203.736358393697
+    com_y = -83114.080684733024
     # instantiate different samplings, store half-light radii (2D)
     R1half = []
     R2half = []
 
+    ##
+    #for kl in range(1000):
     # get a sample assignment:
     import numpy.random as npr
     popass = []
@@ -300,20 +293,28 @@ def run(gp):
             Rhalf = R2[len(R2)/2]
             R2half.append(Rhalf)
             co = 'red'
+    ##R1half = np.array(R1half)
+    ##R2half = np.array(R2half)
+    ##Rdiffhalf = np.abs(R1half-R2half)
+    ##clf()
+    ##hist(Rdiffhalf, np.sqrt(len(Rdiffhalf))/2)
+    ##xlabel(r'\Delta R')
+    ##ylabel('pdf')
+    ##pdb.set_trace()
         Rdiff = np.abs(R1[len(R1)/2] - R2[len(R2)/2])
-        if Rdiff < 95 or Rdiff > 105:
+        print('Rdiff = ', Rdiff)
+        if Rdiff < 90:
             continue
-
         # calculate 2D Sig profiles
         Rmin = min(R0) # [pc]
         Rmax = max(R0) # [pc]
         Binmin, Binmax, Rbin = gh.determine_radius(R0, Rmin, Rmax, gp) # [pc]
         gp.xipol = Rbin # [pc]
-        minr = min(Rbin)                           # [pc]
-        maxr = max(Rbin)                           # [pc]
+        minr = min(Rbin)# [pc]
+        maxr = max(Rbin)# [pc]
         Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [pc^2]
         totmass_tracers = float(len(x))
-        Rsi   = gh.add_errors(R0,   gpr.Rerr)   # [pc], gpr.Rerr was in
+        Rsi   = gh.add_errors(R0, gpr.Rerr)   # [pc], gpr.Rerr was in
         tpb = np.zeros(gp.nipol)
         Sig_phot = np.zeros(gp.nipol)
         for i in range(gp.nipol):
@@ -321,46 +322,32 @@ def run(gp):
                                               Rsi <  Binmax[i])).flatten() # [1]
             tpb[i] = float(len(ind1)) # [1]
             Sig_phot[i] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/pc^2]
-
-        # loglog(gp.xipol, Sig_phot, co)
-        # axvline(Rhalf, color=co)
-        # xlim([min(gp.xipol), max(gp.xipol)])
-        # xlabel(r'$R$')
-        # ylabel(r'$\Sigma(R)$')
-
+        #loglog(gp.xipol, Sig_phot, co)
+        #axvline(Rhalf, color=co)
+        #xlim([min(gp.xipol), max(gp.xipol)])
+        #xlabel(r'$R$')
+        #ylabel(r'$\Sigma(R)$')
+        #pdb.set_trace()
         # deproject to get 3D nu profiles
         gp.xipol = Rbin
         minr = min(Rbin)                           # [pc]
         maxr = max(Rbin)                           # [pc]
-        gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
-                              Rbin, \
-                              2*maxr, 4*maxr, 8*maxr]) # [pc]
+        gp.xepol =np.hstack([minr/8.,minr/4.,minr/2.,Rbin,2*maxr,4*maxr,8*maxr])#[pc]
         gp.xfine = introduce_points_in_between(gp.xepol, gp)
         Sigdatnu, Sigerrnu = gh.complete_nu(Rbin, Sig_phot, Sig_phot/10., gp.xfine)
-        dummyx, nudatnu, nuerrnu, Mrnu = gip.Sig_NORM_rho(gp.xfine, \
-                                                          Sigdatnu, Sigerrnu,\
-                                                          gp)
-        #nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
-        #nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
-        #loglog(gp.xipol, nudat, co)
-        #axvline(Rhalf, color=co)
-        #xlim([min(gp.xipol), max(gp.xipol)])
-        #xlabel(r'$R$')
-        #ylabel(r'$\nu(R)$')
+        dummyx,nudatnu,nuerrnu,Mrnu = gip.Sig_NORM_rho(gp.xfine,Sigdatnu,Sigerrnu,gp)
+        nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
+        nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
+        loglog(gp.xipol, nudat, co)
+        axvline(Rhalf, color=co)
+        xlim([min(gp.xipol), max(gp.xipol)])
+        xlabel(r'$R$')
+        ylabel(r'$\nu(R)$')
         #plum = 100*gh.plummer(gp.xipol, Rhalf, len(R0))
         #loglog(gp.xipol, plum, color=co, linestyle='--')
         #ylim([min(plum), max(plum)])
-        #pdb.set_trace()
+        pdb.set_trace()
 
-    R1half = np.array(R1half)
-    R2half = np.array(R2half)
-    Rdiffhalf = np.abs(R1half-R2half)
-
-    #clf()
-    #hist(Rdiffhalf, np.sqrt(len(Rdiffhalf))/2)
-    #xlabel(r'\Delta R')
-    #ylabel('pdf')
-    #pdb.set_trace()
     np.savetxt(gp.files.dir+'popass', popass)
     return
 ## \fn run(gp)
@@ -374,5 +361,4 @@ if __name__=="__main__":
     if gp.pops < 2:
         gh.LOG(1, " population splitting needs 2 or more populations, corrected")
         gp.pops = 2
-    # convention: directory names have ending "/"
     run(gp)
