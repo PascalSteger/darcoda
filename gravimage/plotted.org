@@ -107,12 +107,14 @@
 ** 2
 |    Timestamp | beta | status | outcome                                                   |
 |--------------+------+--------+-----------------------------------------------------------|
-| 201501240500 | -    | p   r  | new nrnu, beta not yet converged                          |
-| 201501202216 | -    | p   r  | new nrnu, beta not yet converged                          |
-| 201501112130 | -    | pc  r  | good, beta fine, slightly too low                         |
-| 201501112121 | 000  | pc  r  | very good, old nrnu, n(r) fine, a bit too turned too flat |
-| 201501240518 | 000  | r      | no pc2.save?!                                             |
-| 201501270837 | 000  | apf    | good, beta too low, n(r) tilted                           |
+| 201501240500 |    - | p   r  | new nrnu, beta not yet converged                          |
+| 201501202216 |    - | p   r  | new nrnu, beta not yet converged                          |
+| 201501112130 |    - | pc  r  | good, beta fine, slightly too low                         |
+| 201501112121 |  000 | pc  r  | very good, old nrnu, n(r) fine, a bit too turned too flat |
+| 201501240518 |  000 | r      | no pc2.save?!                                             |
+| 201501270837 |  000 | apf    | good, beta too low, n(r) tilted                           |
+| 201501091938 |  000 | p      | old nrnu. too steep n(r), core instead of cusp            |
+|              |      |        |                                                           |
 
 
 * triax

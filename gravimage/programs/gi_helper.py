@@ -243,6 +243,7 @@ def add_errors(R, error):
 
 def quadinf(x, y, A, B, stop = False):
     splpar_nul = splrep(x, y, k=1, s=0.) # s=0 needed for intbeta idnu
+    ### TODO: most time-intensive function in whole code
     interp = lambda x: splev(x, splpar_nul)
     dropoffint = quad(interp, A, B, epsrel=1e-4, limit=100, full_output=1)
     if stop and len(dropoffint)>3:
