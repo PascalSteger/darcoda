@@ -686,6 +686,7 @@ class ProfileCollection():
 
 
     def plot_model_simplenu(self, ax, basename, prof, gp):
+        G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
         K=1500.
         F=267.65
         D=0.18
@@ -702,13 +703,14 @@ class ProfileCollection():
 
         Kzvec = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Sigma_z = (1000.**2)*abs(Kzvec)/(2*np.pi*4.299) #Msun kpc^-1
-        #pdb.set_trace()
         G1 = 4.299e-6 # Newton's constant in (km)^2*kpc/(Msun*s^2)
+        #Sigma_z = abs(Kzvec)/(2*np.pi*G1) #Msun kpc^-1
         rho_z_vec = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
-
-
         k_z_rho = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5) + 2*F))
 
+        temp = np.square(zvec)+D**2
+        rhovec = (K*D**2/(temp*np.sqrt(temp)) + 2.*F)/(4.*np.pi*G1)
+ 
         if prof == 'Sig_DM_vec':
             ax.plot(zvec, Sigma_z, 'g-', alpha=0.5)
         elif prof == 'nu_vec':
@@ -717,7 +719,6 @@ class ProfileCollection():
             ax.plot(zvec, k_z_rho, 'g-', alpha = 0.5)
         elif prof == 'rho_DM_vec':
             ax.plot(zvec, rho_z_vec, 'g-', alpha = 0.5)
-
         return
 
 
