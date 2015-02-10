@@ -37,7 +37,7 @@ def Sig(zvec, rhovec):
 
 # New function for calculating the z-dir velocity dispersion
 def sigz(zvec,Sigvec,nuvec,C):
-    G1 = 4.299*1e-6  # Newton's constant in (km)^2*kpc/(Msun*s^2)
+    G1 = 4.299e-6  # Newton's constant in (km)^2*kpc/(Msun*s^2)
     Kzvec = -2.*constants.pi*G1*Sigvec
     integral = integrate.cumtrapz(nuvec*Kzvec,zvec,initial=0.) + C
     sig2 = integral/nuvec

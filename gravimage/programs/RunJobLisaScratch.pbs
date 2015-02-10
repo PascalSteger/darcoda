@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -S /bin/bash
-#PBS -lnodes=1:cores16:ppn=16,walltime=00:00:02:00
+#PBS -lnodes=1:cores16:ppn=16,walltime=00:08:00:00
 
 # Copying program files to scratch
 
@@ -20,7 +20,7 @@ cd $TMPDIR/darcoda/gravimage/programs
 # Calculate run time for gravimage, less than wall time to allow for data to be
 # copied back, allow 120 seconds for transfer.
 echo PBS_WALLTIME = $PBS_WALLTIME
-transft=30
+transft=120
 echo Transfer time = $transft
 runtime=$(expr $PBS_WALLTIME - $transft)
 echo gravimage runtime = $runtime

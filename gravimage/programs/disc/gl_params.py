@@ -108,7 +108,7 @@ class Params():
         self.kz_nu_C_min = -1.0 #SS
 
         #Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 5.0
+        self.max_kz_slope = 50.
 
         #Limits for sigz central value
         self.sigz_C_max = 30.

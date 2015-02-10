@@ -614,7 +614,7 @@ class ProfileCollection():
             if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
-            if prof == 'Sig_DM_vec' or prof == 'nu_vec':
+            if prof == 'Sig_DM_vec' or prof == 'nu_vec' or prof == 'rho_DM_vec':
                 self.plot_model_simplenu(ax, basename, prof, gp)
 
             if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
@@ -677,6 +677,7 @@ class ProfileCollection():
 
 
     def plot_model_simplenu(self, ax, basename, prof, gp):
+        G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
         K=1500.
         F=267.65
         D=0.18
@@ -692,13 +693,18 @@ class ProfileCollection():
         nuvec = nu0*np.exp(-zvec/z0)
 
         Kzvec = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
-        Sigma_z = (1000.**2)*abs(Kzvec)/(2*np.pi*4.299) #Msun kpc^-1
+        Sigma_z = abs(Kzvec)/(2*np.pi*G1) #Msun kpc^-1
 
+        temp = np.square(zvec)+D**2
+        rhovec = (K*D**2/(temp*np.sqrt(temp)) + 2.*F)/(4.*np.pi*G1)
+ 
         if prof == 'Sig_DM_vec':
             ax.plot(zvec, Sigma_z, 'g-', alpha=0.5)
             ax.set_ylim(0,1.0E8)
         elif prof == 'nu_vec':
             ax.plot(zvec, nuvec, 'g-', alpha=0.5)
+        elif prof == 'rho_DM_vec':
+            ax.plot(zvec,rhovec,'g-',alpha=0.5)
 
         return
 
