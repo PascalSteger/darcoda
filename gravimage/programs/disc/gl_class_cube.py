@@ -83,8 +83,8 @@ def map_kr(params, prof, pop, gp):
         z_diff = gp.z_all_pts[jter+1] - gp.z_all_pts[jter]
         kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
         kz_min = kz_i_m1 - gp.max_kz_slope*z_diff
-        #if monotonic:
-        #    kz_min=max(kz_min, 0.)
+        if monotonic:
+            kz_min=max(kz_min, 0.)
         kz_i = kz_min + (kz_max - kz_min)*params[2+jter]
         #if monotonic:
         #    kz_i = max(kz_i, 0.) #Alternate method for monotonic implementation

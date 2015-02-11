@@ -49,9 +49,9 @@ def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigdat, sig
 
 def run(gp):
     if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
-        external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw.dat'
+        external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
     elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        external_file='/home/sofia/darcoda/gravlite/Data_Sets/simplenu_sigz_raw.dat'
+        external_file='/home/sofia/darcoda/gravlite/Data_Sets/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
 
     external_data = np.loadtxt(external_file)
     z_data = external_data[:, 0] #[kpc]

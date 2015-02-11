@@ -55,6 +55,9 @@ def geom_loglike(cube, ndim, nparams, gp):
 
         off += offstep
 
+    tmp_profs.rho_total_C = tmp_rho_total_allz[0]
+    tmp_profs.set_prof('rho_total_vec', tmp_rho_total_allz[1:], 0, gp)
+
     #Tracer params, nu_C, kz_nu_C, kz_nu_vector
     for tracer_pop in range(0, gp.ntracer_pops):
         offstep = gp.nrhonu + 1
@@ -87,7 +90,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.set_prof('Sig_baryon_vec', Sig_baryon_allz[1:], 0, gp)
 
     tmp_profs.Sig_total_C = Sig_total_allz[0]
-    tmp_profs.set_prog('Sig_total_vec', Sig_total_allz[1:], 0, gp)
+    tmp_profs.set_prof('Sig_total_vec', Sig_total_allz[1:], 0, gp)
 
     Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_total_allz) #SS not orrect zvec
 

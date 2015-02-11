@@ -128,6 +128,7 @@ class ProfileCollection():
 
 
     def sort_prof(self, prof, pop, gp):
+        #pdb.set_trace()
         self.goodprof = []
         self.goodchi = []
         for k in range(len(self.profs)):
@@ -191,10 +192,21 @@ class ProfileCollection():
     def sort_profiles_disc(self, gp):
         self.sort_prof('nu_vec', 0, gp)
         self.sort_prof('sig_vec', 0, gp)
-        self.sort_prof('rho_DM_vec', 0, gp)
+
         self.sort_prof('kz_rho_DM_vec', 0, gp)
         self.sort_prof('kz_nu_vec', 0, gp)
+
+        self.sort_prof('rho_DM_vec', 0, gp)
         self.sort_prof('Sig_DM_vec', 0, gp)
+
+        if gp.baryonmodel not in ['none', 'simplenu']:
+            return
+
+        self.sort_prof('rho_baryon_vec', 0, gp)
+        self.sort_prof('Sig_baryon_vec', 0, gp)
+
+        self.sort_prof('rho_total_vec', 0, gp)
+        self.sort_prof('Sig_total_vec', 0, gp)
 
 
     def set_analytic(self, x0, gp):
@@ -322,10 +334,18 @@ class ProfileCollection():
     def write_all_disc(self, basename, gp):
         self.write_prof(basename, 'nu_vec', 0, gp)
         self.write_prof(basename, 'sig_vec', 0, gp)
-        self.write_prof(basename, 'rho_DM_vec', 0, gp)
+
         self.write_prof(basename, 'kz_rho_DM_vec', 0, gp)
         self.write_prof(basename, 'kz_nu_vec', 0, gp)
+
+        self.write_prof(basename, 'rho_DM_vec', 0, gp)
         self.write_prof(basename, 'Sig_DM_vec', 0, gp)
+
+        self.write_prof(basename, 'rho_baryon_vec', 0, gp)
+        self.write_prof(basename, 'Sig_baryon_vec', 0, gp)
+
+        self.write_prof(basename, 'rho_total_vec', 0, gp)
+        self.write_prof(basename, 'Sig_total_vec', 0, gp)
 
     def plot_N_samples(self, ax, prof, pop):
         k=0
@@ -437,24 +457,37 @@ class ProfileCollection():
             ax.set_ylabel('$n_{\\nu,'+str(pop)+'}(r)$')
         elif prof == 'sig':
             ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\\quad[\\rm{km}/\\rm{s}]$')
+        # Disc cases
         elif prof == 'nu_vec':
             ax.set_ylabel('$\\nu_{\\rm{Tr},'+str(pop)+'}\\quad[\\rm{stars}/\\rm{kpc}^3]$')
             ax.set_ylim(1.0E3, 4.0E4)
         elif prof == 'sig_vec':
             ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
             ax.set_ylim(10., 40.)
-        elif prof == 'rho_DM_vec':
-            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            ax.set_ylim(10., 1E9)
+
         elif prof == 'kz_nu_vec':
             ax.set_ylabel('$k(z)_{\\nu}$')
             ax.set_ylim(0., 6.)
         elif prof == 'kz_rho_DM_vec':
             ax.set_ylabel('$k(z)_{\\rho, \\rm{DM}}$')
             ax.set_ylim(0., 40.)
+
+        elif prof == 'rho_DM_vec':
+            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            ax.set_ylim(10., 1E9)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
             ax.set_ylim(0,1.0E8)
+
+        elif prof == 'rho_baryon_vec':
+            ax.set_ylabel('$\\rho_{\\rm{baryon}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+        elif prof == 'Sig_baryon_vec':
+            ax.set_ylabel('$\\Sigma_{\\rm{baryon}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
+
+        elif prof == 'rho_total_vec':
+            ax.set_ylabel('$\\rho_{\\rm{total}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+        elif prof == 'Sig_total_vec':
+            ax.set_ylabel('$\\Sigma_{\\rm{total}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
 
 
 
@@ -578,6 +611,7 @@ class ProfileCollection():
 
     def plot_profile(self, basename, prof, pop, gp):
         gh.LOG(1, 'plotting profile '+str(prof)+' for pop '+str(pop)+' in run '+basename)
+
         fig = plt.figure()
         ax  = fig.add_subplot(111)
 
@@ -589,11 +623,11 @@ class ProfileCollection():
            prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
 
-        if prof == 'nu_vec' or prof == 'rho_DM_vec':
+        if prof == 'nu_vec' or prof == 'rho_DM_vec' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec':
             ax.set_xscale('linear')
             ax.set_yscale('log')
 
-        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec':
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
             ax.set_xscale('linear')
             ax.set_yscale('linear')
 
@@ -621,7 +655,7 @@ class ProfileCollection():
             if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
-            if prof == 'Sig_DM_vec' or prof == 'nu_vec' or prof == 'kz_rho_DM_vec' or prof == 'rho_DM_vec':
+            if gp.investigate == 'simplenu':
                 self.plot_model_simplenu(ax, basename, prof, gp)
 
             if (gp.investigate == 'walk' or gp.investigate == 'gaia') \
@@ -700,23 +734,58 @@ class ProfileCollection():
 
         nuvec = nu0*np.exp(-zvec/z0)
 
-        Kzvec = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
-        Sigma_z = (1000.**2)*abs(Kzvec)/(2*np.pi*4.299) #Msun kpc^-1
+        Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
+        Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
+        Kzvec_DM = -(2.*F*zvec)
+
+        Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299) #Msun kpc^-1
+        Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299) #Msun kpc^-1
+        Sigma_z_DM = (1000.**2)*abs(Kzvec_DM)/(2*np.pi*4.299) #Msun kpc^-1
+
         #pdb.set_trace()
         G1 = 4.299e-6 # Newton's constant in (km)^2*kpc/(Msun*s^2)
-        rho_z_vec = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
+
+        rho_z_total = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
+        rho_z_baryon = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+        rho_z_DM = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
+
+        k_z_rho_total = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5) + 2*F))
+        k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5)))
+
+        # If there is no baryon model specified set it to none
+        # (allows backward compatibility with old runs)
+        try:
+            gp.baryonmodel
+        except NameError:
+            gp.baryonmodel = 'none'
+
+        # Backwards compatibility: if using old data, then all mass is in DM
+        if gp.baryonmodel not in ['none', 'simplenu']:
+            Sigma_z_DM = Sigma_z_total
+            rho_z_DM = rho_z_total
 
 
-        k_z_rho = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5) + 2*F))
-
-        if prof == 'Sig_DM_vec':
-            ax.plot(zvec, Sigma_z, 'g-', alpha=0.5)
-        elif prof == 'nu_vec':
+        if prof == 'nu_vec':
             ax.plot(zvec, nuvec, 'g-', alpha=0.5)
-        elif prof == 'kz_rho_DM_vec':
-            ax.plot(zvec, k_z_rho, 'g-', alpha = 0.5)
+
+        elif prof == 'Sig_total_vec':
+            ax.plot(zvec, Sigma_z_total, 'g-', alpha=0.5)
+        elif prof == 'Sig_baryon_vec':
+            ax.plot(zvec, Sigma_z_baryon, 'g-', alpha=0.5)
+        elif prof == 'Sig_DM_vec':
+            ax.plot(zvec, Sigma_z_DM, 'g-', alpha=0.5)
+
+        elif prof == 'rho_total_vec':
+            ax.plot(zvec, rho_z_total, 'g-', alpha = 0.5)
+        elif prof == 'rho_baryon_vec':
+            ax.plot(zvec, rho_z_baryon, 'g-', alpha = 0.5)
         elif prof == 'rho_DM_vec':
-            ax.plot(zvec, rho_z_vec, 'g-', alpha = 0.5)
+            ax.plot(zvec, rho_z_DM, 'g-', alpha = 0.5)
+
+        # if all mass is described by DM, then plot kz_rho_DM_vec
+        # if the simplenu_baryon model is used, then kz_rho_DM_vec should equal zero
+        elif prof == 'kz_rho_DM_vec' and gp.baryonmodel in ['none', 'sim']: #i.e. if all mass is described by DM
+            ax.plot(zvec, k_z_rho_total, 'g-', alpha = 0.5)
 
         return
 
