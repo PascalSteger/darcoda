@@ -251,7 +251,7 @@ class Cube:
                 pc[off+i] = tmp_baryon[i]
             off += offstep
 
-        #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector, kz_nu_LS
+        #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector # kz_nu_LS
         for tracer_pop in range(0, gp.ntracer_pops):
             offstep = gp.nrhonu + 1
             tmp_tracer = map_kr(pc[off:off+offstep], 'nu', tracer_pop, gp)

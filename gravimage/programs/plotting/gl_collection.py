@@ -720,6 +720,7 @@ class ProfileCollection():
 
 
     def plot_model_simplenu(self, ax, basename, prof, gp):
+        G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
         K=1500.
         F=267.65
         D=0.18
@@ -742,28 +743,17 @@ class ProfileCollection():
         Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299) #Msun kpc^-1
         Sigma_z_DM = (1000.**2)*abs(Kzvec_DM)/(2*np.pi*4.299) #Msun kpc^-1
 
-        #pdb.set_trace()
-        G1 = 4.299e-6 # Newton's constant in (km)^2*kpc/(Msun*s^2)
-
         rho_z_total = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
         rho_z_baryon = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
         rho_z_DM = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
 
         k_z_rho_total = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5) + 2*F))
-        k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5)))
-
-        # If there is no baryon model specified set it to none
-        # (allows backward compatibility with old runs)
-        try:
-            gp.baryonmodel
-        except NameError:
-            gp.baryonmodel = 'none'
+        k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5))) # not currently used
 
         # Backwards compatibility: if using old data, then all mass is in DM
         if gp.baryonmodel not in ['none', 'simplenu']:
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
-
 
         if prof == 'nu_vec':
             ax.plot(zvec, nuvec, 'g-', alpha=0.5)
