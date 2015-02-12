@@ -54,6 +54,7 @@ def run(gp):
         external_file='/home/sofia/darcoda/gravlite/Data_Sets/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
 
     external_data = np.loadtxt(external_file)
+    pdb.set_trace()
     z_data = external_data[:, 0] #[kpc]
     v_data = external_data[:, 1] #[km/s]
 

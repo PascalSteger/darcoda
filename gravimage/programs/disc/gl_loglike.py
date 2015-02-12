@@ -79,6 +79,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
 
     #Calculate Sigma (surface density)
+    pdb.set_trace()
     Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_DM_allz) # Dark matter Sigma
     Sig_baryon_allz = phys.Sig(gp.z_all_pts, tmp_rho_totbaryon_allz) # total baryon Sigma
     Sig_total_allz = phys.Sig(gp.z_all_pts, tmp_rho_total_allz) # total Sigma
