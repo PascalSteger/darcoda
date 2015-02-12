@@ -128,7 +128,8 @@ class ProfileCollection():
 
 
     def sort_prof(self, prof, pop, gp):
-        #pdb.set_trace()
+        pdb.set_trace()
+
         self.goodprof = []
         self.goodchi = []
         for k in range(len(self.profs)):
@@ -199,7 +200,7 @@ class ProfileCollection():
         self.sort_prof('rho_DM_vec', 0, gp)
         self.sort_prof('Sig_DM_vec', 0, gp)
 
-        if gp.baryonmodel not in ['none', 'simplenu']:
+        if gp.baryonmodel not in ['none', 'simplenu_baryon']:
             return
 
         self.sort_prof('rho_baryon_vec', 0, gp)
@@ -632,6 +633,7 @@ class ProfileCollection():
             ax.set_yscale('linear')
 
         self.plot_labels(ax, prof, pop, gp)
+
         if len(self.profs)>0:
             if prof == 'chi2':
                 goodchi = []

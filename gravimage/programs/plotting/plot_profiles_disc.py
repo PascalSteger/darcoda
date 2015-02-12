@@ -113,7 +113,8 @@ def run(timestamp, basename, profile_source, gp):
     pc.plot_profile(basename, 'rho_DM_vec', 0, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)
 
-    if gp.baryonmodel not in ['none', 'simplenu']:
+    pdb.set_trace()
+    if gp.baryonmodel not in ['none', 'simplenu_baryon']:
         return
 
     pc.plot_profile(basename, 'rho_baryon_vec', 0, gp)
