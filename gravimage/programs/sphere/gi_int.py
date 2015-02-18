@@ -4,7 +4,7 @@
 # @file
 # all integrals from gi_physics
 
-# (c) GPL v3 2014 Pascal S.P. Steger
+# (c) GPL v3 2015 Pascal S.P. Steger pascal@steger.aero
 
 import numpy as np
 import pdb

@@ -5,7 +5,7 @@
 # check all parameters for prior constraints
 # disc version
 
-# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
+# (c) GPL v3 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 import pdb
 

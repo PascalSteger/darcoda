@@ -35,7 +35,7 @@ def get_pos_and_COM(gp):
         grt_com.run(gp)
     elif gp.investigate == 'obs':
         if gp.pops == 1:
-            if gp.case == 1:
+            if gp.case < 5:
                 # in case we work with Fornax dwarf, use deBoer data
                 import grd_photo_for
                 grd_photo_for.run(gp)

@@ -12,7 +12,7 @@
 # 1 = first additional component
 # disc version, done
 
-# (c) GPL v3 2014  ETHZ Pascal S.P. Steger
+# (c) GPL v3 2015  ETHZ Pascal S.P. Steger pascal@steger.aero
 
 # SS testing (7 october 2014)
 

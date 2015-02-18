@@ -4,7 +4,7 @@
 # @file
 # all functions working on spherical coordinates
 
-# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
+# (c) GPL v3 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np

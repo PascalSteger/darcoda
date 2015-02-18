@@ -35,8 +35,7 @@ def read_scale(basename, gp):
     gp.maxsiglos = []
     for pop in range(gp.pops+1):
         # basename + 'scale_' + str(i) + '.txt'
-        A = np.loadtxt(gp.files.get_scale_file(pop),\
-                       unpack=False, skiprows=1)
+        A = np.loadtxt(gp.files.get_scale_file(pop), unpack=False, skiprows=1)
         gp.Xscale.append(A[0])  # [pc]
         gp.Sig0pc.append(A[1])  # [Munit/pc^2]
         # totmass_tracers is A[2] # [Munit]

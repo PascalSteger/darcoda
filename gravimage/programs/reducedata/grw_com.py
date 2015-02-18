@@ -5,7 +5,7 @@
 # calculate approximative center of mass, assuming constant stellar mass
 # 3D version, see grw_COM for 2D
 
-# (c) GPL v3 2014 Pascal S.P. Steger
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger, pascal@steger.aero
 
 import numpy as np
 import pdb
@@ -13,9 +13,9 @@ import pdb
 from pylab import *
 ion()
 from gi_helper import expDtofloat
-import gi_class_files import as gcf
+#import gi_class_files as gcf
 # TODE find missing modules for both below
-import gi_centering as gc
+#import gi_centering as gc
 
 def run(gp):
     import gr_params

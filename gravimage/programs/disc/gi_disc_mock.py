@@ -4,7 +4,7 @@
 # @ file
 # generate simple disc data ourselves
 
-# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
+# (c) GPL v3 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 
 import numpy as np

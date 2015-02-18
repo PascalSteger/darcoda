@@ -4,7 +4,7 @@
 # @file
 # global params for data analysis step 1 used to generate input for spherical MCMC
 
-# (c) GPL v3 2014 ETHZ Pascal Steger, pascal@steger.aero
+# (c) GPL v3 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 import pdb
 

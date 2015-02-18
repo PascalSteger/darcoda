@@ -10,7 +10,7 @@
 # *INT*          denotes main method = integrating
 # *NORM*         denotes main method = renormalization
 
-# (c) GPL v3 2014 Pascal Steger, ETH Zurich, pascal@steger.aero
+# (c) GPL v3 2015 Pascal Steger, ETH Zurich, pascal@steger.aero
 
 import numpy as np
 import pdb

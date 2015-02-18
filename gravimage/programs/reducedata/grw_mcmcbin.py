@@ -8,7 +8,7 @@
 # do this consistently with always the same sets of particles per bin
 # 3D version, see grw_MCMCbin for 2D version only
 
-# (c) GPL v3 2014 Pascal S.P. Steger
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger pascal@steger.aero
 
 import pdb
 import numpy as np

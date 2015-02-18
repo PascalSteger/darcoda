@@ -4,7 +4,7 @@
 # @file
 # class to generate all filenames, independent of which investigation
 
-# (c) GPL v3 2014 ETHZ, pascal@steger.aero
+# (c) GPL v3 2015 ETHZ, pascal@steger.aero
 
 import os
 import pdb

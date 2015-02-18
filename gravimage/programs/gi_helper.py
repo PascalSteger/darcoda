@@ -454,7 +454,6 @@ def derivipol(y,x):
 # @param y dependent variable, array of size N
 # @param x free variable, array of same size N
 
-
 def err(a, gp):
     import numpy.random as npr
     return gp.err/a*(1.+npr.rand()/100.)

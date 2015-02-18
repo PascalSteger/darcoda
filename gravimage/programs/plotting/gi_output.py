@@ -4,7 +4,7 @@
 # @file
 # store profiles to files
 
-# (c) 2014 ETHZ Pascal S.P. Steger
+# (c) GPL v.3 2015 ETHZ Pascal S.P. Steger pascal@steger.aero
 
 
 import pdb

@@ -7,7 +7,7 @@
 # calculate 4th order velocity moment (kurtosis) of 2D rings
 # do this consistently with always the same sets of particles per bin
 
-# (c) GPL v3 2014 Pascal S.P. Steger
+# (c) GPL v3 2015 Pascal S.P. Steger pascal@steger.aero
 
 import pdb
 import numpy as np

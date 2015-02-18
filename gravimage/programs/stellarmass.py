@@ -5,7 +5,7 @@
 # Calculate approximative stellar masses from V-band magnitude, V-I color, distance to dwarf galaxy.
 # Read in [some].bin.[MV,V-I], output ID,Mstar
 
-# (c) GPL v3 2014 Pascal Steger, pascal@steger.aero
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import numpy
 import gi_params as gp

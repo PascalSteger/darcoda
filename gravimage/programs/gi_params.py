@@ -4,7 +4,7 @@
 # @file
 # all parameters for the gravimage MCMC, gaia investigation
 
-# (c) GPL v3 2014 ETHZ Pascal S.P. Steger
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger, pascal@steger.aero
 
 import numpy as np
 import pdb
@@ -36,8 +36,7 @@ class Params():
             self.investigate  = 'obs' # determine which data set to work on
                                       # 'hern': simple Hernquist prof. from simwiki
                                       # 'walk': with full obs. cont. data from Walker
-                                      # 'gaia': 6D data (x,y,z,vx,vy,vz) from gaia
-                                      #         challenge, 1 pop only
+                                      # 'gaia': 1pop 6D data, gaia challenge
                                       # 'coll': collisional system
                                       # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
@@ -48,8 +47,9 @@ class Params():
         else:
             self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
+
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations
+        self.pops = 2 # number of stellar tracer populations
                       # if changed: set getnewdata=True!
         # Set number of tracer stars to look at take all particles #
         # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
@@ -62,7 +62,7 @@ class Params():
         if self.restart: self.getnewdata = False
         self.selfconsistentnu = False # tracer star density profile for dSph?
         self.binning = 'consttr' # linspace, logspace, consttr: binning of particles
-        self.metalpop = False # split metallicities with a separate MCMC
+        self.metalpop = True # split metallicities with a separate MCMC
         self.walker3D = False # for walker mock data: use 3D models
         self.hern_dual = 2 # use hernquist model with 1 or 2 particle
                      # types. do not use second type (DM) as population
@@ -71,7 +71,7 @@ class Params():
         # MultiNest options
         # -------------------------------------
         self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
-        self.chi2_switch = 10
+        self.chi2_switch = 30
         self.chi2_Sig_converged = 1000 #how many times to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run data readout again

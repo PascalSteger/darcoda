@@ -11,7 +11,7 @@
 # populations are counted from 0 = first component,
 # 1 = first additional component
 
-# (c) GPL v3 2014 ETHZ Pascal S.P. Steger
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger pascal@steger.aero
 
 import numpy as np
 import pdb
