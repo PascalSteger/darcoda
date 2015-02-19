@@ -49,12 +49,12 @@ def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigdat, sig
 
 def run(gp):
     if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
-        external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+        external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file
     elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        external_file='/home/sofia/darcoda/gravlite/Data_Sets/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+        external_file='/home/sofia/darcoda/gravlite/Data_Sets/' + gp.external_data_file
 
     external_data = np.loadtxt(external_file)
-    pdb.set_trace()
+
     z_data = external_data[:, 0] #[kpc]
     v_data = external_data[:, 1] #[km/s]
 
@@ -72,6 +72,14 @@ def run(gp):
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data, nu_err_data, sig_data, sig_err_data = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data)
+
+    # Add measurement error to already calculated Poisson errors
+    #sd_z_measurement = bincentermed * gp.z_err_measurement
+    #sd_vz_measurement = gp.vz_err_measurement
+
+
+
+    sig_err_data = np.sqrt(sig_err_data**2 + sd_vz_measurement**2)
 
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_data, sig_data, sig_err_data, gp)
 

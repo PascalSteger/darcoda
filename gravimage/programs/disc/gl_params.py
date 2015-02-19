@@ -54,6 +54,8 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
+        self.external_data_file= '/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.nbins=20 # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
@@ -81,6 +83,10 @@ class Params():
             # nrho +1  params for nu, plus the number of params for all baryon pops
 
 
+        self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
+        self.vz_err_measurement = 5.  # Measurement error on vz, [km s^-1]
+
+
         # Priors
         # ----------------------------------------------------------------------
         # Limits for central densities (z=0)
@@ -90,20 +96,20 @@ class Params():
         self.nu_C_min = 10.0 # no. stars pc^-3
 
         # Limits for central kz values (z=0)
-        self.kz_rho_C_max = 20.0
+        self.kz_rho_C_max = 5.#20.0
         self.kz_rho_C_min = -1.0 #SS
-        self.kz_nu_C_max = 20.0
+        self.kz_nu_C_max = 5.#20.0
         self.kz_nu_C_min = -1.0 #SS
 
         # Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 90.0
+        self.max_kz_slope = 10.#90.0
 
         # Limits for sigz central value
         self.sigz_C_max = 50.
         self.sigz_C_min = 5.
 
         # Monotonicity priors
-        self.monotonic_rho = True    # mono-prior on rho(z)
+        self.monotonic_rho = False    # mono-prior on rho(z)
         self.monotonic_nu = True # mono-prior on nu(z)
 
         # Simplenu Baryon model priors

@@ -128,8 +128,6 @@ class ProfileCollection():
 
 
     def sort_prof(self, prof, pop, gp):
-        pdb.set_trace()
-
         self.goodprof = []
         self.goodchi = []
         for k in range(len(self.profs)):
@@ -753,7 +751,7 @@ class ProfileCollection():
         k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5))) # not currently used
 
         # Backwards compatibility: if using old data, then all mass is in DM
-        if gp.baryonmodel not in ['none', 'simplenu']:
+        if gp.baryonmodel not in ['none', 'simplenu_baryon']:
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
 
