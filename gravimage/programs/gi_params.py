@@ -45,7 +45,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
 
         print(' case : ', self.case)
@@ -74,7 +74,7 @@ class Params():
         self.chi2_switch = 30
         self.chi2_Sig_converged = 1000 #how many times to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run data readout again
+        self.nipol = 9   # IF CHANGED => set getnewdata = True to run data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)

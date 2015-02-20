@@ -65,9 +65,9 @@ def myprior(cube, ndim, nparams):
     # such that each population has at least 10% of the total no. stars
     off +=1
     for pop in range(2): # 2 pops
-        cube[off] = cube[off]*(Mg_max-Mg_min)+Mg_min # Mg_mu
+        cube[off] = cube[off]*(split_max-split_min)+split_min # Mg_mu
         off += 1
-        cube[off] = cube[off]*(Mg_max-Mg_min) # Mg_sig
+        cube[off] = cube[off]*(split_max-split_min) # Mg_sig
         off += 1
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myprior.cube')
@@ -92,28 +92,28 @@ def myprior(cube, ndim, nparams):
 
 def myloglike(cube, ndim, nparams):
     off = 0
-    Mg_mu = []; Mg_sig = []
+    split_mu = []; split_sig = []
     frac = cube[off]
     off += 1
     for pop in range(2):
-        Mg_mu.append(cube[off])
+        split_mu.append(cube[off])
         off += 1
-        Mg_sig.append(cube[off])
+        split_sig.append(cube[off])
         off += 1
-    gh.sanitize_vector(Mg_mu, 2, -10, 10, True)
+    gh.sanitize_vector(split_mu, 2, -10, 10, True)
     if off != ndim:
         gh.LOG(1, 'wrong number of parameters in myloglike.cube')
         pdb.set_trace()
     gh.LOG(2,'starting logev evaluation')
-    p1_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[0]**2+Mg_err**2))*\
-           np.exp(-(Mg-Mg_mu[0])**2/(2*(Mg_sig[0]**2+Mg_err**2)))
-    p2_Mg= 1/np.sqrt(2*np.pi*(Mg_sig[1]**2+Mg_err**2))*\
-           np.exp(-(Mg-Mg_mu[1])**2/(2*(Mg_sig[1]**2+Mg_err**2)))
-    p1 = frac*PM*p1_Mg
+    p1_split= 1/np.sqrt(2*np.pi*(split_sig[0]**2+e_split**2))*\
+           np.exp(-(split-split_mu[0])**2/(2*(split_sig[0]**2+e_split**2)))
+    p2_split= 1/np.sqrt(2*np.pi*(split_sig[1]**2+e_split**2))*\
+           np.exp(-(split-split_mu[1])**2/(2*(split_sig[1]**2+e_split**2)))
+    p1 = frac*PM*p1_split
     for i in range(0,len(p1)):
         if p1[i] == 0.0:
             p1[i] = 1e-30
-    p2 = (1-frac)*PM*p2_Mg
+    p2 = (1-frac)*PM*p2_split
     for i in range(0, len(p2)):
         if p2[i] == 0.0:
             p2[i] = 1e-30
@@ -140,44 +140,66 @@ def run(gp):
     gpr = gr_params.grParams(gp)
 
     #globs = comm.bcast(globs, root=0)
-    global Nsample, Mg, Mg_err, PM, Mg_min, Mg_max
+    global Nsample, split, e_split, PM, split_min, split_max
     gpr.fil = gpr.dir+"data/tracers.dat"
     # number of measured tracer stars
     Nsample = bufcount(gpr.fil)
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
-    ID = np.genfromtxt(gpr.fil,skiprows=29,unpack=True,usecols=(0,1),delimiter=delim)
-    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe, Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
-
-    sel = (Mg>-1)  # exclude missing data on Mg
+    #ID = np.genfromtxt(gpr.fil,skiprows=29,unpack=True,usecols=(0,1),delimiter=delim)
+    if gp.case==5:
+        RAh,RAm,RAs,DEd,DEm,DEs,VHel,e_VHel,Teff,e_Teff,logg,e_logg,Fe,e_Fe,N=np.loadtxt(gpr.fil, skiprows=25, unpack=True)
+        PM = np.ones(len(RAh))
+        split = logg
+        e_split = e_logg
+    else:
+        RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe, Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+        split = Mg
+        e_split = Mg_err
+    if gp.case == 5:
+        sel = (N>0)
+    else:
+        sel = (Mg>-1)  # exclude missing data on Mg
     RAh = RAh[sel]
     RAm = RAm[sel]
     RAs = RAs[sel]
     DEd = DEd[sel]
     DEm = DEm[sel]
     DEs = DEs[sel]
-    Vmag = Vmag[sel]
-    VI  = VI[sel]
+    #Vmag = Vmag[sel]
+    #VI  = VI[sel]
     VHel = VHel[sel]
     e_VHel = e_VHel[sel]
-    Mg = Mg[sel]
-    Mg_err = Mg_err[sel]
+    if gp.case < 5:
+        Mg = Mg[sel]
+        Mg_err = Mg_err[sel]
+    elif gp.case == 5:
+        Teff = Teff[sel]
+        e_Teff = e_Teff[sel]
+        logg = logg[sel]
+        e_logg = e_logg[sel]
+        Fe = Fe[sel]
+        e_Fe = e_Fe[sel]
+        N = N[sel]
+    split = split[sel]
+    e_split = e_split[sel]
     PM = PM[sel]
 
-    Mg_min = min(Mg) # -3, 3 if according to WalkerPenarrubia2011
-    Mg_max = max(Mg)
+
+    split_min = min(split) # -3, 3 if according to WalkerPenarrubia2011
+    split_max = max(split)
 
     # easiest way for visualization: use histogram to show data
-    #hist(Mg, np.sqrt(len(Mg))/2, normed=True)
+    #hist(split, np.sqrt(len(split))/2, normed=True)
 
     # but: it's not as easy as that
     # we have datapoints with errors and probability of membership weighting
-    # thus, we need to smear the values out using a Gaussian of width = Mg_err
+    # thus, we need to smear the values out using a Gaussian of width = split_err
     # and add them up afterwards after scaling with probability PM
-    x = np.array(np.linspace(min(Mg), max(Mg), 100))
-    Mgdf = np.zeros(100)
-    for i in range(len(Mg)):
-        Mgdf += PM[i]*gh.gauss(x, Mg[i], Mg_err[i])
-    Mgdf /= sum(PM)
+    x = np.array(np.linspace(split_min, split_max, 100))
+    splitdf = np.zeros(100)
+    for i in range(len(split)):
+        splitdf += PM[i]*gh.gauss(x, split[i], e_split[i])
+    splitdf /= sum(PM)
 
     #plot(x, Mgdf, 'g', lw=2)
     # only then we want to compare to Gaussians
@@ -222,7 +244,7 @@ def run(gp):
     # override for best Fornax
     #cubeML= np.array([0.475319236624166197E+00, 0.621662395675444568E+00, 0.798401723057411417E-01, 0.550211197376269112E+00, 0.158468782949331616E+00])
 
-    cubeMLphys = myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
+    cubeMLphys = cubeML #myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
     #myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
     pML, mu1ML, sig1ML, mu2ML, sig2ML = cubeMLphys
     #g1 = pML*gh.gauss(x, mu1ML, sig1ML)
@@ -251,10 +273,15 @@ def run(gp):
       }[gp.case](kpc)
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
+
+    # TODO: determine com_x, com_y from shrinking sphere
+    import gi_centering as grc
+    com_x, com_y = grc.com_shrinkcircle_2D(xs, ys)
     # alternative: get center of photometric measurements by deBoer
     # for Fornax, we have
-    com_x = 96203.736358393697
-    com_y = -83114.080684733024
+    if gp.case == 1:
+        com_x = 96203.736358393697
+        com_y = -83114.080684733024
     # instantiate different samplings, store half-light radii (2D)
     R1half = []
     R2half = []
@@ -271,9 +298,9 @@ def run(gp):
         #else:
         #    popass.append(2)
 
-        mg = Mg[i]
-        ppop1 = pML*gh.gauss(mg, mu1ML, sig1ML)
-        ppop2 = (1-pML)*gh.gauss(mg, mu2ML, sig2ML)
+        spl = split[i]
+        ppop1 = pML*gh.gauss(spl, mu1ML, sig1ML)
+        ppop2 = (1-pML)*gh.gauss(spl, mu2ML, sig2ML)
         if npr.rand() <= ppop1/(ppop1+ppop2):
             popass.append(1)
         else:
@@ -283,8 +310,8 @@ def run(gp):
     sel1 = (popass==1)
     sel2 = (popass==2)
     #radii of all stellar tracers from pop 1 and 2
-    R1 = np.sqrt((xs[sel1]-com_x)**2 + (ys[sel1]-com_y)**2)
-    R2 = np.sqrt((xs[sel2]-com_x)**2 + (ys[sel2]-com_y)**2)
+    R1 = np.sqrt((xs[sel1])**2 + (ys[sel1])**2)
+    R2 = np.sqrt((xs[sel2])**2 + (ys[sel2])**2)
     R1.sort()
     R2.sort()
 
@@ -310,8 +337,8 @@ def run(gp):
     ##pdb.set_trace()
         Rdiff = np.abs(R1[len(R1)/2] - R2[len(R2)/2])
         print('Rdiff = ', Rdiff)
-        if Rdiff < 90:
-            continue
+        #if Rdiff < 90:
+        #    continue
         # calculate 2D Sig profiles
         Rmin = min(R0) # [pc]
         Rmax = max(R0) # [pc]

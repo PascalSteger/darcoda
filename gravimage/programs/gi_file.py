@@ -35,7 +35,7 @@ def get_pos_and_COM(gp):
         grt_com.run(gp)
     elif gp.investigate == 'obs':
         if gp.pops == 1:
-            if gp.case < 5:
+            if gp.case == 1:
                 # in case we work with Fornax dwarf, use deBoer data
                 import grd_photo_for
                 grd_photo_for.run(gp)
@@ -51,9 +51,14 @@ def get_pos_and_COM(gp):
                 import grd_COM
                 grd_COM.run(gp)
         elif gp.pops == 2:
-            import grd_metalsplit, grd_COM
+            import grd_metalsplit
             grd_metalsplit.run(gp)
-            grd_COM.run(gp)
+            if gp.case < 5:
+                import grd_COM
+                grd_COM.run(gp)
+            elif gp.case == 5:
+                import grd_COM_dra
+                grd_COM_dra.run(gp)
         else:
             print('implement >2 populations for observed galaxies')
             exit(1)

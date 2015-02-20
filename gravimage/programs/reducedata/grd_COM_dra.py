@@ -50,7 +50,7 @@ def run(gp):
     A = np.loadtxt(gpr.fil, skiprows=25)
     RAh,RAm,RAs,DEd,DEm,DEs,Vlos,e_Vlos,Teff,e_Teff,logg,e_logg,Fe,e_Fe,Nobs = A.T
     # only use stars which have Mg measurements
-    pm = (Teff>0) # (PM>=0.95)*
+    pm = (Nobs>0) # (PM>=0.95)*
     print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
     RAh=RAh[pm]
     RAm=RAm[pm]
