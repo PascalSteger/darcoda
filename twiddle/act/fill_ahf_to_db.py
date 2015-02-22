@@ -42,6 +42,6 @@ my.sqlstop(co,cu)
 #mys.physical_xcm(nsnap,0.702*0.702) #convert all values from AHFstep output to physical units
 mys.physical_xcm(nsnap, 1000.0) # convert all values from AHFstep output (physical) to ramses code units (0,1)
 
-mys.exclude(nsnap,300,100,0.3)       #excluding the outer 30%, and halos with < 300 particles
-#mys.exclude(nsnap, 30, 0, 0.0) # out to very edge. TODO: check/implement overwrapping
+#mys.exclude(nsnap,300,100,0.3)       #excluding the outer 30%, and halos with < 300 particles
+mys.exclude(nsnap, 30, 0, 0.0) # out to very edge. TODO: check/implement overwrapping
 mys.fill_snapshot(nsnap)

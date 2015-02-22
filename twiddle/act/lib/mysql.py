@@ -272,8 +272,10 @@ def fill_halo(snap, buhid, val, co, cu):
     my.sqlcu(cmd,co,cu)
 
 def fill_snapshot(snap):
-    a=str(my.read_a(snap));   print('a read: ', a)
-    z=str(my.read_z(snap));   print('z read: ', z)
+    a=str(my.read_a(snap))
+    print('a read: ', a)
+    z=str(my.read_z(snap))
+    print('z read: ', z)
     nhalo=str(get_nhalo(snap))
     print('nhalo:', nhalo)
     cmd  = "INSERT INTO snapshot(snap,a,z,nhalo,sim,atime) "

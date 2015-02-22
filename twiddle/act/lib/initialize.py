@@ -209,7 +209,7 @@ def open_file(filename, mode):
             the_file = open(filename, mode)
             print("filesize: ",os.path.getsize(filename))
         except(IOError) as e:
-            print("Unable to open the file", file_name, "Ending program.\n", e)
+            print("Unable to open the file", the_file, "Ending program.\n", e)
             #raw_input("\n\nPress the enter key to exit.")
             sys.exit()
         else:
@@ -246,9 +246,12 @@ def sqlstart():
     # ask for username and password
     #user = raw_input("Enter mySQL username: ")
     #somesecstring = raw_input(" .. and his little secret: ")
-    user = "mangaloi_astro"
-    somesecstring = "Pinux10"
-    connection = MySQLdb.connect('108.167.143.108', user, somesecstring, user)
+    user="root"
+    somesecstring = "Sinux10"
+    #user = "mangaloi_astro"
+    #somesecstring = "Pinux10"
+    #connection = MySQLdb.connect('108.167.143.108', user, somesecstring, user)
+    connection = MySQLdb.connect('127.0.0.1', user, somesecstring, "mangaloi_astro")
     cursor = connection.cursor()
     return connection, cursor
 ## \fn sqlstart()
