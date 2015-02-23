@@ -29,7 +29,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     rho_DM_C = rho_DM_params[0] #rho_C
     kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres]
     tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C) #outputs rho across all points
-    tmp_rho_total_allz = tmp_rho_DM_allz # Add DM to total mass density
+    tmp_rho_total_allz = tmp_rho_DM_allz*1.0 # Add DM to total mass density
 
     tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
     tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:], 0, gp)
@@ -40,6 +40,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     #Baryons
     tmp_rho_totbaryon_allz = np.zeros(len(tmp_rho_total_allz))
+
     for baryon_pop in range(0, gp.nbaryon_pops):
         offstep = gp.nbaryon_params
         baryon_params = np.array(cube[off:off+offstep])
@@ -55,8 +56,15 @@ def geom_loglike(cube, ndim, nparams, gp):
 
         off += offstep
 
+    #pdb.set_trace()
     tmp_profs.rho_total_C = tmp_rho_total_allz[0]
     tmp_profs.set_prof('rho_total_vec', tmp_rho_total_allz[1:], 0, gp)
+
+    #DOING: print out tmp_profs DM, baryon, total
+    #print('loglike, rho_DM_Vec = ', tmp_profs.get_prof('rho_DM_vec', 0))
+    #print('loglike, rho_baryon_Vec = ', tmp_profs.get_prof('rho_baryon_vec', 0))
+    #print('loglike, rho_total_Vec = ', tmp_profs.get_prof('rho_total_vec', 0))
+
 
     #Tracer params, nu_C, kz_nu_C, kz_nu_vector
     for tracer_pop in range(0, gp.ntracer_pops):

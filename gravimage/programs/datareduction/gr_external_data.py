@@ -79,7 +79,7 @@ def run(gp):
 
 
 
-    sig_err_data = np.sqrt(sig_err_data**2 + sd_vz_measurement**2)
+    #sig_err_data = np.sqrt(sig_err_data**2 + sd_vz_measurement**2)
 
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_data, sig_data, sig_err_data, gp)
 

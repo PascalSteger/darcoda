@@ -473,20 +473,24 @@ class ProfileCollection():
 
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            ax.set_ylim(10., 1E9)
+            ax.set_ylim(1E3, 1E9)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
             ax.set_ylim(0,1.0E8)
 
         elif prof == 'rho_baryon_vec':
             ax.set_ylabel('$\\rho_{\\rm{baryon}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            ax.set_ylim(1E3, 1E9)
         elif prof == 'Sig_baryon_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{baryon}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
+            ax.set_ylim(0,1.0E8)
 
         elif prof == 'rho_total_vec':
             ax.set_ylabel('$\\rho_{\\rm{total}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            ax.set_ylim(1E3, 1E9)
         elif prof == 'Sig_total_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{total}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
+            ax.set_ylim(0,1.0E8)
 
 
 
@@ -739,6 +743,7 @@ class ProfileCollection():
         Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
         Kzvec_DM = -(2.*F*zvec)
 
+
         Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299) #Msun kpc^-1
         Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299) #Msun kpc^-1
         Sigma_z_DM = (1000.**2)*abs(Kzvec_DM)/(2*np.pi*4.299) #Msun kpc^-1
@@ -752,6 +757,7 @@ class ProfileCollection():
 
         # Backwards compatibility: if using old data, then all mass is in DM
         if gp.baryonmodel not in ['none', 'simplenu_baryon']:
+            gh.LOG(1, 'Simplenu Analytic: No baryon model, all mass is in DM.')
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
 
@@ -768,7 +774,29 @@ class ProfileCollection():
         elif prof == 'rho_total_vec':
             ax.plot(zvec, rho_z_total, 'g-', alpha = 0.5)
         elif prof == 'rho_baryon_vec':
+
+            #Prior range on baryons
+            #pdb.set_trace()
+            def rho_baryon(z, K, D):
+                return (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zval**2)**(1.5))))
+
+            rho_z_baryon_prior_max=[]
+            rho_z_baryon_prior_min=[]
+
+            K_vec = np.linspace(gp.simplenu_baryon_K_min, gp.simplenu_baryon_K_max, 1000)
+            D_vec = np.linspace(gp.simplenu_baryon_D_min+1.E-6, gp.simplenu_baryon_D_max, 1000)
+            K_vec, D_vec = np.meshgrid(K_vec, D_vec)
+
+            for zval in zvec:
+                rho_grid = rho_baryon(zval, K_vec, D_vec)
+                rho_z_baryon_prior_max.append(rho_grid.max())
+                rho_z_baryon_prior_min.append(rho_grid.min())
+
             ax.plot(zvec, rho_z_baryon, 'g-', alpha = 0.5)
+            ax.fill_between(zvec, rho_z_baryon_prior_min, rho_z_baryon_prior_max, color='r', alpha=0.1, lw=1)
+            #ax.plot(zvec, rho_z_baryon_prior_max,'g-', alpha = 0.5, linewidth=1)
+            #ax.plot(zvec, rho_z_baryon_prior_min,'g-', alpha = 0.5, linewidth=1)
+
         elif prof == 'rho_DM_vec':
             ax.plot(zvec, rho_z_DM, 'g-', alpha = 0.5)
 

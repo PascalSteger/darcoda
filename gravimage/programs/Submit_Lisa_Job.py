@@ -18,8 +18,8 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='05:00:00:00'
-
+walltime='00:03:00:00'
+pdb.set_trace()
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
 investigation = 'simplenu'
