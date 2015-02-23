@@ -126,7 +126,6 @@ def betastar_4(r0, params, gp):
     a1 = params[1]
     alpha = params[2]
     betatmp = (a0-a1)/(1+np.exp(alpha*s0))+a1
-
     return betatmp
 ## \fn betastar_4(r0, params, gp)
 # calculate betastar from sigmoid with 4 parameters, using exp directly, with explicit meaning
@@ -137,10 +136,10 @@ def betastar_4(r0, params, gp):
 def betastar(r0, params, gp):
     bs = betastar_4(r0, params, gp)
     for k in range(len(r0)):
-        if bs[k] < gp.minbetastar:
-            bs[k] = gp.minbetastar
-        if bs[k] > gp.maxbetastar:
-            bs[k] = gp.maxbetastar
+        if bs[k] < min(gp.minbetastar_0, gp.minbetastar_inf):
+            bs[k] = min(gp.minbetastar_0, gp.minbetastar_inf)
+        if bs[k] > max(gp.maxbetastar_0, gp.maxbetastar_inf):
+            bs[k] = max(gp.maxbetastar_0, gp.maxbetastar_inf)
     return bs
 ## \fn betastar(r0, params, gp)
 # calculate betastar from 4 parameters
@@ -158,8 +157,8 @@ def betastar_old(r0, r0turn, params, gp):
     # but still allowing parameters to go the the max. value
     for off in range(len(r0)):
         # clipping to range [gp.minbetastar, gp.maxbetastar]
-        betatmp[off] = min(gp.maxbetastar, betatmp[off])
-        betatmp[off] = max(gp.minbetastar, betatmp[off])
+        betatmp[off] = min(max(gp.maxbetastar_0, gp.maxbetastar_inf), betatmp[off])
+        betatmp[off] = max(min(gp.minbetastar_0, gp.minbetastar_inf), betatmp[off])
     return betatmp
 ## \fn betastar_old(r0, params, gp)
 # map [0,1] to [-1,1] with a polynomial
@@ -167,7 +166,6 @@ def betastar_old(r0, r0turn, params, gp):
 # @param r0 radii [pc]
 # @param params normalized ai, s.t. abs(sum(ai)) = 1
 # @param gp global parameters
-
 
 def beta(r0, params, gp):
     bstar = betastar(r0, params, gp)

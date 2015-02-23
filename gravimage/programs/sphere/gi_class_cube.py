@@ -235,12 +235,13 @@ def map_betastar_poly(params, gp):
 
 def map_betastar_sigmoid(params, gp):
     gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
-    bdiff = gp.maxbetastar-gp.minbetastar
-    a0 = params[0]*bdiff + gp.minbetastar  # a0
+    bdiff = gp.maxbetastar_0-gp.minbetastar_0
+    a0 = params[0]*bdiff + gp.minbetastar_0  # a0
     # TODO: remove parameter for the case that beta00prior is set, as then we already know its value (and thus need to sample one dimension less)
     if gp.beta00prior:
         a0 = 0.
-    a1 = params[1]*bdiff + gp.minbetastar  # a1
+    bdiff = gp.maxbetastar_inf-gp.minbetastar_inf
+    a1 = params[1]*bdiff + gp.minbetastar_inf  # a1
     alpha = params[2]*5             # alpha
     # r_s, sampled in log space over all radii,
     # as we want flat prior in log space
