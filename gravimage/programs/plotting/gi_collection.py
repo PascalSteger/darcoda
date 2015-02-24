@@ -340,7 +340,7 @@ class ProfileCollection():
 
     def plot_N_samples(self, ax, prof, pop):
         k=0
-        while k<100:
+        while k<30:
             ind = npr.randint(len(self.profs))
             if self.subset[0] <= self.chis[ind] <= self.subset[1]:
                 lp  = self.profs[ind]

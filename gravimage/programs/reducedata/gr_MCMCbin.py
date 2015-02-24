@@ -97,6 +97,13 @@ def run(gp):
             # set maximum radius (if gp.maxR is set)
             Rmax = max(R) if gp.maxR<0 else 1.0*gp.maxR # [Rscale0]
             print('Rmax [Rscale0] = ', Rmax)
+            #pdb.set_trace()
+            #from pylab import clf, hist, axvline, xlim
+            #clf()
+            #hist(np.log10(R*Rscalei), 40)
+            #for i in range(len(Rbin)):
+            #    axvline(np.log10(Rbin[i]*Rscale0))
+            #xlim([np.log10(min(gp.xepol*Rscale0)), np.log10(max(gp.xepol*Rscale0))])
             sel = (R * Rscalei <= Rmax * Rscale0)
             x = x[sel]
             y = y[sel]
