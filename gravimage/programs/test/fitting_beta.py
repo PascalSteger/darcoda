@@ -95,3 +95,4 @@ ax2.set_xlabel('$r\\,[{\\rm pc}]$')
 plt.savefig('beta_fit_all.pdf')
 
 pdb.set_trace()
+# last radius is 33260 pc, gp.rinfty*max(gp.xepol) for Gaia 2

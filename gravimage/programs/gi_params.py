@@ -122,7 +122,8 @@ class Params():
         self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
         self.maxbetastar_0 = 0.99  # clipping for beta*, default:  1.00
         self.minbetastar_inf = -0.99
-        self.maxbetastar_inf = 0.99
+        self.maxbetastar_inf = 1.00
+        self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
         self.monotonic = True     # monotonicity prior on n(x) for rho(x)
@@ -153,6 +154,8 @@ class Params():
         # debug options
         # ----------------------------------------------------------------------
         self.debug = False # enable calling debug routines during run. Turn off for production runs!
+        self.checkbeta = True # check that if right r_s and beta(r_infty) is set,
+                              # we get the right profiles back
         self.checksig = False # check sigma_LOS calculation steps in gi_int
         self.stopstep = 1 # step to stop at by default
 
