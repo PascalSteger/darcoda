@@ -33,11 +33,9 @@ def nr(r0, dlr, pop, gp):
     # up: common radii r0, but different scale radius for each pop
     logrnu = np.log(rnu/gp.dat.rhalf[pop])
     dlrnu = -1.*dlr
-
     # use linear spline interpolation for dn/dlogr (logr)
     spline_n = splrep(logrnu, dlrnu, k=1)
-
-    # evaluate spline at any points in between
+    # output to evaluate spline at any points in between
     return spline_n
 ## \fn nr(r0, dlr, pop, gp)
 # calculate n(r) at any given radius, as linear interpolation with two asymptotes

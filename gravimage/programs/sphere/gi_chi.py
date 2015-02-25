@@ -77,6 +77,8 @@ def calc_chi2(profs, gp):
         if chi2 < gp.chi2_switch:
             gp.chi2_Sig_converged -= 1
             gh.LOG(1, 'Sig finished burn-in, waiting to get stable, ', gp.chi2_Sig_converged)
+    if gp.checksig:
+        pdb.set_trace()
     return chi2
 ## \fn calc_chi2(profs, gp)
 # Calculate chi^2

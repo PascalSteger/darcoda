@@ -131,8 +131,7 @@ def rho_gaia(rad, gp):
     gh.LOG(2, '   r_DM = ', r_DM)
     gh.LOG(2, '   r_star1 = ', r_star1)
     rhodm = rho_general(rad, r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
-    rhostar1 = rho_general(rad, r_star1, nu0, \
-                   alpha_star1, beta_star1, gamma_star1)
+    rhostar1 = rho_general(rad, r_star1, nu0, alpha_star1, beta_star1, gamma_star1)
     return rhodm, rhostar1
 ## \fn rho_gaia(rad, gp)
 # give densities for the spherical Gaia challenge dataset
@@ -249,7 +248,6 @@ def nr3Dtot_gaia(rad, gp):
         nr = 0.*rad
     return nr
 ## \fn nr3Dtot_gaia(rad, gp)
-# plot - d log rho/ d log r for Gaia models
 # @param rad radius in pc, not log.
 # @param gp global parameters
 

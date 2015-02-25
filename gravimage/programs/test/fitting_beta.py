@@ -25,8 +25,7 @@ def analytic_beta(x):
     #     r_a1 = 1000
     # hern return x**2/(x**2+r_a1**2)
 
-
-x = gp.xipol
+x = gp.xepol
 #xturn = gp.Xscale[0] #max(gp.xipol)/2
 y = analytic_beta(x)
 
@@ -34,16 +33,14 @@ def modelbetaj(r0, vec0, vec1, vec2, vec3):
     betastartmp = (vec0-vec1)*np.exp(-(r0/vec2)**vec3)+vec1
     return betastartmp
 
-
 def modelbeta_sigmoid(r0, vec0, vec1, vec2, vec3, vec4):
     # sigmoid with offsets
     s=np.log(r0/vec3)
     betastartmp = vec0/(1+np.exp(vec1*s+vec2))+vec3*np.ones(len(r0))
     return betastartmp
 
-
 def modelbeta4(r0, vec0, vec1, vec2, vec3):
-    s0=np.log(r0/vec3)
+    s0=np.log(r0/np.exp(vec3))
     a0 = vec0
     a1 = vec1
     alpha = vec2
@@ -58,7 +55,7 @@ ax1 = fig.add_axes(rect1)  #left, bottom, width, height
 ax2 = fig.add_axes(rect2, sharex=ax1)
 
 ax1.plot(x, y, 'k.-', color='black', lw=5, label='data')
-popt3, pcov3 = curve_fit(modelbeta4, x, y)
+popt3, pcov3 = curve_fit(modelbeta4, x, y) #, p0=[0,1,2,np.log(200)])
 #poptj, pcovj = curve_fit(modelbetaj, x, y, p0=[0,1,100])
 
 x = gp.xfine

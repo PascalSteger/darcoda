@@ -258,7 +258,8 @@ def map_betastar_j(params, gp):
     a0 = params[0]*1.98-1 # a_0, betastar(r=0), in between -0.99 and +0.99
     a1 = params[1]*1.98-1 # a_1, betastar(r->infty), same range
     # r_0, scale radius for transition from a0->a1:
-    logrs = params[2]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
+    #logrs = params[2]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
+    logrs = params[2]*(np.log(2*gp.rscale[0])-np.log(gp.rscale[0]/2))+np.log(gp.rscale[0]/2)
     n0 = params[3]*3 # n, rate of transition
     return np.hstack([a0, a1, logrs, n0])
 ## \fn map_betastar_j(params, gp)

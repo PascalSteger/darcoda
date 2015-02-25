@@ -81,7 +81,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                 tmp_profs.chi2 = gh.err(1., gp)
                 return tmp_profs
             try:
-                if gp.checksig:
+                if gp.checksig and gp.investigate == 'hern':
                     import gi_analytic as ga
                     anrho = ga.rho(gp.xepol, gp)[0]
                     rhodmpar_half = np.exp(splev(gp.dat.rhalf[0], splrep(gp.xepol, np.log(anrho))))
@@ -108,8 +108,19 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate == 'gaia':
                         dlrnu[-1] = 6
                     nupar = np.hstack([nupar_half, dlrnu])
+                elif gp.checksig and gp.investigate == 'gaia':
+                    betapar = np.array([-2.96958e-9, 1, 2, 5.86803451])
+                    rhodmpar = np.array([ 0.18235541,  1. ,  0.01673654,  0.03378125,  0.0667587, 0.13081126,  0.24344968,  0.32936262,  0.39892359,  0.46646452, 0.53360197,  0.60953664,  0.68955017,  0.79777653,  0.91245168, 1.08430446,  1.36151242,  1.87914183,  2.32099282,  2.61166345,  1. ])
+                    lbaryonpar = 0.0*rhodmpar
+                    MtoL = 0.0
+                    annu = ga.rho(gp.xepol, gp)[1]
+                    nupar_half = np.exp(splev(gp.dat.rhalf[1], splrep(gp.xepol, np.log(annu))))
+                    nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
+                    dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
+                    if gp.investigate == 'gaia':
+                        dlrnu[-1] = 6
+                    nupar = np.hstack([nupar_half, dlrnu])
                 sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
-
             except Exception:
                 gh.LOG(1, 'sigma error')
                 tmp_profs.chi2 = gh.err(2., gp)

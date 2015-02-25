@@ -121,8 +121,8 @@ class Params():
         self.beta00prior = True  # beta(r=0)=0
         self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
         self.maxbetastar_0 = 0.99  # clipping for beta*, default:  1.00
-        self.minbetastar_inf = 0.99
-        self.maxbetastar_inf = 1.00
+        self.minbetastar_inf = -0.99
+        self.maxbetastar_inf = 0.99
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
         self.monotonic = True     # monotonicity prior on n(x) for rho(x)
