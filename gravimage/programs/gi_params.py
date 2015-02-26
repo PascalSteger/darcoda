@@ -154,7 +154,7 @@ class Params():
         # debug options
         # ----------------------------------------------------------------------
         self.debug = False # enable calling debug routines during run. Turn off for production runs!
-        self.checkbeta = True # check that if right r_s and beta(r_infty) is set,
+        self.checkbeta = False # check that if right r_s and beta(r_infty) is set,
                               # we get the right profiles back
         self.checksig = False # check sigma_LOS calculation steps in gi_int
         self.stopstep = 1 # step to stop at by default

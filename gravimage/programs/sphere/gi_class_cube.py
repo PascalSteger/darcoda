@@ -101,7 +101,7 @@ def map_nr(params, prof, pop, gp):
     # work directly with the dn(r)/dlog(r) parameters here
     dnrdlrparams = params[1:]
     if gp.monotonic:
-        gpar = ginv(np.array(dnrdlrparams)/2.+0.5, 0., gp.nrtol/2)
+        gpar = ginv(np.array(dnrdlrparams)/2.+0.5, 0., gp.nrtol)
     else:
         gpar = ginv(dnrdlrparams, 0., gp.nrtol)
 
@@ -126,7 +126,6 @@ def map_nr(params, prof, pop, gp):
 
     # finite mass prior: to bound between 3 and ..
     nrasyminfty = max(nr[-1], 3.001)
-
     params = np.hstack([rhohalf, nrasym0, nr, nrasyminfty])
     return params
 ## \fn map_nr(params, prof, pop, gp)
@@ -242,10 +241,11 @@ def map_betastar_sigmoid(params, gp):
         a0 = 0.
     bdiff = gp.maxbetastar_inf-gp.minbetastar_inf
     a1 = params[1]*bdiff + gp.minbetastar_inf  # a1
-    alpha = params[2]*5             # alpha
+    alpha = params[2]*4             # alpha
     # r_s, sampled in log space over all radii,
     # as we want flat prior in log space
-    logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
+    #logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
+    logrs = params[3]*(np.log(2*gp.rscale[0])-np.log(gp.rscale[0]/2))+np.log(gp.rscale[0]/2)
     return np.hstack([a0, a1, alpha, logrs])
 ## \fn map_betastar_sigmoid(params, gp)
 # mapping beta parameters from [0,1] to full param space
@@ -267,6 +267,7 @@ def map_betastar_j(params, gp):
     return np.hstack([a0, a1, logrs, n0])
 ## \fn map_betastar_j(params, gp)
 # mapping beta parameters from [0,1] to full param space
+# NOT USED ANYMORE
 # @param params parameter vector, size 4
 # @param gp global parameters
 

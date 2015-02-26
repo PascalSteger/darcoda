@@ -9,7 +9,7 @@
 import pdb
 import numpy as np
 
-from scipy.interpolate import splrep, splint, splev
+from scipy.interpolate import splrep, splint
 from pylab import *
 import gi_helper as gh
 import gi_int as gi
@@ -84,7 +84,7 @@ def rho(r0, rhodmpar, pop, gp):
 ## \fn rho(r0, rhodmpar, pop, gp)
 # calculate density, from interpolated n(r) = -log(rho(r))
 # using interpolation to left and right of r=r_{*, 1/2}
-# @param rhodmpar: rho(rstarhalf), asymptote nr 0, nr(xipol), asymptote nr infty
+# @param rhodmpar: rho(rstarhalf), asymptote nr 0, nr(xepol), asymptote nr infty
 # @param r0 radii to calculate density for, in physical units (pc)
 # @param pop int for population, 0 all or DM, 1, 2, ...
 # @param gp global parameters
