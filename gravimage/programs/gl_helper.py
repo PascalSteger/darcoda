@@ -832,25 +832,35 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
     #Setup output vectors
     nu_vec = []
     nu_err_vec = []
-    sig_vec = []
-    sig_err_vec = []
+    sigz2_vec = []
+    sigz2_err_vec = []
+    Ntr_per_bin = []
 
     for jter in range(0, len(binmin)):
         positions=np.where(np.logical_and(x0>=binmin[jter], x0<binmax[jter]))
-        n = len(positions[0])
+        Ntr = len(positions[0])
+        Ntr_per_bin.append(Ntr)
 
         #Calculate tracer density nu and Poisson error (sqrt(N)/binsize)
-        nu_vec.append(n/(binmax[jter]-binmin[jter]))
-        nu_err_vec.append(np.sqrt(n)/(binmax[jter]-binmin[jter]))
+        nu_vec.append(Ntr/(binmax[jter]-binmin[jter]))
+        nu_err_vec.append(np.sqrt(Ntr)/(binmax[jter]-binmin[jter]))
         v_list_temp=v0[positions]
 
         #Calculate velocity dispersion and Poisson error (sqrt(sigma_z))
-        sig_z = np.sqrt(np.mean(v_list_temp**2) - (np.mean(v_list_temp))**2)
-        sig_vec.append(sig_z)
+        sigz2 = np.mean(v_list_temp**2) - (np.mean(v_list_temp))**2
+        sigz2_vec.append(sigz2)
         #sig_err_vec.append(np.sqrt(np.sqrt(np.mean(v_list_temp**2) - (np.mean(v_list_temp))**2))) #HS TODO: think about this error calculation
-        sig_err_vec.append(sig_z/np.sqrt(2.*n))
+        #sig_err_vec.append(sig_z/np.sqrt(2.*Ntr))
+        sigz2_err_vec.append(sigz2 * np.sqrt(2./Ntr)) #SD(sig_z^2)
 
-    return nu_vec, nu_err_vec, sig_vec, sig_err_vec
+    # Convert to numpy arrays
+    nu_vec = np.array(nu_vec)
+    nu_err_vec = np.array(nu_err_vec)
+    sigz2_vec = np.array(sigz2_vec)
+    sigz2_err_vec = np.array(sigz2_err_vec)
+    Ntr_per_bin = np.array(Ntr_per_bin)
+
+    return nu_vec, nu_err_vec, sigz2_vec, sigz2_err_vec, Ntr_per_bin
 
 ## \fn bin_r_const_tracers(x0, no)
 # split interval into bins of constant particle number

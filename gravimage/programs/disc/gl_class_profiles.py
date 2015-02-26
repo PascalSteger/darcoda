@@ -50,11 +50,8 @@ class Profiles:
         self.nu_C      = 0.0                               #Multinest
         self.kz_nu_C   = 0.0                               #Multinest
         self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
-        #self.kz_nu_LS  = 0.0                               #Multinest
         self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
-        #self.nu_LS     = 0.0                               #Derived from phys
-        self.sig_vec   = np.zeros(ntracer_pops * nbins)    #Derived from phys
-        #self.sig_LS    = 0.0                               #Derived from phys
+        self.sigz2_vec = np.zeros(ntracer_pops * nbins)    #Derived from phys
 
         #chi2 of profile
         self.chi2 = 0.0
@@ -100,8 +97,8 @@ class Profiles:
             self.kz_nu_vec = vec
         elif prof == 'nu_vec':
             self.nu_vec  = vec
-        elif prof == 'sig_vec':
-            self.sig_vec = vec
+        elif prof == 'sigz2_vec':
+            self.sigz2_vec = vec
 
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
@@ -144,8 +141,8 @@ class Profiles:
             return self.kz_nu_vec
         elif prof == 'nu_vec':
             return self.nu_vec
-        elif prof == 'sig_vec':
-            return self.sig_vec
+        elif prof == 'sigz2_vec':
+            return self.sigz2_vec
 
         ##chi2 of profile
         #elif prof == 'chi2'

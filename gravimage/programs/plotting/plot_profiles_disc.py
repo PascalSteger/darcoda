@@ -108,7 +108,7 @@ def run(timestamp, basename, profile_source, gp):
     pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
 
     pc.plot_profile(basename, 'nu_vec', 0, gp)
-    pc.plot_profile(basename, 'sig_vec', 0, gp)
+    pc.plot_profile(basename, 'sigz2_vec', 0, gp)
 
     pc.plot_profile(basename, 'rho_DM_vec', 0, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)

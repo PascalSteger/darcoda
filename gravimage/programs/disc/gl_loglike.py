@@ -106,11 +106,11 @@ def geom_loglike(cube, ndim, nparams, gp):
     #Calculate sigma (velocity dispersion)
     #pdb.set_trace()
     try:
-        sigz_vec = phys.sigz(gp.z_all_pts, Sig_DM_allz, tmp_nu_allz, norm)
+        sigz2_vec = phys.sigz2(gp.z_all_pts, Sig_DM_allz, tmp_nu_allz, norm)
     except ValueError:
         raise ValueError('negative value in sig2 array')
         return
-    tmp_profs.set_prof('sig_vec', sigz_vec[1:], 0, gp)
+    tmp_profs.set_prof('sigz2_vec', sigz2_vec[1:], 0, gp)
 
     # determine log likelihood
     chi2 = calc_chi2(tmp_profs, gp)

@@ -62,15 +62,15 @@ def calc_chi2(profs, gp):
         if not gp.chi2_nu_converged:
             continue # with pop loop
 
-        sigdat  = gp.dat.sig[pop]    # [km/s]
-        sigerr  = gp.dat.sigerr[pop] # [km/s]
-        sigmodel= profs.get_prof('sig_vec', pop)
-        chi2_sig = chi2red(sigmodel, sigdat, sigerr, gp.nbins) # [1]
-        if chi2_sig == np.inf:
+        sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
+        sigz2err    = gp.dat.sigz2err[pop] # [km/s]
+        sigz2_model = profs.get_prof('sigz2_vec', pop)
+        chi2_sigz2  = chi2red(sigz2_model, sigz2dat, sigz2err, gp.nbins) # [1]
+        if chi2_sigz2 == np.inf:
             print('chi2_sig has become infinite')
             pdb.set_trace()
-        chi2 += chi2_sig             # [1]
-        gh.LOG(1, '  chi2_sig  = ', chi2_sig)
+        chi2 += chi2_sigz2             # [1]
+        gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:

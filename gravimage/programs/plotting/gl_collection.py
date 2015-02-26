@@ -35,6 +35,8 @@ def unit(prof):
         unit = '[(Msun/pc^3)]'
     elif prof == 'sig' or prof == 'sig_vec':
         unit = '[km/s]'
+    elif prof == 'sigz2_vec':
+        unit = '[km^2/s^2]'
     elif prof == 'nu_vec':
         unit = '[stars/kpc^3]'
     elif prof == 'rho_DM_vec':
@@ -190,7 +192,8 @@ class ProfileCollection():
 
     def sort_profiles_disc(self, gp):
         self.sort_prof('nu_vec', 0, gp)
-        self.sort_prof('sig_vec', 0, gp)
+        #self.sort_prof('sig_vec', 0, gp) #Old plots
+        self.sort_prof('sigz2_vec', 0, gp)
 
         self.sort_prof('kz_rho_DM_vec', 0, gp)
         self.sort_prof('kz_nu_vec', 0, gp)
@@ -332,7 +335,8 @@ class ProfileCollection():
 
     def write_all_disc(self, basename, gp):
         self.write_prof(basename, 'nu_vec', 0, gp)
-        self.write_prof(basename, 'sig_vec', 0, gp)
+        #self.write_prof(basename, 'sig_vec', 0, gp)
+        self.write_prof(basename, 'sigz2_vec', 0, gp)
 
         self.write_prof(basename, 'kz_rho_DM_vec', 0, gp)
         self.write_prof(basename, 'kz_nu_vec', 0, gp)
@@ -410,6 +414,20 @@ class ProfileCollection():
             ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, \
                             color='blue', alpha=0.3, lw=1)
             #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
+        elif prof == 'sigz2_vec':
+            DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
+                                           unpack=False, skiprows=1))
+            sigz2dat = DATA[4-1] # [maxsiglosi]
+            sigz2err = DATA[5-1] # [maxsiglosi]
+            #sigdat *= gp.maxsiglos[pop]  # [km/s]
+            #sigerr *= gp.maxsiglos[pop]  # [km/s]
+            output.add('data [km^2/s^2]', sigz2dat)
+            output.add('error [km^2/s^2]', sigz2err)
+            output.add('data - error [km/s]', sigz2dat-sigz2err)
+            output.add('data + error [km/s]', sigz2dat+sigz2err)
+            ax.fill_between(r0, sigz2dat-sigz2err, sigz2dat+sigz2err, \
+                            color='blue', alpha=0.3, lw=1)
+            #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
         output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
         return
     ## \fn plot_data(self, ax, basename, prof, pop, gp)
@@ -463,6 +481,9 @@ class ProfileCollection():
         elif prof == 'sig_vec':
             ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
             ax.set_ylim(10., 40.)
+        elif prof == 'sigz2_vec':
+            ax.set_ylabel('$\\sigma_{z}^2\\quad[\\rm{km}^2/\\rm{s}^2]$')
+            ax.set_ylim(100., 1600.)
 
         elif prof == 'kz_nu_vec':
             ax.set_ylabel('$k(z)_{\\nu}$')
@@ -630,7 +651,7 @@ class ProfileCollection():
             ax.set_xscale('linear')
             ax.set_yscale('log')
 
-        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
             ax.set_xscale('linear')
             ax.set_yscale('linear')
 
@@ -656,7 +677,7 @@ class ProfileCollection():
             self.fill_nice(ax, prof, pop, gp)
             self.plot_N_samples(ax, prof, pop)
             self.plot_bins(ax, prof, gp)
-            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec':
+            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
             if gp.investigate == 'simplenu':

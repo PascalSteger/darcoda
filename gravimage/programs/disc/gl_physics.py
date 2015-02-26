@@ -36,7 +36,7 @@ def Sig(zvec, rhovec):
 # @param zvec: z-vector, at which rho/Sig(z) is given (requires z[0] != 0.)
 
 # New function for calculating the z-dir velocity dispersion
-def sigz(zvec,Sigvec,nuvec,C):
+def sigz2(zvec,Sigvec,nuvec,C):
     G1 = 4.299e-6  # Newton's constant in (km)^2*kpc/(Msun*s^2)
     Kzvec = -2.*constants.pi*G1*Sigvec
     integral = integrate.cumtrapz(nuvec*Kzvec,zvec,initial=0.) + C
@@ -45,8 +45,8 @@ def sigz(zvec,Sigvec,nuvec,C):
         gh.LOG(1,'Negative sig2 in phys.sigz')
         raise ValueError('negative value in sig2 array')
         return
-    sigvec = np.sqrt(sig2)
-    return sigvec
+    #sigvec = np.sqrt(sig2)
+    return sig2
 # calculate z velocity dispersion using eq. 5 in 'almost' paper
 # @param sigvec: velocity dispersion vector at the locations of zvec
 # @param zvec: z-vector, at which nu/Sig(z) is given (assuming z[0] = 0.)

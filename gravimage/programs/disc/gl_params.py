@@ -84,7 +84,7 @@ class Params():
 
 
         self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
-        self.vz_err_measurement = 5.  # Measurement error on vz, [km s^-1]
+        self.vz_SDerr_meas = 5.  # Measurement error on vz, [km s^-1]
 
 
         # Priors
@@ -126,7 +126,7 @@ class Params():
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
         self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
-        self.chi2_switch_mincount = 500. # demand that this number of profiles with
+        self.chi2_switch_mincount = 20. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
 

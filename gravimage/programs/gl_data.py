@@ -43,9 +43,9 @@ class Datafile:
         self.Sig = [];     self.Sigerr = []
 
         ## keep line of sight velocity dispersion profile, in [km/s]
-        self.sig = []
+        self.sigz2 = []
         ## keep error of sigdat
-        self.sigerr = []
+        self.sigz2err = []
 
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
@@ -126,6 +126,8 @@ class Datafile:
 
     def read_sig(self, gp):
         for pop in np.arange(gp.pops+1):
+            print('read sig')
+            pdb.set_trace()
             Dummy1, Dummy2, Dummy3, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
             # 3*[Xscale], [maxsiglos], [maxsiglos]
 
@@ -138,10 +140,10 @@ class Datafile:
     # @param gp global parameters
 
 
-    def read_sigz(self, gp):
-        dummy, dummy, dummy, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[0])
-        self.sig.append(sigdat[:]) # [km/s]
-        self.sigerr.append(sigerr[:]) # [km/s]
+    def read_sigz2(self, gp):
+        dummy, dummy, dummy, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[0])
+        self.sigz2.append(sigz2dat[:]) # [km/s]
+        self.sigz2err.append(sigz2err[:]) # [km/s]
 
         return
     ## \fn read_sig(self, gp)
@@ -158,7 +160,7 @@ class Datafile:
         gp.z_binmaxs = binmaxs
         #gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
         gp.z_all_pts = np.append([0.0], bincenters)  #[kpc]
-        
+
 
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):
