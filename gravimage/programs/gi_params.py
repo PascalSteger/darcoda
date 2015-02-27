@@ -118,15 +118,15 @@ class Params():
         self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
-        self.beta00prior = True  # beta(r=0)=0
-        self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
-        self.maxbetastar_0 = 0.99  # clipping for beta*, default:  1.00
-        self.minbetastar_inf = -0.99
+        self.beta00prior = False  # beta(r=0)=0
+        self.minbetastar_0 = -0.01  # clipping for beta*, default: -0.99
+        self.maxbetastar_0 = 0.01  # clipping for beta*, default:  1.00
+        self.minbetastar_inf = 0.99
         self.maxbetastar_inf = 1.00
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = True     # monotonicity prior on n(x) for rho(x)
+        self.monotonic = False     # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
@@ -168,8 +168,10 @@ class Params():
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
         # in [Munit/pc^2], and totmass
         # [Munit], and max(v_LOS) in [km/s]
-        self.rscale=[];        self.nu0pc=[]
-        self.Xscale=[];        self.Sig0pc=[]
+        self.rscale=[]
+        self.Xscale=[]
+        self.Sig0pc=[]
+        self.nu0pc=[]
         self.totmass_tracers=[];       self.maxsiglos=[]
         if self.investigate == 'hern':
             # each is set for all components and first component by

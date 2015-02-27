@@ -245,7 +245,7 @@ def map_betastar_sigmoid(params, gp):
     # r_s, sampled in log space over all radii,
     # as we want flat prior in log space
     #logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
-    logrs = params[3]*(np.log(2*gp.rscale[0])-np.log(gp.rscale[0]/2))+np.log(gp.rscale[0]/2)
+    logrs = params[3]*(np.log(2*gp.Xscale[0])-np.log(gp.Xscale[0]/2))+np.log(gp.Xscale[0]/2)
     if gp.checkbeta:
         a1 = max(0.99, a1) # for Gaia02 runs only!
         logrs = gp.betalogrs
