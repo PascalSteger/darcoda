@@ -16,7 +16,7 @@ class grParams():
         # set automatically if gr_MCMCbin.py is called on the command line
         self.showplots = False
 
-        self.n = 3 # number of iterations in gr_MCMCbin
+        self.n = 30 # number of iterations in gr_MCMCbin
         self.Rerr  = 0. # 0.01      # distance error in [Xscale]
         self.vrerr = 2.0 # [km/s] 0.01 # velocity error. raises sig_los, errors in it
 
@@ -24,7 +24,7 @@ class grParams():
             self.repr  = 1     # choose simulation representation
             self.Rcut = 1.e10  # [Rvir]
             self.Rmin = 0. # [Rscale]i
-            self.Rmax = 3. # [Rscale]
+            self.Rmax = 10. # [Rscale]
 
             self.simname = gp.files.get_sim_name(gp) # dir+'simulation/'+prename+'unit_hern_%i' %(repr)
             if gp.pops == 1:

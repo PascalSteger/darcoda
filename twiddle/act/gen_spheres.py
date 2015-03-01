@@ -11,7 +11,9 @@ os.nice(1)
 import lib.initialize as my
 import lib.mysql as mys
 
-show = True;  run = True; loop = True
+show = True
+run = True
+loop = True
 
 gsd = "get_sphere_dm"
 gss = "get_sphere_stars"
@@ -20,7 +22,7 @@ i = len(sys.argv)
 if(i!=3):
     print("usage: gen_spheres.py snap typ")
     exit(1)
-    
+
 facr = 1 # * rvir from AHF for maximal radial distance to include particles
 
 snap = sys.argv[1]
@@ -51,7 +53,7 @@ for i in range(3):##TODO: len(xcl)
 
     if(mys.is_dmonly):
         continue
-        
+
     # stars only
     cmd = gss+" -inp "+sim
     # center on star center, but with virial radius

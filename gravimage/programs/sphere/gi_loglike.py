@@ -9,6 +9,7 @@
 import numpy as np
 import pdb
 from scipy.interpolate import splev, splrep
+from pylab import *
 #from multiprocessing import Pool
 
 # import matplotlib.pyplot as plt
@@ -80,7 +81,8 @@ def geom_loglike(cube, ndim, nparams, gp):
                 gh.LOG(2, 'beta error')
                 tmp_profs.chi2 = gh.err(1., gp)
                 return tmp_profs
-            try:
+            #try:
+            if True:
                 if gp.checksig and gp.investigate == 'hern':
                     import gi_analytic as ga
                     anrho = ga.rho(gp.xepol, gp)[0]
@@ -92,15 +94,7 @@ def geom_loglike(cube, ndim, nparams, gp):
                         rhodmpar = np.hstack([rhodmpar_half, dlr])
                     lbaryonpar = 0.0*rhodmpar
                     MtoL = 0.0
-                    if gp.investigiiate == 'gaia':
-                        if gp.case == 5:
-                            betapar = np.array([  4.24378376e-14,   1, 2, 1.41421356e+02])
-                        elif gp.case == 6:
-                            betapar = np.array([  5.82811566e-13,   1, 2, 3.53553391e+02])
-                        elif gp.case == 7:
-                            betapar = np.array([  8.31604545e-25,  -1.69605095e-29,   1, 1])
-                    elif gp.investigate == 'hern':
-                        betapar = np.array([0, 0, 2, max(gp.xipol)/2]) # for hern
+                    betapar = np.array([0, 0, 2, max(gp.xipol)/2]) # for hern
                     annu = ga.rho(gp.xepol, gp)[1]
                     nupar_half = np.exp(splev(gp.dat.rhalf[1], splrep(gp.xepol, np.log(annu))))
                     nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
@@ -108,23 +102,35 @@ def geom_loglike(cube, ndim, nparams, gp):
                     if gp.investigate == 'gaia':
                         dlrnu[-1] = 6
                     nupar = np.hstack([nupar_half, dlrnu])
-                elif gp.checksig and gp.investigate == 'gaia':
-                    betapar = np.array([-2.96958e-9, 1, 2, 5.86803451])
-                    rhodmpar = np.array([ 0.18235541,  1. ,  0.01673654,  0.03378125,  0.0667587, 0.13081126,  0.24344968,  0.32936262,  0.39892359,  0.46646452, 0.53360197,  0.60953664,  0.68955017,  0.79777653,  0.91245168, 1.08430446,  1.36151242,  1.87914183,  2.32099282,  2.61166345,  1. ])
+                elif gp.checkbeta and gp.investigate == 'gaia':
+                    rhodmpar = np.array([ 0.41586608, 0.38655515, 0.60898657, 0.50936769, 0.52601378, 0.54526758,  0.5755599, 0.57900806, 0.60252357, 0.60668445, 0.62252721, 0.63173754, 0.64555439, 0.65777175, 0.67083556, 0.68506606, 0.69139872, 0.66304763, 0.61462276, 0.70916575, 0.53287872])
+                    betapar = np.array([  1.23555034e-03,   9.89999994e-01,   2.03722518e+00,   5.85640906e+00])
+                    nupar =  np.array([ 0.15649498,  6.65618254,  0.10293663,  0.1087109,   0.13849277,  0.24371261, 0.62633345,  1.05913181,  1.43774113,  1.82346043,  2.20091446,  2.60007997,  2.98745825,  3.423104,    3.80766658,  4.2089698,   4.62950843,  4.91166037,  4.97380638,  4.99718073,  5.2277589 ])
+                    gp.dat.nrnu = [np.array([ 0.15476906,  0.85086798,  0.9342867 ,  0.88161169,  0.83254241, 0.85086798,  0.99930431,  1.22211638,  1.47184763,  1.78910057, 2.1987677 ,  2.51961046,  2.80345393,  3.10336133,  3.88504346,  4.52442727,  4.88817769,  5.07880404,  4.83455511,  6.32165657,  4.88817769]),
+               np.array([ 0.15476906,  0.85086798,  0.9342867 ,  0.88161169,  0.83254241,  0.85086798,  0.99930431,  1.22211638,  1.47184763,  1.78910057, 2.1987677 ,  2.51961046,  2.80345393,  3.10336133,  3.88504346,  4.52442727,  4.88817769,  5.07880404,  4.83455511,  6.32165657,  4.88817769]),
+               np.array([ 0.15476906,  0.85086798,  0.9342867 ,  0.88161169,  0.83254241, 0.85086798,  0.99930431,  1.22211638,  1.47184763,  1.78910057,  2.1987677 ,  2.51961046,  2.80345393,  3.10336133,  3.88504346,  4.52442727,  4.88817769,  5.07880404,  4.83455511,  6.32165657,    4.88817769]),
+               np.array([ 0.15476906,  0.85086798,  0.9342867 ,  0.88161169,  0.83254241, 0.85086798,  0.99930431,  1.22211638,  1.47184763,  1.78910057,  2.1987677 ,  2.51961046,  2.80345393,  3.10336133,  3.88504346,  4.52442727,  4.88817769,  5.07880404,  4.83455511,  6.32165657,  4.88817769])]
+                    gp.dat.nrnuerr = [np.array([  0.05158969,  12.22044422,   2.44408884,   2.44408884, 2.44408884,   2.44408884,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777, 0.48881777,   2.44408884,   2.44408884,   2.44408884,   2.44408884]),
+                  np.array([  0.05158969,  12.22044422,   2.44408884,   2.44408884, 2.44408884,   2.44408884,   0.48881777,   0.48881777,    0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777, 0.48881777,   2.44408884,   2.44408884,   2.44408884,   2.44408884]),
+                  np.array([  0.05158969,  12.22044422,   2.44408884,   2.44408884, 2.44408884,   2.44408884,   0.48881777,   0.48881777, 0.48881777,   0.48881777,   0.48881777,   0.48881777,  0.48881777,   0.48881777,   0.48881777,   0.48881777, 0.48881777,   2.44408884,   2.44408884,   2.44408884,   2.44408884]),
+                  np.array([  0.05158969,  12.22044422,   2.44408884,   2.44408884, 2.44408884,   2.44408884,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777,   0.48881777, 0.48881777,   2.44408884,   2.44408884,   2.44408884,   2.44408884])]
+
                     lbaryonpar = 0.0*rhodmpar
                     MtoL = 0.0
-                    annu = ga.rho(gp.xepol, gp)[1]
-                    nupar_half = np.exp(splev(gp.dat.rhalf[1], splrep(gp.xepol, np.log(annu))))
-                    nrnu = -gh.derivipol(np.log(annu), np.log(gp.xepol))
-                    dlrnu = np.hstack([nrnu[0], nrnu, nrnu[-1]])
-                    if gp.investigate == 'gaia':
-                        dlrnu[-1] = 6
-                    nupar = np.hstack([nupar_half, dlrnu])
-                sig,kap,zetaa,zetab=phys.sig_kap_zet(gp.xepol, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
-            except Exception:
-                gh.LOG(1, 'sigma error')
-                tmp_profs.chi2 = gh.err(2., gp)
-                return tmp_profs
+
+                sig,kap,zetaa,zetab = phys.sig_kap_zet(gp.xepol, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
+                fill_between(gp.xipol, gp.dat.sig[1]-gp.dat.sigerr[1], gp.dat.sig[1]+gp.dat.sigerr[1])
+                plot(gp.xepol, sig, 'r')
+                xscale('log')
+                ylim([0, 30])
+                xlabel('$r$ [pc]')
+                ylabel('$\sigma_{LOS}$ [km/s]')
+                savefig('siglos_gaia_2.pdf')
+                pdb.set_trace()
+            #except Exception:
+            #    gh.LOG(1, 'sigma error')
+            #    tmp_profs.chi2 = gh.err(2., gp)
+            #    return tmp_profs
             # now store the profiles
             gh.sanitize_vector(tmp_beta, len(tmp_profs.x0), -200, 1, gp.debug)
             tmp_profs.set_prof('beta', tmp_beta, pop, gp)

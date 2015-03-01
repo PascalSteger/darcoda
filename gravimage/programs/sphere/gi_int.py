@@ -126,7 +126,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     # need a M/L parameter)
     # only if we work on real data, add up total baryonic contribution
     if gp.investigate == 'obs':
-        nu_baryons = MtoL*phys.nu(r0fine, lbaryonpar, pop, gp)
+        nu_baryons = MtoL*phys.rho(r0fine, lbaryonpar, pop, gp)
         rhofine += nu_baryons
 
 
@@ -151,7 +151,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # nu
     # ------------------------------------------------------------------------
-    nufine   = phys.nu(r0fine, nupar, pop, gp)
+    nufine   = phys.rho(r0fine, nupar, pop, gp)
     if gp.checksig:
         annu = ga.rho(r0fine, gp)[pop]
     if gp.checksig and gp.stopstep <= 3:

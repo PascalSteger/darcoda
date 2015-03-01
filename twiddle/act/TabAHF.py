@@ -251,8 +251,9 @@ GADGET_MUNIT      = 1.0E10\n")
             if(not mys.snap_exists(nsnap)):
                 continue
             d  = mys.d(nsnap)
-            my.mkdir(d+"stars"); my.mkdir(d+"dm")
-            cmd = "gen_spheres.py "+str(nsnap)+" 2"
+            my.mkdir(d+"stars")
+            my.mkdir(d+"dm")
+            cmd = "gen_spheres.py "+str(nsnap)+" 2" # 1 at end: centers from AHF. 2: after shrinking sphere
             my.run(cmd)
         my.done()
     ## \fn onGenAOI(self, event)

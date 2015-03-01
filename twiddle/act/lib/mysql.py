@@ -287,7 +287,6 @@ def fill_snapshot(snap):
     my.sql("ALTER TABLE snapshot ORDER BY snap DESC;")
 
 def exists_snap(snap):
-    pdb.set_trace()
     c = my.sql("SELECT snap FROM snapshot WHERE snap="+str(snap)+";")
     if(len(c)==0):
         return False;

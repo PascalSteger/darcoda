@@ -72,7 +72,7 @@ class Params():
         # -------------------------------------
         self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
         self.chi2_switch = 30
-        self.chi2_Sig_converged = 1000 #how many times to be below that threshold?
+        self.chi2_Sig_converged = -1 #1000 #how many times to be below that threshold?
         # Set number of terms for enclosedmass+tracer+anisotropy bins = model parameters:
         self.nipol = 12   # IF CHANGED => set getnewdata = True to run data readout again
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
@@ -105,9 +105,8 @@ class Params():
 
         # parameter spaces
         # --------------------------------------------------------
-        self.rhohalf = -1.    # prior density for rho at
-                              # half-light radius of tracers
-                              # calculated in gi_data
+        self.rhohalf = -1.    # prior density for rho at half-light radius of tracers
+                             # calculated in gi_data, in linear space
         self.log10rhospread = 1.  # with this spread, [dex] in log space
         self.log10nuspread = 0.3  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
@@ -119,10 +118,10 @@ class Params():
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = False  # beta(r=0)=0
-        self.minbetastar_0 = -0.01  # clipping for beta*, default: -0.99
-        self.maxbetastar_0 = 0.01  # clipping for beta*, default:  1.00
-        self.minbetastar_inf = 0.99
-        self.maxbetastar_inf = 1.00
+        self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
+        self.maxbetastar_0 = 0.99  # clipping for beta*, default:  1.00
+        self.minbetastar_inf = -0.99
+        self.maxbetastar_inf = 0.99
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
@@ -153,10 +152,10 @@ class Params():
 
         # debug options
         # ----------------------------------------------------------------------
-        self.debug = False # enable calling debug routines during run. Turn off for production runs!
-        self.checkbeta = False # check that if right r_s and beta(r_infty) is set,
+        self.debug = False # enable calling debug routines. Turn off in production runs!
+        self.checkbeta = True # check that if right r_s and beta(r_infty) is set,
                               # we get the right profiles back
-        self.checksig = False # check sigma_LOS calculation steps in gi_int
+        self.checksig = True # check sigma_LOS calculation steps in gi_int
         self.stopstep = 1 # step to stop at by default
 
         # global arrays
@@ -188,7 +187,6 @@ class Params():
     # @param timestamp = '', for new output. set to some existing output dir for restart, plotting
     # @param investigate if set, string of mode
     # @param case if set, number of case
-
 
     def __repr__(self):
         return "Params: "+self.files.dir
