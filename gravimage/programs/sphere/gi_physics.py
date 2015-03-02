@@ -33,6 +33,7 @@ def nr(r0, dlr, pop, gp):
     logrnu = np.log(rnu/gp.dat.rhalf[pop])
     dlrnu = -1.*dlr
     # use linear spline interpolation for dn/dlogr (logr)
+    #pdb.set_trace()
     spline_n = splrep(logrnu, dlrnu, k=1)
     # output to evaluate spline at any points in between
     return spline_n
@@ -44,7 +45,7 @@ def nr(r0, dlr, pop, gp):
 # @param gp global parameters
 
 def rho(r0, rhodmpar, pop, gp):
-    gh.sanitize_vector(rhodmpar, len(gp.xepol)+3, 0, 1e30, gp.debug)
+    gh.sanitize_vector(rhodmpar, gp.nrho, 0, 1e30, gp.debug)
     vec = 1.*rhodmpar # make a new copy so we do not overwrite rhodmpar
     rho_at_rhalf = vec[0]
     vec = vec[1:]

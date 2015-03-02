@@ -32,7 +32,6 @@ def int_poly_inf(r0,poly):
 # @param r0 radii
 # @param poly slope
 
-
 def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
     if log:
         yint[1:] = np.log(yint[1:])
@@ -48,29 +47,22 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 # @param s smoothing of the spline. 0.01 is a *small* default value, hard to converge to
 # @param log bool for working in log space
 
-
 def ant_intbeta(r0, betapar, gp):
-    # define function
     xint = 1.*r0
     yint = phys.beta(xint, betapar, gp)[0]/xint
-
-    # analytic values
-    # yint =  ga.beta(xint, gp)[1]/xint
-
     intbet = np.zeros(len(r0))
     for k in range(len(r0)):
-        intbet[k] = gh.quadinf(xint, yint, r0[0]/1e5, r0[k])
+        intbet[k] = gh.quadinf(xint, yint, r0[0], r0[k])
     # assumption here is that integration goes down to min(r0)/1e5
-
     gh.checknan(intbet, 'intbet in ant_intbeta')
     return intbet                                                # [1]
-## \fn ant_intbeta(r0, betapar, gp)
+## \fn ant_intbeta(r0, betapar, pop, gp)
 # integrate beta(s)/s over s
 # (integrals in front of and after sigma_r^2 integral, factor 2 not in here)
 # @param r0 free variable, array, in [lunit]
 # @param betapar integrand, array, in [1]
-# @param gp
-
+# @param pop population int
+# @param gp global parameters
 
 def g(rvar, rfix, beta, dbetadr):
     tmp = 1.             # [1]
@@ -85,7 +77,6 @@ def g(rvar, rfix, beta, dbetadr):
 # @param rfix capital R, in [pc]
 # @param beta beta, in [1]
 # @param dbetadr d beta/dr, in [1]
-
 
 def varepsilon(r0, betapar, gp):
     su = 0
@@ -128,7 +119,6 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     if gp.investigate == 'obs':
         nu_baryons = MtoL*phys.rho(r0fine, lbaryonpar, pop, gp)
         rhofine += nu_baryons
-
 
     # beta
     # ------------------------------------------------------------------------
@@ -193,16 +183,19 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         savefig('fit_Sig_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
-
     # int beta(s)/s ds
-    # ---------------------------------------------------------------
-    intbetasfine   = ant_intbeta(r0fine, betapar, gp)
+    # ------------------------------------------------------
+    # test for constant \beta
     if gp.checksig:
         if gp.investigate == 'gaia':
             beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
             anintbetasfine = 0.5*(np.log(r0fine**2+r_a1**2)-np.log(r_a1**2))
         elif gp.investigate == 'hern':
             anintbetasfine = 0.0*r0fine
+    #betapar[0] = 1
+    #betapar[1] = 1
+    #anintbetasfine = np.log(r0fine)-np.log(r0fine[0])
+    intbetasfine   = ant_intbeta(r0fine, betapar, gp)
     if gp.checksig and gp.stopstep <= 5 :
         clf()
         plot(r0fine, intbetasfine, 'r.-', label='model')
@@ -218,9 +211,9 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         savefig('fit_intbeta_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
-
     # M(r)
-    # ---------------------------------------------------------------
+    # -------------------------------------------------------
+    #rhofine = ga.rho_hern(r0fine, gp)[0]
     rhoint = 4.*np.pi*r0fine**2*rhofine
     # add point to avoid 0.0 in Mrfine(r0fine[0])
     r0tmp = np.hstack([0.,r0fine])
@@ -231,30 +224,31 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         Mrfine[i] = splint(0., r0fine[i], splpar_rho)
     gh.checkpositive(Mrfine, 'Mrfine')
     if gp.checksig:
-        anMr = ga.Mr(r0fine, gp)[pop]
+        anMr = ga.Mr(r0fine, gp)[0] # earlier: pop
+        anMr = Mrfine
+        #anMr = ga.M_hern(r0fine, gp)[0]
     if gp.checksig and gp.stopstep <= 6:
         #loglog(gp.xipol, gp.dat.Mr[pop], 'g.-', label='data')
         #s = r0fine/r_DM # [1]
         clf()
         loglog(r0fine, Mrfine, 'r.-', label='model')
-        loglog(r0fine, anMr, 'b--', label='analytic')
+        #loglog(r0fine, anMr, 'b--', label='analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
         axvline(gp.dat.rhalf[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$M(r)$')
         legend(loc='lower right')
-        savefig('fit_M_hern_better.pdf')
+        savefig('fit_M_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
-
     # nu(r)\cdot\sigma_r^2(r) integrand
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------
     # (sigr2, 3D) * nu/exp(-intbetasfine)
     xint = r0fine                           # [pc]
     yint = gu.G1__pcMsun_1km2s_2 * Mrfine / r0fine**2         # [1/pc (km/s)^2]
     yint *= nufine                          # [Munit/pc^4 (km/s)^2]
-    yint *= np.exp(2*intbetasfine)                  # [Munit/pc^4 (km/s)^2]
+    yint *= np.exp(2*(intbetasfine))                  # [Munit/pc^4 (km/s)^2]
     gh.checkpositive(yint, 'yint sigr2')
     if gp.checksig and gp.stopstep <= 7:
         clf()
@@ -317,7 +311,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     sigr2nu_model = sigr2nu_model_new
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
-    # -------------------------------------------------------------
+    # -------------------------------------------------------
     sigl2s = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
         bit = 1.e-6
@@ -349,13 +343,13 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
 
     # sigma_LOS^2
-    # ----------------------------------------------------------------------
+    # -------------------------------------------------------
     siglos2 = sigl2s/Sigfine
     if gp.checksig and gp.stopstep <= 10:
         clf()
-        ansiglos = ga.sig_los(r0fine, gp)
+        #ansiglos = ga.sig_los(r0fine, gp)
         plot(r0fine, siglos2, 'r.-', label='model')
-        plot(r0fine, ansiglos**2, 'b--', label='analytic')
+        #plot(r0fine, ansiglos**2, 'b--', label='analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
         axvline(gp.Xscale[0], lw=2)
@@ -372,9 +366,9 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     # gh.checkpositive(siglos2_out, 'siglos2_out')
     if gp.checksig and gp.stopstep <= 11:
         clf()
-        ansiglos = ga.sig_los(r0, gp)
+        #ansiglos = ga.sig_los(r0, gp)
         plot(r0, np.sqrt(siglos2_out), 'r.-', label='model')
-        plot(r0, ansiglos, 'b--', label='analytic')
+        #plot(r0, ansiglos, 'b--', label='analytic')
         plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
         fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
         xscale('log')
@@ -383,6 +377,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}$')
+        ylim([0,25])
         legend(loc='upper right')
         savefig('fit_siglos_out_'+gp.investigate+'.pdf')
         pdb.set_trace()

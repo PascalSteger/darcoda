@@ -34,7 +34,6 @@ def run(gp):
     import gi_helper as gh
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
     x0, y0, z0, vz0 = select_pm(x0, y0, z0, vz, ind1)
-
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
     import gi_centering as glc
     com_x, com_y, com_z, com_vz = glc.com_shrinkcircle_v(x0, y0, z0, vz, PM)
@@ -45,7 +44,6 @@ def run(gp):
     vz -= com_vz # [km/s]
     R0 = np.sqrt(x0*x0+y0*y0) # [pc]
     Rscale = np.median(R0) # [pc]
-
     import gi_file as gf
     for pop in range(gp.pops+1):      # gp.pops +1 for all components together
         pmr = (R0<(gp.maxR*Rscale))

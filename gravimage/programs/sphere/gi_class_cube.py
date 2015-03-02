@@ -205,34 +205,6 @@ def map_nr_tracers(params, pop, gp):
 # @param pop population int, 0 for rho*, 1,2,... for tracer densities
 # @param gp global parameters
 
-def map_betastar_poly(params, gp):
-    gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
-    off_beta = 0
-    # beta* parameters : [0,1] ->  some range, e.g. [-1,1]
-    # starting offset in range [-1,1]
-    # cluster around 0, go symmetrically in both directions,
-    params[0] = 1.98*(params[0]-0.5)
-    if gp.beta00prior:
-        params[0] = 0.0
-    # out to maxbetaslope
-    # here we allow |beta_star,0| > 1, so that any models with
-    # beta(<r_i) = 1, beta(>r_i) < 1
-    # are searched as well
-    # pa[0] = np.sign(tmp)*tmp**2 # between -1 and 1 for first parameter
-    off_beta += 1
-    for i in range(gp.nbeta-1):
-        params[off_beta] = (2*(params[off_beta]-0.5))*gp.maxbetaslope
-        # rising beta prior would remove -0.5
-        off_beta += 1
-
-    return params
-## \fn map_betastar_poly(params, gp)
-# mapping beta parameters from [0,1] to full parameter space,
-# using consecutive polynomials
-# NOT USED ANYMORE
-# @param params parameter array
-# @param gp global parameters
-
 def map_betastar_sigmoid(params, gp):
     gh.sanitize_vector(params, gp.nbeta, 0, 1, gp.debug)
     bdiff = gp.maxbetastar_0-gp.minbetastar_0
@@ -246,32 +218,13 @@ def map_betastar_sigmoid(params, gp):
     # r_s, sampled in log space over all radii,
     # as we want flat prior in log space
     #logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
-    logrs = params[3]*(np.log(2*gp.Xscale[0])-np.log(gp.Xscale[0]/2))+np.log(gp.Xscale[0]/2)
+    logrs = params[3]*(np.log(gp.Xscale[0])-np.log(gp.Xscale[0]/2))+np.log(gp.Xscale[0]/2)
     #if gp.checkbeta:
     #    a1 = max(0.99, a1) # for Gaia02 runs only!
     #    logrs = gp.betalogrs
     return np.hstack([a0, a1, alpha, logrs])
 ## \fn map_betastar_sigmoid(params, gp)
 # mapping beta parameters from [0,1] to full param space
-# @param params parameter vector, size 4
-# @param gp global parameters
-
-def map_betastar_j(params, gp):
-    gh.sanitize_vector(params, 4, 0, 1, gp.debug)
-    # betastar = exp(-(r/r0)^n)*(a0-a1)+a1
-    a0 = params[0]*1.98-1 # a_0, betastar(r=0), in between -0.99 and +0.99
-    a1 = params[1]*1.98-1 # a_1, betastar(r->infty), same range
-    # r_0, scale radius for transition from a0->a1:
-    #logrs = params[2]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
-    logrs = params[2]*(np.log(2*gp.rscale[0])-np.log(gp.rscale[0]/2))+np.log(gp.rscale[0]/2)
-    if gp.checkbeta:
-        a1 = max(0.99, a1)
-        logrs = gp.betalogrs
-    n0 = params[3]*3 # n, rate of transition
-    return np.hstack([a0, a1, logrs, n0])
-## \fn map_betastar_j(params, gp)
-# mapping beta parameters from [0,1] to full param space
-# NOT USED ANYMORE
 # @param params parameter vector, size 4
 # @param gp global parameters
 

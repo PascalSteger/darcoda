@@ -15,17 +15,14 @@ class grParams():
         # show plots during execution of data readout?
         # set automatically if gr_MCMCbin.py is called on the command line
         self.showplots = False
-
-        self.n = 30 # number of iterations in gr_MCMCbin
+        self.n = 300 # number of iterations in gr_MCMCbin
         self.Rerr  = 0. # 0.01      # distance error in [Xscale]
         self.vrerr = 2.0 # [km/s] 0.01 # velocity error. raises sig_los, errors in it
-
         if gp.investigate == 'hern':
             self.repr  = 1     # choose simulation representation
             self.Rcut = 1.e10  # [Rvir]
             self.Rmin = 0. # [Rscale]i
             self.Rmax = 10. # [Rscale]
-
             self.simname = gp.files.get_sim_name(gp) # dir+'simulation/'+prename+'unit_hern_%i' %(repr)
             if gp.pops == 1:
                 self.simpos = gp.files.dir+'simulation/'+self.simname+'pos.txt'
@@ -36,7 +33,6 @@ class grParams():
             else:
                 gh.LOG(0, 'get data for more than 2 pops in Hernquist profile')
                 pdb.set_trace()
-
         elif gp.investigate == 'walk': # or just want to try some other generic pymc stuff:
             self.r_DM  = 1000.
             self.fi = Files(gp)

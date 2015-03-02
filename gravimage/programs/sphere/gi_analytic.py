@@ -120,8 +120,7 @@ def rho_gaia(rad, gp):
     if gp.case == 9 or gp.case == 10:
         alpha_star1 = 0.5
         beta_DM = 4.
-    beta_star1, r_DM, gamma_star1, r_star1, r_a1,\
-        gamma_DM,rho0 = gp.files.params
+    beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM,rho0 = gp.files.params
     if gamma_star1 == 0.1:
         nu0 = 2.2e7/r_star1**3
     elif gamma_star1 == 1.0:
@@ -147,10 +146,10 @@ def M_gaia(rad, gp):
         s = rad/r_DM
         Mstar = 4.*np.pi*rho0*r_DM**3*(1/(1+s)+np.log(1+s)-1) # [Msun]
     else:
-        #Mdm = gip.rho_INT_Sum_MR(rad, rhodm, gp)
+        Mdm = gip.rho_INT_Sum_MR(rad, rhodm, gp)
         Mstar = gip.rho_INT_Sum_MR(rad, rhostar, gp)
     # from here on, we assume to work on 2D radii
-    return Mstar, Mstar
+    return Mdm, Mstar
 ## \fn M_gaia(rad, gp)
 # calculate mass in 2D radial bins
 # @param rad radius in pc, 3D

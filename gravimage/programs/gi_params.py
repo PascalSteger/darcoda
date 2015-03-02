@@ -118,10 +118,10 @@ class Params():
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = False  # beta(r=0)=0
-        self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
-        self.maxbetastar_0 = 0.99  # clipping for beta*, default:  1.00
-        self.minbetastar_inf = -0.99
-        self.maxbetastar_inf = 0.99
+        self.minbetastar_0 = -0.999  # clipping for beta*, default: -0.99
+        self.maxbetastar_0 = 1.00  # clipping for beta*, default:  1.00
+        self.minbetastar_inf = -0.999
+        self.maxbetastar_inf = 1.00
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
@@ -129,19 +129,19 @@ class Params():
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------
         self.usekappa   = False # switch to turn on (True) or off the
                                 # calculation of kappa
         self.usezeta    = False # switch to turn on (True) or off the
                                 # calculation of virial parameters zeta_a,b
 
         # automatic plotting options
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------
         self.last_plot = -1    # timestamp of last automatic plot, set to -1
         self.plot_after = 36000  # [s] to elapse before automatic plotting called again
 
         # filesystem-related
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------
         self.machine = gb.get_machine()
         import import_path as ip
         ip.set_geometry(self.geom, self.machine) # load spherical or disc version of the code
@@ -151,15 +151,15 @@ class Params():
         self.dat = Datafile()
 
         # debug options
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------
         self.debug = False # enable calling debug routines. Turn off in production runs!
-        self.checkbeta = True # check that if right r_s and beta(r_infty) is set,
+        self.checkbeta = False # check that if right r_s and beta(r_infty) is set,
                               # we get the right profiles back
-        self.checksig = True # check sigma_LOS calculation steps in gi_int
-        self.stopstep = 1 # step to stop at by default
+        self.checksig = False # check sigma_LOS calculation steps in gi_int
+        self.stopstep = 11 # step to stop at by default
 
         # global arrays
-        # ----------------------------------------------------------------------
+        # --------------------------------------------------
         self.xipol = np.array([]) # [pc] hold radius bin centers
         self.xepol = np.array([]) # [pc] extended by 3 fudge bins
         self.xfine = np.array([]) # [pc] radii for lookup tables,
@@ -172,6 +172,8 @@ class Params():
         self.Sig0pc=[]
         self.nu0pc=[]
         self.totmass_tracers=[];       self.maxsiglos=[]
+        self.ana = 1000.
+        self.anM = 1.
         if self.investigate == 'hern':
             # each is set for all components and first component by
             # default
