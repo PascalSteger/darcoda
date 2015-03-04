@@ -81,8 +81,8 @@ def geom_loglike(cube, ndim, nparams, gp):
                 gh.LOG(2, 'beta error')
                 tmp_profs.chi2 = gh.err(1., gp)
                 return tmp_profs
-            #try:
-            if True:
+            try:
+            #if True:
                 if gp.checksig and gp.investigate == 'hern':
                     import gi_analytic as ga
                     anrho = ga.rho(gp.xepol, gp)[0]
@@ -121,18 +121,18 @@ def geom_loglike(cube, ndim, nparams, gp):
                     MtoL = 0.0
 
                 sig,kap,zetaa,zetab = phys.sig_kap_zet(gp.xepol, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp)
-                fill_between(gp.xipol, gp.dat.sig[1]-gp.dat.sigerr[1], gp.dat.sig[1]+gp.dat.sigerr[1])
-                plot(gp.xepol, sig, 'r')
-                xscale('log')
-                ylim([0, 30])
-                xlabel('$r$ [pc]')
-                ylabel('$\sigma_{LOS}$ [km/s]')
-                savefig('siglos_gaia_2.pdf')
-                pdb.set_trace()
-            #except Exception:
-            #    gh.LOG(1, 'sigma error')
-            #    tmp_profs.chi2 = gh.err(2., gp)
-            #    return tmp_profs
+                #fill_between(gp.xipol, gp.dat.sig[1]-gp.dat.sigerr[1], gp.dat.sig[1]+gp.dat.sigerr[1])
+                #plot(gp.xepol, sig, 'r')
+                #xscale('log')
+                #ylim([0, 30])
+                #xlabel('$r$ [pc]')
+                #ylabel('$\sigma_{LOS}$ [km/s]')
+                #savefig('siglos_gaia_2.pdf')
+                #pdb.set_trace()
+            except Exception:
+                gh.LOG(1, 'sigma error')
+                tmp_profs.chi2 = gh.err(2., gp)
+                return tmp_profs
             # now store the profiles
             gh.sanitize_vector(tmp_beta, len(tmp_profs.x0), -200, 1, gp.debug)
             tmp_profs.set_prof('beta', tmp_beta, pop, gp)

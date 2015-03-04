@@ -265,16 +265,15 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # actual integration, gives \sigma_r^2 \nu
     sigr2nu_model = np.zeros(len(r0fine))
-    sigr2nu_model_new = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
         #theta_old = np.linspace(0, np.arccos(r0fine[k]/(gp.rinfty*max(gp.xepol))), gp.nfine)
         theta = np.arccos(r0fine[k]/r0fine[k:])
         rq = r0fine[k]/np.cos(theta)
 
-        Mrq = np.interp(rq, r0fine, Mrfine, left=0, right=0)
-        nuq = np.interp(rq, r0fine, nufine, left=0, right=0)
-        intbetaq = np.interp(rq, r0fine, intbetasfine, left=0, right=0)
-        func_interp_before = Mrq*nuq*np.exp(2*intbetaq)
+        #Mrq = np.interp(rq, r0fine, Mrfine, left=0, right=0)
+        #nuq = np.interp(rq, r0fine, nufine, left=0, right=0)
+        #intbetaq = np.interp(rq, r0fine, intbetasfine, left=0, right=0)
+        #func_interp_before = Mrq*nuq*np.exp(2*intbetaq)
 
         func_base = Mrfine*nufine*np.exp(2*intbetasfine)
         #func_interp_after = np.interp(rq, r0fine, func_base, left=0, right=0)
@@ -283,22 +282,20 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         #print('median(func_interp_after / func_interp_before = ',\
         #      np.median(func_interp_after / func_interp_before))
 
-        sigr2nu_model[k] =  np.exp(-2*intbetasfine[k])/r0fine[k] * \
-                            gu.G1__pcMsun_1km2s_2*simps(func_interp_before*np.sin(theta), theta)
+        #sigr2nu_model[k] =  np.exp(-2*intbetasfine[k])/r0fine[k] * \
+        #                    gu.G1__pcMsun_1km2s_2*simps(func_interp_before*np.sin(theta), theta)
 
-        sigr2nu_model_new[k] = np.exp(-2*intbetasfine[k])/r0fine[k] * \
+        sigr2nu_model[k] = np.exp(-2*intbetasfine[k])/r0fine[k] * \
                                gu.G1__pcMsun_1km2s_2*simps(func_interp_after*np.sin(theta), theta)
 
     # clean last value (which is always 0 by construction)
     sigr2nu_model[-1] = sigr2nu_model[-2]/10.
-    sigr2nu_model_new[-1] = sigr2nu_model_new[-2]/10.
     gh.checkpositive(sigr2nu_model, 'sigr2nu_model in sigl2s')
-    gh.checkpositive(sigr2nu_model_new, 'sigr2nu_model_new in sigl2s')
+    #gh.checkpositive(sigr2nu_model_new, 'sigr2nu_model_new in sigl2s')
     if gp.checksig and gp.stopstep <= 8:
         clf()
         ansigr2nu = ga.sigr2(r0fine, gp)*annu
-        loglog(r0fine, sigr2nu_model, 'r.-', label='model, interp each function')
-        loglog(r0fine, sigr2nu_model_new, 'k--', label='model, interp product')
+        loglog(r0fine, sigr2nu_model, 'r.-', label='model')
         loglog(r0fine, ansigr2nu, 'b--', label='analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
@@ -307,8 +304,6 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         ylabel('$\\sigma_r^2(r)\\nu(r)$')
         legend(loc='lower right')
         savefig('fit_sigr2_'+gp.investigate+'.pdf')
-
-    sigr2nu_model = sigr2nu_model_new
 
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
     # -------------------------------------------------------

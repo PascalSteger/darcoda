@@ -49,11 +49,8 @@ class Params():
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
 
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations
-                      # if changed: set getnewdata=True!
-        # Set number of tracer stars to look at take all particles #
-        # case 0 want to set ntracer = 3e3 # case 1 ntracer = 1e4 #
-        # case 2
+        self.pops = 1 # number of stellar tracer populations # if changed: set getnewdata=True!
+        # Set number of tracer stars to look at
         self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N
 
         # data options
@@ -70,11 +67,11 @@ class Params():
 
         # MultiNest options
         # -------------------------------------
-        self.getSigdata = False # get previously stored parameters for tracer densities, from after a Sig convergence run, to speed up the first part
-        self.chi2_switch = 30
-        self.chi2_Sig_converged = -1 #1000 #how many times to be below that threshold?
-        # Set number of terms for enclosedmass+tracer+anisotropy bins = model parameters:
-        self.nipol = 12   # IF CHANGED => set getnewdata = True to run data readout again
+        self.getSigdata = False # get previously stored parameters for nu,  after a Sig convergence run
+        self.chi2_switch = 10   # turn on sig calculation if chi2 < chi2_switch
+        self.chi2_Sig_converged = 1000 # how many times to be below that threshold?
+        # Set number of terms for enclosedmass&tracer&anisotropy bins = model parameters:
+        self.nipol = 12   # set getnewdata = True to run data readout again if this value changes
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)
@@ -85,7 +82,7 @@ class Params():
                                                 # the asymptote to \infty
         self.nfine = 10*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
-        self.rinfty = 5. # interpolate from last slope to slope at
+        self.rinfty = 10. # interpolate from last slope to slope at
                          # 10*max(xipol), where asymptote to \infty
                          # is reached, must be >= 11
         self.nbeta = 4   # number of parameters for beta, in sum of
@@ -113,19 +110,19 @@ class Params():
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxnuslope = 5   # same for nrnu
-        self.nrtol  = 1.     # scale of change of dn/dr
+        self.nrtol  = 1.5     # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
-        self.beta00prior = True  # beta(r=0)=0
-        self.minbetastar_0 = -0.999  # clipping for beta*, default: -0.99
+        self.beta00prior = False  # beta(r=0)=0
+        self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
         self.maxbetastar_0 = 1.00  # clipping for beta*, default:  1.00
-        self.minbetastar_inf = -0.999
+        self.minbetastar_inf = -0.99
         self.maxbetastar_inf = 1.00
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = True     # monotonicity prior on n(x) for rho(x)
+        self.monotonic = False    # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options

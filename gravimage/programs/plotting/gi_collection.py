@@ -126,7 +126,7 @@ class ProfileCollection():
                 if counts[k+1] > counts[k] or counts[k+1]==0 or counts[k+1]<=max(counts)/10:
                     break
             maxchi = 10**(bins[k+1])
-        self.subset = [minchi, maxchi]
+        self.subset = [minchi, 1] #maxchi]
         print('chi^2 subset: ',minchi, maxchi)
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
