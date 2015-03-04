@@ -52,8 +52,7 @@ def ant_intbeta(r0, betapar, gp):
     yint = phys.beta(xint, betapar, gp)[0]/xint
     intbet = np.zeros(len(r0))
     for k in range(len(r0)):
-        intbet[k] = gh.quadinf(xint, yint, gp.xipol[0], r0[k])
-    #pdb.set_trace()
+        intbet[k] = gh.quadinf(xint, yint, r0[0], r0[k])
     # assumption here is that integration goes down to min(r0)/1e5
     gh.checknan(intbet, 'intbet in ant_intbeta')
     return intbet
