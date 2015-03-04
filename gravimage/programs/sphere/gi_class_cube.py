@@ -143,7 +143,11 @@ def map_nr(params, prof, pop, gp):
 def map_nr_data(params, pop, gp):
     meannr = gp.dat.nrnu[pop]
     stdnr = gp.dat.nrnuerr[pop]
-    return (np.array(params)-0.5)*2.*stdnr+meannr
+    nrdata = (np.array(params)-0.5)*2.*stdnr+meannr
+    for k in range(len(nrdata)):
+        if nrdata[k] < 0:
+            nrdata[k] = 0
+    return nrdata
 ## \fn map_nr_data(params, pop, gp)
 # create nr params
 # @param params
@@ -218,7 +222,7 @@ def map_betastar_sigmoid(params, gp):
     # r_s, sampled in log space over all radii,
     # as we want flat prior in log space
     #logrs = params[3]*(np.log(max(gp.xepol))-np.log(min(gp.xepol)))+np.log(min(gp.xepol))
-    logrs = params[3]*(np.log(gp.Xscale[0])-np.log(gp.Xscale[0]/2))+np.log(gp.Xscale[0]/2)
+    logrs = params[3]*(np.log(2*gp.Xscale[0])-np.log(gp.Xscale[0]/2))+np.log(gp.Xscale[0]/2)
     #if gp.checkbeta:
     #    a1 = max(0.99, a1) # for Gaia02 runs only!
     #    logrs = gp.betalogrs
@@ -271,7 +275,7 @@ class Cube:
             pc[off] = map_MtoL(pc[off], gp)
             off += offstep
 
-        for pop in range(1,gp.pops+1): # nu1, nu2, ...
+        for pop in range(1,gp.pops+1): # nu1, nu2, and further
             offstep = gp.nrho
             tmp_nu = map_nr_data(pc[off:off+offstep], pop, gp)
             for i in range(offstep):

@@ -46,7 +46,6 @@ def calc_chi2(profs, gp):
         #chi2_nu  = chi2red(numodel, nudat, nuerr, gp.nipol) # [1]
         #chi2 += chi2_nu                 # [1]
         #gh.LOG(1, ' chi2_nu   = ', chi2_nu)
-
         if gp.chi2_Sig_converged > 0:
             continue
 

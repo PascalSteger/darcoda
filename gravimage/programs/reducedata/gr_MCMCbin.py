@@ -16,7 +16,7 @@ from scipy.stats import kurtosis
 import gi_file as gf
 import gi_helper as gh
 import gi_project as gip
-from BiWeight import meanbiweight
+from BiWeight import stddevbiweight, meanbiweight
 
 def obs_Sig_phot(Binmin, Binmax, Rscale0, Sig_kin, gp, gpr):
     Sig_phot   = np.zeros((gp.nipol, gpr.n))
@@ -134,7 +134,7 @@ def run(gp):
                 vlosi = gh.add_errors(vlos, gpr.vrerr)   # [km/s]
                 for i in range(gp.nipol):
                     ind1 = np.argwhere(np.logical_and(Rsi * Rscalei >= Binmin[i] * Rscale0, Rsi * Rscalei <  Binmax[i] * Rscale0)).flatten() # [1]
-                    tpb[i][k] = float(len(ind1)) #[1]
+                    tpb[i][k] = float(len(ind1)) # [1]
                     Sig_kin[i][k] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/rscale**2]
                     if(len(ind1)<=1):
                         siglos[i][k] = siglos[i-1][k]
@@ -174,6 +174,7 @@ def run(gp):
         Sig0 = np.sum(Sig_phot[0])/float(gpr.n) # [Munit/Rscale^2]
         Sig0pc = Sig0/Rscale0**2              # [munis/pc^2]
         gf.write_Sig_scale(gp.files.get_scale_file(pop), Sig0pc, totmass_tracers)
+
         # calculate density and mass profile, store it
         # ----------------------------------------------------------------------
         #tpb0   = np.sum(tpb[0])/float(gpr.n)     # [1]
@@ -221,6 +222,14 @@ def run(gp):
                 sigerr = p_edvlos[b-1] #[km/s]
                 # attention! uses last error
             else:
+                # Poisson error with measurement errors
+                #sigerr = sig/np.sqrt(tpbb)
+                #sigerr = np.sqrt(sigerr**2+2**2) # 2km/s
+
+                # standard deviation
+                #sigerr = stddevbiweight(siglos[b])
+
+                # Poisson error, first guess
                 sigerr = sig/np.sqrt(tpbb) #[km/s]
             p_dvlos[b] = sig    #[km/s]
             p_edvlos[b]= sigerr #[km/s]

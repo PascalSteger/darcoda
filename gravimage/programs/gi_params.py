@@ -106,18 +106,18 @@ class Params():
         # parameter spaces
         # --------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at half-light radius of tracers
-                             # calculated in gi_data, in linear space
+                              # calculated in gi_data, in linear space
         self.log10rhospread = 1.  # with this spread, [dex] in log space
         self.log10nuspread = 0.3  # same for nu
         self.rlimnr = 1       # radius in [Rhalf] below which n(r) is bounded by maxrhoslope/2
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxnuslope = 5   # same for nrnu
-        self.nrtol  = 1.5     # scale of change of dn/dr
+        self.nrtol  = 1.     # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
-        self.beta00prior = False  # beta(r=0)=0
+        self.beta00prior = True  # beta(r=0)=0
         self.minbetastar_0 = -0.999  # clipping for beta*, default: -0.99
         self.maxbetastar_0 = 1.00  # clipping for beta*, default:  1.00
         self.minbetastar_inf = -0.999
@@ -125,7 +125,7 @@ class Params():
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = False     # monotonicity prior on n(x) for rho(x)
+        self.monotonic = True     # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
@@ -156,7 +156,7 @@ class Params():
         self.checkbeta = False # check that if right r_s and beta(r_infty) is set,
                               # we get the right profiles back
         self.checksig = False # check sigma_LOS calculation steps in gi_int
-        self.stopstep = 11 # step to stop at by default
+        self.stopstep = 5 # step to stop at by default
 
         # global arrays
         # --------------------------------------------------
@@ -167,11 +167,12 @@ class Params():
         # scaling: Xscale in [pc], surfdens_central (=Sig0) in
         # in [Munit/pc^2], and totmass
         # [Munit], and max(v_LOS) in [km/s]
-        self.rscale=[]
-        self.Xscale=[]
-        self.Sig0pc=[]
-        self.nu0pc=[]
-        self.totmass_tracers=[];       self.maxsiglos=[]
+        self.rscale = []
+        self.Xscale = []
+        self.Sig0pc = []
+        self.nu0pc = []
+        self.totmass_tracers = []
+        self.maxsiglos = []
         self.ana = 1000.
         self.anM = 1.
         if self.investigate == 'hern':

@@ -153,11 +153,10 @@ class Datafile:
                 # xscale('log')
 
                 errnre = np.ones(1+len(extleft)+len(nre)+len(extright)+1)*maxnre/10.
-                for k in range(5):
-                    errnre[k] *= 5
+                for k in np.arange(1,4):
+                    errnre[k-1] *= 5
                     errnre[-k] *= 5
-                self.nrnuerr.append(np.hstack([nuhalf/3.,
-                                               errnre]))
+                self.nrnuerr.append(np.hstack([nuhalf/3., errnre]))
                 # import gi_physics as phys
                 # from pylab import loglog, axvline, axhline, plot, xscale, clf
                 # loglog(gp.xepol, self.nu_epol[0], 'b.-', lw=1)

@@ -40,15 +40,12 @@ import numpy as np
 from scipy.stats import t as Tfunc
 from scipy.stats import chi2 as CHI2
 
-
-
 def stddevbiweight(vector, zero=None, eps=1e-20):
     c=9. #tuning constant
     if zero!=None:
         center=0.
     else:
         center = np.median(vector) #sample median, [vecunit]
-
     #median absolute deviation = deviation from the sample median
     mad = np.median(np.abs(vector-center)) #[vecunit]
     if mad<eps:
@@ -66,7 +63,6 @@ def stddevbiweight(vector, zero=None, eps=1e-20):
             n = len(vector)         # [1]
             scale = n*np.sum((vector[ind]-center)**2*term1**4) # [vecunit^2]
             scale = np.sqrt(scale)/np.sum(term1*term2) # [vecunit]
-
     return scale
 ## \fn stddevbiweight(vector, zero=None, eps=1e-20)
 ## PURPOSE: Estimation of the scale ('dispersion') of a distribution,

@@ -52,10 +52,11 @@ def ant_intbeta(r0, betapar, gp):
     yint = phys.beta(xint, betapar, gp)[0]/xint
     intbet = np.zeros(len(r0))
     for k in range(len(r0)):
-        intbet[k] = gh.quadinf(xint, yint, r0[0], r0[k])
+        intbet[k] = gh.quadinf(xint, yint, gp.xipol[0], r0[k])
+    #pdb.set_trace()
     # assumption here is that integration goes down to min(r0)/1e5
     gh.checknan(intbet, 'intbet in ant_intbeta')
-    return intbet                                                # [1]
+    return intbet
 ## \fn ant_intbeta(r0, betapar, pop, gp)
 # integrate beta(s)/s over s
 # (integrals in front of and after sigma_r^2 integral, factor 2 not in here)
@@ -194,7 +195,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
             anintbetasfine = 0.0*r0fine
     #betapar[0] = 1
     #betapar[1] = 1
-    #anintbetasfine = np.log(r0fine)-np.log(r0fine[0])
+    anintbetasfine = np.log(r0fine)-np.log(r0fine[0])
     intbetasfine   = ant_intbeta(r0fine, betapar, gp)
     if gp.checksig and gp.stopstep <= 5 :
         clf()
