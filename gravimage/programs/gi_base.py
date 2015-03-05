@@ -1,6 +1,7 @@
 #!/usr/bin/env ipython3
 import socket
 import getpass
+import pdb
 
 def get_basepath():
     host_name = socket.gethostname()
@@ -8,6 +9,8 @@ def get_basepath():
     basepath = '/home/psteger/sci/darcoda/gravimage/'
     if 'darkside' in host_name:
         basepath = '/home/ast/read/dark/darcoda/gravimage/'
+    elif 'brutus' in host_name:
+        basepath = '/cluster/scratch_xp/public/psteger/gravimage/'
     elif ('lisa' in host_name) and ('hsilverw' in user_name):
         basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
     elif ('lisa' in host_name) and ('sofia' in user_name):
@@ -23,6 +26,8 @@ def get_machine():
         machine = 'darkside'
     elif 'science' in host_name:
         machine = 'science'
+    elif 'brutus' in host_name:
+        machine = 'brutus'
     elif ('lisa' in host_name) and ('login' in host_name) and ('hsilverw' in user_name):
         machine = 'lisa_HS_login'
     elif ('lisa' in host_name) and ('login' not in host_name) and ('hsilverw' in user_name):
