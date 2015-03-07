@@ -113,6 +113,7 @@ def list_files_readout(basedir, investigate, case):
         if re.search("DT"+str(investigate)+"/"+str(case)+"/", line):
             line2 = re.sub(r'\n', '', line)
             print(line2)
+            #exclude "File not found" errors
             if not re.search("File ", line2):
                 fdl.append(line2)
     fil.close()
@@ -338,7 +339,9 @@ def run(investigate="", case=-1, latest=False):
 
     line = fdl[sel] # full directory path, without '/'
     basename = re.split('\t', line)[1]
-    timestamp = re.split('/', basename)[2]
+    info = re.split('/', basename)
+    timestamp = info[2]
+    basename = info[0]+'/'+info[1]
     return timestamp, basepath+basename+'/'
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one

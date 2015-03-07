@@ -113,6 +113,12 @@ class ProfileCollection():
     # add a profile
     # @param prof Profile to add
 
+    def merge(self, pc):
+        self.chis = np.hstack([self.chis, pc.chis])
+        self.profs = np.hstack([self.profs, pc.profs])
+    ## \fn merge(self, pc)
+    # merge another profile collection into this one
+
     def cut_subset(self):
         self.chis = np.array(self.chis) # better to work with numpy arrays for subsections
         minchi = min(self.chis)

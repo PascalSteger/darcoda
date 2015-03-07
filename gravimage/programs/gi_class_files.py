@@ -331,7 +331,6 @@ class Files:
     # @param gp parameters
     # @param timestamp for analysis
 
-
     def set_triax(self, gp, timestamp='-1'):
         if gp.pops == 2:
             print('IMPLEMENT 2 tracer populations for triaxial dataset')
