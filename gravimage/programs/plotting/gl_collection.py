@@ -490,7 +490,7 @@ class ProfileCollection():
             ax.set_ylim(0., 6.)
         elif prof == 'kz_rho_DM_vec':
             ax.set_ylabel('$k(z)_{\\rho, \\rm{DM}}$')
-            ax.set_ylim(0., 40.)
+            ax.set_ylim(-40., 40.)
 
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
@@ -777,7 +777,7 @@ class ProfileCollection():
         k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5))) # not currently used
 
         # Backwards compatibility: if using old data, then all mass is in DM
-        if gp.baryonmodel not in ['none', 'simplenu_baryon']:
+        if gp.baryonmodel not in ['simplenu_baryon']:
             gh.LOG(1, 'Simplenu Analytic: No baryon model, all mass is in DM.')
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total

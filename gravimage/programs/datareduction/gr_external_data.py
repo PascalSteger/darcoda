@@ -92,7 +92,7 @@ def run(gp):
     # Use MC to estimate errors on nu
     if gp.investigate == 'simplenu':
         z_sampler = ErSamp_gauss_linear_w_z
-    nu_err_meas = gmcer.mc_nu_error(z_sampler, 100, binmin, binmax, bincentermed)
+    nu_err_meas = gmcer.mc_nu_error(z_sampler, gp.mc_err_N_iters, binmin, binmax, bincentermed)
 
     #Combine nu errors in quadrature TODO check that this is the right way to add errors
     nu_err_tot = np.sqrt(nu_err_pois**2 + nu_err_meas**2)
@@ -107,6 +107,10 @@ def run(gp):
     #Set central nu prior range
     gp.nu_C_max = 2.*Ntr/(binmax[0]-binmin[0])
     gp.nu_C_min = 0.1*Ntr/(binmax[-1]-binmin[0])
+
+    #Temp:
+    gp.nu_C_max = 3.E4
+    gp.nu_C_min = 1.E3
 
     import gr_params #WHAT DOES THIS DO.
     gpr = gr_params.Params(gp)

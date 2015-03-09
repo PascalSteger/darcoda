@@ -12,7 +12,8 @@ from gl_priors import check_bprior, check_tilt
 from gl_chi import calc_chi2
 import gl_physics as phys
 from pylab import *
-ion()
+#ion()
+import time
 
 def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs = Profiles(gp.ntracer_pops, gp.nbins)#, gp.nbaryon_pops, gp.nbaryon_params)#, gp.nrhonu, )
@@ -24,15 +25,20 @@ def geom_loglike(cube, ndim, nparams, gp):
     off += offstep
 
     #Dark Matter rho parameters (rho_C, kz_C, kz_vector)
-    offstep = gp.nrhonu + 1
-    rho_DM_params = np.array(cube[off:off+offstep])
-    rho_DM_C = rho_DM_params[0] #rho_C
-    kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres]
-    tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C) #outputs rho across all points
-    tmp_rho_total_allz = tmp_rho_DM_allz*1.0 # Add DM to total mass density
 
-    tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
-    tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:], 0, gp)
+    offstep = gp.nrhonu + 1
+    if gp.scan_rhonu_space:
+        tmp_rho_DM_allz = np.array(cube[off:off+offstep])
+    else:
+        rho_DM_params = np.array(cube[off:off+offstep])
+        rho_DM_C = rho_DM_params[0] #rho_C
+        kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres]
+        tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C) #outputs rho across all points
+
+        tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
+        tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:], 0, gp)
+
+    tmp_rho_total_allz = tmp_rho_DM_allz*1.0 # Add DM to total mass density
 
     tmp_profs.rho_DM_C = tmp_rho_DM_allz[0]
     tmp_profs.set_prof('rho_DM_vec', tmp_rho_DM_allz[1:], 0, gp)
@@ -60,22 +66,19 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.rho_total_C = tmp_rho_total_allz[0]
     tmp_profs.set_prof('rho_total_vec', tmp_rho_total_allz[1:], 0, gp)
 
-    #DOING: print out tmp_profs DM, baryon, total
-    #print('loglike, rho_DM_Vec = ', tmp_profs.get_prof('rho_DM_vec', 0))
-    #print('loglike, rho_baryon_Vec = ', tmp_profs.get_prof('rho_baryon_vec', 0))
-    #print('loglike, rho_total_Vec = ', tmp_profs.get_prof('rho_total_vec', 0))
-
-
     #Tracer params, nu_C, kz_nu_C, kz_nu_vector
     for tracer_pop in range(0, gp.ntracer_pops):
         offstep = gp.nrhonu + 1
-        tracer_params = np.array(cube[off:off+offstep])
-        nu_C = tracer_params[0]
-        kz_nu_allz = tracer_params[1:] #kz for rho across all z points [0, bin_centres]
-        tmp_nu_allz = phys.rho(gp.z_all_pts, kz_nu_allz, nu_C) #outputs nu across all z points
+        if gp.scan_rhonu_space:
+            tmp_nu_allz = np.array(cube[off:off+offstep])
+        else:
+            tracer_params = np.array(cube[off:off+offstep])
+            nu_C = tracer_params[0]
+            kz_nu_allz = tracer_params[1:] #kz for rho across all z points [0, bin_centres]
+            tmp_nu_allz = phys.rho(gp.z_all_pts, kz_nu_allz, nu_C) #outputs nu across all z points
 
-        tmp_profs.kz_nu_C = kz_nu_allz[0]
-        tmp_profs.set_prof('kz_nu_vec', kz_nu_allz[1:], 0, gp)
+            tmp_profs.kz_nu_C = kz_nu_allz[0]
+            tmp_profs.set_prof('kz_nu_vec', kz_nu_allz[1:], 0, gp)
 
         tmp_profs.nu_C = tmp_nu_allz[0]
         tmp_profs.set_prof('nu_vec', tmp_nu_allz[1:], tracer_pop, gp)
@@ -100,13 +103,10 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.Sig_total_C = Sig_total_allz[0]
     tmp_profs.set_prof('Sig_total_vec', Sig_total_allz[1:], 0, gp)
 
-    Sig_DM_allz = phys.Sig(gp.z_all_pts, tmp_rho_total_allz) #SS not orrect zvec
-
-
     #Calculate sigma (velocity dispersion)
     #pdb.set_trace()
     try:
-        sigz2_vec = phys.sigz2(gp.z_all_pts, Sig_DM_allz, tmp_nu_allz, norm)
+        sigz2_vec = phys.sigz2(gp.z_all_pts, Sig_total_allz, tmp_nu_allz, norm)
     except ValueError:
         raise ValueError('negative value in sig2 array')
         return
@@ -116,7 +116,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     chi2 = calc_chi2(tmp_profs, gp)
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
-
 
     return tmp_profs   # from   likelihood L = exp(-\chi^2/2), want log of that
 ## \fn geom_loglike(cube, ndim, nparams, gp)

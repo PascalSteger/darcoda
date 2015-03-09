@@ -59,8 +59,9 @@ def calc_chi2(profs, gp):
         gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
         chi2 +=chi2_nu
 
-        if not gp.chi2_nu_converged:
+        if not gp.chi2_nu_converged and not gp.plotting_flag:
             continue # with pop loop
+
 
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop] # [km/s]

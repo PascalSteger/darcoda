@@ -57,7 +57,7 @@ class Params():
         self.external_data_file= '/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
-        self.nbins=20 # Number of bins to split tracer stars into
+        self.nbins = 10 # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
@@ -76,33 +76,39 @@ class Params():
                                     #  Holmberg & Flynn = ?
                                     #  with baryon observational information = nrho
 
+        self.scan_rhonu_space = False #Search directly in rho or nu space, i.e. no kr parametrization
+        if self.scan_rhonu_space:
+            self.nrhonu = self.nbins #Param count will be rho_C + rho_bins
+
         #Total dimensions count
         self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
             # Constant C from sigma_z calculation, nrho + 1 params for rho (nrho
             # points for kz_rho, plus central density of rho, eg rho_C), similarly
             # nrho +1  params for nu, plus the number of params for all baryon pops
 
-
         self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
         self.vz_SDerr_meas = 5.  # Measurement error on vz, [km s^-1]
+        self.mc_err_N_iters = int(100) #Number of iterations to perform when doing MC error estimation
+
+
 
 
         # Priors
         # ----------------------------------------------------------------------
         # Limits for central densities (z=0)
         self.rho_C_max = 0.5E9  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
-        self.rho_C_min = 0.0 #Msun pc^-3
+        self.rho_C_min = 5.E6 #Msun pc^-3
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
 
         # Limits for central kz values (z=0)
-        self.kz_rho_C_max = 5.#20.0
+        self.kz_rho_C_max = 10.0
         self.kz_rho_C_min = -1.0 #SS
-        self.kz_nu_C_max = 5.#20.0
+        self.kz_nu_C_max = 10.#20.0
         self.kz_nu_C_min = -1.0 #SS
 
         # Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 10.#90.0
+        self.max_kz_slope = 10.0
 
         # Limits for sigz central value
         self.sigz_C_max = 50.
@@ -110,13 +116,17 @@ class Params():
 
         # Monotonicity priors
         self.monotonic_rho = False    # mono-prior on rho(z)
-        self.monotonic_nu = True # mono-prior on nu(z)
+        self.monotonic_nu = False # mono-prior on nu(z)
+
+        # Log or linear priors for rhonu scanning
+        self.prior_type_rho = 'gaussian' # 'log' or 'linear'
+        self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 2000. #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1000.
-        self.simplenu_baryon_D_max = 1. #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.
+        self.simplenu_baryon_K_max = 1600. #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1400.
+        self.simplenu_baryon_D_max = 0.1 #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.3
 
 
         # MultiNest options
@@ -126,7 +136,7 @@ class Params():
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
         self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
-        self.chi2_switch_mincount = 20. # demand that this number of profiles with
+        self.chi2_switch_mincount = 10. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
 
@@ -138,6 +148,8 @@ class Params():
         #fraction of profiles to save, set <0 for no profile saving
         self.save_fraction = -1.0
 
+        #Plotting flag
+        self.plotting_flag = False
 
         # filesystem-related
         # ----------------------------------------------------------------------

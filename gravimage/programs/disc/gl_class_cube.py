@@ -19,6 +19,7 @@
 import pdb
 import numpy as np
 import gl_helper as gh
+import scipy.special
 
 def map_tilt_slope(vec, gp):
     T = np.zeros(len(vec))
@@ -209,6 +210,45 @@ def map_MtoL(pa, gp):
 # @param pa scalar
 # @param gp global parameters holding MtoL{min,max}
 
+def map_rhonu(params, prof, pop, gp):
+    if prof == 'rho':
+        rhonu_C_max = gp.rho_C_max
+        rhonu_C_min = gp.rho_C_min
+        monotonic = gp.monotonic_rho
+        prior_type = gp.prior_type_rho
+    elif prof == 'nu':
+        rhonu_C_max = gp.nu_C_max
+        rhonu_C_min = gp.nu_C_min
+        monotonic = gp.monotonic_nu
+        prior_type = gp.prior_type_nu
+
+    rhonu_C = rhonu_C_min + (rhonu_C_max-rhonu_C_min)*params[0]
+
+    # Pick rho/nu values between rhonu_C_max and rhonu_C_min, or if monotonic
+    # pick between rhonu_i_m1 and rhonu_C_min
+    rhonu_vector = []
+    rhonu_i_m1 = rhonu_C
+    for jter in range(1, gp.nbins+1):
+        if monotonic:
+            rhonu_C_max = rhonu_i_m1
+
+        if prior_type == 'linear':
+            rhonu_value = rhonu_C_min + (rhonu_C_max-rhonu_C_min)*params[jter]
+        elif prior_type == 'log':
+            rhonu_value = np.log10(rhonu_C_min) + (np.log10(rhonu_C_max)-np.log10(rhonu_C_min))*params[jter]
+            rhonu_value = 10**rhonu_value
+        elif prior_type == 'gaussian':
+            sigma_rhonu = (rhonu_C_max - rhonu_C_min)/4.
+            rhonu_value = rhonu_i_m1 + np.sqrt(2) * sigma_rhonu * scipy.special.erfinv(2*(params[jter]-0.5))
+            rhonu_value = max(rhonu_C_min, rhonu_value)
+            rhonu_value = min(rhonu_C_max, rhonu_value)
+
+        rhonu_vector.append(rhonu_value)
+        rhonu_i_m1 = rhonu_value
+
+    return np.hstack([rhonu_C, rhonu_vector])
+
+
 
 class Cube:
     def __init__ (self, gp):
@@ -234,7 +274,11 @@ class Cube:
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector
         offstep = gp.nrhonu + 1
-        tmp_DM = map_kr(pc[off:off+offstep], 'rho', 0, gp)
+        if gp.scan_rhonu_space:
+            tmp_DM = map_rhonu(pc[off:off+offstep], 'rho', 0, gp)
+        else:
+            tmp_DM = map_kr(pc[off:off+offstep], 'rho', 0, gp)
+
         for i in range(offstep):
             pc[off+i] = tmp_DM[i]
         off += offstep
@@ -254,7 +298,11 @@ class Cube:
         #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector # kz_nu_LS
         for tracer_pop in range(0, gp.ntracer_pops):
             offstep = gp.nrhonu + 1
-            tmp_tracer = map_kr(pc[off:off+offstep], 'nu', tracer_pop, gp)
+            if gp.scan_rhonu_space:
+                tmp_tracer = map_rhonu(pc[off:off+offstep], 'nu', tracer_pop, gp)
+            else:
+                tmp_tracer = map_kr(pc[off:off+offstep], 'nu', tracer_pop, gp)
+
             for i in range(offstep):
                 pc[off+i] = tmp_tracer[i]
             off += offstep

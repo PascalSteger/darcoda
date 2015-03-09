@@ -44,6 +44,8 @@ def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, invest
 
     paracube_data = np.loadtxt(basepath_ts + paracube_filename, dtype='a')
 
+    gp.plotting_flag = True
+
     for iter in range(0, len(paracube_data[:,0])):
         #print('Iter = ', iter)
         paracube = paracube_data[iter,:]
