@@ -103,9 +103,9 @@ class Params():
 
         # Limits for central kz values (z=0)
         self.kz_rho_C_max = 10.0
-        self.kz_rho_C_min = -1.0 #SS
+        self.kz_rho_C_min = -10.0 #SS
         self.kz_nu_C_max = 10.#20.0
-        self.kz_nu_C_min = -1.0 #SS
+        self.kz_nu_C_min = -10.0 #SS
 
         # Maximum kz_slope (=dk/dz)
         self.max_kz_slope = 10.0

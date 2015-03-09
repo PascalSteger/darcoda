@@ -17,6 +17,7 @@ import gl_output as go
 import gl_helper as gh
 import gl_analytic as ga
 import gl_project as glp
+import gl_physics as phys
 
 USE_ALL = False
 
@@ -483,7 +484,7 @@ class ProfileCollection():
             ax.set_ylim(10., 40.)
         elif prof == 'sigz2_vec':
             ax.set_ylabel('$\\sigma_{z}^2\\quad[\\rm{km}^2/\\rm{s}^2]$')
-            ax.set_ylim(100., 1600.)
+            #ax.set_ylim(100., 1600.)
 
         elif prof == 'kz_nu_vec':
             ax.set_ylabel('$k(z)_{\\nu}$')
@@ -750,6 +751,7 @@ class ProfileCollection():
         F=267.65
         D=0.18
         z0=0.4
+        normC = 22.85
         nu0 = 1.
         Ntr = 10000.
         zmax= 1.2
@@ -818,6 +820,7 @@ class ProfileCollection():
             #ax.plot(zvec, rho_z_baryon_prior_max,'g-', alpha = 0.5, linewidth=1)
             #ax.plot(zvec, rho_z_baryon_prior_min,'g-', alpha = 0.5, linewidth=1)
 
+
         elif prof == 'rho_DM_vec':
             ax.plot(zvec, rho_z_DM, 'g-', alpha = 0.5)
 
@@ -825,6 +828,12 @@ class ProfileCollection():
         # if the simplenu_baryon model is used, then kz_rho_DM_vec should equal zero
         elif prof == 'kz_rho_DM_vec' and gp.baryonmodel in ['none', 'sim']: #i.e. if all mass is described by DM
             ax.plot(zvec, k_z_rho_total, 'g-', alpha = 0.5)
+
+
+        elif prof == 'sigz2_vec':
+            sigz2_analytic = phys.sigz2(zvec, Sigma_z_total, nuvec, (normC**2)*nuvec[0])
+            ax.plot(zvec, sigz2_analytic, 'g-', alpha = 0.5)
+
 
         return
 
