@@ -184,7 +184,6 @@ def run(gp):
     e_split = e_split[sel]
     PM = PM[sel]
 
-
     split_min = min(split) # -3, 3 if according to WalkerPenarrubia2011
     split_max = max(split)
 

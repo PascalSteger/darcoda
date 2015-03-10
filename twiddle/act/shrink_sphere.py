@@ -3,9 +3,10 @@
 ## \file
 # determine center of mass by iteratively shrinking a sphere
 
-# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
 import sys
+import pdb
 from numpy import array,inner,sqrt
 import lib.mysql as mys
 import lib.initialize as my
@@ -15,22 +16,20 @@ if(i!=3):
     print("shrink_sphere.py snap hid")
     exit(0)
 
-snap=int(sys.argv[1])
-hid=int(sys.argv[2])
+snap = int(sys.argv[1])
+hid  = int(sys.argv[2])
 
-eps=1e-5
-frad = 0.9 # shrinked sphere has radius frad*maxr, i.e. frad = 0.90 means 10% smaller
+eps = 1e-5
+frad = 0.90 # shrinked sphere has radius frad*maxr, i.e. frad = 0.90 means 10% smaller
 
-#print("missing file")
 if(not mys.exists_snap(snap)):
     print("snapshot "+str(snap)+" missing")
     exit(0)
 
-xc,yc,zc,mvir,rvir=mys.getxyzmr(snap,1)
+xc, yc, zc, mvir, rvir = mys.getxyzmr(snap,1)
 halo = my.open_file(mys.d(snap)+"dm/dm_"+str(hid)+".dat","r")
 x=[];y=[];z=[];m=[]
 for line in halo:
-    print(line)
     val=line.split()
     m.append(float(val[0]))
     x.append(float(val[1]))
@@ -43,10 +42,8 @@ if(len(m)==0):
     exit(0)
 
 def converged(xc,yc,zc,xc2,yc2,zc2):
-    return  abs(xc-xc2)/abs(xc)   < eps \
-        and abs(yc-yc2)/abs(yc)   < eps \
-        and abs(zc-zc2)/abs(zc)   < eps #\
-#        or rc < eps*max(r)
+    print(max(abs(xc-xc2), abs(yc-yc2),abs(zc-zc2)))
+    return max(abs(xc-xc2), abs(yc-yc2),abs(zc-zc2)) < eps
 ## \fn converged(xc,yc,zc,xc2,yc2,zc2)
 # determine whether two consecutive centers of mass are closer than epsilon
 # @param xc com1
@@ -63,7 +60,8 @@ rc = 0.7*max(r)
 
 xc2 = yc2 = zc2 = -1e99
 # for max. 100 iterations
-for i in range(100):
+for i in range(50):
+    print('iteration ',i)
     rc = frad * rc
     r  = sqrt((x-xc)**2+(y-yc)**2+(z-zc)**2)
     order = r.argsort()
@@ -71,15 +69,13 @@ for i in range(100):
     for cut in range(len(r)):
         if(r[cut]>rc):
             break
-    
+
     xc2 = inner(m[:cut],x[:cut])/sum(m[:cut])
     yc2 = inner(m[:cut],y[:cut])/sum(m[:cut])
     zc2 = inner(m[:cut],z[:cut])/sum(m[:cut])
-    
-    #print(cut,rc,xc2,yc2,zc2)
-    
+
     if(cut<len(m)/100 or converged(xc,yc,zc,xc2,yc2,zc2)):
         print(xc, yc, zc, rc)
-        mys.set_ss(snap,hid,xc,yc,zc,rc)
+        mys.set_ss(snap, hid, xc, yc, zc, rc)
         exit()
     xc,yc,zc = xc2,yc2,zc2

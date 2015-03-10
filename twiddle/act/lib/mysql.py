@@ -215,7 +215,6 @@ def fill_halo(snap, buhid, val, co, cu):
     cmd += "','"+str(snap)+"','"+str(buhid)+"')";
     cmd += " ON DUPLICATE KEY UPDATE atime=now();"
     my.sqlcu(cmd,co,cu)
-    npart = int(val[5-1]);
     fmhires = float(val[38-1])
     mvir = float(val[4-1]);
     if(is_dmonly()):
@@ -362,7 +361,7 @@ def set_rhalf_star(snap,hid,r):
            " AND hid="+str(hid)+";")
     return
 
-def getxyzmr(snap,typ):
+def getxyzmr(snap, typ):
     actsim=my.sql("SELECT name FROM sim WHERE active=1;")
     actsim=actsim[0][0]
     if(typ==1):
@@ -397,32 +396,57 @@ def getxyzmr(snap,typ):
 
 def get_M_star(snap):
     mstar=my.sql("SELECT M_star FROM halo WHERE snap="+str(snap)+";")
-    m=[]
+    mvir=my.sql("SELECT mvir FROM halo WHERE snap="+str(snap)+";")
+    ms=[]; mv=[]
     for i in range(len(mstar)):
-        m.append(mstar[i][0])
-    return m
-
+        ms.append(mstar[i][0])
+        mv.append(mvir[i][0])
+    mv = np.array(mv)
+    ms = np.array(ms)
+    order = mv.argsort()
+    mv = mv[order]
+    ms = ms[order]
+    return ms[::-1]
 
 def get_M_dm(snap):
-    mstar=my.sql("SELECT mvir-M_star-M_gas FROM halo WHERE snap="+str(snap)+";")
-    m=[]
-    for i in range(len(mstar)):
-        m.append(mstar[i][0])
-    return m
+    mvir=my.sql("SELECT mvir FROM halo WHERE snap="+str(snap)+";")
+    mdm = my.sql("SELECT mvir-M_star-M_gas FROM halo WHERE snap="+str(snap)+";")
+    md=[]; mv = []
+    for i in range(len(mdm)):
+        md.append(mdm[i][0])
+        mv.append(mvir[i][0])
+    md = np.array(md)
+    mv = np.array(mv)
+    order = mv.argsort()
+    mv = mv[order]
+    md = md[order]
+    return md[::-1]
 
 def get_is_sub(snap):
     issub=my.sql("SELECT hosthid FROM halo WHERE snap="+str(snap)+";")
-    iss=[]
+    mvir=my.sql("SELECT mvir from halo WHERE snap="+str(snap)+";")
+    iss=[]; mv =[]
     for i in range(len(issub)):
         iss.append(issub[i][0]>0)
-    return iss
+        mv.append(mvir[i][0])
+    mv = np.array(mv)
+    iss = np.array(iss)
+    order = mv.argsort()
+    iss = iss[order]
+    return iss[::-1]
 
 def get_rhalf_star(snap):
     r2s=my.sql("SELECT rhalf_star FROM halo WHERE snap="+str(snap)+";")
-    r=[]
+    mvir=my.sql("SELECT mvir FROM halo WHERE snap="+str(snap)+";")
+    r=[];m=[]
     for i in range(len(r2s)):
         r.append(r2s[i][0])
-    return r
+        m.append(mvir[i][0])
+    r = np.array(r)
+    m = np.array(m)
+    order = m.argsort()
+    r = r[order]
+    return r[::-1]
 
 def getxyzrsnap(snap):
     wc="FROM snapshot WHERE snap="+str(snap)+";"
@@ -431,7 +455,7 @@ def getxyzrsnap(snap):
     zm=my.sql("SELECT zs  "+wc)
     rm=my.sql("SELECT rs "+wc)
     sm=my.sql("SELECT snap "+wc)
-    x=[];y=[];z=[];r=[];s=[];
+    x=[];y=[];z=[];r=[];s=[]
     for i in range(len(xm)):
         x.append(xm[i][0])
         y.append(ym[i][0])
@@ -477,8 +501,19 @@ def getxyzrstars_hid(snap,hid):
     xm=my.sql("SELECT xs_star "+wc)
     ym=my.sql("SELECT ys_star "+wc)
     zm=my.sql("SELECT zs_star "+wc)
+    mvir=my.sql("SELECT mvir "+wc)
     rm=my.sql("SELECT rs_star "+wc)
-    return xm[0][0],ym[0][0],zm[0][0],rm[0][0]
+    xms=[];yms=[];zms=[];mvirs=[];rms=[]
+    for i in range(len(mvir)):
+        xms.append(xm[i][0])
+        yms.append(ym[i][0])
+        zms.append(zm[i][0])
+        mvirs.append(mvir[i][0])
+        rms.append(rm[i][0])
+    xms=np.array(xms); yms=np.array(yms); zms=np.array(zms); mvirs=np.array(mvirs);rms=np.array(rms)
+    order = mvirs.argsort()
+    xms=xms[order]; yms=yms[order]; zms=zms[order]; rms=rms[order]; mvirs=mvirs[order]
+    return xms[-1],yms[-1],zms[-1],rms[-1]
 
 def getxyzrstars(snap,typ):
     if(typ==1):
@@ -486,25 +521,27 @@ def getxyzrstars(snap,typ):
         ys=my.sql("SELECT yc FROM halo WHERE snap="+str(snap)+";")
         zs=my.sql("SELECT zc FROM halo WHERE snap="+str(snap)+";")
         rs=my.sql("SELECT rvir FROM halo WHERE snap="+str(snap)+";")
+        mv=my.sql("SELECT mvir FROM halo WHERE snap="+str(snap)+";")
     if(typ==2):
         xs=my.sql("SELECT xs_star FROM halo WHERE snap="+str(snap)+";")
         ys=my.sql("SELECT ys_star FROM halo WHERE snap="+str(snap)+";")
         zs=my.sql("SELECT zs_star FROM halo WHERE snap="+str(snap)+";")
         rs=my.sql("SELECT rs_star FROM halo WHERE snap="+str(snap)+";")
-    x=[]
-    y=[]
-    z=[]
-    r=[]
+        mv=my.sql("SELECT mvir FROM halo WHERE snap="+str(snap)+";")
+    x=[]; y=[]; z=[]; r=[]; m=[]
     for i in range(len(xs)):
         x.append(xs[i][0])
         y.append(ys[i][0])
         z.append(zs[i][0])
         r.append(rs[i][0])
-    return x,y,z,r
+        m.append(mv[i][0])
+    x=np.array(x);y=np.array(y);z=np.array(z);r=np.array(r);m=np.array(m)
+    order = m.argsort()
+    x=x[order]; y=y[order]; z=z[order]; r=r[order]; m=m[order]
+    return x[::-1],y[::-1],z[::-1],r[::-1]
 
 def get_nhalo(snap):
     nhalo=my.sql("SELECT atime FROM halo WHERE snap="+str(snap)+";")
-    # print(len(nhalo))
     return len(nhalo)
 
 def getNmax():
