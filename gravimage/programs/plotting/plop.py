@@ -252,5 +252,5 @@ if __name__ == '__main__':
     elif gp.pops == 2:
         cmd += "pdfjam --outfile cat.pdf --nup 3x5 --no-landscape prof_nr_0.pdf prof_rho_0.pdf prof_M_0.pdf prof_nrnu_1.pdf prof_nu_1.pdf prof_Sig_1.pdf prof_betastar_1.pdf prof_beta_1.pdf prof_sig_1.pdf prof_nrnu_2.pdf prof_nu_2.pdf prof_Sig_2.pdf prof_betastar_2.pdf prof_beta_2.pdf prof_sig_2.pdf;"
 
-    cmd += "evince cat.pdf &"
-    os.system(cmd)
+    #cmd += "evince cat.pdf &"
+    #os.system(cmd)

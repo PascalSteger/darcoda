@@ -45,7 +45,7 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 2 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 3 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
 
         print(' case : ', self.case)
@@ -68,10 +68,10 @@ class Params():
         # MultiNest options
         # -------------------------------------
         self.getSigdata = False # get previously stored parameters for nu,  after a Sig convergence run
-        self.chi2_switch = 10   # turn on sig calculation if chi2 < chi2_switch
+        self.chi2_switch = 20   # turn on sig calculation if chi2 < chi2_switch
         self.chi2_Sig_converged = 1000 # how many times to be below that threshold?
         # Set number of terms for enclosedmass&tracer&anisotropy bins = model parameters:
-        self.nipol = 12   # set getnewdata = True to run data readout again if this value changes
+        self.nipol = 11  # set getnewdata = True to run data readout again if this value changes
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)
@@ -82,7 +82,7 @@ class Params():
                                                 # the asymptote to \infty
         self.nfine = 10*self.nipol  # number of entries in integral lookup table
                          # gives no. log spaced points
-        self.rinfty = 10. # interpolate from last slope to slope at
+        self.rinfty = 5. # interpolate from last slope to slope at
                          # 10*max(xipol), where asymptote to \infty
                          # is reached, must be >= 11
         self.nbeta = 4   # number of parameters for beta, in sum of

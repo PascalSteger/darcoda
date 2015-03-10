@@ -130,7 +130,7 @@ class ProfileCollection():
             for k in range(posmax, len(counts)-1):
                 if counts[k+1] > counts[k] or counts[k+1]==0 or counts[k+1]<=max(counts)/10:
                     break
-            maxchi = 10**(bins[k+1])
+            maxchi = min(30*min(self.chis),10**(bins[k+1]))
         self.subset = [minchi, maxchi]
         print('chi^2 subset: ',minchi, maxchi)
     ## \fn cut_subset(self)
@@ -249,8 +249,19 @@ class ProfileCollection():
                 beta = ga.beta_walk(r0, gp)[pop]
                 anbeta.append(beta)
                 nu = ga.rho_walk(r0, gp)[pop]
-                annu.append(nu)
-                anSig.append(gip.rho_INT_Sig(r0, nu, gp))
+                dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], unpack=False, skiprows=1))
+                locrhalf = np.argmin(abs(gp.xipol-gp.Xscale[pop])) 
+                nuhalf = nudat[locrhalf]*gp.nu0pc[pop]
+                annuhalf = nu[np.argmin(abs(r0-locrhalf))]
+                annu.append(nu*nuhalf/annuhalf)
+                #pdb.set_trace()
+                dum,dum,dum,Sigdat,Sigerr = np.transpose(np.loadtxt(gp.files.Sigfiles[pop], unpack=False, skiprows=1))
+                locrhalf = np.argmin(abs(gp.xipol-gp.Xscale[pop]))      
+                Sighalf = Sigdat[locrhalf]*gp.Sig0pc[pop]
+                Sig = gip.rho_INT_Sig(r0, nu, gp)
+                anSighalf = Sig[np.argmin(abs(r0-locrhalf))]
+                anSig.append(Sig*Sighalf/anSighalf)
+                #pdb.set_trace()
         elif gp.investigate == 'triax':
             anrho = ga.rho_triax(r0, gp) # one and only
             anM = gip.rho_SUM_Mr(r0, anrho)
@@ -273,6 +284,7 @@ class ProfileCollection():
         for pop in np.arange(1, gp.pops+1):
             self.analytic.set_prof('beta', anbeta[pop-1], pop, gp)
             self.analytic.set_prof('betastar', anbeta[pop-1]/(2.-anbeta[pop-1]), pop, gp)
+            #pdb.set_trace()
             self.analytic.set_prof('nu', annu[pop], pop, gp)
             nrnu = -gh.derivipol(np.log(annu[pop]), np.log(r0))
             self.analytic.set_prof('nrnu', nrnu, pop, gp)
@@ -365,8 +377,7 @@ class ProfileCollection():
         if prof == 'Sig':
             # get 2D data here
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], Sig(R)/Sig(0) [1], error [1]
-            dum,dum,dum,Sigdat,Sigerr = np.transpose(np.loadtxt(gp.files.Sigfiles[pop], \
-                                                              unpack=False, skiprows=1))
+            dum,dum,dum,Sigdat,Sigerr = np.transpose(np.loadtxt(gp.files.Sigfiles[pop], unpack=False, skiprows=1))
             Sigdat *= gp.Sig0pc[pop] # [Msun/pc^2]
             Sigerr *= gp.Sig0pc[pop] # [Msun/pc^2]
             #Signorm = gh.ipol_rhalf_log(gp.xipol, Sigdat, gp.Xscale[pop])
@@ -379,20 +390,17 @@ class ProfileCollection():
         elif prof == 'nu':
             # get 3D data here
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], nu(R)/nu(0) [1], error [1]
-            dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], \
-                                                              unpack=False, skiprows=1))
+            dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], unpack=False, skiprows=1))
             nudat *= gp.nu0pc[pop] # [Msun/pc^2]
             nuerr *= gp.nu0pc[pop] # [Msun/pc^2]
             output.add('data [Msun/pc^3]', nudat)
             output.add('error [Msun/pc^3]', nuerr)
             output.add('data - error [Msun/pc^2]', nudat-nuerr)
             output.add('data + error [Msun/pc^2]', nudat+nuerr)
-            ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
-                            color='blue', alpha=0.3, lw=1)
+            ax.fill_between(r0, nudat-nuerr, nudat+nuerr, color='blue', alpha=0.3, lw=1)
             self.broaden_lim('nu', pop, min(nudat-nuerr)/2., 2*max(nudat+nuerr))
         elif prof == 'sig':
-            DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
-                                           unpack=False, skiprows=1))
+            DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], unpack=False, skiprows=1))
             sigdat = DATA[4-1] # [maxsiglosi]
             sigerr = DATA[5-1] # [maxsiglosi]
             sigdat *= gp.maxsiglos[pop]  # [km/s]
@@ -477,7 +485,7 @@ class ProfileCollection():
                     # half-light radius (3D) is where mass is more than half
                     # ihalf gives the iindex of where this happens
                     if Mprof[kk] >= Mmax/2 and ihalf <0:
-                        xx = (gp.xipol[kk-1]+gp.xipol[kk])/2
+                        xx = (gp.xepol[kk-1]+gp.xepol[kk])/2
                         ax.axvline(xx, color='green', lw=0.5, alpha=0.7)
                         ihalf = kk
     ## \fn plot_Xscale_3D(ax, gp)
@@ -552,6 +560,8 @@ class ProfileCollection():
             self.broaden_lim('M', 0, min(M68lo), max(M68hi))
         elif prof == 'rho':
             self.broaden_lim('rho', 0, min(M68lo), max(M68hi))
+        elif prof == 'nu':
+            self.broaden_lim('nu', pop, min(M68lo), max(M68hi))
         return
     ## \fn fill_nice(self, ax, prof, pop, gp)
     # plot filled region for 1sigma and 2sigma confidence interval
@@ -597,7 +607,7 @@ class ProfileCollection():
             if prof == 'Sig' or prof == 'sig':
                 self.plot_data(ax, basename, prof, pop, gp)
 
-            if (gp.investigate == 'walk' or gp.investigate == 'gaia' or gp.investigate=='triax') and prof != 'sig':
+            if (gp.investigate == 'gaia' or gp.investigate=='triax') and prof != 'sig' or (gp.investigate=='walk' and prof!='sig' and prof!='nu' and prof!='Sig'):
                 r0 = self.analytic.x0
                 y0 = self.analytic.get_prof(prof, pop)
                 self.broaden_lim(prof, pop, min(y0), max(y0))
