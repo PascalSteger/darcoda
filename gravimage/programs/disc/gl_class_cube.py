@@ -59,18 +59,24 @@ def map_kr(params, prof, pop, gp):
     if prof == 'rho':
         rhonu_C_max = gp.rho_C_max
         rhonu_C_min = gp.rho_C_min
+        rhonu_C_prior_type = gp.rho_C_prior_type
         kz_C_max = gp.kz_rho_C_max
         kz_C_min = gp.kz_rho_C_min
         monotonic = gp.monotonic_rho
     elif prof == 'nu':
         rhonu_C_max = gp.nu_C_max
         rhonu_C_min = gp.nu_C_min
+        rhonu_C_prior_type = gp.nu_C_prior_type
         kz_C_max = gp.kz_nu_C_max
         kz_C_min = gp.kz_nu_C_min
         monotonic = gp.monotonic_nu
 
     # rho or nu central value
-    rhonu_C = rhonu_C_min + (rhonu_C_max-rhonu_C_min)*params[0]
+    if rhonu_C_prior_type == 'linear':
+        rhonu_C = rhonu_C_min + (rhonu_C_max-rhonu_C_min)*params[0]
+    elif rhonu_C_prior_type == 'log':
+        rhonu_C = np.log10(rhonu_C_min) + (np.log10(rhonu_C_max)-np.log10(rhonu_C_min))*params[0]
+        rhonu_C = 10**rhonu_C
 
     # kz for rho or nu, central value
     kz_C = kz_C_min + (kz_C_max - kz_C_min)*params[1]
