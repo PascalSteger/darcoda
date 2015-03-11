@@ -33,8 +33,6 @@ def calc_chi2(profs, gp):
     if gp.map_priors:
         return 1.0
 
-
-
     #Tracer population comparison
     for pop in range(0, gp.ntracer_pops):
 

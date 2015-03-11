@@ -101,6 +101,15 @@ class Files:
         else:
             self.timestamp = timestamp
         self.outdir = self.shortdir+self.timestamp+'/'
+
+        # Output the PBS job ID for reference
+        jobid = os.popen('echo $PBS_JOBID').read()
+        print('jobid = ', jobid)
+        if jobid != '\n':
+            print('here')
+            jobid = jobid.split('.')[0]
+            newdir(self.outdir + 'jobid_' + jobid)
+
         # shorter dir names in Multinest (bound to <= 100 total)
         #os.system('ln -sf '+ self.dir+' '+self.modedir + str(gp.case))
         os.system('mkdir -p '+self.outdir)
@@ -113,6 +122,9 @@ class Files:
         if timestamp == '':
             with open(self.outdir+'pc2.save', 'wb') as fi:
                 pickle.dump(-1, fi) # dummy data, to get file written new
+
+
+
         return
     ## \fn __init__(self, gp)
     # constructor

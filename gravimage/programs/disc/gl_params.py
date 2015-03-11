@@ -56,7 +56,7 @@ class Params():
 
         self.external_data_file= '/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
 
-        self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
+        self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
         self.nbins = 10 # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0

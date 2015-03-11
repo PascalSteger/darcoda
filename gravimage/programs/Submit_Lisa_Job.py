@@ -18,7 +18,7 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='00:08:00:00'
+walltime='00:00:01:20'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
@@ -58,7 +58,7 @@ pbs_file.writelines('cd $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('# Calculate run time for gravimage, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
 pbs_file.writelines('echo PBS_WALLTIME = $PBS_WALLTIME'+'\n')
-pbs_file.writelines('transft=360'+'\n')
+pbs_file.writelines('transft=36'+'\n')
 pbs_file.writelines('echo Transfer time = $transft'+'\n')
 pbs_file.writelines('runtime=$(expr $PBS_WALLTIME - $transft)'+'\n')
 pbs_file.writelines('echo gravimage runtime = $runtime'+'\n')
