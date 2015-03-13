@@ -268,116 +268,140 @@ def run(gp):
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
 
-    # determine com_x, com_y from shrinking sphere
-    import gi_centering as grc
-    com_x, com_y = grc.com_shrinkcircle_2D(xs, ys)
     # alternative: get center of photometric measurements by deBoer
     # for Fornax, we have
     if gp.case == 1:
         com_x = 96203.736358393697
         com_y = -83114.080684733024
+        xs = xs-com_x
+        ys = ys-com_y
+    else:
+        # determine com_x, com_y from shrinking sphere
+        import gi_centering as grc
+        com_x, com_y = grc.com_shrinkcircle_2D(xs, ys)
     # instantiate different samplings, store half-light radii (2D)
-    R1half = []
-    R2half = []
+    coll_R1half = []
+    coll_R2half = []
+    coll_popass = []
 
-    ##
-    #for kl in range(1000):
-    # get a sample assignment:
     import numpy.random as npr
-    popass = []
-    for i in range(sum(sel)):
-        # random assignment, wrong
-        #if npr.rand() <= 0.5:
-        #    popass.append(1)
-        #else:
-        #    popass.append(2)
+    #import gi_project as gip
+    for kl in range(1000):
+        # get a sample assignment:
+        popass = []
+        for i in range(sum(sel)):
+            # random assignment, wrong
+            #if npr.rand() <= 0.5:
+            #    popass.append(1)
+            #else:
+            #    popass.append(2)
 
-        spl = split[i]
-        ppop1 = pML*gh.gauss(spl, mu1ML, sig1ML)
-        ppop2 = (1-pML)*gh.gauss(spl, mu2ML, sig2ML)
-        if npr.rand() <= ppop1/(ppop1+ppop2):
-            popass.append(1)
-        else:
-            popass.append(2)
+            spl = split[i]
+            ppop1 = pML*gh.gauss(spl, mu1ML, sig1ML)
+            ppop2 = (1-pML)*gh.gauss(spl, mu2ML, sig2ML)
+            if npr.rand() <= ppop1/(ppop1+ppop2):
+                popass.append(1)
+            else:
+                popass.append(2)
 
-    popass = np.array(popass)
-    sel1 = (popass==1)
-    sel2 = (popass==2)
-    #radii of all stellar tracers from pop 1 and 2
-    R1 = np.sqrt((xs[sel1])**2 + (ys[sel1])**2)
-    R2 = np.sqrt((xs[sel2])**2 + (ys[sel2])**2)
-    R1.sort()
-    R2.sort()
+        popass = np.array(popass)
+        coll_popass.append(popass)
+        sel1 = (popass==1)
+        sel2 = (popass==2)
+        # radii of all stellar tracers from pop 1 and 2
+        R1 = np.sqrt((xs[sel1])**2 + (ys[sel1])**2)
+        R2 = np.sqrt((xs[sel2])**2 + (ys[sel2])**2)
+        R1.sort()
+        R2.sort()
 
-    import gi_project as gip
-    for pop in np.arange(2)+1:
-        if pop == 1:
-            R0 = R1 # [pc]
-            Rhalf = R1[len(R1)/2]
-            R1half.append(Rhalf)
-            co = 'blue'
-        else:
-            R0 = R2 # [pc]
-            Rhalf = R2[len(R2)/2]
-            R2half.append(Rhalf)
-            co = 'red'
-    ##R1half = np.array(R1half)
-    ##R2half = np.array(R2half)
-    ##Rdiffhalf = np.abs(R1half-R2half)
-    ##clf()
-    ##hist(Rdiffhalf, np.sqrt(len(Rdiffhalf))/2)
-    ##xlabel(r'\Delta R')
-    ##ylabel('pdf')
-    ##pdb.set_trace()
-        Rdiff = np.abs(R1[len(R1)/2] - R2[len(R2)/2])
-        print('Rdiff = ', Rdiff)
-        #if Rdiff < 90:
-        #    continue
-        # calculate 2D Sig profiles
-        Rmin = min(R0) # [pc]
-        Rmax = max(R0) # [pc]
-        Binmin, Binmax, Rbin = gh.determine_radius(R0, Rmin, Rmax, gp) # [pc]
-        gp.xipol = Rbin # [pc]
-        minr = min(Rbin)# [pc]
-        maxr = max(Rbin)# [pc]
-        Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [pc^2]
-        totmass_tracers = float(len(x))
-        Rsi   = gh.add_errors(R0, gpr.Rerr)   # [pc], gpr.Rerr was in
-        tpb = np.zeros(gp.nipol)
-        Sig_phot = np.zeros(gp.nipol)
-        for i in range(gp.nipol):
-            ind1 = np.argwhere(np.logical_and(Rsi >= Binmin[i], \
-                                              Rsi <  Binmax[i])).flatten() # [1]
-            tpb[i] = float(len(ind1)) # [1]
-            Sig_phot[i] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/pc^2]
-        #loglog(gp.xipol, Sig_phot, co)
-        #axvline(Rhalf, color=co)
-        #xlim([min(gp.xipol), max(gp.xipol)])
-        #xlabel(r'$R$')
-        #ylabel(r'$\Sigma(R)$')
-        #pdb.set_trace()
-        # deproject to get 3D nu profiles
-        gp.xipol = Rbin
-        minr = min(Rbin)                           # [pc]
-        maxr = max(Rbin)                           # [pc]
-        gp.xepol =np.hstack([minr/8.,minr/4.,minr/2.,Rbin,2*maxr,4*maxr,8*maxr])#[pc]
-        gp.xfine = introduce_points_in_between(gp.xepol, gp)
-        #pdb.set_trace()
-        #Sigdatnu, Sigerrnu = gh.complete_nu(Rbin, Sig_phot, Sig_phot/10., gp.xfine)
-        #dummyx,nudatnu,nuerrnu,Mrnu = gip.Sig_NORM_rho(gp.xfine,Sigdatnu,Sigerrnu,gp)
-        #nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
-        #nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
-        #loglog(gp.xipol, nudat, co)
-        #axvline(Rhalf, color=co)
-        #xlim([min(gp.xipol), max(gp.xipol)])
-        #xlabel(r'$R$')
-        #ylabel(r'$\nu(R)$')
-        #plum = 100*gh.plummer(gp.xipol, Rhalf, len(R0))
-        #loglog(gp.xipol, plum, color=co, linestyle='--')
-        #ylim([min(plum), max(plum)])
-        #pdb.set_trace()
+        for pop in np.arange(2)+1:
+            if pop == 1:
+                R0 = R1 # [pc]
+                Rhalf = R1[len(R1)/2]
+                coll_R1half.append(Rhalf)
+                co = 'blue'
+            else:
+                R0 = R2 # [pc]
+                Rhalf = R2[len(R2)/2]
+                coll_R2half.append(Rhalf)
+                co = 'red'
+    coll_R1half = np.array(coll_R1half)
+    coll_R2half = np.array(coll_R2half)
+    coll_Rdiffhalf = np.abs(coll_R1half-coll_R2half)
+    clf()
+    hist(coll_Rdiffhalf, np.sqrt(len(coll_Rdiffhalf))/2)
+    xlabel(r'$\Delta R/pc$')
+    ylabel('count')
 
-    np.savetxt(gp.files.dir+'popass', popass)
+    # select 3 assignments: one for median, one for median-1sigma, one for median+1sigma
+    med_Rdiff = np.median(coll_Rdiffhalf)
+    stdif = np.std(coll_Rdiffhalf)
+    min1s_Rdiff = med_Rdiff-stdif
+    max1s_Rdiff = med_Rdiff+stdif
+
+    axvline(med_Rdiff, color='r')
+    axvline(min1s_Rdiff, color='g')
+    axvline(max1s_Rdiff, color='g')
+
+    pdb.set_trace()
+    kmed = np.argmin(abs(coll_Rdiffhalf-med_Rdiff))
+    kmin1s = np.argmin(abs(coll_Rdiffhalf-min1s_Rdiff))
+    kmax1s = np.argmin(abs(coll_Rdiffhalf-max1s_Rdiff))
+
+    np.savetxt(gp.files.dir+'popass_median', coll_popass[kmed])
+    np.savetxt(gp.files.dir+'popass_min1s', coll_popass[kmin1s])
+    np.savetxt(gp.files.dir+'popass_max1s', coll_popass[kmax1s])
+
+
+def read(Rdiff):
+    if Rdiff != 'median' and Rdiff != 'min' and Rdiff != 'max':
+        print('run grd_metalsplit.py to get the split by metallicity done before reading it in for GravImage')
+        exit(1)
+
+
+
+    Rmin = min(R0) # [pc]
+    Rmax = max(R0) # [pc]
+    Binmin, Binmax, Rbin = gh.determine_radius(R0, Rmin, Rmax, gp) # [pc]
+    gp.xipol = Rbin # [pc]
+    minr = min(Rbin)# [pc]
+    maxr = max(Rbin)# [pc]
+    Vol = gh.volume_circular_ring(Binmin, Binmax, gp) # [pc^2]
+    totmass_tracers = float(len(x))
+    Rsi   = gh.add_errors(R0, gpr.Rerr)   # [pc], gpr.Rerr was in
+    tpb = np.zeros(gp.nipol)
+    Sig_phot = np.zeros(gp.nipol)
+    for i in range(gp.nipol):
+        ind1 = np.argwhere(np.logical_and(Rsi >= Binmin[i], Rsi <  Binmax[i])).flatten() # [1]
+        tpb[i] = float(len(ind1)) # [1]
+        Sig_phot[i] = float(len(ind1))*totmass_tracers/Vol[i] # [Munit/pc^2]
+    #loglog(gp.xipol, Sig_phot, co)
+    #axvline(Rhalf, color=co)
+    #xlim([min(gp.xipol), max(gp.xipol)])
+    #xlabel(r'$R$')
+    #ylabel(r'$\Sigma(R)$')
+    #pdb.set_trace()
+    # deproject to get 3D nu profiles
+    gp.xipol = Rbin
+    minr = min(Rbin)                           # [pc]
+    maxr = max(Rbin)                           # [pc]
+    gp.xepol =np.hstack([minr/8.,minr/4.,minr/2.,Rbin,2*maxr,4*maxr,8*maxr])#[pc]
+    gp.xfine = introduce_points_in_between(gp.xepol, gp)
+    #pdb.set_trace()
+    #Sigdatnu, Sigerrnu = gh.complete_nu(Rbin, Sig_phot, Sig_phot/10., gp.xfine)
+    #dummyx,nudatnu,nuerrnu,Mrnu = gip.Sig_NORM_rho(gp.xfine,Sigdatnu,Sigerrnu,gp)
+    #nudat = gh.linipollog(gp.xfine, nudatnu, gp.xipol)
+    #nuerr = gh.linipollog(gp.xfine, nuerrnu, gp.xipol)
+    #loglog(gp.xipol, nudat, co)
+    #axvline(Rhalf, color=co)
+    #xlim([min(gp.xipol), max(gp.xipol)])
+    #xlabel(r'$R$')
+    #ylabel(r'$\nu(R)$')
+    #plum = 100*gh.plummer(gp.xipol, Rhalf, len(R0))
+    #loglog(gp.xipol, plum, color=co, linestyle='--')
+    #ylim([min(plum), max(plum)])
+    #pdb.set_trace()
+
     return
 ## \fn run(gp)
 # run MultiNest
