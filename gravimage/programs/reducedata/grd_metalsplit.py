@@ -230,19 +230,14 @@ def run(gp):
                   True, # nest_outfile =
                   -999999, # nest_logZero = points with log L < log_zero will be
                   1000, # nest_maxIter =
-                  True,     # initMPI =  use MPI
+                  False,     # initMPI =  use MPI
                   None) #dump_callback =
-
-    #params after xmas
 
     import os
     os.system('cd '+gp.files.outdir+'; grep -n6 Maximum stats.dat|tail -5|cut -d " " -f8 > metalmaxL.dat;')
     os.system("cd "+gp.files.outdir+"; sed -i 's/\\([0-9]\\)-\\([0-9]\\)/\\1E-\\2/g' metalmaxL.dat")
     os.system("cd "+gp.files.outdir+"; sed -i 's/\\([0-9]\\)+\\([0-9]\\)/\\1E+\\2/g' metalmaxL.dat")
     cubeML = np.loadtxt(gp.files.outdir+'metalmaxL.dat')
-    # override for best Fornax
-    #cubeML= np.array([0.475319236624166197E+00, 0.621662395675444568E+00, 0.798401723057411417E-01, 0.550211197376269112E+00, 0.158468782949331616E+00])
-
     cubeMLphys = cubeML #myprior(cubeML, 1+gp.pops*2, 1+gp.pops*2)
     #myloglike(cubeMLphys, 1+gp.pops*2, 1+gp.pops*2)
     pML, mu1ML, sig1ML, mu2ML, sig2ML = cubeMLphys
@@ -273,7 +268,7 @@ def run(gp):
     xs *= (arcsec*DL) # [pc]
     ys *= (arcsec*DL) # [pc]
 
-    # TODO: determine com_x, com_y from shrinking sphere
+    # determine com_x, com_y from shrinking sphere
     import gi_centering as grc
     com_x, com_y = grc.com_shrinkcircle_2D(xs, ys)
     # alternative: get center of photometric measurements by deBoer
