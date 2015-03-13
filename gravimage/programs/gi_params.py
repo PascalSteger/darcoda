@@ -33,7 +33,7 @@ class Params():
         if investigate != '':
             self.investigate = investigate
         else:
-            self.investigate  = 'gaia' # determine which data set to work on
+            self.investigate  = 'walk' # determine which data set to work on
                                       # 'hern': simple Hernquist prof. from simwiki
                                       # 'walk': with full obs. cont. data from Walker
                                       # 'gaia': 1pop 6D data, gaia challenge
@@ -45,11 +45,11 @@ class Params():
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 3 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
 
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations # if changed: set getnewdata=True!
+        self.pops = 2 # number of stellar tracer populations # if changed: set getnewdata=True!
         # Set number of tracer stars to look at
         self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N
 
@@ -57,9 +57,9 @@ class Params():
         # -------------------------------------
         self.getnewdata = True # new data computed from observations before burn-in
         if self.restart: self.getnewdata = False
-        self.selfconsistentnu = False # tracer star density profile for dSph?
+        self.selfconsistentnu = True # tracer star density profile for dSph?
         self.binning = 'consttr' # linspace, logspace, consttr: binning of particles
-        self.metalpop = True # split metallicities with a separate MCMC
+        self.metalpop = False # split metallicities with a separate MCMC
         self.walker3D = False # for walker mock data: use 3D models
         self.hern_dual = 2 # use hernquist model with 1 or 2 particle
                      # types. do not use second type (DM) as population
@@ -68,10 +68,10 @@ class Params():
         # MultiNest options
         # -------------------------------------
         self.getSigdata = False # get previously stored parameters for nu,  after a Sig convergence run
-        self.chi2_switch = 20   # turn on sig calculation if chi2 < chi2_switch
-        self.chi2_Sig_converged = 1000 # how many times to be below that threshold?
+        self.chi2_switch = 60   # turn on sig calculation if chi2 < chi2_switch
+        self.chi2_Sig_converged = 100 # how many times to be below that threshold?
         # Set number of terms for enclosedmass&tracer&anisotropy bins = model parameters:
-        self.nipol = 11  # set getnewdata = True to run data readout again if this value changes
+        self.nipol = 12  # set getnewdata = True to run data readout again if this value changes
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax
         self.nepol = self.nipol + 2*self.nexp     # number of parameters for
                                                 # direct mapping of nu(r)
@@ -110,19 +110,19 @@ class Params():
         self.rlimnr_nu = 1    # same for nrnu
         self.innerslope = 2.999
         self.maxnuslope = 5   # same for nrnu
-        self.nrtol  = 1.5     # scale of change of dn/dr
+        self.nrtol  = 1.     # scale of change of dn/dr
         self.nrtol_nu = self.maxnuslope*2 # scale of change for nr_nu
         self.nupar_min = np.zeros(self.nrho)  # ranges to be sampled
         self.nupar_max = np.ones(self.nrho)*self.nrtol_nu
         self.beta00prior = False  # beta(r=0)=0
         self.minbetastar_0 = -0.99  # clipping for beta*, default: -0.99
         self.maxbetastar_0 = 1.00  # clipping for beta*, default:  1.00
-        self.minbetastar_inf = -0.99
+        self.minbetastar_inf = 0.75
         self.maxbetastar_inf = 1.00
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = False    # monotonicity prior on n(x) for rho(x)
+        self.monotonic = True    # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
