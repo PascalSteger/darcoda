@@ -51,8 +51,6 @@ def pcload_single_entries(bn, gp):
     ln = 0
     for line in fil:
         ln = ln +1
-        if ln > minlinelen:
-            break
         if re.search(path, line):
             line2 = re.sub(r'\n', '', line)
             if not re.search("File ", line2):
