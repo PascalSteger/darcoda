@@ -52,7 +52,8 @@ def get_pos_and_COM(gp):
                 grd_COM.run(gp)
         elif gp.pops == 2:
             import grd_metalsplit
-            grd_metalsplit.run(gp)
+            grd_metalsplit.read(gp.Rdiff, gp)
+            #grd_metalsplit.run(gp)
             if gp.case < 5:
                 import grd_COM
                 grd_COM.run(gp)

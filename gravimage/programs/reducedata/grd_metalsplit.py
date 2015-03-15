@@ -139,7 +139,6 @@ def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
 
-    #globs = comm.bcast(globs, root=0)
     global Nsample, split, e_split, PM, split_min, split_max
     gpr.fil = gpr.dir+"data/tracers.dat"
     # number of measured tracer stars
@@ -284,6 +283,7 @@ def run(gp):
     coll_R2half = []
     coll_popass = []
 
+    print('drawing 1000 assignments of stars to best fitting Gaussians')
     import numpy.random as npr
     #import gi_project as gip
     for kl in range(1000):
@@ -328,10 +328,6 @@ def run(gp):
     coll_R1half = np.array(coll_R1half)
     coll_R2half = np.array(coll_R2half)
     coll_Rdiffhalf = np.abs(coll_R1half-coll_R2half)
-    clf()
-    hist(coll_Rdiffhalf, np.sqrt(len(coll_Rdiffhalf))/2)
-    xlabel(r'$\Delta R/pc$')
-    ylabel('count')
 
     # select 3 assignments: one for median, one for median-1sigma, one for median+1sigma
     med_Rdiff = np.median(coll_Rdiffhalf)
@@ -339,26 +335,136 @@ def run(gp):
     min1s_Rdiff = med_Rdiff-stdif
     max1s_Rdiff = med_Rdiff+stdif
 
-    axvline(med_Rdiff, color='r')
-    axvline(min1s_Rdiff, color='g')
-    axvline(max1s_Rdiff, color='g')
+    #clf()
+    #hist(coll_Rdiffhalf, np.sqrt(len(coll_Rdiffhalf))/2)
+    #xlabel(r'$\Delta R/pc$')
+    #ylabel('count')
+    #axvline(med_Rdiff, color='r')
+    #axvline(min1s_Rdiff, color='g')
+    #axvline(max1s_Rdiff, color='g')
 
-    pdb.set_trace()
     kmed = np.argmin(abs(coll_Rdiffhalf-med_Rdiff))
     kmin1s = np.argmin(abs(coll_Rdiffhalf-min1s_Rdiff))
     kmax1s = np.argmin(abs(coll_Rdiffhalf-max1s_Rdiff))
 
-    np.savetxt(gp.files.dir+'popass_median', coll_popass[kmed])
-    np.savetxt(gp.files.dir+'popass_min1s', coll_popass[kmin1s])
-    np.savetxt(gp.files.dir+'popass_max1s', coll_popass[kmax1s])
+    print('saving median, lower 68%, upper 68% stellar assignments')
+    np.savetxt(gpr.dir+'data/popass_median', coll_popass[kmed])
+    np.savetxt(gpr.dir+'data/popass_min1s', coll_popass[kmin1s])
+    np.savetxt(gpr.dir+'data/popass_max1s', coll_popass[kmax1s])
+    print('finished')
 
 
-def read(Rdiff):
-    if Rdiff != 'median' and Rdiff != 'min' and Rdiff != 'max':
+def read(Rdiff, gp):
+    if Rdiff != 'median' and Rdiff != 'min1s' and Rdiff != 'max1s':
         print('run grd_metalsplit.py to get the split by metallicity done before reading it in for GravImage')
         exit(1)
 
+    import gr_params
+    gpr = gr_params.grParams(gp)
 
+    global Nsample, split, e_split, PM, split_min, split_max
+    gpr.fil = gpr.dir+"data/tracers.dat"
+    # number of measured tracer stars
+    Nsample = bufcount(gpr.fil)
+    delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
+    #ID = np.genfromtxt(gpr.fil,skiprows=29,unpack=True,usecols=(0,1),delimiter=delim)
+    if gp.case==5:
+        RAh,RAm,RAs,DEd,DEm,DEs,VHel,e_VHel,Teff,e_Teff,logg,e_logg,Fe,e_Fe,N=np.loadtxt(gpr.fil, skiprows=25, unpack=True)
+        PM = np.ones(len(RAh))
+        split = logg
+        e_split = e_logg
+        sel = (N>0)
+    else:
+        RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI,VHel,e_VHel,SigFe,e_SigFe, Mg,Mg_err,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+        split = Mg
+        e_split = Mg_err
+        sel = (Mg>-1)  # exclude missing data on Mg
+    RAh = RAh[sel]
+    RAm = RAm[sel]
+    RAs = RAs[sel]
+    DEd = DEd[sel]
+    DEm = DEm[sel]
+    DEs = DEs[sel]
+    #Vmag = Vmag[sel]
+    #VI  = VI[sel]
+    VHel = VHel[sel]
+    e_VHel = e_VHel[sel]
+    if gp.case < 5:
+        Mg = Mg[sel]
+        Mg_err = Mg_err[sel]
+    elif gp.case == 5:
+        Teff = Teff[sel]
+        e_Teff = e_Teff[sel]
+        logg = logg[sel]
+        e_logg = e_logg[sel]
+        Fe = Fe[sel]
+        e_Fe = e_Fe[sel]
+        N = N[sel]
+    split = split[sel]
+    e_split = e_split[sel]
+    PM = PM[sel]
+
+    split_min = min(split) # -3, 3 if according to WalkerPenarrubia2011
+    split_max = max(split)
+
+    # but: it's not as easy as that
+    # we have datapoints with errors and probability of membership weighting
+    # thus, we need to smear the values out using a Gaussian of width = split_err
+    # and add them up afterwards after scaling with probability PM
+    x = np.array(np.linspace(split_min, split_max, 100))
+    splitdf = np.zeros(100)
+    for i in range(len(split)):
+        splitdf += PM[i]*gh.gauss(x, split[i], e_split[i])
+    splitdf /= sum(PM)
+
+    sig = abs(RAh[0])/RAh[0]
+    RAh = RAh/sig
+    xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
+    sig = abs(DEd[0])/DEd[0]
+    DEd = DEd/sig
+    ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
+    arcsec = 2.*np.pi/(360.*60.*60) # [pc]
+    kpc = 1000 # [pc]
+    DL = {1: lambda x: x * (138),#+/- 8 for Fornax
+          2: lambda x: x * (101),#+/- 5 for Carina
+          3: lambda x: x * (79), #+/- 4 for Sculptor
+          4: lambda x: x * (86), #+/- 4 for Sextans
+          5: lambda x: x * (80)  #+/- 10 for Draco
+      }[gp.case](kpc)
+    xs *= (arcsec*DL) # [pc]
+    ys *= (arcsec*DL) # [pc]
+
+    # alternative: get center of photometric measurements by deBoer
+    # for Fornax, we have
+    if gp.case == 1:
+        com_x = 96203.736358393697
+        com_y = -83114.080684733024
+        xs = xs-com_x
+        ys = ys-com_y
+    else:
+        # determine com_x, com_y from shrinking sphere
+        import gi_centering as grc
+        com_x, com_y = grc.com_shrinkcircle_2D(xs, ys)
+
+    popass = np.loadtxt(gpr.dir+'data/popass_'+Rdiff)
+
+    sel1 = (popass==1)
+    sel2 = (popass==2)
+    # radii of all stellar tracers from pop 1 and 2
+    R1 = np.sqrt((xs[sel1])**2 + (ys[sel1])**2)
+    R2 = np.sqrt((xs[sel2])**2 + (ys[sel2])**2)
+    R1.sort()
+    R2.sort()
+    R0 = np.hstack([R1, R2])
+    R0.sort()
+
+    for pop in np.arange(2)+1:
+        if pop == 1:
+            Rhalf = R1[len(R1)/2]
+            co = 'blue'
+        else:
+            Rhalf = R2[len(R2)/2]
+            co = 'red'
 
     Rmin = min(R0) # [pc]
     Rmax = max(R0) # [pc]

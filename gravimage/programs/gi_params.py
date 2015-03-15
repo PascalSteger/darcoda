@@ -40,33 +40,30 @@ class Params():
                                       # 'coll': collisional system
                                       # 'obs': real data from Fornax dwarf galaxy
         check_investigate(self.investigate)
-        print(' investigation : ', self.investigate)
         if case != -1:
             self.case = case
             #os.system('sed -i "s/case = 1/case = '+str(case)+'/"')
         else:
-            self.case = 1 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
+            self.case = 5 # gaia models (1..8) Walker (0..2,4,5; use 1, 2)
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
 
-        print(' case : ', self.case)
         self.pops = 2 # number of stellar tracer populations # if changed: set getnewdata=True!
         # Set number of tracer stars to look at
         self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N
 
         # data options
-        # -------------------------------------
         self.getnewdata = True # new data computed from observations before burn-in
         if self.restart: self.getnewdata = False
         self.selfconsistentnu = False # tracer star density profile for dSph?
         self.binning = 'consttr' # linspace, logspace, consttr: binning of particles
         self.metalpop = True # split metallicities with a separate MCMC
+        self.Rdiff = 'median' # median, min, max for median,
         self.walker3D = False # for walker mock data: use 3D models
         self.hern_dual = 2 # use hernquist model with 1 or 2 particle
                      # types. do not use second type (DM) as population
         self.maxR = 5. # [Xscale], max range in radial bins
 
         # MultiNest options
-        # -------------------------------------
         self.getSigdata = False # get previously stored parameters for nu,  after a Sig convergence run
         self.chi2_switch = 80   # turn on sig calculation if chi2 < chi2_switch
         self.chi2_Sig_converged = 1000 # how many times to be below that threshold?
@@ -122,7 +119,7 @@ class Params():
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = True    # monotonicity prior on n(x) for rho(x)
+        self.monotonic = False    # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options
