@@ -37,7 +37,7 @@ print('gravimage.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
-ts = '' # empty timestamp means: create new timestamp with folder
+ts = '201503181633' # empty timestamp means: create new timestamp with folder
 gp = gl_params.Params(ts, options.investigation, int(options.case))
 import gl_file as gf
 
@@ -45,7 +45,7 @@ def show(filepath):
     subprocess.call(('xdg-open', filepath))
     return
 ## \fn show(filepath) open the output (pdf) file for the user @param
-# filepath filename with full path
+# filepath filename with full pathThen
 
 def myprior(cube, ndim, nparams):
     mycube = Cube(gp)
@@ -128,7 +128,7 @@ def run(gp):
                     outputfiles_basename = gp.files.outdir,
                     seed = -1,
                     verbose = True,
-                    resume = False,
+                    resume = True,
                     context = 0,
                     write_output = True,
                     log_zero = -1e500,    # points with log likelihood

@@ -491,7 +491,7 @@ class ProfileCollection():
             ax.set_ylim(0., 6.)
         elif prof == 'kz_rho_DM_vec':
             ax.set_ylabel('$k(z)_{\\rho, \\rm{DM}}$')
-            ax.set_ylim(-40., 40.)
+            ax.set_ylim(-10., 10.)
 
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')

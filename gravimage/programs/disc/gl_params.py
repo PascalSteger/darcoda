@@ -54,15 +54,18 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
-        self.external_data_file= '/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+        self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
 
-        self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
+        self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.nbins = 10 # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
         #Dark matter options
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
+
+        self.darkmattermodel = 'const_dm'  # kz_dm = kz parameterization of DM
+                                        # const_dm = constant DM density in z
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model
@@ -81,10 +84,15 @@ class Params():
             self.nrhonu = self.nbins #Param count will be rho_C + rho_bins
 
         #Total dimensions count
-        self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
-            # Constant C from sigma_z calculation, nrho + 1 params for rho (nrho
-            # points for kz_rho, plus central density of rho, eg rho_C), similarly
-            # nrho +1  params for nu, plus the number of params for all baryon pops
+        if self.darkmattermodel == 'kz_dm':
+            self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculation, nrho + 1 params for rho (nrho
+                # points for kz_rho, plus central density of rho, eg rho_C), similarly
+                # nrho +1  params for nu, plus the number of params for all baryon pops
+        elif self.darkmattermodel == 'const_dm':
+            self.ndim = 1 + 1 + (self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculations, 1 for constant rho density,
+                # nrhonu + 1 for kz_nu and nu_C, plus baryon params
 
         self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
         self.vz_SDerr_meas = 5.  # Measurement error on vz, [km s^-1]
@@ -98,14 +106,14 @@ class Params():
         # Limits for central densities (z=0)
         self.rho_C_max = 1.0E8  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
         self.rho_C_min = 1.0E6 #Msun pc^-3
-        self.rho_C_prior_type = 'log'
+        self.rho_C_prior_type = 'log' #log, linear, gaussian
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
         self.nu_C_prior_type = 'log'
 
         # Limits for central kz values (z=0)
-        self.kz_rho_C_max = 2.0
-        self.kz_rho_C_min = -2.0 #SS
+        self.kz_rho_C_max = 5.0
+        self.kz_rho_C_min = -5.0 #SS
         self.kz_nu_C_max = 5.#20.0
         self.kz_nu_C_min = -5.0 #SS
 
@@ -120,15 +128,19 @@ class Params():
         self.monotonic_rho = False    # mono-prior on rho(z)
         self.monotonic_nu = False # mono-prior on nu(z)
 
+        # kz selection scheme
+        self.kz_rho_selection = 'gaussian'
+        self.kz_nu_selection = 'tophat'
+
         # Log or linear priors for rhonu scanning
         self.prior_type_rho = 'gaussian' # 'log' or 'linear'
         self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 1600. #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1400.
-        self.simplenu_baryon_D_max = 0.1 #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.3
+        self.simplenu_baryon_K_max = 1700. #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1300.
+        self.simplenu_baryon_D_max = 0.5 #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.05
 
 
         # MultiNest options

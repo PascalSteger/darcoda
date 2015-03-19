@@ -63,6 +63,7 @@ def map_kr(params, prof, pop, gp):
         kz_C_max = gp.kz_rho_C_max
         kz_C_min = gp.kz_rho_C_min
         monotonic = gp.monotonic_rho
+        kz_rhonu_selection = gp.kz_rho_selection
     elif prof == 'nu':
         rhonu_C_max = gp.nu_C_max
         rhonu_C_min = gp.nu_C_min
@@ -70,6 +71,7 @@ def map_kr(params, prof, pop, gp):
         kz_C_max = gp.kz_nu_C_max
         kz_C_min = gp.kz_nu_C_min
         monotonic = gp.monotonic_nu
+        kz_rhonu_selection = gp.kz_nu_selection
 
     # rho or nu central value
     if rhonu_C_prior_type == 'linear':
@@ -88,13 +90,22 @@ def map_kr(params, prof, pop, gp):
 
     for jter in range(0, gp.nbins):
         z_diff = gp.z_all_pts[jter+1] - gp.z_all_pts[jter]
-        kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
-        kz_min = kz_i_m1 - gp.max_kz_slope*z_diff
-        if monotonic:
-            kz_min=max(kz_min, 0.)
-        kz_i = kz_min + (kz_max - kz_min)*params[2+jter]
+        if kz_rhonu_selection == 'tophat':
+            kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
+            kz_min = kz_i_m1 - gp.max_kz_slope*z_diff
+            kz_i = kz_min + (kz_max - kz_min)*params[2+jter]
+
+        elif kz_rhonu_selection == 'gaussian':
+            sigma_kz = gp.max_kz_slope*z_diff/2. # TODO: Think on this some more
+            #if monotonic:
+            #    kz_i_m1 = max(kz_i_m1, 0)
+            kz_i = kz_i_m1 + np.sqrt(2) * sigma_kz * scipy.special.erfinv(2*(params[jter]-0.5))
+
         #if monotonic:
-        #    kz_i = max(kz_i, 0.) #Alternate method for monotonic implementation
+        #    kz_i = max(kz_i, 0.) #Sledgehammer method for monotonic implementation
+            #if monotonic:
+            #    kz_min=max(kz_min, 0.)
+
         kz_i_m1 = kz_i
         kz_vector.append(kz_i)
 
@@ -254,6 +265,10 @@ def map_rhonu(params, prof, pop, gp):
 
     return np.hstack([rhonu_C, rhonu_vector])
 
+def map_constdm(params, prof, pop, gp):
+    rhoC = gp.rho_C_min + (gp.rho_C_max-gp.rho_C_min)*params[0]
+    return [rhoC]
+
 
 
 class Cube:
@@ -279,11 +294,15 @@ class Cube:
         off += offstep
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector
-        offstep = gp.nrhonu + 1
-        if gp.scan_rhonu_space:
-            tmp_DM = map_rhonu(pc[off:off+offstep], 'rho', 0, gp)
-        else:
-            tmp_DM = map_kr(pc[off:off+offstep], 'rho', 0, gp)
+        if gp.darkmattermodel == 'const_dm':
+            offstep = 1
+            tmp_DM = map_constdm(pc[off:off+offstep], 'rho', 0, gp)
+        elif gp.darkmattermodel == 'kz_dm':
+            offstep = gp.nrhonu + 1
+            if gp.scan_rhonu_space:
+                tmp_DM = map_rhonu(pc[off:off+offstep], 'rho', 0, gp)
+            else:
+                tmp_DM = map_kr(pc[off:off+offstep], 'rho', 0, gp)
 
         for i in range(offstep):
             pc[off+i] = tmp_DM[i]
