@@ -332,7 +332,7 @@ class ProfileCollection():
 
     def write_all(self, basename, gp):
         self.write_prof(basename, 'rho', 0, gp)
-        self.write_prof(basename, 'J', 0, gp)
+        #self.write_prof(basename, 'J', 0, gp)
         if gp.geom == 'sphere':
             self.write_prof(basename, 'M', 0, gp)
         self.write_prof(basename, 'Sig', 0, gp)

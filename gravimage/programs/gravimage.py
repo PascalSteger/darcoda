@@ -99,15 +99,15 @@ def prepare_data(gp):
 
 def run(gp):
     pymultinest.run(myloglike, myprior, gp.ndim, n_params = gp.ndim+1,
-                    n_clustering_params = gp.ndim,# separate modes on the rho parameters only: gp.nrho
+                    n_clustering_params = gp.nrho, # gp.ndim, or separate modes on the rho parameters only: gp.nrho
                     wrapped_params = [ gp.pops, gp.nipol, gp.nrho],
-                    importance_nested_sampling = True, # INS enabled
-                    multimodal = True,           # separate modes
+                    importance_nested_sampling = False, # INS enabled
+                    multimodal = False,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
                     evidence_tolerance = 0.0,   # 0 to keep algorithm working indefinitely
-                    sampling_efficiency = 0.25, # 0.05, MultiNest README for >30 params
-                    n_iter_before_update = 20,  # output after this many iterations
+                    sampling_efficiency = 0.05, # 0.05, MultiNest README for >30 params
+                    n_iter_before_update = 2,  # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive, # preallocation of modes: max=number of live points
                     mode_tolerance = -1.e100,   # mode tolerance in the case where no special value exists: highly negative
