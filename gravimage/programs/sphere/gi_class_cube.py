@@ -58,17 +58,17 @@ def dierfc(y):
     y[y==0] = 1e-15
     y[y==1] = 1.-1e-15
 
-    z=1.*y
-    w=qa-np.log(z)
-    u=np.sqrt(w)
-    s=(qc+np.log(u))/w
-    t=1/(u+qb)
-    x=u*(1-s*(0.5+s*qd))-((((q4*t+q3)*t+q2)*t+q1)*t+q0)*t
-    t=pa/(pa+x)
-    u=t-0.5
-    s=(((((((((p22*u+p21)*u+p20)*u+p19)*u+p18)*u+p17)*u+p16)*u+p15)*u+p14)*u+p13)*u+p12
-    s=((((((((((((s*u+p11)*u+p10)*u+p9)*u+p8)*u+p7)*u+p6)*u+p5)*u+p4)*u+p3)*u+p2)*u+p1)*u+p0)*t-z*np.exp(x*x-pb)
-    x=x+s*(1+x*s)
+    z = 1.*y
+    w = qa-np.log(z)
+    u = np.sqrt(w)
+    s = (qc+np.log(u))/w
+    t = 1/(u+qb)
+    x = u*(1-s*(0.5+s*qd))-((((q4*t+q3)*t+q2)*t+q1)*t+q0)*t
+    t = pa/(pa+x)
+    u = t-0.5
+    s = (((((((((p22*u+p21)*u+p20)*u+p19)*u+p18)*u+p17)*u+p16)*u+p15)*u+p14)*u+p13)*u+p12
+    s = ((((((((((((s*u+p11)*u+p10)*u+p9)*u+p8)*u+p7)*u+p6)*u+p5)*u+p4)*u+p3)*u+p2)*u+p1)*u+p0)*t-z*np.exp(x*x-pb)
+    x = x+s*(1+x*s)
     return x
 ## \fn dierfc(y)
 # inverse of complimentary error function from MultiNest implementation
@@ -242,6 +242,23 @@ def map_MtoL(param, gp):
 # @param param scalar
 # @param gp global parameters holding MtoL{min,max}
 
+def map_hypersig(param, prof, pop, gp):
+    if prof == 'Sig':
+        bs = gp.dat.barSig[pop-1]
+    elif prof == 'sig':
+        bs = gp.dat.barsig[pop-1]
+    lmax = 1/(gp.minsig*bs)
+    lmin = 1/(gp.maxsig*bs)
+    lam = 1/(param*(lmax-lmin)+lmin)
+    return lam
+## \fn map_hypersig(param, prof, pop, gp)
+# map [0,1] to [1/(gp.maxsig * <sig>), 1/(gp.minsig * <sig>)]
+# return hyperparameter
+# @param param scalar [0,1]
+# @param prof Sigma or sigma depending on profile
+# @param pop population (1, 2)
+# @param gp global parameters
+
 class Cube:
     def __init__ (self, gp):
         self.pops = gp.pops
@@ -275,11 +292,21 @@ class Cube:
             pc[off] = map_MtoL(pc[off], gp)
             off += offstep
 
-        for pop in range(1,gp.pops+1): # nu1, nu2, and further
+        for pop in range(1, gp.pops+1): # nu1, nu2, and further
             offstep = gp.nrho
             tmp_nu = map_nr_data(pc[off:off+offstep], pop, gp)
             for i in range(offstep):
                 pc[off+i] = tmp_nu[i]
+            off += offstep
+
+            offstep = 1
+            tmp_hyperSig = map_hypersig(pc[off:off+offstep], 'Sig', pop, gp)
+            pc[off] = tmp_hyperSig
+            off += offstep
+
+            offstep = 1
+            tmp_hypersig = map_hypersig(pc[off:off+offstep], 'sig', pop, gp)
+            pc[off] = tmp_hypersig
             off += offstep
 
             offstep = gp.nbeta

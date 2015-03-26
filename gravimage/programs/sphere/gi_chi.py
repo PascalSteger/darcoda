@@ -10,18 +10,19 @@ import pdb
 import numpy as np
 import gi_helper as gh
 
-def chi2red(model, data, sig, dof):
+def chi2red(model, data, sig, hypersig, dof):
     # if Degrees Of Freedom = 1, return non-reduced chi2
     model = np.array(model)
     data  = np.array(data)
     sig   = np.array(sig)
-    return np.sum(((model-data)**2./sig**2.)/dof)
-## \fn chi2red(model, data, sig, dof)
-# determine 'reduced chi2'
+    return np.sum(((model-data)**2./(sig**2.+hypersig**2))/dof)
+## \fn chi2red(model, data, sig, hypersig, dof)
+# determine chi2 divided by number of bins
 # @param model profile
 # @param data profile
 # @param sig spread
-# @param dof Degrees Of Freedom
+# @param hypersig additional fudge parameter to blow up errors
+# @param dof number of bins
 
 def calc_chi2(profs, gp):
     chi2 = 0.
@@ -35,7 +36,8 @@ def calc_chi2(profs, gp):
         Sigdat   = gp.dat.Sig[pop]      # [Munit/pc^2]
         Sigerr   = gp.dat.Sigerr[pop]   # [Munit/pc^2]
         Sigmodel = profs.get_prof('Sig', pop)[gp.nexp:-gp.nexp]
-        chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, gp.nipol) # [1]
+        hyperSig = profs.hyperSig[pop-1]
+        chi2_Sig  = chi2red(Sigmodel, Sigdat, Sigerr, hyperSig, gp.nipol) # [1]
         chi2 += chi2_Sig                 # [1]
         gh.LOG(2, ' chi2_Sig   = ', chi2_Sig)
 
@@ -51,7 +53,8 @@ def calc_chi2(profs, gp):
 
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop]    # [km/s]
-        smodel = profs.get_prof('sig', pop)[gp.nexp:-gp.nexp]
+        smodel  = profs.get_prof('sig', pop)[gp.nexp:-gp.nexp]
+        hypersig = profs.hypersig[pop]
         chi2_sig = chi2red(smodel, sigdat, sigerr, gp.nipol) # [1]
         chi2 += chi2_sig                # [1]
         gh.LOG(2, '  chi2_sig  = ', chi2_sig)

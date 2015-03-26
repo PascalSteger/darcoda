@@ -49,26 +49,24 @@ class Params():
                           # triax (1-4:core, 5-8:cusp), obs (1:for,car,scl,sex,dra)
 
         print(' case : ', self.case)
-        self.pops = 1 # number of stellar tracer populations # if changed: set getnewdata=True!
+        self.pops = 1 # number of stellar tracer populations, if changed: set getnewdata=True!
         # Set number of tracer stars to look at
         self.ntracer = [1e6, 1e6] # pop0, pop1, pop2, ..., pop_N
 
         # data options
-        # -------------------------------------
         self.getnewdata = True # new data computed from observations before burn-in
         if self.restart: self.getnewdata = False
-        self.selfconsistentnu = True # tracer star density profile for dSph?
+        self.selfconsistentnu = False # tracer star density profile for dSph?
         self.binning = 'consttr' # linspace, logspace, consttr: binning of particles
         self.metalpop = False # split metallicities with a separate MCMC
-        self.Rdiff = 'max1s' # median, min1s, max1s
         self.walker3D = False # for walker mock data: use 3D models
         self.hern_dual = 2 # use hernquist model with 1 or 2 particle
-                     # types. do not use second type (DM) as population
+                           # types. do not use second type (DM) as population
         self.maxR = 5. # [Xscale], max range in radial bins
 
         # MultiNest options
-        self.getSigdata = False # get previously stored parameters for nu,  after a Sig convergence run
-        self.chi2_switch = 100   # turn on sig calculation if chi2 < chi2_switch
+        self.getSigdata = False # get previously stored parameters for nu, after a Sig convergence run
+        self.chi2_switch = 60   # turn on sig calculation if chi2 < chi2_switch
         self.chi2_Sig_converged = 1000 # how many times to be below that threshold?
         # Set number of terms for enclosedmass&tracer&anisotropy bins = model parameters:
         self.nipol = 12  # set getnewdata = True to run data readout again if this value changes
@@ -96,12 +94,15 @@ class Params():
             N_nu = (self.pops+1)*self.nrho+1 #last +1 for MtoL param
         else:
             N_nu = self.pops*self.nrho
-        self.ndim = self.nrho + N_nu + self.pops*self.nbeta
+
+        # ndim has nrho for rho, N_nu, (self.nbeta + 2) per population
+        self.ndim = self.nrho + N_nu + self.pops*(self.nbeta + 2)
         self.nlive = 100*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
+        self.minsig = 0.1   # hyperparameter range sampled from 1/(minsig*mean(sig)) .. max
+        self.maxsig = 10.0
 
         # parameter spaces
-        # --------------------------------------------------------
         self.rhohalf = -1.    # prior density for rho at half-light radius of tracers
                               # calculated in gi_data, in linear space
         self.log10rhospread = 1.  # with this spread, [dex] in log space
@@ -122,7 +123,7 @@ class Params():
         self.betalogrs = 5.86803451 # for checkbeta, fitted value for Gaia02
         self.MtoLmin = 0.8
         self.MtoLmax = 3.
-        self.monotonic = True    # monotonicity prior on n(x) for rho(x)
+        self.monotonic = False    # monotonicity prior on n(x) for rho(x)
         self.monotonic_nu = False # monotonicity prior on n(x) for nu(x)
 
         # integration options

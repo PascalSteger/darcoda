@@ -45,10 +45,12 @@ class Datafile:
         self.nrnuerr = []
         self.Sig = []
         self.Sigerr = []
+        self.barSig = -1
         ## keep line of sight velocity dispersion profile, in [km/s]
         self.sig = []
         ## keep error of sigdat
         self.sigerr = []
+        self.barsig = -1
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
         ## keep errors of kapdat
@@ -131,8 +133,8 @@ class Datafile:
                 slopeleft = slopeleft[::-1]
                 slopes = np.hstack([slopeleft, sloperight])
                 nrpar = 1.*slopes[:-1]
-                #Deltalogr = np.log(gp.xfine[1:]) - np.log(gp.xfine[:-1])
-                #nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
+                # Deltalogr = np.log(gp.xfine[1:]) - np.log(gp.xfine[:-1])
+                # nrpar = (slopes[1:]-slopes[:-1])/Deltalogr
                 spl_nrpar = splrep(gp.xfine[:-1], nrpar, k=1)
                 nre = splev( gp.xipol, spl_nrpar)
                 extleft = splev(gp.xepol[0:3], spl_nrpar) # np.array([nrpar[0], nrpar[0], nrpar[0]])
@@ -179,6 +181,7 @@ class Datafile:
                 self.nuhalf.append(nudat[round(len(nudat)/2)]) #HS ToDo: check validity of this
             self.Sig.append(Sigdat)    # [Munit/pc^2]
             self.Sigerr.append(Sigerr) # [Munit/pc^2]
+            self.barSig.append(np.mean(Sigerr))
             self.nu.append(nudat)      # [Munit/pc^3]
             self.nuerr.append(nuerr)   # [Munit/pc^3]
         return
@@ -197,6 +200,7 @@ class Datafile:
             # change to km/s here
             self.sig.append(sigdat[:] * gp.maxsiglos[pop+1]) # [km/s]
             self.sigerr.append(sigerr[:] * gp.maxsiglos[pop+1]) # [km/s]
+            self.barsig.append(np.mean(sigerr[:]*gp.maxsiglos[pop+1]))
         return
     ## \fn read_sig(self, gp)
     # read in line of sight velocity dispersion for tracer particles

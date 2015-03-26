@@ -27,7 +27,9 @@ class Profiles:
         self.nu   = np.zeros((pops+1)*nepol) # dito
         self.nrnu = np.zeros((pops+1)*nepol)
         self.Sig  = np.zeros((pops+1)*nepol)
+        self.hyperSig = np.zeros(pops)
         self.sig  = np.zeros((pops+1)*nepol)
+        self.hypersig = np.zeros(pops)
         self.kap  = np.zeros((pops+1)*nepol)
         self.zetaa = 0.
         self.zetab = 0.

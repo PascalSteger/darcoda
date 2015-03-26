@@ -47,13 +47,12 @@ def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
     gpr.fil = gpr.dir+"/data/tracers.dat"
-    delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
+    delim = [0, 22, 3, 3, 6, 4, 3, 5, 6, 6, 7, 5, 6, 5, 6, 5, 6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=(0,1),delimiter=delim)
-    RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI, VHel,e_VHel,SigFe,e_SigFe, SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
+    RAh, RAm, RAs, DEd, DEm, DEs, Vmag, VI, VHel, e_VHel, SigFe, e_SigFe, SigMg, e_SigMg, PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
 
     # only use stars which have Mg measurements
     pm = (SigMg>-1) * (PM>=0.95)
-    pdb.set_trace()
     print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
     ID = ID[1][pm]
     RAh = RAh[pm]
