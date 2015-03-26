@@ -5,7 +5,7 @@ import getpass
 def get_basepath():
     host_name = socket.gethostname()
     user_name = getpass.getuser()
-    print('host_name = ', host_name)
+    #print('host_name = ', host_name)
     basepath = '/home/psteger/sci/darcoda/gravimage/'
     if 'darkside' in host_name:
         basepath = '/home/ast/read/dark/darcoda/gravimage/'
@@ -22,7 +22,7 @@ def get_basepath():
 def get_machine():
     host_name = socket.gethostname()
     user_name = getpass.getuser()
-    print('host_name = ', host_name)
+    #print('host_name = ', host_name)
     if 'darkside' in host_name:
         machine = 'darkside'
     elif 'ethz' in host_name:

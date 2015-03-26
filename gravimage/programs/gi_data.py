@@ -74,9 +74,7 @@ class Datafile:
                 gp.xipol = self.rbin                            # [pc]
                 minr = min(self.rbin)                           # [pc]
                 maxr = max(self.rbin)                           # [pc]
-                gp.xepol = np.hstack([minr/8., minr/4., minr/2.,\
-                                      self.rbin, \
-                                      2*maxr, 4*maxr, 8*maxr]) # [pc]
+                gp.xepol = np.hstack([minr/8., minr/4., minr/2., self.rbin, 2*maxr, 4*maxr, 8*maxr]) # [pc]
                 gp.xfine = introduce_points_in_between(gp.xepol, gp)
             # deproject,
             # takes [pc], 2* [Munit/pc^2], gives [pc], 2* [Munit/pc^3],

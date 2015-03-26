@@ -49,37 +49,35 @@ def run(gp):
     gpr.fil = gpr.dir+"/data/tracers.dat"
     delim = [0,22,3,3,6,4,3,5,6,6,7,5,6,5,6,5,6]
     ID = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=(0,1),delimiter=delim)
-
     RAh,RAm,RAs,DEd,DEm,DEs,Vmag,VI, VHel,e_VHel,SigFe,e_SigFe, SigMg,e_SigMg,PM = np.genfromtxt(gpr.fil, skiprows=29, unpack=True, usecols=tuple(range(2,17)), delimiter=delim, filling_values=-1)
 
     # only use stars which have Mg measurements
-    pm = (SigMg>-1) # (PM>=0.95)*
+    pm = (SigMg>-1) * (PM>=0.95)
+    pdb.set_trace()
     print("f_members = ", gh.pretty(1.*sum(pm)/len(pm)))
-    ID=ID[1][pm]
-    RAh=RAh[pm]
-    RAm=RAm[pm]
-    RAs=RAs[pm]
-    DEd=DEd[pm]
-    DEm=DEm[pm]
-    DEs=DEs[pm]
+    ID = ID[1][pm]
+    RAh = RAh[pm]
+    RAm = RAm[pm]
+    RAs = RAs[pm]
+    DEd = DEd[pm]
+    DEm = DEm[pm]
+    DEs = DEs[pm]
     Vmag = Vmag[pm]
-    VI=VI[pm]
-    VHel=VHel[pm]
-    e_VHel=e_VHel[pm]
-    SigFe=SigFe[pm]
-    e_SigFe=e_SigFe[pm]
-    SigMg=SigMg[pm]
-    e_SigMg=e_SigMg[pm]
-    PM=PM[pm]
+    VI = VI[pm]
+    VHel = VHel[pm]
+    e_VHel = e_VHel[pm]
+    SigFe = SigFe[pm]
+    e_SigFe = e_SigFe[pm]
+    SigMg = SigMg[pm]
+    e_SigMg = e_SigMg[pm]
+    PM = PM[pm]
 
     Mg0 = SigMg
     sig = abs(RAh[0])/RAh[0]
-    #print('RAh: signum = ',gh.pretty(sig))
     RAh = RAh/sig
     xs = 15*(RAh*3600+RAm*60+RAs)*sig       # [arcsec/15]
 
     sig = abs(DEd[0])/DEd[0]
-    #print('DEd: signum = ', gh.pretty(sig))
     DEd = DEd/sig
     ys = (DEd*3600+DEm*60+DEs)*sig          # [arcsec]
 

@@ -126,12 +126,10 @@ if __name__ == '__main__':
         import select_run as sr
         timestamp, basename = sr.run(options.investigate, options.case, options.latest)
         options.timestamps=[timestamp]
-
     else:
         import gi_base as gb
         basepath = gb.get_basepath()
         basename = os.path.abspath(basepath+'DT'+options.investigate+'/'+str(options.case))+'/'
-
 
     # use last timestamp for sample gp
     import import_path as ip
@@ -160,7 +158,6 @@ if __name__ == '__main__':
     ip.remove_first(); ip.remove_first()
     ip.remove_first(); ip.remove_first()
 
-
     # set up overall profile collection
     import import_path as ip
     ip.insert_sys_path(basename+tt+'/programs/')
@@ -181,7 +178,6 @@ if __name__ == '__main__':
         # TODO check: read in pickled values
         with open(basename+tt+'/pc', 'rb') as fn:
             pc = pickle.load(fn)
-
         pcall.merge(pc)
 
     # use last timestamp for output

@@ -93,7 +93,7 @@ class ProfileCollection():
         dmax = max(dmax, maxi)
         self.ranges[prof+str(pop)] = [dmin, dmax]
         # overrule settings for n(r) plot
-        if prof=='nr':
+        if prof == 'nr':
             self.ranges[prof+str(pop)] = [-0.5, 4.0]
         return
     ## \fn broaden_lim(self, prof, pop, mini, maxi)
@@ -197,7 +197,7 @@ class ProfileCollection():
                     Jfull[k] = max(0, Jfull[k])
                 self.profs[i].set_prof('J', Jfull, 0, gp)
         else:
-            gh.LOG(1, 'len(self.profs)==0, did not calculate self.profs.J')
+            gh.LOG(1, 'len(self.profs) == 0, did not calculate self.profs.J')
     ## \fn calculate_J(self, gp)
     # calculate J from Sig from rho
     # @param gp global parameters
@@ -250,18 +250,16 @@ class ProfileCollection():
                 anbeta.append(beta)
                 nu = ga.rho_walk(r0, gp)[pop]
                 dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], unpack=False, skiprows=1))
-                locrhalf = np.argmin(abs(gp.xipol-gp.Xscale[pop])) 
+                locrhalf = np.argmin(abs(gp.xipol-gp.Xscale[pop]))
                 nuhalf = nudat[locrhalf]*gp.nu0pc[pop]
                 annuhalf = nu[np.argmin(abs(r0-locrhalf))]
                 annu.append(nu*nuhalf/annuhalf)
-                #pdb.set_trace()
                 dum,dum,dum,Sigdat,Sigerr = np.transpose(np.loadtxt(gp.files.Sigfiles[pop], unpack=False, skiprows=1))
-                locrhalf = np.argmin(abs(gp.xipol-gp.Xscale[pop]))      
+                locrhalf = np.argmin(abs(gp.xipol-gp.Xscale[pop]))
                 Sighalf = Sigdat[locrhalf]*gp.Sig0pc[pop]
                 Sig = gip.rho_INT_Sig(r0, nu, gp)
                 anSighalf = Sig[np.argmin(abs(r0-locrhalf))]
                 anSig.append(Sig*Sighalf/anSighalf)
-                #pdb.set_trace()
         elif gp.investigate == 'triax':
             anrho = ga.rho_triax(r0, gp) # one and only
             anM = gip.rho_SUM_Mr(r0, anrho)
@@ -284,7 +282,6 @@ class ProfileCollection():
         for pop in np.arange(1, gp.pops+1):
             self.analytic.set_prof('beta', anbeta[pop-1], pop, gp)
             self.analytic.set_prof('betastar', anbeta[pop-1]/(2.-anbeta[pop-1]), pop, gp)
-            #pdb.set_trace()
             self.analytic.set_prof('nu', annu[pop], pop, gp)
             nrnu = -gh.derivipol(np.log(annu[pop]), np.log(r0))
             self.analytic.set_prof('nrnu', nrnu, pop, gp)
@@ -461,6 +458,9 @@ class ProfileCollection():
     # @param gp global parameters
 
     def plot_Xscale_3D(self, ax, gp):
+        rmin = np.log10(min(gp.xipol))
+        rmax = np.log10(max(gp.xipol))
+        gp.xfine = np.logspace(rmin, rmax, gp.nfine)
         if gp.investigate == 'walk':
             if gp.pops == 1:
                 rhodm, nu1 = ga.rho_walk(gp.xepol, gp)
@@ -471,6 +471,8 @@ class ProfileCollection():
         for pop in range(gp.pops):
             # use our models
             nuprof = self.Mmedi.get_prof('nu', pop+1)
+            tck = splrep(gp.xepol, nuprof)
+            nuproffine = splev(gp.xfine, tck)
             if gp.investigate == 'walk' or gp.investigate == 'gaia':
                 # or rather use analytic values, where available
                 if pop == 0:
@@ -478,14 +480,15 @@ class ProfileCollection():
                 elif pop == 1:
                     nuprof = nu2
             if gp.geom == 'sphere':
-                Mprof = gip.rho_SUM_Mr(gp.xepol, nuprof)
+                Mprof = gip.rho_SUM_Mr(gp.xfine, nuproffine)
                 Mmax = max(Mprof) # Mprof[-1]
                 ihalf = -1
                 for kk in range(len(Mprof)):
                     # half-light radius (3D) is where mass is more than half
                     # ihalf gives the iindex of where this happens
-                    if Mprof[kk] >= Mmax/2 and ihalf <0:
-                        xx = (gp.xepol[kk-1]+gp.xepol[kk])/2
+                    if Mprof[kk] >= Mmax/2 and ihalf < 0:
+                        xx = (gp.xfine[kk-1]+gp.xfine[kk])/2
+                        print('rhalf = ', xx, ' pc')
                         ax.axvline(xx, color='green', lw=0.5, alpha=0.7)
                         ihalf = kk
     ## \fn plot_Xscale_3D(ax, gp)

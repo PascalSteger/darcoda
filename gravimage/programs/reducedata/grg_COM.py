@@ -23,7 +23,7 @@ def select_pm(x, y, z, vz, pm):
 def run(gp):
     import gr_params
     gpr = gr_params.grParams(gp)
-    print('input:',gpr.fil)
+    print('input:', gpr.fil)
     x0, y0, z0, vx, vy, vz = np.transpose(np.loadtxt(gpr.fil))
     # for purely tangential beta=-0.5 models, have units of kpc instead of pc
     if gp.case == 9 or gp.case == 10:
@@ -34,6 +34,7 @@ def run(gp):
     import gi_helper as gh
     ind1 = gh.draw_random_subset(x0, gp.ntracer[1-1])
     x0, y0, z0, vz0 = select_pm(x0, y0, z0, vz, ind1)
+
     PM = np.ones(len(x0)) # assign all particles the full probability of membership
     import gi_centering as glc
     com_x, com_y, com_z, com_vz = glc.com_shrinkcircle_v(x0, y0, z0, vz, PM)
