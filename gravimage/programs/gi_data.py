@@ -45,12 +45,12 @@ class Datafile:
         self.nrnuerr = []
         self.Sig = []
         self.Sigerr = []
-        self.barSig = -1
+        self.barSig = []
         ## keep line of sight velocity dispersion profile, in [km/s]
         self.sig = []
         ## keep error of sigdat
         self.sigerr = []
-        self.barsig = -1
+        self.barsig = []
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
         ## keep errors of kapdat
