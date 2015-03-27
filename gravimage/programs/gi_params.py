@@ -66,8 +66,8 @@ class Params():
 
         # MultiNest options
         self.getSigdata = False # get previously stored parameters for nu, after a Sig convergence run
-        self.chi2_switch = 60   # turn on sig calculation if chi2 < chi2_switch
-        self.chi2_Sig_converged = 1000 # how many times to be below that threshold?
+        self.chi2_switch = 10   # 10 turn on sig calculation if chi2 < chi2_switch
+        self.chi2_Sig_converged = 1000 # 1000 how many times to be below that threshold?
         # Set number of terms for enclosedmass&tracer&anisotropy bins = model parameters:
         self.nipol = 12  # set getnewdata = True to run data readout again if this value changes
         self.nexp  = 3    # more fudge parameters at r<rmin and r>rmax

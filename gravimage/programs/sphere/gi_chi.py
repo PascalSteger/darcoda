@@ -54,8 +54,8 @@ def calc_chi2(profs, gp):
         sigdat  = gp.dat.sig[pop]    # [km/s]
         sigerr  = gp.dat.sigerr[pop]    # [km/s]
         smodel  = profs.get_prof('sig', pop)[gp.nexp:-gp.nexp]
-        hypersig = profs.hypersig[pop]
-        chi2_sig = chi2red(smodel, sigdat, sigerr, gp.nipol) # [1]
+        hypersig = profs.hypersig[pop-1]
+        chi2_sig = chi2red(smodel, sigdat, sigerr, hypersig, gp.nipol) # [1]
         chi2 += chi2_sig                # [1]
         gh.LOG(2, '  chi2_sig  = ', chi2_sig)
         if gp.usekappa:
