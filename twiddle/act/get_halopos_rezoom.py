@@ -4,7 +4,7 @@
 # read halo props from DB, find three most massive halos with no other
 # halo of mvir/2 inside 5rvir
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import lib.mysql as mys
 from math import sqrt

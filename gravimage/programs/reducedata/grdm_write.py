@@ -4,7 +4,7 @@
 # @ file
 # generate simple disc data ourselves
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 
 import numpy as np
@@ -300,9 +300,6 @@ def run(gp):
     sigerr.append(sig_dat_err_bin1/scales[1][4])
     if gp.pops == 2:
         sigerr.append(sig_dat_err_bin2/scales[2][4])
-
-#    pdb.set_trace()
-
     write_disc_output_files(rbin, rmin, rmax, nudat, nuerr, \
                             Sigdat, Sigerr, Mrdat, Mrerr,\
                             sigdat, sigerr, scales, gp)

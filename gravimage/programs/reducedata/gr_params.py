@@ -4,23 +4,9 @@
 # @file
 # global params for data analysis step 1 used to generate input for spherical MCMC
 
-# (c) GPL v3 2014 ETHZ Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 import pdb
-
-def rhodm(r, r_DM, rho0, alpha_DM, beta_DM, gamma_DM):
-    # TODO beta_DM: define up here somewhere
-    exp = ((1.*gamma_DM-beta_DM)/alpha_DM)
-    rho = rho0*(r/r_DM)**(-gamma_DM)*(1.+(r/r_DM)**alpha_DM)**exp
-    return rho
-## \fn rhodm(r,r_DM, rho0, alpha_DM, beta_DM, gamma_DM)
-# in walker case, calculate rho_DM profile
-# @param r radii [pc]
-# @param r_DM dark matter scale radius [pc]
-# @param rho0 central density in [Msun/pc^3]
-# @param alpha_DM profile parameter, outer slope
-# @param beta_DM  profile parameter, transition strength
-# @param gamma_DM profile parameter, central slope
 
 import gi_helper as gh
 class grParams():
@@ -29,17 +15,14 @@ class grParams():
         # show plots during execution of data readout?
         # set automatically if gr_MCMCbin.py is called on the command line
         self.showplots = False
-
-        self.n = 3 # number of iterations in gr_MCMCbin
+        self.n = 300 # number of iterations in gr_MCMCbin
         self.Rerr  = 0. # 0.01      # distance error in [Xscale]
-        self.vrerr = 2.0 # [km/s] 0.01 # velocity error. raises sig_los, errors in it
-
+        self.vrerr = 2.0 # [km/s] 2.0 # velocity error. raises sig_los, errors in it
         if gp.investigate == 'hern':
             self.repr  = 1     # choose simulation representation
             self.Rcut = 1.e10  # [Rvir]
             self.Rmin = 0. # [Rscale]i
-            self.Rmax = 3. # [Rscale]
-
+            self.Rmax = 10. # [Rscale]
             self.simname = gp.files.get_sim_name(gp) # dir+'simulation/'+prename+'unit_hern_%i' %(repr)
             if gp.pops == 1:
                 self.simpos = gp.files.dir+'simulation/'+self.simname+'pos.txt'
@@ -50,7 +33,6 @@ class grParams():
             else:
                 gh.LOG(0, 'get data for more than 2 pops in Hernquist profile')
                 pdb.set_trace()
-
         elif gp.investigate == 'walk': # or just want to try some other generic pymc stuff:
             self.r_DM  = 1000.
             self.fi = Files(gp)

@@ -4,7 +4,7 @@
 # import file with full path specification, only once, setting back sys.path
 # you need to specify PYTHONPATH to include the gravimage/programs
 
-# (c) GPL v3 2015 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import os
 import sys
@@ -21,13 +21,16 @@ def insert_sys_path(fullpath):
 # and thus make it the first directory to be scanned
 # @param fullpath string to be inserted
 
-
 def remove_first():
     sys.path = sys.path[1:]
 ## \fn remove_first()
 # remove first entry in sys.path
 # and thus reverse insert_sys_path
 
+def remove_third():
+    sys.path[2] = ''
+## \fn remove_third()
+# remove third entry (where gi_params was stored for timestamped restart runs)
 
 def import_path(fullpath):
     path, filename = os.path.split(fullpath)
@@ -42,11 +45,9 @@ def import_path(fullpath):
 # @param fullpath path to filename
 # @return module, use like module.some_fun()
 
-
 def set_geometry(geom, machine):
     print('Machine = ', machine)
     basepath = gb.get_basepath()+'programs/'
-
     insert_sys_path(basepath + 'reducedata/')
     insert_sys_path(basepath + geom)
 ## \fn set_geometry(geom, machine)

@@ -4,7 +4,7 @@
 # @file
 # all file related functions
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np
@@ -12,7 +12,7 @@ import numpy as np
 import gi_helper as gh
 import gi_units as gu
 
-def read_data(gp):
+def get_pos_and_COM(gp):
     if gp.investigate == 'hern':
         import grh_com
         grh_com.run(gp)
@@ -34,30 +34,44 @@ def read_data(gp):
         import grt_com
         grt_com.run(gp)
     elif gp.investigate == 'obs':
-        if gp.case == 0:
-            # in case we work with Fornax dwarf, use deBoer data for
-            import grd_COM_for
-            grd_COM_for.run(gp)
         if gp.pops == 1:
-            import grd_COM
-            grd_COM.run(gp)
+            if gp.case == 1:
+                # in case we work with Fornax dwarf, use deBoer data
+                import grd_photo_for
+                grd_photo_for.run(gp)
+                import grd_COM
+                grd_COM.run(gp)
+            elif gp.case == 5:
+                print('TODO: include photometric data for Draco')
+                #import grd_photo_dra
+                #grd_photo_dra.run(gp)
+                import grd_COM_dra
+                grd_COM_dra.run(gp)
+            else:
+                import grd_COM
+                grd_COM.run(gp)
         elif gp.pops == 2:
-            import grd_metalsplit, grd_COM
-            grd_metalsplit.run(gp)
-            grd_COM.run(gp)
+            import grd_metalsplit
+            grd_metalsplit.read(gp.Rdiff, gp)
+            #grd_metalsplit.run(gp)
+            if gp.case < 5:
+                import grd_COM
+                grd_COM.run(gp)
+            elif gp.case == 5:
+                import grd_COM_dra
+                grd_COM_dra.run(gp)
         else:
-            print('implement 3 populations for observed galaxies')
+            print('implement >2 populations for observed galaxies')
             exit(1)
     else:
         print('wrong investigation')
         exit(1)
-## \fn read_data(gp)
+## \fn get_pos_and_COM(gp)
 # read in files with differing file formats, write out to common x, y, vz file
 # @param gp global parameters
 
 def read_Sigdata(gp):
     gh.LOG(1, 'reading Sig converged parameters')
-    # put together filename
     Sigconvparamsfn = gp.files.modedir+str(gp.case)+'/Sig_conv.stats'
     # read first line into nuparam_min
     # read second line into nuparam_median
@@ -73,29 +87,23 @@ def bin_data(gp):
         import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'gaia':
-        import grg_COM, gr_MCMCbin
-        grg_COM.run(gp)
+        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'walk':
         if not gp.walker3D:
-            import grw_COM, gr_MCMCbin # inside there, split by metallicity
-            grw_COM.run(gp)
+            import gr_MCMCbin # inside there, split by metallicity
             gr_MCMCbin.run(gp)
         # run for 3D models as well if model is set (needed in rhotot_walk)
         if gp.walker3D:
-            import grw_com, grw_mcmcbin
-            grw_com.run(gp)
+            import grw_mcmcbin
             grw_mcmcbin.run(gp)
     elif gp.investigate == 'triax':
-        import grt_com
-        grt_com.run(gp)
         import grt_dens
         grt_dens.run(gp)
         import grt_siglos
         grt_siglos.run(gp)
     elif gp.investigate == 'obs':
-        import grd_COM, gr_MCMCbin
-        grd_COM.run(gp)
+        import gr_MCMCbin
         gr_MCMCbin.run(gp)
     elif gp.investigate == 'discmock':
         import grdm_write
@@ -154,7 +162,6 @@ def get_rhohalfs(gp):
 # and M_half = M(<r_half) for rho
 # @param gp global parameters
 
-
 def arraydump(fname, arrays, app='a', narr=1):
     fn=open(fname,app)
     if narr == 1:
@@ -181,7 +188,6 @@ def bufcount(filename):
     lines = 0
     buf_size = 1024 * 1024
     read_f = f.read # loop optimization
-
     buf = read_f(buf_size)
     while buf:
         lines += buf.count('\n')
@@ -214,7 +220,7 @@ def write_headers_2D(gp, pop):
           'kappa_los(R) [1];','error [1]', file=f_kap)
 
     f_zeta = open(gp.files.zetafiles[pop], 'w')
-    print('zeta_A [1],  zeta_B [1]')
+    print('zeta_A [1],  zeta_B [1]', file=f_zeta)
 
     return f_Sig, f_nu, f_mass, f_sig, f_kap, f_zeta
 ## \fn write_headers_2D(gp, pop)
@@ -248,7 +254,7 @@ def empty(filename):
 
 def read_Xscale(filename):
     crscale = open(filename, 'r')
-    Xscale = np.array(np.loadtxt(crscale, comments='#', unpack=False))
+    Xscale = np.loadtxt(crscale, comments='#', unpack=False)
     crscale.close()
     return Xscale
 ## \fn read_Xscale(filename)

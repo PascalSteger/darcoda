@@ -3,7 +3,7 @@
 ## \file
 # map fortran unformatted output to .png
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import numpy as np
 from pylab import cm

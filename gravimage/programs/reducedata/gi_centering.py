@@ -4,7 +4,7 @@
 # @file
 # basic centering algorithms, shared between gr*_com
 
-# (c) GPL v3 2014 ETHZ, Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ, Pascal S.P. Steger, pascal@steger.aero
 
 import pdb
 import numpy as np

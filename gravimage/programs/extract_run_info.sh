@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-if [ -d /home/ast ]; then
+if [ -d /home/ast/read/dark ]; then
     cd /home/ast/read/dark/darcoda/gravimage
 else
     cd /home/psteger/sci/darcoda/gravimage
@@ -11,7 +10,6 @@ extract_active_runs.sh > active_runs
 
 # enable extended globbing
 shopt -s extglob
-
 
 for inv in DT*
 do
@@ -33,6 +31,7 @@ do
                     nbeta=$(grep "self.nbeta =" $timestamp/programs/gi_params.py | cut -d"=" -f2 | cut -d"#" -f1)
                     pops=$(grep "self.pops =" $timestamp/programs/gi_params.py | cut -d"=" -f2 | head -n1 | cut -d"#" -f1)
                     bins=$(grep "self.nipol =" $timestamp/programs/gi_params.py | cut -d"=" -f2 | cut -d"#" -f1)
+                    mono=$(grep "self.monotonic = " $timestamp/programs/gi_params.py | cut -d"=" -f2 | cut -d"#" -f1)
                     beta00=$(grep "self.beta00prior =" $timestamp/programs/gi_params.py | cut -d"=" -f2 | cut -d"#" -f1)
                     minbeta=$(grep "self.minbetastar =" $timestamp/programs/gi_params.py | cut -d"=" -f2 | cut -d"#" -f1)
 
@@ -54,7 +53,7 @@ do
                     if [ -f $timestamp/output/converged ]; then
                         conv="c"
                     fi
-                    echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$nbeta"\t"$beta00"\t"$minbeta"\t"$active"\t"$plotted"\t"$conv
+                    echo -e $count"\t"$timestamp"\t"$lines"\t"$pops"\t"$bins"\t"$mono"\t"$beta00"\t"$minbeta"\t"$active"\t"$plotted"\t"$conv
 
                     count=$(echo $count"+1"|bc)
                 fi

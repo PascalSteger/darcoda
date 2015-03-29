@@ -4,7 +4,7 @@
 # define log likelihood function to be called by Multinest
 # disc version
 
-# (c) GPL v3 2014 ETHZ, Pascal Steger psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ, Pascal Steger pascal@steger.aero
 
 import numpy as np
 import pdb
@@ -28,9 +28,6 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_rho = phys.rho(gp.xepol, rhodmpar, 0, gp)
     tmp_profs.set_prof('rho', tmp_rho[gp.nexp:-gp.nexp], 0, gp)
     off += offstep
-
-    # tmp_M = glp.rho_SUM_Mr(gp.xepol, tmp_rho)
-    # tmp_profs.set_prof('M', tmp_M[gp.nexp:-gp.nexp], 0, gp)
 
     offstep = gp.nrho
     lbaryonpar = np.array(cube[off:off+offstep]) #SS cube[1+nrho:1+2*nrho]

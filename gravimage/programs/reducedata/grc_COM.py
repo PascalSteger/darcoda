@@ -5,7 +5,7 @@
 # calculate approximative center of mass, assuming constant
 # stellar mass 2D version
 
-# (c) 2014 Pascal S.P. Steger
+# (c) 2015 ETHZ Pascal S.P. Steger, pascal@steger.aero
 
 import numpy as np
 import pdb

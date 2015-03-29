@@ -1,7 +1,5 @@
 program get_particles
-  !-------------------------------------------------------------------
-  ! extract particles (DM/stars) to ASCII
-  !-------------------------------------------------------------------
+  ! extract DM particles to ASCII
   implicit none
   integer::ncpu,ndim,npart,i,j,k,icpu,ipos
   integer::ncpu2,npart2,ndim2,levelmin,levelmax
@@ -13,15 +11,12 @@ program get_particles
   real*8::aexp,t,omega_m,omega_l,omega_b,omega_k,h0,unit_l,unit_t,unit_d
   real*8,dimension(:),allocatable::aexp_frw,hexp_frw,tau_frw,t_frw
   real*8,dimension(:,:),allocatable::map
-#ifndef NPRE
-  integer,parameter::dp=kind(1.0E0) ! default: real*4
+#if NPRE==8
+  integer, parameter :: dp = selected_real_kind(15, 307)
 #else
-#if NPRE==4
-  integer,parameter::dp=kind(1.0E0) ! real*4
-#else
-  integer,parameter::dp=kind(1.0D0) ! real*8
+  integer, parameter :: dp = selected_real_kind(6, 37)
 #endif
-#endif
+  real(dp)::mstar_tot
   real(dp),dimension(:,:),allocatable::x,v
   real(dp),dimension(:),allocatable::m,age,metal
   integer*4,dimension(:),allocatable::id,level
@@ -46,14 +41,14 @@ program get_particles
   ipos=INDEX(repository,'output_')
   nchar=repository(ipos+7:ipos+13)
   nomfich=TRIM(repository)//'/part/part_'//TRIM(nchar)//'.out00001'
-  inquire(file=nomfich, exist=ok) ! verify input file 
+  inquire(file=nomfich, exist=ok) ! verify input file
   if ( .not. ok ) then
      print *,TRIM(nomfich)//' not found.'
      stop
   endif
 
   nomfich=TRIM(repository)//'/info_'//TRIM(nchar)//'.txt'
-  inquire(file=nomfich, exist=ok) ! verify input file 
+  inquire(file=nomfich, exist=ok) ! verify input file
   if ( .not. ok ) then
      print *,TRIM(nomfich)//' not found.'
      stop
@@ -66,7 +61,6 @@ program get_particles
   read(10,*)
   read(10,*)
   read(10,*)
-
   read(10,'(a13,E23.15)')A13,boxlen
   read(10,'(a13,E23.15)')A13,t
   read(10,'(a13,E23.15)')A13,aexp
@@ -96,20 +90,17 @@ program get_particles
      end do
   endif
   close(10)
-
-  !-----------------------
   ! Cosmological model
-  !-----------------------
   ! Allocate look-up tables
   n_frw=1000
   allocate(aexp_frw(0:n_frw),hexp_frw(0:n_frw))
   allocate(tau_frw(0:n_frw),t_frw(0:n_frw))
-  
+
   ! Compute Friedman model look up table
   !write(*,*)'#Computing Friedman model'
   call friedman(dble(omega_m),dble(omega_l),dble(omega_k), &
        & 1.d-6,1.d-3,aexp_frw,hexp_frw,tau_frw,t_frw,n_frw,time_tot)
-  
+
   ! Find neighboring expansion factors
   i=1
   do while(aexp_frw(i)>aexp.and.i<n_frw)
@@ -119,10 +110,7 @@ program get_particles
   time_simu=t_frw(i)*(aexp-aexp_frw(i-1))/(aexp_frw(i)-aexp_frw(i-1))+ &
        & t_frw(i-1)*(aexp-aexp_frw(i))/(aexp_frw(i-1)-aexp_frw(i))
   !write(*,*)'#Age simu=',(time_tot+time_simu)/(h0*1d5/3.08d24)/(365.*24.*3600.*1d9)
-
-  !-----------------------
   ! Map parameters
-  !-----------------------
   if(nx==0)then
      nx=2**levelmin
   endif
@@ -137,7 +125,6 @@ program get_particles
   do j=1,ncpu
      cpu_list(j)=j
   end do
-
   npart=0
   do k=1,ncpu!ncpu_read
      icpu=k!cpu_list(k)
@@ -152,10 +139,7 @@ program get_particles
      npart=npart+npart2
   end do
   !print *,'#Found ',npart,' particles.'
-
-  !-----------------------------------------------
   ! Compute projected mass using CIC smoothing
-  !----------------------------------------------
   npart_actual=0
   mtot=0.0d0
   do k=1,ncpu!ncpu_read
@@ -172,7 +156,9 @@ program get_particles
      !print *,'#npart2 = ',npart2
      read(1) ! localseed
      read(1)nstar
-     read(1) ! mstar_tot
+     !print *,'nstar = ',nstar
+     read(1)mstar_tot
+     !print *,'mstar_tot = ',mstar_tot
      read(1) ! mstar_lost
      read(1)nsink
      !print *,'#nsink = ',nsink
@@ -210,19 +196,19 @@ program get_particles
         read(1)age
         read(1)metal
      endif
-#endif     
+#endif
      !print *,'# success reading'
      close(1)
-     
+
      do i=1,npart2
         weight=1.
         drx = x(i,1)-xc
         dry = x(i,2)-yc
         drz = x(i,3)-zc
         dd2 = drx**2 + dry**2 + drz**2
-!        print *,"(E8.3)",dd2
+        ! print *,"(E8.3)",dd2
         ok_part=(dd2<rc**2.and.metal(i)==0.0) ! exclude stars as well
-        
+
         if(ok_part)then
            npart_actual=npart_actual+1
            print "(4(1pe15.8,1X),2(1pe15.8,1X),3(1pe15.8,1X))",&
@@ -245,7 +231,7 @@ contains
       integer       :: iargc
       character(len=4)   :: opt
       character(len=128) :: arg
-      
+
       n = iargc()
       if (n < 4) then
          print *, 'usage: get_sphere_dm -inp input_dir'
@@ -450,20 +436,20 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   tau = 0.0D0
   t = 0.0D0
   nstep = 0
-  
-  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) ) 
-     
+
+  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) )
+
      nstep = nstep + 1
      dtau = alpha * axp_tau / dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)
      axp_tau_pre = axp_tau - dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)*dtau/2.d0
      axp_tau = axp_tau - dadtau(axp_tau_pre,O_mat_0,O_vac_0,O_k_0)*dtau
      tau = tau - dtau
-     
+
      dt = alpha * axp_t / dadt(axp_t,O_mat_0,O_vac_0,O_k_0)
      axp_t_pre = axp_t - dadt(axp_t,O_mat_0,O_vac_0,O_k_0)*dt/2.d0
      axp_t = axp_t - dadt(axp_t_pre,O_mat_0,O_vac_0,O_k_0)*dt
      t = t - dt
-     
+
   end do
 
   age_tot=-t
@@ -471,7 +457,7 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   !666 format('#Age of the Universe (in unit of 1/H0)=',1pe10.3)
 
   nskip=nstep/ntable
-  
+
   axp_t = 1.d0
   t = 0.d0
   axp_tau = 1.d0
@@ -483,8 +469,8 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   axp_out(nout)=axp_tau
   hexp_out(nout)=dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)/axp_tau
 
-  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) ) 
-     
+  do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) )
+
      nstep = nstep + 1
      dtau = alpha * axp_tau / dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)
      axp_tau_pre = axp_tau - dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)*dtau/2.d0
@@ -495,7 +481,7 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
      axp_t_pre = axp_t - dadt(axp_t,O_mat_0,O_vac_0,O_k_0)*dt/2.d0
      axp_t = axp_t - dadt(axp_t_pre,O_mat_0,O_vac_0,O_k_0)*dt
      t = t - dt
-     
+
      if(mod(nstep,nskip)==0)then
         nout=nout+1
         t_out(nout)=t
@@ -512,7 +498,7 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
 
 end subroutine friedman
 
-function dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0) 
+function dadtau(axp_tau,O_mat_0,O_vac_0,O_k_0)
   real(kind=8)::dadtau,axp_tau,O_mat_0,O_vac_0,O_k_0
   dadtau = axp_tau*axp_tau*axp_tau *  &
        &   ( O_mat_0 + &

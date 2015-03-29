@@ -5,7 +5,7 @@
 # @ingroup gravimage
 # all analytic profiles from gl_physics
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) 2013 Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import pdb
@@ -26,20 +26,20 @@ def get_prof(prof, pop, gp):
     z0  = 240.                                # [pc], scaleheight of first population
     z02 = 200.                                # [pc], scaleheight of second population
     D   = 250.                                # [pc], scaleheight of all stellar tracers
-    K   = 1.65                                # [TODO]
-    F   = 1.65e-4                             # [TODO]
+    K   = 1.65
+    F   = 1.65e-4
     C   = 17.**2.                             # [km/s] integration constant in sig
 
     # Draw mock data from exponential disk:
     nu_zth = np.exp(-zth/z0)                                 # [nu0] = [Msun/A/pc] 3D tracer density
     if prof == 'nu' and pop==1:
         return zth, nu_zth
-    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth) # [TODO]
+    Kz_zth = -(K*zth/np.sqrt(zth**2.+D**2.) + 2.0 * F * zth)
 
     if gp.adddarkdisc:
         DD = 600                                         # [pc] scaleheight of dark disc
-        KD = 0.15 * 1.650                                # [TODO]
-        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.) # [TODO]
+        KD = 0.15 * 1.650
+        Kz_zth = Kz_zth - KD*zth/np.sqrt(zth**2. + DD**2.)
 
     # calculate sig_z^2
     inti = np.zeros(nth)
@@ -51,14 +51,14 @@ def get_prof(prof, pop, gp):
         return zth, sigzth
     # project back to positions of stars
     ran = npr.uniform(size=int(gp.ntracer[1-1]))                 # [1]
-    zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions, exponential falloff
+    #zstar = -z0 * np.log(1.0 - ran)           # [pc] stellar positions, exponential falloff
 
-    sigzstar = gh.ipol(zth, sigzth, zstar)
+    #sigzstar = gh.ipol(zth, sigzth, zstar)
     # > 0 ((IDL, Justin)) stellar velocity dispersion
 
     # assign [0,1] * maxsig
     ran2 = npr.normal(size=int(gp.ntracer[2-1]))  # [1]
-    vzstar = ran2 * sigzstar                      # [km/s]
+    #vzstar = ran2 * sigzstar                      # [km/s]
 
     # Add second population [thick-disc like]:
     if gp.pops == 2:

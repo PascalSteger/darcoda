@@ -5,7 +5,7 @@
 # calculations for velocity dispersion
 # disc version
 
-# (c) 2013 Pascal Steger, psteger@phys.ethz.ch
+# (c) 2013 Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np
@@ -51,7 +51,6 @@ def sigz(zvec,Sigvec,nuvec,C):
 # all arrays (zvec,Sigvec,nuvec) are required to be numpy arrays.
 # outputs sigvec at z = zvec[1:], eg discards first z point
 
-
 def tilt(zipol, param, gp):
     tilttmp = 0.
     for i in range(gp.nbeta):
@@ -59,11 +58,9 @@ def tilt(zipol, param, gp):
     return tilttmp
 ## \fn tilt(zipol, param, gp)
 # return sum of polynomials for tilt as fct of radius
-# TODO: get tilt size from Garbari+2011
 # @param zipol [pc]
 # @param param n_beta parameters
 # @param gp global parameters
-
 
 def kappa(xipol, Kz):
     z0 = xipol

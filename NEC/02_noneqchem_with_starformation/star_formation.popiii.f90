@@ -1,7 +1,4 @@
 !################################################################
-!################################################################
-!################################################################
-!################################################################
 subroutine star_formation(ilevel)
   use amr_commons
   use pm_commons
@@ -13,16 +10,14 @@ subroutine star_formation(ilevel)
   include 'mpif.h'
 #endif
   integer::ilevel
-  !----------------------------------------------------------------------
   ! Description: This subroutine spawns star-particle of constant mass
-  ! using a Poisson probability law if some gas condition are fulfilled. 
-  ! It modifies hydrodynamic variables according to mass conservation 
-  ! and assumes an isothermal transformation... 
+  ! using a Poisson probability law if some gas condition are fulfilled.
+  ! It modifies hydrodynamic variables according to mass conservation
+  ! and assumes an isothermal transformation...
   ! On exit, the gas velocity and sound speed are unchanged.
   ! New star particles are synchronized with other collisionless particles.
   ! Array flag2 is used as temporary work space.
   ! Yann Rasera  10/2002-01/2003
-  !----------------------------------------------------------------------
   ! local constants
   real(dp)::t0,d0,e0,t0III,t0II
   real(dp)::scale_nH,scale_T2,scale_l,scale_d,scale_t,scale_v
@@ -44,7 +39,7 @@ subroutine star_formation(ilevel)
   real(dp)::vxgauss,vygauss,vzgauss,birth_epoch,mass_tmp
   real(dp),dimension(1:nvector)::mstar,mass_new
   real(kind=8)::mlost,mtot,mlost_all,mtot_all
-  real(kind=8)::RandNum,GaussNum,PoissMean   
+  real(kind=8)::RandNum,GaussNum,PoissMean
   real(dp)::vsn,costheta,sintheta,phi,cosphi,sinphi,twopi
   real(dp),dimension(1:3)::skip_loc
   real(dp)::dx,dx_loc,scale,vol_loc,dx_min,vol_min
@@ -57,18 +52,18 @@ subroutine star_formation(ilevel)
   integer ,dimension(1:nvector),save::list_debris,ind_debris1,ind_debris2
   logical ,dimension(1:nvector),save::ok,ok_new=.true.,ok_true=.true.,zswitch
   integer ,dimension(1:ncpu)::ntot_star_cpu,ntot_star_all
-  
+
   if(numbtot(1,ilevel)==0) return
   if(.not. hydro)return
   if(ndim.ne.3)return
 
   if(verbose)write(*,*)' Entering star_formation'
-  
+
   ! Conversion factor from user units to cgs units
   call units(scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2)
 
   ! Mesh spacing in that level
-  dx=0.5D0**ilevel 
+  dx=0.5D0**ilevel
   nx_loc=(icoarse_max-icoarse_min+1)
   skip_loc=(/0.0d0,0.0d0,0.0d0/)
   if(ndim>0)skip_loc(1)=dble(icoarse_min)
@@ -123,7 +118,7 @@ subroutine star_formation(ilevel)
   birth_epoch=t
 
   ! Cells center position relative to grid center position
-  do ind=1,twotondim  
+  do ind=1,twotondim
      iz=(ind-1)/4
      iy=(ind-1-4*iz)/2
      ix=(ind-1-2*iy-4*iz)
@@ -148,7 +143,7 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     do ind=1,twotondim  
+     do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
@@ -233,7 +228,7 @@ subroutine star_formation(ilevel)
 
               fragment = (get_random()/2.)**(-2.3)
               max_mass=fragment*mass_f1
-               
+
 
               ! Compute depleted gas
               dgas=nstar(i)*dstar
@@ -275,7 +270,7 @@ subroutine star_formation(ilevel)
     stop
 #endif
   end if
-  
+
   !---------------------------------
   ! Compute global stars statistics
   !---------------------------------
@@ -324,19 +319,19 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     
+
      ! Loop over cells
      do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
         end do
-        
+
         ! Flag cells with at least one new star
         do i=1,ngrid
            ok(i)=flag2(ind_cell(i))>0
         end do
-        
+
         ! Gather new star arrays
         nnew=0
         do i=1,ngrid
@@ -349,11 +344,11 @@ subroutine star_formation(ilevel)
              enddo
            end if
         end do
-        
+
         ! Update linked list
         call remove_free(ind_part,nnew)
         call add_list(ind_part,ind_grid_new,ok_new,nnew)
-        
+
         ! Calculate new star particle and modify gas density
         do i=1,nnew
 
@@ -388,7 +383,7 @@ subroutine star_formation(ilevel)
              x=(xg(ind_grid_new(i),1)+xc(ind,1)+fboom*1d-2*dx-skip_loc(1))*scale
              y=(xg(ind_grid_new(i),2)+xc(ind,2)+fboom*1d-2*dx-skip_loc(2))*scale
              z=(xg(ind_grid_new(i),3)+xc(ind,3)+fboom*1d-2*dx-skip_loc(3))*scale
- 
+
 
              ! Set new star particle variables
              tp(ind_part(i))=birth_epoch  ! Birth epoch
@@ -403,7 +398,7 @@ subroutine star_formation(ilevel)
              vp(ind_part(i),3)=w
              if(metal)zp(ind_part(i))=zg  ! Initial star metallicity
              write(6,*) "NEWSTAR",mp(ind_part(i)),idp(ind_part(i)),noboom,fboom
-           
+
         end do
         ! End loop over new star particles
 
@@ -425,7 +420,7 @@ subroutine star_formation(ilevel)
      ! End loop over cells
   end do
   ! End loop over grids
-  
+
   !---------------------------------------------------------
   ! Convert hydro variables back to conservative variables
   !---------------------------------------------------------
@@ -435,7 +430,7 @@ subroutine star_formation(ilevel)
      do i=1,ngrid
         ind_grid(i)=active(ilevel)%igrid(igrid+i-1)
      end do
-     do ind=1,twotondim  
+     do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,ngrid
            ind_cell(i)=iskip+ind_grid(i)
@@ -474,7 +469,7 @@ subroutine star_formation(ilevel)
 
 #endif
 
-end subroutine star_formation 
+end subroutine star_formation
 !################################################################
 !################################################################
 !################################################################
@@ -485,8 +480,8 @@ subroutine feedback(ilevel)
   implicit none
   integer::ilevel,ii
   !------------------------------------------------------------------------
-  ! This routine computes the thermal energy, the kinetic energy and 
-  ! the metal mass dumped in the gas by exploding star particles, 
+  ! This routine computes the thermal energy, the kinetic energy and
+  ! the metal mass dumped in the gas by exploding star particles,
   ! called here debris particles, after a time delay t_delay.
   !------------------------------------------------------------------------
   real(dp)::scale_nH,scale_T2,scale_l,scale_d,scale_t,scale_v,t0,scale,dx_min,vsn,vdebris
@@ -511,7 +506,7 @@ subroutine feedback(ilevel)
   ! Supernovae debris velocity in cgs
   vsn=sqrt(2.0*1d51/(10.*2d33))/sqrt(1d0+f_w)
   ! Compute debris flight time in Myr
-  t_delay=1.0d1  !(2.0*dx_min*scale_l/aexp/vsn) / (1d6*365.*24.*3600.)    !OSCAR 
+  t_delay=1.0d1  !(2.0*dx_min*scale_l/aexp/vsn) / (1d6*365.*24.*3600.)    !OSCAR
 
   ! Time delay from Myr to code units
   t_delay=1d6*(365.*24.*3600.)/scale_t
@@ -528,7 +523,7 @@ subroutine feedback(ilevel)
      do jgrid=1,numbl(icpu,ilevel)
         npart1=numbp(igrid)  ! Number of particles in the grid
         npart2=0
-        
+
         ! Count old enough debris particles
         if(npart1>0)then
            ipart=headp(igrid)
@@ -550,9 +545,9 @@ subroutine feedback(ilevel)
               ipart=next_part  ! Go to next particle
            end do
         endif
-        
+
         ! Gather old enough debris particles
-        if(npart2>0)then        
+        if(npart2>0)then
            ig=ig+1
            ind_grid(ig)=igrid
            ipart=headp(igrid)
@@ -573,7 +568,7 @@ subroutine feedback(ilevel)
               if(idp(ipart).eq.0.and.tp(ipart).lt.(t-t0))then
                  ip=ip+1
                  ind_part(ip)=ipart
-                 ind_grid_part(ip)=ig   
+                 ind_grid_part(ip)=ig
                  print *, "Big boom ",mp(ipart),zp(ipart),(tp(ipart)-(t-t0))*scale_t/3.15e13
 !              elseif( (tp(ipart).lt.(t0-t0)) &
 !     &              .and.(mp(ipart).gt.star_mass*.9) )then
@@ -596,7 +591,7 @@ subroutine feedback(ilevel)
 
      ! End loop over grids
      if(ip>0)call sn2(ind_grid,ind_part,ind_grid_part,ig,ip,ilevel,vdebris)
-  end do 
+  end do
   ! End loop over cpus
 
 #endif
@@ -607,7 +602,7 @@ end subroutine feedback
 !################################################################
 !################################################################
 !################################################################
-!################################################################ 
+!################################################################
 subroutine sn2(ind_grid,ind_part,ind_grid_part,ng,np,ilevel,vdebris)
   use amr_commons
   use pm_commons
@@ -644,7 +639,7 @@ subroutine sn2(ind_grid,ind_part,ind_grid_part,ng,np,ilevel,vdebris)
 
   ! Mesh spacing in that level
   call units(scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2)
-  dx=0.5D0**ilevel 
+  dx=0.5D0**ilevel
   nx_loc=(icoarse_max-icoarse_min+1)
   skip_loc=(/0.0d0,0.0d0,0.0d0/)
   if(ndim>0)skip_loc(1)=dble(icoarse_min)
@@ -757,22 +752,22 @@ subroutine sn2(ind_grid,ind_part,ind_grid_part,ng,np,ilevel,vdebris)
      if(ok(j))then
         icell(j)=1+icd(j,1)+2*icd(j,2)+4*icd(j,3)
      else
-        icell(j)=1+icd(j,1)+3*icd(j,2)+9*icd(j,3)   
+        icell(j)=1+icd(j,1)+3*icd(j,2)+9*icd(j,3)
      end if
   end do
-        
+
   ! Compute parent cell adresses and particle effective mass
   do j=1,np
      if(ok(j))then
         indp(j)=ncoarse+(icell(j)-1)*ngridmax+igrid(j)
-          meff(j)=mp(ind_part(j))/vol_loc 
+          meff(j)=mp(ind_part(j))/vol_loc
      else
         indp(j)=nbors_father_cells(ind_grid_part(j),icell(j))
           meff(j)=mp(ind_part(j))/vol_loc/dble(twotondim)
      end if
   end do
 
-  ! Update hydro variables due to feedback 
+  ! Update hydro variables due to feedback
   do j=1,np
      ethermal=meff(j)*(1d51/2d33/10d0/scale_v**2)
      d=uold(indp(j),1)
@@ -805,7 +800,7 @@ subroutine sn2(ind_grid,ind_part,ind_grid_part,ng,np,ilevel,vdebris)
 !  if (remove_part) then
     do j=1,np
        list1(j)=ind_grid(ind_grid_part(j))
-    end do 
+    end do
 
   ! Remove debris particle
     call remove_list(ind_part,list1,ok_true,np)
@@ -817,7 +812,7 @@ subroutine sn2(ind_grid,ind_part,ind_grid_part,ng,np,ilevel,vdebris)
 !  endif
 
 #endif
-  
+
 end subroutine sn2
 !################################################################
 !################################################################

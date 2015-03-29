@@ -4,10 +4,10 @@
 # @file
 # all helper functions
 
-# (c) GPL v3 2014 Pascal S.P. Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal S.P. Steger, pascal@steger.aero
+
 import sys
 import time
-import traceback
 import pdb
 import re
 import numpy as np
@@ -121,7 +121,6 @@ def sanitize_vector(vec, length, mini, maxi, debug):
 # @param maxi maximum allowed value
 # @param debug bool
 
-
 def determine_radius(R, Rmin, Rmax, gp):
     if gp.binning == 'linspace':
         LOG(2, ' bins in linear spacings: ', gp.nipol)
@@ -144,7 +143,6 @@ def determine_radius(R, Rmin, Rmax, gp):
 # @param Rmax float
 # @param gp global parameters
 
-
 def volume_circular_ring(Binmin, Binmax, gp):
     Vol = np.zeros(gp.nipol)
     for k in range(gp.nipol):
@@ -155,8 +153,6 @@ def volume_circular_ring(Binmin, Binmax, gp):
 # @param Binmin in [Rscale] or [pc]
 # @param Binmax in [Rscale] or [pc]
 # @param gp global parameters
-
-
 
 def sanitize_scalar(var, mini, maxi, debug):
     if var < mini:
@@ -179,7 +175,6 @@ def sanitize_scalar(var, mini, maxi, debug):
 # @param maxi maximum value allowed
 # @param debug
 
-
 def myfill(x, N=3):
     if x==np.inf or x==-np.inf:
         return "inf"
@@ -189,7 +184,6 @@ def myfill(x, N=3):
 # @param x integer
 # @param N number of paddings
 # @return 00x or 0xy or xyz
-
 
 def ipol_rhalf_log(X, Y, rhalf):
     for i in range(len(X)):
@@ -201,7 +195,6 @@ def ipol_rhalf_log(X, Y, rhalf):
             highi = len(X)-i-1
     dr = np.log(highr) - np.log(lowr)
     dy = np.log(Y[highi]) - np.log(Y[lowi])
-
     Yhalf = np.exp(np.log(Y[lowi]) + (np.log(rhalf)-np.log(lowr))*dy/dr)
     return Yhalf
 # \fn ipol_rhalf_log(X, Y, rhalf)
@@ -210,7 +203,6 @@ def ipol_rhalf_log(X, Y, rhalf):
 # @param X radii, usually gp.xipol in our case, in [pc]
 # @param Y values, usually Sig(gp.xipol) here, in [arb. units]
 # @param rhalf half-light radius in [pc]
-
 
 def print_summary(Xscale, Rc):
     LOG(2, 'Xscale/pc = ', Xscale)
@@ -223,7 +215,6 @@ def print_summary(Xscale, Rc):
 # @param Xscale
 # @param Rc
 
-
 def draw_random_subset(x, ntracer):
     ind = np.arange(len(x))
     np.random.shuffle(ind)     # random.shuffle already changes ind
@@ -232,7 +223,6 @@ def draw_random_subset(x, ntracer):
 # take an array, and return shuffled array of ntracer entries
 # no entry will be repeated
 
-
 def add_errors(R, error):
     return R + error*np.random.randn(len(R))
 ## \fn add_errors(R, error)
@@ -240,9 +230,9 @@ def add_errors(R, error):
 # @param R array
 # @param error in percent
 
-
 def quadinf(x, y, A, B, stop = False):
     splpar_nul = splrep(x, y, k=1, s=0.) # s=0 needed for intbeta idnu
+    ### TODO: most time-intensive function in whole code
     interp = lambda x: splev(x, splpar_nul)
     dropoffint = quad(interp, A, B, epsrel=1e-4, limit=100, full_output=1)
     if stop and len(dropoffint)>3:
@@ -256,7 +246,6 @@ def quadinf(x, y, A, B, stop = False):
 # @param B right boundary
 # @param stop = True
 
-
 def quadinflog(x, y, A, B, stop = False):
     if max(y) <= 0:
         LOG(1, 'integration over 0', y)
@@ -266,20 +255,17 @@ def quadinflog(x, y, A, B, stop = False):
     minlog = min(np.log(y[y>0])) # exclude y==0 to circumvent error
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible
     # otherwise we get divergent integrals for high radii (low length of x and y)
-
     # replace 0 values with 1e-XX
     yshift = y * shiftlog
     for i in range(len(yshift)):
         if yshift[i] == 0:
             yshift[i] = 10**(-10*i)
-
     #N = 1000
     splpar_nul = splrep(x, np.log(yshift), k=1, s=0.1)
     #maxy = max(y)
     ## invexp = lambda x: min(maxy, np.exp(splev(x,splpar_nul))/shiftlog)
     invexp = lambda x: np.exp(splev(x, splpar_nul))/shiftlog
     ##invexparr= lambda x: np.minimum(maxy*np.ones(len(x)), np.exp(splev(x, splpar_nul))/shiftlog)
-
     # integration with robust quad method (can take np.inf as boundary)
     #start = time.time()
     #for its in range(N):
@@ -290,15 +276,12 @@ def quadinflog(x, y, A, B, stop = False):
     #    print(1, 'warning by quad in quadinflog')
     #elapsed = (time.time()-start)/N
     #print('one iteration quad takes ', elapsed, 's')
-
     # integration with Romberg (can take vector input in function)
     #start = time.time()
     #for its in range(N):
     dropoffint = romberg(invexp, A, B, rtol=1e-3, divmax=15, vec_func=True)
     #elapsed = (time.time()-start)/N
     #print('one iteration romberg takes ', elapsed, 's')
-    #pdb.set_trace()
-
     return dropoffint
 ## \fn quadinflog(x, y, A, B)
 # integrate y over x for strongly decaying function, using splines
@@ -307,7 +290,6 @@ def quadinflog(x, y, A, B, stop = False):
 # @param A left boundary
 # @param B right boundary
 # @param stop = True
-
 
 def quadinfloglog(x, y, A, B, stop = True):
     # work in log(x), log(y) space to enable smoother interpolating functions
@@ -327,14 +309,12 @@ def quadinfloglog(x, y, A, B, stop = True):
 # @param A left boundary
 # @param B right boundary
 
-
 def quadinflog2(x, y, A, B):
     # work in logarithmic space to enable smoother interpolating functions
     # scale to avoid any values <= 1 (such that a second log step can be taken)
     minlog = min(np.log(y))
     shiftlog = np.exp(1.5-minlog) # 1.-minlog not possible,
     # otherwise we get divergent integrals for high radii (low length of x and y)
-
     splpar_nul = splrep(x,np.log(np.log(y*shiftlog)), k=1, s=0.1)
     invexp = lambda x: min(y[0], np.exp(np.exp(splev(x, splpar_nul)))/shiftlog)
     dropoffint = quad(invexp, A, B)
@@ -347,14 +327,13 @@ def quadinflog2(x, y, A, B):
 # @param B right boundary
 # @return integrated y
 
-
 def checknan(vec, place=''):
     if np.isnan(np.sum(vec)):
         LOG(1, 'NaN found! '+place)
         raise Exception('NaN', 'found')
         # not executed anymore :)
-        traceback.print_tb(sys.exc_info()[2])
-        return True
+        #traceback.print_tb(sys.exc_info()[2])
+        #return True
     else:
         return False
 ## \fn checknan(vec, place):
@@ -362,7 +341,6 @@ def checknan(vec, place=''):
 # @param vec array of float values
 # @param place = '' show user where to search
 # @return True if NaN found
-
 
 def checkpositive(vec, place=''):
     if checknan(vec, place):
@@ -384,8 +362,6 @@ def checkpositive(vec, place=''):
 # @param place = '' tell user what to do better
 # @return Exception if (non-physical) negative value found
 
-
-
 def expolpowerlaw(R0, Sigdat, Rnuright, minp = -2.001):
     alpha = (np.log(Sigdat[-3])-np.log(Sigdat[-1]))/(np.log(R0[-3])-np.log(R0[-1]))
     alpha = min(alpha, minp) # assert finite mass
@@ -399,28 +375,22 @@ def expolpowerlaw(R0, Sigdat, Rnuright, minp = -2.001):
 # @param Rnuright extrapolation radii
 # @param minp minimum powerlaw .. extrapolation has to fall at least as much
 
-
 def complete_nu(R0, Sigdat, Sigerr, Rnu):
     Rnuleft = Rnu[Rnu<R0[0]]   # extension of radii to the left
     Rnuright = Rnu[Rnu>R0[-1]] # extension of radii to the right
     R0nu = Rnu[(Rnu>=R0[0]) * (Rnu<=R0[-1])] # [pc]
-
     # cannot use powerlaw to smaller radii, as we only have data on specific points
     Sigdatleft = np.exp(expol(R0, np.log(Sigdat), Rnuleft, 'linear'))
     Sigerrleft = (Sigerr[0]/Sigdat[0])*Sigdatleft
-
     Sigdatnu = linipollog(R0, Sigdat, R0nu)
     Sigerrnu = linipollog(R0, Sigerr, R0nu)
-
     #Sigdatright = np.exp(expol(R0, np.log(Sigdat), Rnuright, 'linear'))
     #Sigerrright = (Sigerr[-1]/Sigdat[-1])*Sigdatright
     # powerlaw extension to highest radii from last 3 binned points
     Sigdatright = expolpowerlaw(R0, Sigdat, Rnuright)
     Sigerrright = (Sigerr[-1]/Sigdat[-1])*Sigdatright
-
     Sigdatnu = np.hstack([Sigdatleft, Sigdatnu, Sigdatright])
     Sigerrnu = np.hstack([Sigerrleft, Sigerrnu, Sigerrright])
-
     return Sigdatnu, Sigerrnu
 ## \fn complete_nu(R0, Sigdat, Sigerr, Rnu)
 # inter- and extrapolate Sigdat and Signu to Rnu (gp.xfine, generally)
@@ -428,7 +398,6 @@ def complete_nu(R0, Sigdat, Sigerr, Rnu):
 # @param Sigdat surface density
 # @param Sigerr error
 # @param Rnu new radii [pc]
-
 
 def derivative(f):
     def df(x, h=0.1e-5):
@@ -484,7 +453,6 @@ def derivipol(y,x):
 # numerical derivated with function from interpolation
 # @param y dependent variable, array of size N
 # @param x free variable, array of same size N
-
 
 def err(a, gp):
     import numpy.random as npr
@@ -656,10 +624,8 @@ def bin_r_const_tracers(x0, nbin):
     x0 = np.array(x0)[order]
     # generate indices for all entries
     ind = np.arange(len(x0))
-
     # split along indices, having the last bin underfilled if no exact splitting possible
     spl = np.array_split(ind, nbin)
-
     binmin = []
     binmax = []
     binmin.append(x0[0]/2)
@@ -672,27 +638,21 @@ def bin_r_const_tracers(x0, nbin):
     binmax.append(x0[-1]*1.01) # last bin stops after last datapoint
     binmin = np.array(binmin)
     binmax = np.array(binmax)
-
     # define bin center to be at center in linear space
     #bincenterlin = (binmin+binmax)/2
-
     # define bin center to be at center in log space
     #bincenterlog = np.exp((np.log(binmin)+np.log(binmax))/2)
-
     # define bin center to be at median radius
     bincentermed = []
     for bini in range(len(spl)):
         bincentermed.append(np.median(x0[spl[bini]]))
     bincentermed = np.array(bincentermed)
-
     return binmin, binmax, bincentermed
 ## \fn bin_r_const_tracers(x0, no)
 # split interval into bins of constant particle number
 # @param x0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
-
-
 
 def sort_profiles_binwise(profs):
     for i in range(len(profs)):
@@ -703,7 +663,6 @@ def sort_profiles_binwise(profs):
 # take array of profiles, sort along each bin
 # @param profs array [prof1, prof2, ..., profN]
 # @return [bin1 bin2 .. binN]_min .. [bin1 bin2 .. binN]_max
-
 
 def get_median_1_2_sig(profs):
     bins = len(profs)
@@ -725,19 +684,16 @@ def get_median_1_2_sig(profs):
 # @param profs bin-wise sorted profiles
 # @return  Mmin, M95lo, M68lo, Mmedi, M68hi, M95hi, Mmax
 
-
 def binsmooth(r, array, low, high, nbin, nanreplace):
     # sort r and array in ascending r order
     index = np.argsort(r)
     r = r[index]
     array = array[index]
-
     # determine linearly spaced bins
     binsize = (high-low)/(1.*nbin)
     rout = np.arange(nbin)*binsize + low
     binmin = rout - binsize/2.
     binmax = rout + binsize/2.
-
     # prepare run
     arrayout = np.zeros(nbin)
     arrayout1 = np.zeros(nbin)
@@ -745,7 +701,6 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
     count_bin = np.zeros(nbin)
     j=0
     siz = len(r)
-
     for i in range(nbin):
         count = 0
         while (binmax[i] > r[j]):
@@ -757,7 +712,6 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
                 j = j + 1
             else:
                 break
-
         if (count > 0):
             arrayout[i] = np.sqrt(arrayout2[i]/count-(arrayout1[i]/count)**2) # def of sig
         else:
@@ -774,12 +728,10 @@ def binsmooth(r, array, low, high, nbin, nanreplace):
 # @param nanreplace if there is no data in a particular bin, it assigns a value of array(r)=nanreplace
 # @return sqrt(avg(x**2)-avg(x)**2) from each bin, with dim [array]
 
-
 def bincount(r, rmax):
     # sort radial bins
     index = np.argsort(r)
     r = r[index]
-
     # prepare
     nbin = len(rmax)
     arrayout  = np.zeros(nbin)
@@ -787,7 +739,6 @@ def bincount(r, rmax):
     std       = np.zeros(nbin)
     j = 0
     siz = len(r)
-
     for i in range(nbin):
         while (rmax[i] > r[j]):
             arrayout[i] = arrayout[i] + 1.
@@ -797,7 +748,6 @@ def bincount(r, rmax):
                 break
         count_bin[i] = arrayout[i]
         std[i] = np.sqrt(count_bin[i])
-
     return arrayout, std
 ## \fn bincount(r, rmax)
 # take an array, r, and count the number of elements in r bins of size bin
@@ -822,7 +772,6 @@ def moments(data):
     var  = 0.0
     skew = 0.0
     curt = 0.0
-
     # Second pass to get the first (absolute), second, third, and fourth moments
     # of the deviation from the mean.
     for j in range(n):
@@ -835,7 +784,6 @@ def moments(data):
         skew += p
         p *= s
         curt += p
-
     adev /= n
     var = (var-ep*ep/n)/(n-1)
     # Corrected two-pass formula.
@@ -853,12 +801,10 @@ def moments(data):
 # from Numerical Recipes
 # @param data 1d array
 
-
 def Ntot(R0, Sigma, gp):
     xint = R0
     yint = Sigma*R0
     Ntot = quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
-
     # new integration routine with cos(theta) substitution
     R0min = min(R0)#/gp.rinfty
     theta = np.arccos(R0min/R0)
@@ -873,7 +819,6 @@ def Ntot(R0, Sigma, gp):
 # @param Sigma surface density profile, [Msun/pc^2]
 # @param gp global parameters
 
-
 def starred(R0, X, Sigma, Ntot, gp):
     xint = R0 # plus extension with 3 bins, to infinity
     yint = X*Sigma*R0
@@ -886,8 +831,3 @@ def starred(R0, X, Sigma, Ntot, gp):
 # @param Sigma surface density at these radii, in [Munit/pc^2]
 # @param Ntot total number of stars
 # @param gp global parameters
-
-
-if __name__=="__main__":
-    # TODO: define tests
-    print("calling tests from gi_helper")

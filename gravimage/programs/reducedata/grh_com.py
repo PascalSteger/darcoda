@@ -4,14 +4,13 @@
 # @file
 # read simulation files (x,y,z, vx,vy,vz), center, cut to N particles, write 2D x,y,vlos
 
-# (c) GPL v3 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import random
 import pdb
 
 import gi_units as gu
-# TODO hernquist gp.G1 replacement in gu
 import gi_helper as gh
 from gi_centering import com_shrinkcircle_v
 

@@ -30,14 +30,12 @@ def bufcount(filename):
 # not used anymore
 # @param filename filename
 
-
 def removeDir(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
 ## \fn removeDir(path)
 # delete directory recursively, if it exists
 # @param path path to directory
-
 
 def remove_empty_folders(fdl):
     for x in fdl:
@@ -57,10 +55,8 @@ def remove_empty_folders(fdl):
 # no iterations of the MultiNest algorithm were stored
 # @param fdl [(name, datestamp)] of all dirs in current mode
 
-
 def list_files(basedir):
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
-
     from datetime import datetime
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
                                  '%Y%m%d%H%M')) for x in dirs]
@@ -75,9 +71,7 @@ def list_files(basedir):
             print('file not found')
             co = 0
         fdl.append((x, timestamp, co ))
-
     fdl.sort(key=lambda x: x[1])
-
     for i in range(len(fdl)):
         try:
             fil = open(fdl[i][0]+'programs/gi_params.py','r')
@@ -111,7 +105,6 @@ def list_files(basedir):
 # NOT USED ANYMORE
 # @param basedir string of directory
 
-
 def list_files_readout(basedir, investigate, case):
     bp = gb.get_basepath()
     fil = open(bp+"/run_info", "r")
@@ -120,6 +113,7 @@ def list_files_readout(basedir, investigate, case):
         if re.search("DT"+str(investigate)+"/"+str(case)+"/", line):
             line2 = re.sub(r'\n', '', line)
             print(line2)
+            #exclude "File not found" errors
             if not re.search("File ", line2):
                 fdl.append(line2)
     fil.close()
@@ -152,21 +146,21 @@ def get_investigate():
 # (walk, gaia, triax, fornax, hern, discsim, discmock)
 # @return string
 
-
 def choose_obs(sel):
-    if sel == '0':
-        return 'for'
     if sel == '1':
-        return 'car'
+        return 'for'
     if sel == '2':
-        return 'scl'
+        return 'car'
     if sel == '3':
+        return 'scl'
+    if sel == '4':
         return 'sex'
+    if sel == '5':
+        return 'dra'
     return 'for'
 ## \fn choose_obs(sel)
 # mapping of selection (int) to directory name (string of length 3)
 # @param sel selection (int)
-
 
 def get_case(investigate):
     default = 1
@@ -181,7 +175,7 @@ def get_case(investigate):
             print("error in input")
         if 0<=sel and ((sel <= 5 and investigate == 'walk') or \
                        (sel <= 10 and investigate == 'gaia') or \
-                       (sel < 4 and investigate == 'obs') or \
+                       (sel <= 5 and investigate == 'obs') or \
                        (sel <= 8 and investigate == 'triax') or \
                        (sel == 0 and investigate == 'discmock') or\
                        (sel == 0 and investigate == 'simplenu')):
@@ -345,7 +339,9 @@ def run(investigate="", case=-1, latest=False):
 
     line = fdl[sel] # full directory path, without '/'
     basename = re.split('\t', line)[1]
-    timestamp = re.split('/', basename)[2]
+    info = re.split('/', basename)
+    timestamp = info[2]
+    basename = info[0]+'/'+info[1]
     return timestamp, basepath+basename+'/'
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one

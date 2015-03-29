@@ -1,1 +1,0 @@
-disc/gl_params.py

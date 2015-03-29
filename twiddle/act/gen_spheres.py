@@ -4,14 +4,18 @@
 # read particles of an AMR simulation snapshot, in a sphere around x y
 # z within radius r for both dm and stars only
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
-import sys, os
+import sys
+import os
+import pdb
 os.nice(1)
 import lib.initialize as my
 import lib.mysql as mys
 
-show = True;  run = True; loop = True
+show = True
+run = True
+loop = True
 
 gsd = "get_sphere_dm"
 gss = "get_sphere_stars"
@@ -20,7 +24,7 @@ i = len(sys.argv)
 if(i!=3):
     print("usage: gen_spheres.py snap typ")
     exit(1)
-    
+
 facr = 1 # * rvir from AHF for maximal radial distance to include particles
 
 snap = sys.argv[1]
@@ -28,13 +32,13 @@ typ = int(sys.argv[2])
 sim = mys.d(snap)
 
 # get xc,yc,zc,mvir,rvir
-xcl,ycl,zcl,mvirl,rvirl = mys.getxyzmr(snap,typ)
-xsl,ysl,zsl,rsl = mys.getxyzrstars(snap,typ)
-
+xcl, ycl, zcl, mvirl,rvirl = mys.getxyzmr(snap, typ)
+xsl, ysl, zsl, rsl = mys.getxyzrstars(snap, typ)
+pdb.set_trace()
 #print('select ',xcl[0])
 #print(len(xcl))
 
-for i in range(3):##TODO: len(xcl)
+for i in range(3):
     xc=str(xcl[i]);       xs=str(xsl[i]);
     yc=str(ycl[i]);       ys=str(ysl[i]);
     zc=str(zcl[i]);       zs=str(zsl[i]);
@@ -51,7 +55,7 @@ for i in range(3):##TODO: len(xcl)
 
     if(mys.is_dmonly):
         continue
-        
+
     # stars only
     cmd = gss+" -inp "+sim
     # center on star center, but with virial radius

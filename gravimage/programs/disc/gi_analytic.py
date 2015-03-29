@@ -5,7 +5,7 @@
 # @ingroup gravimage
 # all analytic profiles from gi_physics
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import pdb

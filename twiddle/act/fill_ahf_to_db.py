@@ -3,7 +3,7 @@
 ## \file
 # after AHF has finished, fill found halo values into MySQL database
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2015 ETHZ, Pascal Steger, pascal@steger.aero
 
 import os, sys
 import lib.mysql as mys
@@ -13,12 +13,11 @@ nsnap = int(sys.argv[1])
 d = mys.d(nsnap)
 
 # reading center, rvir, make comoving again
-
 if(not os.path.exists(d+"halos")):
     exit
 
 co, cu = my.sqlstart()
-    
+
 halos = open(d+"halos","r")
 hid=0
 for line in halos:
@@ -43,6 +42,6 @@ my.sqlstop(co,cu)
 #mys.physical_xcm(nsnap,0.702*0.702) #convert all values from AHFstep output to physical units
 mys.physical_xcm(nsnap, 1000.0) # convert all values from AHFstep output (physical) to ramses code units (0,1)
 
-# mys.exclude(nsnap,300,100,0.3)       #excluding the outer 30%, and halos with < 300 particles
+#mys.exclude(nsnap,300,100,0.3)       #excluding the outer 30%, and halos with < 300 particles
 mys.exclude(nsnap, 30, 0, 0.0) # out to very edge. TODO: check/implement overwrapping
 mys.fill_snapshot(nsnap)

@@ -4,7 +4,7 @@
 # @file
 # read data from simulation
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import numpy as np
 import numpy.random as npr
@@ -230,7 +230,7 @@ def disc_sim(gp):
         elif gp.baryonmodel == 'simple':
             zvis = gp.xipol                   # [pc]
             D = 250.                          # [pc]
-            K = 1.65                          # [TODO]
+            K = 1.65
             sigusevis = K*zvis/sqrt(zvis**2.+D**2.) / (2.0*np.pi*G1)
             siguseviserr = sigusevis*0.01
 

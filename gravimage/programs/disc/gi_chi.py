@@ -5,7 +5,7 @@
 # all functions called directly from gravimage
 # disc version, done
 
-# (c) GPL v3 ETHZ 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 ETHZ 2015 Pascal Steger, pascal@steger.aero
 
 #from types import *
 import pdb

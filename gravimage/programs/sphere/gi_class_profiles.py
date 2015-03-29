@@ -4,7 +4,7 @@
 # @file
 # store profiles
 
-# (c) GPL v3 2014 ETHZ psteger@phys.ethz.ch
+# (c) GPL v3 2015 ETHZ Pascal S.P. Steger pascal@steger.aero
 
 import pdb
 import numpy as np
@@ -19,6 +19,7 @@ class Profiles:
         self.chi2 = 0.0
         self.rho  = np.zeros(nepol)
         self.nr   = np.zeros(nepol)
+        self.J = np.zeros(nepol)
         self.M    = np.zeros(nepol)
         self.MtoL = -1.0
         self.betastar = np.zeros((pops+1)*nepol)
@@ -26,7 +27,9 @@ class Profiles:
         self.nu   = np.zeros((pops+1)*nepol) # dito
         self.nrnu = np.zeros((pops+1)*nepol)
         self.Sig  = np.zeros((pops+1)*nepol)
+        self.hyperSig = np.zeros(pops)
         self.sig  = np.zeros((pops+1)*nepol)
+        self.hypersig = np.zeros(pops)
         self.kap  = np.zeros((pops+1)*nepol)
         self.zetaa = 0.
         self.zetab = 0.
@@ -41,6 +44,8 @@ class Profiles:
             self.rho = vec
         elif prof == 'nr':
             self.nr = vec
+        elif prof == 'J':
+            self.J = vec
         elif prof == 'M':
             self.M = vec
         elif prof == 'nu':
@@ -82,7 +87,6 @@ class Profiles:
     # @param zetab second virial parameter
     # @param pop 1,2,...
 
-
     def get_prof(self, prof, pop):
         if prof == 'rho':
             return self.rho
@@ -90,6 +94,8 @@ class Profiles:
             return self.nr
         elif prof == 'M':
             return self.M
+        elif prof == 'J':
+            return self.J
         elif prof == 'Sig':
             return self.Sig[pop*self.nepol:(pop+1)*self.nepol]
         elif prof == 'nu':
@@ -111,13 +117,11 @@ class Profiles:
     # @param prof of this profile
     # @param pop and of this population (if applicable)
 
-
     def get_zeta(self, pop):
         return self.zetaa, self.zetab
     ## \fn get_zeta(self, pop)
     # return zeta parameters, scalar
     # @param pop int 1,2,... for population
-
 
     def __repr__(self):
         return "Profiles: "+str(self.pops)+" populations, "+str(self.nepol)+" nepol, "+" chi2 = "+str(self.chi2)

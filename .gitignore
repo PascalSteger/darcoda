@@ -11,6 +11,9 @@ DTclus
 DTdisc
 DTdiscmock
 DTdiscsim
+active_runs
+run_info
+
 
 \#*
 \.\#*
@@ -19,6 +22,7 @@ DTdiscsim
 *~
 *.orig
 *.rip
+*.pstats
 
 *.aux
 *.bbl
@@ -28,7 +32,6 @@ DTdiscsim
 *.out
 
 *.svn
-amiga
 
 CVS
 *.o

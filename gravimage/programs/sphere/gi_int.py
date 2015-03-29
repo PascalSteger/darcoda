@@ -4,7 +4,7 @@
 # @file
 # all integrals from gi_physics
 
-# (c) GPL v3 2014 Pascal S.P. Steger
+# (c) GPL v3 2015 Pascal S.P. Steger pascal@steger.aero
 
 import numpy as np
 import pdb
@@ -15,7 +15,7 @@ import gi_units as gu
 import gi_helper as gh
 import gi_analytic as ga
 import gi_physics as phys
-import gi_project as glp
+import gi_project as gip
 
 import matplotlib
 matplotlib.use('pdf')
@@ -32,7 +32,6 @@ def int_poly_inf(r0,poly):
 # @param r0 radii
 # @param poly slope
 
-
 def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
     if log:
         yint[1:] = np.log(yint[1:])
@@ -48,29 +47,22 @@ def correct_first_bin(xint, yint, k=3, s=0.01, log=True):
 # @param s smoothing of the spline. 0.01 is a *small* default value, hard to converge to
 # @param log bool for working in log space
 
-
 def ant_intbeta(r0, betapar, gp):
-    # define function
     xint = 1.*r0
     yint = phys.beta(xint, betapar, gp)[0]/xint
-
-    # analytic values
-    # yint =  ga.beta(xint, gp)[1]/xint
-
     intbet = np.zeros(len(r0))
     for k in range(len(r0)):
-        intbet[k] = gh.quadinf(xint, yint, r0[0]/1e5, r0[k])
+        intbet[k] = gh.quadinf(xint, yint, r0[0], r0[k])
     # assumption here is that integration goes down to min(r0)/1e5
-
     gh.checknan(intbet, 'intbet in ant_intbeta')
-    return intbet                                                # [1]
-## \fn ant_intbeta(r0, betapar, gp)
+    return intbet
+## \fn ant_intbeta(r0, betapar, pop, gp)
 # integrate beta(s)/s over s
 # (integrals in front of and after sigma_r^2 integral, factor 2 not in here)
 # @param r0 free variable, array, in [lunit]
 # @param betapar integrand, array, in [1]
-# @param gp
-
+# @param pop population int
+# @param gp global parameters
 
 def g(rvar, rfix, beta, dbetadr):
     tmp = 1.             # [1]
@@ -85,7 +77,6 @@ def g(rvar, rfix, beta, dbetadr):
 # @param rfix capital R, in [pc]
 # @param beta beta, in [1]
 # @param dbetadr d beta/dr, in [1]
-
 
 def varepsilon(r0, betapar, gp):
     su = 0
@@ -126,9 +117,8 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     # need a M/L parameter)
     # only if we work on real data, add up total baryonic contribution
     if gp.investigate == 'obs':
-        nu_baryons = MtoL*phys.nu(r0fine, lbaryonpar, pop, gp)
+        nu_baryons = MtoL*phys.rho(r0fine, lbaryonpar, pop, gp)
         rhofine += nu_baryons
-
 
     # beta
     # ------------------------------------------------------------------------
@@ -151,7 +141,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # nu
     # ------------------------------------------------------------------------
-    nufine   = phys.nu(r0fine, nupar, pop, gp)
+    nufine   = phys.rho(r0fine, nupar, pop, gp)
     if gp.checksig:
         annu = ga.rho(r0fine, gp)[pop]
     if gp.checksig and gp.stopstep <= 3:
@@ -174,7 +164,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # \Sigma
     # ---------------------------------------------------------------
-    Sigfine  = glp.rho_param_INT_Sig_theta(r0fine, nupar, pop, gp)
+    Sigfine  = gip.rho_param_INT_Sig_theta(r0fine, nupar, pop, gp)
     if gp.checksig and gp.stopstep <= 4:
         clf()
         anSig = ga.Sigma(r0fine, gp)[pop]
@@ -193,16 +183,19 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         savefig('fit_Sig_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
-
     # int beta(s)/s ds
-    # ---------------------------------------------------------------
-    intbetasfine   = ant_intbeta(r0fine, betapar, gp)
+    # ------------------------------------------------------
+    # test for constant \beta
     if gp.checksig:
         if gp.investigate == 'gaia':
             beta_star1, r_DM, gamma_star1, r_star1, r_a1, gamma_DM, rho0 = gp.files.params
             anintbetasfine = 0.5*(np.log(r0fine**2+r_a1**2)-np.log(r_a1**2))
         elif gp.investigate == 'hern':
             anintbetasfine = 0.0*r0fine
+    #betapar[0] = 1
+    #betapar[1] = 1
+    anintbetasfine = np.log(r0fine)-np.log(r0fine[0])
+    intbetasfine   = ant_intbeta(r0fine, betapar, gp)
     if gp.checksig and gp.stopstep <= 5 :
         clf()
         plot(r0fine, intbetasfine, 'r.-', label='model')
@@ -218,9 +211,9 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         savefig('fit_intbeta_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
-
     # M(r)
-    # ---------------------------------------------------------------
+    # -------------------------------------------------------
+    #rhofine = ga.rho_hern(r0fine, gp)[0]
     rhoint = 4.*np.pi*r0fine**2*rhofine
     # add point to avoid 0.0 in Mrfine(r0fine[0])
     r0tmp = np.hstack([0.,r0fine])
@@ -231,30 +224,31 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         Mrfine[i] = splint(0., r0fine[i], splpar_rho)
     gh.checkpositive(Mrfine, 'Mrfine')
     if gp.checksig:
-        anMr = ga.Mr(r0fine, gp)[pop]
+        anMr = ga.Mr(r0fine, gp)[0] # earlier: pop
+        anMr = Mrfine
+        #anMr = ga.M_hern(r0fine, gp)[0]
     if gp.checksig and gp.stopstep <= 6:
         #loglog(gp.xipol, gp.dat.Mr[pop], 'g.-', label='data')
         #s = r0fine/r_DM # [1]
         clf()
         loglog(r0fine, Mrfine, 'r.-', label='model')
-        loglog(r0fine, anMr, 'b--', label='analytic')
+        #loglog(r0fine, anMr, 'b--', label='analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
         axvline(gp.dat.rhalf[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$M(r)$')
         legend(loc='lower right')
-        savefig('fit_M_hern_better.pdf')
+        savefig('fit_M_'+gp.investigate+'.pdf')
         pdb.set_trace()
 
-
     # nu(r)\cdot\sigma_r^2(r) integrand
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------
     # (sigr2, 3D) * nu/exp(-intbetasfine)
     xint = r0fine                           # [pc]
     yint = gu.G1__pcMsun_1km2s_2 * Mrfine / r0fine**2         # [1/pc (km/s)^2]
     yint *= nufine                          # [Munit/pc^4 (km/s)^2]
-    yint *= np.exp(2*intbetasfine)                  # [Munit/pc^4 (km/s)^2]
+    yint *= np.exp(2*(intbetasfine))                  # [Munit/pc^4 (km/s)^2]
     gh.checkpositive(yint, 'yint sigr2')
     if gp.checksig and gp.stopstep <= 7:
         clf()
@@ -271,16 +265,15 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
     # actual integration, gives \sigma_r^2 \nu
     sigr2nu_model = np.zeros(len(r0fine))
-    sigr2nu_model_new = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
         #theta_old = np.linspace(0, np.arccos(r0fine[k]/(gp.rinfty*max(gp.xepol))), gp.nfine)
         theta = np.arccos(r0fine[k]/r0fine[k:])
         rq = r0fine[k]/np.cos(theta)
 
-        Mrq = np.interp(rq, r0fine, Mrfine, left=0, right=0)
-        nuq = np.interp(rq, r0fine, nufine, left=0, right=0)
-        intbetaq = np.interp(rq, r0fine, intbetasfine, left=0, right=0)
-        func_interp_before = Mrq*nuq*np.exp(2*intbetaq)
+        #Mrq = np.interp(rq, r0fine, Mrfine, left=0, right=0)
+        #nuq = np.interp(rq, r0fine, nufine, left=0, right=0)
+        #intbetaq = np.interp(rq, r0fine, intbetasfine, left=0, right=0)
+        #func_interp_before = Mrq*nuq*np.exp(2*intbetaq)
 
         func_base = Mrfine*nufine*np.exp(2*intbetasfine)
         #func_interp_after = np.interp(rq, r0fine, func_base, left=0, right=0)
@@ -289,22 +282,20 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         #print('median(func_interp_after / func_interp_before = ',\
         #      np.median(func_interp_after / func_interp_before))
 
-        sigr2nu_model[k] =  np.exp(-2*intbetasfine[k])/r0fine[k] * \
-                            gu.G1__pcMsun_1km2s_2*simps(func_interp_before*np.sin(theta), theta)
+        #sigr2nu_model[k] =  np.exp(-2*intbetasfine[k])/r0fine[k] * \
+        #                    gu.G1__pcMsun_1km2s_2*simps(func_interp_before*np.sin(theta), theta)
 
-        sigr2nu_model_new[k] = np.exp(-2*intbetasfine[k])/r0fine[k] * \
+        sigr2nu_model[k] = np.exp(-2*intbetasfine[k])/r0fine[k] * \
                                gu.G1__pcMsun_1km2s_2*simps(func_interp_after*np.sin(theta), theta)
 
     # clean last value (which is always 0 by construction)
     sigr2nu_model[-1] = sigr2nu_model[-2]/10.
-    sigr2nu_model_new[-1] = sigr2nu_model_new[-2]/10.
     gh.checkpositive(sigr2nu_model, 'sigr2nu_model in sigl2s')
-    gh.checkpositive(sigr2nu_model_new, 'sigr2nu_model_new in sigl2s')
+    #gh.checkpositive(sigr2nu_model_new, 'sigr2nu_model_new in sigl2s')
     if gp.checksig and gp.stopstep <= 8:
         clf()
         ansigr2nu = ga.sigr2(r0fine, gp)*annu
-        loglog(r0fine, sigr2nu_model, 'r.-', label='model, interp each function')
-        loglog(r0fine, sigr2nu_model_new, 'k--', label='model, interp product')
+        loglog(r0fine, sigr2nu_model, 'r.-', label='model')
         loglog(r0fine, ansigr2nu, 'b--', label='analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
@@ -314,10 +305,8 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         legend(loc='lower right')
         savefig('fit_sigr2_'+gp.investigate+'.pdf')
 
-    sigr2nu_model = sigr2nu_model_new
-
     # project back to LOS values, \sigma_{LOS}^2 * \Sigma(R)
-    # -------------------------------------------------------------
+    # -------------------------------------------------------
     sigl2s = np.zeros(len(r0fine))
     for k in range(len(r0fine)):
         bit = 1.e-6
@@ -349,13 +338,13 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 
 
     # sigma_LOS^2
-    # ----------------------------------------------------------------------
+    # -------------------------------------------------------
     siglos2 = sigl2s/Sigfine
     if gp.checksig and gp.stopstep <= 10:
         clf()
-        ansiglos = ga.sig_los(r0fine, gp)
+        #ansiglos = ga.sig_los(r0fine, gp)
         plot(r0fine, siglos2, 'r.-', label='model')
-        plot(r0fine, ansiglos**2, 'b--', label='analytic')
+        #plot(r0fine, ansiglos**2, 'b--', label='analytic')
         axvline(max(gp.xipol))
         axvline(min(gp.xipol))
         axvline(gp.Xscale[0], lw=2)
@@ -372,9 +361,9 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
     # gh.checkpositive(siglos2_out, 'siglos2_out')
     if gp.checksig and gp.stopstep <= 11:
         clf()
-        ansiglos = ga.sig_los(r0, gp)
+        #ansiglos = ga.sig_los(r0, gp)
         plot(r0, np.sqrt(siglos2_out), 'r.-', label='model')
-        plot(r0, ansiglos, 'b--', label='analytic')
+        #plot(r0, ansiglos, 'b--', label='analytic')
         plot(gp.xipol, gp.dat.sig[pop], 'g.-', label='data')
         fill_between(gp.xipol, gp.dat.sig[pop]-gp.dat.sigerr[pop], gp.dat.sig[pop]+gp.dat.sigerr[pop], color='g', alpha=0.6)
         xscale('log')
@@ -383,6 +372,7 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
         axvline(gp.Xscale[0], lw=2)
         xlabel('$r/\\rm{pc}$')
         ylabel('$\\sigma_{\\rm{LOS}}$')
+        ylim([0,25])
         legend(loc='upper right')
         savefig('fit_siglos_out_'+gp.investigate+'.pdf')
         pdb.set_trace()
@@ -417,21 +407,17 @@ def ant_sigkaplos(r0, rhodmpar, lbaryonpar, MtoL, nupar, betapar, pop, gp):
 # @param gp global parameters
 # @return sig_los^2, correspondingly for 4th order kappa, zetaa, zetab
 
-
 def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     # common parameters
     N = gh.Ntot(r0fine, Sigfine, gp)
     # vr2 = sigr2nu
     # dPhidr = gu.G1__pcMsun_1km2s_2*Mrfine/r0fine**2
-
     # zetaa scalar
     #xint = r0fine
     #yint = nufine*(5-2*betafine)*vr2*dPhidr*r0fine**3
     #nom = gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False)
-
     #yint = nufine*dPhidr*r0fine**3
     #denom = (gh.quadinflog(xint, yint, 0., gp.rinfty*max(gp.xepol), False))**2
-
     theta = np.arccos(r0min/r0fine)
     cth = np.cos(theta)
     sth = np.sin(theta)
@@ -439,12 +425,10 @@ def zeta(r0fine, nufine, Sigfine, Mrfine, betafine, sigr2nu, gp):
     yint = gu.G1__pcMsun_1km2s_2*(5-2*betainterp)*sigr2
     yint *= Minterp*rmin**2/cth**3*sth
     nom = quad(theta, yint, 0, np.pi/2)
-
     yint = gu.G1__pcMsun_1km2s_2**2*nuinterp*Mrinterp
     yint *= rmin**2/cth**3*sth
     denom = quad(theta, yint, 0, np.pi/2)
     zetaa = 9*N/10. * nom/denom
-
     # zetab scalar
     #------------------------------------------------------------
     #yint = nufine*(7-6*betafine)*vr2*dPhidr*r0fine**5

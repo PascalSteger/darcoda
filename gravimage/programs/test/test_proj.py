@@ -22,7 +22,7 @@ import gi_params as gp
 gp.rinfty = 5
 gp.nexp = 3
 import gi_helper as gh
-import gi_project as glp
+import gi_project as gip
 import gi_analytic as ga
 
 
@@ -60,21 +60,21 @@ Sigdatnu, Sigerrnu = gh.complete_nu(r0, Siganf, Siganf/20, rfine)
 
 
 loglog(r0, nuanf, 'b.-')
-nudatnu = glp.Sig_INT_rho(rfine, Sigdatnu, gp)
+nudatnu = gip.Sig_INT_rho(rfine, Sigdatnu, gp)
 loglog(rfine, nudatnu, 'r.-', lw=0.5)
-#nudatnuold = glp.Sig_INT_rho_buggy(rfine, Sigdatnu, gp) #negative found
+#nudatnuold = gip.Sig_INT_rho_buggy(rfine, Sigdatnu, gp) #negative found
 #loglog(rfine, nudatnuold, 'g.-')
 pdb.set_trace()
 
-dummy, nudatnu, nuerrnu, Mrdatnu = glp.Sig_NORM_rho(rfine, Sigdatnu, Sigerrnu, gp)
+dummy, nudatnu, nuerrnu, Mrdatnu = gip.Sig_NORM_rho(rfine, Sigdatnu, Sigerrnu, gp)
 
 
 #loglog(r0, nuanf, 'b.-')
 #loglog(rfine, nudatnu, 'r.-', alpha=0.5)
 
 
-Sigdatproj_coarse = glp.rho_INTIPOL_Sig(r0, nuanf, gp)
-Sigdatproj_fine   = glp.rho_INTIPOL_Sig(rfine, nudatnu, gp)
+Sigdatproj_coarse = gip.rho_INTIPOL_Sig(r0, nuanf, gp)
+Sigdatproj_fine   = gip.rho_INTIPOL_Sig(rfine, nudatnu, gp)
 
 # loglog(r0, Siganf, 'b.-')
 # loglog(r0, Sigdatproj_coarse, 'r')
@@ -144,7 +144,7 @@ for i in range(len(rfine)-gp.nexp): # get sig_los^2
 gh.checkpositive(sigl2s, 'sigl2s')
 
 # calculate surface density on the same rfine as the sigl2s
-surfden = glp.rho_INT_Sig(rfine, nunu, gp)
+surfden = gip.rho_INT_Sig(rfine, nunu, gp)
 siglos = np.sqrt(sigl2s/surfden[:-gp.nexp])
 
 elapsed_time = time.time() - start_time

@@ -3,7 +3,7 @@
 ## \file
 # update MySQL table snapshot after AHF run
 
-# (c) 2014 ETHZ, Pascal Steger, psteger@phys.ethz.ch
+# (c) 2014 ETHZ, Pascal Steger, pascal@steger.aero
 
 import sys
 import lib.initialize as my

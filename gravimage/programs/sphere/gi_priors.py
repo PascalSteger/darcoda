@@ -4,7 +4,7 @@
 # @file
 # check all parameters for prior constraints
 
-# (c) GPL v3 2014 Pascal Steger, psteger@phys.ethz.ch
+# (c) GPL v3 2015 Pascal Steger, pascal@steger.aero
 
 import pdb
 import numpy as np
@@ -47,13 +47,3 @@ def check_beta(beta, gp):
 # check that beta is bound and not jumping
 # @param beta physical beta, to be in the range ]-infty,1]
 # @param gp global parameters
-
-def check_bprior(rhocheck, nucheck):
-    for jj in range(len(rhocheck)):
-        if rhocheck[jj] < nucheck[jj]:
-            return True
-    return False
-## \fn check_bprior(rhocheck, nucheck)
-# check that observed tracer mass is less than total mass
-# @param rhocheck density profile in [Munit/pc^3]
-# @param nucheck density profile in [Munit/pc^3]
