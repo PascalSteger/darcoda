@@ -16,7 +16,8 @@ import matplotlib.pyplot as plt
 #TEST this will eventually go outside
 def ErSamp_gauss_linear_w_z():
     fraction_err = 0.05
-    datafile = '/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    #datafile = '/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    datafile = '/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
     data = np.loadtxt(datafile)
     z_data = data[:, 0]
 

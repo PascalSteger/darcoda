@@ -37,7 +37,8 @@ print('gravimage.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
-ts = '201503181633' # empty timestamp means: create new timestamp with folder
+#ts = '201503181633' # empty timestamp means: create new timestamp with folder
+ts = '' # empty timestamp means: create new timestamp with folder
 gp = gl_params.Params(ts, options.investigation, int(options.case))
 import gl_file as gf
 

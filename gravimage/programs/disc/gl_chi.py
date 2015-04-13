@@ -51,7 +51,7 @@ def calc_chi2(profs, gp):
 
         #If monotonicity passed calculate chi2
         nudat    = gp.dat.nu[pop]
-        nuerr    = gp.dat.nuerr[pop]
+        nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # add hyperparam to error
         numodel  = profs.get_prof('nu_vec', pop)
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins)
         gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
@@ -62,7 +62,7 @@ def calc_chi2(profs, gp):
 
 
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
-        sigz2err    = gp.dat.sigz2err[pop] # [km/s]
+        sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vec', pop)
         chi2_sigz2  = chi2red(sigz2_model, sigz2dat, sigz2err, gp.nbins) # [1]
         if chi2_sigz2 == np.inf:

@@ -17,6 +17,9 @@ import gl_helper as gh
 import gl_mc_errors as gmcer
 import numpy.random as rand
 
+#from gl_collection import ProfileCollection#.true_sigz2_func
+from plotting.gl_collection import ProfileCollection
+
 def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, sigz2err, gp):
 
     # write tracer densities 3D
@@ -31,20 +34,6 @@ def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, s
     for b in range(gp.nbins):
         print(Bincenter[b], Binmin[b], Binmax[b], sigz2dat[b], sigz2err[b], file=file_sig)
     file_sig.close()
-
-
-def ErSamp_gauss_linear_w_z():
-    fraction_err = 0.05
-    datafile = '/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat' #Todo: work out how to un-hard code this
-    data = np.loadtxt(datafile)
-    z_data = data[:, 0]
-
-    z_sampled = []
-    for z_val in z_data:
-        z_sampled.append(rand.normal(loc = z_val, scale= z_val*fraction_err))
-
-    return z_sampled
-
 
 ## \fn write_disc_output_files(Rbin, Binmin, Binmax, nudat, nuerr, Sigdat, Sigerr, Mdat, Merr, sigdat, sigerr, scales, gp)
 # for permanent and consistent data handling
@@ -62,12 +51,29 @@ def ErSamp_gauss_linear_w_z():
 # @param scales
 # @param gp global parameters
 
+def ErSamp_gauss_linear_w_z():
+    fraction_err = 0.05
+    #datafile = '/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat' #Todo: work out how to un-hard code this
+    datafile = '/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat' #Todo: work out how to un-hard code this
+    data = np.loadtxt(datafile)
+    z_data = data[:, 0]
+
+    z_sampled = []
+    for z_val in z_data:
+        z_sampled.append(rand.normal(loc = z_val, scale= z_val*fraction_err))
+
+    return z_sampled
+# \fn ErSamp_gauss_linear_w_z()
+# SS: seems to generate a new file with added measurement errors (or equivalently estimate a realization of true values given the
+#     measurement with measurement error). Looks only at z_data (i.e. nu).
+
+
 
 def run(gp):
     if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
         external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file
     elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        external_file='/home/sofia/darcoda/gravlite/Data_Sets/' + gp.external_data_file
+        external_file='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file
 
     external_data = np.loadtxt(external_file)
 
@@ -89,6 +95,25 @@ def run(gp):
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data)
 
+    if gp.TheoryData == True:
+        G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
+        K=1500.
+        F=267.65
+        D=0.18
+        z0=0.4
+        normC = 22.85
+        nu0 = 1.
+        Ntr = 9516. 
+        zmax= 1.2
+        
+        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
+        truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
+        truenu_arr = truen_arr/(binmax-binmin)
+        nu_data = truenu_arr    
+
+        true_sigz2_arr = ProfileCollection(gp.ntracer_pops,gp.nbins).true_sigz2_func(binmin,binmax,1000,gp.nbins,z0,Ntr,nu0,K,D,F,gp)
+        sigz2_data = true_sigz2_arr
+
     # Use MC to estimate errors on nu
     if gp.investigate == 'simplenu':
         z_sampler = ErSamp_gauss_linear_w_z
@@ -100,6 +125,10 @@ def run(gp):
     #Combine sig (vel disp) errors
     Ntr = len(z_data) #Number of tracers
     sigz2_err_tot = sigz2_err_pois + np.sqrt(2/Ntr_per_bin)*gp.vz_SDerr_meas**2
+
+    #SS: Running the code without measurement errors   TODO FIXME !! 
+    nu_err_tot = nu_err_pois     # SS-TODO
+    sigz2_err_tot = sigz2_err_pois  # SS-TODO
 
     #Output data to file
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)

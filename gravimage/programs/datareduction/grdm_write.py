@@ -125,7 +125,7 @@ def run(gp):
     ran2 = npr.normal(size=int(gp.ntracer[1-1]))  # [1]
     vzstar = ran2 * sigzstar                      # [km/s]
 
-    # Add second population [thick-disc like]:
+    # Add second population [thick-disc like]: 
     if gp.pops == 2:
         nu_zth2 = gp.ntracer[2-1]/gp.ntracer[1-1]*np.exp(-zth/z02)
         # [nu0,2] = [Msun/A/pc], 3D tracer density, exponentially falling

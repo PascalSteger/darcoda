@@ -7,13 +7,14 @@
 
 import numpy as np
 import numpy.random as npr
+import math
 import pdb
 
 import matplotlib.pyplot as plt
 plt.ioff()
 
 from gl_class_profiles import Profiles
-import gl_output as go
+import plotting.gl_output as go
 import gl_helper as gh
 import gl_analytic as ga
 import gl_project as glp
@@ -285,6 +286,10 @@ class ProfileCollection():
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
         output.add('M 68% CL high '+ uni, self.M68hi.get_prof(prof, pop))
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
+        print ('******************************************')
+        print (prof,self.Mmedi.get_prof(prof, pop))
+        #print (self.M95hi.get_prof(prof, pop))
+        #pdb.set_trace()
         output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
         if (gp.investigate =='walk' or gp.investigate=='gaia') \
            and (prof != 'Sig'):
@@ -744,6 +749,33 @@ class ProfileCollection():
     # @param data_analytic analytic profile
     # @param gp global parameters
 
+    def true_sigz2_func(self,binmin,binmax,nsmallbin,nbin,z0,Ntr,nu0,K,D,F,gp): 
+        C = 22.85**2
+        truesig2_arr = np.zeros(nbin)
+        for kbin in range(nbin):
+            zvec = np.zeros(nsmallbin+1) # one extra point since lists both binmin & binmax
+            zvec[0] = binmin[kbin]
+            zvec[-1] = binmax[kbin]
+            for k in range(1,nsmallbin+1):
+                exptemp = math.exp(-zvec[k-1]/z0)-(math.exp(-zvec[0]/z0)-math.exp(-zvec[-1]/z0))/nsmallbin
+                zvec[k] = -z0*math.log(exptemp)
+            nuvec = nu0*np.exp(-zvec/z0)
+            if gp.baryonmodel not in ['simplenu_baryon']:  # assume DM only
+                Kzvec_total = -2.*F*zvec
+            else:
+                Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
+            Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299) #Msun kpc^-1
+            #smallsig2_vec = sigz2(zvec,nuvec,C)
+            smallsig2_vec = phys.sigz2(zvec, Sigma_z_total, nuvec, C*nuvec[0])
+            sig2 = np.sum(smallsig2_vec)/nsmallbin
+            C = smallsig2_vec[-1]
+            truesig2_arr[kbin] = sig2
+        return truesig2_arr
+    ## \fn true_sigz2_func
+    # Calculates the true sigz2 value for each bin (with bin borders binmin & binmax), by
+    # dividing the bin into nsmallbin subbins, with theoret. equally many tracer stars per bin.
+    # The true sigz2 value is then calculated as the average over the subbin results.
+
 
     def plot_model_simplenu(self, ax, basename, prof, gp):
         G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
@@ -753,19 +785,15 @@ class ProfileCollection():
         z0=0.4
         normC = 22.85
         nu0 = 1.
-        Ntr = 10000.
+        #Ntr = 10000.
+        Ntr = 9516.  # Actual n.o. stars in Jutin's mock data set
         zmax= 1.2
 
-        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
-
         zvec=np.linspace(0, zmax, 100)
-
-        nuvec = nu0*np.exp(-zvec/z0)
 
         Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
         Kzvec_DM = -(2.*F*zvec)
-
 
         Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299) #Msun kpc^-1
         Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299) #Msun kpc^-1
@@ -784,8 +812,18 @@ class ProfileCollection():
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
 
+        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
+        nuvec = nu0*np.exp(-zvec/z0)
+
+        #bincentermed, binmin, binmax, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
+        bincentermed, binmin, binmax, dum, dum = gh.readcol5(gp.files.nufiles[0])
+        nbin = np.size(bincentermed)
+        truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
+        truenu_arr = truen_arr/(binmax-binmin)
+
         if prof == 'nu_vec':
-            ax.plot(zvec, nuvec, 'g-', alpha=0.5)
+            #ax.plot(zvec, nuvec, 'g-', alpha=0.5)
+            ax.plot(bincentermed, truenu_arr, 'g-', alpha=0.5)
 
         elif prof == 'Sig_total_vec':
             ax.plot(zvec, Sigma_z_total, 'g-', alpha=0.5)
@@ -831,10 +869,10 @@ class ProfileCollection():
 
 
         elif prof == 'sigz2_vec':
-            sigz2_analytic = phys.sigz2(zvec, Sigma_z_total, nuvec, (normC**2)*nuvec[0])
-            ax.plot(zvec, sigz2_analytic, 'g-', alpha = 0.5)
-
-
+            #sigz2_analytic = phys.sigz2(zvec, Sigma_z_total, nuvec, (normC**2)*nuvec[0])
+            #ax.plot(zvec, sigz2_analytic, 'g-', alpha = 0.5)
+            true_sigz2_arr = self.true_sigz2_func(binmin,binmax,1000,nbin,z0,Ntr,nu0,K,D,F,gp)
+            ax.plot(bincentermed, true_sigz2_arr, 'g-', alpha = 0.5)
         return
 
 

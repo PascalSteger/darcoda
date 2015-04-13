@@ -55,9 +55,13 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
+        self.TheoryData = False   # If true using theoretical bin values as indata
+        self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
-        self.nbins = 10 # Number of bins to split tracer stars into
+        #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
+        #self.nbins = 10   # Number of bins to split tracer stars into
+        self.nbins = 20   # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
@@ -69,7 +73,8 @@ class Params():
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model
-                                    # none = all mass in DM
+                                             # none = all mass in DM
+                                    # setting baryonmodel == 'none' not possible without major rewrite
                                     # simplenu_baryon = model used to generate simplenu mock data
         self.nbaryon_pops = 1 # Number of baryon populations to look at
                                     # =0 if doing simple mass model (eg DM profile describes
@@ -93,6 +98,9 @@ class Params():
             self.ndim = 1 + 1 + (self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
                 # Constant C from sigma_z calculations, 1 for constant rho density,
                 # nrhonu + 1 for kz_nu and nu_C, plus baryon params
+
+        if self.hyperparams == True:
+            self.ndim += 2
 
         self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
         self.vz_SDerr_meas = 5.  # Measurement error on vz, [km s^-1]
@@ -150,6 +158,7 @@ class Params():
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
         self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
+        #self.chi2_switch = 100.*4.**2 # if chi2*10 < chi2_switch, add chi2_sig 
         self.chi2_switch_mincount = 10. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
