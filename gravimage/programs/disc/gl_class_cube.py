@@ -129,6 +129,19 @@ def map_simplenu_baryon(params, gp):
 
     return np.array([K, D])
 
+def map_hypererr(param, prof, pop, gp):
+    if prof == 'nu':
+        meanerr = gp.dat.meannuerr
+    elif prof == 'sig':
+        meanerr = gp.dat.meansigz2err
+    minhyper = 0.1*meanerr   # Hard coded, put in gl_params 
+    maxhyper = 10.*meanerr   # Hard coded, put in gl_params
+    lmax = 1./minhyper
+    lmin = 1./maxhyper
+    lam = 1/(param[0]*(lmax-lmin)+lmin)  # lam : maxhyper -> minhyper
+    return lam
+## \fn map_hypererr
+# return hyperparameter
 
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
@@ -338,6 +351,17 @@ class Cube:
 
         #print('pc = ', pc[0:gp.ndim])
         #pdb.set_trace()
+
+        if gp.hyperparams == True:
+            offstep = 1
+            tmp_hypernu = map_hypererr(pc[off:off+offstep], 'nu', 0, gp)
+            pc[off] = tmp_hypernu
+            off += offstep
+
+            offstep = 1
+            tmp_hypersig = map_hypererr(pc[off:off+offstep], 'sig', 0, gp)
+            pc[off] = tmp_hypersig
+            off += offstep
 
         if off != gp.ndim:
             gh.LOG(1,'wrong subscripts in gl_class_cube')

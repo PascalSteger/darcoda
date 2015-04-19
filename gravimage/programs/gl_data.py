@@ -37,6 +37,7 @@ class Datafile:
         ## keep radial profile of the tracer density, averaged in 2D-rings
         self.nu = [];    self.nu_epol = []
         self.nuerr = []; self.nuerr_epol = []
+        self.meannuerr = 0.
 
         self.nuhalf = []
 
@@ -46,6 +47,7 @@ class Datafile:
         self.sigz2 = []
         ## keep error of sigdat
         self.sigz2err = []
+        self.meansigz2err = 0.
 
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
@@ -144,6 +146,7 @@ class Datafile:
         dummy, dummy, dummy, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[0])
         self.sigz2.append(sigz2dat[:]) # [km/s]
         self.sigz2err.append(sigz2err[:]) # [km/s]
+        self.meansigz2err = np.mean(sigz2err)
 
         return
     ## \fn read_sig(self, gp)
@@ -160,7 +163,9 @@ class Datafile:
         gp.z_binmaxs = binmaxs
         #gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
         gp.z_all_pts = np.append([0.0], bincenters)  #[kpc]
+        self.meannuerr = np.mean(nuerr)
 
+        return  # SS added ...
 
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):

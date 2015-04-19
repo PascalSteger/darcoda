@@ -89,8 +89,20 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.set_prof('nu_vec', tmp_nu_allz[1:], tracer_pop, gp)
         off += offstep
 
+        #Hyperparameters
+        if gp.hyperparams == True:
+            offstep = 1
+            tmp_profs.hyper_nu = cube[off:off+offstep]
+            off += offstep
+            offstep = 1
+            tmp_profs.hyper_sigz2 = cube[off:off+offstep]
+            off += offstep
+
+
     if off != gp.ndim:
         gh.LOG(1,'wrong subscripts in gl_class_cube')
+        print ('in loglike',off,gp.ndim)
+        pdb.set_trace()
         raise Exception('wrong subscripts in gl_class_cube')
 
 

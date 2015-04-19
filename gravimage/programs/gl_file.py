@@ -48,7 +48,6 @@ def read_data(gp):
 
 
 def bin_data(gp):
-    #pdb.set_trace()
     #gp.investigate = 'simplenu'
     #pdb.set_trace()
     if gp.investigate == 'hern':
@@ -81,7 +80,7 @@ def bin_data(gp):
             import grd_split
             grd_split.run(gp)
         gr_MCMCbin.run(gp)
-    elif gp.investigate == 'discmock':
+    elif gp.investigate == 'discmock': 
         import grdm_write
         grdm_write.run(gp)
     elif gp.investigate == 'discsim':

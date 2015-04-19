@@ -73,5 +73,6 @@ if __name__=="__main__":
     parser.add_option("-t", "--timestamp", dest="timestamp", default="")
     (options, args) = parser.parse_args()
 
-    basepath_ts='/home/hsilverw/LoDaM/darcoda/gravimage/DT' + str(options.investigation) + '/' + str(options.case) + '/' + str(options.timestamp) +'/'
+#    basepath_ts='/home/hsilverw/LoDaM/darcoda/gravimage/DT' + str(options.investigation) + '/' + str(options.case) + '/' + str(options.timestamp) +'/'
+    basepath_ts='/home/sofia/darcoda/gravimage/DT' + str(options.investigation) + '/' + str(options.case) + '/' + str(options.timestamp) +'/'
     paracube_to_profile(basepath_ts, "phys_live.point", "phys_live_profiles.save", 'simplenu', options.case, str(options.timestamp))
