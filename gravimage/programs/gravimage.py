@@ -37,7 +37,7 @@ print('gravimage.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
-ts = '201503181633' # empty timestamp means: create new timestamp with folder
+ts = '' # empty timestamp means: create new timestamp with folder
 gp = gl_params.Params(ts, options.investigation, int(options.case))
 import gl_file as gf
 
@@ -115,7 +115,7 @@ def run(gp):
                     evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.95,
+                    sampling_efficiency = 0.05,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -128,7 +128,7 @@ def run(gp):
                     outputfiles_basename = gp.files.outdir,
                     seed = -1,
                     verbose = True,
-                    resume = True,
+                    resume = False,
                     context = 0,
                     write_output = True,
                     log_zero = -1e500,    # points with log likelihood

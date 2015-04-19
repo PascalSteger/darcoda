@@ -484,7 +484,7 @@ class ProfileCollection():
             ax.set_ylim(10., 40.)
         elif prof == 'sigz2_vec':
             ax.set_ylabel('$\\sigma_{z}^2\\quad[\\rm{km}^2/\\rm{s}^2]$')
-            #ax.set_ylim(100., 1600.)
+            ax.set_ylim(500., 1100.)
 
         elif prof == 'kz_nu_vec':
             ax.set_ylabel('$k(z)_{\\nu}$')
@@ -649,11 +649,11 @@ class ProfileCollection():
             ax.set_yscale('log')
 
         if prof == 'nu_vec' or prof == 'rho_DM_vec' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec':
-            ax.set_xscale('linear')
+            ax.set_xscale('log')
             ax.set_yscale('log')
 
         if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
-            ax.set_xscale('linear')
+            ax.set_xscale('log')
             ax.set_yscale('linear')
 
         self.plot_labels(ax, prof, pop, gp)
@@ -831,8 +831,24 @@ class ProfileCollection():
 
 
         elif prof == 'sigz2_vec':
+            from scipy.interpolate import interp1d
+
             sigz2_analytic = phys.sigz2(zvec, Sigma_z_total, nuvec, (normC**2)*nuvec[0])
+            sigz2_analytic_DM = phys.sigz2(zvec, Sigma_z_DM, nuvec, (normC**2)*nuvec[0])
+
+            print('z_all_pts = ', gp.z_all_pts)
+
+            nuvec_interp1d = interp1d(zvec, nuvec)
+            sigz2_interp1d = interp1d(zvec, sigz2_analytic)
+
+            nuvec_analytic_zallpts = nuvec_interp1d(gp.z_all_pts)
+            sigz2_analytic_zallpts = sigz2_interp1d(gp.z_all_pts)
+
+            print('nuvec_analytic_zallpts = ', nuvec_analytic_zallpts)
+            print('sigz2_analytic = ', sigz2_analytic_zallpts)
             ax.plot(zvec, sigz2_analytic, 'g-', alpha = 0.5)
+            #ax.plot(zvec, sigz2_analytic_DM, 'm-', alpha = 0.5)
+            #ax.plot(gp.z_all_pts, sigz2_analytic_zallpts, 'g.', alpha=0.5)
 
 
         return

@@ -54,7 +54,7 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
-        self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
+        self.external_data_file= '/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         self.nbins = 10 # Number of bins to split tracer stars into
@@ -150,7 +150,7 @@ class Params():
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
         self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
-        self.chi2_switch_mincount = 10. # demand that this number of profiles with
+        self.chi2_switch_mincount = 1. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
 

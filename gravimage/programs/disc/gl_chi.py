@@ -53,7 +53,7 @@ def calc_chi2(profs, gp):
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]
         numodel  = profs.get_prof('nu_vec', pop)
-        chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins)
+        chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins) #TEST [0:-1]
         gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
         chi2 +=chi2_nu
 

@@ -266,8 +266,12 @@ def map_rhonu(params, prof, pop, gp):
     return np.hstack([rhonu_C, rhonu_vector])
 
 def map_constdm(params, prof, pop, gp):
-    rhoC = gp.rho_C_min + (gp.rho_C_max-gp.rho_C_min)*params[0]
-    return [rhoC]
+    if gp.rho_C_prior_type == 'linear':
+        rho_C = gp.rho_C_min + (gp.rho_C_max-gp.rho_C_min)*params[0]
+    elif gp.rho_C_prior_type == 'log':
+        rho_C = np.log10(gp.rho_C_min) + (np.log10(gp.rho_C_max)-np.log10(gp.rho_C_min))*params[0]
+        rho_C = 10**rho_C
+    return [rho_C]
 
 
 
