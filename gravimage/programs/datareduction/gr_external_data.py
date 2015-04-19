@@ -39,10 +39,9 @@ def ErSamp_gauss_linear_w_z():
     fraction_err = 0.05
     velocity_err = 5. #km s^-1
 
-    if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
-        datafile='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat' #Todo: work out how to un-hard code this
-    elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        datafile='/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    datafile='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    #datafile='/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    #Todo: work out how to un-hard code this. Ultimately this should be a method of a data class.
 
     data = np.loadtxt(datafile)
     z_data = data[:, 0]
