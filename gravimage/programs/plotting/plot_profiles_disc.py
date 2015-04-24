@@ -98,11 +98,12 @@ def run(timestamp, basename, profile_source, gp):
     pc.plot_profile(basename, 'chi2', 0, gp)
 
     # then select only the best models for plotting the profiles
-    pc.cut_subset()
+    #pc.cut_subset()
     pc.set_x0(gp.z_bincenters) # [kpc]
     print('here')
 
-    pc.sort_profiles_disc(gp)
+    pc.weighted_sort_profiles_disc(gp)
+    #pc.sort_profiles_disc(gp)
     pc.write_all_disc(basename, gp)
     pc.plot_profile(basename, 'kz_rho_DM_vec', 0, gp)
     pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
@@ -168,6 +169,7 @@ if __name__ == '__main__':
             open(basename+"phys_live_profiles.save")
         except OSError:
             gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
-            glmh.paracube_to_profile(basename, "phys_live.point", "phys_live_profiles.save", investigate, options.case, timestamp)
+            glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
+            #glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
 
     run(timestamp, basename, profile_source, gp)

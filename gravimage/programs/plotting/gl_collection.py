@@ -138,6 +138,8 @@ class ProfileCollection():
             if self.subset[0] <= self.chis[k] <= self.subset[1]:
                 self.goodprof.append(self.profs[k].get_prof(prof, pop))
                 self.goodchi.append(self.chis[k])
+
+        #pdb.set_trace()
         tmp = gh.sort_profiles_binwise(np.array(self.goodprof).transpose()).transpose()
         ll = len(tmp)
         #norm = 1
@@ -157,6 +159,71 @@ class ProfileCollection():
     # @param pop population identifier
     # @param gp global parameters
     # @return tmp profiles sorted binwise
+
+
+    def weighted_sort_prof(self, prof, pop, gp):
+        self.goodprof = []
+        self.goodchi = []
+        self.prof_weights=[]
+        for k in range(len(self.profs)):
+            if self.subset[0] <= self.chis[k] <= self.subset[1]:
+                self.goodprof.append(self.profs[k].get_prof(prof, pop))
+                self.goodchi.append(self.chis[k])
+                self.prof_weights.append(self.profs[k].mn_weight)
+
+        #pdb.set_trace()
+
+        bin_prof_values = np.array(self.goodprof).transpose() # values for this bin from all the profiles
+        bin_prof_weights = []
+        bin_prof_credreg_bounds=[] # credibility region boundaries for this bin
+
+        for lter in range(len(bin_prof_values)):
+            sort_indices = np.argsort(bin_prof_values[lter])
+            bin_prof_values[lter] = bin_prof_values[lter][sort_indices]
+            bin_prof_weights.append(np.array(self.prof_weights)[sort_indices])
+
+
+
+            cred_reg_bounds = [0.025, 0.16, 0.5, 0.84, 0.975]
+            bin_i_prof_credreg_bounds = [bin_prof_values[lter][0]]
+
+            for mter in range(len(cred_reg_bounds)):
+                bin_weight_sum = 0.0
+
+                for nter in range(len(bin_prof_values[lter])):
+
+                    bin_weight_sum += bin_prof_weights[lter][nter]
+
+                    if bin_weight_sum >= cred_reg_bounds[mter]:
+                        bin_i_prof_credreg_bounds.append(bin_prof_values[lter][nter])
+                        print('found boundary ', mter)
+                        break
+
+            bin_i_prof_credreg_bounds.append(bin_prof_values[lter][-1])
+            print(bin_i_prof_credreg_bounds)
+            bin_prof_credreg_bounds.append(bin_i_prof_credreg_bounds)
+
+
+        credreg_bound_profs = np.array(bin_prof_credreg_bounds).transpose()
+
+        self.Mmin.set_prof(prof,  credreg_bound_profs[0], pop, gp)
+        self.M95lo.set_prof(prof, credreg_bound_profs[1], pop, gp)
+        self.M68lo.set_prof(prof, credreg_bound_profs[2], pop, gp)
+        self.Mmedi.set_prof(prof, credreg_bound_profs[3], pop, gp)
+        self.M68hi.set_prof(prof, credreg_bound_profs[4], pop, gp)
+        self.M95hi.set_prof(prof, credreg_bound_profs[5], pop, gp)
+        self.Mmax.set_prof(prof,  credreg_bound_profs[6], pop, gp)
+
+        #pdb.set_trace()
+
+        return credreg_bound_profs
+    ## \fn sort_prof(self, prof, pop, gp)
+    # sort the list of prof-profiles, and store the {1,2}sigma, min, medi, max in the appropriate place
+    # @param prof profile identifier, 'rho', 'beta', ...
+    # @param pop population identifier
+    # @param gp global parameters
+    # @return tmp profiles sorted binwise
+
 
     def calculate_M(self, gp):
         if len(self.profs)>0:
@@ -211,6 +278,26 @@ class ProfileCollection():
 
         self.sort_prof('rho_total_vec', 0, gp)
         self.sort_prof('Sig_total_vec', 0, gp)
+
+    def weighted_sort_profiles_disc(self, gp):
+        self.weighted_sort_prof('nu_vec', 0, gp)
+        #self.sort_prof('sig_vec', 0, gp) #Old plots
+        self.weighted_sort_prof('sigz2_vec', 0, gp)
+
+        self.weighted_sort_prof('kz_rho_DM_vec', 0, gp)
+        self.weighted_sort_prof('kz_nu_vec', 0, gp)
+
+        self.weighted_sort_prof('rho_DM_vec', 0, gp)
+        self.weighted_sort_prof('Sig_DM_vec', 0, gp)
+
+        if gp.baryonmodel not in ['none', 'simplenu_baryon']:
+            return
+
+        self.weighted_sort_prof('rho_baryon_vec', 0, gp)
+        self.weighted_sort_prof('Sig_baryon_vec', 0, gp)
+
+        self.weighted_sort_prof('rho_total_vec', 0, gp)
+        self.weighted_sort_prof('Sig_total_vec', 0, gp)
 
 
     def set_analytic(self, x0, gp):

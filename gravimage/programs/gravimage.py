@@ -98,6 +98,7 @@ def prepare_data(gp):
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
+
 def run(gp):
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
@@ -112,7 +113,7 @@ def run(gp):
                     multimodal = True,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
-                    evidence_tolerance = 0.0, # set to 0 to keep
+                    evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
                     sampling_efficiency = 0.05,
@@ -125,7 +126,7 @@ def run(gp):
                                                #case where no special
                                                #value exists: highly
                                                #negative
-                    outputfiles_basename = gp.files.outdir,
+                    outputfiles_basename = gp.files.outdir + '/output',
                     seed = -1,
                     verbose = True,
                     resume = False,
