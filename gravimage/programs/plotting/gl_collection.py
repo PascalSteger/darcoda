@@ -20,7 +20,8 @@ import gl_analytic as ga
 import gl_project as glp
 import gl_physics as phys
 
-USE_ALL = False
+#USE_ALL = False
+USE_ALL = True  # SS: Did not seem to affect things, what is this?
 
 def unit(prof):
     if prof == 'rho' or prof == 'nu':
@@ -113,6 +114,7 @@ class ProfileCollection():
                     break
             maxchi = 10**(bins[k+1])
         self.subset = [minchi, 10*minchi]# maxchi]
+        #self.subset = [minchi, maxchi]
     ## \fn cut_subset(self)
     # set subset to [0, 10*min(chi)] (or 30* minchi, or any value wished)
 
@@ -138,6 +140,15 @@ class ProfileCollection():
             if self.subset[0] <= self.chis[k] <= self.subset[1]:
                 self.goodprof.append(self.profs[k].get_prof(prof, pop))
                 self.goodchi.append(self.chis[k])
+        if prof == 'nu_vec' or prof == 'sigz2_vec': # Printing best fit model:
+            goodchi_arr = np.array(self.goodchi)
+            minchi_index = np.argmin(goodchi_arr)
+            if prof == 'nu_vec':
+                print ('minchi:',goodchi_arr[minchi_index],' of',goodchi_arr.shape,'models')
+            goodprof_arr = np.array(self.goodprof)
+            #print ('goodprof shape:',goodprof_arr.shape)
+            print ('best fit',prof,'profile:',self.goodprof[minchi_index])
+        
         tmp = gh.sort_profiles_binwise(np.array(self.goodprof).transpose()).transpose()
         ll = len(tmp)
         #norm = 1
@@ -500,7 +511,7 @@ class ProfileCollection():
 
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            ax.set_ylim(1E3, 1E9)
+            ax.set_ylim(1E6, 1E8)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
             ax.set_ylim(0,1.0E8)
@@ -649,6 +660,9 @@ class ProfileCollection():
         if prof != 'chi2':
             ax.set_xscale('log')
 
+        if prof == 'chi2':  # SS: Could not find where x-axis is set logscale
+            ax.set_yscale('log') 
+
         if prof == 'rho' or prof == 'Sig' or\
            prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
@@ -671,7 +685,9 @@ class ProfileCollection():
                     goodchi.append(self.chis[k])
                 print('plotting profile chi for '+str(len(goodchi))+' models')
                 print('min, max, maxsubset found chi2: ', min(self.chis), max(self.chis), self.subset[1])
-                bins, edges = np.histogram(np.log10(goodchi), range=[-2,6], \
+                #chi_arr = np.array(self.chis) 
+                #print(chi_arr[np.where(chi_arr < 1.87)])
+                bins, edges = np.histogram(np.log10(goodchi), range=[-3,3], \
                                            bins=max(6,np.sqrt(len(goodchi))),\
                                            density=True)
                 ax.step(edges[1:], bins, where='pre')

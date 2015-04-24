@@ -28,7 +28,6 @@ def chi2red(model, data, sig, dof):
 
 
 def calc_chi2(profs, gp):
-    chi2 = 0.
 
     if gp.map_priors:
         return 1.0
@@ -55,7 +54,6 @@ def calc_chi2(profs, gp):
         numodel  = profs.get_prof('nu_vec', pop)
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins)
         gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
-        chi2 +=chi2_nu
 
         if not gp.chi2_nu_converged and not gp.plotting_flag:
             continue # with pop loop
@@ -68,11 +66,12 @@ def calc_chi2(profs, gp):
         if chi2_sigz2 == np.inf:
             print('chi2_sig has become infinite')
             pdb.set_trace()
-        chi2 += chi2_sigz2             # [1]
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
+        chi2 = (chi2_nu+chi2_sigz2)/2.
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:
+        chi2 = chi2_nu*1.
         chi2 *= 10
         if chi2 < gp.chi2_switch:
             gp.chi2_switch_counter +=1

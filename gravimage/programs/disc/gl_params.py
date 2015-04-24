@@ -56,7 +56,7 @@ class Params():
 
         self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
         self.TheoryData = False   # If true using theoretical bin values as indata
-        self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
+        self.hyperparams = True  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -68,8 +68,9 @@ class Params():
         #Dark matter options
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
 
-        self.darkmattermodel = 'const_dm'  # kz_dm = kz parameterization of DM
-                                        # const_dm = constant DM density in z
+        #self.darkmattermodel = 'const_dm' # const_dm = constant DM density in z 
+        self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
+                                       
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model

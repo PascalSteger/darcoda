@@ -92,6 +92,7 @@ def list_files(basedir):
                 nbeta = int(lsp[2])
             elif lsp[0] == 'self.monotonic':
                 mono = lsp[2]
+        mono = lsp[2]  # Ugly quick-fix to make the code run   TODO FIXME !!
         print("%2d"%(i+1),': ',\
               datetime.strftime(fdl[i][1],'%Y-%m-%d %H:%M'),\
               "%5d"%fdl[i][2], 'its,', \
