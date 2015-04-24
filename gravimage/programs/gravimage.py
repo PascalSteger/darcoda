@@ -37,7 +37,6 @@ print('gravimage.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
-#ts = '201503181633' # empty timestamp means: create new timestamp with folder
 ts = '' # empty timestamp means: create new timestamp with folder
 gp = gl_params.Params(ts, options.investigation, int(options.case))
 import gl_file as gf
@@ -99,6 +98,7 @@ def prepare_data(gp):
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
+
 def run(gp):
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
@@ -113,10 +113,10 @@ def run(gp):
                     multimodal = True,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
-                    evidence_tolerance = 0.0, # set to 0 to keep
+                    evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.95,
+                    sampling_efficiency = 0.05,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -126,10 +126,10 @@ def run(gp):
                                                #case where no special
                                                #value exists: highly
                                                #negative
-                    outputfiles_basename = gp.files.outdir,
+                    outputfiles_basename = gp.files.outdir + '/output',
                     seed = -1,
                     verbose = True,
-                    resume = True,
+                    resume = False,
                     context = 0,
                     write_output = True,
                     log_zero = -1e500,    # points with log likelihood

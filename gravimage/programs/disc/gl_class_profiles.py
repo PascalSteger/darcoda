@@ -56,6 +56,9 @@ class Profiles:
         #chi2 of profile
         self.chi2 = 0.0
 
+        #weight of profile (used in multinest analysis)
+        self.mn_weight = 0.0
+
         #Hyperparameters
         self.hyper_nu = 0.
         self.hyper_sigz2 = 0.
