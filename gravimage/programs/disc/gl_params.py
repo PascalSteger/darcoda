@@ -61,7 +61,7 @@ class Params():
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.nbins = 10   # Number of bins to split tracer stars into
-        self.nbins = 5   # Number of bins to split tracer stars into
+        self.nbins = 10   # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 

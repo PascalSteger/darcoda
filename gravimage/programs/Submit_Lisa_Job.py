@@ -18,7 +18,7 @@ import pdb
 nodes=1
 cores='any'
 ppn=1
-walltime='00:02:00:00'
+walltime='00:08:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
@@ -54,7 +54,7 @@ pbs_file.writelines('cd $TMPDIR'+'\n')
 pbs_file.writelines('mkdir -p $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('mkdir $TMPDIR/darcoda/gravimage/programs/HoldingNumberWas_' + holding_number + '\n')
 #pbs_file.writelines('cp -r $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs/* $TMPDIR/darcoda/gravimage/programs/'+'\n')
-pbs_file.writelines('cp -r $HOME/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs/* $TMPDIR/darcoda/gravimage/programs/'+'\n')
+pbs_file.writelines('cp -r $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs/* $TMPDIR/darcoda/gravimage/programs/'+'\n')
 pbs_file.writelines('cd $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('# Calculate run time for gravimage, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
@@ -66,7 +66,7 @@ pbs_file.writelines('echo gravimage runtime = $runtime'+'\n')
 pbs_file.writelines('python3 gravimage.py --investigation ' + investigation + '& PID=$!; sleep $runtime; kill $PID'+'\n')
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')
 #pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
-pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
+pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
