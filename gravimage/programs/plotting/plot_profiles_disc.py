@@ -160,7 +160,9 @@ if __name__ == '__main__':
     #ip.insert_sys_path(basename+'sphere')
     #import gl_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
-    gp = glp.Params(timestamp, investigate)
+
+    gp = glp.Params(timestamp, investigate) # Change back! TODO FIXME !!!
+
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
 

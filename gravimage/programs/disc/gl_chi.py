@@ -68,6 +68,19 @@ def calc_chi2(profs, gp):
             pdb.set_trace()
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
         chi2 = (chi2_nu+chi2_sigz2)/2.
+        if chi2 < gp.minchi2:
+            gp.minchi2 = chi2
+            print ('lowest chi2 so far:',chi2)
+            print ('nu_model:',numodel)
+            print ('sigz2_model:',sigz2_model)
+            rho_DM_temp = profs.get_prof('rho_DM_vec',pop)
+            rho_baryon_temp = profs.get_prof('rho_baryon_vec',pop)
+            Sig_DM_temp = profs.get_prof('Sig_DM_vec',pop)
+            Sig_baryon_temp = profs.get_prof('Sig_baryon_vec',pop)
+            print ('rho_DM_model:',rho_DM_temp)
+            print ('rho_baryon_model:',rho_baryon_temp)
+            print ('Sig_DM_model:',Sig_DM_temp)
+            print ('Sig_baryon_model:',Sig_baryon_temp)
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:
