@@ -92,12 +92,19 @@ def geom_loglike(cube, ndim, nparams, gp):
         #Hyperparameters
         if gp.hyperparams == True:
             offstep = 1
+            #hyper_nu = cube[off:off+offstep][0]/gp.dat.meannuerr # 0.1->10
             tmp_profs.hyper_nu = cube[off:off+offstep]
             off += offstep
             offstep = 1
+            #hyper_sigz2 = cube[off:off+offstep][0]/gp.dat.meansigz2err
             tmp_profs.hyper_sigz2 = cube[off:off+offstep]
             off += offstep
-
+            ## To set the hyperparameters to effectively the same value,
+            ##  uncomment and comment out tmp.profs... = ...  above
+            #hyper_average = (hyper_nu+hyper_sigz2)/2. # normalized number: 0.1->10
+            #tmp_profs.hyper_nu = [gp.dat.meannuerr*hyper_average]
+            #tmp_profs.hyper_sigz2 = [gp.dat.meansigz2err*hyper_average]
+            #print ('hyper_average:',hyper_average)
 
     if off != gp.ndim:
         gh.LOG(1,'wrong subscripts in gl_class_cube')
@@ -131,6 +138,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     # determine log likelihood
     chi2 = calc_chi2(tmp_profs, gp)
+
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
 

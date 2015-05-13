@@ -58,7 +58,7 @@ def ErSamp_gauss_linear_w_z():
 
 # SS: seems to generate a new file with added measurement errors (or equivalently estimate a realization of true values given the
 #     measurement with measurement error). Looks only at z_data (i.e. nu).
-# HS: takes positions and velocities of starts, uses these as centres for Gaussians, then draws a
+# HS: takes positions and velocities of stars, uses these as centres for Gaussians, then draws a
 #    new set of positions and velocities from those Gaussians.
 
 
@@ -102,10 +102,25 @@ def run(gp):
         nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
         truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
         truenu_arr = truen_arr/(binmax-binmin)
-        nu_data = truenu_arr
+        #nu_data = truenu_arr
 
         true_sigz2_arr = ProfileCollection(gp.ntracer_pops,gp.nbins).true_sigz2_func(binmin,binmax,1000,gp.nbins,z0,Ntr,nu0,K,D,F,gp)
+
+        print ('truenu_arr=',truenu_arr)
+        print ('true_sigz2_arr=',true_sigz2_arr)
+
+        true_chi2_nu = np.sum((truenu_arr-nu_data)**2./nu_err_pois**2.)
+        true_chi2_sigz2 = np.sum((true_sigz2_arr-sigz2_data)**2./sigz2_err_pois**2.)
+        print ('Without measurement errors the true result has the Chi2:')
+        print ('nu:',true_chi2_nu/20.,'sigz2:',true_chi2_sigz2/20.,'average:',(true_chi2_nu+true_chi2_sigz2)/40.)
+
+        nu_data = truenu_arr
         sigz2_data = true_sigz2_arr
+
+    print ('nu_data:',nu_data)
+    print ('sigz2_data:',sigz2_data)
+    print ('nu_err_pois:',nu_err_pois)
+    print ('sigz2_err_pois:',sigz2_err_pois)
 
     # Use MC to estimate errors on nu
     if gp.investigate == 'simplenu':
