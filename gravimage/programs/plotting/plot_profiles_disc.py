@@ -67,6 +67,8 @@ def pcload_single_entries(basename, profile_source, gp):
         filename = 'pc2.save'
     elif profile_source == 'livepoints':
         filename = 'phys_live_profiles.save'
+    elif profile_source == 'MNoutput':
+        filename = 'phys_MNoutput_profiles.save'
 
     with open(basename+filename, 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
@@ -160,7 +162,9 @@ if __name__ == '__main__':
     #ip.insert_sys_path(basename+'sphere')
     #import gl_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
-    gp = glp.Params(timestamp, investigate)
+
+    gp = glp.Params(timestamp, investigate) # Change back! TODO FIXME !!!
+
     gp.pops = sr.get_pops(basename)
     print('working with ', gp.pops, ' populations')
 
@@ -169,8 +173,15 @@ if __name__ == '__main__':
             open(basename+"phys_live_profiles.save")
         except OSError:
             gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
-            glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
+            #glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
+            glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
+
+    if profile_source == 'MNoutput':
+        try:
+            open(basename+"phys_MNoutput_profiles.save")
+        except OSError:
+            gh.LOG(0, 'No phys_MNoutput_profiles.save file found, generating from MultiNest output now')
+            glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, options.case, timestamp)
             #glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
 
     run(timestamp, basename, profile_source, gp)
-

@@ -113,11 +113,11 @@ def run(gp):
                     multimodal = True,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
-                    evidence_tolerance = 0.5, # set to 0 to keep
+                    evidence_tolerance = 0.0, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
                     sampling_efficiency = 0.05,
-                    n_iter_before_update = 100, # output after this many iterations
+                    n_iter_before_update = 1,#00, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
                                             #max. = number of live

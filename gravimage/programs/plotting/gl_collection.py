@@ -20,8 +20,8 @@ import gl_analytic as ga
 import gl_project as glp
 import gl_physics as phys
 
-#USE_ALL = False
-USE_ALL = True  # SS: Did not seem to affect things, what is this?
+USE_ALL = False
+#USE_ALL = True  # SS: Did not seem to affect things, what is this?
 
 def unit(prof):
     if prof == 'rho' or prof == 'nu':
@@ -69,6 +69,7 @@ class ProfileCollection():
         self.M68hi = Profiles(pops, nipol)
         self.M95hi = Profiles(pops, nipol)
         self.Mmax  = Profiles(pops, nipol)
+        self.BestFit = Profiles(pops, nipol)
         self.analytic = Profiles(pops, 100)
     ## \fn __init__(self, pops, nipol)
     # constructor
@@ -79,6 +80,7 @@ class ProfileCollection():
         if np.isnan(prof.chi2):
             return
         self.chis.append(prof.chi2)
+        #pdb.set_trace()
         self.profs.append(prof)
         return
     ## \fn add(self, prof)
@@ -133,14 +135,14 @@ class ProfileCollection():
     # @param x0 radii in pc
 
 
-    def sort_prof(self, prof, pop, gp):
+    def sort_prof(self, prof, pop, gp): #SS: no longer in use(?)
         self.goodprof = []
         self.goodchi = []
         for k in range(len(self.profs)):
             if self.subset[0] <= self.chis[k] <= self.subset[1]:
                 self.goodprof.append(self.profs[k].get_prof(prof, pop))
                 self.goodchi.append(self.chis[k])
-
+        
         if prof == 'nu_vec' or prof == 'sigz2_vec': # Printing best fit model:
             goodchi_arr = np.array(self.goodchi)
             minchi_index = np.argmin(goodchi_arr)
@@ -179,20 +181,19 @@ class ProfileCollection():
             if self.subset[0] <= self.chis[k] <= self.subset[1]:
                 self.goodprof.append(self.profs[k].get_prof(prof, pop))
                 self.goodchi.append(self.chis[k])
+                #pdb.set_trace()
                 self.prof_weights.append(self.profs[k].mn_weight)
-
-        #pdb.set_trace()
 
         bin_prof_values = np.array(self.goodprof).transpose() # values for this bin from all the profiles
         bin_prof_weights = []
         bin_prof_credreg_bounds=[] # credibility region boundaries for this bin
 
+        #print (self.goodprof[np.argmin(self.goodchi)])
+
         for lter in range(len(bin_prof_values)):
             sort_indices = np.argsort(bin_prof_values[lter])
             bin_prof_values[lter] = bin_prof_values[lter][sort_indices]
             bin_prof_weights.append(np.array(self.prof_weights)[sort_indices])
-
-
 
             cred_reg_bounds = [0.025, 0.16, 0.5, 0.84, 0.975]
             bin_i_prof_credreg_bounds = [bin_prof_values[lter][0]]
@@ -206,26 +207,36 @@ class ProfileCollection():
 
                     if bin_weight_sum >= cred_reg_bounds[mter]:
                         bin_i_prof_credreg_bounds.append(bin_prof_values[lter][nter])
-                        print('found boundary ', mter)
+                        #print('found boundary ', mter)
                         break
 
             bin_i_prof_credreg_bounds.append(bin_prof_values[lter][-1])
-            print(bin_i_prof_credreg_bounds)
+            #print(bin_i_prof_credreg_bounds)
             bin_prof_credreg_bounds.append(bin_i_prof_credreg_bounds)
 
 
         credreg_bound_profs = np.array(bin_prof_credreg_bounds).transpose()
 
-        self.Mmin.set_prof(prof,  credreg_bound_profs[0], pop, gp)
-        self.M95lo.set_prof(prof, credreg_bound_profs[1], pop, gp)
-        self.M68lo.set_prof(prof, credreg_bound_profs[2], pop, gp)
-        self.Mmedi.set_prof(prof, credreg_bound_profs[3], pop, gp)
-        self.M68hi.set_prof(prof, credreg_bound_profs[4], pop, gp)
-        self.M95hi.set_prof(prof, credreg_bound_profs[5], pop, gp)
-        self.Mmax.set_prof(prof,  credreg_bound_profs[6], pop, gp)
+        if prof == 'nu_vec': # Rescaling the nu & sigz2 plots to see more details
+            #truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
+            #rescale_prof = ...
+            # NOT IN USE
+            rescale_prof = 1.
+        else:
+            rescale_prof = 1.
+            
+
+        self.Mmin.set_prof(prof,  credreg_bound_profs[0]/rescale_prof, pop, gp)
+        self.M95lo.set_prof(prof, credreg_bound_profs[1]/rescale_prof, pop, gp)
+        self.M68lo.set_prof(prof, credreg_bound_profs[2]/rescale_prof, pop, gp)
+        self.Mmedi.set_prof(prof, credreg_bound_profs[3]/rescale_prof, pop, gp)
+        self.M68hi.set_prof(prof, credreg_bound_profs[4]/rescale_prof, pop, gp)
+        self.M95hi.set_prof(prof, credreg_bound_profs[5]/rescale_prof, pop, gp)
+        self.Mmax.set_prof(prof,  credreg_bound_profs[6]/rescale_prof, pop, gp)
+        self.BestFit.set_prof(prof, self.goodprof[np.argmin(self.goodchi)]/rescale_prof, pop, gp)
+        print ('BestFit profile for',prof,':',self.goodprof[np.argmin(self.goodchi)])
 
         #pdb.set_trace()
-
         return credreg_bound_profs
     ## \fn sort_prof(self, prof, pop, gp)
     # sort the list of prof-profiles, and store the {1,2}sigma, min, medi, max in the appropriate place
@@ -383,8 +394,27 @@ class ProfileCollection():
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
         output.add('M 68% CL high '+ uni, self.M68hi.get_prof(prof, pop))
         output.add('M 95% CL high '+ uni, self.M95hi.get_prof(prof, pop))
+        #output.add('Best fit model '+uni, 
         print ('******************************************')
-        print (prof,self.Mmedi.get_prof(prof, pop))
+        profile_to_plot = self.Mmedi.get_prof(prof, pop)
+        print ('Median for',prof,':',profile_to_plot)
+        if prof == 'nu_vec':
+            dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], \
+                                                              unpack=False, skiprows=1))
+            print ('nudat:',nudat)
+            print ('nuerr:',nuerr)
+            chi2_nu = np.sum(np.square((nudat-profile_to_plot)/nuerr))/np.size(nudat)
+            print ('chi2 for nu part:',chi2_nu)
+        elif prof == 'sigz2_vec':
+            DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
+                                           unpack=False, skiprows=1))
+            sigz2dat = DATA[4-1] # [maxsiglosi]
+            sigz2err = DATA[5-1] # [maxsiglosi]
+            print ('sigz2dat:',sigz2dat)
+            print ('sigz2err:',sigz2err)
+            chi2_sigz2 = np.sum(np.square((sigz2dat-profile_to_plot)/sigz2err))/np.size(sigz2dat)
+            print ('chi2 for sigz2 part:',chi2_sigz2)
+            
         #print (self.M95hi.get_prof(prof, pop))
         #pdb.set_trace()
         output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
@@ -580,41 +610,41 @@ class ProfileCollection():
         # Disc cases
         elif prof == 'nu_vec':
             ax.set_ylabel('$\\nu_{\\rm{Tr},'+str(pop)+'}\\quad[\\rm{stars}/\\rm{kpc}^3]$')
-            ax.set_ylim(1.0E3, 4.0E4)
+            #ax.set_ylim(1.0E4, 4.0E5)
         elif prof == 'sig_vec':
             ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
             ax.set_ylim(10., 40.)
         elif prof == 'sigz2_vec':
             ax.set_ylabel('$\\sigma_{z}^2\\quad[\\rm{km}^2/\\rm{s}^2]$')
-            ax.set_ylim(500., 1100.)
+            #ax.set_ylim(500., 1100.)
 
         elif prof == 'kz_nu_vec':
             ax.set_ylabel('$k(z)_{\\nu}$')
-            ax.set_ylim(0., 6.)
+            #ax.set_ylim(0., 6.)
         elif prof == 'kz_rho_DM_vec':
             ax.set_ylabel('$k(z)_{\\rho, \\rm{DM}}$')
             ax.set_ylim(-10., 10.)
 
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            ax.set_ylim(1E6, 1E8)
+            #ax.set_ylim(1E6, 1E8)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
-            ax.set_ylim(0,1.0E8)
+            #ax.set_ylim(0,1.0E8)
 
         elif prof == 'rho_baryon_vec':
             ax.set_ylabel('$\\rho_{\\rm{baryon}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            ax.set_ylim(1E3, 1E9)
+            #ax.set_ylim(1E3, 1E9)
         elif prof == 'Sig_baryon_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{baryon}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
-            ax.set_ylim(0,1.0E8)
+            #ax.set_ylim(0,1.0E8)
 
         elif prof == 'rho_total_vec':
             ax.set_ylabel('$\\rho_{\\rm{total}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            ax.set_ylim(1E3, 1E9)
+            #ax.set_ylim(1E3, 1E9)
         elif prof == 'Sig_total_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{total}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
-            ax.set_ylim(0,1.0E8)
+            #ax.set_ylim(0,1.0E8)
 
 
 
@@ -675,6 +705,7 @@ class ProfileCollection():
         M95lo = self.M95lo.get_prof(prof, pop)
         M68lo = self.M68lo.get_prof(prof, pop)
         Mmedi = self.Mmedi.get_prof(prof, pop)
+        BestFit = self.BestFit.get_prof(prof, pop)
         r0    = self.Mmedi.x0
         M68hi = self.M68hi.get_prof(prof, pop)
         M95hi = self.M95hi.get_prof(prof, pop)
@@ -685,6 +716,7 @@ class ProfileCollection():
         ax.plot(r0, M68lo, color='black', lw=0.4)
         ax.plot(r0, M68hi, color='black', lw=0.3)
         ax.plot(r0, Mmedi, 'r', lw=1)
+        ax.plot(r0, BestFit, 'm', lw=1)
         if prof == 'Sig' or prof == 'sig':
             for pop in range(gp.pops):
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
@@ -746,19 +778,19 @@ class ProfileCollection():
         if prof != 'chi2':
             ax.set_xscale('log')
 
-        if prof == 'chi2':  # SS: Could not find where x-axis is set logscale
+        if prof == 'chi2':  # SS: Could not find where x-axis is set to logscale
             ax.set_yscale('log') 
 
         if prof == 'rho' or prof == 'Sig' or\
            prof == 'M' or prof == 'nu':
             ax.set_yscale('log')
 
-        if prof == 'nu_vec' or prof == 'rho_DM_vec' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec':
-            ax.set_xscale('log')
+        if prof == 'nu_vec' or prof == 'rho_DM_vec' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec' or prof == 'sigz2_vec':
+            ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('log')
 
-        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
-            ax.set_xscale('log')
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
+            ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('linear')
 
         self.plot_labels(ax, prof, pop, gp)
@@ -783,7 +815,7 @@ class ProfileCollection():
                 return
 
             self.fill_nice(ax, prof, pop, gp)
-            self.plot_N_samples(ax, prof, pop)
+            #self.plot_N_samples(ax, prof, pop) #SS: Don't plot thin gray lines
             self.plot_bins(ax, prof, gp)
             if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
@@ -852,7 +884,8 @@ class ProfileCollection():
     # @param gp global parameters
 
     def true_sigz2_func(self,binmin,binmax,nsmallbin,nbin,z0,Ntr,nu0,K,D,F,gp):
-        C = 22.85**2
+        #C = 22.85**2
+        C = 40.0**2
         truesig2_arr = np.zeros(nbin)
         for kbin in range(nbin):
             zvec = np.zeros(nsmallbin+1) # one extra point since lists both binmin & binmax
@@ -880,18 +913,18 @@ class ProfileCollection():
 
 
     def plot_model_simplenu(self, ax, basename, prof, gp):
+        Ntr = 930811  # N.o. tracers in simple2_1e6 with z < 2.4 kpc
+        #Ntr = 9516. 
         G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
-        K=1500.
-        F=267.65
-        D=0.18
-        z0=0.4
-        normC = 22.85
-        nu0 = 1.
-        #Ntr = 10000.
-        Ntr = 9516.  # Actual n.o. stars in Jutin's mock data set
-        zmax= 1.2
+        K = 1500.
+        F = 267.65
+        D = 0.18
+        z0 = 0.9  # Thick disk
+        #z0 = 0.4  # Thin disk
+        normC = 40.0
+        #normC = 22.85
 
-        zvec=np.linspace(0, zmax, 100)
+        zvec=np.linspace(0, gp.data_z_cut, 100)
 
         Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
@@ -914,7 +947,7 @@ class ProfileCollection():
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
 
-        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
+        nu0 = Ntr/(z0*(1-np.exp(-gp.data_z_cut/z0)))
         nuvec = nu0*np.exp(-zvec/z0)
 
         #bincentermed, binmin, binmax, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
@@ -924,8 +957,10 @@ class ProfileCollection():
         truenu_arr = truen_arr/(binmax-binmin)
 
         if prof == 'nu_vec':
-            #ax.plot(zvec, nuvec, 'g-', alpha=0.5)
-            ax.plot(bincentermed, truenu_arr, 'g-', alpha=0.5)
+            ##ax.plot(zvec, nuvec, 'g-', alpha=0.5)
+            #ax.plot(bincentermed, truenu_arr, 'g-', alpha=0.5)
+            # Uncomment above line to plot theory curve for nu
+            dfflnsdlcn = 1.   # needs to have an indented block...
 
         elif prof == 'Sig_total_vec':
             ax.plot(zvec, Sigma_z_total, 'g-', alpha=0.5)
@@ -971,10 +1006,11 @@ class ProfileCollection():
 
 
         elif prof == 'sigz2_vec':
-            #sigz2_analytic = phys.sigz2(zvec, Sigma_z_total, nuvec, (normC**2)*nuvec[0])
-            #ax.plot(zvec, sigz2_analytic, 'g-', alpha = 0.5)
+            ##sigz2_analytic = phys.sigz2(zvec, Sigma_z_total, nuvec, (normC**2)*nuvec[0])
+            ##ax.plot(zvec, sigz2_analytic, 'g-', alpha = 0.5)
             true_sigz2_arr = self.true_sigz2_func(binmin,binmax,1000,nbin,z0,Ntr,nu0,K,D,F,gp)
-            ax.plot(bincentermed, true_sigz2_arr, 'g-', alpha = 0.5)
+            #ax.plot(bincentermed, true_sigz2_arr, 'g-', alpha = 0.5)
+            # Uncomment above line to plot theory curve for sigz2
         return
 
 

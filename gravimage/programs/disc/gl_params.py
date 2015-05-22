@@ -55,13 +55,18 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
+        #self.external_data_file= '/simplenu/simple_1e5nu_sigz_raw.dat'
+        #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
+        #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
+        self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
+
         self.TheoryData = False   # If true using theoretical bin values as indata
-        self.hyperparams = True  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
+        self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.nbins = 10   # Number of bins to split tracer stars into
-        self.nbins = 10   # Number of bins to split tracer stars into
+        self.nbins = 20   # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
@@ -89,6 +94,9 @@ class Params():
         if self.scan_rhonu_space:
             self.nrhonu = self.nbins #Param count will be rho_C + rho_bins
 
+        # Parameters escribing the underlying baryonic model and the mock data
+        # This is assuming baryonmodel = simplenu_baryon above, rewrite required if this is changed.
+
         #Total dimensions count
         if self.darkmattermodel == 'kz_dm':
             self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
@@ -108,8 +116,6 @@ class Params():
         self.mc_err_N_iters = int(100) #Number of iterations to perform when doing MC error estimation
 
 
-
-
         # Priors
         # ----------------------------------------------------------------------
         # Limits for central densities (z=0)
@@ -127,7 +133,8 @@ class Params():
         self.kz_nu_C_min = -5.0 #SS
 
         # Maximum kz_slope (=dk/dz)
-        self.max_kz_slope = 10.0
+        #self.max_kz_slope = 10.0
+        self.max_kz_slope = 5.0
 
         # Limits for sigz central value
         self.sigz_C_max = 50.
@@ -154,7 +161,7 @@ class Params():
 
         # MultiNest options
         # ----------------------------------------------------------------------
-        self.map_priors = False
+        self.map_priors = True
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
@@ -192,6 +199,8 @@ class Params():
         self.z_binmins = np.array([])
         self.z_binmaxs = np.array([])
         self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
+
+        self.minchi2 = 3.  # Letting the code print out minchi directly
 
     ## \fn __init__(self, timestamp = '')
     # set up all parameters used in the course of the MultiNest run,

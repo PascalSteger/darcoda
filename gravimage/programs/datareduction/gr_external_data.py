@@ -39,8 +39,8 @@ def ErSamp_gauss_linear_w_z():
     fraction_err = 0.05
     velocity_err = 5. #km s^-1
 
-    datafile='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
-    #datafile='/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    #datafile='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
+    datafile='/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
     #Todo: work out how to un-hard code this. Ultimately this should be a method of a data class.
 
     data = np.loadtxt(datafile)
@@ -73,6 +73,15 @@ def run(gp):
     z_data = external_data[:, 0] #[kpc]
     v_data = external_data[:, 1] #[km/s]
 
+    if (gp.data_z_cut < max(z_data)):  # use only data with z<data_z_cut
+        z_data_used = z_data[z_data<gp.data_z_cut] 
+        v_data_used = v_data[z_data<gp.data_z_cut]
+    else:
+        z_data_used = z_data
+        v_data_used = v_data
+
+    print ('N.o. tracer stars used as data:',len(z_data_used))
+
     #Population Splitting
     if gp.ntracer_pops > 1:
         print('More than one population')
@@ -81,12 +90,12 @@ def run(gp):
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
     if gp.binning == 'consttr':
-        binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data, gp.nbins)
+        binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used, gp.nbins)
     elif gp.binning == 'linspace':
-        binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data),1), gp.nbins)
+        binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used),1), gp.nbins)
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
-    nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data)
+    nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used 
 
     if gp.TheoryData == True:
         G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
@@ -122,18 +131,19 @@ def run(gp):
     print ('nu_err_pois:',nu_err_pois)
     print ('sigz2_err_pois:',sigz2_err_pois)
 
-    # Use MC to estimate errors on nu
-    if gp.investigate == 'simplenu':
-        z_sampler = ErSamp_gauss_linear_w_z
-    [nu_err_meas, sigz2_err_meas] = gmcer.mc_nu_error(z_sampler, gp.mc_err_N_iters, binmin, binmax, bincentermed)
+    ## Use MC to estimate errors on nu  # SS: Throws error if file not set correctly, so commented out for now as meas errors are currently not used.
+    #if gp.investigate == 'simplenu':
+    #    z_sampler = ErSamp_gauss_linear_w_z
+    #[nu_err_meas, sigz2_err_meas] = gmcer.mc_nu_error(z_sampler, gp.mc_err_N_iters, binmin, binmax, bincentermed)
 
-    #Combine nu errors in quadrature TODO check that this is the right way to add errors
-    nu_err_tot = np.sqrt(nu_err_pois**2 + nu_err_meas**2)
+    ##Combine nu errors in quadrature TODO check that this is the right way to add errors
+    #nu_err_tot = np.sqrt(nu_err_pois**2 + nu_err_meas**2)
 
     #Combine sig (vel disp) errors
-    Ntr = len(z_data) #Number of tracers
+    Ntr = len(z_data) #Total number of tracers avaliable
+    Ntr_used = len(z_data_used) # Total number of tracers used (& binned)
     #sigz2_err_tot = sigz2_err_pois + np.sqrt(2/Ntr_per_bin)*gp.vz_SDerr_meas**2
-    sigz2_err_tot = np.sqrt(sigz2_err_pois**2 + sigz2_err_meas**2)
+    #sigz2_err_tot = np.sqrt(sigz2_err_pois**2 + sigz2_err_meas**2)
 
     #SS: Running the code without measurement errors   TODO FIXME !!
     nu_err_tot = nu_err_pois     # SS-TODO
@@ -143,12 +153,8 @@ def run(gp):
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
 
     #Set central nu prior range
-    gp.nu_C_max = 2.*Ntr/(binmax[0]-binmin[0])
-    gp.nu_C_min = 0.1*Ntr/(binmax[-1]-binmin[0])
-
-    #Temp:
-    gp.nu_C_max = 3.E4
-    gp.nu_C_min = 1.E3
+    gp.nu_C_max = 2.*Ntr_used/(binmax[0]-binmin[0])
+    gp.nu_C_min = 0.1*Ntr_used/(binmax[-1]-binmin[0])
 
     import gr_params #WHAT DOES THIS DO.
     gpr = gr_params.Params(gp)

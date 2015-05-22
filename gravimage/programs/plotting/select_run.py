@@ -295,19 +295,19 @@ def get_nbeta(basename):
 # @return integer number of beta* parameters
 
 def get_profile_source():
-    default = 'standard'
+    default = 'MNoutput'
     invalid = True
     while(invalid):
         try:
             user_input = input('Profile source: (default: '+str(default)+\
-                               ", standard, livepoints, rejectedpoints): ")
+                               ", standard, livepoints, rejectedpoints, MNoutput): ")
             if not user_input:
                 user_input = str(default)
             sel = user_input
         except ValueError:
             print("error in input")
         invalid = True
-        if sel == 'standard' or sel == 'livepoints' or sel == 'rejectedpoints':
+        if sel == 'standard' or sel == 'livepoints' or sel == 'rejectedpoints' or sel == 'MNoutput':
             invalid = False
     return sel
 ## \fn get_investigate(default)
