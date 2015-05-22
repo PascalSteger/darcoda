@@ -50,14 +50,13 @@ def calc_chi2(profs, gp):
 
         #If monotonicity passed calculate chi2
         nudat    = gp.dat.nu[pop]
-        nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # add hyperparam to error
+        nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
         numodel  = profs.get_prof('nu_vec', pop)
         chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins) #TEST [0:-1]
         gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
 
         if not gp.chi2_nu_converged and not gp.plotting_flag:
             continue # with pop loop
-
 
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
@@ -67,7 +66,17 @@ def calc_chi2(profs, gp):
             print('chi2_sig has become infinite')
             pdb.set_trace()
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
-        chi2 = (chi2_nu+chi2_sigz2)/2.
+
+        if gp.tilt:
+            sigmaRzdat  = gp.dat.tilt 
+            sigmaRzerr = gp.dat.tilterr
+            sigmaRz_model = profs.get_prof('sigmaRz_vec', pop)
+            chi2_tilt = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, gp.nbins)
+            chi2 = (chi2_nu+chi2_sigz2+chi2_tilt)/3.
+            #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
+        else:
+            chi2 = (chi2_nu+chi2_sigz2)/2.
+
         if chi2 < gp.minchi2:
             gp.minchi2 = chi2
             print ('lowest chi2 so far:',chi2)

@@ -49,6 +49,10 @@ class Datafile:
         self.sigz2err = []
         self.meansigz2err = 0.
 
+        # Tilt:
+        self.tilt = []
+        self.tilterr = []
+
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
         ## keep errors of kapdat
@@ -153,6 +157,13 @@ class Datafile:
     # read in line of sight velocity dispersion
     # @param gp global parameters
     # H Silverwood 20/11/14
+
+    def read_tilt(self, gp):
+        dummy, dummy, dumy, tiltdat, tilterr = gh.readcol5(gp.files.tiltfiles[0])
+        self.tilt.append(tiltdat[:])
+        self.tilterr.append(tilterr[:])
+        return
+    ## \fn read_tilt(self, gp)   SS 21 may 2015
 
     def read_nu(self, gp):
         bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])

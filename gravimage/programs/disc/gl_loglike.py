@@ -38,7 +38,10 @@ def geom_loglike(cube, ndim, nparams, gp):
         rho_DM_params = np.array(cube[off:off+offstep])
         rho_DM_C = rho_DM_params[0] #rho_C
         kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres]
-        tmp_rho_DM_allz = phys.rho(gp.z_all_pts, abs(kz_rho_DM_allz), rho_DM_C) #outputs rho across all points
+        if gp.monotonic_rho:         #outputs rho across all points:
+            tmp_rho_DM_allz = phys.rho(gp.z_all_pts, abs(kz_rho_DM_allz), rho_DM_C)
+        else:
+            tmp_rho_DM_allz = phys.rho(gp.z_all_pts, kz_rho_DM_allz, rho_DM_C)
 
         tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
         tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:], 0, gp)
@@ -80,7 +83,10 @@ def geom_loglike(cube, ndim, nparams, gp):
             tracer_params = np.array(cube[off:off+offstep])
             nu_C = tracer_params[0]
             kz_nu_allz = tracer_params[1:] #kz for rho across all z points [0, bin_centres]
-            tmp_nu_allz = phys.rho(gp.z_all_pts, kz_nu_allz, nu_C) #outputs nu across all z points
+            if gp.monotonic_nu:  #outputs nu across all z points:
+                tmp_nu_allz = phys.rho(gp.z_all_pts, abs(kz_nu_allz), nu_C)
+            else:
+                tmp_nu_allz = phys.rho(gp.z_all_pts, kz_nu_allz, nu_C)
 
             tmp_profs.kz_nu_C = kz_nu_allz[0]
             tmp_profs.set_prof('kz_nu_vec', kz_nu_allz[1:], 0, gp)
@@ -88,6 +94,12 @@ def geom_loglike(cube, ndim, nparams, gp):
         tmp_profs.nu_C = tmp_nu_allz[0]
         tmp_profs.set_prof('nu_vec', tmp_nu_allz[1:], tracer_pop, gp)
         off += offstep
+
+        # Tilt term
+        if gp.tilt:
+            offstep = gp.ntilt_params
+            tilt_params = np.array(cube[off:off+offstep])
+            off += offstep
 
         #Hyperparameters
         if gp.hyperparams == True:
@@ -127,10 +139,21 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_profs.Sig_total_C = Sig_total_allz[0]
     tmp_profs.set_prof('Sig_total_vec', Sig_total_allz[1:], 0, gp)
 
+    if gp.tilt:
+        A = tilt_params[0]
+        n = tilt_params[1]
+        R = tilt_params[2]
+        sigmaRz_allz = A*(gp.z_all_pts*1000.)**n
+        tmp_profs.set_prof('sigmaRz_vec', sigmaRz_allz[1:], 0, gp)
+        tilt_allz = A*(gp.z_all_pts*1000.)**n*(1./gp.Rsun - 2./R)
+    else:
+        tilt_allz = np.zeros(len(gp.z_all_pts))
+    tmp_profs.set_prof('tilt_vec', tilt_allz, 0, gp)
+
     #Calculate sigma (velocity dispersion)
     #pdb.set_trace()
     try:
-        sigz2_vec = phys.sigz2(gp.z_all_pts, Sig_total_allz, tmp_nu_allz, norm)
+        sigz2_vec = phys.sigz2(gp.z_all_pts, Sig_total_allz, tilt_allz, tmp_nu_allz, norm)
     except ValueError:
         raise ValueError('negative value in sig2 array')
         return

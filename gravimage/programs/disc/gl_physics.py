@@ -36,10 +36,10 @@ def Sig(zvec, rhovec):
 # @param zvec: z-vector, at which rho/Sig(z) is given (requires z[0] != 0.)
 
 # New function for calculating the z-dir velocity dispersion
-def sigz2(zvec,Sigvec,nuvec,C):
+def sigz2(zvec,Sigvec,tiltvec,nuvec,C):
     G1 = 4.299e-6  # Newton's constant in (km)^2*kpc/(Msun*s^2)
     Kzvec = -2.*constants.pi*G1*Sigvec
-    integral = integrate.cumtrapz(nuvec*Kzvec,zvec,initial=0.) + C
+    integral = integrate.cumtrapz(nuvec*(Kzvec-tiltvec),zvec,initial=0.) + C
     sig2 = integral/nuvec
     if (any(sig2<0.)):
         gh.LOG(1,'Negative sig2 in phys.sigz')

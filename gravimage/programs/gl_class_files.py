@@ -64,6 +64,8 @@ class Files:
         self.nufiles = []
         ## files with velocity dispersions
         self.sigfiles = []
+        ## files with sigmaRz (for tilt)
+        self.tiltfiles = []
         ## files with centered positions and velocities for the tracer particles
         self.posvelfiles = []
         ## files for the fourth order moment of the LOS velocity
@@ -523,6 +525,8 @@ class Files:
         self.dir += timestamp + '/'
         self.nufiles.append(self.dir+'nu/nu_1.txt')
         self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
+        #pdb.set_trace()
+        self.tiltfiles.append(self.dir+'tilt/tilt_1.txt')
         return
     ## \fn set_simplenu(self, gp, timestamp='')
     # set all properties if looking at simple disc

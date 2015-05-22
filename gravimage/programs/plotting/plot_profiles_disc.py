@@ -124,6 +124,8 @@ def run(timestamp, basename, profile_source, gp):
     pc.plot_profile(basename, 'rho_total_vec', 0, gp)
     pc.plot_profile(basename, 'Sig_total_vec', 0, gp)
 
+    pc.plot_profile(basename, 'sigmaRz_vec', 0, gp)
+
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
 # @param timestamp string

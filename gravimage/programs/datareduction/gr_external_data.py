@@ -28,12 +28,22 @@ def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, s
     for b in range(gp.nbins):
         print(Bincenter[b], Binmin[b], Binmax[b], nudat[b], nuerr[b], file=file_nu)
     file_nu.close()
+    print ('gp.files.nufiles:',gp.files.nufiles[0])
 
     file_sig = open(gp.files.sigfiles[0],'w')
     print('Bin centres z [kpc];','Binmin z [kpc];','Binmax [kpc];', 'sigma_z^2(z) [km^2/s^2];', 'error [km^2/s^2]', file=file_sig)
     for b in range(gp.nbins):
         print(Bincenter[b], Binmin[b], Binmax[b], sigz2dat[b], sigz2err[b], file=file_sig)
     file_sig.close()
+    print ('gp.files.sigfiles[0]:',gp.files.sigfiles[0])
+
+def write_tilt_output_files(Bincenter, Binmin, Binmax, tilt, tilterr, gp):
+    file_tilt = open(gp.files.tiltfiles[0], 'w')
+    print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','sigmaRz(z) [km^2/s^2];','error [km^2/s^2]', file=file_tilt)
+    for b in range(gp.nbins):
+        print(Bincenter[b], Binmin[b], Binmax[b], tilt[b], tilterr[b], file=file_tilt)
+    file_tilt.close()
+    print ('gp.files.tiltfiles[0]:',gp.files.tiltfiles[0])
 
 def ErSamp_gauss_linear_w_z():
     fraction_err = 0.05
@@ -65,20 +75,24 @@ def ErSamp_gauss_linear_w_z():
 def run(gp):
     if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
         external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file
+        external_file_tilt='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file_tilt
     elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
         external_file='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file
+        external_file_tilt='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file_tilt
 
     external_data = np.loadtxt(external_file)
+    external_data_tilt = np.loadtxt(external_file_tilt)
 
     z_data = external_data[:, 0] #[kpc]
     v_data = external_data[:, 1] #[km/s]
 
-    if (gp.data_z_cut < max(z_data)):  # use only data with z<data_z_cut
-        z_data_used = z_data[z_data<gp.data_z_cut] 
-        v_data_used = v_data[z_data<gp.data_z_cut]
-    else:
-        z_data_used = z_data
-        v_data_used = v_data
+    z_data_tilt = external_data_tilt[:,0]     #[kpc]
+    vRz_data_tilt = external_data_tilt[:,1]   #[km^2/s^2]
+
+    z_data_used = z_data[z_data<gp.data_z_cut]  # use only data with z<data_z_cut
+    v_data_used = v_data[z_data<gp.data_z_cut]
+
+
 
     print ('N.o. tracer stars used as data:',len(z_data_used))
 
@@ -96,6 +110,11 @@ def run(gp):
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used 
+
+    tilt_data, tilt_data_err = gh.tilt_from_bins(binmin, binmax, z_data_tilt, vRz_data_tilt)
+    print ('tilt_data:',tilt_data)
+    print ('tilt_data_fit:',(tilt_data+0.0087*(1000.*bincentermed)**1.44)/tilt_data)
+    #pdb.set_trace()
 
     if gp.TheoryData == True:
         G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
@@ -151,6 +170,7 @@ def run(gp):
 
     #Output data to file
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
+    write_tilt_output_files(bincentermed, binmin, binmax, tilt_data, tilt_data_err, gp)
 
     #Set central nu prior range
     gp.nu_C_max = 2.*Ntr_used/(binmax[0]-binmin[0])

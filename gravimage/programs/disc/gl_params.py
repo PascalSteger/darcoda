@@ -56,12 +56,15 @@ class Params():
 
         #self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
         #self.external_data_file= '/simplenu/simple_1e5nu_sigz_raw.dat'
-        self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
+        #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
+        self.external_data_file= '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat'
+        self.external_data_file_tilt= '/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat'
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
         self.TheoryData = False   # If true using theoretical bin values as indata
         self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
+        self.tilt = True   # If also modelling the tilt
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -89,12 +92,13 @@ class Params():
                                     #  simplenu_baryon = 2
                                     #  Holmberg & Flynn = ?
                                     #  with baryon observational information = nrho
+        self.ntilt_params = 3  # Number of parameters used to describe tilt
 
         self.scan_rhonu_space = False #Search directly in rho or nu space, i.e. no kr parametrization
         if self.scan_rhonu_space:
             self.nrhonu = self.nbins #Param count will be rho_C + rho_bins
 
-        # Parameters escribing the underlying baryonic model and the mock data 
+        # Parameters describing the underlying baryonic model and the mock data 
         # This is assuming baryonmodel = simplenu_baryon above, rewrite required if this is changed.
 
         #Total dimensions count
@@ -108,8 +112,11 @@ class Params():
                 # Constant C from sigma_z calculations, 1 for constant rho density,
                 # nrhonu + 1 for kz_nu and nu_C, plus baryon params
 
-        if self.hyperparams == True:
+        if self.hyperparams:
             self.ndim += 2
+
+        if self.tilt:
+            self.ndim += self.ntilt_params
 
         self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
         self.vz_SDerr_meas = 5.  # Measurement error on vz, [km s^-1]
@@ -153,10 +160,18 @@ class Params():
         self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 1700. #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1300.
-        self.simplenu_baryon_D_max = 0.5 #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.05
+        self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1000  #1400 #1300.
+        self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
+
+        # Tilt priors
+        self.tilt_A_max = -0.005  # simple2 mock has A = -0.0087
+        self.tilt_A_min = -0.012
+        self.tilt_n_max = 1.9    # simple2 mock has n = 1.44
+        self.tilt_n_min = 1.
+        self.tilt_R_max = 3.5     # simple2 mock has R = 2.5 
+        self.tilt_R_min = 1.5
 
 
         # MultiNest options
@@ -201,6 +216,9 @@ class Params():
         self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
 
         self.minchi2 = 3.  # Letting the code print out minchi directly
+
+        # Global constants
+        self.Rsun = 8.  # [kpc]  Sun's distance to galactic center
 
     ## \fn __init__(self, timestamp = '')
     # set up all parameters used in the course of the MultiNest run,

@@ -62,6 +62,11 @@ class Profiles:
         #Hyperparameters
         self.hyper_nu = 0.
         self.hyper_sigz2 = 0.
+
+        #Tilt
+        self.tilt_vec = np.zeros(ntracer_pops * (nbins+1))
+        self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins+1))
+
     ## \fn __init__(self, pops, nipol)
     # constructor
     # @param ntracer_pops = number of tracer populations
@@ -107,6 +112,12 @@ class Profiles:
         elif prof == 'sigz2_vec':
             self.sigz2_vec = vec
 
+        #Tilt
+        elif prof == 'tilt_vec':
+            self.tilt_vec = vec
+        elif prof == 'sigmaRz_vec':
+            self.sigmaRz_vec = vec
+
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
     # @param prof profile identifier
@@ -150,6 +161,12 @@ class Profiles:
             return self.nu_vec
         elif prof == 'sigz2_vec':
             return self.sigz2_vec
+
+        #Tilt
+        elif prof == 'tilt_vec':
+            return self.tilt_vec
+        elif prof == 'sigmaRz_vec':
+            return self.sigmaRz_vec
 
         ##chi2 of profile
         #elif prof == 'chi2'
