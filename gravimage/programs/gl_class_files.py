@@ -120,6 +120,7 @@ class Files:
         newdir(self.dir + 'siglos/')
         newdir(self.dir + 'kappalos/')
         newdir(self.dir + 'nu/')
+        newdir(self.dir + 'tilt/')
         # create new pc2.save file for profile storage that is appended to during the run
         if timestamp == '':
             with open(self.outdir+'pc2.save', 'wb') as fi:

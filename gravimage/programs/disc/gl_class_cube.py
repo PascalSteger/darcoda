@@ -129,6 +129,7 @@ def map_simplenu_baryon(params, gp):
 
     return np.array([K, D])
 
+
 def map_hypererr(param, prof, pop, gp):
     if prof == 'nu':
         meanerr = gp.dat.meannuerr
@@ -298,7 +299,17 @@ def map_constdm(params, prof, pop, gp):
         rho_C = 10**rho_C
     return [rho_C]
 
-
+def map_simplenu_dm(params, prof, pop, gp):
+    if gp.rho_C_prior_type == 'linear':
+        rho_C = gp.rho_C_min + (gp.rho_C_max-gp.rho_C_min)*params[0]
+    elif gp.rho_C_prior_type == 'log':
+        rho_C = np.log10(gp.rho_C_min) + (np.log10(gp.rho_C_max)-np.log10(gp.rho_C_min))*params[0]
+        rho_C = 10**rho_C
+    K_range = gp.simplenu_dm_K_max - gp.simplenu_dm_K_min
+    K = gp.simplenu_dm_K_min + K_range*params[1]
+    D_range = gp.simplenu_dm_D_max - gp.simplenu_dm_D_min
+    D = gp.simplenu_dm_D_min + D_range*params[2]
+    return np.array([rho_C, K, D])    
 
 class Cube:
     def __init__ (self, gp):
@@ -326,6 +337,9 @@ class Cube:
         if gp.darkmattermodel == 'const_dm':
             offstep = 1
             tmp_DM = map_constdm(pc[off:off+offstep], 'rho', 0, gp)
+        elif gp.darkmattermodel == 'ConstPlusDD':
+            offstep = 3
+            tmp_DM = map_simplenu_dm(pc[off:off+offstep], 'rho', 0, gp)
         elif gp.darkmattermodel == 'kz_dm':
             offstep = gp.nrhonu + 1
             if gp.scan_rhonu_space:
