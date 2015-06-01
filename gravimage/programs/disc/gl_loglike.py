@@ -34,6 +34,11 @@ def geom_loglike(cube, ndim, nparams, gp):
         rho_DM_params = np.array(cube[off:off+offstep])
         rho_DM_C = rho_DM_params[0]
         tmp_rho_DM_allz = rho_DM_C * np.ones(gp.nbins+1)
+    elif gp.darkmattermodel == 'ConstPlusDD':
+        offstep = 3
+        rho_DM_params = np.array(cube[off:off+offstep])
+        rho_DM_C = rho_DM_params[0]
+        tmp_rho_DM_allz = phys.rho_dm_simplenu(gp.z_all_pts, rho_DM_params)
     else:
         rho_DM_params = np.array(cube[off:off+offstep])
         rho_DM_C = rho_DM_params[0] #rho_C
@@ -145,10 +150,12 @@ def geom_loglike(cube, ndim, nparams, gp):
         R = tilt_params[2]
         sigmaRz_allz = A*(gp.z_all_pts*1000.)**n
         tmp_profs.set_prof('sigmaRz_vec', sigmaRz_allz[1:], 0, gp)
-        tilt_allz = A*(gp.z_all_pts*1000.)**n*(1./gp.Rsun - 2./R)
+        tilt_allz = sigmaRz_allz*(1./gp.Rsun - 2./R)
     else:
         tilt_allz = np.zeros(len(gp.z_all_pts))
-    tmp_profs.set_prof('tilt_vec', tilt_allz, 0, gp)
+    tmp_profs.set_prof('tilt_vec', tilt_allz[1:], 0, gp)
+    #print ('gp.tilt:',gp.tilt,' tilt_allz:',tilt_allz)
+    #pdb.set_trace()
 
     #Calculate sigma (velocity dispersion)
     #pdb.set_trace()

@@ -68,10 +68,11 @@ def calc_chi2(profs, gp):
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
 
         if gp.tilt:
-            sigmaRzdat  = gp.dat.tilt 
-            sigmaRzerr = gp.dat.tilterr
+            sigmaRz2dat  = gp.dat.tilt2 
+            sigmaRz2err = gp.dat.tilt2err
             sigmaRz_model = profs.get_prof('sigmaRz_vec', pop)
-            chi2_tilt = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, gp.nbins)
+            sigmaRz2_model = np.square(sigmaRz_model)
+            chi2_tilt = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, gp.nbins)
             chi2 = (chi2_nu+chi2_sigz2+chi2_tilt)/3.
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
         else:

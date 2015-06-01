@@ -58,13 +58,18 @@ class Params():
         #self.external_data_file= '/simplenu/simple_1e5nu_sigz_raw.dat'
         #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
         self.external_data_file= '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat'
+        #self.external_data_file= '/simplenu/simple2_dd_1e6nu_sigz_raw.dat'
+
         self.external_data_file_tilt= '/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat'
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
-        self.TheoryData = False   # If true using theoretical bin values as indata
-        self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
+        #self.tilt = True   # If also modelling the tilt
         self.tilt = True   # If also modelling the tilt
+
+        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
+        #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
+        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -73,12 +78,12 @@ class Params():
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
+        #------------------------
+        self.TheoryData = False   # If true using theoretical bin values as indata
+        self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
         #Dark matter options
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
-
-        self.darkmattermodel = 'const_dm' # const_dm = constant DM density in z
-        #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-
+        # self.adddarkdisc is currently not used !
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model
@@ -111,6 +116,9 @@ class Params():
             self.ndim = 1 + 1 + (self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
                 # Constant C from sigma_z calculations, 1 for constant rho density,
                 # nrhonu + 1 for kz_nu and nu_C, plus baryon params
+
+        elif self.darkmattermodel == 'ConstPlusDD':
+            self.ndim =  1 + 3 + (self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
 
         if self.hyperparams:
             self.ndim += 2
@@ -164,6 +172,12 @@ class Params():
         self.simplenu_baryon_K_min = 1000  #1400 #1300.
         self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
         self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
+
+        # Simplenu DM disc model priors
+        self.simplenu_dm_K_max = 500.  #JR model has K = 300.
+        self.simplenu_dm_K_min = 0.
+        self.simplenu_dm_D_max = 3.5  #JR model has D = 2.5
+        self.simplenu_dm_D_min = 1.5
 
         # Tilt priors
         self.tilt_A_max = -0.005  # simple2 mock has A = -0.0087

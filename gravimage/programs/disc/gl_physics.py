@@ -106,6 +106,13 @@ def rho_baryon_simplenu(zvec, params):
     D=params[1]
     return (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
 
+def rho_dm_simplenu(zvec, params): # DM = const + dark disc
+    G1 = 4.299e-6 # Newton's constant in (km)^2*kpc/(Msun*s^2)
+    const = params[0]
+    K=params[1]
+    D=params[2]
+    return (const + 1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+
 
 ## \fn rho_baryon_simplenu(zvec, K, D)
 # Calculate baryon density from the model used to generate the simplenu mock data

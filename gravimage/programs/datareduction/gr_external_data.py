@@ -112,9 +112,9 @@ def run(gp):
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used
 
-    tilt_data, tilt_data_err = gh.tilt_from_bins(binmin, binmax, z_data_tilt, vRz_data_tilt)
-    print ('tilt_data:',tilt_data)
-    print ('tilt_data_fit:',(tilt_data+0.0087*(1000.*bincentermed)**1.44)/tilt_data)
+    tilt2_data, tilt2_data_err = gh.tilt_from_bins(binmin, binmax, z_data_tilt, vRz_data_tilt)
+    print ('tilt2_data:',tilt2_data)
+    print ('tilt2_data_fit:',(tilt2_data-np.square(0.0087*(1000.*bincentermed)**1.44)/tilt2_data))
     #pdb.set_trace()
 
     if gp.TheoryData == True:
@@ -172,7 +172,7 @@ def run(gp):
     #Output data to file
     pdb.set_trace()
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
-    write_tilt_output_files(bincentermed, binmin, binmax, tilt_data, tilt_data_err, gp)
+    write_tilt_output_files(bincentermed, binmin, binmax, tilt2_data, tilt2_data_err, gp)
 
     #Set central nu prior range
     gp.nu_C_max = 2.*Ntr_used/(binmax[0]-binmin[0])

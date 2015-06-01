@@ -237,7 +237,6 @@ class ProfileCollection():
         self.Mmax.set_prof(prof,  credreg_bound_profs[6]/rescale_prof, pop, gp)
         self.BestFit.set_prof(prof, self.goodprof[np.argmin(self.goodchi)]/rescale_prof, pop, gp)
         print ('BestFit profile for',prof,':',self.goodprof[np.argmin(self.goodchi)])
-
         #pdb.set_trace()
         return credreg_bound_profs
     ## \fn sort_prof(self, prof, pop, gp)
@@ -322,7 +321,9 @@ class ProfileCollection():
         self.weighted_sort_prof('rho_total_vec', 0, gp)
         self.weighted_sort_prof('Sig_total_vec', 0, gp)
 
-        self.weighted_sort_prof('sigmaRz_vec', 0, gp)
+        if gp.tilt:
+            self.weighted_sort_prof('sigmaRz_vec', 0, gp)
+            self.weighted_sort_prof('tilt_vec', 0, gp)
 
 
     def set_analytic(self, x0, gp):
@@ -421,7 +422,8 @@ class ProfileCollection():
             
         #print (self.M95hi.get_prof(prof, pop))
         #pdb.set_trace()
-        output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
+        if prof != 'tilt_vec':
+            output.write(basename+'/output/ascii/prof_'+prof+'_'+str(pop)+'.ascii')
         if (gp.investigate =='walk' or gp.investigate=='gaia') \
            and (prof != 'Sig'):
             out_an = go.Output()
@@ -486,6 +488,10 @@ class ProfileCollection():
 
         self.write_prof(basename, 'rho_total_vec', 0, gp)
         self.write_prof(basename, 'Sig_total_vec', 0, gp)
+        
+        if gp.tilt:
+            self.write_prof(basename, 'sigmaRz_vec', 0, gp)
+            self.write_prof(basename, 'tilt_vec', 0, gp)
 
     def plot_N_samples(self, ax, prof, pop):
         k=0
@@ -569,13 +575,13 @@ class ProfileCollection():
         elif prof == 'sigmaRz_vec':
             DATA = np.transpose(np.loadtxt(gp.files.tiltfiles[pop], \
                                            unpack=False, skiprows=1))
-            tiltdat = DATA[4-1] # [maxsiglosi]
-            tilterr = DATA[5-1] # [maxsiglosi]
-            output.add('data [km^2/s^2]', tiltdat)
-            output.add('error [km^2/s^2]', tilterr)
-            output.add('data - error [km/s]', tiltdat-tilterr)
-            output.add('data + error [km/s]', tiltdat+tilterr)
-            ax.fill_between(r0, tiltdat-tilterr, tiltdat+tilterr, \
+            tilt2dat = DATA[4-1] # [maxsiglosi]
+            tilt2err = DATA[5-1] # [maxsiglosi]
+            #output.add('data [km^2/s^2]', np.sqrt(tilt2dat))  # SS: are these used ???
+            #output.add('error [km^2/s^2]', tilterr)
+            #output.add('data - error [km/s]', tilt2dat-tilt2err)
+            #output.add('data + error [km/s]', tiltdat+tilterr)
+            ax.fill_between(r0, -np.sqrt(tilt2dat-tilt2err), -np.sqrt(tilt2dat+tilt2err), \
                             color='blue', alpha=0.3, lw=1)
         output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
         return

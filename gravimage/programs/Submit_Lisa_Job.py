@@ -19,7 +19,7 @@ nodes=1
 cores='any'
 ppn=1
 
-walltime='00:08:00:00'
+walltime='00:30:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
