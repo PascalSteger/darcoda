@@ -143,6 +143,18 @@ def map_hypererr(param, prof, pop, gp):
 ## \fn map_hypererr
 # return hyperparameter
 
+def map_tilt(params,gp):
+    A_range = gp.tilt_A_max - gp.tilt_A_min
+    A = gp.tilt_A_min + A_range*params[0]
+    n_range = gp.tilt_n_max - gp.tilt_n_min
+    n = gp.tilt_n_min + n_range*params[1]
+    R_range = gp.tilt_R_max - gp.tilt_R_min
+    R = gp.tilt_R_min + R_range*params[2]
+    return np.array([A,n,R])
+# Input: 3 multinest cube params, 
+# Output: tilt parameters A, n and R = 2*R_0*R_1/(R_0 + R_1)
+# SS: 19 May 2015 
+
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
     nr = np.zeros(gp.nepol) # to hold the n(r) = dlog(rho)/dlog(r) values
@@ -352,7 +364,16 @@ class Cube:
         #print('pc = ', pc[0:gp.ndim])
         #pdb.set_trace()
 
-        if gp.hyperparams == True:
+        # Introducing tilt term:
+        if gp.tilt:
+            offstep = gp.ntilt_params
+            tmp_tilt = map_tilt(pc[off:off+offstep],gp)
+            for i in range(offstep):
+                pc[off+i] = tmp_tilt[i]
+            off += offstep
+
+        # Possibility to use hyperparameters:
+        if gp.hyperparams:
             offstep = 1
             tmp_hypernu = map_hypererr(pc[off:off+offstep], 'nu', 0, gp)
             pc[off] = tmp_hypernu
@@ -364,6 +385,7 @@ class Cube:
             off += offstep
 
         if off != gp.ndim:
+            print ('in gl_class_cube, off:',off,'gp.ndim:',gp.ndim)
             gh.LOG(1,'wrong subscripts in gl_class_cube')
             raise Exception('wrong subscripts in gl_class_cube')
 

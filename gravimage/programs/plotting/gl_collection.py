@@ -44,6 +44,8 @@ def unit(prof):
         unit = '[stars/kpc^3]'
     elif prof == 'rho_DM_vec':
         unit = '[Msum/kpc^3]'
+    elif prof == 'sigmaRz_vec':
+        unit = '[kpc]'
     else:
         unit = 'a.u.'
     return unit
@@ -320,6 +322,8 @@ class ProfileCollection():
         self.weighted_sort_prof('rho_total_vec', 0, gp)
         self.weighted_sort_prof('Sig_total_vec', 0, gp)
 
+        self.weighted_sort_prof('sigmaRz_vec', 0, gp)
+
 
     def set_analytic(self, x0, gp):
         r0 = x0 # [pc], spherical case
@@ -561,6 +565,18 @@ class ProfileCollection():
             ax.fill_between(r0, sigz2dat-sigz2err, sigz2dat+sigz2err, \
                             color='blue', alpha=0.3, lw=1)
             #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
+
+        elif prof == 'sigmaRz_vec':
+            DATA = np.transpose(np.loadtxt(gp.files.tiltfiles[pop], \
+                                           unpack=False, skiprows=1))
+            tiltdat = DATA[4-1] # [maxsiglosi]
+            tilterr = DATA[5-1] # [maxsiglosi]
+            output.add('data [km^2/s^2]', tiltdat)
+            output.add('error [km^2/s^2]', tilterr)
+            output.add('data - error [km/s]', tiltdat-tilterr)
+            output.add('data + error [km/s]', tiltdat+tilterr)
+            ax.fill_between(r0, tiltdat-tilterr, tiltdat+tilterr, \
+                            color='blue', alpha=0.3, lw=1)
         output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
         return
     ## \fn plot_data(self, ax, basename, prof, pop, gp)
@@ -646,6 +662,9 @@ class ProfileCollection():
             ax.set_ylabel('$\\Sigma_{\\rm{total}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
             #ax.set_ylim(0,1.0E8)
 
+        elif prof == 'sigmaRz_vec':
+            ax.set_ylabel('$\\sigma_{Rz}\\quad[\\rm{km}^2/\\rm{s}^2]$')
+
 
 
 #
@@ -716,7 +735,7 @@ class ProfileCollection():
         ax.plot(r0, M68lo, color='black', lw=0.4)
         ax.plot(r0, M68hi, color='black', lw=0.3)
         ax.plot(r0, Mmedi, 'r', lw=1)
-        ax.plot(r0, BestFit, 'm', lw=1)
+        ax.plot(r0, BestFit, 'm', lw=.5)  # 'm'
         if prof == 'Sig' or prof == 'sig':
             for pop in range(gp.pops):
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
@@ -789,7 +808,7 @@ class ProfileCollection():
             ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('log')
 
-        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec':
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
             ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('linear')
 
@@ -817,7 +836,7 @@ class ProfileCollection():
             self.fill_nice(ax, prof, pop, gp)
             #self.plot_N_samples(ax, prof, pop) #SS: Don't plot thin gray lines
             self.plot_bins(ax, prof, gp)
-            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec':
+            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec' or prof == 'sigmaRz_vec':
                 self.plot_data(ax, basename, prof, pop, gp)
 
             if gp.investigate == 'simplenu':
@@ -901,7 +920,8 @@ class ProfileCollection():
                 Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
             Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299) #Msun kpc^-1
             #smallsig2_vec = sigz2(zvec,nuvec,C)
-            smallsig2_vec = phys.sigz2(zvec, Sigma_z_total, nuvec, C*nuvec[0])
+            tiltvec = np.zeros(len(nuvec))   # Tilt not implemented here
+            smallsig2_vec = phys.sigz2(zvec, Sigma_z_total, tiltvec, nuvec, C*nuvec[0])
             sig2 = np.sum(smallsig2_vec)/nsmallbin
             C = smallsig2_vec[-1]
             truesig2_arr[kbin] = sig2
@@ -1011,8 +1031,14 @@ class ProfileCollection():
             true_sigz2_arr = self.true_sigz2_func(binmin,binmax,1000,nbin,z0,Ntr,nu0,K,D,F,gp)
             #ax.plot(bincentermed, true_sigz2_arr, 'g-', alpha = 0.5)
             # Uncomment above line to plot theory curve for sigz2
-        return
+            
+        elif prof == 'sigmaRz_vec':
+            A = -0.0087
+            n = 1.44
+            sigmaRz = A*(1000.*zvec)**n 
+            ax.plot(zvec, sigmaRz, 'g-', alpha = 0.5)
 
+        return
 
     def plot_bins(self, ax, prof, gp):
         [ax.axvline(x, color='c', linewidth=0.1) for x in gp.z_bincenters]

@@ -32,8 +32,6 @@ def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, invest
     # Import the bin centres used for the run
     gp.dat = glf.get_binned_data_noscale(gp)
 
-
-
     nu_1_data = np.loadtxt(basepath_ts +'/nu/nu_1.txt', skiprows=1)
     gp.z_bincenters = nu_1_data[:,0]
     gp.z_binmins = nu_1_data[:,1]

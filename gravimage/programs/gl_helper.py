@@ -868,6 +868,29 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
+def tilt_from_bins(binmin, binmax, z, vRz):
+    order = np.argsort(z)
+    z = np.array(z)[order]
+    vRz = np.array(vRz)[order]
+
+    tilt_vec, tilt_err_vec = [], []
+    Ntr_per_bin = []
+
+    for jter in range(len(binmin)):
+        positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
+        Ntr = len(positions[0])
+        Ntr_per_bin.append(Ntr)
+        vRz_list_temp = vRz[positions] # vRz list of stars in given bin 
+
+        tilt = -np.sqrt(np.mean(np.square(vRz_list_temp)))
+        tilt_vec.append(tilt)
+
+    tilt_vec = np.array(tilt_vec)
+    tilt_vec_err = 0.1*tilt_vec   # BODGE  TODO  FIXME !!!
+    return tilt_vec,tilt_vec_err
+
+
+
 def detect_machine():
     host_name = socket.gethostname()
     user_name = getpass.getuser()
