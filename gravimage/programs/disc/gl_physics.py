@@ -111,7 +111,9 @@ def rho_dm_simplenu(zvec, params): # DM = const + dark disc
     const = params[0]
     K=params[1]
     D=params[2]
-    return (const + 1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+    DD_component =  1/(4*np.pi*G1) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+    #print ('const:',const,' K:',K,' D:',D)
+    return (const + DD_component)
 
 
 ## \fn rho_baryon_simplenu(zvec, K, D)

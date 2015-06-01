@@ -59,17 +59,19 @@ class Params():
         #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
         self.external_data_file= '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat'
         #self.external_data_file= '/simplenu/simple2_dd_1e6nu_sigz_raw.dat'
+        #dd_data = True
+        dd_data = False  # if we are to plot dd analytics or not
 
         self.external_data_file_tilt= '/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat'
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
         #self.tilt = True   # If also modelling the tilt
-        self.tilt = True   # If also modelling the tilt
+        self.tilt = False   # If also modelling the tilt
 
-        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z 
+        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z 
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles

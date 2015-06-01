@@ -885,6 +885,7 @@ def tilt_from_bins(binmin, binmax, z, vRz):
         tilt2 = np.mean(np.square(vRz_list_temp))
         tilt2_vec.append(tilt2)
         tilt2_err = np.sqrt(2./Ntr)*tilt2
+        #tilt2_err = 0.01*tilt2  
         tilt2_err_vec.append(tilt2_err)
 
     tilt2_vec = np.array(tilt2_vec)
