@@ -227,7 +227,8 @@ class ProfileCollection():
         else:
             rescale_prof = 1.
             
-
+        print ('prof:',prof)
+        #pdb.set_trace()
         self.Mmin.set_prof(prof,  credreg_bound_profs[0]/rescale_prof, pop, gp)
         self.M95lo.set_prof(prof, credreg_bound_profs[1]/rescale_prof, pop, gp)
         self.M68lo.set_prof(prof, credreg_bound_profs[2]/rescale_prof, pop, gp)
@@ -575,14 +576,14 @@ class ProfileCollection():
         elif prof == 'sigmaRz_vec':
             DATA = np.transpose(np.loadtxt(gp.files.tiltfiles[pop], \
                                            unpack=False, skiprows=1))
-            tilt2dat = DATA[4-1] # [maxsiglosi]
-            tilt2err = DATA[5-1] # [maxsiglosi]
-            #output.add('data [km^2/s^2]', np.sqrt(tilt2dat))  # SS: are these used ???
+            tiltdat = DATA[4-1] # [maxsiglosi]
+            tilterr = DATA[5-1] # [maxsiglosi]
+            #output.add('data [km^2/s^2]', np.sqrt(tiltdat))  # SS: are these used ???
             #output.add('error [km^2/s^2]', tilterr)
-            #output.add('data - error [km/s]', tilt2dat-tilt2err)
+            #output.add('data - error [km/s]', tiltdat-tilterr)
             #output.add('data + error [km/s]', tiltdat+tilterr)
             #pdb.set_trace()
-            ax.fill_between(r0, -np.sqrt(tilt2dat-tilt2err), -np.sqrt(tilt2dat+tilt2err), \
+            ax.fill_between(r0, tiltdat-tilterr, tiltdat+tilterr, \
                             color='blue', alpha=0.3, lw=1)
         output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
         return

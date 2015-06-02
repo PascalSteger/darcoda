@@ -68,12 +68,10 @@ def calc_chi2(profs, gp):
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
 
         if gp.tilt:
-            sigmaRz2dat  = gp.dat.tilt2 
-            sigmaRz2err = gp.dat.tilt2err
+            sigmaRzdat  = gp.dat.tilt 
+            sigmaRzerr = gp.dat.tilterr
             sigmaRz_model = profs.get_prof('sigmaRz_vec', pop)
-            sigmaRz2_model = np.square(sigmaRz_model)
-            chi2_tilt = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, gp.nbins)
-            #chi2_tilt = chi2red(np.sqrt(sigmaRz2_model), np.sqrt(sigmaRz2dat), np.sqrt(sigmaRz2err), gp.nbins)    # TODO SS FIXME !!!
+            chi2_tilt = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, gp.nbins)
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
             #print ('sigmaRz2err:',sigmaRz2err)
@@ -81,25 +79,6 @@ def calc_chi2(profs, gp):
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
         else:
             chi2 = (chi2_nu+chi2_sigz2)/2.
-
-        if chi2 < gp.minchi2:
-            gp.minchi2 = chi2
-            print ('lowest chi2 so far:',chi2)
-            if gp.tilt:
-                print ('chi2_nu:',chi2_nu,' chi2_sigz2:',chi2_sigz2,' chi2_tilt:',chi2_tilt)
-            else:
-                print ('chi2_nu:',chi2_nu,' chi2_sigz2:',chi2_sigz2)    
-            print ('nu_model:',numodel)
-            print ('sigz2_model:',sigz2_model)
-            rho_DM_temp = profs.get_prof('rho_DM_vec',pop)
-            rho_baryon_temp = profs.get_prof('rho_baryon_vec',pop)
-            Sig_DM_temp = profs.get_prof('Sig_DM_vec',pop)
-            Sig_baryon_temp = profs.get_prof('Sig_baryon_vec',pop)
-            print ('rho_DM_model:',rho_DM_temp)
-            print ('rho_baryon_model:',rho_baryon_temp)
-            print ('Sig_DM_model:',Sig_DM_temp)
-            print ('Sig_baryon_model:',Sig_baryon_temp)
-            print ('sigmaRz2_model:',sigmaRz2_model)
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:

@@ -873,7 +873,7 @@ def tilt_from_bins(binmin, binmax, z, vRz):
     z = np.array(z)[order]
     vRz = np.array(vRz)[order]
 
-    tilt2_vec, tilt2_err_vec = [], []
+    tilt_vec, tilt_err_vec = [], []
     Ntr_per_bin = []
 
     for jter in range(len(binmin)):
@@ -882,15 +882,18 @@ def tilt_from_bins(binmin, binmax, z, vRz):
         Ntr_per_bin.append(Ntr)
         vRz_list_temp = vRz[positions] # vRz list of stars in given bin 
 
+        #tilt2 = np.mean(np.square(vRz_list_temp)) - (np.mean(vRz_list_temp))**2
         tilt2 = np.mean(np.square(vRz_list_temp))
-        tilt2_vec.append(tilt2)
-        tilt2_err = np.sqrt(2./Ntr)*tilt2
-        #tilt2_err = 0.01*tilt2  
-        tilt2_err_vec.append(tilt2_err)
+        tilt = -np.sqrt(tilt2)
+        tilt_vec.append(tilt)
+        tilt_err = abs(np.sqrt(1./Ntr)*tilt)
+        print ('Ntr:',Ntr,' tilt:',tilt,' tilt_err:',tilt_err)
+        #tilt_err = 0.01*tilt  
+        tilt_err_vec.append(tilt_err)
 
-    tilt2_vec = np.array(tilt2_vec)
-    tilt2_err_vec = np.array(tilt2_err_vec)
-    return tilt2_vec,tilt2_err_vec
+    tilt_vec = np.array(tilt_vec)
+    tilt_err_vec = np.array(tilt_err_vec)
+    return tilt_vec,tilt_err_vec
 
 
 

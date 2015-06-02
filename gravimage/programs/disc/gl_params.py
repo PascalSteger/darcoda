@@ -54,20 +54,23 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
-        #self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
-        #self.external_data_file= '/simplenu/simple_1e5nu_sigz_raw.dat'
-        #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
-        self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file= '/simplenu/simple2_dd_1e6nu_sigz_raw.dat'
-        #dd_data = True
-        dd_data = False  # if we are to plot dd analytics or not
+        #self.external_data_file= ['/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat']
+        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
+        self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
+        self.dd_data = True
+        #self.dd_data = False  # if we are to plot dd analytics or not
 
-        self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
+        self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat']
+
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
-        #self.tilt = True   # If also modelling the tilt
-        self.tilt = False   # If also modelling the tilt
+        self.tilt = True   # If also modelling the tilt
+        #self.tilt = False   # If also modelling the tilt
 
         #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
@@ -176,7 +179,7 @@ class Params():
         self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
 
         # Simplenu DM disc model priors
-        self.simplenu_dm_K_max = 500.  #JR model has K = 300.
+        self.simplenu_dm_K_max = 1500.  #JR model has K = 300.
         self.simplenu_dm_K_min = 0.
         self.simplenu_dm_D_max = 3.5  #JR model has D = 2.5
         self.simplenu_dm_D_min = 1.5
@@ -230,8 +233,6 @@ class Params():
         self.z_binmins = np.array([])
         self.z_binmaxs = np.array([])
         self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
-
-        self.minchi2 = 3.  # Letting the code print out minchi directly
 
         # Global constants
         self.Rsun = 8.  # [kpc]  Sun's distance to galactic center

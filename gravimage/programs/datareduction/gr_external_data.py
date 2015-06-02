@@ -97,6 +97,13 @@ def run(gp):
     z_data_used = [data_tmp[data_tmp<gp.data_z_cut] for data_tmp in z_data]  # use only data with z<data_z_cut
     v_data_used = [v_data[ii][z_data[ii]<gp.data_z_cut] for ii in range(0, len(external_data))]
 
+    #Temporary conversion back to old scheme
+    z_data = z_data[0]
+    v_data = v_data[0]
+
+    z_data_tilt = z_data_tilt[0]
+    vRz_data_tilt = vRz_data_tilt[0]
+
     z_data_used = z_data_used[0]
     v_data_used = v_data_used[0]
 
