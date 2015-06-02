@@ -73,6 +73,10 @@ def calc_chi2(profs, gp):
             sigmaRz_model = profs.get_prof('sigmaRz_vec', pop)
             sigmaRz2_model = np.square(sigmaRz_model)
             chi2_tilt = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, gp.nbins)
+            #chi2_tilt = chi2red(np.sqrt(sigmaRz2_model), np.sqrt(sigmaRz2dat), np.sqrt(sigmaRz2err), gp.nbins)    # TODO SS FIXME !!!
+            #print ('sigmaRz2dat:',sigmaRz2dat)
+            #print ('sigmaRz2_model:',sigmaRz2_model)
+            #print ('sigmaRz2err:',sigmaRz2err)
             chi2 = (chi2_nu+chi2_sigz2+chi2_tilt)/3.
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
         else:
@@ -81,6 +85,10 @@ def calc_chi2(profs, gp):
         if chi2 < gp.minchi2:
             gp.minchi2 = chi2
             print ('lowest chi2 so far:',chi2)
+            if gp.tilt:
+                print ('chi2_nu:',chi2_nu,' chi2_sigz2:',chi2_sigz2,' chi2_tilt:',chi2_tilt)
+            else:
+                print ('chi2_nu:',chi2_nu,' chi2_sigz2:',chi2_sigz2)    
             print ('nu_model:',numodel)
             print ('sigz2_model:',sigz2_model)
             rho_DM_temp = profs.get_prof('rho_DM_vec',pop)
@@ -91,6 +99,7 @@ def calc_chi2(profs, gp):
             print ('rho_baryon_model:',rho_baryon_temp)
             print ('Sig_DM_model:',Sig_DM_temp)
             print ('Sig_baryon_model:',Sig_baryon_temp)
+            print ('sigmaRz2_model:',sigmaRz2_model)
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:

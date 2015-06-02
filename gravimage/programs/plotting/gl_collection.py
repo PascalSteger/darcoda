@@ -581,6 +581,7 @@ class ProfileCollection():
             #output.add('error [km^2/s^2]', tilterr)
             #output.add('data - error [km/s]', tilt2dat-tilt2err)
             #output.add('data + error [km/s]', tiltdat+tilterr)
+            #pdb.set_trace()
             ax.fill_between(r0, -np.sqrt(tilt2dat-tilt2err), -np.sqrt(tilt2dat+tilt2err), \
                             color='blue', alpha=0.3, lw=1)
         output.write(basename+'/output/data/prof_'+prof+'_'+str(pop)+'.data')
@@ -945,6 +946,8 @@ class ProfileCollection():
         K = 1500.
         F = 267.65
         D = 0.18
+        K_dd = 300.
+        D_dd = 2.5
         z0 = 0.9  # Thick disk
         #z0 = 0.4  # Thin disk
         normC = 40.0
@@ -954,15 +957,24 @@ class ProfileCollection():
 
         Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
-        Kzvec_DM = -(2.*F*zvec)
+        Kzvec_DD = -((K_dd*zvec)/(np.sqrt(zvec**2 + D_dd**2)))
+        Kzvec_const_DM = -(2.*F*zvec)
 
-        Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299) #Msun kpc^-1
-        Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299) #Msun kpc^-1
-        Sigma_z_DM = (1000.**2)*abs(Kzvec_DM)/(2*np.pi*4.299) #Msun kpc^-1
-
-        rho_z_total = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
+        rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
+        dd_data = False
+        if dd_data:
+            rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))
+            Kzvec_DM = Kzvec_const_DM + Kzvec_DD
+        else:    
+            rho_z_DM = rho_z_DM_const
+            Kzvec_DM = Kzvec_const_DM
+        #rho_z_total = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
         rho_z_baryon = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
-        rho_z_DM = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
+        rho_z_total = rho_z_baryon + rho_z_DM
+        #Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299)
+        Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299)
+        Sigma_z_DM = (1000.**2)*abs(Kzvec_DM)/(2*np.pi*4.299)
+        Sigma_z_total = Sigma_z_baryon + Sigma_z_DM
 
         k_z_rho_total = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5) + 2*F))
         k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5))) # not currently used

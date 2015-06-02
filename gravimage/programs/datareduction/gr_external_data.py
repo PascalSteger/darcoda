@@ -75,25 +75,32 @@ def ErSamp_gauss_linear_w_z():
 
 def run(gp):
     if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
-        external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file
-        external_file_tilt='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file_tilt
+        external_file=['/home/hsilverw/LoDaM/darcoda/Data_Sets/' + temp for temp in gp.external_data_file]
+        external_file_tilt=['/home/hsilverw/LoDaM/darcoda/Data_Sets/' + temp for temp in gp.external_data_file_tilt]
     elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        external_file='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file
-        external_file_tilt='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file_tilt
+        external_file=['/home/sofia/darcoda/Data_Sets/' + temp for temp in gp.external_data_file]
+        external_file_tilt=['/home/sofia/darcoda/Data_Sets/' + temp for temp in gp.external_data_file_tilt]
 
-    external_data = np.loadtxt(external_file)
-    external_data_tilt = np.loadtxt(external_file_tilt)
+    #Check number of data files corresponds with population count
+    if len(external_file) != gp.ntracer_pops or len(external_file_tilt) != gp.ntracer_pops:
+        raise Exception('Incorect number of data files for number of tracer populations')
 
-    z_data = external_data[:, 0] #[kpc]
-    v_data = external_data[:, 1] #[km/s]
+    external_data = [np.loadtxt(file_name) for file_name in external_file]
+    external_data_tilt = [np.loadtxt(file_name_tilt) for file_name_tilt in external_file_tilt]
 
-    z_data_tilt = external_data_tilt[:,0]     #[kpc]
-    vRz_data_tilt = external_data_tilt[:,1]   #[km^2/s^2]
+    z_data = [external_data[ii][:, 0] for ii in range(0, len(external_data))] #[kpc]
+    v_data = [external_data[ii][:, 1] for ii in range(0, len(external_data))] #[km/s]
 
-    z_data_used = z_data[z_data<gp.data_z_cut]  # use only data with z<data_z_cut
-    v_data_used = v_data[z_data<gp.data_z_cut]
+    z_data_tilt = [external_data_tilt[ii][:,0] for ii in range(0, len(external_data))]     #[kpc]
+    vRz_data_tilt = [external_data_tilt[ii][:,1] for ii in range(0, len(external_data))]   #[km^2/s^2]
 
+    z_data_used = [data_tmp[data_tmp<gp.data_z_cut] for data_tmp in z_data]  # use only data with z<data_z_cut
+    v_data_used = [v_data[ii][z_data[ii]<gp.data_z_cut] for ii in range(0, len(external_data))]
 
+    z_data_used = z_data_used[0]
+    v_data_used = v_data_used[0]
+
+    pdb.set_trace()
 
     print ('N.o. tracer stars used as data:',len(z_data_used))
 
