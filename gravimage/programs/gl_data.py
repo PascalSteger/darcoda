@@ -50,8 +50,8 @@ class Datafile:
         self.meansigz2err = 0.
 
         # Tilt:
-        self.tilt2 = []
-        self.tilt2err = []
+        self.tilt = []
+        self.tilterr = []
 
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
@@ -159,9 +159,9 @@ class Datafile:
     # H Silverwood 20/11/14
 
     def read_tilt(self, gp):
-        dummy, dummy, dumy, tilt2dat, tilt2err = gh.readcol5(gp.files.tiltfiles[0])
-        self.tilt2.append(tilt2dat[:])
-        self.tilt2err.append(tilt2err[:])
+        dummy, dummy, dumy, tiltdat, tilterr = gh.readcol5(gp.files.tiltfiles[0])
+        self.tilt.append(tiltdat[:])
+        self.tilterr.append(tilterr[:])
         return
     ## \fn read_tilt(self, gp)   SS 21 may 2015
 
