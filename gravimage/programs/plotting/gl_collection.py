@@ -189,8 +189,8 @@ class ProfileCollection():
                 self.goodchi.append(self.chis[k])
                 self.prof_weights.append(self.profs[k].mn_weight)
         #pdb.set_trace()
-        # BODGE Renormalizing so that weights sum to 1  TODO  FIXME !!!
-        self.prof_weights = self.prof_weights*(10./np.sum(self.prof_weights))
+        ## BODGE Renormalizing so that weights sum to 1  TODO  FIXME !!!
+        #self.prof_weights = self.prof_weights*(10./np.sum(self.prof_weights))
         print ('Sum of weights:',np.sum(self.prof_weights))
         #pdb.set_trace()
         bin_prof_values = np.array(self.goodprof).transpose() # values for this bin from all the profiles
@@ -215,7 +215,7 @@ class ProfileCollection():
 
                     if bin_weight_sum >= cred_reg_bounds[mter]:
                         bin_i_prof_credreg_bounds.append(bin_prof_values[lter][nter])
-                        print('found boundary, bin_weight_sum:',bin_weight_sum,'credreg:',cred_reg_bounds[mter])
+                        #print('found boundary, bin_weight_sum:',bin_weight_sum,'credreg:',cred_reg_bounds[mter])
                         break
                # pdb.set_trace()
 
@@ -834,7 +834,7 @@ class ProfileCollection():
         if prof == 'rho_DM_vec':
             ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
             ax.set_yscale('linear')  # plot this in log or linear scale...?
-            ax.set_ylim([7,13])   # TAG 
+            #ax.set_ylim([7,13])   # TAG 
 
         if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
             ax.set_xscale('linear')  # SS: was 'log' before
@@ -989,7 +989,7 @@ class ProfileCollection():
         rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
         if prof == 'nu_vec':
             print ('gp.dd_data:',gp.dd_data,' K_dd:',K_dd)
-        dd_data = False
+        dd_data = True
         #if gp.dd_data:
         if dd_data:
             rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))
