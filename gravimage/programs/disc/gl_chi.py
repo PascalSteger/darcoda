@@ -12,19 +12,18 @@ import pdb
 import numpy as np
 import gl_helper as gh
 
-def chi2red(model, data, sig, dof):
+def chi2func(model, data, sig):
     # if Degrees Of Freedom = 1, return non-reduced chi2
     model = np.array(model)
     data  = np.array(data)
     sig   = np.array(sig)
-    chired = np.sum(((model-data)**2./sig**2.)/dof)
+    chired = np.sum((model-data)**2./sig**2.)
     return chired
-## \fn chi2red(model, data, sig, dof)
+## \fn chi2func(model, data, sig)
 # determine 'reduced chi2'
 # @param model
 # @param data
 # @param sig spread
-# @param dof Degrees Of Freedom
 
 
 def calc_chi2(profs, gp):
@@ -52,7 +51,7 @@ def calc_chi2(profs, gp):
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
         numodel  = profs.get_prof('nu_vec', pop)
-        chi2_nu = chi2red(numodel, nudat, nuerr, gp.nbins) #TEST [0:-1]
+        chi2_nu = chi2func(numodel, nudat, nuerr) #TEST [0:-1]
         gh.LOG(1, ' chi2_nu0 = ', chi2_nu)
 
         if not gp.chi2_nu_converged and not gp.plotting_flag:
@@ -61,24 +60,24 @@ def calc_chi2(profs, gp):
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vec', pop)
-        chi2_sigz2  = chi2red(sigz2_model, sigz2dat, sigz2err, gp.nbins) # [1]
+        chi2_sigz2  = chi2func(sigz2_model, sigz2dat, sigz2err) # [1]
         if chi2_sigz2 == np.inf:
             print('chi2_sig has become infinite')
             pdb.set_trace()
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2)
 
         if gp.tilt:
-            sigmaRzdat  = gp.dat.tilt 
+            sigmaRzdat = gp.dat.tilt 
             sigmaRzerr = gp.dat.tilterr
             sigmaRz_model = profs.get_prof('sigmaRz_vec', pop)
-            chi2_tilt = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, gp.nbins)
+            chi2_tilt = chi2func(sigmaRz_model, sigmaRzdat, sigmaRzerr)
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
             #print ('sigmaRz2err:',sigmaRz2err)
             chi2 = (chi2_nu+chi2_sigz2+chi2_tilt)/3.
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
         else:
-            chi2 = (chi2_nu+chi2_sigz2)/2.
+            chi2 = chi2_nu+chi2_sigz2 
 
     # switch to chi2_sig calculation too, if converged on Sig
     if not gp.chi2_nu_converged:

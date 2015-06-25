@@ -100,6 +100,7 @@ def prepare_data(gp):
 # @param gp global parameters
 
 def run(gp):
+    print ('In gravimage before starting Multinest')
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
                     n_clustering_params = gp.ndim,# separate modes on

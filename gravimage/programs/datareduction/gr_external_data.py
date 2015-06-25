@@ -23,6 +23,7 @@ from plotting.gl_collection import ProfileCollection
 def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, sigz2err, gp):
 
     # write tracer densities 3D
+    print ('gp.files.nu_files[0]:',gp.files.nufiles[0])
     file_nu = open(gp.files.nufiles[0], 'w')
     print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','nu(z) [#/pc^3];','error [#/pc^3]', file=file_nu)
     for b in range(gp.nbins):
@@ -75,85 +76,102 @@ def ErSamp_gauss_linear_w_z():
 def run(gp):
     if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
         external_file='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file
+        external_folder = '/home/hsilverw/LoDaM/darcoda/Data_Sets/'
         external_file_tilt='/home/hsilverw/LoDaM/darcoda/Data_Sets/' + gp.external_data_file_tilt
     elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
         external_file='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file
+        external_folder='/home/sofia/darcoda/Data_Sets/'
         external_file_tilt='/home/sofia/darcoda/Data_Sets/' + gp.external_data_file_tilt
+    if gp.bin_new_data:
+        print ('Is about to load the external data')
+        external_data = np.loadtxt(external_file)
+        print ('loaded external data')
+        
+        z_data = external_data[:, 0] #[kpc]
+        v_data = external_data[:, 1] #[km/s]
+        print ('divided external data into z_data and v_data')
 
-    external_data = np.loadtxt(external_file)
-    external_data_tilt = np.loadtxt(external_file_tilt)
-
-    z_data = external_data[:, 0] #[kpc]
-    v_data = external_data[:, 1] #[km/s]
-
-    z_data_tilt = external_data_tilt[:,0]     #[kpc]
-    vRz_data_tilt = external_data_tilt[:,1]   #[km^2/s^2]
-
-    z_data_used = z_data[z_data<gp.data_z_cut]  # use only data with z<data_z_cut
-    v_data_used = v_data[z_data<gp.data_z_cut]
+        if gp.tilt:
+            external_data_tilt = np.loadtxt(external_file_tilt)
+            z_data_tilt = external_data_tilt[:,0]     #[kpc]
+            vRz_data_tilt = external_data_tilt[:,1]   #[km^2/s^2]
+        
+        z_data_used = z_data[z_data<gp.data_z_cut]  # use only data with z<data_z_cut
+        v_data_used = v_data[z_data<gp.data_z_cut]
+        print ('picked out the useful part of v_data and z_data')
 
 
-
-    print ('N.o. tracer stars used as data:',len(z_data_used))
+        print ('N.o. tracer stars used as data:',len(z_data_used))
 
     #Population Splitting
-    if gp.ntracer_pops > 1:
-        print('More than one population')
+        #if gp.ntracer_pops > 1:
+        #    print('More than one population')
         #DO POPULATION SPLITTING
 
-    # Bin data, constant number of tracers per bin.
-    # First, calculate binmins, binmaxes, and bin centres
-    if gp.binning == 'consttr':
-        binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used, gp.nbins)
-    elif gp.binning == 'linspace':
-        binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used),1), gp.nbins)
+        # Bin data, constant number of tracers per bin.
+        # First, calculate binmins, binmaxes, and bin centres
+        if gp.binning == 'consttr':
+            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used, gp.nbins)
+        elif gp.binning == 'linspace':
+            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used),1), gp.nbins)
+        print ('Have extracted the binning from the data:')
+        print ('binmin:',binmin)
+        print ('binmax:',binmax)
+        print ('bincentermed:',bincentermed)
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
-    nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used 
+        nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used 
+        print ('Have put the data into bins, i.e. binned the data:')
+        print ('nu_data:',nu_data)
+        print ('nu_err_poiss:',nu_err_pois)
+        print ('sigz2_data:',sigz2_data)
+        print ('sigz2_err_pois:',sigz2_err_pois)
+        print ('Ntr_per_bin:',Ntr_per_bin)
+            
+        if gp.tilt:
+            tilt_data, tilt_data_err = gh.tilt_from_bins(binmin, binmax, z_data_tilt, vRz_data_tilt)
+            print ('tilt_data:',tilt_data)
+            print ('tilt_model:',-0.0087*(1000.*bincentermed)**1.44)
+            print ('tilt_data - tilt_model =',tilt_data+0.0087*(1000.*bincentermed)**1.44)
+            # Odd that this has the same sign for all bins.
+            print ('tilt_data_err:',tilt_data_err)
+            print ('tilt_data_fit:',(tilt_data+0.0087*(1000.*bincentermed)**1.44)/tilt_data_err)
+            print ('tilt_data_fit:',np.mean((tilt_data+0.0087*(1000.*bincentermed)**1.44)/tilt_data_err))
+        #pdb.set_trace()
 
-    tilt_data, tilt_data_err = gh.tilt_from_bins(binmin, binmax, z_data_tilt, vRz_data_tilt)
-    print ('tilt_data:',tilt_data)
-    print ('tilt_model:',-0.0087*(1000.*bincentermed)**1.44)
-    print ('tilt_data - tilt_model =',tilt_data+0.0087*(1000.*bincentermed)**1.44)
-    # Odd that this has the same sign for all bins.
-    print ('tilt_data_err:',tilt_data_err)
-    print ('tilt_data_fit:',(tilt_data+0.0087*(1000.*bincentermed)**1.44)/tilt_data_err)
-    print ('tilt_data_fit:',np.mean((tilt_data+0.0087*(1000.*bincentermed)**1.44)/tilt_data_err))
-    #pdb.set_trace()
+        if gp.TheoryData == True:
+            G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
+            K=1500.
+            F=267.65
+            D=0.18
+            z0=0.4
+            normC = 22.85
+            nu0 = 1.
+            Ntr = 9516.
+            zmax= 1.2
+                   
+            nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
+            truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
+            truenu_arr = truen_arr/(binmax-binmin)
+            #nu_data = truenu_arr
+                    
+            true_sigz2_arr = ProfileCollection(gp.ntracer_pops,gp.nbins).true_sigz2_func(binmin,binmax,1000,gp.nbins,z0,Ntr,nu0,K,D,F,gp)
 
-    if gp.TheoryData == True:
-        G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
-        K=1500.
-        F=267.65
-        D=0.18
-        z0=0.4
-        normC = 22.85
-        nu0 = 1.
-        Ntr = 9516.
-        zmax= 1.2
+            print ('truenu_arr=',truenu_arr)
+            print ('true_sigz2_arr=',true_sigz2_arr)
 
-        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
-        truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
-        truenu_arr = truen_arr/(binmax-binmin)
-        #nu_data = truenu_arr
+            true_chi2_nu = np.sum((truenu_arr-nu_data)**2./nu_err_pois**2.)
+            true_chi2_sigz2 = np.sum((true_sigz2_arr-sigz2_data)**2./sigz2_err_pois**2.)
+            print ('Without measurement errors the true result has the Chi2:')
+            print ('nu:',true_chi2_nu/20.,'sigz2:',true_chi2_sigz2/20.,'average:',(true_chi2_nu+true_chi2_sigz2)/40.)
+                    
+            nu_data = truenu_arr    
+            sigz2_data = true_sigz2_arr
 
-        true_sigz2_arr = ProfileCollection(gp.ntracer_pops,gp.nbins).true_sigz2_func(binmin,binmax,1000,gp.nbins,z0,Ntr,nu0,K,D,F,gp)
-
-        print ('truenu_arr=',truenu_arr)
-        print ('true_sigz2_arr=',true_sigz2_arr)
-
-        true_chi2_nu = np.sum((truenu_arr-nu_data)**2./nu_err_pois**2.)
-        true_chi2_sigz2 = np.sum((true_sigz2_arr-sigz2_data)**2./sigz2_err_pois**2.)
-        print ('Without measurement errors the true result has the Chi2:')
-        print ('nu:',true_chi2_nu/20.,'sigz2:',true_chi2_sigz2/20.,'average:',(true_chi2_nu+true_chi2_sigz2)/40.)
-
-        nu_data = truenu_arr    
-        sigz2_data = true_sigz2_arr
-
-    print ('nu_data:',nu_data)
-    print ('sigz2_data:',sigz2_data)
-    print ('nu_err_pois:',nu_err_pois)
-    print ('sigz2_err_pois:',sigz2_err_pois)
+        print ('nu_data:',nu_data)
+        print ('sigz2_data:',sigz2_data)
+        print ('nu_err_pois:',nu_err_pois)
+        print ('sigz2_err_pois:',sigz2_err_pois)
 
     ## Use MC to estimate errors on nu  # SS: Throws error if file not set correctly, so commented out for now as meas errors are currently not used.
     #if gp.investigate == 'simplenu':
@@ -164,18 +182,30 @@ def run(gp):
     #nu_err_tot = np.sqrt(nu_err_pois**2 + nu_err_meas**2)
 
     #Combine sig (vel disp) errors
-    Ntr = len(z_data) #Total number of tracers avaliable
-    Ntr_used = len(z_data_used) # Total number of tracers used (& binned)
+        Ntr = len(z_data) #Total number of tracers avaliable
+        Ntr_used = len(z_data_used) # Total number of tracers used (& binned)
     #sigz2_err_tot = sigz2_err_pois + np.sqrt(2/Ntr_per_bin)*gp.vz_SDerr_meas**2
     #sigz2_err_tot = np.sqrt(sigz2_err_pois**2 + sigz2_err_meas**2)
 
     #SS: Running the code without measurement errors   TODO FIXME !!
-    nu_err_tot = nu_err_pois     # SS-TODO
-    sigz2_err_tot = sigz2_err_pois  # SS-TODO
+        nu_err_tot = nu_err_pois     # SS-TODO
+        sigz2_err_tot = sigz2_err_pois  # SS-TODO
+
+    else:
+        bincentermed, binmin, binmax, nu_data, nu_err_tot = gh.readcol5(external_folder + gp.binned_data_folder + 'nu_1.txt')
+        dum, dum, dum, sigz2_data, sigz2_err_tot = gh.readcol5(external_folder + gp.binned_data_folder + 'sigz_1.txt')
+
+        if gp.binned_data_folder == '/simplenu/simple2_1e8nu_sigz2_binned/':
+            Ntr = 1e8
+            Ntr_used = Ntr   # Ugly fix, do something better (?)
 
     #Output data to file
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
-    write_tilt_output_files(bincentermed, binmin, binmax, tilt_data, tilt_data_err, gp)
+
+
+    if gp.tilt:
+        dum, dum, dum, tilt_data, tilt_data_err = gh.readcol5(external_folder + gp.binned_data_folder + 'tilt_1.txt')
+        write_tilt_output_files(bincentermed, binmin, binmax, tilt_data, tilt_data_err, gp)
 
     #Set central nu prior range
     gp.nu_C_max = 2.*Ntr_used/(binmax[0]-binmin[0])

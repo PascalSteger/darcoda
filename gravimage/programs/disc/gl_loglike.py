@@ -150,6 +150,8 @@ def geom_loglike(cube, ndim, nparams, gp):
         R = tilt_params[2]
         sigmaRz_allz = A*(gp.z_all_pts*1000.)**n
         tmp_profs.set_prof('sigmaRz_vec', sigmaRz_allz[1:], 0, gp)
+        R_param_vec = R*np.ones(len(gp.z_all_pts)) # easier to store as vector
+        tmp_profs.set_prof('R_param', R_param_vec, 0, gp)
         tilt_allz = sigmaRz_allz*(1./gp.Rsun - 2./R)
     else:
         tilt_allz = np.zeros(len(gp.z_all_pts))

@@ -66,6 +66,7 @@ class Profiles:
         #Tilt
         self.tilt_vec = np.zeros(ntracer_pops * (nbins+1))
         self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins+1))
+        self.R_param = np.zeros(ntracer_pops * (nbins+1))
 
     ## \fn __init__(self, pops, nipol)
     # constructor
@@ -117,6 +118,8 @@ class Profiles:
             self.tilt_vec = vec
         elif prof == 'sigmaRz_vec':
             self.sigmaRz_vec = vec
+        elif prof == 'R_param':
+            self.R_param = vec
 
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
@@ -167,6 +170,8 @@ class Profiles:
             return self.tilt_vec
         elif prof == 'sigmaRz_vec':
             return self.sigmaRz_vec
+        elif prof == 'R_param':
+            return self.R_param
 
         ##chi2 of profile
         #elif prof == 'chi2'
