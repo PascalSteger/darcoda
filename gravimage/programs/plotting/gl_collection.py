@@ -758,7 +758,7 @@ class ProfileCollection():
         ax.plot(r0, M68lo, color='black', lw=0.4)
         ax.plot(r0, M68hi, color='black', lw=0.3)
         ax.plot(r0, Mmedi, 'r', lw=1)
-        ax.plot(r0, BestFit, 'm', lw=.5)  # 'm'
+        #ax.plot(r0, BestFit, 'm', lw=.5)  # 'm'
         if prof == 'Sig' or prof == 'sig':
             for pop in range(gp.pops):
                 ax.axvline(gp.Xscale[pop+1], color='blue', lw=0.5) # [pc]
@@ -834,7 +834,27 @@ class ProfileCollection():
         if prof == 'rho_DM_vec':
             ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
             ax.set_yscale('linear')  # plot this in log or linear scale...?
-            #ax.set_ylim([7,13])   # TAG 
+            right_hand_side_label = True  # GeV/cm3 on right hand sider or not
+            if (right_hand_side_label):
+                #plt.subplots_adjust(left=0.21, right=0.79)
+                # Above fits left and right labels but shrinks plot surface
+                plt.subplots_adjust(left=0.1, right=0.75)
+                # Above fits only right label but preseves plot surface square
+                # Python3 default: left = 0.125, right = 0.9
+                ax2 = ax.twinx()
+                ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
+                ax_ylim = np.array([0,14])    # TAG 
+                kpc = 3.0857E19   # kpc in m
+                Msun = 1.9891E30  # Sun's mass in kg
+                GeV = 1.78266E-27 # GeV in kg
+                ax_ylim2 = 1E6*Msun/(GeV*(100.*kpc)**3)*ax_ylim
+                ax.set_ylim(ax_ylim) 
+                ax2.set_ylim(ax_ylim2)
+            else:
+                cldfneroivnasdlcnw = 0.   # Need indented block...
+                #ax.set_ylim([0,14])    # TAG 
+
+
 
         if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
             ax.set_xscale('linear')  # SS: was 'log' before
@@ -989,7 +1009,7 @@ class ProfileCollection():
         rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
         if prof == 'nu_vec':
             print ('gp.dd_data:',gp.dd_data,' K_dd:',K_dd)
-        dd_data = True
+        dd_data = False
         #if gp.dd_data:
         if dd_data:
             rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))

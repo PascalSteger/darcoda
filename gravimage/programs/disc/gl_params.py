@@ -55,19 +55,19 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         #self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
-        #self.external_data_file= '/simplenu/simple2_1e8nu_sigz_raw.dat'
+        self.external_data_file= '/simplenu/simple2_1e5nu_sigz_raw.dat'
         #self.external_data_file= '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat'
         #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
-        #self.external_data_file= '/simplenu/simple2_bdd_tilt_1e8nu_sigz_raw.dat'
-        self.external_data_file= '/simplenu/simple2_dd_1e6nu_sigz_raw.dat'
-        self.dd_data = True
-        #self.dd_data = False  # if we are to plot dd analytics or not
+        #self.external_data_file= '/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat'
+        #self.external_data_file= '/simplenu/simple2_bdd_1e6nu_sigz_raw.dat'
+        #self.dd_data = True
+        self.dd_data = False  # if we are to plot dd analytics or not
         self.bin_new_data = True  # bin data (or read in binned data from file)
         #self.bin_new_data = False
-        self.binned_data_folder = '/simplenu/simple2_1e8nu_sigz2_binned/'
+        self.binned_data_folder = '/simplenu/simple2_1e6nu_sigz2_binned/'
 
         #self.external_data_file_tilt= '/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat'
-        self.external_data_file_tilt= '/simplenu/simple2_dd_tilt_1e6nu_sigRz_raw.dat'
+        self.external_data_file_tilt= '/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat'
         #self.external_data_file_tilt= '/simplenu/simple2_bdd_tilt_1e8nu_sigRz_raw.dat'
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
@@ -75,9 +75,9 @@ class Params():
         #self.tilt = True   # If also modelling the tilt
         self.tilt = False   # If also modelling the tilt
 
-        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z 
+        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z 
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -176,17 +176,18 @@ class Params():
         self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1350
-        self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.16 
-        #self.simplenu_baryon_K_max = 2000 #JR model has K = 1500.
-        #self.simplenu_baryon_K_min = 1000
-        #self.simplenu_baryon_D_max = 0.24 #JR model has D = 0.18
-        #self.simplenu_baryon_D_min = 0.12
+        #self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
+        #self.simplenu_baryon_K_min = 1350
+        #self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
+        #self.simplenu_baryon_D_min = 0.16 
+        self.simplenu_baryon_K_max = 2000 #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1000
+        self.simplenu_baryon_D_max = 0.24 #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.12
 
         # Simplenu DM disc model priors
         self.simplenu_dm_K_max = 1500.  #JR model has K = 300.
+        #self.simplenu_dm_K_min = -1500. 
         self.simplenu_dm_K_min = 0. 
         self.simplenu_dm_D_max = 3.5  #JR model has D = 2.5
         self.simplenu_dm_D_min = 1.5 

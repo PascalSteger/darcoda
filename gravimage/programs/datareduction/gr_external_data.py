@@ -195,16 +195,19 @@ def run(gp):
         bincentermed, binmin, binmax, nu_data, nu_err_tot = gh.readcol5(external_folder + gp.binned_data_folder + 'nu_1.txt')
         dum, dum, dum, sigz2_data, sigz2_err_tot = gh.readcol5(external_folder + gp.binned_data_folder + 'sigz_1.txt')
 
+        if gp.tilt:
+            dum, dum, dum, tilt_data, tilt_data_err = gh.readcol5(external_folder + gp.binned_data_folder + 'tilt_1.txt')
+
         if gp.binned_data_folder == '/simplenu/simple2_1e8nu_sigz2_binned/':
             Ntr = 1e8
             Ntr_used = Ntr   # Ugly fix, do something better (?)
+            
 
     #Output data to file
     write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
 
 
     if gp.tilt:
-        dum, dum, dum, tilt_data, tilt_data_err = gh.readcol5(external_folder + gp.binned_data_folder + 'tilt_1.txt')
         write_tilt_output_files(bincentermed, binmin, binmax, tilt_data, tilt_data_err, gp)
 
     #Set central nu prior range
