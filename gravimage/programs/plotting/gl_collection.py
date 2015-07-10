@@ -813,37 +813,37 @@ class ProfileCollection():
     def plot_profile(self, basename, prof, pop, gp):
         gh.LOG(1, 'plotting profile '+str(prof)+' for pop '+str(pop)+' in run '+basename)
 
-        fig = plt.figure()
-        ax  = fig.add_subplot(111)
-
-
-        if prof != 'chi2':
-            ax.set_xscale('log')
-
         if prof == 'chi2':  # SS: Could not find where x-axis is set to logscale
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_yscale('log') 
 
         if prof == 'rho' or prof == 'Sig' or\
            prof == 'M' or prof == 'nu':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_yscale('log')
 
         if prof == 'nu_vec' or  prof == 'rho_baryon_vec' or prof == 'rho_total_vec' or prof == 'sigz2_vec':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('log')
 
         if prof == 'rho_DM_vec':
-            ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
-            ax.set_yscale('linear')  # plot this in log or linear scale...?
-            right_hand_side_label = True  # GeV/cm3 on right hand sider or not
+            #fig = plt.figure()
+            right_hand_side_label = False  # GeV/cm3 on right hand sider or not
             if (right_hand_side_label):
-                #plt.subplots_adjust(left=0.21, right=0.79)
+                fig = plt.figure(figsize=(2.3,2.3))
+                ax  = fig.add_subplot(111)
+                plt.subplots_adjust(left=0.21, right=0.79, bottom=0.22, top=0.8)
                 # Above fits left and right labels but shrinks plot surface
-                plt.subplots_adjust(left=0.1, right=0.75)
+                #plt.subplots_adjust(left=0.1, right=0.75)
                 # Above fits only right label but preseves plot surface square
-                # Python3 default: left = 0.125, right = 0.9
+                # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
                 ax2 = ax.twinx()
                 ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
-                ax_ylim = np.array([0,14])    # TAG 
+                ax_ylim = np.array([6,16])    # TAG 
                 kpc = 3.0857E19   # kpc in m
                 Msun = 1.9891E30  # Sun's mass in kg
                 GeV = 1.78266E-27 # GeV in kg
@@ -851,14 +851,22 @@ class ProfileCollection():
                 ax.set_ylim(ax_ylim) 
                 ax2.set_ylim(ax_ylim2)
             else:
-                cldfneroivnasdlcnw = 0.   # Need indented block...
+                fig = plt.figure()
+                ax  = fig.add_subplot(111)
                 #ax.set_ylim([0,14])    # TAG 
+            ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
+            ax.set_yscale('linear')  # plot this in log or linear scale...?
 
 
 
         if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('linear')
+
+        #if prof != 'chi2':
+        #    ax.set_xscale('log')
 
         self.plot_labels(ax, prof, pop, gp)
 
@@ -880,6 +888,7 @@ class ProfileCollection():
                 # Exchanged range = [-3,3] to range = [-3,4]   TODO FIXME
 
                 ax.step(edges[1:], bins, where='pre')
+                ax.xaxis.get_majorticklabels()[0].set_horizontalalignment("left")
                 plt.draw()
                 self.write_chi2(basename, edges, bins)
                 fig.savefig(basename+'/output/prof_chi2_0.pdf')
@@ -991,8 +1000,8 @@ class ProfileCollection():
         K = 1500.
         F = 267.65
         D = 0.18
-        #K_dd = 300.  # For 'normal' dark disk
-        K_dd = 900.   # For bdd, i.e. big dark disk
+        K_dd = 300.  # For 'normal' dark disk
+        #K_dd = 900.   # For bdd, i.e. big dark disk
         D_dd = 2.5
         z0 = 0.9  # Thick disk
         #z0 = 0.4  # Thin disk
