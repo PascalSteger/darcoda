@@ -54,31 +54,59 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
+
+        #Popn 1 1E4
+        self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat']
+        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
+
+        #Popn 2 1E4
+        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+
+        #Popn 1 & 2 1E4
+        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+
+
+        ##Popn 1 1E6
+        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
+        ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
+
+        ##Popn 2 1E6
+        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
+        ##self.external_data_file_tilt = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+
+        ##Popn 1 & 2 1E6
+        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+
         #self.external_data_file= ['/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat']
+        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
         #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
         #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
         #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
         #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
         #self.external_data_file= ['/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
-        self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
-        self.dd_data = True
+        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
+
+        self.dd_data = False
         #self.dd_data = False  # if we are to plot dd analytics or not
 
-        self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat']
 
-        #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
-        self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
+        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
 
-        self.tilt = True   # If also modelling the tilt
-        #self.tilt = False   # If also modelling the tilt
+        self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
+        #self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
-        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
+        self.tilt = False   # If also modelling the tilt
+
+        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
-        #self.nbins = 10   # Number of bins to split tracer stars into
         self.nbins = 20   # Number of bins to split tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
@@ -113,23 +141,25 @@ class Params():
 
         #Total dimensions count
         if self.darkmattermodel == 'kz_dm':
-            self.ndim = 1 + 2*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
-                # Constant C from sigma_z calculation, nrho + 1 params for rho (nrho
+            self.ndim = self.ntracer_pops + (1+self.ntracer_pops)*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculation (one for each tracer pop), (nrho + 1) params for rho (nrho
                 # points for kz_rho, plus central density of rho, eg rho_C), similarly
-                # nrho +1  params for nu, plus the number of params for all baryon pops
+                # (nrho +1)  params for tracer populations nu, plus the number of params for all baryon pops
         elif self.darkmattermodel == 'const_dm':
-            self.ndim = 1 + 1 + (self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
-                # Constant C from sigma_z calculations, 1 for constant rho density,
-                # nrhonu + 1 for kz_nu and nu_C, plus baryon params
+            self.ndim = self.ntracer_pops + 1 + (self.ntracer_pops)*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculations (one for each tracer pop), 1 for constant rho density,
+                # (nrhonu + 1) for kz_nu and nu_C for each tracer popn, plus baryon params
 
         elif self.darkmattermodel == 'ConstPlusDD':
-            self.ndim =  1 + 3 + (self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+            self.ndim =  self.ntracer_pops + 3 + (self.ntracer_pops)*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculations (one for each tracer pop), 1 for constant rho density, 2 for dark disk,
+                # (nrhonu + 1) for kz_nu and nu_C for each tracer popn, plus baryon params
 
         if self.hyperparams:
             self.ndim += 2
 
         if self.tilt:
-            self.ndim += self.ntilt_params
+            self.ndim += self.ntilt_params * self.ntracer_pops
 
         self.z_err_measurement = 0.05 # Measurement error on z, fraction, eg 0.05 = 5%
         self.vz_SDerr_meas = 5.  # Measurement error on vz, [km s^-1]
@@ -195,12 +225,12 @@ class Params():
 
         # MultiNest options
         # ----------------------------------------------------------------------
-        self.map_priors = True
+        self.map_priors = False
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
-        self.chi2_switch_mincount = 10. # demand that this number of profiles with
+        self.chi2_switch = 10000. # if chi2*10 < chi2_switch, add chi2_sig
+        self.chi2_switch_mincount = 0. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0
 

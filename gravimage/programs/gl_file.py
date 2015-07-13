@@ -80,7 +80,7 @@ def bin_data(gp):
             import grd_split
             grd_split.run(gp)
         gr_MCMCbin.run(gp)
-    elif gp.investigate == 'discmock': 
+    elif gp.investigate == 'discmock':
         import grdm_write
         grdm_write.run(gp)
     elif gp.investigate == 'discsim':
@@ -125,7 +125,8 @@ def get_binned_data(gp):
 def get_binned_data_noscale(gp):
     gp.dat.read_nu(gp)
     gp.dat.read_sigz2(gp)
-    gp.dat.read_tilt(gp)
+    if gp.tilt:
+        gp.dat.read_tilt(gp)
     return gp.dat
 ## \fn get_binned_data_noscale(gp)
 # read in binned data, store in a gl_data class

@@ -135,7 +135,7 @@ def map_hypererr(param, prof, pop, gp):
         meanerr = gp.dat.meannuerr
     elif prof == 'sig':
         meanerr = gp.dat.meansigz2err
-    minhyper = 0.1*meanerr   # Hard coded, put in gl_params 
+    minhyper = 0.1*meanerr   # Hard coded, put in gl_params
     maxhyper = 10.*meanerr   # Hard coded, put in gl_params
     lmax = 1./minhyper
     lmin = 1./maxhyper
@@ -149,12 +149,17 @@ def map_tilt(params,gp):
     A = gp.tilt_A_min + A_range*params[0]
     n_range = gp.tilt_n_max - gp.tilt_n_min
     n = gp.tilt_n_min + n_range*params[1]
+    if n < 0:
+        print('Negative n found')
+        print('gp.tilt_n_max = ', gp.tilt_n_max)
+        print('gp.tilt_n_min = ', gp.tilt_n_min)
+        print('n = ', n)
     R_range = gp.tilt_R_max - gp.tilt_R_min
     R = gp.tilt_R_min + R_range*params[2]
     return np.array([A,n,R])
-# Input: 3 multinest cube params, 
+# Input: 3 multinest cube params,
 # Output: tilt parameters A, n and R = 2*R_0*R_1/(R_0 + R_1)
-# SS: 19 May 2015 
+# SS: 19 May 2015
 
 def map_nr(params, prof, pop, gp):
     gh.sanitize_vector(params, gp.nrho, 0, 1, gp.debug)
@@ -309,7 +314,7 @@ def map_simplenu_dm(params, prof, pop, gp):
     K = gp.simplenu_dm_K_min + K_range*params[1]
     D_range = gp.simplenu_dm_D_max - gp.simplenu_dm_D_min
     D = gp.simplenu_dm_D_min + D_range*params[2]
-    return np.array([rho_C, K, D])    
+    return np.array([rho_C, K, D])
 
 class Cube:
     def __init__ (self, gp):
@@ -323,14 +328,15 @@ class Cube:
 
     def convert_to_parameter_space(self, gp):
         # if we want any priors, here they have to enter:
-
         #Normalisation constant C, for the calculation of sigma_z via Jeans Eq.
+        #one for each tracer population
         pc = self.cube
         off = 0
-        offstep = 1
+        offstep = gp.ntracer_pops
         IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
         IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
-        pc[off] = IntC_min+(IntC_max-IntC_min)*pc[off]
+        for t_pop in range(0, gp.ntracer_pops):
+            pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
         off += offstep
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector
@@ -380,11 +386,12 @@ class Cube:
 
         # Introducing tilt term:
         if gp.tilt:
-            offstep = gp.ntilt_params
-            tmp_tilt = map_tilt(pc[off:off+offstep],gp)
-            for i in range(offstep):
-                pc[off+i] = tmp_tilt[i]
-            off += offstep
+            for tracer_pop in range(0, gp.ntracer_pops):
+                offstep = gp.ntilt_params
+                tmp_tilt = map_tilt(pc[off:off+offstep],gp)
+                for i in range(offstep):
+                    pc[off+i] = tmp_tilt[i]
+                off += offstep
 
         # Possibility to use hyperparameters:
         if gp.hyperparams:

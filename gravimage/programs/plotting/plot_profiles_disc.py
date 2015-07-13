@@ -70,14 +70,17 @@ def pcload_single_entries(basename, profile_source, gp):
     elif profile_source == 'MNoutput':
         filename = 'phys_MNoutput_profiles.save'
 
+    model_load_count = 0
     with open(basename+filename, 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         while 1:
+            model_load_count +=1
             try:
                 MODEL = pickle.load(fi)
                 pc.add(MODEL)
             except EOFError:
                 break
+    print('Loaded ', model_load_count, ' models from ', filename)
     return pc
 ## \fn pcload_single_entries(basename, gp)
 # load all data into [chi^2, profiles] pairs, and add to a profile collection
@@ -97,37 +100,44 @@ def run(timestamp, basename, profile_source, gp):
         gh.LOG(1, 'no profiles found for plotting')
         return
     # first plot all chi^2 values in histogram
-    pc.plot_profile(basename, 'chi2', 0, gp)
+
+    pc.plot_profile(basename, 'chi2', 0, profile_source, gp)
 
     # then select only the best models for plotting the profiles
     #pc.cut_subset()
     pc.set_x0(gp.z_bincenters) # [kpc]
     print('here')
 
-    pc.weighted_sort_profiles_disc(gp)
-    #pc.sort_profiles_disc(gp)
+    if profile_source == 'MNoutput':
+        pc.weighted_sort_profiles_disc(gp)
+    elif profile_source == 'livepoints':
+        pc.sort_profiles_disc(gp)
+
     pc.write_all_disc(basename, gp)
-    pc.plot_profile(basename, 'kz_rho_DM_vec', 0, gp)
-    pc.plot_profile(basename, 'kz_nu_vec', 0, gp)
 
-    pc.plot_profile(basename, 'nu_vec', 0, gp)
-    pc.plot_profile(basename, 'sigz2_vec', 0, gp)
+    for t_pop in range(0, gp.ntracer_pops):
+        pc.plot_profile(basename, 'kz_nu_vec', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'nu_vec', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'sigz2_vec', t_pop, profile_source, gp)
+        if gp.tilt:
+            pc.plot_profile(basename, 'sigmaRz_vec', t_pop, profile_source, gp)
 
-    pc.plot_profile(basename, 'rho_DM_vec', 0, gp)
-    pc.plot_profile(basename, 'Sig_DM_vec', 0, gp)
+    if gp.darkmattermodel == 'kz_dm':
+        pc.plot_profile(basename, 'kz_rho_DM_vec', 0, profile_source, gp)
+    pc.plot_profile(basename, 'rho_DM_vec', 0, profile_source, gp)
+    pc.plot_profile(basename, 'Sig_DM_vec', 0, profile_source, gp)
 
     if gp.baryonmodel not in ['simplenu_baryon']:
         gh.LOG(1, 'No baryon model, all mass is in DM.')
         return
 
-    pc.plot_profile(basename, 'rho_baryon_vec', 0, gp)
-    pc.plot_profile(basename, 'Sig_baryon_vec', 0, gp)
+    pc.plot_profile(basename, 'rho_baryon_vec', 0, profile_source, gp)
+    pc.plot_profile(basename, 'Sig_baryon_vec', 0, profile_source, gp)
 
-    pc.plot_profile(basename, 'rho_total_vec', 0, gp)
-    pc.plot_profile(basename, 'Sig_total_vec', 0, gp)
+    pc.plot_profile(basename, 'rho_total_vec', 0, profile_source, gp)
+    pc.plot_profile(basename, 'Sig_total_vec', 0, profile_source, gp)
 
-    if gp.tilt:
-        pc.plot_profile(basename, 'sigmaRz_vec', 0, gp)
+
 
 ## \fn run(timestamp, basename, gp)
 # call all model read-in, and profile-plotting routines
@@ -169,6 +179,7 @@ if __name__ == '__main__':
     gp = glp.Params(timestamp, investigate) # Change back! TODO FIXME !!!
 
     gp.pops = sr.get_pops(basename)
+
     print('working with ', gp.pops, ' populations')
 
     if profile_source == 'livepoints':
@@ -177,7 +188,7 @@ if __name__ == '__main__':
         except OSError:
             gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
             #glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
-            glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
+            glmh.paracube_to_profile(basename, "outputphys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
 
     if profile_source == 'MNoutput':
         try:

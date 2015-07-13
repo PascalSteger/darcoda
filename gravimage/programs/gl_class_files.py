@@ -13,6 +13,8 @@ import sys
 import pickle
 import numpy as np
 import gl_helper as gh
+from mpi4py import MPI
+import time
 
 def get_case(cas):
     ntracer = 0
@@ -29,7 +31,20 @@ def get_case(cas):
 
 import os.path
 def newdir(bname):
+
+    hwmess = "newdir running on process %d of %d on %s.\n"
+    myrank = MPI.COMM_WORLD.Get_rank()
+    nprocs = MPI.COMM_WORLD.Get_size()
+    procnm = MPI.Get_processor_name()
+    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+
+    if myrank != 0:
+        print('I am not process 0, so I will sleep')
+        time.sleep(1)
+
+    print('newdir, bname = ', bname)
     if not os.path.exists(bname):
+        print('newdir, rank ', myrank, ', making new directory: ', bname)
         os.makedirs(bname)
     return
 ## \fn newdir(bname)
@@ -524,10 +539,14 @@ class Files:
     def set_simplenu(self, gp, timestamp=''):
         self.dir = self.machine + 'DTsimplenu/0/'
         self.dir += timestamp + '/'
-        self.nufiles.append(self.dir+'nu/nu_1.txt')
-        self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
-        #pdb.set_trace()
-        self.tiltfiles.append(self.dir+'tilt/tilt_1.txt')
+        for pop in range(0, gp.ntracer_pops):
+            self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
+            self.sigfiles.append(self.dir + 'sigz/sigz_' + str(pop) + '.txt')
+            self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
+
+        #self.nufiles.append(self.dir+'nu/nu_1.txt')
+        #self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
+        #self.tiltfiles.append(self.dir+'tilt/tilt_1.txt')
         return
     ## \fn set_simplenu(self, gp, timestamp='')
     # set all properties if looking at simple disc

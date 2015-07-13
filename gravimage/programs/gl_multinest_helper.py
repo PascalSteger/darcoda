@@ -32,7 +32,7 @@ def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, invest
     # Import the bin centres used for the run
     gp.dat = glf.get_binned_data_noscale(gp)
 
-    nu_1_data = np.loadtxt(basepath_ts +'/nu/nu_1.txt', skiprows=1)
+    nu_1_data = np.loadtxt(basepath_ts +'/nu/nu_0.txt', skiprows=1)
     gp.z_bincenters = nu_1_data[:,0]
     gp.z_binmins = nu_1_data[:,1]
     gp.z_binmaxs = nu_1_data[:,2]
@@ -44,6 +44,7 @@ def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, invest
 
     gp.plotting_flag = True
 
+    print('Converting ', len(paracube_data[:,0]), ' paracube points to profiles.')
     for iter in range(0, len(paracube_data[:,0])):
         #print('Iter = ', iter)
         paracube = paracube_data[iter,:]
@@ -65,7 +66,6 @@ def mn_output_to_profile(basepath_ts, mn_output_filename, profile_filename, inve
     # Takes a file with points defined in the multinest cube, output file with profiles
     # as per the pc2.save type
 
-
     #Pull in parameters from the run basepath
     import import_path as ip
     # load stored parameters
@@ -81,10 +81,10 @@ def mn_output_to_profile(basepath_ts, mn_output_filename, profile_filename, inve
     # Import the bin centres used for the run
     gp.dat = glf.get_binned_data_noscale(gp)
 
-    nu_1_data = np.loadtxt(basepath_ts +'/nu/nu_1.txt', skiprows=1)
-    gp.z_bincenters = nu_1_data[:,0]
-    gp.z_binmins = nu_1_data[:,1]
-    gp.z_binmaxs = nu_1_data[:,2]
+    nu_0_data = np.loadtxt(basepath_ts +'/nu/nu_0.txt', skiprows=1)
+    gp.z_bincenters = nu_0_data[:,0]
+    gp.z_binmins = nu_0_data[:,1]
+    gp.z_binmaxs = nu_0_data[:,2]
     gp.z_all_pts = np.append([0.0], gp.z_bincenters)
 
     correct_E_error(basepath_ts + mn_output_filename)

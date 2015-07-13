@@ -16,7 +16,7 @@ import getpass
 import os
 
 # show all messages which are important enough (Level <= DEBUGLEVEL)
-DEBUGLEVEL = 0 # 0: none, 1: some, 2: more, 3: all
+DEBUGLEVEL = 1 # 0: none, 1: some, 2: more, 3: all
 
 def LOG(level, message, var=''):
     if level > DEBUGLEVEL:
@@ -880,7 +880,7 @@ def tilt_from_bins(binmin, binmax, z, vRz):
         positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
         Ntr = len(positions[0])  # N.o. tracers in given bin
         Ntr_per_bin.append(Ntr)
-        vRz_list_temp = vRz[positions] # vRz list of stars in given bin 
+        vRz_list_temp = vRz[positions] # vRz list of stars in given bin
 
         #tilt2 = np.mean(np.square(vRz_list_temp)) - (np.mean(vRz_list_temp))**2
         tilt2 = np.mean(np.square(vRz_list_temp))
@@ -888,7 +888,7 @@ def tilt_from_bins(binmin, binmax, z, vRz):
         tilt_vec.append(tilt)
         tilt_err = abs(np.sqrt(1./Ntr)*tilt)
         print ('Ntr:',Ntr,' tilt:',tilt,' tilt_err:',tilt_err)
-        #tilt_err = 0.01*tilt  
+        #tilt_err = 0.01*tilt
         tilt_err_vec.append(tilt_err)
 
     tilt_vec = np.array(tilt_vec)

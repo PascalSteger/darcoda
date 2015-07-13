@@ -47,8 +47,9 @@ class Profiles:
         self.Sig_total_vec = np.zeros(nbins)
 
         #Tracer profile parameters and derived mass density
-        self.nu_C      = 0.0                               #Multinest
-        self.kz_nu_C   = 0.0                               #Multinest
+        self.norm_C    = np.zeros(ntracer_pops)
+        self.nu_C      = np.zeros(ntracer_pops)            #Multinest
+        self.kz_nu_C   = np.zeros(ntracer_pops)                               #Multinest
         self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
         self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
         self.sigz2_vec = np.zeros(ntracer_pops * nbins)    #Derived from phys
@@ -64,8 +65,8 @@ class Profiles:
         self.hyper_sigz2 = 0.
 
         #Tilt
-        self.tilt_vec = np.zeros(ntracer_pops * (nbins+1))
-        self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins+1))
+        self.tilt_vec = np.zeros(ntracer_pops * (nbins))
+        self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins))
 
     ## \fn __init__(self, pops, nipol)
     # constructor
@@ -106,17 +107,17 @@ class Profiles:
 
         #Tracer stars
         elif prof == 'kz_nu_vec':
-            self.kz_nu_vec = vec
+            self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
         elif prof == 'nu_vec':
-            self.nu_vec  = vec
+            self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]  = vec
         elif prof == 'sigz2_vec':
-            self.sigz2_vec = vec
+            self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
 
         #Tilt
         elif prof == 'tilt_vec':
-            self.tilt_vec = vec
+            self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
         elif prof == 'sigmaRz_vec':
-            self.sigmaRz_vec = vec
+            self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
 
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
@@ -156,17 +157,17 @@ class Profiles:
 
         #Tracer stars
         elif prof == 'kz_nu_vec':
-            return self.kz_nu_vec
+            return self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins]
         elif prof == 'nu_vec':
-            return self.nu_vec
+            return self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]
         elif prof == 'sigz2_vec':
-            return self.sigz2_vec
+            return self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins]
 
         #Tilt
         elif prof == 'tilt_vec':
-            return self.tilt_vec
+            return self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins]
         elif prof == 'sigmaRz_vec':
-            return self.sigmaRz_vec
+            return self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins]
 
         ##chi2 of profile
         #elif prof == 'chi2'

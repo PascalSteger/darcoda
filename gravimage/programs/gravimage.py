@@ -13,7 +13,7 @@
 
 ### imports
 # from __future__ import absolute_import, unicode_literals, print_function
-#from mpi4py import MPI
+from mpi4py import MPI
 import subprocess
 import numpy as np
 import pymultinest
@@ -21,6 +21,7 @@ import pickle
 import gl_helper as gh
 import pdb
 import numpy.random as npr
+import time
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
@@ -81,6 +82,7 @@ def myloglike(cube, ndim, nparams):
     # for output:
     # from   likelihood L = exp(-\chi^2/2), want log of that
     return -tmp_profs.chi2/2.
+    #return -tmp_profs.chi2/(2.*1E6) #test
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
 # @param ndim number of dimensions, 2*npop*nipol + nipol
@@ -88,6 +90,14 @@ def myloglike(cube, ndim, nparams):
 # stored with actual parameters
 
 def prepare_data(gp):
+
+    hwmess = "prepare_data, process %d of %d on %s.\n"
+    myrank = MPI.COMM_WORLD.Get_rank()
+    nprocs = MPI.COMM_WORLD.Get_size()
+    procnm = MPI.Get_processor_name()
+    import sys
+    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+
     if gp.getnewdata:
         if gp.getnewpos:
             gf.read_data(gp)
@@ -95,6 +105,43 @@ def prepare_data(gp):
     gf.get_binned_data_noscale(gp)    #H Silverwood 20/11/14
     gp.files.populate_output_dir(gp)
     gf.get_rhohalfs(gp)
+
+
+#    if myrank ==0:
+#        gp = gl_params.Params(ts, options.investigation, int(options.case))
+#        import gl_file as gf
+#        global Cube, geom_loglike
+#        from gl_class_cube import Cube
+#        from gl_loglike import geom_loglike
+#
+#
+#
+#        if gp.getnewdata:
+#            if gp.getnewpos:
+#                gf.read_data(gp)
+#            gf.bin_data(gp)
+#        gf.get_binned_data_noscale(gp)    #H Silverwood 20/11/14
+#        gp.files.populate_output_dir(gp)
+#        gf.get_rhohalfs(gp)
+#
+#        gp = comm.bcast(gp)
+#        go_order = True
+#        comm.send(go_order, dest=1, tag=11)
+#        print('Broadcasted')
+#        return
+#
+#    elif myrank !=0:
+#        while not comm.Iprobe(source=0, tag=11):
+#            print('Holding rank ', myrank, ' while data prepared on 0')
+#            time.sleep(1)
+#        gp = comm.recv(source=0, tag=11)
+#        global Cube, geom_loglike
+#        from gl_class_cube import Cube
+#        from gl_loglike import geom_loglike
+#        return
+
+
+
 ## \fn prepare_data(gp)
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
@@ -109,14 +156,14 @@ def run(gp):
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
-                    importance_nested_sampling = True, # INS enabled
+                    importance_nested_sampling = False, # INS enabled
                     multimodal = True,           # separate modes
                     const_efficiency_mode = True, # use const sampling efficiency
                     n_live_points = gp.nlive,
-                    evidence_tolerance = 0.0, # set to 0 to keep
+                    evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.05,
+                    sampling_efficiency = 'parameter',
                     n_iter_before_update = 1,#00, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -139,25 +186,112 @@ def run(gp):
                                           #reaching max_iter (no
                                           #stopping criterium based on
                                           #number of iterations)
-                    init_MPI = True,     # use MPI
+                    init_MPI = False,     # use MPI
                     dump_callback = None)
+
+
+def mpi_prepare_data():
+
+    hwmess = "mpi_prepare_data on process %d of %d on %s.\n"
+    myrank = MPI.COMM_WORLD.Get_rank()
+    nprocs = MPI.COMM_WORLD.Get_size()
+    procnm = MPI.Get_processor_name()
+    import sys
+    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+
+    if myrank ==0:
+        gp = gl_params.Params(ts, options.investigation, int(options.case))
+        import gl_file as gf
+        global Cube, geom_loglike
+        from gl_class_cube import Cube
+        from gl_loglike import geom_loglike
+
+        print('Preparing data')
+        prepare_data(gp)
+        print('Data prepared, broadcasting.')
+        gp = comm.bcast(gp)
+        comm.send(gp, dest=1, tag=11)
+        print('Broadcasted')
+        return
+
+    elif myrank !=0:
+        while not comm.Iprobe(source=0, tag=11):
+            print('Holding rank ', myrank, ' while data prepared on 0')
+            time.sleep(1)
+        gp = comm.recv(source=0, tag=11)
+        global Cube, geom_loglike
+        from gl_class_cube import Cube
+        from gl_loglike import geom_loglike
+        return
+
 
 if __name__=="__main__":
     global Cube, geom_loglike
     from gl_class_cube import Cube
     from gl_loglike import geom_loglike
+    comm = MPI.COMM_WORLD
 
-    # hwmess = "Hello, World!! I am process %d of %d on %s.\n"
-    # myrank = MPI.COMM_WORLD.Get_rank()
-    # nprocs = MPI.COMM_WORLD.Get_size()
-    # procnm = MPI.Get_processor_name()
-    # import sys
-    # sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+    hwmess = "Hello, World!! I am process %d of %d on %s.\n"
+    myrank = MPI.COMM_WORLD.Get_rank()
+    nprocs = MPI.COMM_WORLD.Get_size()
+    procnm = MPI.Get_processor_name()
+    import sys
+    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
-    # TODO: wait for prepare_data to finish
-    # if MPI.COMM_WORLD.Get_rank() == 0:
-    #     # TODO: wrong: have 0 take part in sampling as well
-    prepare_data(gp) # run once
-    # else:
-    #     # run with full MPI
+    #launch_go = False
+
+#    if myrank ==0:
+#        gp = gl_params.Params(ts, options.investigation, int(options.case))
+#        import gl_file as gf
+#        global Cube, geom_loglike
+#        from gl_class_cube import Cube
+#        from gl_loglike import geom_loglike
+#
+#
+#        print('Preparing data')
+#        prepare_data(gp)
+#        print('Data prepared, broadcasting.')
+#        gp = comm.bcast(gp)
+#        comm.send(gp, dest=1, tag=11)
+#        print('Broadcasted')
+#
+#    elif myrank !=0:
+#        while not comm.Iprobe(source=0, tag=11):
+#            print('Holding rank ', myrank, ' while data prepared on 0')
+#            time.sleep(1)
+#        gp = comm.recv(source=0, tag=11)
+#        global Cube, geom_loglike
+#        from gl_class_cube import Cube
+#        from gl_loglike import geom_loglike
+
+    #print('Preparing data')
+    #prepare_data(gp)
+
+    #mpi_prepare_data()
+    prepare_data(gp)
+
+
+    print('\n Running pymultinest')
     run(gp)
+
+    ## TODO: wait for prepare_data to finish
+    #if MPI.COMM_WORLD.Get_rank() == 0:
+    #    prepare_data(gp) # run once
+    #else:
+    #    run(gp)
+
+
+
+
+
+
+#    if rank == 0:
+#   data = {'a': 7, 'b': 3.14}
+#   time.sleep(3)
+#   comm.send(data, dest=1, tag=11)
+#elif rank == 1:
+#   while not comm.Iprobe(source=0, tag=11):
+#        print 'rank 1 Doing some work...'
+#        time.sleep(1)
+#   rdata = comm.recv(source=0, tag=11)
+#   print 'rank 1: got ', rdata

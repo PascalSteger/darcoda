@@ -147,10 +147,11 @@ class Datafile:
 
 
     def read_sigz2(self, gp):
-        dummy, dummy, dummy, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[0])
-        self.sigz2.append(sigz2dat[:]) # [km/s]
-        self.sigz2err.append(sigz2err[:]) # [km/s]
-        self.meansigz2err = np.mean(sigz2err)
+        for pop in range(0, gp.ntracer_pops):
+            dummy, dummy, dummy, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[pop])
+            self.sigz2.append(sigz2dat[:]) # [km/s]
+            self.sigz2err.append(sigz2err[:]) # [km/s]
+        self.meansigz2err = np.mean(self.sigz2err)
 
         return
     ## \fn read_sig(self, gp)
@@ -159,22 +160,24 @@ class Datafile:
     # H Silverwood 20/11/14
 
     def read_tilt(self, gp):
-        dummy, dummy, dumy, tiltdat, tilterr = gh.readcol5(gp.files.tiltfiles[0])
-        self.tilt.append(tiltdat[:])
-        self.tilterr.append(tilterr[:])
+        for pop in range(0, gp.ntracer_pops):
+            dummy, dummy, dumy, tiltdat, tilterr = gh.readcol5(gp.files.tiltfiles[pop])
+            self.tilt.append(tiltdat[:])
+            self.tilterr.append(tilterr[:])
         return
     ## \fn read_tilt(self, gp)   SS 21 may 2015
 
     def read_nu(self, gp):
-        bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
-        self.nu.append(nudat[:]) # [#stars/kpc^3]
-        self.nuerr.append(nuerr[:])
+        for pop in range(0, gp.ntracer_pops):
+            bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[pop])
+            self.nu.append(nudat[:]) # [#stars/kpc^3]
+            self.nuerr.append(nuerr[:])
         gp.z_bincenters = bincenters # [kpc]
         gp.z_binmins = binmins
         gp.z_binmaxs = binmaxs
         #gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
         gp.z_all_pts = np.append([0.0], bincenters)  #[kpc]
-        self.meannuerr = np.mean(nuerr)
+        self.meannuerr = np.mean(self.nuerr)
 
         return  # SS added ...
 

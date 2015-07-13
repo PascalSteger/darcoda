@@ -57,17 +57,30 @@ def list_files(basedir):
     from datetime import datetime
     fdl = [(x, datetime.strptime(x[x.find('201'):x.find('201')+14],\
                                  '%Y%m%d%H%M')) for x in dirs]
-    remove_empty_folders(fdl)
+    #remove_empty_folders(fdl)
     dirs = list(filter(os.path.isdir, glob.glob(basedir + "201*")))
     fdl = []
     for x in dirs:
         ts = datetime.strptime(x[x.find('201'):x.find('201')+14], '%Y%m%d%H%M')
         try:
-            co = bufcount(x+'/ev.dat')
+            iters = bufcount(x+'/outputev.dat')
         except FileNotFoundError:
-            print('file not found')
-            co = 0
-        fdl.append((x, ts, co ))
+            #print('ev.dat file not found')
+            iters = 0
+
+        try:
+            outlines = bufcount(x+'/output.txt')
+        except FileNotFoundError:
+            #print('MN output file not found')
+            outlines = 0
+
+        try:
+            livepts_out = bufcount(x+'/outputphys_live.points')
+        except FileNotFoundError:
+            #print('phys_live.point file not found')
+            livepts_out = 0
+
+        fdl.append((x, ts, iters, outlines, livepts_out))
 
     fdl.sort(key=lambda x: x[1])
 
@@ -95,7 +108,7 @@ def list_files(basedir):
         mono = lsp[2]  # Ugly quick-fix to make the code run   TODO FIXME !!
         print("%2d"%(i+1),': ',\
               datetime.strftime(fdl[i][1],'%Y-%m-%d %H:%M'),\
-              "%5d"%fdl[i][2], 'its,', \
+              "%5d"%fdl[i][2], 'its,', fdl[i][3], 'output lines,', fdl[i][4], 'physlive points',\
               pops, 'pops,',\
               nipol, 'bins,', 'nbeta=', nbeta, 'mono=', mono)
     out = np.transpose(np.array(fdl))[:][0]
