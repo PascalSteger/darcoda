@@ -31,11 +31,11 @@ def chi2red(model, data, sig, dof):
 
 def calc_chi2(profs, gp):
 
-    hwmess = "calc_chi2 running on process %d of %d on %s.\n"
-    myrank = MPI.COMM_WORLD.Get_rank()
-    nprocs = MPI.COMM_WORLD.Get_size()
-    procnm = MPI.Get_processor_name()
-    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+    #hwmess = "calc_chi2 running on process %d of %d on %s.\n"
+    #myrank = MPI.COMM_WORLD.Get_rank()
+    #nprocs = MPI.COMM_WORLD.Get_size()
+    #procnm = MPI.Get_processor_name()
+    #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
     if gp.map_priors:
         return 1.0

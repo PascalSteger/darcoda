@@ -55,13 +55,13 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
 
-        #Popn 1 1E4
-        self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat']
-        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
+        ##Popn 1 1E4
+        #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat']
+        ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
 
-        #Popn 2 1E4
+        ##Popn 2 1E4
         #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        ##self.external_data_file_tilt = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
 
         #Popn 1 & 2 1E4
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
@@ -72,13 +72,17 @@ class Params():
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
         ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
 
-        ##Popn 2 1E6
-        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-        ##self.external_data_file_tilt = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #Popn 2 1E6
+        self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
+
 
         ##Popn 1 & 2 1E6
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
         #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+
+        ##Pop 2 1E6 with tilt
+        #self.external_data_file = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
 
         #self.external_data_file= ['/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat']
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
@@ -96,14 +100,14 @@ class Params():
 
         #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
 
-        self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
-        #self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
+        #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
+        self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
         self.tilt = False   # If also modelling the tilt
 
-        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
+        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -203,10 +207,14 @@ class Params():
         self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1000  #1400 #1300.
-        self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
+        self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1350
+        self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.16
+        #self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
+        #self.simplenu_baryon_K_min = 1000  #1400 #1300.
+        #self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
+        #self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
 
         # Simplenu DM disc model priors
         self.simplenu_dm_K_max = 1500.  #JR model has K = 300.
@@ -229,7 +237,7 @@ class Params():
         # Set number of terms for enclosedmass+tracer+anisotropy bins
         # = model parameters:
         self.chi2_nu_converged = False # first converge on Sig if set to False
-        self.chi2_switch = 10000. # if chi2*10 < chi2_switch, add chi2_sig
+        self.chi2_switch = 100. # if chi2*10 < chi2_switch, add chi2_sig
         self.chi2_switch_mincount = 0. # demand that this number of profiles with
                                         # chi2<chi2_switch are found before adding chi2_sig
         self.chi2_switch_counter = 0. # start the counter at 0

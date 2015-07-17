@@ -159,13 +159,20 @@ class ProfileCollection():
         #norm = 1
         #if prof == 'Sig':
         #    norm = gh.ipol_rhalf_log(gp.xepol, tmp[ll/2], gp.Xscale[0])
-        self.Mmin.set_prof(prof,  tmp[0],       pop, gp)
-        self.M95lo.set_prof(prof, tmp[ll*0.05], pop, gp)
-        self.M68lo.set_prof(prof, tmp[ll*0.32], pop, gp)
-        self.Mmedi.set_prof(prof, tmp[ll/2],    pop, gp)
-        self.M68hi.set_prof(prof, tmp[ll*0.68], pop, gp)
-        self.M95hi.set_prof(prof, tmp[ll*0.95], pop, gp)
-        self.Mmax.set_prof(prof,  tmp[-1],      pop, gp)
+
+        if prof == 'rho_DM_vec': # Possibility to rescale plots
+            rescale_prof = 1e6
+        else:
+            rescale_prof = 1.
+
+
+        self.Mmin.set_prof(prof,  tmp[0]/rescale_prof,       pop, gp)
+        self.M95lo.set_prof(prof, tmp[ll*0.05]/rescale_prof, pop, gp)
+        self.M68lo.set_prof(prof, tmp[ll*0.32]/rescale_prof, pop, gp)
+        self.Mmedi.set_prof(prof, tmp[ll/2]/rescale_prof,    pop, gp)
+        self.M68hi.set_prof(prof, tmp[ll*0.68]/rescale_prof, pop, gp)
+        self.M95hi.set_prof(prof, tmp[ll*0.95]/rescale_prof, pop, gp)
+        self.Mmax.set_prof(prof,  tmp[-1]/rescale_prof,      pop, gp)
         return tmp
     ## \fn sort_prof(self, prof, pop, gp)
     # sort the list of prof-profiles, and store the {1,2}sigma, min, medi, max in the appropriate place
@@ -233,11 +240,8 @@ class ProfileCollection():
 
         credreg_bound_profs = np.array(bin_prof_credreg_bounds).transpose()
 
-        if prof == 'nu_vec': # Rescaling the nu & sigz2 plots to see more details
-            #truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
-            #rescale_prof = ...
-            # NOT IN USE
-            rescale_prof = 1.
+        if prof == 'rho_DM_vec': # Possibility to rescale plots
+            rescale_prof = 1e6
         else:
             rescale_prof = 1.
 
@@ -731,7 +735,8 @@ class ProfileCollection():
             ax.set_ylim(-10., 10.)
 
         elif prof == 'rho_DM_vec':
-            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[10^6\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            #ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
             #ax.set_ylim(1E6, 1E8)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
@@ -879,24 +884,62 @@ class ProfileCollection():
 
     def plot_profile(self, basename, prof, pop, profile_source, gp):
         gh.LOG(1, 'plotting profile '+str(prof)+' for pop '+str(pop)+' in run '+basename)
-        fig = plt.figure()
-        ax  = fig.add_subplot(111)
+
 
         if prof != 'chi2':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_xscale('log')
 
         if prof == 'chi2':  # SS: Could not find where x-axis is set to logscale
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_yscale('log')
 
         if prof == 'rho' or prof == 'Sig' or\
            prof == 'M' or prof == 'nu':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_yscale('log')
 
         if prof == 'nu_vec' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec' or prof == 'sigz2_vec':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('log')
 
-        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec' or prof == 'rho_DM_vec':
+
+
+        if prof == 'rho_DM_vec':
+            #fig = plt.figure()
+            right_hand_side_label = True  # GeV/cm3 on right hand sider or not
+            if (right_hand_side_label):
+                fig = plt.figure(figsize=(2.3,2.3))
+                ax  = fig.add_subplot(111)
+                plt.subplots_adjust(left=0.21, right=0.79, bottom=0.22, top=0.8)
+                # Above fits left and right labels but shrinks plot surface
+                #plt.subplots_adjust(left=0.1, right=0.75)
+                # Above fits only right label but preseves plot surface square
+                # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
+                ax2 = ax.twinx()
+                ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
+                ax_ylim = np.array([6,20])    # TAG
+                kpc = 3.0857E19   # kpc in m
+                Msun = 1.9891E30  # Sun's mass in kg
+                GeV = 1.78266E-27 # GeV in kg
+                ax_ylim2 = 1E6*Msun/(GeV*(100.*kpc)**3)*ax_ylim
+                ax.set_ylim(ax_ylim)
+                ax2.set_ylim(ax_ylim2)
+            else:
+                fig = plt.figure()
+                ax  = fig.add_subplot(111)
+                #ax.set_ylim([0,14])    # TAG
+            ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
+            ax.set_yscale('linear')  # plot this in log or linear scale...?
+
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
+            fig = plt.figure()
+            ax  = fig.add_subplot(111)
             ax.set_xscale('linear')  # SS: was 'log' before
             ax.set_yscale('linear')
 
@@ -924,8 +967,8 @@ class ProfileCollection():
                 return
 
             #Choice of plotting style
-            self.weighted_hist_heatmap(ax, prof, pop, gp)
-            #self.fill_nice(ax, prof, pop, gp)
+            #self.weighted_hist_heatmap(ax, prof, pop, gp)
+            self.fill_nice(ax, prof, pop, gp)
 
 
             #self.plot_N_samples(ax, prof, pop) #SS: Don't plot thin gray lines
@@ -944,8 +987,6 @@ class ProfileCollection():
 
             #ax.set_xlim(0, gp.z_bincenters[-1]) #bodge
             ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
-
-            pdb.set_trace()
 
             #for tick in ax.xaxis.get_majorticklabels():
             #    tick.set_horizontalalignment("left")
@@ -1131,7 +1172,8 @@ class ProfileCollection():
 
 
         elif prof == 'rho_DM_vec':
-            ax.plot(zvec, rho_z_DM, 'g-', alpha = 0.5)
+            rescale_prof = 10.**6
+            ax.plot(zvec, rho_z_DM/rescale_prof, 'g-', alpha = 0.5)
 
         # if all mass is described by DM, then plot kz_rho_DM_vec
         # if the simplenu_baryon model is used, then kz_rho_DM_vec should equal zero

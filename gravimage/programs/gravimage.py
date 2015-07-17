@@ -82,7 +82,6 @@ def myloglike(cube, ndim, nparams):
     # for output:
     # from   likelihood L = exp(-\chi^2/2), want log of that
     return -tmp_profs.chi2/2.
-    #return -tmp_profs.chi2/(2.*1E6) #test
 ## \fn myloglike(cube, ndim, nparams) calculate probability function
 # @param cube ndim cube of physical parameter space (nr)
 # @param ndim number of dimensions, 2*npop*nipol + nipol
@@ -158,13 +157,13 @@ def run(gp):
                                                                      #parameters
                     importance_nested_sampling = False, # INS enabled
                     multimodal = True,           # separate modes
-                    const_efficiency_mode = True, # use const sampling efficiency
+                    const_efficiency_mode = False, # use const sampling efficiency
                     n_live_points = gp.nlive,
                     evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 'parameter',
-                    n_iter_before_update = 1,#00, # output after this many iterations
+                    sampling_efficiency = 0.3,#'parameter',
+                    n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
                                             #max. = number of live
