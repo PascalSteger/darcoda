@@ -1083,7 +1083,7 @@ class ProfileCollection():
         K = 1500.
         F = 267.65
         D = 0.18
-        K_dd = 300.
+        K_dd = 900.
         D_dd = 2.5
         #z0 = 0.9  # Thick disk
         z0 = 0.4  # Thin disk
