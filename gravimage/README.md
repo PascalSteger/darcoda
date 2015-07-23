@@ -101,7 +101,6 @@ The code is under constant development, and might show bugs. Feel free to branch
 the code, correct them, and send a patch!
 
 
-October 2014,
-Pascal Steger
-psteger@phys.ethz.ch
-http://www.n.ethz.ch/~psteger
+October 2014 | 
+Pascal Steger | 
+psteger@phys.ethz.ch | http://steger.aero
