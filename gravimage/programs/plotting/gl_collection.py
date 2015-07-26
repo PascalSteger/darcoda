@@ -923,7 +923,7 @@ class ProfileCollection():
                 # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
                 ax2 = ax.twinx()
                 ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
-                ax_ylim = np.array([6,20])    # TAG
+                ax_ylim = np.array([0,14])    # TAG
                 kpc = 3.0857E19   # kpc in m
                 Msun = 1.9891E30  # Sun's mass in kg
                 GeV = 1.78266E-27 # GeV in kg
@@ -936,6 +936,7 @@ class ProfileCollection():
                 #ax.set_ylim([0,14])    # TAG
             ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
             ax.set_yscale('linear')  # plot this in log or linear scale...?
+
 
         if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
             fig = plt.figure()
@@ -986,12 +987,15 @@ class ProfileCollection():
                 ax.plot(r0, y0, 'b--', lw=2)
 
             #ax.set_xlim(0, gp.z_bincenters[-1]) #bodge
-            ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
+            #ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
+            #ax.set_xlim(0., gp.z_all_pts[-1])
+            ax.set_xlim(0., gp.z_binmaxs[-1])
 
             #for tick in ax.xaxis.get_majorticklabels():
             #    tick.set_horizontalalignment("left")
 
             ax.xaxis.get_majorticklabels()[0].set_horizontalalignment("left")
+
 
             plt.draw()
         else:
@@ -1090,7 +1094,8 @@ class ProfileCollection():
         #normC = 40.0
         normC = 22.85
 
-        zvec=np.linspace(0, gp.data_z_cut, 100)
+        #zvec=np.linspace(0, gp.data_z_cut, 100)
+        zvec=np.linspace(0, gp.z_binmaxs[-1], 100)
 
         Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
@@ -1173,12 +1178,13 @@ class ProfileCollection():
 
         elif prof == 'rho_DM_vec':
             rescale_prof = 10.**6
-            ax.plot(zvec, rho_z_DM/rescale_prof, 'g-', alpha = 0.5)
+            pdb.set_trace()
+            ax.plot(zvec, rho_z_DM/rescale_prof, 'g--', dash_joinstyle='round', dashes=(6,2), alpha = 0.5, lw=2)
 
         # if all mass is described by DM, then plot kz_rho_DM_vec
         # if the simplenu_baryon model is used, then kz_rho_DM_vec should equal zero
         elif prof == 'kz_rho_DM_vec' and gp.baryonmodel in ['none', 'sim']: #i.e. if all mass is described by DM
-            ax.plot(zvec, k_z_rho_total, 'g-', alpha = 0.5)
+            ax.plot(zvec, k_z_rho_total, 'g.=', alpha = 0.5)
 
 
         elif prof == 'sigz2_vec':
