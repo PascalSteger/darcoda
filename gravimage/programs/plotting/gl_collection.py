@@ -923,7 +923,7 @@ class ProfileCollection():
                 # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
                 ax2 = ax.twinx()
                 ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
-                ax_ylim = np.array([6,20])    # TAG
+                ax_ylim = np.array([0,14])    # TAG
                 kpc = 3.0857E19   # kpc in m
                 Msun = 1.9891E30  # Sun's mass in kg
                 GeV = 1.78266E-27 # GeV in kg
@@ -1103,7 +1103,7 @@ class ProfileCollection():
         Kzvec_const_DM = -(2.*F*zvec)
 
         rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
-        dd_data = True
+        dd_data = False
         if dd_data:
             rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))
             Kzvec_DM = Kzvec_const_DM + Kzvec_DD
