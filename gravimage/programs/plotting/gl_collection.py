@@ -923,7 +923,7 @@ class ProfileCollection():
                 # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
                 ax2 = ax.twinx()
                 ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
-                ax_ylim = np.array([0,14])    # TAG
+                ax_ylim = np.array([6,20])    # TAG
                 kpc = 3.0857E19   # kpc in m
                 Msun = 1.9891E30  # Sun's mass in kg
                 GeV = 1.78266E-27 # GeV in kg
