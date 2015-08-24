@@ -198,6 +198,7 @@ class ProfileCollection():
 
         if 0.5 < max_weight < 0.9:
             print('WARNING: more than 0.5 of the weight is in one point')
+            print('max weight = ', max_weight)
         elif 0.9 < max_weight:
             print('WARNING: more than 0.9 of the weight is in one point')
             print('max weight = ', max_weight)
@@ -305,7 +306,12 @@ class ProfileCollection():
         Hist_masked = np.ma.masked_where(Hist==0, Hist)
 
         #Plot color histogram
-        ax.pcolormesh(z_edges, y_edges, np.transpose(Hist_masked), cmap='BuPu')
+        if prof == 'rho_DM_vec': # Possibility to rescale plots
+            rescale_prof = 1e6
+        else:
+            rescale_prof = 1.
+
+        ax.pcolormesh(z_edges, y_edges/rescale_prof, np.transpose(Hist_masked), cmap='BuPu')
 
         #Pull in Credible Region intervals
 
@@ -1001,7 +1007,7 @@ class ProfileCollection():
         else:
             gh.LOG(1, 'empty self.profs')
 
-        fig.savefig(basename+'/output/pdf/' + profile_source + '_prof_'+prof+'_'+str(pop)+'.pdf')
+        fig.savefig(basename+'/output/pdf/' + 'band_' + profile_source + '_prof_'+prof+'_'+str(pop)+'.pdf')
         return
     ## \fn plot_profile(self, basename, prof, pop, gp)
     # plot single profile
@@ -1127,7 +1133,16 @@ class ProfileCollection():
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
 
-        nu0 = Ntr/(z0*(1-np.exp(-gp.data_z_cut/z0)))
+
+        pop=0
+
+        try:
+           data_z_cut = gp.data_z_cut[pop]
+        except ValueError:
+           data_z_cut = gp.data_z_cut
+
+
+        nu0 = Ntr/(z0*(1-np.exp(-data_z_cut/z0)))
         nuvec = nu0*np.exp(-zvec/z0)
 
         #bincentermed, binmin, binmax, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])

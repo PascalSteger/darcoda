@@ -15,10 +15,10 @@ import os, datetime, shutil
 from subprocess import call
 import pdb
 
-nodes=1
+nodes=2
 cores='16'
-ppn=1
-walltime='03:00:00:00'
+ppn=16
+walltime='01:00:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
@@ -66,7 +66,7 @@ pbs_file.writelines('cd $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('# Calculate run time for gravimage, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
 pbs_file.writelines('echo PBS_WALLTIME = $PBS_WALLTIME'+'\n')
-pbs_file.writelines('transft=180'+'\n')
+pbs_file.writelines('transft=360'+'\n')
 pbs_file.writelines('echo Transfer time = $transft'+'\n')
 pbs_file.writelines('runtime=$(expr $PBS_WALLTIME - $transft)'+'\n')
 pbs_file.writelines('echo gravimage runtime = $runtime'+'\n')
@@ -86,11 +86,10 @@ pbs_file.writelines('echo Contents of programs folder:' + '\n')
 pbs_file.writelines('ls -l -a' + '\n')
 
 pbs_file.writelines('echo Contents of DT folder:' + '\n')
-pbs_file.writelines('ls -R -l $TMPDIR/darcoda/gravimage/DT' + '\n')
+pbs_file.writelines('ls -R -l $TMPDIR/darcoda/gravimage/DTsimplenu' + '\n')
 
-pbs_file.writelines('python3 gravimage.py --investigation ' + investigation + '& PID=$!; sleep $runtime; kill $PID'+'\n')
-#pbs_file.writelines('mpiexec -n 2 python3 gravimage.py --investigation simplenu' + '\n')
-#pbs_file.writelines('mpiexec -n 16 python3 gravimage.py --investigation ' + investigation + '& PID=$!; sleep $runtime; kill $PID'+'\n')
+pbs_file.writelines('mpiexec -n ' + str(nodes*ppn) + ' python3 gravimage.py --investigation simplenu' + '& PID=$!; sleep $runtime; kill $PID'+'\n' + '\n')
+
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')
 pbs_file.writelines('pwd'+'\n')
 pbs_file.writelines('ls -l -a $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/*'+'\n')

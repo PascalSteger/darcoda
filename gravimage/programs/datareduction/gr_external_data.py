@@ -102,17 +102,28 @@ def run(gp):
         z_data_tilt = [external_data_tilt[ii][:,0] for ii in range(0, len(external_data))]     #[kpc]
         vRz_data_tilt = [external_data_tilt[ii][:,1] for ii in range(0, len(external_data))]   #[km^2/s^2]
 
-    z_data_used = [data_tmp[data_tmp<gp.data_z_cut] for data_tmp in z_data]  # use only data with z<data_z_cut
-    v_data_used = [v_data[ii][z_data[ii]<gp.data_z_cut] for ii in range(0, len(external_data))]
+    # z-cut, use only stars below a certain height for each population
+    z_data_used = [z_data[ii][z_data[ii]<gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
+    v_data_used = [v_data[ii][z_data[ii]<gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
 
     [print ('N.o. tracer stars used as data for popn ', t_pop, ': ', len(z_data_used[t_pop])) for t_pop in range(0, len(external_data))]
 
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
-    if gp.binning == 'consttr':
-        binmin, binmax, bincentermed = gh.bin_r_const_tracers(np.concatenate(z_data_used), gp.nbins)
-    elif gp.binning == 'linspace':
-        binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(np.concatenate(z_data_used)),1), gp.nbins)
+    binmin_pops = []
+    binmax_pops = []
+    bincentermed_pops = []
+
+    for pop in range(0, gp.ntracer_pops):
+        if gp.binning == 'consttr':
+            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used[pop], gp.nbins)
+        elif gp.binning == 'linspace':
+            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used[0]),1), gp.nbins)
+
+        binmin_pops.append(binmin)
+        binmax_pops.append(binmax)
+        bincentermed_pops.append(bincentermed)
+
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data=[]
@@ -123,7 +134,7 @@ def run(gp):
     tilt2_data = []
     tilt2_data_err = []
     for pop in range(0, gp.ntracer_pops):
-        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin, binmax, z_data[pop], v_data[pop])
+        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], v_data[pop])
         nu_data.append(nu_data_tmp)
         nu_err_pois.append(nu_err_pois_tmp)
         sigz2_data.append(sigz2_data_tmp)
@@ -131,9 +142,10 @@ def run(gp):
         Ntr_per_bin.append(Ntr_per_bin_tmp)
 
         if gp.tilt:
-            tilt2_data_tmp, tilt2_data_err_tmp = gh.tilt_from_bins(binmin, binmax, z_data_tilt[pop], vRz_data_tilt[pop])
+            tilt2_data_tmp, tilt2_data_err_tmp = gh.tilt_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
             tilt2_data.append(tilt2_data_tmp)
             tilt2_data_err.append(tilt2_data_err_tmp)
+    #MULTIPOPS REWRITE WORKING POINT
 
     #nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used
 
@@ -195,7 +207,9 @@ def run(gp):
     sigz2_err_tot = sigz2_err_pois  # SS-TODO
 
     #Output data to file
-    write_disc_output_files(bincentermed, binmin, binmax, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
+    #TO DO MULTIPOPS BODGE
+
+    write_disc_output_files(bincentermed_pops[0], binmin_pops[0], binmax_pops[0], nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
     if gp.tilt:
         write_tilt_output_files(bincentermed, binmin, binmax, tilt2_data, tilt2_data_err, gp)
 

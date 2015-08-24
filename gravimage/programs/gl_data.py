@@ -9,7 +9,7 @@
 import pdb
 import numpy as np
 import gl_helper as gh
-import gl_project as glp
+#import gl_project as glp #HS not needed, import call causing MPI problems
 from scipy.interpolate import splrep, splev
 
 def introduce_points_in_between(r0, gp):

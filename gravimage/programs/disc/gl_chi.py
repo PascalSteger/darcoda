@@ -32,9 +32,9 @@ def chi2red(model, data, sig, dof):
 def calc_chi2(profs, gp):
 
     #hwmess = "calc_chi2 running on process %d of %d on %s.\n"
-    #myrank = MPI.COMM_WORLD.Get_rank()
-    #nprocs = MPI.COMM_WORLD.Get_size()
-    #procnm = MPI.Get_processor_name()
+    myrank = MPI.COMM_WORLD.Get_rank()
+    nprocs = MPI.COMM_WORLD.Get_size()
+    procnm = MPI.Get_processor_name()
     #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
     if gp.map_priors:
@@ -104,6 +104,8 @@ def calc_chi2(profs, gp):
 
     #Combine chi2 for nu, sigz, and sigRz for all populations
     chi2 = chi2_nu + chi2_sigz2 + chi2_tilt
+
+    #print('P', myrank, ': chi2 = ', chi2)
 
     return chi2
 ## \fn calc_chi2(profs)

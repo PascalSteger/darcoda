@@ -9,6 +9,7 @@
 import numpy as np
 import pdb
 import gl_helper as gh
+from mpi4py import MPI
 #import socket
 #import getpass
 
@@ -20,6 +21,12 @@ def check_investigate(inv):
 
 class Params():
     def __init__(self, timestamp = '', investigate = '', case = -1):
+
+        myrank = MPI.COMM_WORLD.Get_rank()
+        nprocs = MPI.COMM_WORLD.Get_size()
+        procnm = MPI.Get_processor_name()
+
+        print('P', myrank, ': Initiating Params()')
 
         # Set machine and user variables
         # ----------------------------------------------------------------------
@@ -60,8 +67,7 @@ class Params():
         ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
 
         ##Popn 2 1E4
-        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-        ##self.external_data_file_tilt = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple2_1e4nu_sigz_raw.dat']
 
         #Popn 1 & 2 1E4
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
@@ -72,17 +78,21 @@ class Params():
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
         ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
 
-        #Popn 2 1E6
-        self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
+        ##Popn 2 1E6
+        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
 
 
-        ##Popn 1 & 2 1E6
+        ###Popn 1 & 2 1E6
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
 
-        ##Pop 2 1E6 with tilt
-        #self.external_data_file = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
+        #Pop 2 1E6 with tilt
+        self.external_data_file = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
+
+        ##Pop 2 1E6 with BDD and Tilt
+        #self.external_data_file = ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt = ['/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat']
 
         #self.external_data_file= ['/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat']
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
@@ -96,14 +106,10 @@ class Params():
         self.dd_data = False
         #self.dd_data = False  # if we are to plot dd analytics or not
 
-        #self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat']
-
-        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
-
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
-        self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
+        self.data_z_cut = [2.4]  # (set > data z_max to use all avaiable data)
 
-        self.tilt = False   # If also modelling the tilt
+        self.tilt = True   # If also modelling the tilt
 
         #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
@@ -111,7 +117,7 @@ class Params():
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
-        self.nbins = 20   # Number of bins to split tracer stars into
+        self.nbins = 20   # Number of bins to split each population of tracer stars into
         self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
@@ -252,6 +258,8 @@ class Params():
         ip.set_geometry(self.geom, self.machine) # load spherical or
                                                  # disc version
                                                  # of the code
+
+        print('P', myrank, ': Instantiating Files class')
         import gl_class_files
         self.files = gl_class_files.Files(self, timestamp)
         from gl_data import Datafile
