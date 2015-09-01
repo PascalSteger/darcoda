@@ -164,7 +164,7 @@ def run(gp):
                     n_clustering_params = gp.ndim,# separate modes on
                                                   # the rho parameters
                                                   # only: gp.nrho
-                    wrapped_params = [ gp.ntracer_pops, gp.nbins, gp.nrhonu], # do
+                    wrapped_params = [ gp.ntracer_pops, gp.nbins[0], gp.nrhonu], # do
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
@@ -295,7 +295,7 @@ if __name__=="__main__":
                     n_clustering_params = gp.ndim,# separate modes on
                                                   # the rho parameters
                                                   # only: gp.nrho
-                    wrapped_params = [ gp.ntracer_pops, gp.nbins, gp.nrhonu], # do
+                    wrapped_params = [gp.ntracer_pops, gp.nbins[0], gp.nrhonu], # do
                                                                      #not
                                                                      #wrap-around
                                                                      #parameters
@@ -317,7 +317,7 @@ if __name__=="__main__":
                                                #value exists: highly
                                                #negative
                     outputfiles_basename = gp.files.outdir + '/output',
-                    seed = -1,
+                    seed = 1985,
                     verbose = True,
                     resume = False,
                     context = 0,

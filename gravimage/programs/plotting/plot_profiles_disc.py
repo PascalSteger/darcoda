@@ -105,8 +105,7 @@ def run(timestamp, basename, profile_source, gp):
 
     # then select only the best models for plotting the profiles
     #pc.cut_subset()
-    pc.set_x0(gp.z_bincenters) # [kpc]
-    print('here')
+    pc.set_z_values(gp.z_bincenter_vecs, gp.z_all_pts_sorted)
 
     if profile_source == 'MNoutput':
         pc.weighted_sort_profiles_disc(gp)
@@ -116,11 +115,17 @@ def run(timestamp, basename, profile_source, gp):
     pc.write_all_disc(basename, gp)
 
     for t_pop in range(0, gp.ntracer_pops):
-        pc.plot_profile(basename, 'kz_nu_vec', t_pop, profile_source, gp)
-        pc.plot_profile(basename, 'nu_vec', t_pop, profile_source, gp)
-        pc.plot_profile(basename, 'sigz2_vec', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'kz_nu_vecs', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'nu_vecs', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'sigz2_vecs', t_pop, profile_source, gp)
         if gp.tilt:
-            pc.plot_profile(basename, 'sigmaRz_vec', t_pop, profile_source, gp)
+            pc.plot_profile(basename, 'sigmaRz_vecs', t_pop, profile_source, gp)
+
+        #pc.plot_profile(basename, 'kz_nu_vec', t_pop, profile_source, gp)
+        #pc.plot_profile(basename, 'nu_vec', t_pop, profile_source, gp)
+        #pc.plot_profile(basename, 'sigz2_vec', t_pop, profile_source, gp)
+        #if gp.tilt:
+        #    pc.plot_profile(basename, 'sigmaRz_vec', t_pop, profile_source, gp)
 
     if gp.darkmattermodel == 'kz_dm':
         pc.plot_profile(basename, 'kz_rho_DM_vec', 0, profile_source, gp)

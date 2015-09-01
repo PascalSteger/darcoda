@@ -68,7 +68,7 @@ def calc_chi2(profs, gp):
         #Calculate tracer density chi2 for population no. pop
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
-        numodel  = profs.get_prof('nu_vec', pop)
+        numodel  = profs.get_prof('nu_vecs', pop)
         chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
         chi2_nu += chi2_nu_tmp
         #print('pop = ', pop)
@@ -80,7 +80,7 @@ def calc_chi2(profs, gp):
         #Calculate z-velocity dispersion chi2 for population no. pop
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
-        sigz2_model = profs.get_prof('sigz2_vec', pop)
+        sigz2_model = profs.get_prof('sigz2_vecs', pop)
         chi2_sigz2_tmp  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
         if chi2_sigz2_tmp == np.inf:
             print('chi2_sig has become infinite')
@@ -89,9 +89,9 @@ def calc_chi2(profs, gp):
 
         #Calculate Rz-velocity dispersion chi2 for population no. pop
         if gp.tilt:
-            sigmaRzdat  = gp.dat.tilt
-            sigmaRzerr = gp.dat.tilterr
-            sigmaRz_model = profs.get_prof('sigmaRz_vec', pop)
+            sigmaRzdat  = gp.dat.tilt[pop]
+            sigmaRzerr = gp.dat.tilterr[pop]
+            sigmaRz_model = profs.get_prof('sigmaRz_vecs', pop)
             chi2_tilt_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1.)
             chi2_tilt += chi2_tilt_tmp
             #print ('sigmaRz2dat:',sigmaRz2dat)

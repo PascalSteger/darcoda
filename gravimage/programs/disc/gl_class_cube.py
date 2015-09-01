@@ -88,8 +88,10 @@ def map_kr(params, prof, pop, gp):
     kz_vector = []
     kz_i_m1 = kz_C #kz_(i-1)
 
-    for jter in range(0, gp.nbins):
-        z_diff = gp.z_all_pts[jter+1] - gp.z_all_pts[jter]
+
+    z_points_tmp = np.append(0., gp.z_bincenter_vecs[pop])
+    for jter in range(0, gp.nbins[pop]):
+        z_diff = z_points_tmp[jter+1] - z_points_tmp[jter]
         if kz_rhonu_selection == 'tophat':
             kz_max = kz_i_m1 + gp.max_kz_slope*z_diff
             kz_min = kz_i_m1 - gp.max_kz_slope*z_diff
@@ -336,6 +338,7 @@ class Cube:
         IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
         IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
         for t_pop in range(0, gp.ntracer_pops):
+            print('pc[off+t_pop] = ', pc[off+t_pop])
             pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
         off += offstep
 
@@ -371,7 +374,7 @@ class Cube:
 
         #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector # kz_nu_LS
         for tracer_pop in range(0, gp.ntracer_pops):
-            offstep = gp.nrhonu + 1
+            offstep = gp.nbins[tracer_pop] + 1 + 1 #kz on bincenters, and zC=0, and nu_C
             if gp.scan_rhonu_space:
                 tmp_tracer = map_rhonu(pc[off:off+offstep], 'nu', tracer_pop, gp)
             else:
@@ -382,7 +385,6 @@ class Cube:
             off += offstep
 
         #print('pc = ', pc[0:gp.ndim])
-        #pdb.set_trace()
 
         # Introducing tilt term:
         if gp.tilt:

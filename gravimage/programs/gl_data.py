@@ -151,7 +151,7 @@ class Datafile:
             dummy, dummy, dummy, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[pop])
             self.sigz2.append(sigz2dat[:]) # [km/s]
             self.sigz2err.append(sigz2err[:]) # [km/s]
-        self.meansigz2err = np.mean(self.sigz2err)
+        self.meansigz2err = np.mean(np.concatenate(self.sigz2err, axis=0))
 
         return
     ## \fn read_sig(self, gp)
@@ -168,18 +168,29 @@ class Datafile:
     ## \fn read_tilt(self, gp)   SS 21 may 2015
 
     def read_nu(self, gp):
+        gp.z_all_pts_unsort = [0.0]
         for pop in range(0, gp.ntracer_pops):
             bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[pop])
             self.nu.append(nudat[:]) # [#stars/kpc^3]
             self.nuerr.append(nuerr[:])
-        gp.z_bincenters = bincenters # [kpc]
-        gp.z_binmins = binmins
-        gp.z_binmaxs = binmaxs
-        #gp.z_all_pts = np.append(np.append([0.0], bincenters), [binmaxs[-1]]) #[kpc]
-        gp.z_all_pts = np.append([0.0], bincenters)  #[kpc]
-        self.meannuerr = np.mean(self.nuerr)
+            gp.z_bincenter_vecs.append(bincenters[:]) # [kpc]
+            gp.z_binmin_vecs.append(binmins[:])
+            gp.z_binmax_vecs.append(binmaxs[:])
 
-        return  # SS added ...
+            gp.z_all_pts_unsort = np.append(gp.z_all_pts_unsort, bincenters)
+
+        #Remove repeats (?)
+        gp.z_all_pts_unsort = np.unique(gp.z_all_pts_unsort)
+
+        #Sort z points and define masks for each population
+        gp.z_all_pts_sorted = np.sort(gp.z_all_pts_unsort)
+        gp.z_vec_masks = [np.in1d(gp.z_all_pts_sorted, np.append(0, gp.z_bincenter_vecs[pop])) for pop in range(0, gp.ntracer_pops)]
+        self.meannuerr = np.mean(np.concatenate(self.nuerr, axis=0))
+
+        return
+
+
+
 
     def read_kappa(self, gp):
         for pop in np.arange(gp.pops+1):

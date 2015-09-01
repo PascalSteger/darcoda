@@ -19,40 +19,48 @@ class Profiles:
 
         #z-profile points
         self.z_C = 0.0
-        self.z_vec = np.zeros(nbins)
-        self.binmin = np.zeros(nbins) #?
-        self.binmax = np.zeros(nbins) #?
-        self.xbins = np.zeros(nbins+1) #to mesh with general code
-        self.x0 = np.zeros(nbins) #to mesh with general code
+        self.z_vecs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
+        self.z_vecs_comb_w0 = np.zeros(sum(nbins)+1)
+        self.binmins = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #?
+        self.binmaxs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #?
+        self.z_vec_masks = [[].append(None) for ii in range(0, ntracer_pops)]
+
+        #self.xbins = np.zeros(nbins+1) #to mesh with general code
+        #self.x0 = np.zeros(nbins) #to mesh with general code
 
         #Dark Matter profile parameters and derived mass density
         self.rho_DM_C      = 0.0               #Multinest
         self.kz_rho_DM_C   = 0.0               #Multinest
-        self.kz_rho_DM_vec = np.zeros(nbins)   #Multinest
-        self.rho_DM_vec    = np.zeros(nbins)   #Derived from phys
+        self.kz_rho_DM_vec = np.zeros(sum(nbins))   #Multinest
+        self.rho_DM_vec    = np.zeros(sum(nbins))   #Derived from phys
         self.Sig_DM_C      = 0.0               #always zero if z_C = 0
-        self.Sig_DM_vec    = np.zeros(nbins)   #Derived from phys
+        self.Sig_DM_vec    = np.zeros(sum(nbins))   #Derived from phys
 
         #Baryon mass density and parameters
         #self.baryon_params  = np.zeros(nbaryon_pops*nbaryon_params)
         self.rho_baryon_C   = 0.0
-        self.rho_baryon_vec = np.zeros(nbins)
+        self.rho_baryon_vec = np.zeros(sum(nbins))
         self.Sig_baryon_C = 0.0                 #always zero if z_C = 0
-        self.Sig_baryon_vec = np.zeros(nbins)
+        self.Sig_baryon_vec = np.zeros(sum(nbins))
 
         #Total Mass density
         self.rho_total_C = 0.0
-        self.rho_total_vec = np.zeros(nbins)
+        self.rho_total_vec = np.zeros(sum(nbins))
         self.Sig_total_C = 0.0                 #always zero if z_C = 0
-        self.Sig_total_vec = np.zeros(nbins)
+        self.Sig_total_vec = np.zeros(sum(nbins))
 
         #Tracer profile parameters and derived mass density
         self.norm_C    = np.zeros(ntracer_pops)
         self.nu_C      = np.zeros(ntracer_pops)            #Multinest
-        self.kz_nu_C   = np.zeros(ntracer_pops)                               #Multinest
-        self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
-        self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
-        self.sigz2_vec = np.zeros(ntracer_pops * nbins)    #Derived from phys
+        self.kz_nu_C   = np.zeros(ntracer_pops)            #Multinest
+
+        self.kz_nu_vecs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #Multinest
+        self.nu_vecs    = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #Derived from phys
+        self.sigz2_vecs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #Derived from phys
+
+        #self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
+        #self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
+        #self.sigz2_vec = np.zeros(ntracer_pops * nbins)    #Derived from phys
 
         #chi2 of profile
         self.chi2 = 0.0
@@ -65,8 +73,11 @@ class Profiles:
         self.hyper_sigz2 = 0.
 
         #Tilt
-        self.tilt_vec = np.zeros(ntracer_pops * (nbins))
-        self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins))
+        self.tilt_vecs     = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
+        self.sigmaRz_vecs  = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
+
+        #self.tilt_vec = np.zeros(ntracer_pops * (nbins))
+        #self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins))
 
     ## \fn __init__(self, pops, nipol)
     # constructor
@@ -76,11 +87,21 @@ class Profiles:
     # set_prof just for the vectors, so that the length can be checked
 
     def set_prof(self, prof, vec, pop, gp):
-        gh.sanitize_vector(vec, len(gp.z_bincenters), -1e30, 1e30, gp.debug)
+        if prof in ['kz_rho_DM_vec', 'rho_DM_vec', 'Sig_DM_vec', 'rho_baryon_vec', 'Sig_baryon_vec',
+            'rho_total_vec', 'Sig_total_vec']:
+            proper_vec_length = gp.nrhonu - 1
+        elif prof in ['z_vecs_comb_w0']:
+            proper_vec_length = gp.nrhonu
+        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz_vecs']:
+            proper_vec_length = gp.nbins[pop]
+
+        gh.sanitize_vector(vec, proper_vec_length, -1e30, 1e30, gp.debug)
 
         #z-profile points
-        if prof == 'z_vec':
-            self.z_vec = vec
+        if prof == 'z_vecs':
+            self.z_vecs[pop] = vec
+        elif prof == 'z_vecs_comb_w0':
+            self.z_vecs_comb_w0 = vec
 
         #Dark matter
         elif prof == 'kz_rho_DM_vec':
@@ -106,18 +127,32 @@ class Profiles:
             self.Sig_total_vec = vec
 
         #Tracer stars
-        elif prof == 'kz_nu_vec':
-            self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
-        elif prof == 'nu_vec':
-            self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]  = vec
-        elif prof == 'sigz2_vec':
-            self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
+        elif prof == 'kz_nu_vecs':
+            self.kz_nu_vecs[pop] = vec
+        elif prof == 'nu_vecs':
+            self.nu_vecs[pop]  = vec
+        elif prof == 'sigz2_vecs':
+            self.sigz2_vecs[pop] = vec
+
+        #
+        #elif prof == 'kz_nu_vec':
+        #    self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
+        #elif prof == 'nu_vec':
+        #    self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]  = vec
+        #elif prof == 'sigz2_vec':
+        #    self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
 
         #Tilt
-        elif prof == 'tilt_vec':
-            self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
-        elif prof == 'sigmaRz_vec':
-            self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
+        elif prof == 'tilt_vecs':
+            self.tilt_vecs[pop] = vec
+        elif prof == 'sigmaRz_vecs':
+            self.sigmaRz_vecs[pop] = vec
+
+        #
+        #elif prof == 'tilt_vec':
+        #    self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
+        #elif prof == 'sigmaRz_vec':
+        #    self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
 
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
@@ -156,18 +191,30 @@ class Profiles:
             return self.Sig_total_vec
 
         #Tracer stars
-        elif prof == 'kz_nu_vec':
-            return self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins]
-        elif prof == 'nu_vec':
-            return self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]
-        elif prof == 'sigz2_vec':
-            return self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins]
+        elif prof == 'kz_nu_vecs':
+            return self.kz_nu_vecs[pop]
+        elif prof == 'nu_vecs':
+            return self.nu_vecs[pop]
+        elif prof == 'sigz2_vecs':
+            return self.sigz2_vecs[pop]
+
+        #elif prof == 'kz_nu_vec':
+        #    return self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins]
+        #elif prof == 'nu_vec':
+        #    return self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]
+        #elif prof == 'sigz2_vec':
+        #    return self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins]
 
         #Tilt
-        elif prof == 'tilt_vec':
-            return self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins]
-        elif prof == 'sigmaRz_vec':
-            return self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins]
+        elif prof == 'tilt_vecs':
+            return self.tilt_vecs[pop]
+        elif prof == 'sigmaRz_vecs':
+            return self.sigmaRz_vecs[pop]
+
+        #elif prof == 'tilt_vec':
+        #    return self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins]
+        #elif prof == 'sigmaRz_vec':
+        #    return self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins]
 
         ##chi2 of profile
         #elif prof == 'chi2'

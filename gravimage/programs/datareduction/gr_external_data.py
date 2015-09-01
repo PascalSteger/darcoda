@@ -21,20 +21,19 @@ import numpy.random as rand
 from plotting.gl_collection import ProfileCollection
 
 def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, sigz2err, gp):
-
     # write tracer densities 3D
     for pop in range(0, gp.ntracer_pops):
         file_nu = open(gp.files.nufiles[pop], 'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','nu(z) [#/pc^3];','error [#/pc^3]', file=file_nu)
-        for b in range(gp.nbins):
-            print(Bincenter[b], Binmin[b], Binmax[b], nudat[pop][b], nuerr[pop][b], file=file_nu)
+        for b in range(gp.nbins[pop]):
+            print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], nudat[pop][b], nuerr[pop][b], file=file_nu)
         file_nu.close()
         print ('gp.files.nufiles[pop]:',gp.files.nufiles[pop])
 
         file_sig = open(gp.files.sigfiles[pop],'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax [kpc];', 'sigma_z^2(z) [km^2/s^2];', 'error [km^2/s^2]', file=file_sig)
-        for b in range(gp.nbins):
-            print(Bincenter[b], Binmin[b], Binmax[b], sigz2dat[pop][b], sigz2err[pop][b], file=file_sig)
+        for b in range(gp.nbins[pop]):
+            print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], sigz2dat[pop][b], sigz2err[pop][b], file=file_sig)
         file_sig.close()
         print ('gp.files.sigfiles[pop]:',gp.files.sigfiles[pop])
 
@@ -42,8 +41,8 @@ def write_tilt_output_files(Bincenter, Binmin, Binmax, tilt, tilterr, gp):
     for pop in range(0, gp.ntracer_pops):
         file_tilt = open(gp.files.tiltfiles[pop], 'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','sigmaRz(z) [km^2/s^2];','error [km^2/s^2]', file=file_tilt)
-        for b in range(gp.nbins):
-            print(Bincenter[b], Binmin[b], Binmax[b], tilt[pop][b], tilterr[pop][b], file=file_tilt)
+        for b in range(gp.nbins[pop]):
+            print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], tilt[pop][b], tilterr[pop][b], file=file_tilt)
         file_tilt.close()
         print ('gp.files.tiltfiles[pop]:',gp.files.tiltfiles[pop])
 
@@ -116,14 +115,13 @@ def run(gp):
 
     for pop in range(0, gp.ntracer_pops):
         if gp.binning == 'consttr':
-            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used[pop], gp.nbins)
+            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used[pop], gp.nbins[pop])
         elif gp.binning == 'linspace':
-            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used[0]),1), gp.nbins)
+            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used[0]),1), gp.nbins[pop])
 
         binmin_pops.append(binmin)
         binmax_pops.append(binmax)
         bincentermed_pops.append(bincentermed)
-
 
     # Then calculate tracer number density [#stars/kpc^3], [#stars/kpc^3], [km/s], [km/s]
     nu_data=[]
@@ -149,9 +147,9 @@ def run(gp):
 
     #nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used
 
-    if gp.tilt:
-        print ('tilt2_data:',tilt2_data)
-        print ('tilt2_data_fit:',(tilt2_data-np.square(0.0087*(1000.*bincentermed)**1.44)/tilt2_data))
+    #if gp.tilt:
+    #    print ('tilt2_data:',tilt2_data)
+    #    print ('tilt2_data_fit:',(tilt2_data-np.square(0.0087*(1000.*bincentermed)**1.44)/tilt2_data))
     #pdb.set_trace()
 
     if gp.TheoryData == True:
@@ -209,9 +207,9 @@ def run(gp):
     #Output data to file
     #TO DO MULTIPOPS BODGE
 
-    write_disc_output_files(bincentermed_pops[0], binmin_pops[0], binmax_pops[0], nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
+    write_disc_output_files(bincentermed_pops, binmin_pops, binmax_pops, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
     if gp.tilt:
-        write_tilt_output_files(bincentermed, binmin, binmax, tilt2_data, tilt2_data_err, gp)
+        write_tilt_output_files(bincentermed_pops, binmin_pops, binmax_pops, tilt2_data, tilt2_data_err, gp)
 
     #Set central nu prior range #TODO: look again at this prior
     gp.nu_C_max = max(2.*Ntr_used/(binmax[0]-binmin[0]))

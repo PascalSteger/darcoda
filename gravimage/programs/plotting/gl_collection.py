@@ -72,7 +72,7 @@ class ProfileCollection():
         self.M95hi = Profiles(pops, nipol)
         self.Mmax  = Profiles(pops, nipol)
         self.BestFit = Profiles(pops, nipol)
-        self.analytic = Profiles(pops, 100)
+        #self.analytic = Profiles(pops, 100)
     ## \fn __init__(self, pops, nipol)
     # constructor
     # @param pops number of populations
@@ -135,6 +135,24 @@ class ProfileCollection():
     ## \fn set_x0(self, x0)
     # set radii for 1sigma, 2sigma profiles
     # @param x0 radii in pc
+
+
+    def set_z_values(self, z_vecs, z_vecs_comb_w0):
+        self.Mmin.z_vecs = z_vecs
+        self.M95lo.z_vecs = z_vecs
+        self.M68lo.z_vecs = z_vecs
+        self.Mmedi.z_vecs = z_vecs
+        self.M68hi.z_vecs = z_vecs
+        self.M95hi.z_vecs = z_vecs
+        self.Mmax.z_vecs = z_vecs
+
+        self.Mmin.z_vecs_comb_w0 = z_vecs_comb_w0
+        self.M95lo.z_vecs_comb_w0 = z_vecs_comb_w0
+        self.M68lo.z_vecs_comb_w0 = z_vecs_comb_w0
+        self.Mmedi.z_vecs_comb_w0 = z_vecs_comb_w0
+        self.M68hi.z_vecs_comb_w0 = z_vecs_comb_w0
+        self.M95lo.z_vecs_comb_w0 = z_vecs_comb_w0
+        self.Mmax.z_vecs_comb_w0 = z_vecs_comb_w0
 
 
     def sort_prof(self, prof, pop, gp): #SS: no longer in use(?)
@@ -211,7 +229,6 @@ class ProfileCollection():
         bin_prof_credreg_bounds=[] # credibility region boundaries for this bin
 
         #print (self.goodprof[np.argmin(self.goodchi)])
-
         for lter in range(len(bin_prof_values)):
             sort_indices = np.argsort(bin_prof_values[lter])
             bin_prof_values[lter] = bin_prof_values[lter][sort_indices]
@@ -393,13 +410,22 @@ class ProfileCollection():
 
     def weighted_sort_profiles_disc(self, gp):
         for t_pop in range(0, gp.ntracer_pops):
-            self.weighted_sort_prof('kz_nu_vec', t_pop, gp)
-            self.weighted_sort_prof('nu_vec', t_pop, gp)
-            self.weighted_sort_prof('sigz2_vec', t_pop, gp)
+            self.weighted_sort_prof('kz_nu_vecs', t_pop, gp)
+            self.weighted_sort_prof('nu_vecs', t_pop, gp)
+            self.weighted_sort_prof('sigz2_vecs', t_pop, gp)
 
             if gp.tilt:
-                self.weighted_sort_prof('sigmaRz_vec', t_pop, gp)
-                self.weighted_sort_prof('tilt_vec', t_pop, gp)
+                self.weighted_sort_prof('sigmaRz_vecs', t_pop, gp)
+                self.weighted_sort_prof('tilt_vecs', t_pop, gp)
+
+
+            #self.weighted_sort_prof('kz_nu_vec', t_pop, gp)
+            #self.weighted_sort_prof('nu_vec', t_pop, gp)
+            #self.weighted_sort_prof('sigz2_vec', t_pop, gp)
+
+            #if gp.tilt:
+            #    self.weighted_sort_prof('sigmaRz_vec', t_pop, gp)
+            #    self.weighted_sort_prof('tilt_vec', t_pop, gp)
 
         self.weighted_sort_prof('kz_rho_DM_vec', 0, gp)
 
@@ -485,7 +511,13 @@ class ProfileCollection():
     def write_prof(self, basename, prof, pop, gp):
         output = go.Output()
         uni = unit(prof)
-        output.add('radius (models) [pc]', self.Mmedi.x0)
+
+        if prof in ['kz_rho_DM_vec', 'rho_DM_vec', 'Sig_DM_vec', 'rho_baryon_vec', 'Sig_baryon_vec',
+            'rho_total_vec', 'Sig_total_vec']:
+            output.add('radius (models) [pc]', self.Mmedi.z_vecs_comb_w0[1:])
+        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz_vecs']:
+            output.add('radius (models) [pc]', self.Mmedi.z_vecs[pop])
+
         output.add('M 95% CL low ' + uni, self.M95lo.get_prof(prof, pop))
         output.add('M 68% CL low ' + uni, self.M68lo.get_prof(prof, pop))
         output.add('M median '     + uni, self.Mmedi.get_prof(prof, pop))
@@ -565,13 +597,20 @@ class ProfileCollection():
     # @param gp global parameters
 
     def write_all_disc(self, basename, gp):
+        self.write_prof(basename, 'kz_rho_DM_vec', 0, gp) #DELETE ME
         for t_pop in range(0, gp.ntracer_pops):
-            self.write_prof(basename, 'kz_nu_vec', t_pop, gp)
-            self.write_prof(basename, 'nu_vec', t_pop, gp)
-            self.write_prof(basename, 'sigz2_vec', t_pop, gp)
+            self.write_prof(basename, 'kz_nu_vecs', t_pop, gp)
+            self.write_prof(basename, 'nu_vecs', t_pop, gp)
+            self.write_prof(basename, 'sigz2_vecs', t_pop, gp)
             if gp.tilt:
-                self.write_prof(basename, 'sigmaRz_vec', t_pop, gp)
-                self.write_prof(basename, 'tilt_vec', t_pop, gp)
+                self.write_prof(basename, 'sigmaRz_vecs', t_pop, gp)
+                self.write_prof(basename, 'tilt_vecs', t_pop, gp)
+            #self.write_prof(basename, 'kz_nu_vec', t_pop, gp)
+            #self.write_prof(basename, 'nu_vec', t_pop, gp)
+            #self.write_prof(basename, 'sigz2_vec', t_pop, gp)
+            #if gp.tilt:
+            #    self.write_prof(basename, 'sigmaRz_vec', t_pop, gp)
+            #    self.write_prof(basename, 'tilt_vec', t_pop, gp)
 
         self.write_prof(basename, 'kz_rho_DM_vec', 0, gp)
 
@@ -605,7 +644,7 @@ class ProfileCollection():
     def plot_data(self, ax, basename, prof, pop, gp):
         print('Plotting data for prof = ', prof)
         output = go.Output()
-        r0 = self.Mmedi.x0 # [pc]
+        r0 = self.Mmedi.z_vecs[pop] # [pc]
         output.add('radius (data) [pc]', r0)
         if prof == 'Sig':
             # get 2D data here
@@ -622,7 +661,7 @@ class ProfileCollection():
             ax.fill_between(r0, Sigdat-Sigerr, Sigdat+Sigerr, \
                             color='blue', alpha=0.3, lw=1)
             ax.set_ylim([min(Sigdat-Sigerr)/2., 2.*max(Sigdat+Sigerr)])
-        elif prof == 'nu' or prof == 'nu_vec':
+        elif prof == 'nu' or prof == 'nu_vec' or prof == 'nu_vecs':
             # get 3D data here
             # Rbin [Xscale], Binmin [Xscale], Binmax [Xscale], nu(R)/nu(0) [1], error [1]
             dum,dum,dum,nudat,nuerr = np.transpose(np.loadtxt(gp.files.nufiles[pop], \
@@ -636,7 +675,7 @@ class ProfileCollection():
             ax.fill_between(r0, nudat-nuerr, nudat+nuerr, \
                             color='blue', alpha=0.3, lw=1)
             #ax.set_ylim([min(nudat-nuerr)/2., 2.*max(nudat+nuerr)]) #bodge
-        elif prof == 'sig' or prof == 'sig_vec':
+        elif prof == 'sig' or prof == 'sig_vec' or prof == 'sig_vec':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
             sigdat = DATA[4-1] # [maxsiglosi]
@@ -650,7 +689,7 @@ class ProfileCollection():
             ax.fill_between(r0, sigdat-sigerr, sigdat+sigerr, \
                             color='blue', alpha=0.3, lw=1)
             #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
-        elif prof == 'sigz2_vec':
+        elif prof == 'sigz2_vec' or prof == 'sigz2_vecs':
             DATA = np.transpose(np.loadtxt(gp.files.sigfiles[pop], \
                                            unpack=False, skiprows=1))
             sigz2dat = DATA[4-1] # [maxsiglosi]
@@ -665,7 +704,7 @@ class ProfileCollection():
                             color='blue', alpha=0.3, lw=1)
             #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
 
-        elif prof == 'sigmaRz_vec':
+        elif prof == 'sigmaRz_vec' or prof == 'sigmaRz_vec':
             DATA = np.transpose(np.loadtxt(gp.files.tiltfiles[pop], \
                                            unpack=False, skiprows=1))
             tiltdat = DATA[4-1] # [maxsiglosi]
@@ -723,17 +762,17 @@ class ProfileCollection():
         elif prof == 'sig':
             ax.set_ylabel('$\\sigma_{\\rm{LOS},'+str(pop)+'}\\quad[\\rm{km}/\\rm{s}]$')
         # Disc cases
-        elif prof == 'nu_vec':
+        elif prof == 'nu_vec' or prof == 'nu_vecs':
             ax.set_ylabel('$\\nu_{\\rm{Tr},'+str(pop)+'}\\quad[\\rm{stars}/\\rm{kpc}^3]$')
             #ax.set_ylim(1.0E4, 4.0E5)
-        elif prof == 'sig_vec':
+        elif prof == 'sig_vec' or prof == 'sig_vecs':
             ax.set_ylabel('$\\sigma_{z}\\quad[\\rm{km}/\\rm{s}]$')
             ax.set_ylim(10., 40.)
-        elif prof == 'sigz2_vec':
+        elif prof == 'sigz2_vec' or prof == 'sigz2_vecs':
             ax.set_ylabel('$\\sigma_{z,'+str(pop)+'}^2\\quad[\\rm{km}^2/\\rm{s}^2]$')
             #ax.set_ylim(300., 2000.)
 
-        elif prof == 'kz_nu_vec':
+        elif prof == 'kz_nu_vec' or prof == 'kz_nu_vecs':
             ax.set_ylabel('$k(z)_{\\nu,'+str(pop)+'} $')
             #ax.set_ylim(0., 6.)
         elif prof == 'kz_rho_DM_vec':
@@ -822,11 +861,20 @@ class ProfileCollection():
 
     def fill_nice(self, ax, prof, pop, gp):
         print('fill_nice, prof = ', prof, 'pop = ', pop)
+        #pdb.set_trace()
+        if prof in ['kz_rho_DM_vec', 'rho_DM_vec', 'Sig_DM_vec', 'rho_baryon_vec', 'Sig_baryon_vec',
+            'rho_total_vec', 'Sig_total_vec']:
+            r0 = self.Mmedi.z_vecs_comb_w0[1:]
+        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz_vecs']:
+            r0 = self.Mmedi.z_vecs[pop]
+
+
+
         M95lo = self.M95lo.get_prof(prof, pop)
         M68lo = self.M68lo.get_prof(prof, pop)
         Mmedi = self.Mmedi.get_prof(prof, pop)
         BestFit = self.BestFit.get_prof(prof, pop)
-        r0    = self.Mmedi.x0
+
         M68hi = self.M68hi.get_prof(prof, pop)
         M95hi = self.M95hi.get_prof(prof, pop)
         ax.fill_between(r0, M95lo, M95hi, color='black', alpha=0.2, lw=0.1)
@@ -908,7 +956,7 @@ class ProfileCollection():
             ax  = fig.add_subplot(111)
             ax.set_yscale('log')
 
-        if prof == 'nu_vec' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec' or prof == 'sigz2_vec':
+        if prof == 'nu_vecs' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec' or prof == 'sigz2_vecs':
             fig = plt.figure()
             ax  = fig.add_subplot(111)
             ax.set_xscale('linear')  # SS: was 'log' before
@@ -944,7 +992,7 @@ class ProfileCollection():
             ax.set_yscale('linear')  # plot this in log or linear scale...?
 
 
-        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vec' or prof == 'sig_vec' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vec':
+        if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vecs' or prof == 'sig_vecs' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vecs':
             fig = plt.figure()
             ax  = fig.add_subplot(111)
             ax.set_xscale('linear')  # SS: was 'log' before
@@ -979,8 +1027,8 @@ class ProfileCollection():
 
 
             #self.plot_N_samples(ax, prof, pop) #SS: Don't plot thin gray lines
-            self.plot_bins(ax, prof, gp)
-            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vec' or prof == 'sig_vec' or prof == 'sigz2_vec' or prof == 'sigmaRz_vec':
+            self.plot_bins(ax, prof, pop, gp)
+            if prof == 'Sig' or prof=='nu' or prof == 'sig' or prof == 'nu_vecs' or prof == 'sig_vecs' or prof == 'sigz2_vecs' or prof == 'sigmaRz_vecs':
                 self.plot_data(ax, basename, prof, pop, gp)
 
             if gp.investigate == 'simplenu':
@@ -995,7 +1043,8 @@ class ProfileCollection():
             #ax.set_xlim(0, gp.z_bincenters[-1]) #bodge
             #ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
             #ax.set_xlim(0., gp.z_all_pts[-1])
-            ax.set_xlim(0., gp.z_binmaxs[-1])
+            ax.set_xlim(0., max(np.concatenate(gp.z_binmax_vecs)))
+            #ax.set_xlim(0., 2.41)
 
             #for tick in ax.xaxis.get_majorticklabels():
             #    tick.set_horizontalalignment("left")
@@ -1101,7 +1150,7 @@ class ProfileCollection():
         normC = 22.85
 
         #zvec=np.linspace(0, gp.data_z_cut, 100)
-        zvec=np.linspace(0, gp.z_binmaxs[-1], 100)
+        zvec=np.linspace(0, max(np.concatenate(gp.z_binmax_vecs)), 100)
 
         Kzvec_total = -((K*zvec)/(np.sqrt(zvec**2 + D**2)) + 2.*F*zvec)
         Kzvec_baryon = -((K*zvec)/(np.sqrt(zvec**2 + D**2)))
@@ -1216,8 +1265,14 @@ class ProfileCollection():
 
         return
 
-    def plot_bins(self, ax, prof, gp):
-        [ax.axvline(x, color='c', linewidth=0.1) for x in gp.z_bincenters]
+    def plot_bins(self, ax, prof, pop, gp):
+        if prof in ['kz_rho_DM_vec', 'rho_DM_vec', 'Sig_DM_vec', 'rho_baryon_vec', 'Sig_baryon_vec',
+            'rho_total_vec', 'Sig_total_vec']:
+            r0 = gp.z_all_pts_sorted
+        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz_vecs']:
+            r0 = gp.z_bincenter_vecs[pop]
+
+        [ax.axvline(x, color='c', linewidth=0.1) for x in r0]
         return
 
 

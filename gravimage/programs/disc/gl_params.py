@@ -62,63 +62,105 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
 
+        ######## 1E4 Sample Size ########
         ##Popn 1 1E4
         #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat']
-        ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
+        ###Popn 2 1E4
+        self.external_data_file= ['/simplenu/simple2_1e4nu_sigz_raw.dat']
+        ##Popn 1 & 2 1E4
+        #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat', '/simplenu/simple2_1e4nu_sigz_raw.dat']
 
-        ##Popn 2 1E4
-        #self.external_data_file= ['/simplenu/simple2_1e4nu_sigz_raw.dat']
+        ##Popn 1 1E4 DD
+        #self.external_data_file= ['/simplenu/simple_dd_1e4nu_sigz_raw.dat']
+        ##Popn 2 1E4 DD
+        #self.external_data_file= ['/simplenu/simple2_dd_1e4nu_sigz_raw.dat']
+        ##Popn 1 & 2 1E4 DD
+        #self.external_data_file= ['/simplenu/simple_dd_1e4nu_sigz_raw.dat', '/simplenu/simple2_dd_1e4nu_sigz_raw.dat']
 
-        #Popn 1 & 2 1E4
-        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        ##Popn 2 1E4 Big DD
+        #self.external_data_file= ['/simplenu/simple2_bdd_1e4nu_sigz_raw.dat']
+
+        ##Popn 2 1E4 Big DD with Tilt
+        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e4nu_sigz_bin.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e4nu_sigRz_raw.dat']
 
 
+        ######## 1E5 Sample Size ########
+        ##Popn 1 1E5
+        #self.external_data_file= ['/simplenu/simple_1e5nu_sigz_raw.dat']
+        ##Popn 2 1E5
+        #self.external_data_file= ['/simplenu/simple2_1e5nu_sigz_raw.dat']
+        ##Popn 1 & 2 1E5
+        #self.external_data_file= ['/simplenu/simple_1e5nu_sigz_raw.dat', '/simplenu/simple2_1e5nu_sigz_raw.dat']
+
+        ##Popn 1 1E5 DD
+        #self.external_data_file= ['/simplenu/simple_dd_1e5nu_sigz_raw.dat']
+        ##Popn 2 1E5 DD
+        #self.external_data_file= ['/simplenu/simple2_dd_1e5nu_sigz_raw.dat']
+        ##Popn 1 & 2 1E5 DD
+        #self.external_data_file= ['/simplenu/simple_dd_1e5nu_sigz_raw.dat', '/simplenu/simple2_dd_1e5nu_sigz_raw.dat']
+
+        ##Popn 2 1E5 Big DD
+        #self.external_data_file= ['/simplenu/simple2_bdd_1e5nu_sigz_raw.dat']
+
+        ##Popn 2 1E5 Big DD with Tilt
+        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e5nu_sigz_bin.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e5nu_sigRz_raw.dat']
+
+
+        ####### 1E6 Sample Size ########
         ##Popn 1 1E6
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
-        ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
-
-        ##Popn 2 1E6
+        #Popn 2 1E6
         #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-
-
-        ###Popn 1 & 2 1E6
+        ##Popn 1 & 2 1E6
         #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
-        ##self.external_data_file_tilt = ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
 
-        #Pop 2 1E6 with tilt
-        self.external_data_file = ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
-        self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
-
-        ##Pop 2 1E6 with BDD and Tilt
-        #self.external_data_file = ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt = ['/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat']
-
-        #self.external_data_file= ['/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat']
-        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
-        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-        #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-        #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        ##Popn 1 1E6 DD
+        #self.external_data_file= ['/simplenu/simple_dd_1e6nu_sigz_raw.dat']
+        ##Popn 2 1E6 DD
         #self.external_data_file= ['/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
-        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
+        ##Popn 1 & 2 1E6 DD
+        #self.external_data_file= ['/simplenu/simple_dd_1e6nu_sigz_raw.dat', '/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
 
-        self.dd_data = False
-        #self.dd_data = False  # if we are to plot dd analytics or not
+        ##Popn 2 1E6 Big DD
+        #self.external_data_file= ['/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
+
+        ##Popn 1 1E6 Tilt
+        #self.external_data_file= ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple_tilt_1e6nu_sigRz_raw.dat'] #MISSING
+        ##Popn 2 1E6 Tilt
+        #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
+        ##Popn 1 & 2 1E6 Tilt MISSING ELEMENTS
+        #self.external_data_file= ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple_tilt_1e6nu_sigRz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat'] #MISSING 0
+
+        ##Popn 2 1E6 Big DD and Tilt
+        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
+        #self.external_data_file_tilt= ['/simplenu/simple_bdd_tilt_1e6nu_sigRz_raw.dat']
+
+        ######## Hunt & Kawata Data sets ########
+        #self.external_data_file = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
+        #self.external_data_file_tilt = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
+
+
+
+        self.dd_data = False # if we are to plot dd analytics or not
 
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = [2.4]  # (set > data z_max to use all avaiable data)
 
-        self.tilt = True   # If also modelling the tilt
+        self.tilt = False   # If also modelling the tilt
 
-        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
+        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
-        self.nbins = 20   # Number of bins to split each population of tracer stars into
-        self.nrhonu = self.nbins + 1 # Number of points where rho and nu parameters will be set,
+        self.nbins = [10]   # Number of bins to split each population of tracer stars into
+        self.nrhonu = sum(self.nbins) + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
         #------------------------
@@ -151,19 +193,25 @@ class Params():
 
         #Total dimensions count
         if self.darkmattermodel == 'kz_dm':
-            self.ndim = self.ntracer_pops + (1+self.ntracer_pops)*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
-                # Constant C from sigma_z calculation (one for each tracer pop), (nrho + 1) params for rho (nrho
-                # points for kz_rho, plus central density of rho, eg rho_C), similarly
-                # (nrho +1)  params for tracer populations nu, plus the number of params for all baryon pops
+            self.ndim = self.ntracer_pops + (self.nrhonu + 1) + (sum(self.nbins) + self.ntracer_pops) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculations (one for each tracer population)
+                # DM kz_rho defined at all bin centres and zC=0, plus rho_C
+                # kz_nu definitions at bin centres, plus at zC = 0 for each population
+                # baryon parameters
+
         elif self.darkmattermodel == 'const_dm':
-            self.ndim = self.ntracer_pops + 1 + (self.ntracer_pops)*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
-                # Constant C from sigma_z calculations (one for each tracer pop), 1 for constant rho density,
-                # (nrhonu + 1) for kz_nu and nu_C for each tracer popn, plus baryon params
+            self.ndim = self.ntracer_pops + 1 + (sum(self.nbins) + 2*self.ntracer_pops) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculations (one for each tracer population)
+                # Constant DM density
+                # kz_nu definitions at bin centres, plus at zC = 0 for each population
+                # baryon parameters
 
         elif self.darkmattermodel == 'ConstPlusDD':
-            self.ndim =  self.ntracer_pops + 3 + (self.ntracer_pops)*(self.nrhonu + 1) + self.nbaryon_pops*self.nbaryon_params
-                # Constant C from sigma_z calculations (one for each tracer pop), 1 for constant rho density, 2 for dark disk,
-                # (nrhonu + 1) for kz_nu and nu_C for each tracer popn, plus baryon params
+            self.ndim = self.ntracer_pops + 3 + (sum(self.nbins) + 2*self.ntracer_pops) + self.nbaryon_pops*self.nbaryon_params
+                # Constant C from sigma_z calculations (one for each tracer population)
+                # Constant DM density, plus two params for a dark disc
+                # kz_nu definitions at bin centres, plus at zC = 0, and nu_C, for each population
+                # baryon parameters
 
         if self.hyperparams:
             self.ndim += 2
@@ -179,8 +227,8 @@ class Params():
         # Priors
         # ----------------------------------------------------------------------
         # Limits for central densities (z=0)
-        self.rho_C_max = 1.0E8  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
-        self.rho_C_min = 1.0E6 #Msun pc^-3
+        self.rho_C_max = 1.0E10  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
+        self.rho_C_min = 1.0E4 #Msun pc^-3
         self.rho_C_prior_type = 'log' #log, linear, gaussian
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
@@ -197,8 +245,8 @@ class Params():
         self.max_kz_slope = 5.0
 
         # Limits for sigz central value
-        self.sigz_C_max = 50.
-        self.sigz_C_min = 5.
+        self.sigz_C_max = 500. #was 5 and 50
+        self.sigz_C_min = 0.5
 
         # Monotonicity priors
         self.monotonic_rho = False    # mono-prior on rho(z)
@@ -268,10 +316,18 @@ class Params():
 
         # global arrays
         # ----------------------------------------------------------------------
-        self.z_bincenters = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
-        self.z_binmins = np.array([])
-        self.z_binmaxs = np.array([])
-        self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
+        self.z_bincenter_vecs = [] # [(np.zeros(self.nbins[ii])) for ii in range(0, self.ntracer_pops)]
+        self.z_binmin_vecs = [] #[(np.zeros(self.nbins[ii])) for ii in range(0, self.ntracer_pops)]
+        self.z_binmax_vecs = [] #[(np.zeros(self.nbins[ii])) for ii in range(0, self.ntracer_pops)]
+        self.z_all_pts_unsort = np.array([]) #Simple concatenation of bincentres and zC = 0
+        self.z_all_pts_sorted = [] #Sorted list of bincentres and zC = 0
+        self.z_vec_masks = [] #[[].append(None) for ii in range(0, self.ntracer_pops)]
+
+        #self.z_bincenters = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
+        #self.z_binmins = np.array([])
+        #self.z_binmaxs = np.array([])
+        #self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
+
 
         # Global constants
         self.Rsun = 8.  # [kpc]  Sun's distance to galactic center
