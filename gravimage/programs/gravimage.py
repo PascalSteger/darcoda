@@ -113,14 +113,14 @@ def run(gp):
                     #importance_nested_sampling = True, # INS enabled
                     importance_nested_sampling = False, # provar utan...
                     multimodal = True,           # separate modes
-                    const_efficiency_mode = True, # use const sampling efficiency
-                    #const_efficiency_mode = False, # use const sampling efficiency
+                    #const_efficiency_mode = True, # use const sampling efficiency
+                    const_efficiency_mode = False,
                     n_live_points = gp.nlive,
                     evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.05,
-                    #sampling_efficiency = 0.3,
+                    #sampling_efficiency = 0.05,
+                    sampling_efficiency = 0.3,
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:

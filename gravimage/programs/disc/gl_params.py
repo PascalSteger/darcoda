@@ -56,9 +56,9 @@ class Params():
 
         #self.external_data_file= '/simplenu/simplenu_sigz_raw.dat'#_sdz_p05_sdvz_5.dat'
         #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
-        self.external_data_file= '/simplenu/simple2_tilt_1e4nu_sigz_raw.dat'
+        #self.external_data_file= '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat'
         #self.external_data_file= '/simplenu/simple2_1e6nu_sigz_raw.dat'
-        #self.external_data_file= '/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat'
+        self.external_data_file= '/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat'
         #self.external_data_file= '/simplenu/simple2_bdd_1e6nu_sigz_raw.dat'
         self.dd_data = True
         #self.dd_data = False  # if we are to plot dd analytics or not
@@ -66,14 +66,14 @@ class Params():
         #self.bin_new_data = False
         self.binned_data_folder = '/simplenu/simple2_1e6nu_sigz2_binned/'
 
-        #self.external_data_file_tilt= '/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat'
-        self.external_data_file_tilt= '/simplenu/simple2_tilt_1e4nu_sigRz_raw.dat'
+        self.external_data_file_tilt= '/simplenu/simple2_bdd_tilt_1e6nu_sigRz_raw.dat'
+        #self.external_data_file_tilt= '/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat'
         #self.external_data_file_tilt= '/simplenu/simple2_bdd_tilt_1e8nu_sigRz_raw.dat'
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = 2.4  # (set > data z_max to use all avaiable data)
 
-        self.tilt = True   # If also modelling the tilt
-        #self.tilt = False   # If also modelling the tilt
+        #self.tilt = True   # If also modelling the tilt
+        self.tilt = False   # If also modelling the tilt
 
         self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z 
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM

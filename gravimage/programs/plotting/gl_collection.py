@@ -843,7 +843,7 @@ class ProfileCollection():
                 # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
                 ax2 = ax.twinx()
                 ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
-                ax_ylim = np.array([6,16])    # TAG 
+                ax_ylim = np.array([8,16])    # TAG 
                 kpc = 3.0857E19   # kpc in m
                 Msun = 1.9891E30  # Sun's mass in kg
                 GeV = 1.78266E-27 # GeV in kg
@@ -881,14 +881,13 @@ class ProfileCollection():
                 #pdb.set_trace()
                 #chi_arr = np.array(self.chis) 
                 #print(chi_arr[np.where(chi_arr < 1.87)])
-                bins, edges = np.histogram(np.log10(goodchi), range=[-3,3], \
+                bins, edges = np.histogram(np.log10(goodchi), range=[-3,10], \
                                            bins=max(6,np.sqrt(len(goodchi))),\
                                            density=True)
                 # BODGE above to get the code running. Does it make any difference?
                 # Exchanged range = [-3,3] to range = [-3,4]   TODO FIXME
 
                 ax.step(edges[1:], bins, where='pre')
-                ax.xaxis.get_majorticklabels()[0].set_horizontalalignment("left")
                 plt.draw()
                 self.write_chi2(basename, edges, bins)
                 fig.savefig(basename+'/output/prof_chi2_0.pdf')
@@ -911,6 +910,7 @@ class ProfileCollection():
 
             #ax.set_xlim(0, gp.z_bincenters[-1]) #bodge
             ax.set_xlim(0, np.round(gp.z_binmaxs[-1], 1))
+            ax.xaxis.get_majorticklabels()[0].set_horizontalalignment("left")
 
             plt.draw()
         else:
@@ -1000,8 +1000,8 @@ class ProfileCollection():
         K = 1500.
         F = 267.65
         D = 0.18
-        K_dd = 300.  # For 'normal' dark disk
-        #K_dd = 900.   # For bdd, i.e. big dark disk
+        #K_dd = 300.  # For 'normal' dark disk
+        K_dd = 900.   # For bdd, i.e. big dark disk
         D_dd = 2.5
         z0 = 0.9  # Thick disk
         #z0 = 0.4  # Thin disk
@@ -1018,7 +1018,7 @@ class ProfileCollection():
         rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
         if prof == 'nu_vec':
             print ('gp.dd_data:',gp.dd_data,' K_dd:',K_dd)
-        dd_data = False
+        dd_data = True
         #if gp.dd_data:
         if dd_data:
             rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))

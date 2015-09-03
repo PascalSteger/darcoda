@@ -74,7 +74,7 @@ def calc_chi2(profs, gp):
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
             #print ('sigmaRz2err:',sigmaRz2err)
-            chi2 = (chi2_nu+chi2_sigz2+chi2_tilt)/3.
+            chi2 = chi2_nu+chi2_sigz2+chi2_tilt
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
         else:
             chi2 = chi2_nu+chi2_sigz2 
