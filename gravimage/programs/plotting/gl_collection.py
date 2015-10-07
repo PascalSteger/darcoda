@@ -386,12 +386,20 @@ class ProfileCollection():
 
     def sort_profiles_disc(self, gp):
         for t_pop in range(0, gp.ntracer_pops):
-            self.sort_prof('kz_nu_vec', t_pop, gp)
-            self.sort_prof('nu_vec', t_pop, gp)
-            self.sort_prof('sigz2_vec', t_pop, gp)
+            self.sort_prof('kz_nu_vecs', t_pop, gp)
+            self.sort_prof('nu_vecs', t_pop, gp)
+            self.sort_prof('sigz2_vecs', t_pop, gp)
             if gp.tilt:
-                self.sort_prof('sigmaRz_vec', t_pop, gp)
-                self.sort_prof('tilt_vec', t_pop, gp)
+                self.sort_prof('sigmaRz_vecs', t_pop, gp)
+                self.sort_prof('tilt_vecs', t_pop, gp)
+
+            #Legacy Support
+            #self.sort_prof('kz_nu_vec', t_pop, gp)
+            #self.sort_prof('nu_vec', t_pop, gp)
+            #self.sort_prof('sigz2_vec', t_pop, gp)
+            #if gp.tilt:
+            #    self.sort_prof('sigmaRz_vec', t_pop, gp)
+            #    self.sort_prof('tilt_vec', t_pop, gp)
 
         self.sort_prof('kz_rho_DM_vec', 0, gp)
 
@@ -418,7 +426,7 @@ class ProfileCollection():
                 self.weighted_sort_prof('sigmaRz_vecs', t_pop, gp)
                 self.weighted_sort_prof('tilt_vecs', t_pop, gp)
 
-
+            #Legacy Support
             #self.weighted_sort_prof('kz_nu_vec', t_pop, gp)
             #self.weighted_sort_prof('nu_vec', t_pop, gp)
             #self.weighted_sort_prof('sigz2_vec', t_pop, gp)

@@ -44,10 +44,7 @@ class Params():
         self.geom = 'disc'
 
         #check_investigate(self.investigate)
-        self.case = 0 # used in spherical case
-        self.ntracer_pops = 1 # number of stellar tracer populations
-                      # if changed: set getnewdata=True!
-
+        self.case = case # used in spherical case
 
         # debug options
         # ----------------------------------------------------------------------
@@ -61,97 +58,51 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
+        if self.investigate == 'simplenu':
+            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e6', 'bdd', True)
+                #ext_file_selector_simplenu(pops, sampling, darkdisk, tilt)
+                #pops = [x,x], eg which population to use
+                #sampling = 1e4, 1e5, 1e6,
+                #tilt = True or False
+                #darkdisk= '', 'dd', 'bdd'
 
-        ######## 1E4 Sample Size ########
-        ##Popn 1 1E4
-        #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat']
-        ###Popn 2 1E4
-        self.external_data_file= ['/simplenu/simple2_1e4nu_sigz_raw.dat']
-        ##Popn 1 & 2 1E4
-        #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat', '/simplenu/simple2_1e4nu_sigz_raw.dat']
+        elif self.investigate == 'disc_nbody' and self.case == 1: ######## Hunt & Kawata Data sets ########
+            #self.external_data_file = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
+            #self.external_data_file_tilt = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
 
-        ##Popn 1 1E4 DD
-        #self.external_data_file= ['/simplenu/simple_dd_1e4nu_sigz_raw.dat']
-        ##Popn 2 1E4 DD
-        #self.external_data_file= ['/simplenu/simple2_dd_1e4nu_sigz_raw.dat']
-        ##Popn 1 & 2 1E4 DD
-        #self.external_data_file= ['/simplenu/simple_dd_1e4nu_sigz_raw.dat', '/simplenu/simple2_dd_1e4nu_sigz_raw.dat']
+            self.external_data_file = ['/Hunt_Kawata_GCD/HK_cut_1kpc_GalC_z_vz.dat']
+            self.external_data_file_tilt = ['/Hunt_Kawata_GCD/HK_cut_1kpc_GalC_z_vz.dat']
 
-        ##Popn 2 1E4 Big DD
-        #self.external_data_file= ['/simplenu/simple2_bdd_1e4nu_sigz_raw.dat']
-
-        ##Popn 2 1E4 Big DD with Tilt
-        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e4nu_sigz_bin.dat']
-        #self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e4nu_sigRz_raw.dat']
-
-
-        ######## 1E5 Sample Size ########
-        ##Popn 1 1E5
-        #self.external_data_file= ['/simplenu/simple_1e5nu_sigz_raw.dat']
-        ##Popn 2 1E5
-        #self.external_data_file= ['/simplenu/simple2_1e5nu_sigz_raw.dat']
-        ##Popn 1 & 2 1E5
-        #self.external_data_file= ['/simplenu/simple_1e5nu_sigz_raw.dat', '/simplenu/simple2_1e5nu_sigz_raw.dat']
-
-        ##Popn 1 1E5 DD
-        #self.external_data_file= ['/simplenu/simple_dd_1e5nu_sigz_raw.dat']
-        ##Popn 2 1E5 DD
-        #self.external_data_file= ['/simplenu/simple2_dd_1e5nu_sigz_raw.dat']
-        ##Popn 1 & 2 1E5 DD
-        #self.external_data_file= ['/simplenu/simple_dd_1e5nu_sigz_raw.dat', '/simplenu/simple2_dd_1e5nu_sigz_raw.dat']
-
-        ##Popn 2 1E5 Big DD
-        #self.external_data_file= ['/simplenu/simple2_bdd_1e5nu_sigz_raw.dat']
-
-        ##Popn 2 1E5 Big DD with Tilt
-        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e5nu_sigz_bin.dat']
-        #self.external_data_file_tilt= ['/simplenu/simple2_bdd_tilt_1e5nu_sigRz_raw.dat']
+        elif self.investigate == 'disc_nbody' and self.case == 2: ######## Garbari et al. Wedges ########
+            Gar_Root = '/Garbari_Nbody/wedges/'
+            Gar_Simulation = 'mwhr' #'unevolved', 'mwhr', 'LLMC10', 'LLMC60'
+            Gar_Radius = 'r8500' #'r8500', 'r10500', 'r12500'
+            Gar_Angle = 'ang0' #'ang45', 'ang90', 'ang135', 'ang180', 'ang225', 'ang270', 'ang315'
+            self.external_data_file = [Gar_Root + Gar_Simulation + '_' + Gar_Radius + '_' + Gar_Angle + '_stars_z_vz_vR.dat']
 
 
-        ####### 1E6 Sample Size ########
-        ##Popn 1 1E6
-        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat']
-        #Popn 2 1E6
-        #self.external_data_file= ['/simplenu/simple2_1e6nu_sigz_raw.dat']
-        ##Popn 1 & 2 1E6
-        #self.external_data_file= ['/simplenu/simple_1e6nu_sigz_raw.dat', '/simplenu/simple2_1e6nu_sigz_raw.dat']
+        #Check case agains data file
+        if self.investigate == 'simplenu' and 'simplenu' not in self.external_data_file[0]:
+                print('Investigate = ', self.investigate, ', Case = ', self.case, ', data files = ', self.external_data_file[0])
+                raise Exception('Case and data file mismatch')
+        if self.investigate == 'disc_nbody' and self.case == 1 and 'Hunt_Kawata_GCD' not in self.external_data_file[0]:
+                print('Investigate = ', self.investigate, ', Case = ', self.case, ', data files = ', self.external_data_file[0])
+                raise Exception('Case and data file mismatch')
+        if self.investigate == 'disc_nbody' and self.case == 2 and 'Garbari_Nbody' not in self.external_data_file[0]:
+                print('Investigate = ', self.investigate, ', Case = ', self.case, ', data files = ', self.external_data_file[0])
+                raise Exception('Case and data file mismatch')
 
-        ##Popn 1 1E6 DD
-        #self.external_data_file= ['/simplenu/simple_dd_1e6nu_sigz_raw.dat']
-        ##Popn 2 1E6 DD
-        #self.external_data_file= ['/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
-        ##Popn 1 & 2 1E6 DD
-        #self.external_data_file= ['/simplenu/simple_dd_1e6nu_sigz_raw.dat', '/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
-
-        ##Popn 2 1E6 Big DD
-        #self.external_data_file= ['/simplenu/simple2_dd_1e6nu_sigz_raw.dat']
-
-        ##Popn 1 1E6 Tilt
-        #self.external_data_file= ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt= ['/simplenu/simple_tilt_1e6nu_sigRz_raw.dat'] #MISSING
-        ##Popn 2 1E6 Tilt
-        #self.external_data_file= ['/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt= ['/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat']
-        ##Popn 1 & 2 1E6 Tilt MISSING ELEMENTS
-        #self.external_data_file= ['/simplenu/simple_tilt_1e6nu_sigz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file= ['/simplenu/simple_tilt_1e6nu_sigRz_raw.dat', '/simplenu/simple2_tilt_1e6nu_sigRz_raw.dat'] #MISSING 0
-
-        ##Popn 2 1E6 Big DD and Tilt
-        #self.external_data_file= ['/simplenu/simple2_bdd_tilt_1e6nu_sigz_raw.dat']
-        #self.external_data_file_tilt= ['/simplenu/simple_bdd_tilt_1e6nu_sigRz_raw.dat']
-
-        ######## Hunt & Kawata Data sets ########
-        #self.external_data_file = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
-        #self.external_data_file_tilt = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
-
-
+        #Count number of tracer populations
+        self.ntracer_pops = len(self.external_data_file) # number of stellar tracer populations
 
         self.dd_data = False # if we are to plot dd analytics or not
 
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = [2.4]  # (set > data z_max to use all avaiable data)
+        if len(self.data_z_cut) != self.ntracer_pops:
+            raise Exception('Incorrect data_z_cut vector length')
 
-        self.tilt = False   # If also modelling the tilt
+        self.tilt = True   # If also modelling the tilt
 
         self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
@@ -159,7 +110,9 @@ class Params():
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
-        self.nbins = [10]   # Number of bins to split each population of tracer stars into
+        self.nbins = [20]   # Number of bins to split each population of tracer stars into
+        if len(self.nbins) != self.ntracer_pops:
+            raise Exception('Number of bins vector is of incorrect length')
         self.nrhonu = sum(self.nbins) + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
@@ -227,8 +180,8 @@ class Params():
         # Priors
         # ----------------------------------------------------------------------
         # Limits for central densities (z=0)
-        self.rho_C_max = 1.0E10  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
-        self.rho_C_min = 1.0E4 #Msun pc^-3
+        self.rho_C_max = 1.0E8  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
+        self.rho_C_min = 1.0E6 #Msun pc^-3
         self.rho_C_prior_type = 'log' #log, linear, gaussian
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
@@ -245,8 +198,8 @@ class Params():
         self.max_kz_slope = 5.0
 
         # Limits for sigz central value
-        self.sigz_C_max = 500. #was 5 and 50
-        self.sigz_C_min = 0.5
+        self.sigz_C_max = 50. #was 5 and 50
+        self.sigz_C_min = 5.
 
         # Monotonicity priors
         self.monotonic_rho = False    # mono-prior on rho(z)
@@ -277,12 +230,18 @@ class Params():
         self.simplenu_dm_D_min = 1.5
 
         # Tilt priors
-        self.tilt_A_max = -0.005  # simple2 mock has A = -0.0087
-        self.tilt_A_min = -0.012
-        self.tilt_n_max = 1.9    # simple2 mock has n = 1.44
-        self.tilt_n_min = 1.
-        self.tilt_R_max = 3.5     # simple2 mock has R = 2.5
-        self.tilt_R_min = 1.5
+        #self.tilt_A_max = -0.005  # simple2 mock has A = -0.0087
+        #self.tilt_A_min = -0.012
+        #self.tilt_n_max = 1.9    # simple2 mock has n = 1.44
+        #self.tilt_n_min = 1.
+        #self.tilt_R_max = 3.5     # simple2 mock has R = 2.5
+        #self.tilt_R_min = 1.5
+        self.tilt_A_max = 0.0  # simple2 mock has A = -0.0087
+        self.tilt_A_min = -1.0
+        self.tilt_n_max = 3.0    # simple2 mock has n = 1.44
+        self.tilt_n_min = 0.1
+        self.tilt_R_max = 4.5     # simple2 mock has R = 2.5
+        self.tilt_R_min = 0.5
 
 
         # MultiNest options
@@ -292,6 +251,8 @@ class Params():
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
         self.nlive = 100*self.ndim
+        if self.map_priors:
+            self.nlive = int(1E6)*self.ndim
         self.err = 1e300    # chi^2 for models which are impossible
 
         #fraction of profiles to save, set <0 for no profile saving

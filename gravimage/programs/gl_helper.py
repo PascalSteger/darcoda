@@ -880,11 +880,11 @@ def tilt_from_bins(binmin, binmax, z, vRz):
         positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
         Ntr = len(positions[0])  # N.o. tracers in given bin
         Ntr_per_bin.append(Ntr)
-        vRz_list_temp = vRz[positions] # vRz list of stars in given bin
+        vRz_list_temp = vRz[positions] # vRz list of stars in given bin km^2 s^-2
 
         #tilt2 = np.mean(np.square(vRz_list_temp)) - (np.mean(vRz_list_temp))**2
-        tilt2 = np.mean(np.square(vRz_list_temp))
-        tilt = -np.sqrt(tilt2)
+        tilt2 = np.mean(np.square(vRz_list_temp)) #km^4 s^-4
+        tilt = -np.sqrt(tilt2) #km^2 s^-2
         tilt_vec.append(tilt)
         tilt_err = abs(np.sqrt(1./Ntr)*tilt)
         print ('Ntr:',Ntr,' tilt:',tilt,' tilt_err:',tilt_err)
@@ -893,7 +893,70 @@ def tilt_from_bins(binmin, binmax, z, vRz):
 
     tilt_vec = np.array(tilt_vec)
     tilt_err_vec = np.array(tilt_err_vec)
-    return tilt_vec,tilt_err_vec
+    return tilt_vec,tilt_err_vec #km^2 s^-2
+
+
+def sigRz_from_bins(binmin, binmax, z, vz, vR):
+    #order = np.argsort(z)
+    #z = np.array(z)[order]
+    #vz = np.array(vz)[order]
+    #vR = np.array(vR)[order]
+
+    sigRz2_vec, sigRz2_err_vec = [], []
+    Ntr_per_bin = []
+    for jter in range(len(binmin)):
+        positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
+        Ntr = len(positions[0])  # N.o. tracers in given bin
+        Ntr_per_bin.append(Ntr)
+        vz_list_temp = vz[positions] # vz list of stars in given bin
+        vR_list_temp = vR[positions]
+
+        #Calculate Rz term of velocity dispersion tensor, B&T 4.26
+        sigRz2 = np.mean(vz_list_temp*vR_list_temp) - np.mean(vz_list_temp)*np.mean(vR_list_temp)
+        sigRz2_vec.append(sigRz2) #km^2 s^-2
+
+        #Calculate Poisson error
+        sigRz2_err = sigRz2 * np.sqrt(2/Ntr) #?
+        sigRz2_err_vec.append(sigRz2_err)
+
+        print ('Ntr:',Ntr,', sigRz2 = ',sigRz2,' sigRz2_err:',sigRz2_err)
+
+    sigRz2_vec = np.array(sigRz2_vec)
+    sigRz2_err_vec = np.array(sigRz2_err_vec)
+    return sigRz2_vec, sigRz2_err_vec #km^2 s^-2
+
+
+
+def sigRz_from_bins_simplenu(binmin, binmax, z, vRvz):
+    order = np.argsort(z)
+    z = np.array(z)[order]
+    vRvz = np.array(vRvz)[order]
+
+    sigRz2_vec, sigRz2_err_vec = [], []
+    Ntr_per_bin = []
+
+    for jter in range(len(binmin)):
+        positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
+        Ntr = len(positions[0])  # N.o. tracers in given bin
+        Ntr_per_bin.append(Ntr)
+        vRvz_list_temp = vRvz[positions] # vz list of stars in given bin
+
+        #Calculate Rz term of velocity dispersion tensor
+        sigRz2 = np.mean(vRvz_list_temp) # must assume np.mean(z) = 0
+        sigRz2_vec.append(sigRz2)
+
+        #Calculate Poisson error
+        sigRz2_err = sigRz2 * np.sqrt(2/Ntr)
+        sigRz2_err_vec.append(sigRz2_err)
+
+        print ('Ntr:',Ntr,', sigrz2 = ',sigRz2,' sigRz2_err:',sigRz2_err)
+
+    sigRz2_vec = np.array(sigRz2_vec)
+    sigRz2_err_vec = np.array(sigRz2_err_vec)
+    return sigRz2_err_vec,sigRz2_err_vec
+
+
+
 
 
 
@@ -927,3 +990,35 @@ def detect_machine():
         gravimage_path = scratch_space + '/darcoda/gravimage/'
 
     return machine, gravimage_path
+
+
+def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt):
+    #pops = [x,x], eg which population to use
+    #sampling = 1e4, 1e5, 1e6,
+    #tilt = True or False
+    #darkdisk= '', 'dd', 'bdd'
+
+    filenames=[]
+    filenames_tilt=[]
+
+    A='/simplenu/'
+
+    for pop in pops:
+        if pop == 1:
+            B = 'simple_'
+        elif pop ==2:
+            B = 'simple2_'
+
+        C = darkdisk + '_'
+
+        if tilt:
+            D = 'tilt_'
+        else:
+            D = ''
+
+        E = sampling
+
+        filenames.append(A+B+C+D+E+'nu_sigz_raw.dat')
+        filenames_tilt.append(A+B+C+D+E+'nu_sigRz_raw.dat')
+
+    return filenames, filenames_tilt

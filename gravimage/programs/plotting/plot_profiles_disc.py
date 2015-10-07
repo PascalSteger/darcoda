@@ -166,7 +166,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     gh.LOG(1, 'plot_profiles '+str(options.investigate)+' '+str(options.case)+' '+str(options.latest))
     import select_run as sr
-    timestamp, basename, investigate, profile_source = sr.run(options.investigate, \
+    timestamp, basename, investigate, case, profile_source = sr.run(options.investigate, \
                                  options.case,\
                                  options.latest)
     #pdb.set_trace()
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     #import gl_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
 
-    gp = glp.Params(timestamp, investigate) # Change back! TODO FIXME !!!
+    gp = glp.Params(timestamp, investigate, case) # Change back! TODO FIXME !!!
 
     gp.pops = sr.get_pops(basename)
 
@@ -193,14 +193,14 @@ if __name__ == '__main__':
         except OSError:
             gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
             #glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
-            glmh.paracube_to_profile(basename, "outputphys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
+            glmh.paracube_to_profile(basename, "outputphys_live.points", "phys_live_profiles.save", investigate, case, timestamp)
 
     if profile_source == 'MNoutput':
         try:
             open(basename+"phys_MNoutput_profiles.save")
         except OSError:
             gh.LOG(0, 'No phys_MNoutput_profiles.save file found, generating from MultiNest output now')
-            glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, options.case, timestamp)
+            glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, case, timestamp)
             #glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
 
     run(timestamp, basename, profile_source, gp)

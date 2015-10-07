@@ -45,7 +45,7 @@ def calc_chi2(profs, gp):
     #chi2_tilt = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     chi2_nu = 0
     chi2_sigz2 = 0
-    chi2_tilt = 0
+    chi2_sigRz2 = 0
 
 
     #Tracer population comparison
@@ -89,21 +89,21 @@ def calc_chi2(profs, gp):
 
         #Calculate Rz-velocity dispersion chi2 for population no. pop
         if gp.tilt:
-            sigmaRzdat  = gp.dat.tilt[pop]
-            sigmaRzerr = gp.dat.tilterr[pop]
+            sigmaRzdat  = gp.dat.sigRz2[pop]
+            sigmaRzerr = gp.dat.sigRz2err[pop]
             sigmaRz_model = profs.get_prof('sigmaRz_vecs', pop)
-            chi2_tilt_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1.)
-            chi2_tilt += chi2_tilt_tmp
+            chi2_sigRz2_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1.)
+            chi2_sigRz2 += chi2_sigRz2_tmp
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
             #print ('sigmaRz2err:',sigmaRz2err)
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
-            gh.LOG(1, '  chi2_tilt  = ', chi2_tilt_tmp)
+            gh.LOG(1, '  chi2_sigRz2  = ', chi2_sigRz2_tmp)
         else:
-            chi2_tilt=0.
+            chi2_sigRz2=0.
 
     #Combine chi2 for nu, sigz, and sigRz for all populations
-    chi2 = chi2_nu + chi2_sigz2 + chi2_tilt
+    chi2 = chi2_nu + chi2_sigz2 + chi2_sigRz2
 
     #print('P', myrank, ': chi2 = ', chi2)
 

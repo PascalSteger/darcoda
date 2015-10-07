@@ -149,6 +149,8 @@ def map_hypererr(param, prof, pop, gp):
 def map_tilt(params,gp):
     A_range = gp.tilt_A_max - gp.tilt_A_min
     A = gp.tilt_A_min + A_range*params[0]
+
+    #print('min A = ', gp.tilt_A_min, ', A = ', A, ', max A = ', gp.tilt_A_max)
     n_range = gp.tilt_n_max - gp.tilt_n_min
     n = gp.tilt_n_min + n_range*params[1]
     if n < 0:
@@ -338,7 +340,6 @@ class Cube:
         IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
         IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
         for t_pop in range(0, gp.ntracer_pops):
-            print('pc[off+t_pop] = ', pc[off+t_pop])
             pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
         off += offstep
 

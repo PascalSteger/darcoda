@@ -18,11 +18,12 @@ import pdb
 nodes=1
 cores='16'
 ppn=15
-walltime='00:00:15:00'
+walltime='05:00:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
 investigation = 'simplenu'
+case = '0'
 
 #NOT YET IMPLEMENTED
 resume_run = False
@@ -39,7 +40,7 @@ holding_number = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 #Copy code to holding area with timestamp
 if resume_run:
     #shutil.copytree(gravimage_path +'/DTsimplenu/0/' + resume_ts + '/programs', holding_stack_path + holding_number + '/programs/')
-    shutil.copytree(gravimage_path +'/DTsimplenu/0/' + resume_ts, holding_stack_path + holding_number + '/')
+    shutil.copytree(gravimage_path +'/DT' + investigation + '/' + case + '/' + resume_ts, holding_stack_path + holding_number + '/')
 else:
     shutil.copytree(gravimage_path + '/programs', holding_stack_path + holding_number + '/programs/')
 
@@ -91,15 +92,15 @@ pbs_file.writelines('echo Contents of programs folder:' + '\n')
 pbs_file.writelines('ls -l -a' + '\n')
 
 pbs_file.writelines('echo Contents of DT folder:' + '\n')
-pbs_file.writelines('ls -R -l $TMPDIR/darcoda/gravimage/DTsimplenu' + '\n')
+pbs_file.writelines('ls -R -l $TMPDIR/darcoda/gravimage/DT' + investigation + '\n')
 
 pbs_file.writelines('echo Running gravimage:' + '\n')
-pbs_file.writelines('mpiexec -n ' + str(nodes*ppn) + ' python3 gravimage.py --investigation simplenu' + '& PID=$!; sleep $runtime; kill $PID'+'\n' + '\n')
+pbs_file.writelines('mpiexec -n ' + str(nodes*ppn) + ' python3 gravimage.py --investigation ' + investigation + ' --case ' + case + '& PID=$!; sleep $runtime; kill $PID'+'\n' + '\n')
 
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')
 pbs_file.writelines('pwd'+'\n')
-pbs_file.writelines('ls -l -a $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/*'+'\n')
-pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
+pbs_file.writelines('ls -l -a $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/*'+'\n')
+pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/' + case + '/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 

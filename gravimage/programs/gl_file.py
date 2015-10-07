@@ -86,7 +86,7 @@ def bin_data(gp):
     elif gp.investigate == 'discsim':
         import grds_write
         grds_write.run(gp)
-    elif gp.investigate == 'simplenu':
+    elif gp.investigate == 'simplenu' or 'disc_nbody':
         import gr_external_data
         gr_external_data.run(gp)
     return
@@ -126,7 +126,7 @@ def get_binned_data_noscale(gp):
     gp.dat.read_nu(gp)
     gp.dat.read_sigz2(gp)
     if gp.tilt:
-        gp.dat.read_tilt(gp)
+        gp.dat.read_sigRz2(gp)
     return gp.dat
 ## \fn get_binned_data_noscale(gp)
 # read in binned data, store in a gl_data class

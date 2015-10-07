@@ -80,7 +80,7 @@ class Files:
         ## files with velocity dispersions
         self.sigfiles = []
         ## files with sigmaRz (for tilt)
-        self.tiltfiles = []
+        self.sigRz2_files = []
         ## files with centered positions and velocities for the tracer particles
         self.posvelfiles = []
         ## files for the fourth order moment of the LOS velocity
@@ -108,6 +108,11 @@ class Files:
         elif gp.investigate == 'simplenu':
             self.set_simplenu(gp, timestamp)
             newdir(self.dir + 'sigz/')
+            newdir(self.dir + 'sigRz2/')
+        elif gp.investigate == 'disc_nbody':
+            self.set_disc_nbody(gp, timestamp)
+            newdir(self.dir + 'sigz/')
+            newdir(self.dir + 'sigRz2/')
         else:
             print(' wrong investigation in Files()')
             pdb.set_trace()
@@ -542,17 +547,28 @@ class Files:
         for pop in range(0, gp.ntracer_pops):
             self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
             self.sigfiles.append(self.dir + 'sigz/sigz_' + str(pop) + '.txt')
-            self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
-
-        #self.nufiles.append(self.dir+'nu/nu_1.txt')
-        #self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
-        #self.tiltfiles.append(self.dir+'tilt/tilt_1.txt')
+            self.sigRz2_files.append(self.dir + 'sigRz2/sigRz2_' + str(pop) + '.txt')
+            #self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
         return
     ## \fn set_simplenu(self, gp, timestamp='')
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
 
+
+    def set_disc_nbody(self, gp, timestamp=''):
+        self.dir = self.machine + 'DTdisc_nbody/' + str(gp.case) +'/'
+        self.dir += timestamp + '/'
+        for pop in range(0, gp.ntracer_pops):
+            self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
+            self.sigfiles.append(self.dir + 'sigz/sigz_' + str(pop) + '.txt')
+            self.sigRz2_files.append(self.dir + 'sigRz2/sigRz2_' + str(pop) + '.txt')
+            #self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
+        return
+    ## \fn set_simplenu(self, gp, timestamp='')
+    # set all properties if looking at simple disc
+    # @param gp global parameters
+    # @param timestamp string YYYYMMDDhhmm
 
     def get_com_file(self, n):
         gh.sanitize_scalar(n, 0, 2, True)

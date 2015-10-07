@@ -30,9 +30,9 @@ import time
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-i", "--investigation", dest="investigation",
-                      default="", help="investigation to run: gaia, walk, hern, triax, discmock, simplenu")
+                      default="", help="investigation to run: simplenu, disc_nbody")
 parser.add_option("-c", "--case", dest="case",
-                      default=-1, help="case: 1, 2, ..")
+                      default=-1, help="case: 1 (Hunt & Kawata GCD), 2 (Garbari N-body), ..")
 (options, args) = parser.parse_args()
 print('gravimage.py '+str(options.investigation)+' '+str(options.case))
 import gl_params
@@ -306,7 +306,8 @@ if __name__=="__main__":
                     evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.3,#'parameter',
+                    sampling_efficiency = 0.8,#0.8 or 'parameter' for parameter estimation,
+                                                #0.3 or 'evidence' for evidence calculation
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:
@@ -317,7 +318,7 @@ if __name__=="__main__":
                                                #value exists: highly
                                                #negative
                     outputfiles_basename = gp.files.outdir + '/output',
-                    seed = 1985,
+                    seed = -1,
                     verbose = True,
                     resume = False,
                     context = 0,
