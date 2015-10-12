@@ -1009,7 +1009,10 @@ def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt):
         elif pop ==2:
             B = 'simple2_'
 
-        C = darkdisk + '_'
+        if darkdisk == '':
+            C = darkdisk
+        else:
+            C = darkdisk + '_'
 
         if tilt:
             D = 'tilt_'

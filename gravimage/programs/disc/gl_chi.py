@@ -66,11 +66,15 @@ def calc_chi2(profs, gp):
 
 
         #Calculate tracer density chi2 for population no. pop
-        nudat    = gp.dat.nu[pop]
-        nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
-        numodel  = profs.get_prof('nu_vecs', pop)
-        chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
-        chi2_nu += chi2_nu_tmp
+        if gp.nu_model == 'kz_nu':
+            nudat    = gp.dat.nu[pop]
+            nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
+            numodel  = profs.get_prof('nu_vecs', pop)
+            chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
+            chi2_nu += chi2_nu_tmp
+        else:
+            chi2_nu_tmp = 0.
+            chi2_nu = 0.
         #print('pop = ', pop)
         #print('nudat = ', nudat)
         #print('numodel = ', numodel)

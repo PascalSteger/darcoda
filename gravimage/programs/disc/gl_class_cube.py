@@ -300,6 +300,23 @@ def map_rhonu(params, prof, pop, gp):
 
     return np.hstack([rhonu_C, rhonu_vector])
 
+def map_nu_data(params, pop, gp):
+    nudat    = gp.dat.nu[pop]
+    nuerr    = gp.dat.nuerr[pop]
+    nu_out_vector = []
+
+    nu_C = nudat[0] + np.sqrt(2)*5*nuerr[0]* scipy.special.erfinv(2*(params[0]-0.5))
+
+    for jter in range(0, gp.nbins[pop]):
+        nu_i = nudat[jter] + np.sqrt(2) * nuerr[jter] * scipy.special.erfinv(2*(params[jter+1]-0.5))
+        nu_out_vector.append(nu_i)
+
+
+    return np.hstack([nu_C, nu_out_vector])
+
+
+
+
 def map_constdm(params, prof, pop, gp):
     if gp.rho_C_prior_type == 'linear':
         rho_C = gp.rho_C_min + (gp.rho_C_max-gp.rho_C_min)*params[0]
@@ -341,7 +358,9 @@ class Cube:
         IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
         for t_pop in range(0, gp.ntracer_pops):
             pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
+            #print('IntC_min = ', IntC_min, 'IntC_max = ', IntC_max, 'C = ', pc[off+t_pop])
         off += offstep
+
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector
         if gp.darkmattermodel == 'const_dm':
@@ -375,11 +394,14 @@ class Cube:
 
         #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector # kz_nu_LS
         for tracer_pop in range(0, gp.ntracer_pops):
-            offstep = gp.nbins[tracer_pop] + 1 + 1 #kz on bincenters, and zC=0, and nu_C
             if gp.scan_rhonu_space:
                 tmp_tracer = map_rhonu(pc[off:off+offstep], 'nu', tracer_pop, gp)
-            else:
+            elif gp.nu_model=='kz_nu':
+                offstep = gp.nbins[tracer_pop] + 1 + 1 #kz on bincenters, and zC=0, and nu_C
                 tmp_tracer = map_kr(pc[off:off+offstep], 'nu', tracer_pop, gp)
+            elif gp.nu_model=='gaussian_data':
+                offstep = gp.nbins[tracer_pop] + 1 #nu on bincenters, and nu_C
+                tmp_tracer = map_nu_data(pc[off:off+offstep], tracer_pop, gp)
 
             for i in range(offstep):
                 pc[off+i] = tmp_tracer[i]

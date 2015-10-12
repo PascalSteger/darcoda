@@ -93,10 +93,14 @@ def geom_loglike(cube, ndim, nparams, gp):
     tmp_nu_allz=[[].append(None) for ii in range(0,gp.ntracer_pops)]
 
     for t_pop in range(0, gp.ntracer_pops):
-        offstep = gp.nbins[t_pop] + 1 + 1 #kz on bincenters, and zC=0, and nu_C
         if gp.scan_rhonu_space:
-            tmp_nu_allz = np.array(cube[off:off+offstep])
-        else:
+            offstep = gp.nbins[t_pop] + 1 #nu on bincenters, nu_C
+            tmp_nu_allz[t_pop] = np.array(cube[off:off+offstep])
+        elif gp.nu_model == 'gaussian_data':
+            offstep = gp.nbins[t_pop] + 1 #nu on bincenters, nu_C
+            tmp_nu_allz[t_pop] = np.array(cube[off:off+offstep])
+        elif gp.nu_model == 'kz_nu':
+            offstep = gp.nbins[t_pop] + 1 + 1 #kz on bincenters, and zC=0, and nu_C
             tracer_params = np.array(cube[off:off+offstep])
             nu_C = tracer_params[0]
             kz_nu_allz = tracer_params[1:] #kz for rho across all z points [0, bin_centres]

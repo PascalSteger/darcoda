@@ -18,6 +18,8 @@ import pdb
 nodes=1
 cores='16'
 ppn=15
+cputype='cpu3'
+mem = 'mem64gb'
 walltime='05:00:00:00'
 
 gravimage_path = os.path.abspath('../')
@@ -53,9 +55,9 @@ pbs_file = open(pbs_filename, 'w')
 pbs_file.writelines('#!/bin/bash'+'\n')
 pbs_file.writelines('#PBS -S /bin/bash'+'\n')
 if cores == 'any':
-    pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
+    pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':' + cputype + ':' + mem + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
 else:
-    pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':cores' + str(cores) + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
+    pbs_file.writelines('#PBS -lnodes=' + str(nodes) + ':' + cputype + ':' + mem + ':cores' + str(cores) + ':ppn=' + str(ppn) + ',walltime=' + walltime+'\n')
 
 pbs_file.writelines('echo Loading LISA version' + '\n')
 pbs_file.writelines('module load python/3.4.2' + '\n')

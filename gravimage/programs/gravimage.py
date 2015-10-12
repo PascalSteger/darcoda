@@ -150,95 +150,94 @@ def prepare_data(gp):
 # prepare everything for multinest(.MPI) run
 # @param gp global parameters
 
-def run(gp):
-    hwmess = "run(gp) on process %d of %d on %s.\n"
-    myrank = MPI.COMM_WORLD.Get_rank()
-    nprocs = MPI.COMM_WORLD.Get_size()
-    procnm = MPI.Get_processor_name()
-    import sys
-    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+#def run(gp):
+#    hwmess = "run(gp) on process %d of %d on %s.\n"
+#    myrank = MPI.COMM_WORLD.Get_rank()
+#    nprocs = MPI.COMM_WORLD.Get_size()
+#    procnm = MPI.Get_processor_name()
+#    import sys
+#    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+#
+#
+#    pymultinest.run(myloglike,   myprior,
+#                    gp.ndim, n_params = gp.ndim+1, # None beforehands
+#                    n_clustering_params = gp.ndim,# separate modes on
+#                                                  # the rho parameters
+#                                                  # only: gp.nrho
+#                    wrapped_params = [ gp.ntracer_pops, gp.nbins[0], gp.nrhonu], # do
+#                                                                     #not
+#                                                                     #wrap-around
+#                                                                     #parameters
+#                    importance_nested_sampling = False, # INS enabled
+#                    multimodal = True,           # separate modes
+#                    const_efficiency_mode = False, # use const sampling efficiency
+#                    n_live_points = gp.nlive,
+#                    evidence_tolerance = 0.5, # set to 0 to keep
+#                                              # algorithm working
+#                                              # indefinitely
+#                    sampling_efficiency = 0.3,#'parameter',
+#                    n_iter_before_update = 100, # output after this many iterations
+#                    null_log_evidence = -1e100,
+#                    max_modes = gp.nlive,   # preallocation of modes:
+#                                            #max. = number of live
+#                                            #points
+#                    mode_tolerance = -1.e100,   # mode tolerance in the
+#                                               #case where no special
+#                                               #value exists: highly
+#                                               #negative
+#                    outputfiles_basename = gp.files.outdir + '/output',
+#                    seed = -1,
+#                    verbose = True,
+#                    resume = False,
+#                    context = 0,
+#                    write_output = True,
+#                    log_zero = -1e500,    # points with log likelihood
+#                                          #< log_zero will be
+#                                          #neglected
+#                    max_iter = 0,         # set to 0 for never
+#                                          #reaching max_iter (no
+#                                          #stopping criterium based on
+#                                          #number of iterations)
+#                    init_MPI = False,     # use MPI
+#                    dump_callback = None)
 
 
-    pymultinest.run(myloglike,   myprior,
-                    gp.ndim, n_params = gp.ndim+1, # None beforehands
-                    n_clustering_params = gp.ndim,# separate modes on
-                                                  # the rho parameters
-                                                  # only: gp.nrho
-                    wrapped_params = [ gp.ntracer_pops, gp.nbins[0], gp.nrhonu], # do
-                                                                     #not
-                                                                     #wrap-around
-                                                                     #parameters
-                    importance_nested_sampling = False, # INS enabled
-                    multimodal = True,           # separate modes
-                    const_efficiency_mode = False, # use const sampling efficiency
-                    n_live_points = gp.nlive,
-                    evidence_tolerance = 0.5, # set to 0 to keep
-                                              # algorithm working
-                                              # indefinitely
-                    sampling_efficiency = 0.3,#'parameter',
-                    n_iter_before_update = 100, # output after this many iterations
-                    null_log_evidence = -1e100,
-                    max_modes = gp.nlive,   # preallocation of modes:
-                                            #max. = number of live
-                                            #points
-                    mode_tolerance = -1.e100,   # mode tolerance in the
-                                               #case where no special
-                                               #value exists: highly
-                                               #negative
-                    outputfiles_basename = gp.files.outdir + '/output',
-                    seed = -1,
-                    verbose = True,
-                    resume = False,
-                    context = 0,
-                    write_output = True,
-                    log_zero = -1e500,    # points with log likelihood
-                                          #< log_zero will be
-                                          #neglected
-                    max_iter = 0,         # set to 0 for never
-                                          #reaching max_iter (no
-                                          #stopping criterium based on
-                                          #number of iterations)
-                    init_MPI = False,     # use MPI
-                    dump_callback = None)
-
-
-def mpi_prepare_data():
-
-    hwmess = "mpi_prepare_data on process %d of %d on %s.\n"
-    myrank = MPI.COMM_WORLD.Get_rank()
-    nprocs = MPI.COMM_WORLD.Get_size()
-    procnm = MPI.Get_processor_name()
-    import sys
-    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
-
-    if myrank ==0:
-        gp = gl_params.Params(ts, options.investigation, int(options.case))
-        import gl_file as gf
-        global Cube, geom_loglike
-        from gl_class_cube import Cube
-        from gl_loglike import geom_loglike
-
-        print('Preparing data')
-        prepare_data(gp)
-        print('Data prepared, broadcasting.')
-        gp = comm.bcast(gp)
-        comm.send(gp, dest=1, tag=11)
-        print('Broadcasted')
-        return
-
-    elif myrank !=0:
-        while not comm.Iprobe(source=0, tag=11):
-            print('Holding rank ', myrank, ' while data prepared on 0')
-            time.sleep(1)
-        gp = comm.recv(source=0, tag=11)
-        global Cube, geom_loglike
-        from gl_class_cube import Cube
-        from gl_loglike import geom_loglike
-        return
+#def mpi_prepare_data():
+#
+#    hwmess = "mpi_prepare_data on process %d of %d on %s.\n"
+#    myrank = MPI.COMM_WORLD.Get_rank()
+#    nprocs = MPI.COMM_WORLD.Get_size()
+#    procnm = MPI.Get_processor_name()
+#    import sys
+#    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+#
+#    if myrank ==0:
+#        gp = gl_params.Params(ts, options.investigation, int(options.case))
+#        import gl_file as gf
+#        global Cube, geom_loglike
+#        from gl_class_cube import Cube
+#        from gl_loglike import geom_loglike
+#
+#        print('Preparing data')
+#        prepare_data(gp)
+#        print('Data prepared, broadcasting.')
+#        gp = comm.bcast(gp)
+#        comm.send(gp, dest=1, tag=11)
+#        print('Broadcasted')
+#        return
+#
+#    elif myrank !=0:
+#        while not comm.Iprobe(source=0, tag=11):
+#            print('Holding rank ', myrank, ' while data prepared on 0')
+#            time.sleep(1)
+#        gp = comm.recv(source=0, tag=11)
+#        global Cube, geom_loglike
+#        from gl_class_cube import Cube
+#        from gl_loglike import geom_loglike
+#        return
 
 
 if __name__=="__main__":
-
     comm = MPI.COMM_WORLD
     myrank = comm.Get_rank()
     nprocs = comm.Get_size()
@@ -290,6 +289,7 @@ if __name__=="__main__":
 
     print('\n P', myrank, ': Running pymultinest')
 
+    start_time = time.time()
     pymultinest.run(myloglike,   myprior,
                     gp.ndim, n_params = gp.ndim+1, # None beforehands
                     n_clustering_params = gp.ndim,# separate modes on
@@ -318,7 +318,7 @@ if __name__=="__main__":
                                                #value exists: highly
                                                #negative
                     outputfiles_basename = gp.files.outdir + '/output',
-                    seed = -1,
+                    seed = 1985, # -1 for seed from clock
                     verbose = True,
                     resume = False,
                     context = 0,
@@ -332,6 +332,11 @@ if __name__=="__main__":
                                           #number of iterations)
                     init_MPI = False,     # use MPI
                     dump_callback = None)
+
+
+    end_time = time.time()
+    run_time = end_time - start_time
+    print('\n P', myrank, ': On ', nprocs, ' cores, run time is ',  run_time, ' sec')
 
 
     #run(gp)

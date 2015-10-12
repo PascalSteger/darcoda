@@ -59,7 +59,7 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         if self.investigate == 'simplenu':
-            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e6', 'bdd', True)
+            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e4', '', False)
                 #ext_file_selector_simplenu(pops, sampling, darkdisk, tilt)
                 #pops = [x,x], eg which population to use
                 #sampling = 1e4, 1e5, 1e6,
@@ -102,7 +102,7 @@ class Params():
         if len(self.data_z_cut) != self.ntracer_pops:
             raise Exception('Incorrect data_z_cut vector length')
 
-        self.tilt = True   # If also modelling the tilt
+        self.tilt = False   # If also modelling the tilt
 
         self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
@@ -122,6 +122,10 @@ class Params():
         #Dark matter options
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
         # self.adddarkdisc is currently not used !
+
+        #Tracer Density description
+        #self.nu_model = 'kz_nu'
+        self.nu_model = 'gaussian_data'
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model
@@ -166,6 +170,9 @@ class Params():
                 # kz_nu definitions at bin centres, plus at zC = 0, and nu_C, for each population
                 # baryon parameters
 
+        if self.nu_model == 'gaussian_data':
+            self.ndim -= 1
+
         if self.hyperparams:
             self.ndim += 2
 
@@ -184,7 +191,7 @@ class Params():
         self.rho_C_min = 1.0E6 #Msun pc^-3
         self.rho_C_prior_type = 'log' #log, linear, gaussian
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
-        self.nu_C_min = 10.0 # no. stars pc^-3
+        self.nu_C_min = 0.0 # no. stars pc^-3
         self.nu_C_prior_type = 'log'
 
         # Limits for central kz values (z=0)
@@ -198,8 +205,8 @@ class Params():
         self.max_kz_slope = 5.0
 
         # Limits for sigz central value
-        self.sigz_C_max = 50. #was 5 and 50
-        self.sigz_C_min = 5.
+        self.sigz_C_max = 0. #set from data in gr_external_data
+        self.sigz_C_min = 0.
 
         # Monotonicity priors
         self.monotonic_rho = False    # mono-prior on rho(z)
@@ -251,8 +258,10 @@ class Params():
         # live points, > ndim, < 2^ndim, about number of
         # ellipsoids in phase space to be found
         self.nlive = 100*self.ndim
+
         if self.map_priors:
-            self.nlive = int(1E6)*self.ndim
+            self.nlive = int(1E4)*self.ndim
+
         self.err = 1e300    # chi^2 for models which are impossible
 
         #fraction of profiles to save, set <0 for no profile saving

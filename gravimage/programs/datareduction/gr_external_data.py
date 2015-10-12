@@ -241,38 +241,27 @@ def run(gp):
         if gp.tilt:
             if gp.investigate == 'simplenu':
                 sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz_from_bins_simplenu(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
-                tilt2_data_tmp, tilt2_data_err_tmp = gh.tilt_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
-                tilt2_data.append(tilt2_data_tmp)
-                tilt2_data_err.append(tilt2_data_err_tmp)
             elif gp.investigate == 'disc_nbody':
                 sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop], vR_data_used[pop])
 
             sigRz2_data.append(sigRz2_data_tmp)
             sigRz2_err_pois.append(sigRz2_data_err_tmp)
 
-            #gh.tilt_from_bins outputs #km^2 s^-2
-
-            #WARNING tilt2 data is actually sigmaRz data  TODO - fix this!
-    #MULTIPOPS REWRITE WORKING POINT
-
-    #nu_data, nu_err_pois, sigz2_data, sigz2_err_pois, Ntr_per_bin = gh.nu_sig_from_bins(binmin, binmax, z_data, v_data) # faster to instead use .._data_used
-
-    #if gp.tilt:
-    #    print ('tilt2_data:',tilt2_data)
-    #    print ('tilt2_data_fit:',(tilt2_data-np.square(0.0087*(1000.*bincentermed)**1.44)/tilt2_data))
-    #pdb.set_trace()
-
 
 
     print ('z vectors: ', bincentermed_pops)
     print ('nu_data:',nu_data)
-    print ('sigz2_data:',sigz2_data)
     print ('nu_err_pois:',nu_err_pois)
+    print ('sigz2_data:',sigz2_data)
     print ('sigz2_err_pois:',sigz2_err_pois)
     if gp.tilt:
         print('sigRz2_data = ', sigRz2_data)
+        print('sigRz2_err_pois = ', sigRz2_err_pois)
 
-    ## Use MC to estimate errors on nu  # SS: Throws error if file not set correctly, so commented out for now as meas errors are currently not used.
+
+    Ntr_used = np.array([len(z_data_used[ii]) for ii in range(0, len(z_data_used))]) # Total number of tracers used (& binned)
+
+    ## Use MC to estimate errors on nu
     #if gp.investigate == 'simplenu':
     #    z_sampler = ErSamp_gauss_linear_w_z
     #[nu_err_meas, sigz2_err_meas] = gmcer.mc_nu_error(z_sampler, gp.mc_err_N_iters, binmin, binmax, bincentermed)
@@ -282,13 +271,14 @@ def run(gp):
 
     #Combine sig (vel disp) errors
     #Ntr = np.array([len(z_data[ii]) for ii in range(0,len(z_data))]) #Total number of tracers avaliable
-    Ntr_used = np.array([len(z_data_used[ii]) for ii in range(0, len(z_data_used))]) # Total number of tracers used (& binned)
+
     #sigz2_err_tot = sigz2_err_pois + np.sqrt(2/Ntr_per_bin)*gp.vz_SDerr_meas**2
     #sigz2_err_tot = np.sqrt(sigz2_err_pois**2 + sigz2_err_meas**2)
 
     #SS: Running the code without measurement errors   TODO FIXME !!
     nu_err_tot = nu_err_pois     # SS-TODO
     sigz2_err_tot = sigz2_err_pois  # SS-TODO
+    sigRz2_err_tot = sigRz2_err_pois
 
     #Output data to file
     #TO DO MULTIPOPS BODGE
@@ -296,11 +286,25 @@ def run(gp):
     write_disc_output_files(bincentermed_pops, binmin_pops, binmax_pops, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
     if gp.tilt:
         #write_tilt_output_files(bincentermed_pops, binmin_pops, binmax_pops, tilt2_data, tilt2_data_err, gp)
-        write_sigRz2_output_files(bincentermed_pops, binmin_pops, binmax_pops, sigRz2_data, sigRz2_err_pois, gp)
+        write_sigRz2_output_files(bincentermed_pops, binmin_pops, binmax_pops, sigRz2_data, sigRz2_err_tot, gp)
 
-    #Set central nu prior range #TODO: look again at this prior
-    gp.nu_C_max = max(2.*Ntr_used/(binmax[0]-binmin[0]))
-    gp.nu_C_min = min(0.1*Ntr_used/(binmax[-1]-binmin[0]))
+    #Set central nu and sigz prior range #TODO: look again at this prior
+    nu_0_values = [nu_data[ii][0] for ii in range(0, gp.ntracer_pops)]
+    nu_0_errs = [nu_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)]
+    sigz_0_values = np.sqrt([sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)])
+    sigz_0_errs = np.sqrt([sigz2_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)])
+
+    #gp.nu_C_max = 10*max(nu_0_values)
+    #gp.nu_C_min = 0.1*min(nu_0_values)
+
+    gp.nu_C_max = max(nu_0_values) + 5*max(nu_0_errs) # 5 sigma either way
+    gp.nu_C_min = min(nu_0_values) - 5*max(nu_0_errs)
+
+    #gp.sigz_C_max = 10*max(sigz_0_values) #set from data in gr_external_data
+    #gp.sigz_C_min = 0.1*min(sigz_0_values)
+
+    gp.sigz_C_max = max(sigz_0_values) + 5*max(sigz_0_errs)
+    gp.sigz_C_min = max(min(sigz_0_values) - 5*max(sigz_0_errs), 0.)
 
     import gr_params #WHAT DOES THIS DO.
     gpr = gr_params.Params(gp)
