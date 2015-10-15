@@ -942,7 +942,8 @@ def sigRz_from_bins_simplenu(binmin, binmax, z, vRvz):
         vRvz_list_temp = vRvz[positions] # vz list of stars in given bin
 
         #Calculate Rz term of velocity dispersion tensor
-        sigRz2 = np.mean(vRvz_list_temp) # must assume np.mean(z) = 0
+        #sigRz2 = np.mean(vRvz_list_temp) # must assume np.mean(z) = 0
+        sigRz2 = -np.sqrt(np.mean(np.square(vRvz_list_temp)))
         sigRz2_vec.append(sigRz2)
 
         #Calculate Poisson error

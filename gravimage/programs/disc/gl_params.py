@@ -59,17 +59,14 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         if self.investigate == 'simplenu':
-            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e4', '', False)
+            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e6', '', False)
                 #ext_file_selector_simplenu(pops, sampling, darkdisk, tilt)
                 #pops = [x,x], eg which population to use
                 #sampling = 1e4, 1e5, 1e6,
-                #tilt = True or False
                 #darkdisk= '', 'dd', 'bdd'
+                #tilt = True or False
 
         elif self.investigate == 'disc_nbody' and self.case == 1: ######## Hunt & Kawata Data sets ########
-            #self.external_data_file = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
-            #self.external_data_file_tilt = ['/Hunt_Kawata_GCD/HK_cut_1kpc_z_vz.dat']
-
             self.external_data_file = ['/Hunt_Kawata_GCD/HK_cut_1kpc_GalC_z_vz.dat']
             self.external_data_file_tilt = ['/Hunt_Kawata_GCD/HK_cut_1kpc_GalC_z_vz.dat']
 
@@ -79,7 +76,6 @@ class Params():
             Gar_Radius = 'r8500' #'r8500', 'r10500', 'r12500'
             Gar_Angle = 'ang0' #'ang45', 'ang90', 'ang135', 'ang180', 'ang225', 'ang270', 'ang315'
             self.external_data_file = [Gar_Root + Gar_Simulation + '_' + Gar_Radius + '_' + Gar_Angle + '_stars_z_vz_vR.dat']
-
 
         #Check case agains data file
         if self.investigate == 'simplenu' and 'simplenu' not in self.external_data_file[0]:
@@ -292,12 +288,6 @@ class Params():
         self.z_all_pts_unsort = np.array([]) #Simple concatenation of bincentres and zC = 0
         self.z_all_pts_sorted = [] #Sorted list of bincentres and zC = 0
         self.z_vec_masks = [] #[[].append(None) for ii in range(0, self.ntracer_pops)]
-
-        #self.z_bincenters = np.array([]) # [pc] holds the bin centers, H Silverwood 21/11/14
-        #self.z_binmins = np.array([])
-        #self.z_binmaxs = np.array([])
-        #self.z_all_pts = np.array([]) # [pc] holds [zC = 0, z_bin_centers]
-
 
         # Global constants
         self.Rsun = 8.  # [kpc]  Sun's distance to galactic center

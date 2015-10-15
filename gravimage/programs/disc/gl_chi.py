@@ -50,7 +50,8 @@ def calc_chi2(profs, gp):
 
     #Tracer population comparison
     for pop in range(0, gp.ntracer_pops):
-        gh.LOG(1, ' pop = ', pop)
+        if gp.ntracer_pops > 1:
+            gh.LOG(1, ' pop = ', pop)
         #Check Monotonicity
         if gp.monotonic_rho:
             kz_rho_DM_vec_temp = profs.get_prof('kz_rho_DM_vec', pop)
@@ -72,6 +73,7 @@ def calc_chi2(profs, gp):
             numodel  = profs.get_prof('nu_vecs', pop)
             chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
             chi2_nu += chi2_nu_tmp
+            gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
         else:
             chi2_nu_tmp = 0.
             chi2_nu = 0.
@@ -79,7 +81,7 @@ def calc_chi2(profs, gp):
         #print('nudat = ', nudat)
         #print('numodel = ', numodel)
         #print('nuerr = ', nuerr)
-        gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
+
 
         #Calculate z-velocity dispersion chi2 for population no. pop
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
