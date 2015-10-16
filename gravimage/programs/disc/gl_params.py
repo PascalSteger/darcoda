@@ -28,11 +28,6 @@ class Params():
 
         print('P', myrank, ': Initiating Params()')
 
-        # Set machine and user variables
-        # ----------------------------------------------------------------------
-        self.machine, dummy = gh.detect_machine()
-
-
         # Set investigation and geometry
         # ----------------------------------------------------------------------
         if investigate != '':
@@ -59,7 +54,7 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         if self.investigate == 'simplenu':
-            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e6', '', False)
+            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e4', '', False)
                 #ext_file_selector_simplenu(pops, sampling, darkdisk, tilt)
                 #pops = [x,x], eg which population to use
                 #sampling = 1e4, 1e5, 1e6,
@@ -269,9 +264,9 @@ class Params():
         # filesystem-related
         # ----------------------------------------------------------------------
         import import_path as ip
-        ip.set_geometry(self.geom, self.machine) # load spherical or
-                                                 # disc version
-                                                 # of the code
+        ip.set_geometry(self.geom) # load spherical or
+                                    # disc version
+                                    # of the code
 
         print('P', myrank, ': Instantiating Files class')
         import gl_class_files

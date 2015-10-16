@@ -20,7 +20,7 @@ cores='16'
 ppn=15
 cputype='cpu3'
 mem = 'mem64gb'
-walltime='02:00:00:00'
+walltime='00:01:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'

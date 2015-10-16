@@ -56,79 +56,10 @@ def write_sigRz2_output_files(Bincenter, Binmin, Binmax, sigRz2_dat, sigRz2_err,
         print ('gp.files.sigRz2_files[pop]:',gp.files.sigRz2_files[pop])
 
 
-
-def ErSamp_gauss_linear_w_z():
-    fraction_err = 0.05
-    velocity_err = 5. #km s^-1
-
-    #datafile='/home/hsilverw/LoDaM/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
-    datafile='/home/sofia/darcoda/Data_Sets/simplenu/simplenu_sigz_raw_sdz_p05_sdvz_5.dat'
-    #Todo: work out how to un-hard code this. Ultimately this should be a method of a data class.
-
-    data = np.loadtxt(datafile)
-    z_data = data[:, 0]
-    v_data = data[:, 1]
-
-    z_sampled = []
-    v_sampled = []
-    for z_val in z_data:
-        z_sampled.append(rand.normal(loc = z_val, scale = z_val*fraction_err))
-    for v_val in v_data:
-        v_sampled.append(rand.normal(loc = v_val, scale = velocity_err))
-
-    return [z_sampled, v_sampled]
-
-# SS: seems to generate a new file with added measurement errors (or equivalently estimate a realization of true values given the
-#     measurement with measurement error). Looks only at z_data (i.e. nu).
-# HS: takes positions and velocities of stars, uses these as centres for Gaussians, then draws a
-#    new set of positions and velocities from those Gaussians.
-
-
-#def true_simplenu(gp):
-#    if gp.TheoryData == True:
-#        G1 = 4.299e-6   # Newton's constant in (km)^2*kpc/(Msun*s^2)
-#        K=1500.
-#        F=267.65
-#        D=0.18
-#        z0=0.4
-#        normC = 22.85
-#        nu0 = 1.
-#        Ntr = 9516.
-#        zmax= 1.2
-#
-#        nu0 = Ntr/(z0*(1-np.exp(-zmax/z0)))
-#        truen_arr = nu0*z0*(np.exp(-1.*binmin/z0)-np.exp(-1.*binmax/z0))  # true n.o. stars in bins
-#        truenu_arr = truen_arr/(binmax-binmin)
-#        #nu_data = truenu_arr
-#
-#        true_sigz2_arr = ProfileCollection(gp.ntracer_pops,gp.nbins).true_sigz2_func(binmin,binmax,1000,gp.nbins,z0,Ntr,nu0,K,D,F,gp)
-#
-#        print ('truenu_arr=',truenu_arr)
-#        print ('true_sigz2_arr=',true_sigz2_arr)
-#
-#        true_chi2_nu = np.sum((truenu_arr-nu_data)**2./nu_err_pois**2.)
-#        true_chi2_sigz2 = np.sum((true_sigz2_arr-sigz2_data)**2./sigz2_err_pois**2.)
-#        print ('Without measurement errors the true result has the Chi2:')
-#        print ('nu:',true_chi2_nu/20.,'sigz2:',true_chi2_sigz2/20.,'average:',(true_chi2_nu+true_chi2_sigz2)/40.)
-#
-#        nu_data = truenu_arr
-#        sigz2_data = true_sigz2_arr
-
-
-
-
-
-
 def load_simplenu_posvel(gp):
-
-    if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
-        external_file=['/home/hsilverw/LoDaM/darcoda/Data_Sets/' + temp for temp in gp.external_data_file]
-        if gp.tilt:
-            external_file_tilt=['/home/hsilverw/LoDaM/darcoda/Data_Sets/' + temp for temp in gp.external_data_file_tilt]
-    elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        external_file=['/home/sofia/darcoda/Data_Sets/' + temp for temp in gp.external_data_file]
-        if gp.tilt:
-            external_file_tilt=['/home/sofia/darcoda/Data_Sets/' + temp for temp in gp.external_data_file_tilt]
+    external_file = ['../../Data_Sets/' + temp for temp in gp.external_data_file]
+    if gp.tilt:
+        external_file_tilt=['../../Data_Sets/' + temp for temp in gp.external_data_file_tilt]
 
     #Load external data
     external_data = [np.loadtxt(file_name) for file_name in external_file]
@@ -154,10 +85,9 @@ def load_simplenu_posvel(gp):
 
 
 def load_disc_nbody_posvel(gp):
-    if gp.machine == 'lisa_HS_login' or gp.machine == 'lisa_HS_batch':
-        external_file=['/home/hsilverw/LoDaM/darcoda/Data_Sets/' + temp for temp in gp.external_data_file]
-    elif gp.machine == 'lisa_SS_login' or gp.machine == 'lisa_SS_batch':
-        external_file=['/home/sofia/darcoda/Data_Sets/' + temp for temp in gp.external_data_file]
+    external_file = ['../../Data_Sets/' + temp for temp in gp.external_data_file]
+    if gp.tilt:
+        external_file_tilt=['../../Data_Sets/' + temp for temp in gp.external_data_file_tilt]
 
     #Load external data
     print('Using external data file(s): ', gp.external_data_file)
@@ -185,12 +115,6 @@ def load_disc_nbody_posvel(gp):
     vzvR_data_cut = [vz_data_cut[jj]*vR_data_cut[jj] for jj in range(0, len(vz_data_cut))]
 
     return z_data_cut, vz_data_cut, vR_data_cut
-
-
-
-
-
-
 
 
 def run(gp):

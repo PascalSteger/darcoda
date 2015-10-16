@@ -990,6 +990,8 @@ def detect_machine():
         scratch_space = os.getenv("TMPDIR")
         gravimage_path = scratch_space + '/darcoda/gravimage/'
 
+    gravimage_path = os.path.abspath('..')+'/'
+
     return machine, gravimage_path
 
 

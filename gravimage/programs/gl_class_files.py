@@ -66,7 +66,7 @@ class Files:
         ## relative path to the 'programs' directory
         self.progdir = ''
         self.modedir = ''
-        self.set_dir(gp.machine, gp.case, gp.investigate) # changes self.shortdir
+        self.set_dir(gp.case, gp.investigate) # changes self.shortdir
         ## file with 2D summed masses
         self.massfiles = []
         ## file with analytic values for Walker models
@@ -155,20 +155,11 @@ class Files:
     # @param timestamp = '' used for output analysis
 
 
-    def set_dir(self, machine, case, inv):
-        if machine == 'darkside':
-            self.machine = '/home/ast/read/user/psteger/software/darcoda/gravimage/'
-        elif machine == 'pstgnt332':
-            self.machine = '/home/psteger/sci/darcoda/gravimage/'
-        elif machine == 'lisa_HS_login':
-            self.machine = '/home/hsilverw/LoDaM/darcoda/gravimage/'
-        elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/darcoda/gravimage/'
-        elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-            scratch_space = os.getenv("TMPDIR")
-            self.machine = scratch_space + '/darcoda/gravimage/'
-        self.progdir = self.machine + 'programs/'
-        self.modedir = self.machine + 'DT' + inv + '/'
+    def set_dir(self, case, inv):
+        gravimage_path = os.path.abspath('..')+'/'
+
+        self.progdir = gravimage_path + 'programs/'
+        self.modedir = gravimage_path + 'DT' + inv + '/'
         self.shortdir = self.modedir + str(case) + '/'
         return
     ## \fn set_dir(self, machine, case, inv)

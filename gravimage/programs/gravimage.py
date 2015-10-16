@@ -135,7 +135,7 @@ if __name__=="__main__":
     #Set import paths for P1 thru PN (this is done for P0 when instantiating gp,
     # but does not propagate to other processes). TO DO fix this.
     import import_path as ip
-    ip.set_geometry(gp.geom, gp.machine)
+    ip.set_geometry(gp.geom)
 
     import gl_file as gf
     global Cube, geom_loglike
