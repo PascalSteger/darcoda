@@ -156,7 +156,8 @@ class Files:
 
 
     def set_dir(self, case, inv):
-        gravimage_path = os.path.abspath('..')+'/'
+        darcoda_path = gh.find_darcoda_path()
+        gravimage_path = darcoda_path + '/gravimage/'
 
         self.progdir = gravimage_path + 'programs/'
         self.modedir = gravimage_path + 'DT' + inv + '/'
@@ -533,7 +534,17 @@ class Files:
     # @param timestamp string YYYYMMDDhhmm
 
     def set_simplenu(self, gp, timestamp=''):
-        self.dir = self.machine + 'DTsimplenu/0/'
+        ##Find darcoda path
+        #relative_path=''
+        #while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        #    relative_path += '../'
+        #    if os.path.abspath(relative_path).split('/')[-1] == 'home':
+        #        raise Exception('Cannot find darcoda folder in function set_simplenu')
+        #darcoda_path = os.path.abspath(relative_path)
+        darcoda_path = gh.find_darcoda_path()
+        gravimage_path = darcoda_path + '/gravimage/'
+
+        self.dir = gravimage_path + 'DTsimplenu/0/'
         self.dir += timestamp + '/'
         for pop in range(0, gp.ntracer_pops):
             self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
@@ -548,7 +559,17 @@ class Files:
 
 
     def set_disc_nbody(self, gp, timestamp=''):
-        self.dir = self.machine + 'DTdisc_nbody/' + str(gp.case) +'/'
+        ##Find darcoda path
+        #relative_path=''
+        #while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        #    relative_path += '../'
+        #    if os.path.abspath(relative_path).split('/')[-1] == 'home':
+        #        raise Exception('Cannot find darcoda folder in function set_disc_nbody')
+        #darcoda_path = os.path.abspath(relative_path)
+        darcoda_path = gh.find_darcoda_path()
+        gravimage_path = darcoda_path + '/gravimage/'
+
+        self.dir = gravimage_path + 'DTdisc_nbody/' + str(gp.case) +'/'
         self.dir += timestamp + '/'
         for pop in range(0, gp.ntracer_pops):
             self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')

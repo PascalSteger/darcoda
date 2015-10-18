@@ -578,13 +578,14 @@ def bin_r_log(rmin, rmax, nbin):
 # @param nbin number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
-def bin_r_const_tracers(x0, nbin):
+def bin_r_const_tracers(x0, nbin, weights):
     # procedure: get all particles in bin i
     #            get minimum, maximum radius. get radius of min/max before/after bin i
     #            get mean of (half of max bin/min next bin) for bin radius
     # make sure array is sorted in ascending order
     order = np.argsort(x0)
     x0 = np.array(x0)[order]
+    weights = np.array(weights)[order] #NOT YET IMPLMENTED
     # generate indices for all entries
     ind = np.arange(len(x0))
 
@@ -622,6 +623,40 @@ def bin_r_const_tracers(x0, nbin):
 # @param x0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
+
+
+def bin_r_const_tracers_weighted(x_vec, nbins, weights):
+    #procedure: calculate total weight, then weight per bin
+    # Sum star weights until weight per bin is reached
+    # define bin edge halfway between last star of bin and next star
+
+    # make sure array is sorted in ascending order
+    order = np.argsort(x_vec)
+    x_vec = np.array(x_vec)[order]
+    weights = np.array(weights)[order]
+
+    weight_per_bin = sum(weights)/nbins
+
+    binmin = np.zeros(nbins)
+    binmax = np.zeros(nbins)
+    bincentermed = np.zeros(nbins)
+
+    binmin[0] = min(x_vec)/2
+    binweights = np.zeros(nbins)
+    bc = 0
+
+    for jter in range(0, len(x_vec)):
+        binweights[bc] += weights[jter]
+        if binweights[bc]>weight_per_bin:
+            binmax[bc] = (x_vec[jter+1]+x_vec[jter])/2
+            binmin[bc+1] = (x_vec[jter+1]+x_vec[jter])/2
+            bincentermed[bc] = (binmax[bc] + binmin[bc])/2
+            bc+=1
+
+    binmax[bc] = x_vec[-1]*1.01
+    bincentermed[bc] = (binmax[bc] + binmin[bc])/2
+
+    return binmin, binmax, bincentermed
 
 
 
@@ -819,7 +854,7 @@ def starred(R0, X, Sigma, Ntot, gp):
 # @param gp global parameters
 
 
-def nu_sig_from_bins(binmin, binmax, x0, v0):
+def nu_sig_from_bins(binmin, binmax, x0, v0, weights):
     # H Silverwood 29/10/2014
     # Bin position and velocity information, return tracer density and velocity
     # dispersion (nu and sigma)
@@ -838,7 +873,8 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 
     for jter in range(0, len(binmin)):
         positions=np.where(np.logical_and(x0>=binmin[jter], x0<binmax[jter]))
-        Ntr = len(positions[0])
+        bin_weights = weights[positions]
+        Ntr = sum(bin_weights)
         Ntr_per_bin.append(Ntr)
 
         #Calculate tracer density nu and Poisson error (sqrt(N)/binsize)
@@ -1028,3 +1064,14 @@ def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt):
         filenames_tilt.append(A+B+C+D+E+'nu_sigRz_raw.dat')
 
     return filenames, filenames_tilt
+
+
+def find_darcoda_path():
+    #Find darcoda path
+    relative_path=''
+    while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        relative_path += '../'
+        if os.path.abspath(relative_path).split('/')[-1] == 'home':
+            raise Exception('Cannot find darcoda folder upwards in file tree')
+    darcoda_path = os.path.abspath(relative_path)
+    return darcoda_path

@@ -16,6 +16,7 @@ import gl_units as gu
 import gl_helper as gh
 import gl_mc_errors as gmcer
 import numpy.random as rand
+import os
 
 #from gl_collection import ProfileCollection#.true_sigz2_func
 from plotting.gl_collection import ProfileCollection
@@ -57,9 +58,13 @@ def write_sigRz2_output_files(Bincenter, Binmin, Binmax, sigRz2_dat, sigRz2_err,
 
 
 def load_simplenu_posvel(gp):
-    external_file = ['../../Data_Sets/' + temp for temp in gp.external_data_file]
+    darcoda_path = gh.find_darcoda_path()
+    data_set_folder = darcoda_path + '/Data_Sets/'
+    external_file = [data_set_folder + temp for temp in gp.external_data_file]
+    print('External file name = ', external_file)
     if gp.tilt:
-        external_file_tilt=['../../Data_Sets/' + temp for temp in gp.external_data_file_tilt]
+        external_file_tilt=[data_set_folder + temp for temp in gp.external_data_file_tilt]
+        print('External tilt file name = ', external_file_tilt)
 
     #Load external data
     external_data = [np.loadtxt(file_name) for file_name in external_file]
@@ -85,9 +90,11 @@ def load_simplenu_posvel(gp):
 
 
 def load_disc_nbody_posvel(gp):
-    external_file = ['../../Data_Sets/' + temp for temp in gp.external_data_file]
+    darcoda_path = gh.find_darcoda_path()
+    data_set_folder = darcoda_path + '/Data_Sets/'
+    external_file = [data_set_folder + temp for temp in gp.external_data_file]
     if gp.tilt:
-        external_file_tilt=['../../Data_Sets/' + temp for temp in gp.external_data_file_tilt]
+        external_file_tilt=[data_set_folder + temp for temp in gp.external_data_file_tilt]
 
     #Load external data
     print('Using external data file(s): ', gp.external_data_file)
@@ -135,7 +142,9 @@ def run(gp):
 
     for pop in range(0, gp.ntracer_pops):
         if gp.binning == 'consttr':
-            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used[pop], gp.nbins[pop])
+            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used[pop], gp.nbins[pop], np.ones(len(z_data_used[pop])))
+            #pdb.set_trace()
+            #binmin, binmax, bincentermed = gh.bin_r_const_tracers_weighted(z_data_used[pop], gp.nbins[pop], np.ones(len(z_data_used[pop])))
         elif gp.binning == 'linspace':
             binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used[0]),1), gp.nbins[pop])
 
@@ -155,7 +164,7 @@ def run(gp):
     tilt2_data_err = []
 
     for pop in range(0, gp.ntracer_pops):
-        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop])
+        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop], np.ones(len(z_data_used[pop])))
         nu_data.append(nu_data_tmp)
         nu_err_pois.append(nu_err_pois_tmp)
         sigz2_data.append(sigz2_data_tmp)

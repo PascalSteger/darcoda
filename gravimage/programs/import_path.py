@@ -41,10 +41,18 @@ def import_path(fullpath):
 
 
 def set_geometry(geom):
-    basepath = os.getcwd()+'/'
-    print('basepath = ', basepath)
-    insert_sys_path(basepath + 'datareduction/')
-    insert_sys_path(basepath + geom)
+    #Find darcoda path
+    relative_path=''
+    while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        relative_path += '../'
+        if os.path.abspath(relative_path).split('/')[-1] == 'home':
+            raise Exception('Cannot find darcoda folder in function set_geometry')
+    darcoda_path = os.path.abspath(relative_path)
+    programs_path = darcoda_path + '/gravimage/programs/'
+
+    print('programs_path = ', programs_path)
+    insert_sys_path(programs_path + 'datareduction/')
+    insert_sys_path(programs_path + geom)
 ## \fn set_geometry(geom, machine)
 # get right directory for geometry-dependent imports
 # @param geom string of investigation geometry: disc or sphere

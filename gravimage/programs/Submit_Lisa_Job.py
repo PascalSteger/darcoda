@@ -20,7 +20,7 @@ cores='16'
 ppn=15
 cputype='cpu3'
 mem = 'mem64gb'
-walltime='00:01:00:00'
+walltime='00:18:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
@@ -66,19 +66,22 @@ pbs_file.writelines('module load openmpi/intel' + '\n')
 pbs_file.writelines('module load mpicopy' + '\n')
 
 pbs_file.writelines('# Copying program files to scratch'+'\n')
-pbs_file.writelines('#module load openmpi/intel'+'\n')
 pbs_file.writelines('echo TMPDIR = $TMPDIR' + '\n')
 pbs_file.writelines('export RUNDIR=$TMPDIR'+'\n')
 pbs_file.writelines('cd $TMPDIR'+'\n')
 pbs_file.writelines('mkdir -p $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('mkdir $TMPDIR/darcoda/gravimage/programs/HoldingNumberWas_' + holding_number + '\n')
+pbs_file.writelines('mkdir -p $TMPDIR/darcoda/Data_Sets/' + investigation + '\n')
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 
 pbs_file.writelines('mpicopy $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
+pbs_file.writelines('mpicopy $HOME/LoDaM/darcoda/Data_Sets/' + investigation + ' -o "$TMPDIR"/darcoda/Data_Sets/ \n')
 
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
-pbs_file.writelines('echo Point A' + '\n')
+
 pbs_file.writelines('ls -l -a darcoda/gravimage/programs/*' + '\n')
+pbs_file.writelines('echo Contents of Data_Sets/simplenu: \n')
+pbs_file.writelines('ls -l -a darcoda/Data_Sets/simplenu/*' + '\n')
 
 pbs_file.writelines('cd $TMPDIR/darcoda/gravimage/programs'+'\n')
 

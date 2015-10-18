@@ -339,7 +339,6 @@ def run(investigate="", case=-1, latest=False):
         case = get_case(investigate)
 
     profile_source = get_profile_source()
-    pdb.set_trace()
     gravimage_path = os.path.abspath('../../')+'/'
     basedir = os.path.abspath(gravimage_path+'/DT'+investigate+'/'+str(case)+'/')+'/'
 

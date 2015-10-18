@@ -54,7 +54,7 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         if self.investigate == 'simplenu':
-            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e4', '', False)
+            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e8', 'bdd', True)
                 #ext_file_selector_simplenu(pops, sampling, darkdisk, tilt)
                 #pops = [x,x], eg which population to use
                 #sampling = 1e4, 1e5, 1e6,
@@ -93,11 +93,11 @@ class Params():
         if len(self.data_z_cut) != self.ntracer_pops:
             raise Exception('Incorrect data_z_cut vector length')
 
-        self.tilt = False   # If also modelling the tilt
+        self.tilt = True   # If also modelling the tilt
 
-        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
-        #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
-        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
+        #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM CURRENTLY NOT WORKING
+        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
