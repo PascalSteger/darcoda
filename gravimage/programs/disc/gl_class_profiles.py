@@ -74,7 +74,7 @@ class Profiles:
 
         #Tilt
         self.tilt_vecs     = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
-        self.sigmaRz_vecs  = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
+        self.sigmaRz2_vecs  = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
 
         #self.tilt_vec = np.zeros(ntracer_pops * (nbins))
         #self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins))
@@ -92,7 +92,7 @@ class Profiles:
             proper_vec_length = gp.nrhonu - 1
         elif prof in ['z_vecs_comb_w0']:
             proper_vec_length = gp.nrhonu
-        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz_vecs']:
+        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz2_vecs']:
             proper_vec_length = gp.nbins[pop]
 
         gh.sanitize_vector(vec, proper_vec_length, -1e30, 1e30, gp.debug)
@@ -145,8 +145,8 @@ class Profiles:
         #Tilt
         elif prof == 'tilt_vecs':
             self.tilt_vecs[pop] = vec
-        elif prof == 'sigmaRz_vecs':
-            self.sigmaRz_vecs[pop] = vec
+        elif prof == 'sigmaRz2_vecs':
+            self.sigmaRz2_vecs[pop] = vec
 
         #
         #elif prof == 'tilt_vec':
@@ -208,8 +208,8 @@ class Profiles:
         #Tilt
         elif prof == 'tilt_vecs':
             return self.tilt_vecs[pop]
-        elif prof == 'sigmaRz_vecs':
-            return self.sigmaRz_vecs[pop]
+        elif prof == 'sigmaRz2_vecs':
+            return self.sigmaRz2_vecs[pop]
 
         #elif prof == 'tilt_vec':
         #    return self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins]

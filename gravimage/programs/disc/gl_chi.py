@@ -19,8 +19,9 @@ def chi2red(model, data, sig, dof):
     model = np.array(model)
     data  = np.array(data)
     sig   = np.array(sig)
-    chired = np.sum(((model-data)**2./sig**2.)/dof)
-    return chired
+    chi2_vec = ((model-data)**2./sig**2.)/dof
+    chired = np.sum(chi2_vec)
+    return chired, chi2_vec
 ## \fn chi2red(model, data, sig, dof)
 # determine 'reduced chi2'
 # @param model
@@ -67,11 +68,11 @@ def calc_chi2(profs, gp):
 
 
         #Calculate tracer density chi2 for population no. pop
-        if gp.nu_model == 'kz_nu':
+        if True:#gp.nu_model == 'kz_nu':
             nudat    = gp.dat.nu[pop]
             nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
             numodel  = profs.get_prof('nu_vecs', pop)
-            chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
+            chi2_nu_tmp, chi2_nu_vec = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
             chi2_nu += chi2_nu_tmp
             gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
         else:
@@ -87,7 +88,7 @@ def calc_chi2(profs, gp):
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vecs', pop)
-        chi2_sigz2_tmp  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
+        chi2_sigz2_tmp, chi2_sigz2_vec  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
         if chi2_sigz2_tmp == np.inf:
             print('chi2_sig has become infinite')
         chi2_sigz2 += chi2_sigz2_tmp
@@ -95,10 +96,10 @@ def calc_chi2(profs, gp):
 
         #Calculate Rz-velocity dispersion chi2 for population no. pop
         if gp.tilt:
-            sigmaRzdat  = gp.dat.sigRz2[pop]
-            sigmaRzerr = gp.dat.sigRz2err[pop]
-            sigmaRz_model = profs.get_prof('sigmaRz_vecs', pop)
-            chi2_sigRz2_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1.)
+            sigmaRz2dat  = gp.dat.sigRz2[pop]
+            sigmaRz2err = gp.dat.sigRz2err[pop]
+            sigmaRz2_model = profs.get_prof('sigmaRz2_vecs', pop)
+            chi2_sigRz2_tmp, chi2_sigRz2_vec = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, 1.)
             chi2_sigRz2 += chi2_sigRz2_tmp
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
@@ -107,6 +108,7 @@ def calc_chi2(profs, gp):
             gh.LOG(1, '  chi2_sigRz2  = ', chi2_sigRz2_tmp)
         else:
             chi2_sigRz2=0.
+            chi2_sigRz2_vec = np.zeros(gp.nbins)
 
     #Combine chi2 for nu, sigz, and sigRz for all populations
     chi2 = chi2_nu + chi2_sigz2 + chi2_sigRz2

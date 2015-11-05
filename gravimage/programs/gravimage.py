@@ -22,6 +22,7 @@ import gl_helper as gh
 import pdb
 import numpy.random as npr
 import time
+import gl_multinest_helper as glmh
 # increment NICEness of process by 1, CPU usage shall not block others
 # import os
 # os.nice(1)
@@ -122,6 +123,7 @@ if __name__=="__main__":
         print('P', myrank, ':, creating gp.')
         gp = gl_params.Params(ts, options.investigation, int(options.case))
         print('P', myrank, ':, created gp.')
+        glmh.write_mn_info(gp)
         comm.Barrier()
 
     elif myrank != 0:
@@ -188,7 +190,7 @@ if __name__=="__main__":
                                                #value exists: highly
                                                #negative
                     outputfiles_basename = gp.files.outdir + '/output',
-                    seed = 1985, # -1 for seed from clock
+                    seed = -1, # -1 for seed from clock
                     verbose = True,
                     resume = False,
                     context = 0,

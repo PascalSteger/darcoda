@@ -54,7 +54,7 @@ class Params():
         self.getnewpos  = True  # redo the first data conversion step
 
         if self.investigate == 'simplenu':
-            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e8', 'bdd', True)
+            self.external_data_file, self.external_data_file_tilt = gh.ext_file_selector_simplenu([2], '1e6', '', False)
                 #ext_file_selector_simplenu(pops, sampling, darkdisk, tilt)
                 #pops = [x,x], eg which population to use
                 #sampling = 1e4, 1e5, 1e6,
@@ -86,18 +86,18 @@ class Params():
         #Count number of tracer populations
         self.ntracer_pops = len(self.external_data_file) # number of stellar tracer populations
 
-        self.dd_data = False # if we are to plot dd analytics or not
-
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = [2.4]  # (set > data z_max to use all avaiable data)
         if len(self.data_z_cut) != self.ntracer_pops:
             raise Exception('Incorrect data_z_cut vector length')
 
-        self.tilt = True   # If also modelling the tilt
+        self.tilt = False   # If also modelling the tilt
 
-        #self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
+        self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM CURRENTLY NOT WORKING
-        self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+        #self.darkmattermodel = 'ConstPlusDD' # constant DM + DM disc component
+
+        #self.dd_data = False # if we are to plot dd analytics or not
 
         self.binning = 'consttr' # 'linspace', 'logspace', 'consttr': binning of particles
         #self.binning = 'linspace' # 'linspace', 'logspace', 'consttr': binning of particles
@@ -212,14 +212,25 @@ class Params():
         self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1350
-        self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.16
+        self.simplenu_baryon_K_max = 1501  #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1499
+        self.simplenu_baryon_D_max = 0.181  #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.179
+
+        #self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
+        #self.simplenu_baryon_K_min = 1350
+        #self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
+        #self.simplenu_baryon_D_min = 0.16
+
         #self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
         #self.simplenu_baryon_K_min = 1000  #1400 #1300.
         #self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
         #self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
+
+        #self.simplenu_baryon_K_max = 3000  #1600 #1700. #JR model has K = 1500.
+        #self.simplenu_baryon_K_min = 10  #1400 #1300.
+        #self.simplenu_baryon_D_max = 0.5  #0.20 #0.5 #JR model has D = 0.18
+        #self.simplenu_baryon_D_min = 0.01  #0.16 #0.05
 
         # Simplenu DM disc model priors
         self.simplenu_dm_K_max = 1500.  #JR model has K = 300.
@@ -234,8 +245,12 @@ class Params():
         #self.tilt_n_min = 1.
         #self.tilt_R_max = 3.5     # simple2 mock has R = 2.5
         #self.tilt_R_min = 1.5
-        self.tilt_A_max = 0.0  # simple2 mock has A = -0.0087
-        self.tilt_A_min = -1.0
+
+        #self.tilt_A_max = 0.0  # simple2 mock has A = -8.7 -0.0087
+        #self.tilt_A_min = -1.0
+        self.tilt_A_max = 0.0  # simple2 mock has A = -181.77 for z[kpc]
+        self.tilt_A_min = -200.00
+
         self.tilt_n_max = 3.0    # simple2 mock has n = 1.44
         self.tilt_n_min = 0.1
         self.tilt_R_max = 4.5     # simple2 mock has R = 2.5
@@ -273,7 +288,6 @@ class Params():
         self.files = gl_class_files.Files(self, timestamp)
         from gl_data import Datafile
         self.dat = Datafile()
-
 
         # global arrays
         # ----------------------------------------------------------------------

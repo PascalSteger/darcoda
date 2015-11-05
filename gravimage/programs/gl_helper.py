@@ -932,7 +932,7 @@ def tilt_from_bins(binmin, binmax, z, vRz):
     return tilt_vec,tilt_err_vec #km^2 s^-2
 
 
-def sigRz_from_bins(binmin, binmax, z, vz, vR):
+def sigRz2_from_bins(binmin, binmax, z, vz, vR):
     #order = np.argsort(z)
     #z = np.array(z)[order]
     #vz = np.array(vz)[order]
@@ -963,7 +963,7 @@ def sigRz_from_bins(binmin, binmax, z, vz, vR):
 
 
 
-def sigRz_from_bins_simplenu(binmin, binmax, z, vRvz):
+def sigRz2_from_bins_simplenu(binmin, binmax, z, vRvz):
     order = np.argsort(z)
     z = np.array(z)[order]
     vRvz = np.array(vRvz)[order]
@@ -990,7 +990,7 @@ def sigRz_from_bins_simplenu(binmin, binmax, z, vRvz):
 
     sigRz2_vec = np.array(sigRz2_vec)
     sigRz2_err_vec = np.array(sigRz2_err_vec)
-    return sigRz2_err_vec,sigRz2_err_vec
+    return sigRz2_vec, sigRz2_err_vec
 
 
 

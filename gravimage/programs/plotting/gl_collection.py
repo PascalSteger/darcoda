@@ -264,6 +264,7 @@ class ProfileCollection():
             rescale_prof = 1.
 
         print ('prof:',prof, 'pop: ', pop)
+
         self.Mmin.set_prof(prof,  credreg_bound_profs[0]/rescale_prof, pop, gp)
         self.M95lo.set_prof(prof, credreg_bound_profs[1]/rescale_prof, pop, gp)
         self.M68lo.set_prof(prof, credreg_bound_profs[2]/rescale_prof, pop, gp)
@@ -273,6 +274,7 @@ class ProfileCollection():
         self.Mmax.set_prof(prof,  credreg_bound_profs[6]/rescale_prof, pop, gp)
         self.BestFit.set_prof(prof, self.goodprof[np.argmin(self.goodchi)]/rescale_prof, pop, gp)
         print ('BestFit profile for',prof,':',self.goodprof[np.argmin(self.goodchi)])
+
         return credreg_bound_profs
     ## \fn sort_prof(self, prof, pop, gp)
     # sort the list of prof-profiles, and store the {1,2}sigma, min, medi, max in the appropriate place
@@ -298,18 +300,19 @@ class ProfileCollection():
         N_models = len(bin_prof_values[0])
 
         #Compile bin centers for all points
-        bin_prof_values_bincents = [np.ones(N_models)*gp.z_bincenters[ii] for ii in range(0, len(gp.z_bincenters))]
+
+        bin_prof_values_bincents = [np.ones(N_models)*gp.z_bincenter_vecs[pop][ii] for ii in range(0, len(gp.z_bincenter_vecs[pop]))]
 
         #Construct list of all points
         y_data = np.concatenate(bin_prof_values)
         z_data = np.concatenate(bin_prof_values_bincents)
-        weight_data = np.tile(self.prof_weights, len(gp.z_bincenters))
+        weight_data = np.tile(self.prof_weights, len(gp.z_bincenter_vecs[pop]))
 
         if weight_data.all() ==0:
             weight_data = np.ones(len(weight_data)) * (1./N_models)
 
         #Set bin edges
-        z_edges = np.append(gp.z_binmins, gp.z_binmaxs[-1])
+        z_edges = np.append(gp.z_binmin_vecs[pop], gp.z_binmax_vecs[pop][-1])
         ax_yscale = ax.get_yscale()
         if ax_yscale == 'linear':
             y_edges = np.linspace(min(y_data), max(y_data), 100)
@@ -339,11 +342,11 @@ class ProfileCollection():
         M68hi = self.M68hi.get_prof(prof, pop)
         M95hi = self.M95hi.get_prof(prof, pop)
 
-        [ax.hlines(M95lo[ii], z_edges[ii], z_edges[ii+1], lw=0.1, linestyle=':') for ii in range(0, gp.nbins)]
-        [ax.hlines(M68lo[ii], z_edges[ii], z_edges[ii+1], lw=0.1) for ii in range(0, gp.nbins)]
-        ax.plot(gp.z_bincenters, Mmedi, 'r.', markersize=0.8)
-        [ax.hlines(M68hi[ii], z_edges[ii], z_edges[ii+1], lw=0.1) for ii in range(0, gp.nbins)]
-        [ax.hlines(M95hi[ii], z_edges[ii], z_edges[ii+1], lw=0.1, linestyle=':') for ii in range(0, gp.nbins)]
+        [ax.hlines(M95lo[ii], z_edges[ii], z_edges[ii+1], lw=0.1, linestyle=':') for ii in range(0, gp.nbins[pop])]
+        [ax.hlines(M68lo[ii], z_edges[ii], z_edges[ii+1], lw=0.1) for ii in range(0, gp.nbins[pop])]
+        ax.plot(gp.z_bincenter_vecs[pop], Mmedi, 'r.', markersize=0.8)
+        [ax.hlines(M68hi[ii], z_edges[ii], z_edges[ii+1], lw=0.1) for ii in range(0, gp.nbins[pop])]
+        [ax.hlines(M95hi[ii], z_edges[ii], z_edges[ii+1], lw=0.1, linestyle=':') for ii in range(0, gp.nbins[pop])]
 
         return
 
@@ -712,8 +715,9 @@ class ProfileCollection():
                             color='blue', alpha=0.3, lw=1)
             #ax.set_ylim([0., 2.*max(sigdat+sigerr)]) #bodge
 
-        elif prof == 'sigmaRz_vec' or prof == 'sigmaRz_vec':
-            DATA = np.transpose(np.loadtxt(gp.files.tiltfiles[pop], \
+        elif prof == 'sigmaRz_vec' or prof == 'sigmaRz_vecs':
+            pdb.set_trace()
+            DATA = np.transpose(np.loadtxt(gp.files.sigRz2_files[pop], \
                                            unpack=False, skiprows=1))
             tiltdat = DATA[4-1] # [maxsiglosi]
             tilterr = DATA[5-1] # [maxsiglosi]
@@ -790,7 +794,7 @@ class ProfileCollection():
         elif prof == 'rho_DM_vec':
             ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[10^{-3}\\rm{M}_\\odot/\\rm{pc}^3]$')
             #ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
-            #ax.set_ylim(1E6, 1E8)
+            ax.set_ylim(1, 30)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
             #ax.set_ylim(0,1.0E8)
@@ -809,7 +813,7 @@ class ProfileCollection():
             ax.set_ylabel('$\\Sigma_{\\rm{total}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
             #ax.set_ylim(0,1.0E8)
 
-        elif prof == 'sigmaRz_vec':
+        elif prof == 'sigmaRz_vec' or prof == 'sigmaRz_vecs':
             ax.set_ylabel('$\\sigma_{Rz,'+str(pop)+'}\\quad[\\rm{km}^2/\\rm{s}^2]$')
 
 
@@ -967,7 +971,7 @@ class ProfileCollection():
         if prof == 'nu_vecs' or prof == 'rho_baryon_vec' or prof == 'rho_total_vec' or prof == 'sigz2_vecs':
             fig = plt.figure()
             ax  = fig.add_subplot(111)
-            ax.set_xscale('linear')  # SS: was 'log' before
+            ax.set_xscale('linear') #TEST
             ax.set_yscale('log')
 
 
@@ -1026,12 +1030,13 @@ class ProfileCollection():
                 ax.step(edges[1:], bins, where='pre')
                 plt.draw()
                 self.write_chi2(basename, edges, bins)
+
                 fig.savefig(basename+'/output/' + profile_source + '_prof_chi2_0.pdf')
                 return
 
             #Choice of plotting style
-            #self.weighted_hist_heatmap(ax, prof, pop, gp)
-            self.fill_nice(ax, prof, pop, gp)
+            self.weighted_hist_heatmap(ax, prof, pop, gp)
+            #self.fill_nice(ax, prof, pop, gp)
 
 
             #self.plot_N_samples(ax, prof, pop) #SS: Don't plot thin gray lines
@@ -1166,8 +1171,8 @@ class ProfileCollection():
         Kzvec_const_DM = -(2.*F*zvec)
 
         rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
-        dd_data = False
-        if dd_data:
+
+        if gp.darkmattermodel == 'ConstPlusDD':
             rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))
             Kzvec_DM = Kzvec_const_DM + Kzvec_DD
         else:
@@ -1265,11 +1270,11 @@ class ProfileCollection():
             #ax.plot(bincentermed, true_sigz2_arr, 'g-', alpha = 0.5)
             # Uncomment above line to plot theory curve for sigz2
 
-        elif prof == 'sigmaRz_vec':
-            A = -0.0087
+        elif prof == 'sigmaRz_vec' or prof == 'sigmaRz2_vecs':
+            A = -8.7
             n = 1.44
-            sigmaRz = A*(1000.*zvec)**n
-            ax.plot(zvec, sigmaRz, 'g-', alpha = 0.5)
+            sigmaRz2 = A*(zvec)**n #z [kpc]
+            ax.plot(zvec, sigmaRz2, 'g-', alpha = 0.5)
 
         return
 

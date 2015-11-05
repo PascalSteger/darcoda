@@ -31,7 +31,7 @@ def geom_loglike(cube, ndim, nparams, gp):
     offstep = gp.ntracer_pops
     norm_C = cube[off:off+offstep]
     for t_pop in range(0, gp.ntracer_pops):
-        tmp_profs.norm_C[t_pop] = norm_C[t_pop]
+        tmp_profs.norm_C[t_pop] = norm_C[t_pop]*1.0
     off += offstep
     #Dark Matter rho parameters (rho_C, kz_C, kz_vector)
 
@@ -167,7 +167,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
 
     #Calculate tilt for each population
-    sigmaRz_allz = [[].append(None) for ii in range(0,gp.ntracer_pops)]
+    sigmaRz2_allz = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     tilt_allz = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     for t_pop in range(0, gp.ntracer_pops):
         z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
@@ -178,9 +178,9 @@ def geom_loglike(cube, ndim, nparams, gp):
             if n<0:
                 print('z_points_tmp = ', z_points_tmp, ', A = ', A, ', n = ', n, ', R = ', R)
 
-            sigmaRz_allz[t_pop] = A*(z_points_tmp*1000.)**n #all z for this population
-            tmp_profs.set_prof('sigmaRz_vecs', sigmaRz_allz[t_pop][1:], t_pop, gp)
-            tilt_allz[t_pop] = sigmaRz_allz[t_pop]*(1./gp.Rsun - 2./R)
+            sigmaRz2_allz[t_pop] = A*(z_points_tmp)**n #all z for this population
+            tmp_profs.set_prof('sigmaRz2_vecs', sigmaRz2_allz[t_pop][1:], t_pop, gp)
+            tilt_allz[t_pop] = sigmaRz2_allz[t_pop]*(1./gp.Rsun - 2./R)
         else:
             tilt_allz[t_pop] = np.zeros(gp.nbins[t_pop]+1)
         tmp_profs.set_prof('tilt_vecs', tilt_allz[t_pop][1:], t_pop, gp)

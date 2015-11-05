@@ -173,9 +173,9 @@ def run(gp):
 
         if gp.tilt:
             if gp.investigate == 'simplenu':
-                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz_from_bins_simplenu(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
+                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
             elif gp.investigate == 'disc_nbody':
-                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop], vR_data_used[pop])
+                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop], vR_data_used[pop])
 
             sigRz2_data.append(sigRz2_data_tmp)
             sigRz2_err_pois.append(sigRz2_data_err_tmp)

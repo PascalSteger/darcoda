@@ -115,7 +115,8 @@ def run(timestamp, basename, profile_source, gp):
     pc.write_all_disc(basename, gp)
 
     for t_pop in range(0, gp.ntracer_pops):
-        pc.plot_profile(basename, 'kz_nu_vecs', t_pop, profile_source, gp)
+        if gp.nu_model == 'kz_nu':
+            pc.plot_profile(basename, 'kz_nu_vecs', t_pop, profile_source, gp)
         pc.plot_profile(basename, 'nu_vecs', t_pop, profile_source, gp)
         pc.plot_profile(basename, 'sigz2_vecs', t_pop, profile_source, gp)
         if gp.tilt:
@@ -169,7 +170,7 @@ if __name__ == '__main__':
     timestamp, basename, investigate, case, profile_source = sr.run(options.investigate, \
                                  options.case,\
                                  options.latest)
-    #pdb.set_trace()
+
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
     # load stored parameters
