@@ -48,6 +48,10 @@ def calc_chi2(profs, gp):
     chi2_sigz2 = 0
     chi2_sigRz2 = 0
 
+    chi2_nu_vecs=[]
+    chi2_sigz2_vecs=[]
+    chi2_sigRz2_vecs=[]
+
 
     #Tracer population comparison
     for pop in range(0, gp.ntracer_pops):
@@ -74,6 +78,7 @@ def calc_chi2(profs, gp):
             numodel  = profs.get_prof('nu_vecs', pop)
             chi2_nu_tmp, chi2_nu_vec = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
             chi2_nu += chi2_nu_tmp
+            chi2_nu_vecs.append(chi2_nu_vec)
             gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
         else:
             chi2_nu_tmp = 0.
@@ -92,6 +97,7 @@ def calc_chi2(profs, gp):
         if chi2_sigz2_tmp == np.inf:
             print('chi2_sig has become infinite')
         chi2_sigz2 += chi2_sigz2_tmp
+        chi2_sigz2_vecs.append(chi2_sigz2_vec)
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2_tmp)
 
         #Calculate Rz-velocity dispersion chi2 for population no. pop
@@ -100,22 +106,23 @@ def calc_chi2(profs, gp):
             sigmaRz2err = gp.dat.sigRz2err[pop]
             sigmaRz2_model = profs.get_prof('sigmaRz2_vecs', pop)
             chi2_sigRz2_tmp, chi2_sigRz2_vec = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, 1.)
-            chi2_sigRz2 += chi2_sigRz2_tmp
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
             #print ('sigmaRz2err:',sigmaRz2err)
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
             gh.LOG(1, '  chi2_sigRz2  = ', chi2_sigRz2_tmp)
         else:
-            chi2_sigRz2=0.
-            chi2_sigRz2_vec = np.zeros(gp.nbins)
+            chi2_sigRz2_tmp =0.
+            chi2_sigRz2_vec = np.zeros(gp.nbins[pop])
+        chi2_sigRz2 += chi2_sigRz2_tmp
+        chi2_sigRz2_vecs.append(chi2_sigRz2_vec)
 
     #Combine chi2 for nu, sigz, and sigRz for all populations
     chi2 = chi2_nu + chi2_sigz2 + chi2_sigRz2
 
     #print('P', myrank, ': chi2 = ', chi2)
 
-    return chi2
+    return chi2, chi2_nu_vecs, chi2_sigz2_vecs, chi2_sigRz2_vecs
 ## \fn calc_chi2(profs)
 # Calculate chi^2
 # @param profs profiles for rho, M, nu_i, beta_i, sig_i, kap_i

@@ -214,7 +214,11 @@ def geom_loglike(cube, ndim, nparams, gp):
         pdb.set_trace()
 
     # determine log likelihood
-    chi2 = calc_chi2(tmp_profs, gp)
+    chi2, chi2_nu_vecs_tmp, chi2_sigz2_vecs_tmp, chi2_sigRz2_vecs_tmp = calc_chi2(tmp_profs, gp)
+    for t_pop in range(0, gp.ntracer_pops):
+        tmp_profs.set_prof('chi2_nu_vecs', chi2_nu_vecs_tmp[t_pop], t_pop, gp)
+        tmp_profs.set_prof('chi2_sigz2_vecs', chi2_sigz2_vecs_tmp[t_pop], t_pop, gp)
+        tmp_profs.set_prof('chi2_sigRz2_vecs', chi2_sigRz2_vecs_tmp[t_pop], t_pop, gp)
 
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2

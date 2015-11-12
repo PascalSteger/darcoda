@@ -115,8 +115,8 @@ class Params():
         # self.adddarkdisc is currently not used !
 
         #Tracer Density description
-        #self.nu_model = 'kz_nu'
-        self.nu_model = 'gaussian_data'
+        self.nu_model = 'kz_nu'
+        #self.nu_model = 'gaussian_data'
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model
@@ -162,7 +162,7 @@ class Params():
                 # baryon parameters
 
         if self.nu_model == 'gaussian_data':
-            self.ndim -= 1
+            self.ndim -= self.ntracer_pops
 
         if self.hyperparams:
             self.ndim += 2

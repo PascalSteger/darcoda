@@ -25,9 +25,6 @@ class Profiles:
         self.binmaxs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #?
         self.z_vec_masks = [[].append(None) for ii in range(0, ntracer_pops)]
 
-        #self.xbins = np.zeros(nbins+1) #to mesh with general code
-        #self.x0 = np.zeros(nbins) #to mesh with general code
-
         #Dark Matter profile parameters and derived mass density
         self.rho_DM_C      = 0.0               #Multinest
         self.kz_rho_DM_C   = 0.0               #Multinest
@@ -58,12 +55,11 @@ class Profiles:
         self.nu_vecs    = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #Derived from phys
         self.sigz2_vecs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)] #Derived from phys
 
-        #self.kz_nu_vec = np.zeros(ntracer_pops * nbins)    #Multinest
-        #self.nu_vec    = np.zeros(ntracer_pops * nbins)    #Derived from phys
-        #self.sigz2_vec = np.zeros(ntracer_pops * nbins)    #Derived from phys
-
         #chi2 of profile
         self.chi2 = 0.0
+        self.chi2_nu_vecs     = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
+        self.chi2_sigz2_vecs  = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
+        self.chi2_sigRz2_vecs = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
 
         #weight of profile (used in multinest analysis)
         self.mn_weight = 0.0
@@ -75,9 +71,6 @@ class Profiles:
         #Tilt
         self.tilt_vecs     = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
         self.sigmaRz2_vecs  = [(np.zeros(nbins[ii])) for ii in range(0, ntracer_pops)]
-
-        #self.tilt_vec = np.zeros(ntracer_pops * (nbins))
-        #self.sigmaRz_vec = np.zeros(ntracer_pops * (nbins))
 
     ## \fn __init__(self, pops, nipol)
     # constructor
@@ -92,7 +85,8 @@ class Profiles:
             proper_vec_length = gp.nrhonu - 1
         elif prof in ['z_vecs_comb_w0']:
             proper_vec_length = gp.nrhonu
-        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz2_vecs']:
+        elif prof in ['z_vecs', 'kz_nu_vecs', 'nu_vecs', 'sigz2_vecs', 'tilt_vecs', 'sigmaRz2_vecs',\
+                        'chi2_nu_vecs', 'chi2_sigz2_vecs', 'chi2_sigRz2_vecs']:
             proper_vec_length = gp.nbins[pop]
 
         gh.sanitize_vector(vec, proper_vec_length, -1e30, 1e30, gp.debug)
@@ -134,13 +128,6 @@ class Profiles:
         elif prof == 'sigz2_vecs':
             self.sigz2_vecs[pop] = vec
 
-        #
-        #elif prof == 'kz_nu_vec':
-        #    self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
-        #elif prof == 'nu_vec':
-        #    self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]  = vec
-        #elif prof == 'sigz2_vec':
-        #    self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
 
         #Tilt
         elif prof == 'tilt_vecs':
@@ -148,11 +135,15 @@ class Profiles:
         elif prof == 'sigmaRz2_vecs':
             self.sigmaRz2_vecs[pop] = vec
 
-        #
-        #elif prof == 'tilt_vec':
-        #    self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
-        #elif prof == 'sigmaRz_vec':
-        #    self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins] = vec
+        #Chi2 profiles
+        elif prof == 'chi2_nu_vecs':
+            self.chi2_nu_vecs[pop] = vec
+        elif prof == 'chi2_sigz2_vecs':
+            self.chi2_sigz2_vecs[pop] = vec
+        elif prof == 'chi2_sigRz2_vecs':
+            self.chi2_sigRz2_vecs[pop] = vec
+
+
 
     ## \fn set_prof(self, prof, vec, pop, gp)
     # store density vector
@@ -198,27 +189,19 @@ class Profiles:
         elif prof == 'sigz2_vecs':
             return self.sigz2_vecs[pop]
 
-        #elif prof == 'kz_nu_vec':
-        #    return self.kz_nu_vec[pop*self.nbins:(pop+1)*self.nbins]
-        #elif prof == 'nu_vec':
-        #    return self.nu_vec[pop*self.nbins:(pop+1)*self.nbins]
-        #elif prof == 'sigz2_vec':
-        #    return self.sigz2_vec[pop*self.nbins:(pop+1)*self.nbins]
-
         #Tilt
         elif prof == 'tilt_vecs':
             return self.tilt_vecs[pop]
         elif prof == 'sigmaRz2_vecs':
             return self.sigmaRz2_vecs[pop]
 
-        #elif prof == 'tilt_vec':
-        #    return self.tilt_vec[pop*self.nbins:(pop+1)*self.nbins]
-        #elif prof == 'sigmaRz_vec':
-        #    return self.sigmaRz_vec[pop*self.nbins:(pop+1)*self.nbins]
-
-        ##chi2 of profile
-        #elif prof == 'chi2'
-        #    return self.chi2
+        #Chi2 profile
+        elif prof == 'chi2_nu_vecs':
+            return self.chi2_nu_vecs[pop]
+        elif prof == 'chi2_sigz2_vecs':
+            return self.chi2_sigz2_vecs[pop]
+        elif prof == 'chi2_sigRz2_vecs':
+            return self.chi2_sigRz2_vecs[pop]
 
     ## \fn get_prof(self, prof, pop)
     # return density array
