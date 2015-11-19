@@ -20,6 +20,9 @@ import gl_analytic as ga
 import gl_project as glp
 import gl_physics as phys
 
+import barrett.posterior as posterior
+import barrett.data as data
+
 USE_ALL = True
 #USE_ALL = True  # SS: Did not seem to affect things, what is this?
 
@@ -1035,8 +1038,8 @@ class ProfileCollection():
                 return
 
             #Choice of plotting style
-            self.weighted_hist_heatmap(ax, prof, pop, gp)
-            #self.fill_nice(ax, prof, pop, gp)
+            #self.weighted_hist_heatmap(ax, prof, pop, gp)
+            self.fill_nice(ax, prof, pop, gp)
 
 
             #self.plot_N_samples(ax, prof, pop) #SS: Don't plot thin gray lines
@@ -1288,6 +1291,29 @@ class ProfileCollection():
         [ax.axvline(x, color='c', linewidth=0.1) for x in r0]
         return
 
+    def plot_barrett_histograms(self, h5_filename, plot_filename, nbins, gp):
+        pdb.set_trace()
+        fig, axes = plt.subplots(nrows=gp.ndim,
+                             ncols=1,
+                             sharex=False,
+                             sharey=False)
+
+        plt.subplots_adjust(wspace=0, hspace=1)
+
+        for jter in range(0, gp.ndim):
+            ax = axes[jter]
+            limits = None
+
+            P = posterior.oneD(h5_filename, gp.param_headers[jter], limits=limits, nbins=nbins)
+            P.marginalise()
+            P.plot(ax)
+
+            ax.set_yticklabels([])
+
+        fig.set_size_inches(4,gp.ndim*2)
+        fig.savefig(plot_filename)
+
+        plt.close(fig)
 
 
 

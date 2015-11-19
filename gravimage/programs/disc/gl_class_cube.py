@@ -305,17 +305,10 @@ def map_nu_data(params, pop, gp):
     nuerr    = gp.dat.nuerr[pop]
     nu_out_vector = []
 
-    #nu_C = nudat[0] + np.sqrt(2)*5*nuerr[0]* scipy.special.erfinv(2*(params[0]-0.5))
+    nu_C = nudat[0] + np.sqrt(2)*5*nuerr[0]* scipy.special.erfinv(2*(params[0]-0.5))
 
-    #for jter in range(0, gp.nbins[pop]):
-    #    nu_i = nudat[jter] + np.sqrt(2) * nuerr[jter] * scipy.special.erfinv(2*(params[jter+1]-0.5))
-    #    nu_out_vector.append(nu_i)
-
-    #Flat over X sigma
-    scan_pm = 2.0
-    nu_C = nudat[0] + scan_pm*nuerr[0]*(2.0*params[0]-1)
     for jter in range(0, gp.nbins[pop]):
-        nu_i = nudat[jter] + scan_pm*nuerr[jter]*(2.0*params[jter+1]-1)
+        nu_i = nudat[jter] + np.sqrt(2) * nuerr[jter] * scipy.special.erfinv(2*(params[jter+1]-0.5))
         nu_out_vector.append(nu_i)
 
     return np.hstack([nu_C, nu_out_vector])

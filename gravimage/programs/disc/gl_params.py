@@ -107,16 +107,19 @@ class Params():
         self.nrhonu = sum(self.nbins) + 1 # Number of points where rho and nu parameters will be set,
                                    # e.g. bin centres, plus zC=0
 
+        #Tracer Density description
+        #self.nu_model = 'kz_nu'
+        self.nu_model = 'gaussian_data'
+
         #------------------------
         self.TheoryData = False   # If true using theoretical bin values as indata
         self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
         #Dark matter options
         self.adddarkdisc = False  # for disc mock case: add a dark disc?
         # self.adddarkdisc is currently not used !
+        self.param_headers = []
 
-        #Tracer Density description
-        self.nu_model = 'kz_nu'
-        #self.nu_model = 'gaussian_data'
+
 
         #Baryon options
         self.baryonmodel = 'simplenu_baryon' #set baryon model
@@ -212,25 +215,16 @@ class Params():
         self.prior_type_nu = 'gaussian' # 'log' or 'linear'
 
         # Simplenu Baryon model priors
-        self.simplenu_baryon_K_max = 1501  #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1499
-        self.simplenu_baryon_D_max = 0.181  #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.179
 
         #self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
         #self.simplenu_baryon_K_min = 1350
         #self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
         #self.simplenu_baryon_D_min = 0.16
 
-        #self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
-        #self.simplenu_baryon_K_min = 1000  #1400 #1300.
-        #self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
-        #self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
-
-        #self.simplenu_baryon_K_max = 3000  #1600 #1700. #JR model has K = 1500.
-        #self.simplenu_baryon_K_min = 10  #1400 #1300.
-        #self.simplenu_baryon_D_max = 0.5  #0.20 #0.5 #JR model has D = 0.18
-        #self.simplenu_baryon_D_min = 0.01  #0.16 #0.05
+        self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1000  #1400 #1300.
+        self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
 
         # Simplenu DM disc model priors
         self.simplenu_dm_K_max = 1500.  #JR model has K = 300.

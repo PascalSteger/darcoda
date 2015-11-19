@@ -578,14 +578,14 @@ def bin_r_log(rmin, rmax, nbin):
 # @param nbin number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
-def bin_r_const_tracers(x0, nbin, weights):
+def bin_r_const_tracers(x0, nbin, weights, x_data_cut):
     # procedure: get all particles in bin i
     #            get minimum, maximum radius. get radius of min/max before/after bin i
     #            get mean of (half of max bin/min next bin) for bin radius
     # make sure array is sorted in ascending order
     order = np.argsort(x0)
     x0 = np.array(x0)[order]
-    weights = np.array(weights)[order] #NOT YET IMPLMENTED
+    weights = np.array(weights)[order] #NOT YET IMPLMENTED, part of SDSS analysis
     # generate indices for all entries
     ind = np.arange(len(x0))
 
@@ -601,7 +601,11 @@ def bin_r_const_tracers(x0, nbin, weights):
         binboundary = (lastR+firstRnext)/2.
         binmin.append(binboundary) # binmin of next bin
         binmax.append(binboundary) # binmax of this bin
-    binmax.append(x0[-1]*1.01) # last bin stops after last datapoint
+
+    if x0[-1] > x_data_cut:
+        raise Exception('bin_r_const_tracers handed uncut data')
+
+    binmax.append(x_data_cut) # last bin stops after last datapoint
     binmin = np.array(binmin)
     binmax = np.array(binmax)
 

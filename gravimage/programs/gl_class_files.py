@@ -31,18 +31,15 @@ def get_case(cas):
 
 import os.path
 def newdir(bname):
-
     hwmess = "newdir running on process %d of %d on %s.\n"
     myrank = MPI.COMM_WORLD.Get_rank()
     nprocs = MPI.COMM_WORLD.Get_size()
     procnm = MPI.Get_processor_name()
-    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+    #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
     if myrank != 0:
-        print('I am not process 0, so I will sleep')
         time.sleep(1)
 
-    print('newdir, bname = ', bname)
     if not os.path.exists(bname):
         print('newdir, rank ', myrank, ', making new directory: ', bname)
         os.makedirs(bname)

@@ -17,6 +17,7 @@ npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
 import gl_helper as gh
 import gl_multinest_helper as glmh
+#import gl_collection as glc
 
 def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/data/')
@@ -99,8 +100,11 @@ def run(timestamp, basename, profile_source, gp):
     if len(pc.chis) == 0:
         gh.LOG(1, 'no profiles found for plotting')
         return
-    # first plot all chi^2 values in histogram
 
+    #Plot Histograms WORK IN PROGRESS
+    #pc.plot_barrett_histograms(basename+'mn_output.h5', basename+'/output/posterior_hist.pdf', 60, gp)
+
+    # first plot all chi^2 values in histogram
     pc.plot_profile(basename, 'chi2', 0, profile_source, gp)
 
     # then select only the best models for plotting the profiles
@@ -121,12 +125,6 @@ def run(timestamp, basename, profile_source, gp):
         pc.plot_profile(basename, 'sigz2_vecs', t_pop, profile_source, gp)
         if gp.tilt:
             pc.plot_profile(basename, 'sigmaRz_vecs', t_pop, profile_source, gp)
-
-        #pc.plot_profile(basename, 'kz_nu_vec', t_pop, profile_source, gp)
-        #pc.plot_profile(basename, 'nu_vec', t_pop, profile_source, gp)
-        #pc.plot_profile(basename, 'sigz2_vec', t_pop, profile_source, gp)
-        #if gp.tilt:
-        #    pc.plot_profile(basename, 'sigmaRz_vec', t_pop, profile_source, gp)
 
     if gp.darkmattermodel == 'kz_dm':
         pc.plot_profile(basename, 'kz_rho_DM_vec', 0, profile_source, gp)
@@ -183,9 +181,8 @@ if __name__ == '__main__':
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
 
     gp = glp.Params(timestamp, investigate, case) # Change back! TODO FIXME !!!
-
     gp.pops = sr.get_pops(basename)
-
+    glmh.write_mn_info(gp)
     print('working with ', gp.pops, ' populations')
 
     if profile_source == 'livepoints':
@@ -193,7 +190,6 @@ if __name__ == '__main__':
             open(basename+"phys_live_profiles.save")
         except OSError:
             gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
-            #glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
             glmh.paracube_to_profile(basename, "outputphys_live.points", "phys_live_profiles.save", investigate, case, timestamp)
 
     if profile_source == 'MNoutput':
@@ -202,6 +198,7 @@ if __name__ == '__main__':
         except OSError:
             gh.LOG(0, 'No phys_MNoutput_profiles.save file found, generating from MultiNest output now')
             glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, case, timestamp)
-            #glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
+
+        glmh.mn_output_to_hdf5(basename, "output.txt", "mn_output.h5", investigate, case, timestamp, gp)
 
     run(timestamp, basename, profile_source, gp)

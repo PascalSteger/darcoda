@@ -81,11 +81,7 @@ def load_simplenu_posvel(gp):
         z_data_tilt = 0.
         vRz_data_tilt = 0.
 
-    # z-cut, use only stars below a certain height for each population
-    z_data_used = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-    v_data_used = [v_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-
-    return z_data_used, v_data_used, z_data_tilt, vRz_data_tilt
+    return z_data, v_data, z_data_tilt, vRz_data_tilt
 
 
 
@@ -113,26 +109,18 @@ def load_disc_nbody_posvel(gp):
     z_data = z_data*negative_z_mask
     vz_data = vz_data*negative_z_mask
 
-    #Cut on z
-    z_data_cut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-    vz_data_cut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-    vR_data_cut = [vR_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-
-    #Calculate vzvR
-    vzvR_data_cut = [vz_data_cut[jj]*vR_data_cut[jj] for jj in range(0, len(vz_data_cut))]
-
-    return z_data_cut, vz_data_cut, vR_data_cut
-
+    return z_data, vz_data, vR_data
 
 def run(gp):
-
     if gp.investigate == 'simplenu':
-        z_data_used, vz_data_used, z_data_tilt, vRz_data_tilt = load_simplenu_posvel(gp)
+        z_data, vz_data, z_data_tilt, vRz_data_tilt = load_simplenu_posvel(gp)
+        z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
+        v_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
     elif gp.investigate == 'disc_nbody':
-        z_data_used, vz_data_used, vR_data_used = load_disc_nbody_posvel(gp)
-
-    #vz_data_used = np.array(vz_data_used)
-    #vR_data_used = np.array(vR_data_used)
+        z_data, vz_data, vR_data = load_disc_nbody_posvel(gp)
+        z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
+        vz_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
+        vR_data_zcut = [vR_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
 
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
@@ -142,11 +130,9 @@ def run(gp):
 
     for pop in range(0, gp.ntracer_pops):
         if gp.binning == 'consttr':
-            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_used[pop], gp.nbins[pop], np.ones(len(z_data_used[pop])))
-            #pdb.set_trace()
-            #binmin, binmax, bincentermed = gh.bin_r_const_tracers_weighted(z_data_used[pop], gp.nbins[pop], np.ones(len(z_data_used[pop])))
+            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_zcut[pop], gp.nbins[pop], np.ones(len(z_data_zcut[pop])), gp.data_z_cut[pop])
         elif gp.binning == 'linspace':
-            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_used[0]),1), gp.nbins[pop])
+            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_zcut[0]),1), gp.nbins[pop])
 
         binmin_pops.append(binmin)
         binmax_pops.append(binmax)
@@ -164,7 +150,7 @@ def run(gp):
     tilt2_data_err = []
 
     for pop in range(0, gp.ntracer_pops):
-        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop], np.ones(len(z_data_used[pop])))
+        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], vz_data[pop], np.ones(len(z_data[pop])))
         nu_data.append(nu_data_tmp)
         nu_err_pois.append(nu_err_pois_tmp)
         sigz2_data.append(sigz2_data_tmp)
@@ -175,7 +161,7 @@ def run(gp):
             if gp.investigate == 'simplenu':
                 sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
             elif gp.investigate == 'disc_nbody':
-                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop], binmax_pops[pop], z_data_used[pop], vz_data_used[pop], vR_data_used[pop])
+                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], vz_data[pop], vR_data[pop])
 
             sigRz2_data.append(sigRz2_data_tmp)
             sigRz2_err_pois.append(sigRz2_data_err_tmp)
@@ -192,7 +178,7 @@ def run(gp):
         print('sigRz2_err_pois = ', sigRz2_err_pois)
 
 
-    Ntr_used = np.array([len(z_data_used[ii]) for ii in range(0, len(z_data_used))]) # Total number of tracers used (& binned)
+    Ntr_used = np.array([len(z_data_zcut[ii]) for ii in range(0, len(z_data_zcut))]) # Total number of tracers used (& binned)
 
     ## Use MC to estimate errors on nu
     #if gp.investigate == 'simplenu':
@@ -227,14 +213,8 @@ def run(gp):
     sigz_0_values = np.sqrt([sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)])
     sigz_0_errs = np.sqrt([sigz2_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)])
 
-    #gp.nu_C_max = 10*max(nu_0_values)
-    #gp.nu_C_min = 0.1*min(nu_0_values)
-
     gp.nu_C_max = max(nu_0_values) + 5*max(nu_0_errs) # 5 sigma either way
     gp.nu_C_min = min(nu_0_values) - 5*max(nu_0_errs)
-
-    #gp.sigz_C_max = 10*max(sigz_0_values) #set from data in gr_external_data
-    #gp.sigz_C_min = 0.1*min(sigz_0_values)
 
     gp.sigz_C_max = max(sigz_0_values) + 5*max(sigz_0_errs)
     gp.sigz_C_min = max(min(sigz_0_values) - 5*max(sigz_0_errs), 0.)

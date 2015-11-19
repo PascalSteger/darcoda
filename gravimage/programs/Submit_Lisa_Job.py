@@ -14,15 +14,17 @@ from numpy import *
 import os, datetime, shutil
 from subprocess import call
 import pdb
+import gl_helper as gh
 
 nodes=1
 cores='16'
 ppn=15
 cputype='cpu3'
 mem = 'mem64gb'
-walltime='05:00:00:00'
+walltime='00:12:00:00'
 
-gravimage_path = os.path.abspath('../')
+darcoda_path = gh.find_darcoda_path() + '/'
+gravimage_path = darcoda_path + '/gravimage/'
 holding_stack_path = gravimage_path + '/holding_stack/'
 investigation = 'simplenu'
 case = '0'
@@ -74,8 +76,8 @@ pbs_file.writelines('mkdir $TMPDIR/darcoda/gravimage/programs/HoldingNumberWas_'
 pbs_file.writelines('mkdir -p $TMPDIR/darcoda/Data_Sets/' + investigation + '\n')
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 
-pbs_file.writelines('mpicopy $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
-pbs_file.writelines('mpicopy $HOME/LoDaM/darcoda/Data_Sets/' + investigation + ' -o "$TMPDIR"/darcoda/Data_Sets/ \n')
+pbs_file.writelines('mpicopy ' + darcoda_path + '/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
+pbs_file.writelines('mpicopy ' + darcoda_path + '/Data_Sets/' + investigation + ' -o "$TMPDIR"/darcoda/Data_Sets/ \n')
 
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 
@@ -107,7 +109,7 @@ pbs_file.writelines('date \n')
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')
 pbs_file.writelines('pwd'+'\n')
 pbs_file.writelines('ls -l -a $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/*'+'\n')
-pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/' + case + '/'+'\n')
+pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/* '+ darcoda_path +'/gravimage/DT'+ investigation +'/' + case + '/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 
