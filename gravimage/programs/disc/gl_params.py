@@ -108,8 +108,12 @@ class Params():
                                    # e.g. bin centres, plus zC=0
 
         #Tracer Density description
-        #self.nu_model = 'kz_nu'
-        self.nu_model = 'gaussian_data'
+        self.nu_model = 'kz_nu'
+        #self.nu_model = 'gaussian_data'
+
+        #sigRz sign correction
+        self.positive_sigRz_data_sign = False
+        self.positive_sigRz_model_sign = False
 
         #------------------------
         self.TheoryData = False   # If true using theoretical bin values as indata
@@ -216,15 +220,15 @@ class Params():
 
         # Simplenu Baryon model priors
 
-        #self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
-        #self.simplenu_baryon_K_min = 1350
-        #self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
-        #self.simplenu_baryon_D_min = 0.16
+        self.simplenu_baryon_K_max = 1650  #JR model has K = 1500.
+        self.simplenu_baryon_K_min = 1350
+        self.simplenu_baryon_D_max = 0.2  #JR model has D = 0.18
+        self.simplenu_baryon_D_min = 0.16
 
-        self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
-        self.simplenu_baryon_K_min = 1000  #1400 #1300.
-        self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
-        self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
+        #self.simplenu_baryon_K_max = 2000  #1600 #1700. #JR model has K = 1500.
+        #self.simplenu_baryon_K_min = 1000  #1400 #1300.
+        #self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
+        #self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
 
         # Simplenu DM disc model priors
         self.simplenu_dm_K_max = 1500.  #JR model has K = 300.
@@ -240,10 +244,12 @@ class Params():
         #self.tilt_R_max = 3.5     # simple2 mock has R = 2.5
         #self.tilt_R_min = 1.5
 
-        #self.tilt_A_max = 0.0  # simple2 mock has A = -8.7 -0.0087
-        #self.tilt_A_min = -1.0
-        self.tilt_A_max = 0.0  # simple2 mock has A = -181.77 for z[kpc]
-        self.tilt_A_min = -200.00
+        if self.positive_sigRz_model_sign:
+            self.tilt_A_max = 200.00
+            self.tilt_A_min = 0.0
+        else:
+            self.tilt_A_max = 0.0  # simple2 mock has A = -181.77 for z[kpc]
+            self.tilt_A_min = -200.00
 
         self.tilt_n_max = 3.0    # simple2 mock has n = 1.44
         self.tilt_n_min = 0.1

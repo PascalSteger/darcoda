@@ -160,13 +160,14 @@ def run(gp):
         if gp.tilt:
             if gp.investigate == 'simplenu':
                 sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
+                if not gp.positive_sigRz_data_sign:
+                    sigRz2_data_tmp = sigRz2_data_tmp * -1.0
+
             elif gp.investigate == 'disc_nbody':
                 sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], vz_data[pop], vR_data[pop])
 
             sigRz2_data.append(sigRz2_data_tmp)
             sigRz2_err_pois.append(sigRz2_data_err_tmp)
-
-
 
     print ('z vectors: ', bincentermed_pops)
     print ('nu_data:',nu_data)
@@ -213,11 +214,12 @@ def run(gp):
     sigz_0_values = np.sqrt([sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)])
     sigz_0_errs = np.sqrt([sigz2_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)])
 
-    gp.nu_C_max = max(nu_0_values) + 5*max(nu_0_errs) # 5 sigma either way
-    gp.nu_C_min = min(nu_0_values) - 5*max(nu_0_errs)
+    prior_sigma = 2.0
+    gp.nu_C_max = max(nu_0_values) + prior_sigma*max(nu_0_errs) # 5 sigma either way
+    gp.nu_C_min = min(nu_0_values) - prior_sigma*max(nu_0_errs)
 
-    gp.sigz_C_max = max(sigz_0_values) + 5*max(sigz_0_errs)
-    gp.sigz_C_min = max(min(sigz_0_values) - 5*max(sigz_0_errs), 0.)
+    gp.sigz_C_max = max(sigz_0_values) + prior_sigma*max(sigz_0_errs)
+    gp.sigz_C_min = max(min(sigz_0_values) - prior_sigma*max(sigz_0_errs), 0.)
 
     import gr_params #WHAT DOES THIS DO.
     gpr = gr_params.Params(gp)

@@ -21,7 +21,7 @@ cores='16'
 ppn=15
 cputype='cpu3'
 mem = 'mem64gb'
-walltime='00:12:00:00'
+walltime='05:00:00:00'
 
 darcoda_path = gh.find_darcoda_path() + '/'
 gravimage_path = darcoda_path + '/gravimage/'
@@ -109,7 +109,8 @@ pbs_file.writelines('date \n')
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')
 pbs_file.writelines('pwd'+'\n')
 pbs_file.writelines('ls -l -a $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/*'+'\n')
-pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/* '+ darcoda_path +'/gravimage/DT'+ investigation +'/' + case + '/'+'\n')
+pbs_file.writelines('mkdir -p ' + darcoda_path +'/gravimage/DT'+ investigation +'/' + case + '/'+ 'finished_'+holding_number+'/'+'\n')
+pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/' + case + '/* '+ darcoda_path +'/gravimage/DT'+ investigation +'/' + case + '/'+ 'finished_'+holding_number+'/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 

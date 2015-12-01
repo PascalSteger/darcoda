@@ -124,7 +124,7 @@ def run(timestamp, basename, profile_source, gp):
         pc.plot_profile(basename, 'nu_vecs', t_pop, profile_source, gp)
         pc.plot_profile(basename, 'sigz2_vecs', t_pop, profile_source, gp)
         if gp.tilt:
-            pc.plot_profile(basename, 'sigmaRz_vecs', t_pop, profile_source, gp)
+            pc.plot_profile(basename, 'sigmaRz2_vecs', t_pop, profile_source, gp)
 
     if gp.darkmattermodel == 'kz_dm':
         pc.plot_profile(basename, 'kz_rho_DM_vec', 0, profile_source, gp)
@@ -199,6 +199,6 @@ if __name__ == '__main__':
             gh.LOG(0, 'No phys_MNoutput_profiles.save file found, generating from MultiNest output now')
             glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, case, timestamp)
 
-        glmh.mn_output_to_hdf5(basename, "output.txt", "mn_output.h5", investigate, case, timestamp, gp)
+        #glmh.mn_output_to_hdf5(basename, "output.txt", "mn_output.h5", investigate, case, timestamp, gp)
 
     run(timestamp, basename, profile_source, gp)

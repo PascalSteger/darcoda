@@ -38,8 +38,7 @@ def calc_chi2(profs, gp):
     procnm = MPI.Get_processor_name()
     #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
-    if gp.map_priors:
-        return 1.0
+
 
     #chi2_nu = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     #chi2_sigz2 = [[].append(None) for ii in range(0,gp.ntracer_pops)]
@@ -51,6 +50,15 @@ def calc_chi2(profs, gp):
     chi2_nu_vecs=[]
     chi2_sigz2_vecs=[]
     chi2_sigRz2_vecs=[]
+
+    if gp.map_priors:
+        chi2 = 1.0
+        for pop in range(0, gp.ntracer_pops):
+            chi2_nu_vecs.append( np.zeros(gp.nbins[pop]))
+            chi2_sigz2_vecs.append( np.zeros(gp.nbins[pop]))
+            chi2_sigRz2_vecs.append( np.zeros(gp.nbins[pop]))
+
+        return chi2, chi2_nu_vecs, chi2_sigz2_vecs, chi2_sigRz2_vecs
 
 
     #Tracer population comparison
