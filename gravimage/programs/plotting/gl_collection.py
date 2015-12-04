@@ -177,9 +177,9 @@ class ProfileCollection():
         #norm = 1
         #if prof == 'Sig':
         #    norm = gh.ipol_rhalf_log(gp.xepol, tmp[ll/2], gp.Xscale[0])
-
         if prof == 'rho_DM_vec': # Possibility to rescale plots
-            rescale_prof = 1e6
+            #rescale_prof = 1e6
+            rescale_prof = 1.
         else:
             rescale_prof = 1.
 
@@ -259,7 +259,8 @@ class ProfileCollection():
         credreg_bound_profs = np.array(bin_prof_credreg_bounds).transpose()
 
         if prof == 'rho_DM_vec': # Possibility to rescale plots
-            rescale_prof = 1e6
+            #rescale_prof = 1e6  # If changing this back, change rescale_prof everywhere
+            rescale_prof = 1.
         else:
             rescale_prof = 1.
 
@@ -272,7 +273,7 @@ class ProfileCollection():
         self.M95hi.set_prof(prof, credreg_bound_profs[5]/rescale_prof, pop, gp)
         self.Mmax.set_prof(prof,  credreg_bound_profs[6]/rescale_prof, pop, gp)
         self.BestFit.set_prof(prof, self.goodprof[np.argmin(self.goodchi)]/rescale_prof, pop, gp)
-        print ('BestFit profile for',prof,':',self.goodprof[np.argmin(self.goodchi)])
+        print ('BestFit profile for',prof,':',self.goodprof[np.argmin(self.goodchi)]/rescale_prof)  # Hmmm, think about the rescaling
         return credreg_bound_profs
     ## \fn sort_prof(self, prof, pop, gp)
     # sort the list of prof-profiles, and store the {1,2}sigma, min, medi, max in the appropriate place
@@ -324,7 +325,8 @@ class ProfileCollection():
 
         #Plot color histogram
         if prof == 'rho_DM_vec': # Possibility to rescale plots
-            rescale_prof = 1e6
+            #rescale_prof = 1e6
+            rescale_prof = 1.
         else:
             rescale_prof = 1.
 
@@ -384,7 +386,8 @@ class ProfileCollection():
     # sort all profiles
     # @param gp global parameters
 
-    def sort_profiles_disc(self, gp):
+    def sort_profiles_disc(self, gp):  # Not used
+    # Not compatible with other baryon model than simplenu_bary
         for t_pop in range(0, gp.ntracer_pops):
             self.sort_prof('kz_nu_vec', t_pop, gp)
             self.sort_prof('nu_vec', t_pop, gp)
@@ -432,7 +435,7 @@ class ProfileCollection():
         self.weighted_sort_prof('rho_DM_vec', 0, gp)
         self.weighted_sort_prof('Sig_DM_vec', 0, gp)
 
-        if gp.baryonmodel not in ['none', 'simplenu_baryon']:
+        if gp.baryonmodel not in ['none', 'simplenu_baryon', 'obs_baryon']:
             return
 
         self.weighted_sort_prof('rho_baryon_vec', 0, gp)
@@ -780,8 +783,9 @@ class ProfileCollection():
             ax.set_ylim(-10., 10.)
 
         elif prof == 'rho_DM_vec':
-            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[10^{-3}\\rm{M}_\\odot/\\rm{pc}^3]$')
-            #ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
+            #ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[10^{-3}\\rm{M}_\\odot/\\rm{pc}^3]$')
+            # Change this label if again want to use rescale_prof >< 1 for plotting
+            ax.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{M}_\\odot/\\rm{kpc}^3]$')
             #ax.set_ylim(1E6, 1E8)
         elif prof == 'Sig_DM_vec':
             ax.set_ylabel('$\\Sigma_{\\rm{DM}} \\quad[\\rm{M}_\\odot/\\rm{kpc}^2]$')
@@ -977,7 +981,7 @@ class ProfileCollection():
                 # Python3 default: left=0.125, right=0.9, bottom=0.1, top=0.9
                 ax2 = ax.twinx()
                 ax2.set_ylabel('$\\rho_{\\rm{DM}}\\quad[\\rm{GeV}/\\rm{cm}^3]$')
-                ax_ylim = np.array([6,20])    # TAG
+                ax_ylim = np.array([1.e6,1.e8])    # TAG   ! was 6 to 20
                 kpc = 3.0857E19   # kpc in m
                 Msun = 1.9891E30  # Sun's mass in kg
                 GeV = 1.78266E-27 # GeV in kg
@@ -989,7 +993,8 @@ class ProfileCollection():
                 ax  = fig.add_subplot(111)
                 #ax.set_ylim([0,14])    # TAG
             ax.set_xscale('linear')  # SS: changed rhoDM plots to linear scale
-            ax.set_yscale('linear')  # plot this in log or linear scale...?
+            #ax.set_yscale('linear')  # plot this in log or linear scale...?
+            ax.set_yscale('log')  # plot this in log or linear scale...?
 
 
         if prof == 'kz_rho_DM_vec' or prof == 'kz_nu_vecs' or prof == 'sig_vecs' or prof == 'Sig_DM_vec'  or prof == 'Sig_baryon_vec'  or prof == 'Sig_total_vec' or prof == 'sigmaRz_vecs':
@@ -1116,6 +1121,8 @@ class ProfileCollection():
                 exptemp = math.exp(-zvec[k-1]/z0)-(math.exp(-zvec[0]/z0)-math.exp(-zvec[-1]/z0))/nsmallbin
                 zvec[k] = -z0*math.log(exptemp)
             nuvec = nu0*np.exp(-zvec/z0)
+            print ('VARNING, this part not compatible with obs_baryon model')
+            pdb.set_trace()
             if gp.baryonmodel not in ['simplenu_baryon']:  # assume DM only
                 Kzvec_total = -2.*F*zvec
             else:
@@ -1158,6 +1165,8 @@ class ProfileCollection():
         Kzvec_const_DM = -(2.*F*zvec)
 
         rho_z_DM_const = (1/(4*np.pi*G1)) * abs(2.*F) * np.ones(len(zvec))
+        #rho_z_DM_const = 1.e7*np.ones(len(zvec))  # UGLY, TODO FIXME
+        #new baryon mock uses DM_dens 1e7 Msun/kpc3
         dd_data = False
         if dd_data:
             rho_z_DM =  rho_z_DM_const +  (1/(4*np.pi*G1)) * abs((K_dd*(D_dd**2)/((D_dd**2 + zvec**2)**(1.5))))
@@ -1166,10 +1175,20 @@ class ProfileCollection():
             rho_z_DM = rho_z_DM_const
             Kzvec_DM = Kzvec_const_DM
         #rho_z_total = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))) + 2.*F)
-        rho_z_baryon = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+        if gp.baryonmodel == 'obs_baryon':
+            bary_params = np.array([gp.obs_bary_gasH2_Sigma,gp.obs_bary_gasH2_h,gp.obs_bary_gasHIcnm_Sigma,gp.obs_bary_gasHIcnm_h,gp.obs_bary_gasHIwnm1_Sigma,gp.obs_bary_gasHIwnm1_h,gp.obs_bary_gasHIwnm2_Sigma,gp.obs_bary_gasHIwnm2_h,gp.obs_bary_gasHII_Sigma,gp.obs_bary_gasHII_h,gp.obs_bary_MS3_Sigma,gp.obs_bary_MS3_h,gp.obs_bary_MS4_Sigma,gp.obs_bary_MS4_h,gp.obs_bary_MS5_Sigma,gp.obs_bary_MS5_h,gp.obs_bary_MS8_Sigma,gp.obs_bary_MS8_h,gp.obs_bary_MS_thick_fraction,gp.obs_bary_MS_thick_h,gp.obs_bary_dwarfs_Sigma,gp.obs_bary_dwarfs_h1,gp.obs_bary_dwarfs_h2,gp.obs_bary_dwarfs_beta])
+            rho_z_baryon = phys.rho_baryon_obs(zvec, bary_params)
+            #Sigma_z_baryon = np.zeros(len(zvec))
+            #for i in range(zvec):
+                #Sigma_z_baryon[i] = integrate.quad(rho_z_baryon,0.,zvec[i])
+            #Sigma_z_baryon = integrate.quad(    # TODO !! FIXME
+            # Update so that also Sigma is the new bary density
+        elif gp.baryonmodel == 'simplenu_baryon':
+            rho_z_baryon = (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
+        Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299)
+
         rho_z_total = rho_z_baryon + rho_z_DM
         #Sigma_z_total = (1000.**2)*abs(Kzvec_total)/(2*np.pi*4.299)
-        Sigma_z_baryon = (1000.**2)*abs(Kzvec_baryon)/(2*np.pi*4.299)
         Sigma_z_DM = (1000.**2)*abs(Kzvec_DM)/(2*np.pi*4.299)
         Sigma_z_total = Sigma_z_baryon + Sigma_z_DM
 
@@ -1177,7 +1196,9 @@ class ProfileCollection():
         k_z_rho_baryon = (3*(D**2)*K*zvec) / ( ((D**2 + zvec**2)**2.5) * ((K*(D**2))/((D**2 + zvec**2)**1.5))) # not currently used
 
         # Backwards compatibility: if using old data, then all mass is in DM
-        if gp.baryonmodel not in ['simplenu_baryon']:
+        if gp.baryonmodel not in ['simplenu_baryon', 'obs_baryon']:
+            print ('set_trace 4')
+            pdb.set_trace()
             gh.LOG(1, 'Simplenu Analytic: No baryon model, all mass is in DM.')
             Sigma_z_DM = Sigma_z_total
             rho_z_DM = rho_z_total
@@ -1221,18 +1242,26 @@ class ProfileCollection():
             #pdb.set_trace()
             def rho_baryon(z, K, D):
                 return (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zval**2)**(1.5))))
-
-            rho_z_baryon_prior_max=[]
-            rho_z_baryon_prior_min=[]
-
-            K_vec = np.linspace(gp.simplenu_baryon_K_min, gp.simplenu_baryon_K_max, 1000)
-            D_vec = np.linspace(gp.simplenu_baryon_D_min+1.E-6, gp.simplenu_baryon_D_max, 1000)
-            K_vec, D_vec = np.meshgrid(K_vec, D_vec)
-
-            for zval in zvec:
-                rho_grid = rho_baryon(zval, K_vec, D_vec)
-                rho_z_baryon_prior_max.append(rho_grid.max())
-                rho_z_baryon_prior_min.append(rho_grid.min())
+            if gp.baryonmodel == 'obs_baryon':  # Do this better, not certain that this maps the whole space?
+                bary_err_params = np.array([gp.obs_bary_gasH2_Sigma_err,gp.obs_bary_gasH2_h_err,gp.obs_bary_gasHIcnm_Sigma_err,gp.obs_bary_gasHIcnm_h_err,gp.obs_bary_gasHIwnm1_Sigma_err,gp.obs_bary_gasHIwnm1_h_err,gp.obs_bary_gasHIwnm2_Sigma_err,gp.obs_bary_gasHIwnm2_h_err,gp.obs_bary_gasHII_Sigma_err,gp.obs_bary_gasHII_h_err,gp.obs_bary_MS3_Sigma_err,gp.obs_bary_MS3_h_err,gp.obs_bary_MS4_Sigma_err,gp.obs_bary_MS4_h_err,gp.obs_bary_MS5_Sigma_err,gp.obs_bary_MS5_h_err,gp.obs_bary_MS8_Sigma_err,gp.obs_bary_MS8_h_err,gp.obs_bary_MS_thick_fraction_err,gp.obs_bary_MS_thick_h_err,gp.obs_bary_dwarfs_Sigma_err,gp.obs_bary_dwarfs_h1_err,gp.obs_bary_dwarfs_h2_err,gp.obs_bary_dwarfs_beta_err])
+                rho_bary1 = phys.rho_baryon_obs(zvec,bary_params + bary_err_params)
+                rho_bary2 = phys.rho_baryon_obs(zvec,bary_params - bary_err_params)
+                alt_vec = np.array([1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,1.,-1.,-1.,-1.])
+                rho_bary3 = phys.rho_baryon_obs(zvec,bary_params + bary_err_params*alt_vec)
+                rho_bary4 = phys.rho_baryon_obs(zvec,bary_params - bary_err_params*alt_vec)
+                rho_bary_comb = np.vstack((rho_bary1,rho_bary2,rho_bary3,rho_bary4))
+                rho_z_baryon_prior_min = np.amin(rho_bary_comb,axis=0)
+                rho_z_baryon_prior_max = np.amax(rho_bary_comb,axis=0)
+            elif gp.baryonmodel == 'simplenu_baryon':
+                rho_z_baryon_prior_max=[]
+                rho_z_baryon_prior_min=[]
+                K_vec = np.linspace(gp.simplenu_baryon_K_min, gp.simplenu_baryon_K_max, 1000)
+                D_vec = np.linspace(gp.simplenu_baryon_D_min+1.E-6, gp.simplenu_baryon_D_max, 1000)
+                K_vec, D_vec = np.meshgrid(K_vec, D_vec)
+                for zval in zvec:
+                    rho_grid = rho_baryon(zval, K_vec, D_vec)
+                    rho_z_baryon_prior_max.append(rho_grid.max())
+                    rho_z_baryon_prior_min.append(rho_grid.min())
 
             ax.plot(zvec, rho_z_baryon, 'g-', alpha = 0.5)
             ax.fill_between(zvec, rho_z_baryon_prior_min, rho_z_baryon_prior_max, color='r', alpha=0.1, lw=1)
@@ -1241,7 +1270,8 @@ class ProfileCollection():
 
 
         elif prof == 'rho_DM_vec':
-            rescale_prof = 10.**6
+            #rescale_prof = 10.**6
+            rescale_prof = 1.
             ax.plot(zvec, rho_z_DM/rescale_prof, 'g--', dash_joinstyle='round', dashes=(6,2), alpha = 1.0, lw=2)
 
         # if all mass is described by DM, then plot kz_rho_DM_vec

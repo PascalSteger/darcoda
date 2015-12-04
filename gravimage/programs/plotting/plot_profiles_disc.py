@@ -132,10 +132,10 @@ def run(timestamp, basename, profile_source, gp):
     pc.plot_profile(basename, 'rho_DM_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, profile_source, gp)
 
-    if gp.baryonmodel not in ['simplenu_baryon']:
+    if gp.baryonmodel not in ['simplenu_baryon', 'obs_baryon']:
         gh.LOG(1, 'No baryon model, all mass is in DM.')
         return
-
+    
     pc.plot_profile(basename, 'rho_baryon_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'Sig_baryon_vec', 0, profile_source, gp)
 

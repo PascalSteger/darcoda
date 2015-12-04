@@ -108,6 +108,9 @@ class Files:
         elif gp.investigate == 'simplenu':
             self.set_simplenu(gp, timestamp)
             newdir(self.dir + 'sigz/')
+        elif gp.investigate == 'obsbary':
+            self.set_obsbary(gp, timestamp)
+            newdir(self.dir + 'sigz/')
         else:
             print(' wrong investigation in Files()')
             pdb.set_trace()
@@ -549,6 +552,20 @@ class Files:
         #self.tiltfiles.append(self.dir+'tilt/tilt_1.txt')
         return
     ## \fn set_simplenu(self, gp, timestamp='')
+    # set all properties if looking at simple disc
+    # @param gp global parameters
+    # @param timestamp string YYYYMMDDhhmm
+
+    def set_obsbary(self, gp, timestamp=''):
+        self.dir = self.machine + 'DTobsbary/'
+        self.dir += timestamp + '/'
+        for pop in range(0, gp.ntracer_pops):
+            self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
+            self.sigfiles.append(self.dir + 'sigz/sigz_' + str(pop) + '.txt')
+            self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
+            print ('directory:',self.dir,' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        return
+    ## \fn set_obsbary(self, gp, timestamp='')
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm

@@ -32,6 +32,11 @@ class Params():
         # ----------------------------------------------------------------------
         self.machine, dummy = gh.detect_machine()
 
+        # Set global constants
+        #self.Msun = 1.9891e30 # Solar mass in kg
+        #self.pc = 3.0857e16   # pc in m 
+        #self.Mp = 1.6726231e-27 # proton mass in kg
+
 
         # Set investigation and geometry
         # ----------------------------------------------------------------------
@@ -39,6 +44,7 @@ class Params():
             self.investigate = investigate
         else:
             self.investigate  = 'simplenu' # determine which data set to work on
+            #self.investigate  = 'obsbary' # determine which data set to work on
                                   # 'discmock': set up simple model for disc
                                   # 'discsim': read in disc simulation
         self.geom = 'disc'
@@ -61,12 +67,18 @@ class Params():
                                 # observations before burn-in
         self.getnewpos  = True  # redo the first data conversion step
 
+        ######## New mock data: obsbary ##########
+        #self.external_data_file = ['/obsbary/obs_32e3_raw.dat']
+        #self.external_data_file = ['/simplenu/obs_32e3_raw.dat']
+        self.external_data_file = ['/simplenu/obs_32e3_tilt_raw.dat']
+        self.external_data_file_tilt = ['/simplenu/obs_32e3_sigRz.dat']
+        #self.external_data_file = ['/obsbary/simple2_1e4nu_sigz_raw.dat']
 
         ######## 1E4 Sample Size ########
         ##Popn 1 1E4
         #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat']
         ###Popn 2 1E4
-        self.external_data_file= ['/simplenu/simple2_1e4nu_sigz_raw.dat']
+        #self.external_data_file= ['/simplenu/simple2_1e4nu_sigz_raw.dat']
         ##Popn 1 & 2 1E4
         #self.external_data_file= ['/simplenu/simple_1e4nu_sigz_raw.dat', '/simplenu/simple2_1e4nu_sigz_raw.dat']
 
@@ -151,7 +163,7 @@ class Params():
         #self.data_z_cut = 1.2  # [kpz] only use (& bin) data up to this z limit
         self.data_z_cut = [2.4]  # (set > data z_max to use all avaiable data)
 
-        self.tilt = False   # If also modelling the tilt
+        self.tilt = True   # If also modelling the tilt
 
         self.darkmattermodel = 'const_dm' # const_dm = const DM dens in z
         #self.darkmattermodel = 'kz_dm'  # kz_dm = kz parameterization of DM
@@ -164,6 +176,7 @@ class Params():
                                    # e.g. bin centres, plus zC=0
 
         #------------------------
+        self.fit_outer_z_half = False  # Use only the outer half of the bins for chi2 fit
         self.TheoryData = False   # If true using theoretical bin values as indata
         self.hyperparams = False  # Use hyperparameters, 2 params, range (0.1->10)*meanerr
         #Dark matter options
@@ -171,14 +184,19 @@ class Params():
         # self.adddarkdisc is currently not used !
 
         #Baryon options
-        self.baryonmodel = 'simplenu_baryon' #set baryon model
+        #self.baryonmodel = 'simplenu_baryon' #set baryon model
+        self.baryonmodel = 'obs_baryon' #more complex baryon model based on observations 
                                              # none = all mass in DM
                                     # setting baryonmodel == 'none' not possible without major rewrite
                                     # simplenu_baryon = model used to generate simplenu mock data
         self.nbaryon_pops = 1 # Number of baryon populations to look at
                                     # =0 if doing simple mass model (eg DM profile describes
                                     # all mmass)
-        self.nbaryon_params = 2 # Number of parameters to describe baryon population
+        if self.baryonmodel == 'obs_baryon':
+                    #  obs_baryon: gas: 5*2, stars: 5*2 + 4 => total 24
+            self.nbaryon_params = 24 # Number of parameters to describe bary pop
+        else:   # simplenu baryons
+            self.nbaryon_params = 2
                                     #  simplenu_baryon = 2
                                     #  Holmberg & Flynn = ?
                                     #  with baryon observational information = nrho
@@ -228,7 +246,7 @@ class Params():
         # ----------------------------------------------------------------------
         # Limits for central densities (z=0)
         self.rho_C_max = 1.0E10  #Msun kpc^-3 for either DM or baryons (cf rho_b = 0.0914 Msun pc^-3, Flynn+ 2006)
-        self.rho_C_min = 1.0E4 #Msun pc^-3
+        self.rho_C_min = 1.0E4 #Msun pc^-3  (Lower end od DM density prior)
         self.rho_C_prior_type = 'log' #log, linear, gaussian
         self.nu_C_max = 0.0 # no. stars pc^-3, full value calculated in external_data
         self.nu_C_min = 10.0 # no. stars pc^-3
@@ -270,6 +288,69 @@ class Params():
         #self.simplenu_baryon_D_max = 0.24  #0.20 #0.5 #JR model has D = 0.18
         #self.simplenu_baryon_D_min = 0.12  #0.16 #0.05
 
+        # Observational baryon priors
+        self.obs_bary_gasH2_Sigma = 1.0   # Surface density of H2 gas in Msun/pc2
+        self.obs_bary_gasH2_Sigma_err = 0.3  # Estimated error on the above surface density
+        self.obs_bary_gasH2_h = 105.  # H2 scale height in pc
+        self.obs_bary_gasH2_h_err = 0.2*self.obs_bary_gasH2_h  # Estimated error on above h. UNKNOWN
+
+        self.obs_bary_gasHIcnm_Sigma = 6.21   # Surface density of H2 gas in Msun/pc2
+        self.obs_bary_gasHIcnm_Sigma_err = 0.15*self.obs_bary_gasHIcnm_Sigma
+        self.obs_bary_gasHIcnm_h = 127.  # H2 scale height in pc
+        self.obs_bary_gasHIcnm_h_err =  0.2*self.obs_bary_gasHIcnm_h 
+
+        self.obs_bary_gasHIwnm1_Sigma = 2.51   # Surface density of H2 gas in Msun/pc2
+        self.obs_bary_gasHIwnm1_Sigma_err = 0.15*self.obs_bary_gasHIwnm1_Sigma 
+        self.obs_bary_gasHIwnm1_h = 318.  # H2 scale height in pc
+        self.obs_bary_gasHIwnm1_h_err = 0.2*self.obs_bary_gasHIwnm1_h
+
+        self.obs_bary_gasHIwnm2_Sigma = 2.14   # Surface density of H2 gas in Msun/pc2
+        self.obs_bary_gasHIwnm2_Sigma_err = 0.15*self.obs_bary_gasHIwnm2_Sigma 
+        self.obs_bary_gasHIwnm2_h = 403.  # H2 scale height in pc
+        self.obs_bary_gasHIwnm2_h_err = 0.2*self.obs_bary_gasHIwnm2_h
+
+        self.obs_bary_gasHII_Sigma = 1.8   # Surface density of H2 gas in Msun/pc2
+        self.obs_bary_gasHII_Sigma_err = 0.1
+        self.obs_bary_gasHII_h = 1590.  # H2 scale height in pc
+        self.obs_bary_gasHII_h_err = 0.2*self.obs_bary_gasHII_h 
+        
+        # STARS
+        self.obs_bary_MS3_Sigma = 0.5   # MS stars up to magnitude 3
+        self.obs_bary_MS3_Sigma_err = 0.1*self.obs_bary_MS3_Sigma
+        self.obs_bary_MS3_h = 140.
+        self.obs_bary_MS3_h_err = 0.2*self.obs_bary_MS3_h
+
+        self.obs_bary_MS4_Sigma = 0.8   # MS stars (from 3) up to magnitude 4
+        self.obs_bary_MS4_Sigma_err = 0.1*self.obs_bary_MS4_Sigma
+        self.obs_bary_MS4_h = 236.
+        self.obs_bary_MS4_h_err = 0.2*self.obs_bary_MS4_h
+
+        self.obs_bary_MS5_Sigma = 2.2+0.4  # including giant stars
+        self.obs_bary_MS5_Sigma_err = 0.1*self.obs_bary_MS5_Sigma
+        self.obs_bary_MS5_h = 384.
+        self.obs_bary_MS5_h_err = 0.2*self.obs_bary_MS5_h
+
+        self.obs_bary_MS8_Sigma = 5.8
+        self.obs_bary_MS8_Sigma_err = 0.1*self.obs_bary_MS8_Sigma
+        self.obs_bary_MS8_h = 400.
+        self.obs_bary_MS8_h_err = 0.2*self.obs_bary_MS8_h
+
+            # Thick disk fraction of the dimmer MS stars: MS5 and MS8
+        self.obs_bary_MS_thick_fraction = 0.1
+        self.obs_bary_MS_thick_fraction_err = 0.5*self.obs_bary_MS_thick_fraction
+        self.obs_bary_MS_thick_h = 1000.
+        self.obs_bary_MS_thick_h_err = 0.2*self.obs_bary_MS_thick_h
+
+        self.obs_bary_dwarfs_Sigma = 17.3+1.2+4.9+0.3  # M, brown and white dwarfs
+        self.obs_bary_dwarfs_Sigma_err = 0.1*self.obs_bary_dwarfs_Sigma
+        self.obs_bary_dwarfs_h1 = 332.
+        self.obs_bary_dwarfs_h1_err = 0.2*self.obs_bary_dwarfs_h1
+        self.obs_bary_dwarfs_h2 = 609.
+        self.obs_bary_dwarfs_h2_err = 0.2*self.obs_bary_dwarfs_h2
+        self.obs_bary_dwarfs_beta = 0.244
+        self.obs_bary_dwarfs_beta_err = 0.2*self.obs_bary_dwarfs_beta
+
+
         # Simplenu DM disc model priors
         self.simplenu_dm_K_max = 1500.  #JR model has K = 300.
         self.simplenu_dm_K_min = 0.
@@ -277,13 +358,12 @@ class Params():
         self.simplenu_dm_D_min = 1.5
 
         # Tilt priors
-        self.tilt_A_max = -0.005  # simple2 mock has A = -0.0087
-        self.tilt_A_min = -0.012
+        self.tilt_A_max = 270.  # 'Right answer': A = 181.77 
+        self.tilt_A_min = 90
         self.tilt_n_max = 1.9    # simple2 mock has n = 1.44
         self.tilt_n_min = 1.
         self.tilt_R_max = 3.5     # simple2 mock has R = 2.5
         self.tilt_R_min = 1.5
-
 
         # MultiNest options
         # ----------------------------------------------------------------------

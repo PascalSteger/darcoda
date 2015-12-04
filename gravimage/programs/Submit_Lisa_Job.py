@@ -18,7 +18,7 @@ import pdb
 nodes=1
 cores='16'
 ppn=15
-walltime='00:00:15:00'
+walltime='00:36:00:00'
 
 gravimage_path = os.path.abspath('../')
 holding_stack_path = gravimage_path + '/holding_stack/'
@@ -71,7 +71,8 @@ pbs_file.writelines('mkdir -p $TMPDIR/darcoda/gravimage/programs'+'\n')
 pbs_file.writelines('mkdir $TMPDIR/darcoda/gravimage/programs/HoldingNumberWas_' + holding_number + '\n')
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 
-pbs_file.writelines('mpicopy $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
+#pbs_file.writelines('mpicopy $HOME/LoDaM/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
+pbs_file.writelines('mpicopy $HOME/darcoda/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
 
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 pbs_file.writelines('echo Point A' + '\n')
@@ -99,7 +100,8 @@ pbs_file.writelines('mpiexec -n ' + str(nodes*ppn) + ' python3 gravimage.py --in
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')
 pbs_file.writelines('pwd'+'\n')
 pbs_file.writelines('ls -l -a $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/*'+'\n')
-pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
+#pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/LoDaM/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
+pbs_file.writelines('cp -r $TMPDIR/darcoda/gravimage/DT' + investigation +'/0/* $HOME/darcoda/gravimage/DT'+ investigation +'/0/'+'\n')
 pbs_file.writelines('echo Data transfered, job finished'+'\n')
 pbs_file.close()
 

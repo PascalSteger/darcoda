@@ -65,6 +65,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     tmp_profs.rho_DM_C = tmp_rho_DM_allz[0]
     tmp_profs.set_prof('rho_DM_vec', tmp_rho_DM_allz[1:], 0, gp)
+    #print ('tmp_rho_DM_allz:',tmp_rho_DM_allz)
     off += offstep
 
     #Baryons
@@ -75,10 +76,13 @@ def geom_loglike(cube, ndim, nparams, gp):
         baryon_params = np.array(cube[off:off+offstep])
         if gp.baryonmodel == 'simplenu_baryon':
             tmp_rho_baryon_allz = phys.rho_baryon_simplenu(gp.z_all_pts_sorted, baryon_params)
+        elif gp.baryonmodel == 'obs_baryon':
+            tmp_rho_baryon_allz = phys.rho_baryon_obs(gp.z_all_pts_sorted, baryon_params)
         elif gp.baryonmodel == 'kz_baryon':
             print('Not implemented yet')
         tmp_profs.rho_baryon_C = tmp_rho_baryon_allz[0]
         tmp_profs.set_prof('rho_baryon_vec', tmp_rho_baryon_allz[1:], baryon_pop, gp)
+        #print ('tmp_rho_baryon_allz:',tmp_rho_baryon_allz)
 
         tmp_rho_totbaryon_allz += tmp_rho_baryon_allz # add this pop's density to baryon total
         tmp_rho_total_allz += tmp_rho_baryon_allz # add the baryon density to the total density
@@ -88,6 +92,7 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     tmp_profs.rho_total_C = tmp_rho_total_allz[0]
     tmp_profs.set_prof('rho_total_vec', tmp_rho_total_allz[1:], 0, gp)
+    #print ('tmp_rho_total_allz:',tmp_rho_total_allz)
 
     #Tracer params, nu_C, kz_nu_C, kz_nu_vector
     tmp_nu_allz=[[].append(None) for ii in range(0,gp.ntracer_pops)]
@@ -154,12 +159,14 @@ def geom_loglike(cube, ndim, nparams, gp):
 
     tmp_profs.Sig_DM_C = Sig_DM_allz[0]
     tmp_profs.set_prof('Sig_DM_vec', Sig_DM_allz[1:], 0, gp)
+    #print ('Sig_DM_allz:',Sig_DM_allz)
 
     tmp_profs.Sig_baryon_C = Sig_baryon_allz[0]
     tmp_profs.set_prof('Sig_baryon_vec', Sig_baryon_allz[1:], 0, gp)
 
     tmp_profs.Sig_total_C = Sig_total_allz[0]
     tmp_profs.set_prof('Sig_total_vec', Sig_total_allz[1:], 0, gp)
+    #print ('Sig_baryon_allz:',Sig_baryon_allz)
 
 
     #Calculate tilt for each population
@@ -174,7 +181,8 @@ def geom_loglike(cube, ndim, nparams, gp):
             if n<0:
                 print('z_points_tmp = ', z_points_tmp, ', A = ', A, ', n = ', n, ', R = ', R)
 
-            sigmaRz_allz[t_pop] = A*(z_points_tmp*1000.)**n #all z for this population
+            sigmaRz_allz[t_pop] = A*(z_points_tmp)**n #all z for this population
+            # Above: A adjusted so that z is just directly in kpc.
             tmp_profs.set_prof('sigmaRz_vecs', sigmaRz_allz[t_pop][1:], t_pop, gp)
             tilt_allz[t_pop] = sigmaRz_allz[t_pop]*(1./gp.Rsun - 2./R)
         else:

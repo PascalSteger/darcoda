@@ -14,12 +14,18 @@ import gl_helper as gh
 import sys
 from mpi4py import MPI
 
-def chi2red(model, data, sig, dof):
+def chi2red(model, data, sig, dof, gp):
     # if Degrees Of Freedom = 1, return non-reduced chi2
     model = np.array(model)
     data  = np.array(data)
     sig   = np.array(sig)
-    chired = np.sum(((model-data)**2./sig**2.)/dof)
+    if gp.fit_outer_z_half:
+        out_model = np.split(model,2)[1]
+        out_data = np.split(data,2)[1]
+        out_sig = np.split(sig,2)[1]
+        chired = np.sum(((out_model-out_data)**2./out_sig**2.)/dof)
+    else:
+        chired = np.sum(((model-data)**2./sig**2.)/dof)
     return chired
 ## \fn chi2red(model, data, sig, dof)
 # determine 'reduced chi2'
@@ -69,7 +75,7 @@ def calc_chi2(profs, gp):
         nudat    = gp.dat.nu[pop]
         nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
         numodel  = profs.get_prof('nu_vecs', pop)
-        chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
+        chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1., gp) #reduced dof = gp.nbins
         chi2_nu += chi2_nu_tmp
         #print('pop = ', pop)
         #print('nudat = ', nudat)
@@ -81,7 +87,7 @@ def calc_chi2(profs, gp):
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vecs', pop)
-        chi2_sigz2_tmp  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
+        chi2_sigz2_tmp  = chi2red(sigz2_model, sigz2dat, sigz2err, 1., gp)
         if chi2_sigz2_tmp == np.inf:
             print('chi2_sig has become infinite')
         chi2_sigz2 += chi2_sigz2_tmp
@@ -92,7 +98,7 @@ def calc_chi2(profs, gp):
             sigmaRzdat  = gp.dat.tilt[pop]
             sigmaRzerr = gp.dat.tilterr[pop]
             sigmaRz_model = profs.get_prof('sigmaRz_vecs', pop)
-            chi2_tilt_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1.)
+            chi2_tilt_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1., gp)
             chi2_tilt += chi2_tilt_tmp
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)

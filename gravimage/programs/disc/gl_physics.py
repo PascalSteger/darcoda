@@ -106,6 +106,64 @@ def rho_baryon_simplenu(zvec, params):
     D=params[1]
     return (1/(4*np.pi*G1)) * abs((K*(D**2)/((D**2 + zvec**2)**(1.5))))
 
+def rho_baryon_obs(zvec, params):
+    H2_Sigma = params[0]
+    H2_h = params[1]
+    HIcnm_Sigma = params[2]
+    HIcnm_h = params[3]
+    HIwnm1_Sigma = params[4]
+    HIwnm1_h = params[5]
+    HIwnm2_Sigma = params[6]
+    HIwnm2_h = params[7]
+    HII_Sigma = params[8]
+    HII_h = params[9]
+    MS3_Sigma = params[10]
+    MS3_h = params[11]
+    MS4_Sigma = params[12]
+    MS4_h = params[13]
+    MS5_Sigma = params[14]
+    MS5_h = params[15]
+    MS8_Sigma = params[16]
+    MS8_h = params[17]
+    MS_thick_fraction = params[18]
+    MS_thick_h = params[19]
+    dwarfs_Sigma = params[20]
+    dwarfs_h1 = params[21]
+    dwarfs_h2 = params[22]
+    dwarfs_beta = params[23]
+
+    #This calculation is performed in units of Msun and pc, while the rest of
+    # the code uses kpc. Hence convert zvec to pc:
+    zvec = 1000.*zvec
+
+    H2_dens = H2_Sigma/(H2_h*math.sqrt(math.pi))*np.exp(-np.square(zvec/H2_h))
+    HIcnm_dens = HIcnm_Sigma/(HIcnm_h*math.sqrt(math.pi))*np.exp(-np.square(zvec/HIcnm_h))
+    HIwnm1_dens = HIwnm1_Sigma/(HIwnm1_h*math.sqrt(math.pi))*np.exp(-np.square(zvec/HIwnm1_h))
+    HIwnm2_dens = HIwnm2_Sigma/(2.*HIwnm2_h)*np.exp(-zvec/HIwnm2_h)
+    HII_dens = HII_Sigma/(2.*HII_h)*np.exp(-zvec/HII_h)
+
+    MS3_dens = MS3_Sigma/(2.*MS3_h*np.square(np.cosh(zvec/MS3_h)))
+    MS4_dens = MS4_Sigma/(2.*MS4_h*np.square(np.cosh(zvec/MS4_h)))
+    MS5_dens = MS5_Sigma/(2.*MS5_h*np.square(np.cosh(zvec/MS3_h)))*(1.-MS_thick_fraction)
+    MS8_dens = MS8_Sigma/(2.*MS8_h*np.square(np.cosh(zvec/MS8_h)))*(1.-MS_thick_fraction)
+    MS_thick_dens = MS_thick_fraction*(MS5_Sigma+MS8_Sigma)/(2.*MS_thick_h)*np.exp(-zvec/MS_thick_h)
+
+    h_dwarf = (1.-dwarfs_beta)*dwarfs_h1 + dwarfs_beta*dwarfs_h2
+    dwarf_dens = dwarfs_Sigma/(2.*h_dwarf)*((1.-dwarfs_beta)*(np.cosh(zvec/dwarfs_h1))**-2 + dwarfs_beta*np.exp(-zvec/dwarfs_h2))
+
+    star_dens = MS3_dens+MS4_dens+MS5_dens+MS8_dens+MS_thick_dens+dwarf_dens
+    #star_dens = dwarf_dens
+    gas_dens =  H2_dens+HIcnm_dens+HIwnm1_dens+HIwnm2_dens+HII_dens
+
+    # Above is in units of Msun/pc3, transforming into units Msun/kpc3 below
+    gas_dens = gas_dens*1e9     #Converting to Msun/kpc3
+    star_dens = star_dens*1e9   # Converting to Msun/kpc3
+
+    return gas_dens+star_dens
+    #return (0.5*star_dens + 5.*gas_dens)/2. #BODGE to make the baryon dens more similar to simplenu
+    # TODO FIXME !!! 
+    # Divided by 2 to see if less baryons improve multinest fit.
+
 def rho_dm_simplenu(zvec, params): # DM = const + dark disc
     G1 = 4.299e-6 # Newton's constant in (km)^2*kpc/(Msun*s^2)
     const = params[0]

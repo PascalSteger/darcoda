@@ -131,6 +131,50 @@ def map_simplenu_baryon(params, gp):
 
     return np.array([K, D])
 
+def map_obs_baryon(params, gp):
+    # Input: 24 multinest cube params, [0,1]  (was 14 previously)
+    # Output: Normalization, scale hieight and beta for obs baryon model
+    # S Sivertsson 14/09/15
+
+    gas_H2_Sigma = gp.obs_bary_gasH2_Sigma + gp.obs_bary_gasH2_Sigma_err*(2.*params[0] - 1.)
+    gas_H2_h = gp.obs_bary_gasH2_h + gp.obs_bary_gasH2_h_err*(2.*params[1] - 1.)
+
+    gas_HIcnm_Sigma = gp.obs_bary_gasHIcnm_Sigma + gp.obs_bary_gasHIcnm_Sigma_err*(2.*params[2] - 1.)
+    gas_HIcnm_h = gp.obs_bary_gasHIcnm_h + gp.obs_bary_gasHIcnm_h_err*(2.*params[3] - 1.)
+
+    gas_HIwnm1_Sigma = gp.obs_bary_gasHIwnm1_Sigma + gp.obs_bary_gasHIwnm1_Sigma_err*(2.*params[4] - 1.)
+    gas_HIwnm1_h = gp.obs_bary_gasHIwnm1_h + gp.obs_bary_gasHIwnm1_h_err*(2.*params[5] - 1.)
+
+    gas_HIwnm2_Sigma = gp.obs_bary_gasHIwnm2_Sigma + gp.obs_bary_gasHIwnm2_Sigma_err*(2.*params[6] - 1.)
+    gas_HIwnm2_h = gp.obs_bary_gasHIwnm2_h + gp.obs_bary_gasHIwnm2_h_err*(2.*params[7] - 1.)
+
+    gas_HII_Sigma = gp.obs_bary_gasHII_Sigma + gp.obs_bary_gasHII_Sigma_err*(2.*params[8] - 1.)
+    gas_HII_h = gp.obs_bary_gasHII_h + gp.obs_bary_gasHII_h_err*(2.*params[9] - 1.)
+
+    MS3_Sigma = gp.obs_bary_MS3_Sigma + gp.obs_bary_MS3_Sigma_err*(2.*params[10] - 1.)
+    MS3_h = gp.obs_bary_MS3_h + gp.obs_bary_MS3_h_err*(2.*params[11] - 1.)
+
+    MS4_Sigma = gp.obs_bary_MS4_Sigma + gp.obs_bary_MS4_Sigma_err*(2.*params[12] - 1.)
+    MS4_h = gp.obs_bary_MS4_h + gp.obs_bary_MS4_h_err*(2.*params[13] - 1.)
+
+    MS_thick_fraction = gp.obs_bary_MS_thick_fraction + gp.obs_bary_MS_thick_fraction_err*(2.*params[14] - 1.)
+
+    MS5_Sigma = (gp.obs_bary_MS5_Sigma + gp.obs_bary_MS5_Sigma_err*(2.*params[15] - 1.))*(1. - MS_thick_fraction)
+    MS5_h = gp.obs_bary_MS5_h + gp.obs_bary_MS5_h_err*(2.*params[16] - 1.)
+
+    MS8_Sigma = (gp.obs_bary_MS8_Sigma + gp.obs_bary_MS8_Sigma_err*(2.*params[17] - 1.))*(1. - MS_thick_fraction)
+    MS8_h = gp.obs_bary_MS8_h + gp.obs_bary_MS8_h_err*(2.*params[18] - 1.)
+
+    #MS_thick_Sigma = MS_thick_fraction*(MS5_Sigma + MS8_Sigma)
+    MS_thick_h = gp.obs_bary_MS_thick_h + gp.obs_bary_MS_thick_h_err*(2.*params[19] - 1.)
+
+    dwarfs_Sigma = gp.obs_bary_dwarfs_Sigma + gp.obs_bary_dwarfs_Sigma_err*(2.*params[20] - 1.)
+    dwarfs_h1 = gp.obs_bary_dwarfs_h1 + gp.obs_bary_dwarfs_h1_err*(2.*params[21] - 1.)
+    dwarfs_h2 = gp.obs_bary_dwarfs_h2 + gp.obs_bary_dwarfs_h2_err*(2.*params[22] - 1.)
+    dwarfs_beta = gp.obs_bary_dwarfs_beta + gp.obs_bary_dwarfs_beta_err*(2.*params[23] - 1.)
+
+    return np.array([gas_H2_Sigma,gas_H2_h,gas_HIcnm_Sigma,gas_HIcnm_h,gas_HIwnm1_Sigma,gas_HIwnm1_h,gas_HIwnm2_Sigma,gas_HIwnm2_h,gas_HII_Sigma,gas_HII_h,MS3_Sigma,MS3_h,MS4_Sigma,MS4_h,MS5_Sigma,MS5_h,MS8_Sigma,MS8_h,MS_thick_fraction,MS_thick_h,dwarfs_Sigma,dwarfs_h1,dwarfs_h2,dwarfs_beta])
+
 
 def map_hypererr(param, prof, pop, gp):
     if prof == 'nu':
@@ -338,7 +382,7 @@ class Cube:
         IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
         IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
         for t_pop in range(0, gp.ntracer_pops):
-            print('pc[off+t_pop] = ', pc[off+t_pop])
+            #print('pc[off+t_pop] = ', pc[off+t_pop])
             pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
         off += offstep
 
@@ -366,6 +410,8 @@ class Cube:
             offstep = gp.nbaryon_params
             if gp.baryonmodel == 'simplenu_baryon':
                 tmp_baryon = map_simplenu_baryon(pc[off:off+offstep], gp)
+            elif gp.baryonmodel == 'obs_baryon':
+                tmp_baryon = map_obs_baryon(pc[off:off+offstep], gp)
             elif gp.baryonmodel == 'kz_baryon':
                 tmp_baryon = map_kr(pc[off:off+offstep], 'rho', baryon_pop, gp)
             for i in range(offstep):
