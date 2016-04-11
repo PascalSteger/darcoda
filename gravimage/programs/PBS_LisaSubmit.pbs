@@ -1,0 +1,24 @@
+#PBS -lnodes=1:cores16:ppn=1,walltime=03:00:00:00
+echo Loading LISA version
+module load python/3.4.2
+module load openmpi/intel
+module load mpicopy
+# Copying program files to scratch
+echo TMPDIR = $TMPDIR
+cd $TMPDIR
+mkdir -p $TMPDIR/darcoda/gravimage/mock_programs
+ls -l -a $TMPDIR/*
+mpicopy $HOME/darcoda/gravimage/mock_programs/mock_gen.py -o $TMPDIR/darcoda/gravimage/mock_programs/.
+cd $TMPDIR/darcoda/gravimage/mock_programs
+echo PBS_WALLTIME = $PBS_WALLTIME
+transft=36
+echo Transfer time = $transft
+runtime=$(expr $PBS_WALLTIME - $transft)
+echo runtime = $runtime
+mpiexec -n 1 python3 mock_gen.py& PID=$!; sleep $runtime; kill $PID
+
+echo mock_gen killed
+pwd
+ls -l -a $TMPDIR/darcoda/gravimage/mock_programs/*
+mpicopy $TMPDIR/darcoda/gravimage/mock_programs/*.dat -o $HOME/darcoda/gravimage/mock_programs/.
+echo Data transfered, job finished

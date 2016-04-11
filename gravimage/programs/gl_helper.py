@@ -578,13 +578,14 @@ def bin_r_log(rmin, rmax, nbin):
 # @param nbin number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
 
-def bin_r_const_tracers(x0, nbin):
+def bin_r_const_tracers(x0, nbin, weights, x_data_cut):
     # procedure: get all particles in bin i
     #            get minimum, maximum radius. get radius of min/max before/after bin i
     #            get mean of (half of max bin/min next bin) for bin radius
     # make sure array is sorted in ascending order
     order = np.argsort(x0)
     x0 = np.array(x0)[order]
+    weights = np.array(weights)[order] #NOT YET IMPLMENTED, part of SDSS analysis
     # generate indices for all entries
     ind = np.arange(len(x0))
 
@@ -600,7 +601,11 @@ def bin_r_const_tracers(x0, nbin):
         binboundary = (lastR+firstRnext)/2.
         binmin.append(binboundary) # binmin of next bin
         binmax.append(binboundary) # binmax of this bin
-    binmax.append(x0[-1]*1.01) # last bin stops after last datapoint
+
+    if x0[-1] > x_data_cut:
+        raise Exception('bin_r_const_tracers handed uncut data')
+
+    binmax.append(x_data_cut) # last bin stops after last datapoint
     binmin = np.array(binmin)
     binmax = np.array(binmax)
 
@@ -616,12 +621,61 @@ def bin_r_const_tracers(x0, nbin):
         bincentermed.append(np.median(x0[spl[bini]]))
     bincentermed = np.array(bincentermed)
 
+    bincentermed_alt = []
+    for jter in range(0, nbin):
+        bincentermed_alt.append(-np.log(0.5*(np.exp(-binmin[jter]/0.9) + np.exp(-binmax[jter]/0.9))))
+    bincentermed_alt = np.array(bincentermed_alt)
+
+    #bincentermed = bincentermed_alt
+
+#    nu_up_down_diff = []
+#    for zc in np.linspace(binmin[-1], binmax[-1], 1000):
+#        nu_up = (sum(1 for zi in x0[spl[bini]] if zi > zc)) /(binmax[-1] - zc)
+#        nu_do = (sum(1 for zi in x0[spl[bini]] if zi < zc)) /(zc - binmin[-1])
+#        nu_up_down_diff.append(nu_up/nu_do)
+#
+#    pdb.set_trace()
+
     return binmin, binmax, bincentermed
 ## \fn bin_r_const_tracers(x0, no)
 # split interval into bins of constant particle number
 # @param x0 radii from all particles in an array
 # @param no integer, number of bins
 # @return arrays of (beginning of bins, end of bins, position of bins)
+
+
+def bin_r_const_tracers_weighted(x_vec, nbins, weights):
+    #procedure: calculate total weight, then weight per bin
+    # Sum star weights until weight per bin is reached
+    # define bin edge halfway between last star of bin and next star
+
+    # make sure array is sorted in ascending order
+    order = np.argsort(x_vec)
+    x_vec = np.array(x_vec)[order]
+    weights = np.array(weights)[order]
+
+    weight_per_bin = sum(weights)/nbins
+
+    binmin = np.zeros(nbins)
+    binmax = np.zeros(nbins)
+    bincentermed = np.zeros(nbins)
+
+    binmin[0] = min(x_vec)/2
+    binweights = np.zeros(nbins)
+    bc = 0
+
+    for jter in range(0, len(x_vec)):
+        binweights[bc] += weights[jter]
+        if binweights[bc]>weight_per_bin:
+            binmax[bc] = (x_vec[jter+1]+x_vec[jter])/2
+            binmin[bc+1] = (x_vec[jter+1]+x_vec[jter])/2
+            bincentermed[bc] = (binmax[bc] + binmin[bc])/2
+            bc+=1
+
+    binmax[bc] = x_vec[-1]*1.01
+    bincentermed[bc] = (binmax[bc] + binmin[bc])/2
+
+    return binmin, binmax, bincentermed
 
 
 
@@ -819,7 +873,7 @@ def starred(R0, X, Sigma, Ntot, gp):
 # @param gp global parameters
 
 
-def nu_sig_from_bins(binmin, binmax, x0, v0):
+def nu_sig_from_bins(binmin, binmax, x0, v0, weights):
     # H Silverwood 29/10/2014
     # Bin position and velocity information, return tracer density and velocity
     # dispersion (nu and sigma)
@@ -838,7 +892,8 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
 
     for jter in range(0, len(binmin)):
         positions=np.where(np.logical_and(x0>=binmin[jter], x0<binmax[jter]))
-        Ntr = len(positions[0])
+        bin_weights = weights[positions]
+        Ntr = sum(bin_weights)
         Ntr_per_bin.append(Ntr)
 
         #Calculate tracer density nu and Poisson error (sqrt(N)/binsize)
@@ -853,12 +908,15 @@ def nu_sig_from_bins(binmin, binmax, x0, v0):
         #sig_err_vec.append(sig_z/np.sqrt(2.*Ntr))
         sigz2_err_vec.append(sigz2 * np.sqrt(2./Ntr)) #SD(sig_z^2)
 
+
+
     # Convert to numpy arrays
     nu_vec = np.array(nu_vec)
     nu_err_vec = np.array(nu_err_vec)
     sigz2_vec = np.array(sigz2_vec)
     sigz2_err_vec = np.array(sigz2_err_vec)
     Ntr_per_bin = np.array(Ntr_per_bin)
+
 
     return nu_vec, nu_err_vec, sigz2_vec, sigz2_err_vec, Ntr_per_bin
 
@@ -880,11 +938,11 @@ def tilt_from_bins(binmin, binmax, z, vRz):
         positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
         Ntr = len(positions[0])  # N.o. tracers in given bin
         Ntr_per_bin.append(Ntr)
-        vRz_list_temp = vRz[positions] # vRz list of stars in given bin
+        vRz_list_temp = vRz[positions] # vRz list of stars in given bin km^2 s^-2
 
         #tilt2 = np.mean(np.square(vRz_list_temp)) - (np.mean(vRz_list_temp))**2
-        tilt2 = np.mean(np.square(vRz_list_temp))
-        tilt = -np.sqrt(tilt2)
+        tilt2 = np.mean(np.square(vRz_list_temp)) #km^4 s^-4
+        tilt = -np.sqrt(tilt2) #km^2 s^-2
         tilt_vec.append(tilt)
         tilt_err = abs(np.sqrt(1./Ntr)*tilt)
         print ('Ntr:',Ntr,' tilt:',tilt,' tilt_err:',tilt_err)
@@ -893,7 +951,71 @@ def tilt_from_bins(binmin, binmax, z, vRz):
 
     tilt_vec = np.array(tilt_vec)
     tilt_err_vec = np.array(tilt_err_vec)
-    return tilt_vec,tilt_err_vec
+    return tilt_vec,tilt_err_vec #km^2 s^-2
+
+
+def sigRz2_from_bins(binmin, binmax, z, vz, vR):
+    #order = np.argsort(z)
+    #z = np.array(z)[order]
+    #vz = np.array(vz)[order]
+    #vR = np.array(vR)[order]
+
+    sigRz2_vec, sigRz2_err_vec = [], []
+    Ntr_per_bin = []
+    for jter in range(len(binmin)):
+        positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
+        Ntr = len(positions[0])  # N.o. tracers in given bin
+        Ntr_per_bin.append(Ntr)
+        vz_list_temp = vz[positions] # vz list of stars in given bin
+        vR_list_temp = vR[positions]
+
+        #Calculate Rz term of velocity dispersion tensor, B&T 4.26
+        sigRz2 = np.mean(vz_list_temp*vR_list_temp) - np.mean(vz_list_temp)*np.mean(vR_list_temp)
+        sigRz2_vec.append(sigRz2) #km^2 s^-2
+
+        #Calculate Poisson error
+        sigRz2_err = sigRz2 * np.sqrt(2/Ntr) #?
+        sigRz2_err_vec.append(sigRz2_err)
+
+        print ('Ntr:',Ntr,', sigRz2 = ',sigRz2,' sigRz2_err:',sigRz2_err)
+
+    sigRz2_vec = np.array(sigRz2_vec)
+    sigRz2_err_vec = np.array(sigRz2_err_vec)
+    return sigRz2_vec, sigRz2_err_vec #km^2 s^-2
+
+
+
+def sigRz2_from_bins_simplenu(binmin, binmax, z, vRvz):
+    order = np.argsort(z)
+    z = np.array(z)[order]
+    vRvz = np.array(vRvz)[order]
+
+    sigRz2_vec, sigRz2_err_vec = [], []
+    Ntr_per_bin = []
+
+    for jter in range(len(binmin)):
+        positions = np.where(np.logical_and(z>=binmin[jter],z<binmax[jter]))
+        Ntr = len(positions[0])  # N.o. tracers in given bin
+        Ntr_per_bin.append(Ntr)
+        vRvz_list_temp = vRvz[positions] # vz list of stars in given bin
+
+        #Calculate Rz term of velocity dispersion tensor
+        #sigRz2 = np.mean(vRvz_list_temp) # must assume np.mean(z) = 0
+        sigRz2 = np.sqrt(np.mean(np.square(vRvz_list_temp)))
+        sigRz2_vec.append(sigRz2)
+
+        #Calculate Poisson error
+        sigRz2_err = sigRz2 * np.sqrt(2/Ntr)
+        sigRz2_err_vec.append(sigRz2_err)
+
+        print ('Ntr:',Ntr,', sigrz2 = ',sigRz2,' sigRz2_err:',sigRz2_err)
+
+    sigRz2_vec = np.array(sigRz2_vec)
+    sigRz2_err_vec = np.array(sigRz2_err_vec)
+    return sigRz2_vec, sigRz2_err_vec
+
+
+
 
 
 
@@ -926,4 +1048,64 @@ def detect_machine():
         scratch_space = os.getenv("TMPDIR")
         gravimage_path = scratch_space + '/darcoda/gravimage/'
 
+    gravimage_path = os.path.abspath('..')+'/'
+
     return machine, gravimage_path
+
+
+def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt, pos_sigRz, baryon_model, suffix):
+    #pops = [x,x], eg which population to use
+    #sampling = 1e4, 1e5, 1e6,
+    #tilt = True or False
+    #darkdisk= '', 'dd', 'bdd'
+    #pos_sigRz = True or False
+    #baryon_model
+
+    filenames=[]
+    filenames_tilt=[]
+
+    if pos_sigRz:
+        A = '/psigRz_simplenu/'
+        B = 'psigRz_'
+    else:
+        A = '/simplenu/'
+        B = ''
+
+    for pop in pops:
+        if pop == 1:
+            B = B + 'simple_'
+        elif pop ==2:
+            B = B + 'simple2_'
+
+        if darkdisk == '':
+            C = darkdisk
+        else:
+            C = darkdisk + '_'
+
+        if tilt:
+            D = 'tilt_'
+        else:
+            D = ''
+
+        if baryon_model == 'simplenu_baryon':
+            E = ''
+        elif baryon_model == 'obs_baryon':
+            E = 'obsB_'
+
+        F = sampling
+
+        filenames.append(A+B+C+D+E+F+'nu_sigz_raw_' + str(suffix) + '.dat')
+        filenames_tilt.append(A+B+C+D+E+F+'nu_sigRz_raw_' + str(suffix) + '.dat')
+
+    return filenames, filenames_tilt
+
+
+def find_darcoda_path():
+    #Find darcoda path
+    relative_path=''
+    while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        relative_path += '../'
+        if os.path.abspath(relative_path).split('/')[-1] == 'home':
+            raise Exception('Cannot find darcoda folder upwards in file tree')
+    darcoda_path = os.path.abspath(relative_path)
+    return darcoda_path

@@ -49,9 +49,9 @@ class Datafile:
         self.sigz2err = []
         self.meansigz2err = 0.
 
-        # Tilt:
-        self.tilt = []
-        self.tilterr = []
+        # sigRz2 (aka tilt):
+        self.sigRz2 = []
+        self.sigRz2err = []
 
         ## keep fourth velocity moment of the LOS velocities
         self.kap = []
@@ -133,7 +133,6 @@ class Datafile:
     def read_sig(self, gp):
         for pop in np.arange(gp.pops+1):
             print('read sig')
-            pdb.set_trace()
             Dummy1, Dummy2, Dummy3, sigdat, sigerr = gh.readcol5(gp.files.sigfiles[pop])
             # 3*[Xscale], [maxsiglos], [maxsiglos]
 
@@ -159,11 +158,11 @@ class Datafile:
     # @param gp global parameters
     # H Silverwood 20/11/14
 
-    def read_tilt(self, gp):
+    def read_sigRz2(self, gp):
         for pop in range(0, gp.ntracer_pops):
-            dummy, dummy, dumy, tiltdat, tilterr = gh.readcol5(gp.files.tiltfiles[pop])
-            self.tilt.append(tiltdat[:])
-            self.tilterr.append(tilterr[:])
+            dummy, dummy, dumy, sigRz2dat, sigRz2err = gh.readcol5(gp.files.sigRz2_files[pop])
+            self.sigRz2.append(sigRz2dat[:])
+            self.sigRz2err.append(sigRz2err[:])
         return
     ## \fn read_tilt(self, gp)   SS 21 may 2015
 
@@ -186,10 +185,23 @@ class Datafile:
         gp.z_all_pts_sorted = np.sort(gp.z_all_pts_unsort)
         gp.z_vec_masks = [np.in1d(gp.z_all_pts_sorted, np.append(0, gp.z_bincenter_vecs[pop])) for pop in range(0, gp.ntracer_pops)]
         self.meannuerr = np.mean(np.concatenate(self.nuerr, axis=0))
-
         return
 
+    def read_baryon_priors(self, gp):
+        import gl_physics as phys
+        from mpi4py import MPI
+        myrank = MPI.COMM_WORLD.Get_rank()
+        nprocs = MPI.COMM_WORLD.Get_size()
+        procnm = MPI.Get_processor_name()
+        if gp.baryonmodel == 'simplenu_baryon_gaussian':
+            K_mid = gp.simplenu_baryon_K_mid
+            D_mid = gp.simplenu_baryon_D_mid
+            gp.gaussian_rho_baryon_mid_vector = phys.rho_baryon_simplenu(gp.z_all_pts_sorted, [K_mid,D_mid])
+            print('P', myrank, ': Gaussian rho mid vector = ', gp.gaussian_rho_baryon_mid_vector)
+            gp.gaussian_rho_baryon_SD_vector = gp.gaussian_rho_baryon_mid_vector*gp.gaussian_baryon_prior_SD
 
+        elif gp.baryonmodel == 'simplenu_baryon_gaussian':
+            print('Not yet implemented')
 
 
     def read_kappa(self, gp):

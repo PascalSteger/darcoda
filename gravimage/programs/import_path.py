@@ -40,22 +40,19 @@ def import_path(fullpath):
 # @return module, use like module.some_fun()
 
 
-def set_geometry(geom, machine):
-    print('Machine = ', machine)
-    if machine == 'pstgnt332':
-        basepath = '/home/psteger/sci/darcoda/gravimage/programs/'
-    elif machine == 'darkside':
-        basepath = '/home/ast/read/user/psteger/software/darcoda/gravimage/programs/'
-    elif machine == 'lisa_HS_login':
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/programs/'
-    elif machine == 'lisa_SS_login':
-        basepath = '/home/sofia/darcoda/gravimage/programs/'
-    elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-        scratch_space = os.getenv("TMPDIR")
-        basepath = scratch_space + '/darcoda/gravimage/programs/'
-    print('basepath = ', basepath)
-    insert_sys_path(basepath + 'datareduction/')
-    insert_sys_path(basepath + geom)
+def set_geometry(geom):
+    #Find darcoda path
+    relative_path=''
+    while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        relative_path += '../'
+        if os.path.abspath(relative_path).split('/')[-1] == 'home':
+            raise Exception('Cannot find darcoda folder in function set_geometry')
+    darcoda_path = os.path.abspath(relative_path)
+    programs_path = darcoda_path + '/gravimage/programs/'
+
+    #print('programs_path = ', programs_path)
+    insert_sys_path(programs_path + 'datareduction/')
+    insert_sys_path(programs_path + geom)
 ## \fn set_geometry(geom, machine)
 # get right directory for geometry-dependent imports
 # @param geom string of investigation geometry: disc or sphere

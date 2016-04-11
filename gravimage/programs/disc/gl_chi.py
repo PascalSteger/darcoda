@@ -14,19 +14,14 @@ import gl_helper as gh
 import sys
 from mpi4py import MPI
 
-def chi2red(model, data, sig, dof, gp):
+def chi2red(model, data, sig, dof):
     # if Degrees Of Freedom = 1, return non-reduced chi2
     model = np.array(model)
     data  = np.array(data)
     sig   = np.array(sig)
-    if gp.fit_outer_z_half:
-        out_model = np.split(model,2)[1]
-        out_data = np.split(data,2)[1]
-        out_sig = np.split(sig,2)[1]
-        chired = np.sum(((out_model-out_data)**2./out_sig**2.)/dof)
-    else:
-        chired = np.sum(((model-data)**2./sig**2.)/dof)
-    return chired
+    chi2_vec = ((model-data)**2./sig**2.)/dof
+    chired = np.sum(chi2_vec)
+    return chired, chi2_vec
 ## \fn chi2red(model, data, sig, dof)
 # determine 'reduced chi2'
 # @param model
@@ -43,20 +38,33 @@ def calc_chi2(profs, gp):
     procnm = MPI.Get_processor_name()
     #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
-    if gp.map_priors:
-        return 1.0
+
 
     #chi2_nu = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     #chi2_sigz2 = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     #chi2_tilt = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     chi2_nu = 0
     chi2_sigz2 = 0
-    chi2_tilt = 0
+    chi2_sigRz2 = 0
+
+    chi2_nu_vecs=[]
+    chi2_sigz2_vecs=[]
+    chi2_sigRz2_vecs=[]
+
+    if gp.map_priors:
+        chi2 = 1.0
+        for pop in range(0, gp.ntracer_pops):
+            chi2_nu_vecs.append( np.zeros(gp.nbins[pop]))
+            chi2_sigz2_vecs.append( np.zeros(gp.nbins[pop]))
+            chi2_sigRz2_vecs.append( np.zeros(gp.nbins[pop]))
+
+        return chi2, chi2_nu_vecs, chi2_sigz2_vecs, chi2_sigRz2_vecs
 
 
     #Tracer population comparison
     for pop in range(0, gp.ntracer_pops):
-        gh.LOG(1, ' pop = ', pop)
+        if gp.ntracer_pops > 1:
+            gh.LOG(1, ' pop = ', pop)
         #Check Monotonicity
         if gp.monotonic_rho:
             kz_rho_DM_vec_temp = profs.get_prof('kz_rho_DM_vec', pop)
@@ -72,48 +80,71 @@ def calc_chi2(profs, gp):
 
 
         #Calculate tracer density chi2 for population no. pop
-        nudat    = gp.dat.nu[pop]
-        nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
-        numodel  = profs.get_prof('nu_vecs', pop)
-        chi2_nu_tmp = chi2red(numodel, nudat, nuerr, 1., gp) #reduced dof = gp.nbins
-        chi2_nu += chi2_nu_tmp
+        if gp.nu_model in ['kz_nu', 'exponential_sum']:
+            nudat    = gp.dat.nu[pop]
+            nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
+            numodel  = profs.get_prof('nu_vecs', pop)
+            chi2_nu_tmp, chi2_nu_vec = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
+            chi2_nu += chi2_nu_tmp
+            chi2_nu_vecs.append(chi2_nu_vec)
+            gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
+        else:
+            chi2_nu_tmp = 0.
+            chi2_nu = 0.
+            chi2_nu_vecs.append(np.zeros(gp.nbins[pop]))
         #print('pop = ', pop)
         #print('nudat = ', nudat)
         #print('numodel = ', numodel)
         #print('nuerr = ', nuerr)
-        gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
+
 
         #Calculate z-velocity dispersion chi2 for population no. pop
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
-        sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
+        sigz2err    = gp.dat.sigz2err[pop] +profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vecs', pop)
-        chi2_sigz2_tmp  = chi2red(sigz2_model, sigz2dat, sigz2err, 1., gp)
+        chi2_sigz2_tmp, chi2_sigz2_vec  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
+        #chi2_sigz2_vec = np.append(np.zeros(5), chi2_sigz2_vec) #TEST 11/02 needed if you drop the first X bins
+
         if chi2_sigz2_tmp == np.inf:
             print('chi2_sig has become infinite')
         chi2_sigz2 += chi2_sigz2_tmp
+        chi2_sigz2_vecs.append(chi2_sigz2_vec)
+
+        profs.set_prof('chi2_sigz2_vecs', chi2_sigz2_vec, pop, gp)
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2_tmp)
 
         #Calculate Rz-velocity dispersion chi2 for population no. pop
         if gp.tilt:
-            sigmaRzdat  = gp.dat.tilt[pop]
-            sigmaRzerr = gp.dat.tilterr[pop]
-            sigmaRz_model = profs.get_prof('sigmaRz_vecs', pop)
-            chi2_tilt_tmp = chi2red(sigmaRz_model, sigmaRzdat, sigmaRzerr, 1., gp)
-            chi2_tilt += chi2_tilt_tmp
+            sigmaRz2dat  = gp.dat.sigRz2[pop]
+            sigmaRz2err = gp.dat.sigRz2err[pop]
+            sigmaRz2_model = profs.get_prof('sigmaRz2_vecs', pop)
+            chi2_sigRz2_tmp, chi2_sigRz2_vec = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, 1.)
             #print ('sigmaRz2dat:',sigmaRz2dat)
             #print ('sigmaRz2_model:',sigmaRz2_model)
             #print ('sigmaRz2err:',sigmaRz2err)
             #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
-            gh.LOG(1, '  chi2_tilt  = ', chi2_tilt_tmp)
+            gh.LOG(1, '  chi2_sigRz2  = ', chi2_sigRz2_tmp)
         else:
-            chi2_tilt=0.
+            chi2_sigRz2_tmp =0.
+            chi2_sigRz2_vec = np.zeros(gp.nbins[pop])
+        chi2_sigRz2 += chi2_sigRz2_tmp
+        chi2_sigRz2_vecs.append(chi2_sigRz2_vec)
+        profs.set_prof('chi2_sigRz2_vecs', chi2_sigRz2_vec, pop, gp)
+
+        #chi2_dm=0
+        #if gp.darkmattermodel == 'gaussian_per_bin':
+        #    rhoDM_vec = profs.get_prof('rho_DM_vec', pop)
+        #    rhoDM_allz = np.append(profs.rho_DM_C, rhoDM_vec)
+        #    rhoDM_mid = np.median(rhoDM_allz)*np.ones(gp.nrhonu)
+        #    rhoDM_SD = rhoDM_mid*0.1
+        #    chi2_rhoDM, dummy = chi2red(rhoDM_mid, rhoDM_allz, rhoDM_SD, 1.)
 
     #Combine chi2 for nu, sigz, and sigRz for all populations
-    chi2 = chi2_nu + chi2_sigz2 + chi2_tilt
+    chi2 = chi2_nu + chi2_sigz2 + chi2_sigRz2
 
     #print('P', myrank, ': chi2 = ', chi2)
 
-    return chi2
+    return chi2, chi2_nu_vecs, chi2_sigz2_vecs, chi2_sigRz2_vecs
 ## \fn calc_chi2(profs)
 # Calculate chi^2
 # @param profs profiles for rho, M, nu_i, beta_i, sig_i, kap_i

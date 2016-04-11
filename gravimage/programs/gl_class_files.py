@@ -31,18 +31,15 @@ def get_case(cas):
 
 import os.path
 def newdir(bname):
-
     hwmess = "newdir running on process %d of %d on %s.\n"
     myrank = MPI.COMM_WORLD.Get_rank()
     nprocs = MPI.COMM_WORLD.Get_size()
     procnm = MPI.Get_processor_name()
-    sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+    #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
     if myrank != 0:
-        print('I am not process 0, so I will sleep')
         time.sleep(1)
 
-    print('newdir, bname = ', bname)
     if not os.path.exists(bname):
         print('newdir, rank ', myrank, ', making new directory: ', bname)
         os.makedirs(bname)
@@ -66,7 +63,7 @@ class Files:
         ## relative path to the 'programs' directory
         self.progdir = ''
         self.modedir = ''
-        self.set_dir(gp.machine, gp.case, gp.investigate) # changes self.shortdir
+        self.set_dir(gp.case, gp.investigate) # changes self.shortdir
         ## file with 2D summed masses
         self.massfiles = []
         ## file with analytic values for Walker models
@@ -80,7 +77,7 @@ class Files:
         ## files with velocity dispersions
         self.sigfiles = []
         ## files with sigmaRz (for tilt)
-        self.tiltfiles = []
+        self.sigRz2_files = []
         ## files with centered positions and velocities for the tracer particles
         self.posvelfiles = []
         ## files for the fourth order moment of the LOS velocity
@@ -108,9 +105,11 @@ class Files:
         elif gp.investigate == 'simplenu':
             self.set_simplenu(gp, timestamp)
             newdir(self.dir + 'sigz/')
-        elif gp.investigate == 'obsbary':
-            self.set_obsbary(gp, timestamp)
+            newdir(self.dir + 'sigRz2/')
+        elif gp.investigate == 'disc_nbody':
+            self.set_disc_nbody(gp, timestamp)
             newdir(self.dir + 'sigz/')
+            newdir(self.dir + 'sigRz2/')
         else:
             print(' wrong investigation in Files()')
             pdb.set_trace()
@@ -124,9 +123,8 @@ class Files:
 
         # Output the PBS job ID for reference
         jobid = os.popen('echo $PBS_JOBID').read()
-        print('jobid = ', jobid)
+        #print('jobid = ', jobid)
         if jobid != '\n':
-            print('here')
             jobid = jobid.split('.')[0]
             newdir(self.outdir + 'jobid_' + jobid)
 
@@ -153,20 +151,12 @@ class Files:
     # @param timestamp = '' used for output analysis
 
 
-    def set_dir(self, machine, case, inv):
-        if machine == 'darkside':
-            self.machine = '/home/ast/read/user/psteger/software/darcoda/gravimage/'
-        elif machine == 'pstgnt332':
-            self.machine = '/home/psteger/sci/darcoda/gravimage/'
-        elif machine == 'lisa_HS_login':
-            self.machine = '/home/hsilverw/LoDaM/darcoda/gravimage/'
-        elif machine == 'lisa_SS_login':
-            self.machine = '/home/sofia/darcoda/gravimage/'
-        elif machine == 'lisa_HS_batch' or machine == 'lisa_SS_batch':
-            scratch_space = os.getenv("TMPDIR")
-            self.machine = scratch_space + '/darcoda/gravimage/'
-        self.progdir = self.machine + 'programs/'
-        self.modedir = self.machine + 'DT' + inv + '/'
+    def set_dir(self, case, inv):
+        darcoda_path = gh.find_darcoda_path()
+        gravimage_path = darcoda_path + '/gravimage/'
+
+        self.progdir = gravimage_path + 'programs/'
+        self.modedir = gravimage_path + 'DT' + inv + '/'
         self.shortdir = self.modedir + str(case) + '/'
         return
     ## \fn set_dir(self, machine, case, inv)
@@ -540,36 +530,53 @@ class Files:
     # @param timestamp string YYYYMMDDhhmm
 
     def set_simplenu(self, gp, timestamp=''):
-        self.dir = self.machine + 'DTsimplenu/0/'
+        ##Find darcoda path
+        #relative_path=''
+        #while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        #    relative_path += '../'
+        #    if os.path.abspath(relative_path).split('/')[-1] == 'home':
+        #        raise Exception('Cannot find darcoda folder in function set_simplenu')
+        #darcoda_path = os.path.abspath(relative_path)
+        darcoda_path = gh.find_darcoda_path()
+        gravimage_path = darcoda_path + '/gravimage/'
+
+        self.dir = gravimage_path + 'DTsimplenu/0/'
         self.dir += timestamp + '/'
         for pop in range(0, gp.ntracer_pops):
             self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
             self.sigfiles.append(self.dir + 'sigz/sigz_' + str(pop) + '.txt')
-            self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
-
-        #self.nufiles.append(self.dir+'nu/nu_1.txt')
-        #self.sigfiles.append(self.dir+'sigz/sigz_1.txt')
-        #self.tiltfiles.append(self.dir+'tilt/tilt_1.txt')
+            self.sigRz2_files.append(self.dir + 'sigRz2/sigRz2_' + str(pop) + '.txt')
+            #self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
         return
     ## \fn set_simplenu(self, gp, timestamp='')
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
 
-    def set_obsbary(self, gp, timestamp=''):
-        self.dir = self.machine + 'DTobsbary/'
+
+    def set_disc_nbody(self, gp, timestamp=''):
+        ##Find darcoda path
+        #relative_path=''
+        #while os.path.abspath(relative_path).split('/')[-1] != 'darcoda':
+        #    relative_path += '../'
+        #    if os.path.abspath(relative_path).split('/')[-1] == 'home':
+        #        raise Exception('Cannot find darcoda folder in function set_disc_nbody')
+        #darcoda_path = os.path.abspath(relative_path)
+        darcoda_path = gh.find_darcoda_path()
+        gravimage_path = darcoda_path + '/gravimage/'
+
+        self.dir = gravimage_path + 'DTdisc_nbody/' + str(gp.case) +'/'
         self.dir += timestamp + '/'
         for pop in range(0, gp.ntracer_pops):
             self.nufiles.append(self.dir + 'nu/nu_' + str(pop) + '.txt')
             self.sigfiles.append(self.dir + 'sigz/sigz_' + str(pop) + '.txt')
-            self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
-            print ('directory:',self.dir,' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            self.sigRz2_files.append(self.dir + 'sigRz2/sigRz2_' + str(pop) + '.txt')
+            #self.tiltfiles.append(self.dir + 'tilt/tilt_' + str(pop) + '.txt')
         return
-    ## \fn set_obsbary(self, gp, timestamp='')
+    ## \fn set_simplenu(self, gp, timestamp='')
     # set all properties if looking at simple disc
     # @param gp global parameters
     # @param timestamp string YYYYMMDDhhmm
-
 
     def get_com_file(self, n):
         gh.sanitize_scalar(n, 0, 2, True)

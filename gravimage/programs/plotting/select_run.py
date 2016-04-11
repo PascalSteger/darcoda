@@ -124,7 +124,7 @@ def get_investigate():
     while(invalid):
         try:
             user_input = input('Investigate: (default: '+str(default)+\
-                               ", walk, gaia, triax, hern, obs, discsim, discmock, simplenu): ")
+                               ", walk, gaia, triax, hern, obs, discsim, discmock, simplenu, disc_nbody): ")
             if not user_input:
                 user_input = str(default)
             sel = user_input
@@ -132,7 +132,8 @@ def get_investigate():
             print("error in input")
         invalid = True
         if sel == 'walk' or sel == 'gaia' or sel == 'triax' or sel == 'hern'\
-          or sel == 'obs' or sel == 'discsim' or sel == 'discmock' or sel == 'simplenu':
+          or sel == 'obs' or sel == 'discsim' or sel == 'discmock' or sel == 'simplenu'\
+          or sel == 'disc_nbody':
             invalid = False
     return sel
 ## \fn get_investigate(default)
@@ -172,7 +173,9 @@ def get_case(investigate):
                        (sel < 4 and investigate == 'obs') or \
                        (sel <= 8 and investigate == 'triax') or \
                        (sel == 0 and investigate == 'discmock') or\
-                       (sel == 0 and investigate == 'simplenu')):
+                       (sel == 0 and investigate == 'simplenu') or\
+                       (sel == 1 and investigate == 'disc_nbody') or\
+                       (sel == 2 and investigate == 'disc_nbody')):
             invalid = False
         # assign string if working with observed dwarfs
         #if investigate == 'obs':
@@ -336,18 +339,8 @@ def run(investigate="", case=-1, latest=False):
         case = get_case(investigate)
 
     profile_source = get_profile_source()
-
-    host_name = socket.gethostname()
-    user_name = getpass.getuser()
-    if 'pstgnt332' in host_name:
-        basepath = '/home/psteger/sci/darcoda/gravimage/'
-    elif 'darkside' in host_name:
-        basepath = '/home/ast/read/dark/gravimage/'
-    elif ('lisa' in host_name) and ('hsilverw' in user_name):
-        basepath = '/home/hsilverw/LoDaM/darcoda/gravimage/'
-    elif ('lisa' in host_name) and ('sofia' in user_name):
-        basepath = '/home/sofia/darcoda/gravimage/'
-    basedir = os.path.abspath(basepath+'/DT'+investigate+'/'+str(case)+'/')+'/'
+    gravimage_path = os.path.abspath('../../')+'/'
+    basedir = os.path.abspath(gravimage_path+'/DT'+investigate+'/'+str(case)+'/')+'/'
 
     if latest:
         fdl = list_files(basedir)
@@ -366,7 +359,7 @@ def run(investigate="", case=-1, latest=False):
 
     basename = fdl[sel] # full directory path, without '/'
     timestamp = basename.split('/')[-1] # extract last bit
-    return timestamp, basename+'/', investigate, profile_source#, prof #, pop
+    return timestamp, basename+'/', investigate, case, profile_source#, prof #, pop
 ## \fn run(investigate, case, latest)
 # display possible runs of the current investigation method, select one
 # @param investigate string of investigation case, hern, gaia, walk, discmock

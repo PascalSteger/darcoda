@@ -17,12 +17,16 @@ npr.seed(int(time.time())) # 1989 for random events that are reproducible
 from optparse import OptionParser
 import gl_helper as gh
 import gl_multinest_helper as glmh
+import h5py
+import gl_barrett as glb
+#import gl_collection as glc
 
 def prepare_output_folder(basename):
     os.system('mkdir -p '+ basename + 'output/data/')
     os.system('mkdir -p '+ basename + 'output/ascii/')
     os.system('mkdir -p '+ basename + 'output/pdf/')
     os.system('mkdir -p '+ basename + 'output/analytic/')
+    os.system('mkdir -p '+ basename + 'output/histograms/')
     return 0
 ## \fn prepare_output_folder(basename)
 # create directory structure in output folder
@@ -89,6 +93,8 @@ def pcload_single_entries(basename, profile_source, gp):
 
 
 def run(timestamp, basename, profile_source, gp):
+
+
     prepare_output_folder(basename)
     import gl_file as glf
     gp.dat = glf.get_binned_data_noscale(gp)
@@ -99,13 +105,21 @@ def run(timestamp, basename, profile_source, gp):
     if len(pc.chis) == 0:
         gh.LOG(1, 'no profiles found for plotting')
         return
-    # first plot all chi^2 values in histogram
-
-    pc.plot_profile(basename, 'chi2', 0, profile_source, gp)
 
     # then select only the best models for plotting the profiles
     #pc.cut_subset()
     pc.set_z_values(gp.z_bincenter_vecs, gp.z_all_pts_sorted)
+
+    #Plot Histograms WORK IN PROGRESS
+
+    glb.plot_barrett_2D_hist_sep(basename+'mn_output.h5', basename+'/output/histograms/2D_posterior_hist', 60, gp)
+    glb.plot_barrett_histograms_all(basename+'mn_output.h5', basename+'/output/histograms/posterior_hist.pdf', 60, gp)
+    glb.plot_barrett_histograms_split(basename+'mn_output.h5', basename+'/output/histograms/posterior_hist', 60, gp)
+
+    # first plot all chi^2 values in histogram
+    pc.plot_profile(basename, 'chi2', 0, profile_source, gp)
+
+
 
     if profile_source == 'MNoutput':
         pc.weighted_sort_profiles_disc(gp)
@@ -115,33 +129,59 @@ def run(timestamp, basename, profile_source, gp):
     pc.write_all_disc(basename, gp)
 
     for t_pop in range(0, gp.ntracer_pops):
-        pc.plot_profile(basename, 'kz_nu_vecs', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'chi2_sigz2_vecs', t_pop, profile_source, gp)
+        pc.plot_profile(basename, 'chi2_sigRz2_vecs', t_pop, profile_source, gp)
+
+        if gp.nu_model == 'kz_nu':
+            pc.plot_profile(basename, 'kz_nu_vecs', t_pop, profile_source, gp)
         pc.plot_profile(basename, 'nu_vecs', t_pop, profile_source, gp)
         pc.plot_profile(basename, 'sigz2_vecs', t_pop, profile_source, gp)
         if gp.tilt:
-            pc.plot_profile(basename, 'sigmaRz_vecs', t_pop, profile_source, gp)
+            pc.plot_profile(basename, 'sigmaRz2_vecs', t_pop, profile_source, gp)
 
-        #pc.plot_profile(basename, 'kz_nu_vec', t_pop, profile_source, gp)
-        #pc.plot_profile(basename, 'nu_vec', t_pop, profile_source, gp)
-        #pc.plot_profile(basename, 'sigz2_vec', t_pop, profile_source, gp)
-        #if gp.tilt:
-        #    pc.plot_profile(basename, 'sigmaRz_vec', t_pop, profile_source, gp)
+
+
 
     if gp.darkmattermodel == 'kz_dm':
         pc.plot_profile(basename, 'kz_rho_DM_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'rho_DM_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, profile_source, gp)
 
-    if gp.baryonmodel not in ['simplenu_baryon', 'obs_baryon']:
+    if gp.baryonmodel not in ['simplenu_baryon', 'simplenu_baryon_gaussian']:
         gh.LOG(1, 'No baryon model, all mass is in DM.')
         return
-    
+
     pc.plot_profile(basename, 'rho_baryon_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'Sig_baryon_vec', 0, profile_source, gp)
 
     pc.plot_profile(basename, 'rho_total_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'Sig_total_vec', 0, profile_source, gp)
 
+    #Output DM limits
+    LocalDM_95hi = pc.M95hi.get_prof('rho_DM_vec', 0)[0]
+    LocalDM_68hi = pc.M68hi.get_prof('rho_DM_vec', 0)[0]
+    LocalDM_medi = pc.Mmedi.get_prof('rho_DM_vec', 0)[0]
+    LocalDM_68lo = pc.M68lo.get_prof('rho_DM_vec', 0)[0]
+    LocalDM_95lo = pc.M95lo.get_prof('rho_DM_vec', 0)[0]
+    print('Local Dark Matter Limits x10^-3 Msun/pc^3')
+    print('    Median = ', LocalDM_medi, ' x10^-3 Msun/pc^3')
+    print('    68pc CL = [', LocalDM_68lo, LocalDM_68hi, '] x10^-3 Msun/pc^3' )
+    print('    95pc CL = [', LocalDM_95lo, LocalDM_95hi, '] x10^-3 Msun/pc^3' )
+    print('    95pc CL width = ', LocalDM_95hi-LocalDM_95lo, 'x10^-3 Msun/pc^3')
+    print('    68pc CL width = ', LocalDM_68hi-LocalDM_68lo, 'x10^-3 Msun/pc^3')
+
+
+    print('Local Dark Matter Limits, GeV/cm^3')
+    confac = 37.98E-3 #Conversion factor
+    print('    Median = ', LocalDM_medi*confac, ' GeV/cm^3')
+    print('    68pc CL = [', LocalDM_68lo*confac, LocalDM_68hi*confac, '] GeV/cm^3' )
+    print('    95pc CL = [', LocalDM_95lo*confac, LocalDM_95hi*confac, '] GeV/cm^3' )
+    print('    95pc CL width = ', (LocalDM_95hi-LocalDM_95lo)*confac, ' GeV/cm^3')
+    print('    68pc CL width = ', (LocalDM_68hi-LocalDM_68lo)*confac, ' GeV/cm^3')
+
+    print(gp.nbins[0], gp.nbins[0], gp.nbins[0], gp.nbins[0], gp.nbins[0])
+    #print(LocalDM_95lo, LocalDM_68lo, LocalDM_medi, LocalDM_68hi, LocalDM_95hi)
+    print(str(LocalDM_95lo) + ', ' + str(LocalDM_68lo) + ', ' +  str(LocalDM_medi) + ', ' + str(LocalDM_68hi) + ', ' + str(LocalDM_95hi))
 
 
 ## \fn run(timestamp, basename, gp)
@@ -166,10 +206,10 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     gh.LOG(1, 'plot_profiles '+str(options.investigate)+' '+str(options.case)+' '+str(options.latest))
     import select_run as sr
-    timestamp, basename, investigate, profile_source = sr.run(options.investigate, \
+    timestamp, basename, investigate, case, profile_source = sr.run(options.investigate, \
                                  options.case,\
                                  options.latest)
-    #pdb.set_trace()
+
     # include runtime gl_params, but other files all from current directory
     import import_path as ip
     # load stored parameters
@@ -181,10 +221,9 @@ if __name__ == '__main__':
     #import gl_collection as glc
     ##ip.remove_first(); ip.remove_first() # uncomment to include most recent
 
-    gp = glp.Params(timestamp, investigate) # Change back! TODO FIXME !!!
-
+    gp = glp.Params(timestamp, investigate, case) # Change back! TODO FIXME !!!
     gp.pops = sr.get_pops(basename)
-
+    glmh.write_mn_info(gp)
     print('working with ', gp.pops, ' populations')
 
     if profile_source == 'livepoints':
@@ -192,15 +231,25 @@ if __name__ == '__main__':
             open(basename+"phys_live_profiles.save")
         except OSError:
             gh.LOG(0, 'No phys_live_profiles.save file found, generating from livepoints now')
-            #glmh.mn_output_to_profile(basename, "output.txt", "phys_live_profiles.save", investigate, options.case, timestamp)
-            glmh.paracube_to_profile(basename, "outputphys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
+            glmh.paracube_to_profile(basename, "outputphys_live.points", "phys_live_profiles.save", investigate, case, timestamp)
+            gh.LOG(0, 'phys_live_profiles.save generation completed.')
 
     if profile_source == 'MNoutput':
         try:
             open(basename+"phys_MNoutput_profiles.save")
         except OSError:
             gh.LOG(0, 'No phys_MNoutput_profiles.save file found, generating from MultiNest output now')
-            glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, options.case, timestamp)
-            #glmh.paracube_to_profile(basename, "phys_live.points", "phys_live_profiles.save", investigate, options.case, timestamp)
+            glmh.mn_output_to_profile(basename, "output.txt", "phys_MNoutput_profiles.save", investigate, case, timestamp)
+            gh.LOG(0, 'phys_MNoutput_profiles.save generation completed.')
+
+        try:
+            temp = h5py.File(basename+"mn_output.h5", 'r')
+        except OSError:
+            gh.LOG(0, 'No HDF5 file mn_output.h5 file found, generating from MultiNest output now')
+            glmh.mn_output_to_hdf5(basename, "output.txt", "mn_output.h5", investigate, case, timestamp, gp)
+            #gh.LOG(0, 'Adding baryon profiles to HDF5 file now')
+            #glmh.mn_h5_baryon_vecs(basename, "output.txt", "mn_output.h5", investigate, case, timestamp, gp)
+
+            gh.LOG(0, 'mn_output.h5 generation completed.')
 
     run(timestamp, basename, profile_source, gp)
