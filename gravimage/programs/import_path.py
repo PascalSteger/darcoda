@@ -50,7 +50,7 @@ def set_geometry(geom):
     darcoda_path = os.path.abspath(relative_path)
     programs_path = darcoda_path + '/gravimage/programs/'
 
-    print('programs_path = ', programs_path)
+    #print('programs_path = ', programs_path)
     insert_sys_path(programs_path + 'datareduction/')
     insert_sys_path(programs_path + geom)
 ## \fn set_geometry(geom, machine)

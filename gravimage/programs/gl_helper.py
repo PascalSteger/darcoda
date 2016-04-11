@@ -621,6 +621,21 @@ def bin_r_const_tracers(x0, nbin, weights, x_data_cut):
         bincentermed.append(np.median(x0[spl[bini]]))
     bincentermed = np.array(bincentermed)
 
+    bincentermed_alt = []
+    for jter in range(0, nbin):
+        bincentermed_alt.append(-np.log(0.5*(np.exp(-binmin[jter]/0.9) + np.exp(-binmax[jter]/0.9))))
+    bincentermed_alt = np.array(bincentermed_alt)
+
+    #bincentermed = bincentermed_alt
+
+#    nu_up_down_diff = []
+#    for zc in np.linspace(binmin[-1], binmax[-1], 1000):
+#        nu_up = (sum(1 for zi in x0[spl[bini]] if zi > zc)) /(binmax[-1] - zc)
+#        nu_do = (sum(1 for zi in x0[spl[bini]] if zi < zc)) /(zc - binmin[-1])
+#        nu_up_down_diff.append(nu_up/nu_do)
+#
+#    pdb.set_trace()
+
     return binmin, binmax, bincentermed
 ## \fn bin_r_const_tracers(x0, no)
 # split interval into bins of constant particle number
@@ -893,12 +908,15 @@ def nu_sig_from_bins(binmin, binmax, x0, v0, weights):
         #sig_err_vec.append(sig_z/np.sqrt(2.*Ntr))
         sigz2_err_vec.append(sigz2 * np.sqrt(2./Ntr)) #SD(sig_z^2)
 
+
+
     # Convert to numpy arrays
     nu_vec = np.array(nu_vec)
     nu_err_vec = np.array(nu_err_vec)
     sigz2_vec = np.array(sigz2_vec)
     sigz2_err_vec = np.array(sigz2_err_vec)
     Ntr_per_bin = np.array(Ntr_per_bin)
+
 
     return nu_vec, nu_err_vec, sigz2_vec, sigz2_err_vec, Ntr_per_bin
 
@@ -1035,22 +1053,29 @@ def detect_machine():
     return machine, gravimage_path
 
 
-def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt):
+def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt, pos_sigRz, baryon_model, suffix):
     #pops = [x,x], eg which population to use
     #sampling = 1e4, 1e5, 1e6,
     #tilt = True or False
     #darkdisk= '', 'dd', 'bdd'
+    #pos_sigRz = True or False
+    #baryon_model
 
     filenames=[]
     filenames_tilt=[]
 
-    A='/simplenu/'
+    if pos_sigRz:
+        A = '/psigRz_simplenu/'
+        B = 'psigRz_'
+    else:
+        A = '/simplenu/'
+        B = ''
 
     for pop in pops:
         if pop == 1:
-            B = 'simple_'
+            B = B + 'simple_'
         elif pop ==2:
-            B = 'simple2_'
+            B = B + 'simple2_'
 
         if darkdisk == '':
             C = darkdisk
@@ -1062,10 +1087,15 @@ def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt):
         else:
             D = ''
 
-        E = sampling
+        if baryon_model == 'simplenu_baryon':
+            E = ''
+        elif baryon_model == 'obs_baryon':
+            E = 'obsB_'
 
-        filenames.append(A+B+C+D+E+'nu_sigz_raw.dat')
-        filenames_tilt.append(A+B+C+D+E+'nu_sigRz_raw.dat')
+        F = sampling
+
+        filenames.append(A+B+C+D+E+F+'nu_sigz_raw_' + str(suffix) + '.dat')
+        filenames_tilt.append(A+B+C+D+E+F+'nu_sigRz_raw_' + str(suffix) + '.dat')
 
     return filenames, filenames_tilt
 

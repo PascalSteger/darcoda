@@ -19,6 +19,7 @@
 import pdb
 import numpy as np
 import gl_helper as gh
+import gl_physics as phys
 import scipy.special
 
 def map_tilt_slope(vec, gp):
@@ -123,13 +124,49 @@ def map_simplenu_baryon(params, gp):
     # Input: two multinest cube params, [0,1]
     # Output: K and D parameters for simplenu baryon model
     # H Silverwood 3/02/15
-
     K_range = gp.simplenu_baryon_K_max - gp.simplenu_baryon_K_min
-    K = gp.simplenu_baryon_K_min + K_range*params[0]
     D_range = gp.simplenu_baryon_D_max - gp.simplenu_baryon_D_min
-    D = gp.simplenu_baryon_D_min + D_range*params[1]
+
+    K_mid = gp.simplenu_baryon_K_mid
+    K_sd  = gp.simplenu_baryon_K_sd
+    D_mid = gp.simplenu_baryon_D_mid
+    D_sd = gp.simplenu_baryon_D_sd
+
+    if gp.prior_type_simplenu_baryon == 'linear':
+        K = gp.simplenu_baryon_K_min + K_range*params[0]
+        D = gp.simplenu_baryon_D_min + D_range*params[1]
+    elif gp.prior_type_simplenu_baryon == 'gaussian':
+        K = K_mid + np.sqrt(2) * K_sd * scipy.special.erfinv(2*(params[0]-0.5))
+        D = D_mid + np.sqrt(2) * D_sd * scipy.special.erfinv(2*(params[1]-0.5))
 
     return np.array([K, D])
+
+
+def map_simplenu_baryon_gaussian(params, gp):
+    rho_mid_vector = gp.gaussian_rho_baryon_mid_vector
+    rho_SD_vector = gp.gaussian_rho_baryon_SD_vector
+    rho_baryon_out = []
+
+    for jter in range(0,sum(gp.nbins)+1):
+        rho_baryon_jter = rho_mid_vector[jter] + np.sqrt(2) * rho_SD_vector[jter] * scipy.special.erfinv(2*(params[jter]-0.5))
+        #rho_baryon_jter = rho_mid_vector[jter] + rho_SD_vector[jter]*(2*params[jter] - 1) #flat prior test
+        rho_baryon_out.append(rho_baryon_jter)
+
+    return np.array(rho_baryon_out)
+
+
+def map_gaussian_per_bin_dm(params, gp):
+    med = gp.rho_DM_gaussian_med = 10.0E6
+    sd = gp.rho_DM_gaussian_SD = 5.0E6
+
+    rho_DM_out = []
+
+    for jter in range(0,sum(gp.nbins)+1):
+        rho_DM_jter = med + np.sqrt(2) * sd * scipy.special.erfinv(2*(params[jter]-0.5))
+        rho_DM_out.append(rho_DM_jter)
+
+    return np.array(rho_DM_out)
+
 
 
 def map_hypererr(param, prof, pop, gp):
@@ -158,8 +195,15 @@ def map_sigRz2_model(params,gp):
         print('gp.tilt_n_max = ', gp.tilt_n_max)
         print('gp.tilt_n_min = ', gp.tilt_n_min)
         print('n = ', n)
-    R_range = gp.tilt_R_max - gp.tilt_R_min
-    R = gp.tilt_R_min + R_range*params[2]
+
+
+    if gp.prior_type_tilt_R == 'linear':
+        R_range = gp.tilt_R_max - gp.tilt_R_min
+        R = gp.tilt_R_min + R_range*params[2]
+    elif gp.prior_type_tilt_R == 'gaussian':
+        R = gp.tilt_R_med + np.sqrt(2) * gp.tilt_R_sd * scipy.special.erfinv(2*(params[2]-0.5))
+
+
     return np.array([A,n,R])
 # Input: 3 multinest cube params,
 # Output: tilt parameters A, n and R = 2*R_0*R_1/(R_0 + R_1)
@@ -336,6 +380,31 @@ def map_simplenu_dm(params, prof, pop, gp):
     D = gp.simplenu_dm_D_min + D_range*params[2]
     return np.array([rho_C, K, D])
 
+
+def map_nu_exponential_sum(params, gp):
+    #[nuC_median, nuC_SD, nu_h, nu_h_SD]
+    #exp_ii = which exponential in the sum
+    output = np.array([])
+    for exp_ii in range(0, gp.N_nu_model_exps):
+        nuC_median  = gp.nu_exp_sum_priors[exp_ii][0]
+        nuC_SD      = gp.nu_exp_sum_priors[exp_ii][1]
+        nu_h_median = gp.nu_exp_sum_priors[exp_ii][2]
+        nu_h_SD     = gp.nu_exp_sum_priors[exp_ii][3]
+
+        #nuC = nuC_median + np.sqrt(2) * nuC_SD * scipy.special.erfinv(2*(params[exp_ii*2]-0.5)) #Gaussian
+        nuC = params[exp_ii*2] * (nuC_median + nuC_SD) # Linear RE DO THIS
+
+
+        #nu_h = nu_h_median + np.sqrt(2) * nu_h_SD * scipy.special.erfinv(2*(params[exp_ii*2 + 1] - 0.5))
+        nu_h_min=nu_h_median-nu_h_SD
+        nu_h = nu_h_min + 2*nu_h_SD*params[exp_ii*2 + 1]
+        output = np.append(output, (nuC, nu_h))
+
+    return output
+
+
+
+
 class Cube:
     def __init__ (self, gp):
         self.pops = gp.ntracer_pops
@@ -348,18 +417,10 @@ class Cube:
 
     def convert_to_parameter_space(self, gp):
         # if we want any priors, here they have to enter:
-        #Normalisation constant C, for the calculation of sigma_z via Jeans Eq.
-        #one for each tracer population
+
         pc = self.cube
         off = 0
-        offstep = gp.ntracer_pops
-        IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
-        IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
-        for t_pop in range(0, gp.ntracer_pops):
-            temp = pc[off+t_pop]
-            pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
-            #print('IntC_min = ', IntC_min, 'IntC_max = ', IntC_max, 'C = ', pc[off+t_pop], 'param = ', temp)
-        off += offstep
+
 
 
         #Dark Matter mass profile parameters: rho_C, kz_C, kz_vector
@@ -369,6 +430,9 @@ class Cube:
         elif gp.darkmattermodel == 'ConstPlusDD':
             offstep = 3
             tmp_DM = map_simplenu_dm(pc[off:off+offstep], 'rho', 0, gp)
+        elif gp.darkmattermodel == 'gaussian_per_bin':
+            offstep = gp.nrhonu
+            tmp_DM = map_gaussian_per_bin_dm(params, gp)
         elif gp.darkmattermodel == 'kz_dm':
             offstep = gp.nrhonu + 1
             if gp.scan_rhonu_space:
@@ -388,6 +452,9 @@ class Cube:
                 tmp_baryon = map_simplenu_baryon(pc[off:off+offstep], gp)
             elif gp.baryonmodel == 'kz_baryon':
                 tmp_baryon = map_kr(pc[off:off+offstep], 'rho', baryon_pop, gp)
+            elif gp.baryonmodel == 'simplenu_baryon_gaussian':
+                tmp_baryon = map_simplenu_baryon_gaussian(pc[off:off+offstep], gp)
+
             for i in range(offstep):
                 pc[off+i] = tmp_baryon[i]
             off += offstep
@@ -402,6 +469,10 @@ class Cube:
             elif gp.nu_model=='gaussian_data':
                 offstep = gp.nbins[tracer_pop] + 1 #nu on bincenters, and nu_C
                 tmp_tracer = map_nu_data(pc[off:off+offstep], tracer_pop, gp)
+            elif gp.nu_model=='exponential_sum':
+                offstep = gp.N_nu_model_exps*2
+                tmp_tracer = map_nu_exponential_sum(pc[off:off+offstep], gp)
+
 
             for i in range(offstep):
                 pc[off+i] = tmp_tracer[i]
@@ -429,6 +500,27 @@ class Cube:
             tmp_hypersig = map_hypererr(pc[off:off+offstep], 'sig', 0, gp)
             pc[off] = tmp_hypersig
             off += offstep
+
+
+        #Normalisation constant C, for the calculation of sigma_z via Jeans Eq.
+        #one for each tracer population
+        offstep = gp.ntracer_pops
+
+        for t_pop in range(0, gp.ntracer_pops):
+            if gp.nu_model == 'exponential_sum':
+                IntC_max=(gp.sigz_C_max**2)*tmp_tracer[t_pop*2]
+                IntC_min=(gp.sigz_C_min**2)*tmp_tracer[t_pop*2]
+            else:
+                IntC_max=(gp.sigz_C_max**2)*gp.nu_C_max
+                IntC_min=(gp.sigz_C_min**2)*gp.nu_C_min
+
+            #temp = pc[off+t_pop]
+            pc[off+t_pop] = IntC_min+(IntC_max-IntC_min)*pc[off+t_pop]
+            #print('IntC_min = ', IntC_min, 'IntC_max = ', IntC_max, 'C = ', pc[off+t_pop], 'param = ', temp)
+        off += offstep
+
+
+
 
         if off != gp.ndim:
             print ('in gl_class_cube, off:',off,'gp.ndim:',gp.ndim)

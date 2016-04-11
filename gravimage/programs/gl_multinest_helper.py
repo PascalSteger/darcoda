@@ -13,6 +13,7 @@ sys.path.insert(0, 'plotting/')
 from plot_profiles import correct_E_error
 import time
 import barrett.util
+import disc.gl_physics as phys
 
 def paracube_to_profile(basepath_ts, paracube_filename, profile_filename, investigation, case, timestamp):
     # Takes a file with points defined in the multinest cube, output file with profiles
@@ -128,6 +129,19 @@ def mn_output_to_hdf5(basepath_ts, mn_output_filename, h5_filename, investigatio
     return
 
 
+def mn_h5_baryon_vecs(basepath_ts, mn_output_filename, h5_filename, investigation, case, timestamp, gp):
+    #This appends the baryon density in each bin to the h5 file
+    pdb.set_trace()
+    bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[0])
+
+    h5file = barrett.data.Chain(basepath_ts + h5_filename)
+    z_vec = bincenters
+    for j in range(0, len(z_vec)):
+        h5file.apply('rho_baryon_%j', '', lambda k, d: phys.rho_baryon_simplenu(z_vec[j], [k, d]), '$K_{\\rm DD}$', '$D_{\\rm DD}$')
+
+
+
+
 
 def write_mn_info(gp):
     #Writes info file for multinest post analysis
@@ -151,38 +165,45 @@ def write_mn_info(gp):
 
     #sigz constant 'C' parameters
     lc=1 #line count
-    info_file.writelines('# sigc constant C parameter(s) \n')
-    for t_pop in range(0, gp.ntracer_pops):
-        info_file.writelines('lab' + str(lc) + '= C_' + str(t_pop) + '\n')
-        param_headers.append('C_' + str(t_pop))
-        lc+=1
 
     #Dark matter parameters
+
     info_file.writelines('# Dark Matter Parameters \n')
     if gp.darkmattermodel == 'const_dm':
         info_file.writelines('#     DM model: const_dm \n')
+        #info_file.writelines('lab' + str(lc) + '= \\rho_{\\rm DM, const} \n')
+        #param_headers.append('\\rho_{\\rm DM, const}')
         info_file.writelines('lab' + str(lc) + '= \\rho_{\\rm DM, const} \n')
-        param_headers.append('\\rho_{\\rm DM, const}')
+        param_headers.append('$\\rho_{\\rm DM, const}$')
         lc+=1
     elif gp.darkmattermodel == 'ConstPlusDD':
         info_file.writelines('#     DM model: ConstPlusDD \n')
         info_file.writelines('lab' + str(lc) + '= \\rho_{\\rm DM, const} \n')
-        param_headers.append('\\rho_{\\rm DM, const}')
+        param_headers.append('$\\rho_{\\rm DM, const}$')
         lc+=1
         info_file.writelines('lab' + str(lc) + '= K_{\\rm DD} \n')
-        param_headers.append('K_{\\rm DD}')
+        param_headers.append('$K_{\\rm DD}$')
         lc+=1
         info_file.writelines('lab' + str(lc) + '= D_{\\rm DD} \n')
-        param_headers.append('D_{\\rm DD}')
+        param_headers.append('$D_{\\rm DD}$')
         lc+=1
+    elif gp.darkmattermodel == 'gaussian_per_bin':
+        info_file.writelines('lab' + str(lc) + '= \\rho_{\\rm DM, C} \n')
+        param_headers.append('$\\rho_{\\rm DM, C}$')
+        lc+=1
+        for jter in range(0, gp.nrhonu-1):
+            info_file.writelines('lab' + str(lc) + '= \\rho_{\\rm DM, ' + str(jter) +'} \n')
+            param_headers.append('$\\rho_{\\rm DM, ' + str(jter) +'}$')
+            lc+=1
+
     elif gp.darkmattermodel == 'kz_dm':
         info_file.writelines('#     DM model: kz_dm \n')
         info_file.writelines('lab' + str(lc) + '= k_{z,C} \n')
-        param_headers.append('k_{z,C}')
+        param_headers.append('$k_{z,C}$')
         lc+=1
         for jter in range(0, gp.nrhonu):
             info_file.writelines('lab' + str(lc) + '= k_{z,' + str(jter) + '} \n')
-            param_headers.append('k_{z,' + str(jter) + '}')
+            param_headers.append('$k_{z,' + str(jter) + '}$')
             lc+=1
 
     #Baryon mass profile parameters
@@ -191,11 +212,21 @@ def write_mn_info(gp):
         if gp.baryonmodel == 'simplenu_baryon':
             info_file.writelines('#     Baryon model: simplenu \n')
             info_file.writelines('lab' + str(lc) + '= K_{\\rm baryon} \n')
-            param_headers.append('K_{\\rm baryon}')
+            param_headers.append('$K_{\\rm baryon}$')
             lc+=1
             info_file.writelines('lab' + str(lc) + '= D_{\\rm baryon} \n')
-            param_headers.append('D_{\\rm baryon}')
+            param_headers.append('$D_{\\rm baryon}$')
             lc+=1
+
+        elif gp.baryonmodel == 'simplenu_baryon_gaussian':
+            info_file.writelines('# Baryon model: simplenu gaussian \n')
+            info_file.writelines('lab' + str(lc) + '= rho_{{\rm baryon},C} \n')
+            param_headers.append('$\\rho_{{\\rm baryon},C}$')
+            lc+=1
+            for jter in range(0, sum(gp.nbins)):
+                info_file.writelines('lab' + str(lc) + '= rho_{{\rm baryon},' + str(jter) + '} \n')
+                param_headers.append('$\\rho_{{\\rm baryon},' + str(jter) + '}$')
+                lc+=1
 
     #Tracer profile parameters: nu_C, kz_nu_C, kz_nu_vector # kz_nu_LS
     info_file.writelines('# Tracer density model parameters \n')
@@ -207,39 +238,61 @@ def write_mn_info(gp):
         elif gp.nu_model=='kz_nu':
             info_file.writelines('#     Tracer model pop ' + str(tracer_pop) + ': kz_nu \n')
             info_file.writelines('lab' + str(lc) + '= \\nu_C \n')
-            param_headers.append('\\nu_C')
+            param_headers.append('$\\nu_C$')
             lc+=1
-            info_file.writelines('lab' + str(lc) + '= k_{\\nu, {\\rm C}} \n')
-            param_headers.append('k_{\\nu, {\\rm C}}')
+            #info_file.writelines('lab' + str(lc) + '= k_{\\nu, {\\rm C}} \n')
+            #param_headers.append('k_{\\nu, {\\rm C}}')
+            info_file.writelines('lab' + str(lc) + '= k_{\\nu,} \n')
+            param_headers.append('$k_{\\nu,C}$')
             lc+=1
             for jter in range(0, gp.nbins[tracer_pop]):
                 info_file.writelines('lab' + str(lc) + '= k_{\\nu,' + str(jter) +'} \n')
-                param_headers.append('k_{\\nu,' + str(jter) +'}')
+                param_headers.append('$k_{\\nu,' + str(jter) +'}$')
                 lc+=1
 
         elif gp.nu_model=='gaussian_data':
             info_file.writelines('#     Tracer model pop ' + str(tracer_pop) + ': gaussian_data \n')
             info_file.writelines('lab' + str(lc) + '= \\nu_{\\rm C} \n')
-            param_headers.append('\\nu_{\\rm C}')
+            param_headers.append('$\\nu_{\\rm C}$')
             lc+=1
             for jter in range(0, gp.nbins[tracer_pop]):
-                info_file.writelines('lab' + str(lc) + '= \\nu_{' + str(jter) +'} \n')
-                param_headers.append('\\nu_{' + str(jter) +'}')
+                info_file.writelines('lab' + str(lc) + '= $\\nu_{' + str(jter) +'}$ \n')
+                param_headers.append('$\\nu_{' + str(jter) + '}$')
                 lc+=1
+
+
+        elif gp.nu_model=='exponential_sum':
+            info_file.writelines('#     Tracer model pop ' + str(tracer_pop) + ': sum of exponentials \n')
+            for kter in range(0, gp.N_nu_model_exps):
+                info_file.writelines('lab' + str(lc) + '= \\nu_{\\rm C, pop' + str(tracer_pop) + ', exp ' + str(kter) + '} \n')
+                lc+=1
+                info_file.writelines('lab' + str(lc) + '= \\nu_{\\rm h, pop' + str(tracer_pop) + ', exp ' + str(kter) + '} \n')
+                lc+=1
+                param_headers.append('$\\nu_{\\rm C, pop' + str(tracer_pop) + ', exp ' + str(kter) + '}$')
+                param_headers.append('$\\nu_{\\rm h, pop' + str(tracer_pop) + ', exp ' + str(kter) + '}$')
+
+
 
     # Introducing tilt term:
     if gp.tilt:
         info_file.writelines('# Tilt term model parameters \n')
         for tracer_pop in range(0, gp.ntracer_pops):
             info_file.writelines('lab' + str(lc) + '= A_{' + str(tracer_pop) + ',{\\rm tilt}} \n')
-            param_headers.append('A_{' + str(tracer_pop) + ',{\\rm tilt}}')
+            param_headers.append('$A_{' + str(tracer_pop) + ',{\\rm tilt}}$')
             lc+=1
             info_file.writelines('lab' + str(lc) + '= n_{' + str(tracer_pop) + ',{\\rm tilt}} \n')
-            param_headers.append('n_{' + str(tracer_pop) + ',{\\rm tilt}}')
+            param_headers.append('$n_{' + str(tracer_pop) + ',{\\rm tilt}}$')
             lc+=1
             info_file.writelines('lab' + str(lc) + '= R_{' + str(tracer_pop) + ',{\\rm tilt}} \n')
-            param_headers.append('R_{' + str(tracer_pop) + ',{\\rm tilt}}')
+            param_headers.append('$R_{' + str(tracer_pop) + ',{\\rm tilt}}$')
             lc+=1
+
+
+    info_file.writelines('# sigc constant C parameter(s) \n')
+    for t_pop in range(0, gp.ntracer_pops):
+        info_file.writelines('lab' + str(lc) + '= C_' + str(t_pop) + '\n')
+        param_headers.append('$C_' + str(t_pop) + '$')
+        lc+=1
 
     if lc-1 != gp.ndim:
         raise Exception('Incorrect number of labels in mn_info')

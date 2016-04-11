@@ -11,6 +11,7 @@ import numpy as np
 import numpy.random as npr
 import pdb
 from scipy.integrate import simps
+from scipy.signal import savgol_filter
 
 import gl_units as gu
 import gl_helper as gh
@@ -89,8 +90,8 @@ def load_disc_nbody_posvel(gp):
     darcoda_path = gh.find_darcoda_path()
     data_set_folder = darcoda_path + '/Data_Sets/'
     external_file = [data_set_folder + temp for temp in gp.external_data_file]
-    if gp.tilt:
-        external_file_tilt=[data_set_folder + temp for temp in gp.external_data_file_tilt]
+    #if gp.tilt:
+    #    external_file_tilt=[data_set_folder + temp for temp in gp.external_data_file_tilt]
 
     #Load external data
     print('Using external data file(s): ', gp.external_data_file)
@@ -115,12 +116,12 @@ def run(gp):
     if gp.investigate == 'simplenu':
         z_data, vz_data, z_data_tilt, vRz_data_tilt = load_simplenu_posvel(gp)
         z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
-        v_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
+        #v_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
     elif gp.investigate == 'disc_nbody':
         z_data, vz_data, vR_data = load_disc_nbody_posvel(gp)
-        z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-        vz_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
-        vR_data_zcut = [vR_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
+        z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
+        #vz_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
+        #vR_data_zcut = [vR_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
 
     # Bin data, constant number of tracers per bin.
     # First, calculate binmins, binmaxes, and bin centres
@@ -130,7 +131,8 @@ def run(gp):
 
     for pop in range(0, gp.ntracer_pops):
         if gp.binning == 'consttr':
-            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_zcut[pop], gp.nbins[pop], np.ones(len(z_data_zcut[pop])), gp.data_z_cut[pop])
+            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_zcut[pop], gp.nbins[pop],
+                                                np.ones(len(z_data_zcut[pop])), gp.data_z_cut[pop])
         elif gp.binning == 'linspace':
             binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_zcut[0]),1), gp.nbins[pop])
 
@@ -150,7 +152,10 @@ def run(gp):
     tilt2_data_err = []
 
     for pop in range(0, gp.ntracer_pops):
-        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], vz_data[pop], np.ones(len(z_data[pop])))
+        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp\
+            = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop],
+                                    vz_data[pop], np.ones(len(z_data[pop])))
+
         nu_data.append(nu_data_tmp)
         nu_err_pois.append(nu_err_pois_tmp)
         sigz2_data.append(sigz2_data_tmp)
@@ -159,15 +164,26 @@ def run(gp):
 
         if gp.tilt:
             if gp.investigate == 'simplenu':
-                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop], binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
+                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop],
+                                                            binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
+
+                #Reverse sigRz2 sign if necessary
                 if not gp.positive_sigRz_data_sign:
                     sigRz2_data_tmp = sigRz2_data_tmp * -1.0
 
             elif gp.investigate == 'disc_nbody':
-                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], vz_data[pop], vR_data[pop])
+                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop],
+                                                            binmax_pops[pop], z_data[pop], vz_data[pop], vR_data[pop])
 
             sigRz2_data.append(sigRz2_data_tmp)
             sigRz2_err_pois.append(sigRz2_data_err_tmp)
+
+    ##Nu bias correction
+    #dh_vec = (binmax-binmin)/0.9
+    #correction_vec = 0.5 * dh_vec * (np.exp(dh_vec)+1)/(np.exp(dh_vec)-1)
+    #print('nu correction:', correction_vec)
+    ##nu_data[0] = nu_data[0] * correction_vec
+
 
     print ('z vectors: ', bincentermed_pops)
     print ('nu_data:',nu_data)
@@ -209,17 +225,27 @@ def run(gp):
         write_sigRz2_output_files(bincentermed_pops, binmin_pops, binmax_pops, sigRz2_data, sigRz2_err_tot, gp)
 
     #Set central nu and sigz prior range #TODO: look again at this prior
+
     nu_0_values = [nu_data[ii][0] for ii in range(0, gp.ntracer_pops)]
     nu_0_errs = [nu_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)]
     sigz_0_values = np.sqrt([sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)])
     sigz_0_errs = np.sqrt([sigz2_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)])
 
+
+
+
     prior_sigma = 2.0
-    gp.nu_C_max = max(nu_0_values) + prior_sigma*max(nu_0_errs) # 5 sigma either way
+    gp.nu_C_max = 2*max(nu_0_values) + prior_sigma*max(nu_0_errs) # 5 sigma either way #10/3 bodge 2*
     gp.nu_C_min = min(nu_0_values) - prior_sigma*max(nu_0_errs)
 
     gp.sigz_C_max = max(sigz_0_values) + prior_sigma*max(sigz_0_errs)
     gp.sigz_C_min = max(min(sigz_0_values) - prior_sigma*max(sigz_0_errs), 0.)
+
+    #Set priors for the exponential disks #REDO THESE PRIORS
+    for jter in range(0, gp.N_nu_model_exps):
+        gp.nu_exp_sum_priors[jter][0] = max(nu_0_values)
+        gp.nu_exp_sum_priors[jter][1] = 0.1 * max(nu_0_values)
+
 
     import gr_params #WHAT DOES THIS DO.
     gpr = gr_params.Params(gp)
@@ -240,3 +266,148 @@ if __name__=="__main__":
     import gl_params
     gp = gl_params.Params()
     run(gp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#        #TEMPORARY TEST 25/01 increasing errors on sigRz2
+#        sigz2_err_pois_tmp = sigz2_err_pois_tmp * 1.1
+#
+#        #Temportary test 15/02 increasing errors on nu
+#        nu_err_pois_tmp = nu_err_pois_tmp * 1.2
+
+        #TEMPORARY TEST 25/01 smoothing sigz2 data
+        #sigz2_data_tmp = savgol_filter(sigz2_data_tmp, 5, 1)
+        #nu_data_tmp = savgol_filter(nu_data_tmp, 5, 1)
+
+        ##Set 02 Frank
+        #sigz2_data_tmp = np.array([ 1610.61804191,  1665.59877152,  1722.80205969,  1782.57043621,
+        #                            1817.24953954,  1859.59282268,  1912.78591356,  1941.68893828,
+        #                            2002.24509393,  2018.79823251, 2063.27821223,  2126.09805272,
+        #                            2161.57323368,  2220.85999367,  2281.50627278,  2326.66874511,
+        #                            2442.85040529,  2525.20151286,  2643.39541919,  2765.76378331])
+
+
+        ##Set 20 Frank
+        #sigz2_data_tmp = np.array([ 1602.2919723 ,  1689.54799504,  1738.46953328,  1778.40284861,
+        #                            1830.55026302,  1856.55686437,  1900.62203068,  1936.93570973,
+        #                            2015.7846952 ,  1995.81055793, 2064.55710872,  2093.60970765,
+        #                            2148.40595152,  2205.95909336,  2252.28646799,  2339.97492179,
+        #                            2417.97394751,  2512.25825913,  2646.4444893 ,  2835.21902204])
+
+
+        ##bins 11-14, 16, 19 transplant
+        #sigz2_data_tmp = np.array([ 1602.2919723 ,  1689.54799504,  1738.46953328,  1778.40284861,
+        #                            1830.55026302,  1856.55686437,  1900.62203068,  1936.93570973,
+        #                            2015.7846952 ,  1995.81055793,  2063.27821223,
+        #                            2100.0,  #11
+        #                            2123.0,  #12
+        #                            2216.0,  #13
+        #                            2245.0,  #14
+        #                            2326.66874511,
+        #                            2411.0,  #16,
+        #                            2525.20151286,  2643.39541919,
+        #                            2806.0]) #19
+
+
+        ##bins 11-14, 19 transplant
+        #sigz2_data_tmp = np.array([ 1602.2919723 ,  1689.54799504,  1738.46953328,  1778.40284861,
+        #                            1830.55026302,  1856.55686437,  1900.62203068,  1936.93570973,
+        #                            2015.7846952 ,  1995.81055793,  2063.27821223,
+        #                            2100.0,  #11
+        #                            2123.0,  #12
+        #                            2216.0,  #13
+        #                            2245.0,  #14
+        #                            2326.66874511, 2442.85040529, 2525.20151286,  2643.39541919,
+        #                            2806.0]) #19
+
+        #Bin 16 transplant
+        #sigz2_data_tmp = np.array([ 1602.2919723 ,  1689.54799504,  1738.46953328,  1778.40284861,
+        #                            1830.55026302,  1856.55686437,  1900.62203068,  1936.93570973,
+        #                            2015.7846952 ,  1995.81055793,  2063.27821223,  2126.09805272,
+        #                            2161.57323368,  2220.85999367,  2281.50627278,  2326.66874511,
+        #                            2411.0, #16
+        #                            2525.20151286,  2643.39541919,  2765.76378331])
+
+
+        ##Bin 19 transplant
+        #sigz2_data_tmp = np.array([ 1602.2919723 ,  1689.54799504,  1738.46953328,  1778.40284861,
+        #                            1830.55026302,  1856.55686437,  1900.62203068,  1936.93570973,
+        #                            2015.7846952 ,  1995.81055793,  2063.27821223,  2126.09805272,
+        #                            2161.57323368,  2220.85999367,  2281.50627278,  2326.66874511,
+        #                            2442.85040529,  2525.20151286,  2643.39541919,
+        #                            2806.0])
+
+        ##Bin 16 & 19 transplant transplant
+        #sigz2_data_tmp = np.array([ 1602.2919723 ,  1689.54799504,  1738.46953328,  1778.40284861,
+        #                            1830.55026302,  1856.55686437,  1900.62203068,  1936.93570973,
+        #                            2015.7846952 ,  1995.81055793,  2063.27821223,  2126.09805272,
+        #                            2161.57323368,  2220.85999367,  2281.50627278,  2326.66874511,
+        #                            2411.0, #16
+        #                            2525.20151286,  2643.39541919,
+        #                            2807.0]) #19
+
+
+
+        #Test 17/02
+#        pdb.set_trace()
+#        sigz2_err_pois_tmp = sigz2_err_pois_tmp*0.1
+#        sigz2_err_pois_cumu = [sigz2_err_pois_tmp[0]]
+#        for jter in range(1, len(sigz2_err_pois_tmp)):
+#            nu_factor_i = (nu_data_tmp[jter-1]/nu_data_tmp[jter])
+#            #nu_factor_i = 1.0
+#            print('jter = ', jter, ', nu_factor_i = ', nu_factor_i)
+#            sigz2_err_pois_cumu.append(sigz2_err_pois_tmp[jter] + nu_factor_i * sigz2_err_pois_cumu[jter-1])
+#            print('jter = ', jter, ', sigz2_err_pois_tmp = ', sigz2_err_pois_tmp[jter], sigz2_err_pois_cumu[jter])
+#
+#        print('sigz2_err_pois_tmp = ', sigz2_err_pois_tmp)
+#        print('sigz2_err_pois_cumu = ', sigz2_err_pois_cumu)
+#        pdb.set_trace()
+#        #sigz2_err_pois_cumu = np.array([(sigz2_err_pois_tmp[ii] + sigz2_err_pois_cumu[ii-1]*nu_data_tmp[ii-1]/nu_data_tmp[ii]) for ii in range(1, len(sigz2_err_pois_tmp))])
+#        #sigz2_err_pois_cumu = np.array([(nu_data_tmp[ii-1]/nu_data_tmp[ii]) for ii in range(1, len(sigz2_err_pois_tmp))])
+#
+#
+#
+#        sigz2_err_pois_tmp = np.append(sigz2_err_pois_0, sigz2_err_pois_cumu)
+#        pdb.set_trace()
+
+
+        #1 SD up and down test
+
+        #sigz2_data_tmp = np.array([1623.25139087,  1688.37444732,  1743.97698327,  1791.7950385,   1834.83250905,
+        #                        1874.45496845,  1912.79200978,  1950.16273803,  1988.93871516,  2028.12197511,
+        #                        2070.10042631,  2114.74191993,  2163.33053234,  2217.17667516,  2277.46685436,
+        #                        2346.35939292,  2427.9963064,  2526.79694338,  2652.82556956,  2829.90130777])
+
+
+        #sigz2_data_tmp = np.array([ 1602.23761271,  1666.21632173,  1721.17726028,  1768.4715971,   1810.82516345,
+        #                            1850.10655084,  1887.86568523,  1924.76016596,  1962.50205248,  2001.94726972,
+        #                            2043.04089448,  2086.85851691,  2134.98187854,  2188.05048591,  2247.5452998,
+        #                            2315.84554045,  2395.95875184,  2493.67936848,  2618.15790231,  2793.6288009])
+
+
+        #sigz2_data_tmp = np.array([1633.7582799493587, 1699.4535101136034, 1755.3768447575219, 1803.4567592091764,
+        #                            1846.8361818550111, 1886.6291772629531, 1925.2551720466179, 1962.8640240668881,
+        #                            2002.157046506449, 2041.2093277957306, 2083.6301922310295, 2128.6836214397135,
+        #                            2177.5048592381504, 2231.7397697874244, 2292.4276316462337, 2361.6163191561204,
+        #                            2444.0150836842595, 2543.3557308243558, 2670.1594031782442, 2848.037561206846])
+
+        #sigz2_data_tmp = np.array([1591.7307236339855, 1655.1372589329853, 1709.777398791415, 1756.8098763914988,
+        #                            1798.8214906517383, 1837.9323420300918, 1875.4025229602846, 1912.058879918701,
+        #                            1949.2837211313911, 1988.8599170338089, 2029.5111285660084, 2072.9168153971295,
+        #                            2120.8075516442682, 2173.48739127811, 2232.584522511971, 2300.5886142165477,
+        #                            2379.9399745572236, 2477.120581036183, 2600.8240686920881, 2775.4925474592505])

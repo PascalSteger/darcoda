@@ -127,6 +127,7 @@ def get_binned_data_noscale(gp):
     gp.dat.read_sigz2(gp)
     if gp.tilt:
         gp.dat.read_sigRz2(gp)
+    gp.dat.read_baryon_priors(gp)
     return gp.dat
 ## \fn get_binned_data_noscale(gp)
 # read in binned data, store in a gl_data class

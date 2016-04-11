@@ -80,7 +80,7 @@ def calc_chi2(profs, gp):
 
 
         #Calculate tracer density chi2 for population no. pop
-        if gp.nu_model == 'kz_nu':
+        if gp.nu_model in ['kz_nu', 'exponential_sum']:
             nudat    = gp.dat.nu[pop]
             nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
             numodel  = profs.get_prof('nu_vecs', pop)
@@ -100,13 +100,17 @@ def calc_chi2(profs, gp):
 
         #Calculate z-velocity dispersion chi2 for population no. pop
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
-        sigz2err    = gp.dat.sigz2err[pop]+profs.hyper_sigz2  # [km/s]
+        sigz2err    = gp.dat.sigz2err[pop] +profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vecs', pop)
         chi2_sigz2_tmp, chi2_sigz2_vec  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
+        #chi2_sigz2_vec = np.append(np.zeros(5), chi2_sigz2_vec) #TEST 11/02 needed if you drop the first X bins
+
         if chi2_sigz2_tmp == np.inf:
             print('chi2_sig has become infinite')
         chi2_sigz2 += chi2_sigz2_tmp
         chi2_sigz2_vecs.append(chi2_sigz2_vec)
+
+        profs.set_prof('chi2_sigz2_vecs', chi2_sigz2_vec, pop, gp)
         gh.LOG(1, '  chi2_sigz2  = ', chi2_sigz2_tmp)
 
         #Calculate Rz-velocity dispersion chi2 for population no. pop
@@ -125,6 +129,15 @@ def calc_chi2(profs, gp):
             chi2_sigRz2_vec = np.zeros(gp.nbins[pop])
         chi2_sigRz2 += chi2_sigRz2_tmp
         chi2_sigRz2_vecs.append(chi2_sigRz2_vec)
+        profs.set_prof('chi2_sigRz2_vecs', chi2_sigRz2_vec, pop, gp)
+
+        #chi2_dm=0
+        #if gp.darkmattermodel == 'gaussian_per_bin':
+        #    rhoDM_vec = profs.get_prof('rho_DM_vec', pop)
+        #    rhoDM_allz = np.append(profs.rho_DM_C, rhoDM_vec)
+        #    rhoDM_mid = np.median(rhoDM_allz)*np.ones(gp.nrhonu)
+        #    rhoDM_SD = rhoDM_mid*0.1
+        #    chi2_rhoDM, dummy = chi2red(rhoDM_mid, rhoDM_allz, rhoDM_SD, 1.)
 
     #Combine chi2 for nu, sigz, and sigRz for all populations
     chi2 = chi2_nu + chi2_sigz2 + chi2_sigRz2

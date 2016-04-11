@@ -21,13 +21,17 @@ cores='16'
 ppn=15
 cputype='cpu3'
 mem = 'mem64gb'
-walltime='05:00:00:00'
+walltime='01:00:00:00'
 
 darcoda_path = gh.find_darcoda_path() + '/'
 gravimage_path = darcoda_path + '/gravimage/'
 holding_stack_path = gravimage_path + '/holding_stack/'
 investigation = 'simplenu'
 case = '0'
+#investigation = 'disc_nbody'
+#case = '2'
+psigRz_data = True
+
 
 #NOT YET IMPLEMENTED
 resume_run = False
@@ -76,21 +80,30 @@ pbs_file.writelines('mkdir $TMPDIR/darcoda/gravimage/programs/HoldingNumberWas_'
 pbs_file.writelines('mkdir -p $TMPDIR/darcoda/Data_Sets/' + investigation + '\n')
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 
+#Copy files and data sets to the node
 pbs_file.writelines('mpicopy ' + darcoda_path + '/gravimage/holding_stack/' + str(holding_number) +'/programs' + ' -o "$TMPDIR"/darcoda/gravimage/' + '\n')
-pbs_file.writelines('mpicopy ' + darcoda_path + '/Data_Sets/' + investigation + ' -o "$TMPDIR"/darcoda/Data_Sets/ \n')
+
+if investigation == 'simplenu' and psigRz_data:
+    pbs_file.writelines('mpicopy ' + darcoda_path + '/Data_Sets/psigRz_' + investigation + ' -o "$TMPDIR"/darcoda/Data_Sets/ \n')
+elif investigation == 'simplenu' and not psigRz_data:
+    pbs_file.writelines('mpicopy ' + darcoda_path + '/Data_Sets/' + investigation + ' -o "$TMPDIR"/darcoda/Data_Sets/ \n')
+elif investigation == 'disc_nbody' and case == '1':
+    pbs_file.writelines('mpicopy ' + darcoda_path + '/Data_Sets/Hunt_Kawata_GCD -o "$TMPDIR"/darcoda/Data_Sets/ \n')
+elif investigation == 'disc_nbody' and case == '2':
+    pbs_file.writelines('mpicopy ' + darcoda_path + '/Data_Sets/Garbari_Nbody/wedges -o "$TMPDIR"/darcoda/Data_Sets/Garbari_Nbody/ \n')
 
 pbs_file.writelines('ls -l -a $TMPDIR/*' + '\n')
 
 pbs_file.writelines('ls -l -a darcoda/gravimage/programs/*' + '\n')
-pbs_file.writelines('echo Contents of Data_Sets/simplenu: \n')
-pbs_file.writelines('ls -l -a darcoda/Data_Sets/simplenu/*' + '\n')
+pbs_file.writelines('echo Contents of Data_Sets/: \n')
+pbs_file.writelines('ls -l -a darcoda/Data_Sets/*' + '\n')
 
 pbs_file.writelines('cd $TMPDIR/darcoda/gravimage/programs'+'\n')
 
 pbs_file.writelines('# Calculate run time for gravimage, less than wall time to allow for data to be'+'\n')
 pbs_file.writelines('# copied back, allow [transft] seconds for transfer.'+'\n')
 pbs_file.writelines('echo PBS_WALLTIME = $PBS_WALLTIME'+'\n')
-pbs_file.writelines('transft=360'+'\n') #FIX
+pbs_file.writelines('transft=60'+'\n') #FIX
 pbs_file.writelines('echo Transfer time = $transft'+'\n')
 pbs_file.writelines('runtime=$(expr $PBS_WALLTIME - $transft)'+'\n')
 pbs_file.writelines('echo gravimage runtime = $runtime'+'\n')
@@ -103,7 +116,7 @@ pbs_file.writelines('ls -R -l $TMPDIR/darcoda/gravimage/DT' + investigation + '\
 
 pbs_file.writelines('echo Running gravimage:' + '\n')
 pbs_file.writelines('date \n')
-pbs_file.writelines('timeout $runtime mpiexec -n ' + str(nodes*ppn) + ' python3 gravimage.py --investigation ' + investigation + ' --case ' + case + '\n')
+pbs_file.writelines('timeout -s 9 $runtime mpiexec -n ' + str(nodes*ppn) + ' python3 gravimage.py --investigation ' + investigation + ' --case ' + case + '\n')
 
 pbs_file.writelines('date \n')
 pbs_file.writelines('echo gravimage killed, transfering data'+'\n')

@@ -26,16 +26,13 @@ def geom_loglike(cube, ndim, nparams, gp):
 
 
     #[tmp_profs.z_vecs[pop] = gp.z_bincenter_vecs[pop] for pop in range(0, gp.ntracer_pops)]
-    #Normalisation constant C for sigz calculation
     off = 0
-    offstep = gp.ntracer_pops
-    norm_C = cube[off:off+offstep]
-    for t_pop in range(0, gp.ntracer_pops):
-        tmp_profs.norm_C[t_pop] = norm_C[t_pop]*1.0
-    off += offstep
+
+
+
+
+
     #Dark Matter rho parameters (rho_C, kz_C, kz_vector)
-
-
     if gp.scan_rhonu_space:
         tmp_rho_DM_allz = np.array(cube[off:off+offstep])
     elif gp.darkmattermodel == 'const_dm':
@@ -43,6 +40,9 @@ def geom_loglike(cube, ndim, nparams, gp):
         rho_DM_params = np.array(cube[off:off+offstep])
         rho_DM_C = rho_DM_params[0]
         tmp_rho_DM_allz = rho_DM_C * np.ones(gp.nrhonu)
+    elif gp.darkmattermodel == 'gaussian_per_bin':
+        offstep = gp.nrhonu
+        tmp_rho_DM_allz = np.array(cube[off:off+offstep])
     elif gp.darkmattermodel == 'ConstPlusDD':
         offstep = 3
         rho_DM_params = np.array(cube[off:off+offstep])
@@ -73,10 +73,14 @@ def geom_loglike(cube, ndim, nparams, gp):
     for baryon_pop in range(0, gp.nbaryon_pops):
         offstep = gp.nbaryon_params
         baryon_params = np.array(cube[off:off+offstep])
+
         if gp.baryonmodel == 'simplenu_baryon':
             tmp_rho_baryon_allz = phys.rho_baryon_simplenu(gp.z_all_pts_sorted, baryon_params)
         elif gp.baryonmodel == 'kz_baryon':
             print('Not implemented yet')
+        elif gp.baryonmodel == 'simplenu_baryon_gaussian':
+            tmp_rho_baryon_allz = baryon_params
+
         tmp_profs.rho_baryon_C = tmp_rho_baryon_allz[0]
         tmp_profs.set_prof('rho_baryon_vec', tmp_rho_baryon_allz[1:], baryon_pop, gp)
 
@@ -113,6 +117,15 @@ def geom_loglike(cube, ndim, nparams, gp):
             tmp_profs.kz_nu_C[t_pop] = kz_nu_allz[0]
             tmp_profs.set_prof('kz_nu_vecs', kz_nu_allz[1:], t_pop, gp)
 
+        elif gp.nu_model=='exponential_sum':
+            offstep = gp.N_nu_model_exps*2
+            tracer_params = np.array(cube[off:off+offstep])
+            z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
+            tmp_nu_allz[t_pop] = np.zeros(len(z_points_tmp))
+            for jter in range(0, 2*gp.N_nu_model_exps,2):
+                tmp_nu_allz[t_pop] +=  tracer_params[jter] * np.exp(-z_points_tmp/tracer_params[jter+1])
+
+
         tmp_profs.nu_C[t_pop] = tmp_nu_allz[t_pop][0]
         tmp_profs.set_prof('nu_vecs', tmp_nu_allz[t_pop][1:], t_pop, gp)
         off += offstep
@@ -143,6 +156,13 @@ def geom_loglike(cube, ndim, nparams, gp):
             #tmp_profs.hyper_nu = [gp.dat.meannuerr*hyper_average]
             #tmp_profs.hyper_sigz2 = [gp.dat.meansigz2err*hyper_average]
             #print ('hyper_average:',hyper_average)
+
+    #Normalisation constant C for sigz calculation
+    offstep = gp.ntracer_pops
+    norm_C = cube[off:off+offstep]
+    for t_pop in range(0, gp.ntracer_pops):
+        tmp_profs.norm_C[t_pop] = norm_C[t_pop]*1.0
+    off += offstep
 
     if off != gp.ndim:
         gh.LOG(1,'wrong subscripts in gl_class_cube')

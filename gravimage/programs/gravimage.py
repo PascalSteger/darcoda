@@ -34,8 +34,10 @@ parser.add_option("-i", "--investigation", dest="investigation",
                       default="", help="investigation to run: simplenu, disc_nbody")
 parser.add_option("-c", "--case", dest="case",
                       default=-1, help="case: 1 (Hunt & Kawata GCD), 2 (Garbari N-body), ..")
+parser.add_option("-s", "--mock_suffix", dest="mock_suffix",
+                      default=0, help="suffix for mock data")
 (options, args) = parser.parse_args()
-print('gravimage.py '+str(options.investigation)+' '+str(options.case))
+print('gravimage.py investigation'+str(options.investigation)+', case '+str(options.case)+', mock_suffix '+str(options.mock_suffix))
 import gl_params
 import warnings
 warnings.simplefilter('ignore') # set to 'error' when debugging
@@ -121,7 +123,7 @@ if __name__=="__main__":
     #Instantiate the gp class on P0, hold other processes until completed
     if myrank == 0:
         print('P', myrank, ':, creating gp.')
-        gp = gl_params.Params(ts, options.investigation, int(options.case))
+        gp = gl_params.Params(ts, options.investigation, int(options.case), int(options.mock_suffix))
         print('P', myrank, ':, created gp.')
         glmh.write_mn_info(gp)
         comm.Barrier()
@@ -132,6 +134,7 @@ if __name__=="__main__":
         comm.Barrier()
 
     #Broadcase gp class to other processors
+    #pdb.set_trace()
     gp = comm.bcast(gp, root=0)
 
     #Set import paths for P1 thru PN (this is done for P0 when instantiating gp,

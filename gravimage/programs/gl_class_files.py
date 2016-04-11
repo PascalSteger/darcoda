@@ -123,9 +123,8 @@ class Files:
 
         # Output the PBS job ID for reference
         jobid = os.popen('echo $PBS_JOBID').read()
-        print('jobid = ', jobid)
+        #print('jobid = ', jobid)
         if jobid != '\n':
-            print('here')
             jobid = jobid.split('.')[0]
             newdir(self.outdir + 'jobid_' + jobid)
 
