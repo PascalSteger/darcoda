@@ -10,6 +10,7 @@ import pdb
 import pickle
 import sys
 sys.path.insert(0, 'plotting/')
+sys.path.append("/home/sofia/darcoda")
 from plot_profiles import correct_E_error
 import time
 import barrett.util
@@ -92,13 +93,30 @@ def mn_output_to_profile(basepath_ts, mn_output_filename, profile_filename, inve
 
     correct_E_error(basepath_ts + mn_output_filename)
     mn_output_data = np.loadtxt(basepath_ts + mn_output_filename, dtype ='a')
+    # Loading data from output.txt, which consists of many rows with 18 columns
+    #  (for tun with gp.ndim = 15)  (last of the 18 looks a bit odd)
+    # The output.txt params are below run through gl_loglike to extract
+    #  the physical parameters of each profile. To be saved in ..MN_out...save
+
+    print ('In gl_m_h, m_out_to_prof')
+    print ('basepath_ts:',basepath_ts)
+    print ('mn_output_filename:',mn_output_filename)
+    print ('gp.ndim:',gp.ndim)
+    print ('gp.files.outdir:',gp.files.outdir,' profile_filename:',profile_filename)
 
     #paracube_data = np.loadtxt(basepath_ts + paracube_filename, dtype='a')
 
     gp.plotting_flag = True
 
+    print ('len(mn_output_data[:,0])=',len(mn_output_data[:,0]))
+    counting = 0
     for iter in range(0, len(mn_output_data[:,0])):
         #print('Iter = ', iter)
+        if counting == 100:
+            print ('iter:',iter)
+            counting = 0
+        counting = counting+1
+
         mn_weight = mn_output_data[iter, 0].astype('float')
         mn_m2lnL = mn_output_data[iter, 1].astype('float')
         paracube = mn_output_data[iter, 2:]
@@ -116,6 +134,7 @@ def mn_output_to_profile(basepath_ts, mn_output_filename, profile_filename, inve
         temp_profile.mn_weight = mn_weight
         with open(gp.files.outdir+profile_filename, 'ab') as fi:
             pickle.dump(temp_profile, fi)
+        # Exporting the profiles to phys_MNoutput_profiles.save
 
 
 def mn_output_to_hdf5(basepath_ts, mn_output_filename, h5_filename, investigation, case, timestamp, gp):
@@ -218,7 +237,46 @@ def write_mn_info(gp):
             param_headers.append('$D_{\\rm baryon}$')
             lc+=1
 
-        elif gp.baryonmodel == 'simplenu_baryon_gaussian':
+        elif gp.baryonmodel == 'trivial_baryon':
+            info_file.writelines('#     Baryon model: trivial \n')
+            info_file.writelines('lab' + str(lc) + '= \\Sigma_{\\rm baryon} \n')
+            param_headers.append('$\\Sigma_{\\rm baryon}$') 
+            lc+=1
+
+        elif gp.baryonmodel == 'obs_baryon':
+            info_file.writelines('#     Baryon model: obs \n')
+            info_file.writelines('lab' + str(lc) + '= \\Sigma_{\\rm baryon} \n')
+            param_headers.append('$\\Sigma_{\\rm baryon}$') 
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= \\Sigma_{\\rm dwarf} \n')
+            param_headers.append('$\\Sigma_{\\rm dwarf}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= \\rho 0_{\\rm MS} \n')
+            param_headers.append('$\\rho 0_{\\rm MS}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= h_{\\rm dwarf} \n')
+            param_headers.append('$h_{\\rm dwarf}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= h_{\\rm 1} \n')
+            param_headers.append('$h_{\\rm 1}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= h_{\\rm 2} \n')
+            param_headers.append('$h_{\\rm 2}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= h_{\\rm 3} \n')
+            param_headers.append('$h_{\\rm 3}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= x_{\\rm thick} \n')
+            param_headers.append('$x_{\\rm thick}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= \\Sigma_{\\rm HII} \n')
+            param_headers.append('$\\Sigma_{\\rm HII}$')
+            lc+=1
+            info_file.writelines('lab' + str(lc) + '= h_{\\rm HII} \n')
+            param_headers.append('$h_{\\rm HII}$')
+            lc+=1
+
+        elif gp.baryonmodel == 'simplenu_baryon_gaussian':  # Not supported
             info_file.writelines('# Baryon model: simplenu gaussian \n')
             info_file.writelines('lab' + str(lc) + '= rho_{{\rm baryon},C} \n')
             param_headers.append('$\\rho_{{\\rm baryon},C}$')
@@ -235,7 +293,7 @@ def write_mn_info(gp):
             info_file.writelines('#     Tracer model pop ' + str(tracer_pop) + ': scan_rhonu_space \n')
             raise Exception('Still working on this bit')
 
-        elif gp.nu_model=='kz_nu':
+        elif gp.nu_model=='kz_nu':  # not supported
             info_file.writelines('#     Tracer model pop ' + str(tracer_pop) + ': kz_nu \n')
             info_file.writelines('lab' + str(lc) + '= \\nu_C \n')
             param_headers.append('$\\nu_C$')
@@ -250,7 +308,7 @@ def write_mn_info(gp):
                 param_headers.append('$k_{\\nu,' + str(jter) +'}$')
                 lc+=1
 
-        elif gp.nu_model=='gaussian_data':
+        elif gp.nu_model=='gaussian_data': # not supported
             info_file.writelines('#     Tracer model pop ' + str(tracer_pop) + ': gaussian_data \n')
             info_file.writelines('lab' + str(lc) + '= \\nu_{\\rm C} \n')
             param_headers.append('$\\nu_{\\rm C}$')
@@ -287,13 +345,14 @@ def write_mn_info(gp):
             param_headers.append('$R_{' + str(tracer_pop) + ',{\\rm tilt}}$')
             lc+=1
 
+    if gp.analytic_sigz2 == False:
+        info_file.writelines('# sigc constant C parameter(s) \n')
+        for t_pop in range(0, gp.ntracer_pops):
+            info_file.writelines('lab' + str(lc) + '= C_' + str(t_pop) + '\n')
+            param_headers.append('$C_' + str(t_pop) + '$')
+            lc+=1
 
-    info_file.writelines('# sigc constant C parameter(s) \n')
-    for t_pop in range(0, gp.ntracer_pops):
-        info_file.writelines('lab' + str(lc) + '= C_' + str(t_pop) + '\n')
-        param_headers.append('$C_' + str(t_pop) + '$')
-        lc+=1
-
+    print ('lc-1:',lc-1,' gp.ndim:',gp.ndim) 
     if lc-1 != gp.ndim:
         raise Exception('Incorrect number of labels in mn_info')
 

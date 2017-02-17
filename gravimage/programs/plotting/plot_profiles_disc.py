@@ -7,6 +7,7 @@
 
 # start off with plotting/ in front of path
 #import sys
+#sys.path.append("/home/sofia/darcoda")
 import pdb
 import pickle
 import os
@@ -64,8 +65,9 @@ def read_models(basename):
 
 
 def pcload_single_entries(basename, profile_source, gp):
+    print ('In plot_prof..., in pcload_simgle_entries')
     import gl_collection as glc
-    pc = glc.ProfileCollection(gp.ntracer_pops, gp.nbins)
+    pc = glc.ProfileCollection(gp.ntracer_pops, gp.nbins, gp.no_Sigrho_bins)
 
     if profile_source =='standard':
         filename = 'pc2.save'
@@ -75,13 +77,15 @@ def pcload_single_entries(basename, profile_source, gp):
         filename = 'phys_MNoutput_profiles.save'
 
     model_load_count = 0
+    print ('basename:',basename,' filename:',filename)
     with open(basename+filename, 'rb') as fi:
         dum = pickle.load(fi) # dummy variable, was used to create file
         while 1:
             model_load_count +=1
             try:
-                MODEL = pickle.load(fi)
-                pc.add(MODEL)
+                MODEL = pickle.load(fi) # TAG:
+                #print ('MODEL:',MODEL)  #out: Profiles (disc): 130.848579 etc
+                pc.add(MODEL)  # THIS IS WHERE THE add FUNCTION IS CALLED !!!
             except EOFError:
                 break
     print('Loaded ', model_load_count, ' models from ', filename)
@@ -108,16 +112,27 @@ def run(timestamp, basename, profile_source, gp):
 
     # then select only the best models for plotting the profiles
     #pc.cut_subset()
-    pc.set_z_values(gp.z_bincenter_vecs, gp.z_all_pts_sorted)
+    #pc.set_z_values(gp.z_bincenter_vecs, gp.z_all_pts_sorted)
+    #pc.set_z_values(gp.z_bincenter_vecs, gp.extend_z_binc_vecs[0])# Bodge TAG
+    # Below: if having different binning for nu
+    pc.set_z_values(gp.z_bincenter_vecs, gp.nu_z_bincenter_vecs, gp.z_vec_Sigrho)# extend_z_binc_vecs not used for nu (only for rhoDM etc).
+    # Think about which consequences above line has !!!   TAG !
+    # Last arg of func call needs to have same dim as used DM etc profiles
+    # (Maybe skip connection with bin centers and just divide in 100 or so bins)
+    #  (then also skip vertical lines in plots for these...)
+    # Just below: tried stuff which doesn't work
+    #temp = np.sort(np.concatenate((gp.extend_z_binc_vecs[0],gp.z_bincenter_vecs[1])))
+    #print ('temp:',temp)
+    #pc.set_z_values(gp.z_bincenter_vecs, temp)# Bodge TAG
 
-    #Plot Histograms WORK IN PROGRESS
 
-    glb.plot_barrett_2D_hist_sep(basename+'mn_output.h5', basename+'/output/histograms/2D_posterior_hist', 60, gp)
-    glb.plot_barrett_histograms_all(basename+'mn_output.h5', basename+'/output/histograms/posterior_hist.pdf', 60, gp)
-    glb.plot_barrett_histograms_split(basename+'mn_output.h5', basename+'/output/histograms/posterior_hist', 60, gp)
+    #Plot Histograms WORK IN PROGRESS  # SS commented out below
+    #glb.plot_barrett_2D_hist_sep(basename+'mn_output.h5', basename+'/output/histograms/2D_posterior_hist', 60, gp)
+    #glb.plot_barrett_histograms_all(basename+'mn_output.h5', basename+'/output/histograms/posterior_hist.pdf', 60, gp)
+    #glb.plot_barrett_histograms_split(basename+'mn_output.h5', basename+'/output/histograms/posterior_hist', 60, gp)
 
     # first plot all chi^2 values in histogram
-    pc.plot_profile(basename, 'chi2', 0, profile_source, gp)
+    #pc.plot_profile(basename, 'chi2', 0, profile_source, gp)  # BODGE !!
 
 
 
@@ -147,7 +162,7 @@ def run(timestamp, basename, profile_source, gp):
     pc.plot_profile(basename, 'rho_DM_vec', 0, profile_source, gp)
     pc.plot_profile(basename, 'Sig_DM_vec', 0, profile_source, gp)
 
-    if gp.baryonmodel not in ['simplenu_baryon', 'simplenu_baryon_gaussian']:
+    if gp.baryonmodel not in ['simplenu_baryon', 'trivial_baryon', 'obs_baryon', 'simplenu_baryon_gaussian']:
         gh.LOG(1, 'No baryon model, all mass is in DM.')
         return
 
@@ -179,7 +194,7 @@ def run(timestamp, basename, profile_source, gp):
     print('    95pc CL width = ', (LocalDM_95hi-LocalDM_95lo)*confac, ' GeV/cm^3')
     print('    68pc CL width = ', (LocalDM_68hi-LocalDM_68lo)*confac, ' GeV/cm^3')
 
-    print(gp.nbins[0], gp.nbins[0], gp.nbins[0], gp.nbins[0], gp.nbins[0])
+    #print(gp.nbins[0], gp.nbins[0], gp.nbins[0], gp.nbins[0], gp.nbins[0])
     #print(LocalDM_95lo, LocalDM_68lo, LocalDM_medi, LocalDM_68hi, LocalDM_95hi)
     print(str(LocalDM_95lo) + ', ' + str(LocalDM_68lo) + ', ' +  str(LocalDM_medi) + ', ' + str(LocalDM_68hi) + ', ' + str(LocalDM_95hi))
 

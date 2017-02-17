@@ -145,12 +145,28 @@ class Datafile:
     # @param gp global parameters
 
 
-    def read_sigz2(self, gp):
+    def read_sigz2(self, gp): #(used also for pre-binned data)
         for pop in range(0, gp.ntracer_pops):
-            dummy, dummy, dummy, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[pop])
+            bincenters, binmins, binmaxs, sigz2dat, sigz2err = gh.readcol5(gp.files.sigfiles[pop])
             self.sigz2.append(sigz2dat[:]) # [km/s]
             self.sigz2err.append(sigz2err[:]) # [km/s]
+
+            gp.z_bincenter_vecs.append(bincenters) # [kpc] (had [:])
+            gp.extend_z_binc_vecs.append(np.concatenate(([0],bincenters)))
+
+            gp.z_binmin_vecs.append(binmins[:]) # only used for plotting
+            gp.z_binmax_vecs.append(binmaxs[:]) #  -:-
+
+            gp.z_all_pts_unsort = np.append(gp.z_all_pts_unsort, bincenters)
+
         self.meansigz2err = np.mean(np.concatenate(self.sigz2err, axis=0))
+
+        #Remove repeats (?)  SS: try to live without it...
+        #gp.z_all_pts_unsort = np.unique(gp.z_all_pts_unsort)
+
+        #Sort z points and define masks for each population
+        gp.z_all_pts_sorted = np.sort(gp.z_all_pts_unsort)
+        gp.z_vec_masks = [np.in1d(gp.z_all_pts_sorted, np.append(0, gp.z_bincenter_vecs[pop])) for pop in range(0, gp.ntracer_pops)]
 
         return
     ## \fn read_sig(self, gp)
@@ -166,24 +182,16 @@ class Datafile:
         return
     ## \fn read_tilt(self, gp)   SS 21 may 2015
 
-    def read_nu(self, gp):
+    def read_nu(self, gp): #(used also for pre-binned data)
         gp.z_all_pts_unsort = [0.0]
         for pop in range(0, gp.ntracer_pops):
             bincenters, binmins, binmaxs, nudat, nuerr = gh.readcol5(gp.files.nufiles[pop])
             self.nu.append(nudat[:]) # [#stars/kpc^3]
             self.nuerr.append(nuerr[:])
-            gp.z_bincenter_vecs.append(bincenters[:]) # [kpc]
-            gp.z_binmin_vecs.append(binmins[:])
-            gp.z_binmax_vecs.append(binmaxs[:])
 
-            gp.z_all_pts_unsort = np.append(gp.z_all_pts_unsort, bincenters)
+            gp.nu_z_bincenter_vecs.append(bincenters) # [kpc] (had [:])
+            gp.extend_nu_z_binc_vecs.append(np.concatenate(([0],bincenters)))
 
-        #Remove repeats (?)
-        gp.z_all_pts_unsort = np.unique(gp.z_all_pts_unsort)
-
-        #Sort z points and define masks for each population
-        gp.z_all_pts_sorted = np.sort(gp.z_all_pts_unsort)
-        gp.z_vec_masks = [np.in1d(gp.z_all_pts_sorted, np.append(0, gp.z_bincenter_vecs[pop])) for pop in range(0, gp.ntracer_pops)]
         self.meannuerr = np.mean(np.concatenate(self.nuerr, axis=0))
         return
 
@@ -194,7 +202,7 @@ class Datafile:
         nprocs = MPI.COMM_WORLD.Get_size()
         procnm = MPI.Get_processor_name()
         if gp.baryonmodel == 'simplenu_baryon_gaussian':
-            K_mid = gp.simplenu_baryon_K_mid
+            K_mid = gp.simplenu_baryon_K_mid            
             D_mid = gp.simplenu_baryon_D_mid
             gp.gaussian_rho_baryon_mid_vector = phys.rho_baryon_simplenu(gp.z_all_pts_sorted, [K_mid,D_mid])
             print('P', myrank, ': Gaussian rho mid vector = ', gp.gaussian_rho_baryon_mid_vector)

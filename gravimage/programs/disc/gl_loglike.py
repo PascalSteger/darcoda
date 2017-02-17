@@ -1,8 +1,6 @@
-#!/usr/bin/env ipython3
-
-## @file
-# define log likelihood function to be called by pyMultinest
-# disc version
+## SS write new loglike file which only has the actually used settings in it
+# (25 april -16), due to lack of overwiev.
+# I.e. disables a lot of parameter choices in gl_params
 
 import numpy as np
 import pdb
@@ -16,232 +14,201 @@ from pylab import *
 import time
 
 def geom_loglike(cube, ndim, nparams, gp):
-    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins)#, gp.nbaryon_pops, gp.nbaryon_params)#, gp.nrhonu, )
+    tmp_profs = Profiles(gp.ntracer_pops, gp.nbins, gp.no_Sigrho_bins)
+    if gp.print_flag: print ('In geom_loglike in gl_loglike start -----------------------')
+    #print ('bin centers:',gp.z_bincenter_vecs)
+    #print ('extended bin centers:',gp.extend_z_binc_vecs)
 
-    # Export z values to the profile
-    for pop in range(0, gp.ntracer_pops):
-        tmp_profs.set_prof('z_vecs', gp.z_bincenter_vecs[pop], pop, gp)
-    tmp_profs.set_prof('z_vecs_comb_w0', gp.z_all_pts_sorted, pop, gp)
-
-
-
-    #[tmp_profs.z_vecs[pop] = gp.z_bincenter_vecs[pop] for pop in range(0, gp.ntracer_pops)]
+    # FIRST READ IN PARAMETER VALUES:
     off = 0
-
-
-
-
-
-    #Dark Matter rho parameters (rho_C, kz_C, kz_vector)
-    if gp.scan_rhonu_space:
-        tmp_rho_DM_allz = np.array(cube[off:off+offstep])
-    elif gp.darkmattermodel == 'const_dm':
-        offstep = 1
-        rho_DM_params = np.array(cube[off:off+offstep])
-        rho_DM_C = rho_DM_params[0]
-        tmp_rho_DM_allz = rho_DM_C * np.ones(gp.nrhonu)
-    elif gp.darkmattermodel == 'gaussian_per_bin':
-        offstep = gp.nrhonu
-        tmp_rho_DM_allz = np.array(cube[off:off+offstep])
-    elif gp.darkmattermodel == 'ConstPlusDD':
-        offstep = 3
-        rho_DM_params = np.array(cube[off:off+offstep])
-        rho_DM_C = rho_DM_params[0]
-        tmp_rho_DM_allz = phys.rho_dm_simplenu(gp.z_all_pts_sorted, rho_DM_params)
-    else:
-        offstep = gp.nrhonu + 1
-        rho_DM_params = np.array(cube[off:off+offstep])
-        rho_DM_C = rho_DM_params[0] #rho_C
-        kz_rho_DM_allz = rho_DM_params[1:] #kz for rho across all z points [0, bin_centres]
-        if gp.monotonic_rho:         #outputs rho across all points:
-            tmp_rho_DM_allz = phys.rho(gp.z_all_pts_sorted, abs(kz_rho_DM_allz), rho_DM_C)
-        else:
-            tmp_rho_DM_allz = phys.rho(gp.z_all_pts_sorted, kz_rho_DM_allz, rho_DM_C)
-
-        tmp_profs.kz_rho_DM_C = kz_rho_DM_allz[0]
-        tmp_profs.set_prof('kz_rho_DM_vec', kz_rho_DM_allz[1:], 0, gp)
-
-    tmp_rho_total_allz = tmp_rho_DM_allz*1.0 # Add DM to total mass density
-
-    tmp_profs.rho_DM_C = tmp_rho_DM_allz[0]
-    tmp_profs.set_prof('rho_DM_vec', tmp_rho_DM_allz[1:], 0, gp)
+    # Dark matter:
+    offstep = gp.nDM_params
+    DM_params = np.array(cube[off:off+offstep])
+    rho_const_DM = DM_params[0]
     off += offstep
 
-    #Baryons
-    tmp_rho_totbaryon_allz = np.zeros(len(tmp_rho_total_allz))
+    # Baryons:
+    offstep = gp.nbaryon_params
+    baryon_params = np.array(cube[off:off+offstep])
+    off += offstep
 
-    for baryon_pop in range(0, gp.nbaryon_pops):
-        offstep = gp.nbaryon_params
-        baryon_params = np.array(cube[off:off+offstep])
-
-        if gp.baryonmodel == 'simplenu_baryon':
-            tmp_rho_baryon_allz = phys.rho_baryon_simplenu(gp.z_all_pts_sorted, baryon_params)
-        elif gp.baryonmodel == 'kz_baryon':
-            print('Not implemented yet')
-        elif gp.baryonmodel == 'simplenu_baryon_gaussian':
-            tmp_rho_baryon_allz = baryon_params
-
-        tmp_profs.rho_baryon_C = tmp_rho_baryon_allz[0]
-        tmp_profs.set_prof('rho_baryon_vec', tmp_rho_baryon_allz[1:], baryon_pop, gp)
-
-        tmp_rho_totbaryon_allz += tmp_rho_baryon_allz # add this pop's density to baryon total
-        tmp_rho_total_allz += tmp_rho_baryon_allz # add the baryon density to the total density
-
+    # Tracers:
+    tracer_params=[[].append(None) for ii in range(0,gp.ntracer_pops)]
+    for pop in range(0, gp.ntracer_pops):
+        offstep = gp.N_nu_model_exps*2
+        tracer_params[pop] = np.array(cube[off:off+offstep])
+        #print ('pop:',pop,' tracer_params[pop]',tracer_params[pop])
         off += offstep
-
-
-    tmp_profs.rho_total_C = tmp_rho_total_allz[0]
-    tmp_profs.set_prof('rho_total_vec', tmp_rho_total_allz[1:], 0, gp)
-
-    #Tracer params, nu_C, kz_nu_C, kz_nu_vector
-    tmp_nu_allz=[[].append(None) for ii in range(0,gp.ntracer_pops)]
-
-    for t_pop in range(0, gp.ntracer_pops):
-        if gp.scan_rhonu_space:
-            offstep = gp.nbins[t_pop] + 1 #nu on bincenters, nu_C
-            tmp_nu_allz[t_pop] = np.array(cube[off:off+offstep])
-        elif gp.nu_model == 'gaussian_data':
-            offstep = gp.nbins[t_pop] + 1 #nu on bincenters, nu_C
-            tmp_nu_allz[t_pop] = np.array(cube[off:off+offstep])
-        elif gp.nu_model == 'kz_nu':
-            offstep = gp.nbins[t_pop] + 1 + 1 #kz on bincenters, and zC=0, and nu_C
-            tracer_params = np.array(cube[off:off+offstep])
-            nu_C = tracer_params[0]
-            kz_nu_allz = tracer_params[1:] #kz for rho across all z points [0, bin_centres]
-            z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
-            if gp.monotonic_nu:  #outputs nu across z points for that population:
-                tmp_nu_allz[t_pop] = phys.rho(z_points_tmp, abs(kz_nu_allz), nu_C)
-            else:
-                tmp_nu_allz[t_pop] = phys.rho(z_points_tmp, kz_nu_allz, nu_C)
-
-            tmp_profs.kz_nu_C[t_pop] = kz_nu_allz[0]
-            tmp_profs.set_prof('kz_nu_vecs', kz_nu_allz[1:], t_pop, gp)
-
-        elif gp.nu_model=='exponential_sum':
-            offstep = gp.N_nu_model_exps*2
-            tracer_params = np.array(cube[off:off+offstep])
-            z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
-            tmp_nu_allz[t_pop] = np.zeros(len(z_points_tmp))
-            for jter in range(0, 2*gp.N_nu_model_exps,2):
-                tmp_nu_allz[t_pop] +=  tracer_params[jter] * np.exp(-z_points_tmp/tracer_params[jter+1])
-
-
-        tmp_profs.nu_C[t_pop] = tmp_nu_allz[t_pop][0]
-        tmp_profs.set_prof('nu_vecs', tmp_nu_allz[t_pop][1:], t_pop, gp)
-        off += offstep
-
 
     # Tilt term
+    sigmaRz2_vecs = [[].append(None) for ii in range(0,gp.ntracer_pops)]
+    tilt_vecs     = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     tilt_params=[[].append(None) for ii in range(0,gp.ntracer_pops)]
     if gp.tilt:
         for t_pop in range(0, gp.ntracer_pops):
             offstep = gp.ntilt_params
             tilt_params[t_pop] = np.array(cube[off:off+offstep])
             off += offstep
-
-    #Hyperparameters
-    if gp.hyperparams == True:
-        for t_pop in range(0, gp.ntracer_pops):
-            offstep = 1
-            #hyper_nu = cube[off:off+offstep][0]/gp.dat.meannuerr # 0.1->10
-            tmp_profs.hyper_nu = cube[off:off+offstep]
-            off += offstep
-            offstep = 1
-            #hyper_sigz2 = cube[off:off+offstep][0]/gp.dat.meansigz2err
-            tmp_profs.hyper_sigz2 = cube[off:off+offstep]
-            off += offstep
-            ## To set the hyperparameters to effectively the same value,
-            ##  uncomment and comment out tmp.profs... = ...  above
-            #hyper_average = (hyper_nu+hyper_sigz2)/2. # normalized number: 0.1->10
-            #tmp_profs.hyper_nu = [gp.dat.meannuerr*hyper_average]
-            #tmp_profs.hyper_sigz2 = [gp.dat.meansigz2err*hyper_average]
-            #print ('hyper_average:',hyper_average)
-
-    #Normalisation constant C for sigz calculation
-    offstep = gp.ntracer_pops
-    norm_C = cube[off:off+offstep]
-    for t_pop in range(0, gp.ntracer_pops):
-        tmp_profs.norm_C[t_pop] = norm_C[t_pop]*1.0
-    off += offstep
+    if gp.analytic_sigz2 == False:
+        #Normalisation constant C for sigz calculation
+        offstep = gp.ntracer_pops
+        norm_C = cube[off:off+offstep]  # referred to as IntC in gl_class_cube(?)
+        off += offstep
 
     if off != gp.ndim:
         gh.LOG(1,'wrong subscripts in gl_class_cube')
         print ('in loglike',off,gp.ndim)
         raise Exception('wrong subscripts in gl_class_cube')
 
+    # Export Sig and rho profiles (at gp.z_vec_Sigrho locations) for future plotting
+    if gp.darkmattermodel == 'const_dm':
+        rho_DM_vec = rho_const_DM * np.ones(len(gp.z_vec_Sigrho)) 
+        Sig_DM_vec = 2.* rho_const_DM * gp.z_vec_Sigrho
+    elif gp.darkmattermodel == 'ConstPlusDD':
+        rho_DM_vec = phys.rho_dm_simplenu(gp.z_vec_Sigrho, DM_params)
+        Sig_DM_vec = phys.Sig_dm_simplenu(gp.z_vec_Sigrho, DM_params)
+    # Code assumes only one baryon pop:
+    if gp.baryonmodel == 'simplenu_baryon': 
+        rho_baryon_vec = phys.rho_baryon_simplenu(gp.z_vec_Sigrho, baryon_params)
+        Sig_baryon_vec = phys.Sig_baryon_simplenu(gp.z_vec_Sigrho, baryon_params)
+    elif gp.baryonmodel == 'obs_baryon': 
+        rho_baryon_vec = phys.rho_baryon_obs(gp.z_vec_Sigrho, baryon_params)
+        Sig_baryon_vec = phys.Sig_baryon_obs(gp.z_vec_Sigrho, baryon_params)
+    elif gp.baryonmodel == 'trivial_baryon':
+        rho_baryon_vec = np.zeros(len(gp.z_vec_Sigrho))
+        Sig_baryon_vec = baryon_params[0]*np.ones(len(gp.z_vec_Sigrho))
+    rho_total_vec = rho_DM_vec + rho_baryon_vec
+    Sig_total_vec = Sig_DM_vec + Sig_baryon_vec
+
+    #print ('rho_DM_vec:',rho_total_vec)
+    #print ('rho_baryon_vec:',rho_total_vec)
+    #print ('rho_total_vec:',rho_total_vec)
+    #print ('Sig_DM_vec:',Sig_total_vec)
+    #print ('Sig_baryon_vec:',Sig_total_vec)
+    #print ('Sig_total_vec:',Sig_total_vec)
+
+    pop = 0  # pop not used in set_prof for rho and Sig stuff
+    tmp_profs.set_prof('z_vec_Sigrho', gp.z_vec_Sigrho, pop, gp)
+    tmp_profs.set_prof('rho_DM_vec', rho_DM_vec, pop, gp)
+    tmp_profs.set_prof('rho_baryon_vec', rho_baryon_vec, pop, gp)
+    tmp_profs.set_prof('rho_total_vec', rho_total_vec, pop, gp)
+    tmp_profs.set_prof('Sig_DM_vec', Sig_DM_vec, pop, gp)
+    tmp_profs.set_prof('Sig_baryon_vec', Sig_baryon_vec, pop, gp)
+    tmp_profs.set_prof('Sig_total_vec', Sig_total_vec, pop, gp)
 
 
-    #Calculate Sigma (surface density)
-    Sig_DM_allz = phys.Sig(gp.z_all_pts_sorted, tmp_rho_DM_allz) # Dark matter Sigma
-    Sig_baryon_allz = phys.Sig(gp.z_all_pts_sorted, tmp_rho_totbaryon_allz) # total baryon Sigma
-    Sig_total_allz = phys.Sig(gp.z_all_pts_sorted, tmp_rho_total_allz) # total Sigma
+    # Export the population dependent profiles
+    for pop in range(0, gp.ntracer_pops):
+        tmp_profs.set_prof('z_vecs', gp.z_bincenter_vecs[pop], pop, gp)
+        tmp_profs.set_prof('nu_z_vecs', gp.nu_z_bincenter_vecs[pop], pop, gp)
+        #print ('nu_z_vec:',gp.nu_z_bincenter_vecs[pop])
 
-    tmp_profs.Sig_DM_C = Sig_DM_allz[0]
-    tmp_profs.set_prof('Sig_DM_vec', Sig_DM_allz[1:], 0, gp)
+        # nu vector at z_binc locations and at nu_z_binc loc
+        tmp_nu_of_z = np.zeros(len(gp.z_bincenter_vecs[pop]))
+        tmp_nu_of_nu_z = np.zeros(len(gp.nu_z_bincenter_vecs[pop]))
+        for jter in range(0, 2*gp.N_nu_model_exps,2):
+            #print ('pop:',pop,' A:',tracer_params[pop][jter],' h:',tracer_params[pop][jter+1])
+            #tmp_nu_of_z +=  tracer_params[pop][jter] * np.exp(-gp.z_bincenter_vecs[pop]/tracer_params[pop][jter+1])
+            #tmp_nu_of_nu_z +=  tracer_params[pop][jter] * np.exp(-gp.nu_z_bincenter_vecs[pop]/tracer_params[pop][jter+1])
+            z_vec_temp = gp.z_bincenter_vecs[pop] - gp.nu_z_bincenter_vecs[pop][0]
+            tmp_nu_of_z    +=  tracer_params[pop][jter] * np.exp(-z_vec_temp/tracer_params[pop][jter+1])
+            z_vec_temp = gp.nu_z_bincenter_vecs[pop] - gp.nu_z_bincenter_vecs[pop][0]
+            tmp_nu_of_nu_z +=  tracer_params[pop][jter] * np.exp(-z_vec_temp/tracer_params[pop][jter+1])
 
-    tmp_profs.Sig_baryon_C = Sig_baryon_allz[0]
-    tmp_profs.set_prof('Sig_baryon_vec', Sig_baryon_allz[1:], 0, gp)
+        #print ('tmp_nu_of_z:',tmp_nu_of_z)
+        #print ('tmp_nu_of_nu_z:',tmp_nu_of_nu_z)
 
-    tmp_profs.Sig_total_C = Sig_total_allz[0]
-    tmp_profs.set_prof('Sig_total_vec', Sig_total_allz[1:], 0, gp)
+        tmp_profs.set_prof('nu_vecs', tmp_nu_of_nu_z, pop, gp) 
+        # store nu_vecs given at the nu data locations
 
-
-    #Calculate tilt for each population
-    sigmaRz2_allz = [[].append(None) for ii in range(0,gp.ntracer_pops)]
-    tilt_allz = [[].append(None) for ii in range(0,gp.ntracer_pops)]
-    for t_pop in range(0, gp.ntracer_pops):
-        z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
+        #Calculate tilt for each population 
+#        z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
         if gp.tilt:
-            A = tilt_params[t_pop][0]
-            n = tilt_params[t_pop][1]
-            R = tilt_params[t_pop][2]
-            if n<0:
-                print('z_points_tmp = ', z_points_tmp, ', A = ', A, ', n = ', n, ', R = ', R)
+            A_tilt = tilt_params[pop][0]
+            n_tilt = tilt_params[pop][1]
+            #R_tilt = tilt_params[pop][2]
+            k_tilt = tilt_params[pop][2]
 
-            sigmaRz2_allz[t_pop] = A*(z_points_tmp)**n #all z for this population
-            tmp_profs.set_prof('sigmaRz2_vecs', sigmaRz2_allz[t_pop][1:], t_pop, gp)
-            tilt_allz[t_pop] = sigmaRz2_allz[t_pop]*(1./gp.Rsun - 2./R)
+            sigmaRz2_vecs[pop] = A_tilt*(gp.z_bincenter_vecs[pop])**n_tilt #all z for this pop
+            tmp_profs.set_prof('sigmaRz2_vecs', sigmaRz2_vecs[pop], pop, gp)
+            #tilt_vecs[pop] = sigmaRz2_vecs[pop]*(1./gp.Rsun - 2./R_tilt)
+            tilt_vecs[pop] = sigmaRz2_vecs[pop]*(1./gp.Rsun - k_tilt)
         else:
-            tilt_allz[t_pop] = np.zeros(gp.nbins[t_pop]+1)
-        tmp_profs.set_prof('tilt_vecs', tilt_allz[t_pop][1:], t_pop, gp)
-    #print ('gp.tilt:',gp.tilt,' tilt_allz:',tilt_allz)
+            tilt_vecs[pop] = np.zeros(gp.nbins[pop][1])
+        tmp_profs.set_prof('tilt_vecs', tilt_vecs[pop], pop, gp)
 
-    #Calculate sigma (velocity dispersion)
-    for t_pop in range(0, gp.ntracer_pops):
-        Sig_total_popz_tmp = Sig_total_allz[gp.z_vec_masks[t_pop]] #Sig_total at bin centres for this pop
-        z_points_tmp = np.append(0., gp.z_bincenter_vecs[t_pop])
-        try:
-            sigz2_vec = phys.sigz2(z_points_tmp, Sig_total_popz_tmp, tilt_allz[t_pop], tmp_nu_allz[t_pop], norm_C[t_pop])
-        except ValueError:
-            raise ValueError('negative value in sig2 array')
-            print('tracer pop = ', t_pop)
-            print('tilt params = ', tilt_params[t_pop])
-            print('Sig_total_allz = ', Sig_total_allz)
-            print('tilt_all_z[t_pop] = ', tilt_allz[t_pop])
-            print('tmp_nu_allz[t_pop] = ', tmp_nu_allz[t_pop])
-            print('norm = ', norm)
-            return
-        tmp_profs.set_prof('sigz2_vecs', sigz2_vec[1:], t_pop, gp)
+        #Calculate sigma (velocity dispersion)
+        if gp.print_flag:  print ('Before sigz2_vec: pop=',pop)
+        # Need the Sig values at the locations relevant for current sigz calc:
+        if gp.darkmattermodel == 'const_dm':
+            Sig_DM_vec = 2.* rho_const_DM * gp.z_bincenter_vecs[pop]
+        elif gp.darkmattermodel == 'ConstPlusDD':
+            Sig_DM_vec = phys.Sig_dm_simplenu(gp.z_bincenter_vecs[pop], DM_params)
 
-    if (np.isinf(sigz2_vec)).any():
-        print('Negative sigz2_vec')
-        print('tracer pop = ', t_pop)
-        print('tilt params = ', tilt_params[t_pop])
-        print('Sig_total_allz = ', Sig_total_allz)
-        print('tilt_all_z[t_pop] = ', tilt_allz[t_pop])
-        print('tmp_nu_allz[t_pop] = ', tmp_nu_allz[t_pop])
-        print('norm = ', norm)
-        pdb.set_trace()
+        if gp.baryonmodel == 'simplenu_baryon':
+            Sig_baryon_vec = phys.Sig_baryon_simplenu(gp.z_bincenter_vecs[pop], baryon_params)
+        elif gp.baryonmodel == 'obs_baryon':
+            Sig_baryon_vec = phys.Sig_baryon_obs(gp.z_bincenter_vecs[pop], baryon_params)
+        elif gp.baryonmodel == 'trivial_baryon':
+            Sig_baryon_vec = baryon_params[0]*np.ones(len(gp.z_bincenter_vecs[pop]))
 
+
+        # Only for debugging, remove block below !!! 
+        #print ('C:',norm_C[pop])
+        #sigz2_vec = phys.sigz2(gp.z_bincenter_vecs[pop], Sig_DM_vec+Sig_baryon_vec, tilt_vecs[pop], tmp_nu_of_z, norm_C[pop])
+        #print ('sigz2_vec:',sigz2_vec)    
+   
+
+        if gp.analytic_sigz2:
+            sigz2_vec = phys.sigz2_obsbary(gp.z_bincenter_vecs[pop], baryon_params, tracer_params[pop][1], rho_const_DM)
+            if gp.tilt:
+                #A_tilde = A_tilt*(1./gp.Rsun - 2./R_tilt)
+                A_tilde = A_tilt*(1./gp.Rsun - k_tilt)
+                sigz2_tilt_vec = phys.sigz2_tilt(gp.z_bincenter_vecs[pop], tracer_params[pop][1], A_tilde, n_tilt) 
+                #print ('sigz2_vec:',sigz2_vec)
+                #print ('sigz2_tilt_vec:',sigz2_tilt_vec)
+                #print ('----------------------------')
+                sigz2_vec += sigz2_tilt_vec
+        else:
+            try:  # np.zeros(len(gp.extend_z_binc_vecs[pop]))
+                sigz2_vec = phys.sigz2(gp.z_bincenter_vecs[pop], Sig_DM_vec+Sig_baryon_vec, tilt_vecs[pop], tmp_nu_of_z, norm_C[pop])
+            except ValueError:
+                if gp.print_flag : 
+                    print ('Negative value in sigz2 array (back in gl_l..), pop=',pop)
+                #print('norm_C[pop] = ', norm_C[pop])
+            #raise ValueError('negative value in sig2 array')
+                    raise ValueError('negative value in, or falling, sig2 array')
+                return
+
+        if gp.fit_to_sigz2 == False:
+            sigz2_vec = np.sqrt(sigz2_vec)  # Store sigz (instead of sigz2)
+            if gp.print_flag: print ('After:pop=',pop)
+        tmp_profs.set_prof('sigz2_vecs', sigz2_vec, pop, gp)
+
+        if (np.isinf(sigz2_vec)).any():
+            print ('Infinite sigz2_vec,  pop=',pop)
+            print ('sigz2_vec',sigz2_vec)
+            print ('Tracer params:',tracer_params[pop])
+            print ('tmp_nu_of_z:',tmp_nu_of_z)
+            print ('Sig_baryon_vec:',Sig_baryon_vec)
+            print ('Sig_DM_vec:',Sig_DM_vec)
+            print ('tilt_vecs:',tilt_vecs[pop][1:])
+            print ('gp.z_bincenter_vecs:',gp.z_bincenter_vecs[pop])
+            pdb.set_trace()
+
+    if gp.print_flag: print ('Before entering chi2 calculation (calc_chi2)')
     # determine log likelihood
     chi2, chi2_nu_vecs_tmp, chi2_sigz2_vecs_tmp, chi2_sigRz2_vecs_tmp = calc_chi2(tmp_profs, gp)
-    for t_pop in range(0, gp.ntracer_pops):
-        tmp_profs.set_prof('chi2_nu_vecs', chi2_nu_vecs_tmp[t_pop], t_pop, gp)
-        tmp_profs.set_prof('chi2_sigz2_vecs', chi2_sigz2_vecs_tmp[t_pop], t_pop, gp)
-        tmp_profs.set_prof('chi2_sigRz2_vecs', chi2_sigRz2_vecs_tmp[t_pop], t_pop, gp)
+    if gp.print_flag: print ('chi2 in gl_loglike:',chi2)
+    for pop in range(0, gp.ntracer_pops):
+        tmp_profs.set_prof('chi2_nu_vecs', chi2_nu_vecs_tmp[pop], pop, gp)
+        tmp_profs.set_prof('chi2_sigz2_vecs', chi2_sigz2_vecs_tmp[pop], pop, gp)
+        tmp_profs.set_prof('chi2_sigRz2_vecs', chi2_sigRz2_vecs_tmp[pop], pop, gp)
 
     gh.LOG(1, '   log L = ', -chi2/2.)
     tmp_profs.chi2 = chi2
+
+    if gp.print_flag: print ('THE END, chi2:',chi2,' |||||||||||||||||||||||')
 
     return tmp_profs   # from   likelihood L = exp(-\chi^2/2), want log of that
 ## \fn geom_loglike(cube, ndim, nparams, gp)

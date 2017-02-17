@@ -128,6 +128,23 @@ def get_binned_data_noscale(gp):
     if gp.tilt:
         gp.dat.read_sigRz2(gp)
     gp.dat.read_baryon_priors(gp)
+    z_min = 1.e6
+    z_max = 0.
+    for pop in range(gp.ntracer_pops):
+        min_temp = max([min(gp.z_bincenter_vecs[pop]),min(gp.nu_z_bincenter_vecs[pop])])
+        max_temp = min([max(gp.z_bincenter_vecs[pop]),max(gp.nu_z_bincenter_vecs[pop])])
+        if min_temp < z_min:   z_min = min_temp
+        if max_temp > z_max:   z_max = max_temp
+    print ('z_min:',z_min,' z_max:',z_max)
+    # z_min & z_max is largest interval in which we both have nu & sigz data
+    z_vec_Sigrho_tmp = z_min + (z_max-z_min)*(np.arange(gp.no_Sigrho_bins))/(gp.no_Sigrho_bins-1)
+    print ('z_vec_Sigrho:',z_vec_Sigrho_tmp)
+    print ('gp.z_bincenter_vecs:',gp.z_bincenter_vecs)
+    print ('gp.nu_z_bincenter_vecs:',gp.nu_z_bincenter_vecs)
+
+    # (where the Sig and rho vectors will be stored)
+    gp.z_vec_Sigrho = z_vec_Sigrho_tmp
+
     return gp.dat
 ## \fn get_binned_data_noscale(gp)
 # read in binned data, store in a gl_data class

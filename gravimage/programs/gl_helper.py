@@ -985,7 +985,7 @@ def sigRz2_from_bins(binmin, binmax, z, vz, vR):
 
 
 
-def sigRz2_from_bins_simplenu(binmin, binmax, z, vRvz):
+def sigRz2_from_bins_simplenu(binmin, binmax, z, vRvz):  # The one used
     order = np.argsort(z)
     z = np.array(z)[order]
     vRvz = np.array(vRvz)[order]
@@ -1008,7 +1008,8 @@ def sigRz2_from_bins_simplenu(binmin, binmax, z, vRvz):
         sigRz2_err = sigRz2 * np.sqrt(2/Ntr)
         sigRz2_err_vec.append(sigRz2_err)
 
-        print ('Ntr:',Ntr,', sigrz2 = ',sigRz2,' sigRz2_err:',sigRz2_err)
+        #print ('Ntr:',Ntr,', sigrz2 = ',sigRz2,' sigRz2_err:',sigRz2_err)
+    print ('Calc sigRz from bins, no bins:',len(binmin),' total no stars:',len(z))
 
     sigRz2_vec = np.array(sigRz2_vec)
     sigRz2_err_vec = np.array(sigRz2_err_vec)
@@ -1097,6 +1098,9 @@ def ext_file_selector_simplenu(pops, sampling, darkdisk, tilt, pos_sigRz, baryon
         filenames.append(A+B+C+D+E+F+'nu_sigz_raw_' + str(suffix) + '.dat')
         filenames_tilt.append(A+B+C+D+E+F+'nu_sigRz_raw_' + str(suffix) + '.dat')
 
+    print ('filenames:',filenames)
+    print ('filenames_tilt:',filenames_tilt)
+    #pdb.set_trace()
     return filenames, filenames_tilt
 
 

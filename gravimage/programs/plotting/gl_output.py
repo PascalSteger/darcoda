@@ -42,6 +42,7 @@ class Output:
     def write(self, filename):
         headers = ",".join(self.descriptions)
         csvfile = open(filename, 'wb')
+        #print ('self.arrays:',self.arrays)
         np.savetxt(csvfile, np.transpose(np.array(self.arrays)), header=headers, delimiter=",")
         csvfile.close()
     ## \fn write(self, filename)

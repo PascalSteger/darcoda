@@ -38,8 +38,6 @@ def calc_chi2(profs, gp):
     procnm = MPI.Get_processor_name()
     #sys.stdout.write(hwmess % (myrank, nprocs, procnm))
 
-
-
     #chi2_nu = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     #chi2_sigz2 = [[].append(None) for ii in range(0,gp.ntracer_pops)]
     #chi2_tilt = [[].append(None) for ii in range(0,gp.ntracer_pops)]
@@ -51,7 +49,7 @@ def calc_chi2(profs, gp):
     chi2_sigz2_vecs=[]
     chi2_sigRz2_vecs=[]
 
-    if gp.map_priors:
+    if gp.map_priors:   # False  # not supported
         chi2 = 1.0
         for pop in range(0, gp.ntracer_pops):
             chi2_nu_vecs.append( np.zeros(gp.nbins[pop]))
@@ -65,30 +63,20 @@ def calc_chi2(profs, gp):
     for pop in range(0, gp.ntracer_pops):
         if gp.ntracer_pops > 1:
             gh.LOG(1, ' pop = ', pop)
-        #Check Monotonicity
-        if gp.monotonic_rho:
-            kz_rho_DM_vec_temp = profs.get_prof('kz_rho_DM_vec', pop)
-            if min(kz_rho_DM_vec_temp) < 0:
-                gh.LOG(1,'Negative kz_rho_DM in gl_chi')
-                raise ValueError('negative value in kz_rho_DM array')
-
-        if gp.monotonic_nu:
-            kz_nu_vec_temp = profs.get_prof('kz_nu_vec', pop)
-            if min(kz_nu_vec_temp) < 0:
-                gh.LOG(1,'Negative kz_nu_DM in gl_chi')
-                raise ValueError('negative value in kz_nu array')
-
 
         #Calculate tracer density chi2 for population no. pop
-        if gp.nu_model in ['kz_nu', 'exponential_sum']:
+        if gp.nu_model in ['kz_nu', 'exponential_sum']:  # True
             nudat    = gp.dat.nu[pop]
+            #print ('binmin, pop:',gp.dat.binmin)  # empty list: []
             nuerr    = gp.dat.nuerr[pop]+profs.hyper_nu  # adding hyperparam to error
             numodel  = profs.get_prof('nu_vecs', pop)
             chi2_nu_tmp, chi2_nu_vec = chi2red(numodel, nudat, nuerr, 1.) #reduced dof = gp.nbins
+            if gp.print_flag:
+                print ('In gl_chi, pop:',pop,' chi2_nu_tmp:',chi2_nu_tmp)
             chi2_nu += chi2_nu_tmp
             chi2_nu_vecs.append(chi2_nu_vec)
             gh.LOG(1, ' chi2_nu = ', chi2_nu_tmp)
-        else:
+        else:   # False # not supported
             chi2_nu_tmp = 0.
             chi2_nu = 0.
             chi2_nu_vecs.append(np.zeros(gp.nbins[pop]))
@@ -97,12 +85,13 @@ def calc_chi2(profs, gp):
         #print('numodel = ', numodel)
         #print('nuerr = ', nuerr)
 
-
         #Calculate z-velocity dispersion chi2 for population no. pop
         sigz2dat    = gp.dat.sigz2[pop]    # [km/s]
         sigz2err    = gp.dat.sigz2err[pop] +profs.hyper_sigz2  # [km/s]
         sigz2_model = profs.get_prof('sigz2_vecs', pop)
         chi2_sigz2_tmp, chi2_sigz2_vec  = chi2red(sigz2_model, sigz2dat, sigz2err, 1.)
+        if gp.print_flag:
+            print ('In gl_chi, pop:',pop,' chi2_sigz2_tmp:',chi2_sigz2_tmp)
         #chi2_sigz2_vec = np.append(np.zeros(5), chi2_sigz2_vec) #TEST 11/02 needed if you drop the first X bins
 
         if chi2_sigz2_tmp == np.inf:
@@ -119,30 +108,21 @@ def calc_chi2(profs, gp):
             sigmaRz2err = gp.dat.sigRz2err[pop]
             sigmaRz2_model = profs.get_prof('sigmaRz2_vecs', pop)
             chi2_sigRz2_tmp, chi2_sigRz2_vec = chi2red(sigmaRz2_model, sigmaRz2dat, sigmaRz2err, 1.)
-            #print ('sigmaRz2dat:',sigmaRz2dat)
-            #print ('sigmaRz2_model:',sigmaRz2_model)
-            #print ('sigmaRz2err:',sigmaRz2err)
-            #print ('chi2:',chi2,'chi2_tilt:',chi2_tilt)
             gh.LOG(1, '  chi2_sigRz2  = ', chi2_sigRz2_tmp)
         else:
             chi2_sigRz2_tmp =0.
-            chi2_sigRz2_vec = np.zeros(gp.nbins[pop])
+            chi2_sigRz2_vec = np.zeros(gp.nbins[pop][1])
         chi2_sigRz2 += chi2_sigRz2_tmp
         chi2_sigRz2_vecs.append(chi2_sigRz2_vec)
         profs.set_prof('chi2_sigRz2_vecs', chi2_sigRz2_vec, pop, gp)
 
-        #chi2_dm=0
-        #if gp.darkmattermodel == 'gaussian_per_bin':
-        #    rhoDM_vec = profs.get_prof('rho_DM_vec', pop)
-        #    rhoDM_allz = np.append(profs.rho_DM_C, rhoDM_vec)
-        #    rhoDM_mid = np.median(rhoDM_allz)*np.ones(gp.nrhonu)
-        #    rhoDM_SD = rhoDM_mid*0.1
-        #    chi2_rhoDM, dummy = chi2red(rhoDM_mid, rhoDM_allz, rhoDM_SD, 1.)
-
     #Combine chi2 for nu, sigz, and sigRz for all populations
     chi2 = chi2_nu + chi2_sigz2 + chi2_sigRz2
+    #print ('chi2_nu:',chi2_nu,' chi2_sigz2:',chi2_sigz2)
 
     #print('P', myrank, ': chi2 = ', chi2)
+    if gp.print_flag: print ('chi2:',chi2)
+    #pdb.set_trace()
 
     return chi2, chi2_nu_vecs, chi2_sigz2_vecs, chi2_sigRz2_vecs
 ## \fn calc_chi2(profs)

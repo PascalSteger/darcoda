@@ -56,7 +56,8 @@ def myprior(cube, ndim, nparams):
     mycube.copy(cube)
     try:
         cube = mycube.convert_to_parameter_space(gp)
-    except Exception:
+    except Exception as detail:
+        print ('gravimage cube exception, detail:',detail)
         gh.LOG(1, 'parameters not fulfilling prior requirements')
 
     return
@@ -75,6 +76,8 @@ def myloglike(cube, ndim, nparams):
         tmp_profs = geom_loglike(cube, ndim, nparams, gp)
     except ValueError:
         return -1e100  # SS: think about sign...
+    except Exception as detail: # Not working ??!!
+        print ('gravimage loglike exception, detail:',detail)
     # store tmp_prof by appending it to pc2.save
     # TODO: with parallel version, need to append to CPU-based output name
     # we only store models after the initial Sigma burn-in
@@ -170,10 +173,8 @@ if __name__=="__main__":
                     n_clustering_params = gp.ndim,# separate modes on
                                                   # the rho parameters
                                                   # only: gp.nrho
-                    wrapped_params = [gp.ntracer_pops, gp.nbins[0], gp.nrhonu], # do
-                                                                     #not
-                                                                     #wrap-around
-                                                                     #parameters
+                    #wrapped_params = [gp.ntracer_pops, gp.nbins[0], gp.nrhonu], # do
+                          #not wrap-around parameters  # SS: not used, hence commented out
                     importance_nested_sampling = False, # INS enabled
                     multimodal = True,           # separate modes
                     const_efficiency_mode = False, # use const sampling efficiency
@@ -181,8 +182,8 @@ if __name__=="__main__":
                     evidence_tolerance = 0.5, # set to 0 to keep
                                               # algorithm working
                                               # indefinitely
-                    sampling_efficiency = 0.8,#0.8 or 'parameter' for parameter estimation,
-                                                #0.3 or 'evidence' for evidence calculation
+                    sampling_efficiency = 0.8, #0.8 or 'parameter' for parameter estimation,
+                                               #0.3 or 'evidence' for evidence calculation
                     n_iter_before_update = 100, # output after this many iterations
                     null_log_evidence = -1e100,
                     max_modes = gp.nlive,   # preallocation of modes:

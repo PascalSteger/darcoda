@@ -21,7 +21,7 @@ cores='16'
 ppn=15
 cputype='cpu3'
 mem = 'mem64gb'
-walltime='01:00:00:00'
+walltime='00:00:30:00' # N_nu_model_exps = 2 takes longer to run
 
 darcoda_path = gh.find_darcoda_path() + '/'
 gravimage_path = darcoda_path + '/gravimage/'

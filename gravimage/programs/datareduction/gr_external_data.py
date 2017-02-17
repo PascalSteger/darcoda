@@ -22,20 +22,31 @@ import os
 #from gl_collection import ProfileCollection#.true_sigz2_func
 from plotting.gl_collection import ProfileCollection
 
-def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, sigz2err, gp):
+def write_disc_output_files(Bincenter, Binmin, Binmax, nudat, nuerr, sigz2dat, sigz2err, gp):  # can have different bin centers for nu data
     # write tracer densities 3D
-    for pop in range(0, gp.ntracer_pops):
+    for pop in range(0, gp.ntracer_pops):  # (Used)
         file_nu = open(gp.files.nufiles[pop], 'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','nu(z) [#/pc^3];','error [#/pc^3]', file=file_nu)
-        for b in range(gp.nbins[pop]):
-            print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], nudat[pop][b], nuerr[pop][b], file=file_nu)
+        for b in range(gp.nbins[pop][0]):
+            if gp.raw_data:
+                print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], nudat[pop][b], nuerr[pop][b], file=file_nu)
+            else:
+                print(Bincenter[pop][0][b], Binmin[pop][0][b], Binmax[pop][0][b], nudat[pop][b], nuerr[pop][b], file=file_nu)
+
+        # Note that if nu & sig binning are different then above Binmin & max
+            # are not sensible (SS: hope not used...)
         file_nu.close()
-        print ('gp.files.nufiles[pop]:',gp.files.nufiles[pop])
+        #print ('nudat:',nudat)  # one array of 20 elements per pop
+        print ('gp.files.nufiles for pop:',1,':',gp.files.nufiles[pop])
 
         file_sig = open(gp.files.sigfiles[pop],'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax [kpc];', 'sigma_z^2(z) [km^2/s^2];', 'error [km^2/s^2]', file=file_sig)
-        for b in range(gp.nbins[pop]):
-            print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], sigz2dat[pop][b], sigz2err[pop][b], file=file_sig)
+        for b in range(gp.nbins[pop][1]):
+            if gp.raw_data:
+                print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], sigz2dat[pop][b], sigz2err[pop][b], file=file_sig)
+            else:
+                print(Bincenter[pop][1][b], Binmin[pop][1][b], Binmax[pop][1][b], sigz2dat[pop][b], sigz2err[pop][b], file=file_sig)
+                
         file_sig.close()
         print ('gp.files.sigfiles[pop]:',gp.files.sigfiles[pop])
 
@@ -43,7 +54,7 @@ def write_tilt_output_files(Bincenter, Binmin, Binmax, tilt, tilterr, gp):
     for pop in range(0, gp.ntracer_pops):
         file_tilt = open(gp.files.tiltfiles[pop], 'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','sigmaRz(z) [km^2/s^2];','error [km^2/s^2]', file=file_tilt)
-        for b in range(gp.nbins[pop]):
+        for b in range(gp.nbins[pop][1]):
             print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], tilt[pop][b], tilterr[pop][b], file=file_tilt)
         file_tilt.close()
         print ('gp.files.tiltfiles[pop]:',gp.files.tiltfiles[pop])
@@ -52,8 +63,11 @@ def write_sigRz2_output_files(Bincenter, Binmin, Binmax, sigRz2_dat, sigRz2_err,
     for pop in range(0, gp.ntracer_pops):
         file_sigRz2 = open(gp.files.sigRz2_files[pop], 'w')
         print('Bin centres z [kpc];','Binmin z [kpc];','Binmax z [kpc];','sigmaRz(z) [km^2/s^2];','error [km^2/s^2]', file=file_sigRz2)
-        for b in range(gp.nbins[pop]):
-            print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], sigRz2_dat[pop][b], sigRz2_err[pop][b], file=file_sigRz2)
+        for b in range(gp.nbins[pop][1]):
+            if gp.raw_data:
+                print(Bincenter[pop][b], Binmin[pop][b], Binmax[pop][b], sigRz2_dat[pop][b], sigRz2_err[pop][b], file=file_sigRz2)
+            else:
+                print(Bincenter[pop][1][b], Binmin[pop][1][b], Binmax[pop][1][b], sigRz2_dat[pop][b], sigRz2_err[pop][b], file=file_sigRz2)
         file_sigRz2.close()
         print ('gp.files.sigRz2_files[pop]:',gp.files.sigRz2_files[pop])
 
@@ -113,13 +127,14 @@ def load_disc_nbody_posvel(gp):
     return z_data, vz_data, vR_data
 
 def run(gp):
-    if gp.investigate == 'simplenu':
-        z_data, vz_data, z_data_tilt, vRz_data_tilt = load_simplenu_posvel(gp)
-        z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
+    if gp.raw_data:
+        if gp.investigate == 'simplenu':
+            z_data, vz_data, z_data_tilt, vRz_data_tilt = load_simplenu_posvel(gp)
+            z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
         #v_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
-    elif gp.investigate == 'disc_nbody':
-        z_data, vz_data, vR_data = load_disc_nbody_posvel(gp)
-        z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
+        elif gp.investigate == 'disc_nbody':
+            z_data, vz_data, vR_data = load_disc_nbody_posvel(gp)
+            z_data_zcut = [z_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(z_data))]
         #vz_data_zcut = [vz_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
         #vR_data_zcut = [vR_data[ii][z_data[ii] <gp.data_z_cut[ii]] for ii in range(0, len(external_data))]
 
@@ -130,11 +145,27 @@ def run(gp):
     bincentermed_pops = []
 
     for pop in range(0, gp.ntracer_pops):
-        if gp.binning == 'consttr':
-            binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_zcut[pop], gp.nbins[pop],
-                                                np.ones(len(z_data_zcut[pop])), gp.data_z_cut[pop])
-        elif gp.binning == 'linspace':
-            binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_zcut[0]),1), gp.nbins[pop])
+        if gp.raw_data:
+            if gp.binning == 'consttr':
+                binmin, binmax, bincentermed = gh.bin_r_const_tracers(z_data_zcut[pop], gp.nbins[pop][1], np.ones(len(z_data_zcut[pop])), gp.data_z_cut[pop])
+            elif gp.binning == 'linspace':
+                binmin, binmax, bincentermed = gh.bin_r_linear(0., round(max(z_data_zcut[0]),1), gp.nbins[pop][1])
+        else:
+            bincentermed = [None]*2 # Both ext_z_vec & ext_nu_z_vec 
+            binmin = [None]*2 ; binmax = [None]*2
+
+            bincentermed_temp = gp.ext_nu_z_vec[pop]
+            bincentermed[0] = bincentermed_temp
+            btwn_bins = (bincentermed_temp[1:]+bincentermed_temp[:-1])/2.
+            binmin[0] = np.concatenate((np.array([0]),btwn_bins))
+            binmax[0] = np.concatenate((btwn_bins,np.array([2.*btwn_bins[-1]-btwn_bins[-2]])))
+
+            bincentermed_temp = gp.ext_z_vec[pop]
+            bincentermed[1] = bincentermed_temp
+            btwn_bins = (bincentermed_temp[1:]+bincentermed_temp[:-1])/2.
+            binmin[1] = np.concatenate((np.array([0]),btwn_bins))
+            binmax[1] = np.concatenate((btwn_bins,np.array([2.*btwn_bins[-1]-btwn_bins[-2]])))
+            # Quite brutal binmin & max guessing, hope they're not important
 
         binmin_pops.append(binmin)
         binmax_pops.append(binmax)
@@ -152,32 +183,39 @@ def run(gp):
     tilt2_data_err = []
 
     for pop in range(0, gp.ntracer_pops):
-        nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp\
-            = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop],
-                                    vz_data[pop], np.ones(len(z_data[pop])))
+        if gp.raw_data: # Code needs to bin raw indata
+            nu_data_tmp, nu_err_pois_tmp, sigz2_data_tmp, sigz2_err_pois_tmp, Ntr_per_bin_tmp\
+                = gh.nu_sig_from_bins(binmin_pops[pop], binmax_pops[pop], z_data[pop], vz_data[pop], np.ones(len(z_data[pop])))
+            Ntr_per_bin.append(Ntr_per_bin_tmp)
+        else:  # Use already binned data
+            nu_data_tmp = gp.ext_nu_vec[pop]
+            nu_err_pois_tmp = gp.ext_nu_err_vec[pop]
+            sigz2_data_tmp = gp.ext_sigz2_vec[pop]
+            sigz2_err_pois_tmp = gp.ext_sigz2_err_vec[pop]
 
         nu_data.append(nu_data_tmp)
         nu_err_pois.append(nu_err_pois_tmp)
         sigz2_data.append(sigz2_data_tmp)
         sigz2_err_pois.append(sigz2_err_pois_tmp)
-        Ntr_per_bin.append(Ntr_per_bin_tmp)
 
         if gp.tilt:
             if gp.investigate == 'simplenu':
-                sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop],
-                                                            binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
-
+                if gp.raw_data: # Code needs to bin raw indata
+                    sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins_simplenu(binmin_pops[pop],binmax_pops[pop], z_data_tilt[pop], vRz_data_tilt[pop])
                 #Reverse sigRz2 sign if necessary
-                if not gp.positive_sigRz_data_sign:
-                    sigRz2_data_tmp = sigRz2_data_tmp * -1.0
+                    if not gp.positive_sigRz_data_sign:
+                        sigRz2_data_tmp = sigRz2_data_tmp * -1.0
+                else:
+                    sigRz2_data_tmp = gp.ext_sigRz2_vec[pop]
+                    sigRz2_data_err_tmp = gp.ext_sigRz2_err_vec[pop]
 
-            elif gp.investigate == 'disc_nbody':
+
+            elif gp.investigate == 'disc_nbody': # not used??
                 sigRz2_data_tmp, sigRz2_data_err_tmp = gh.sigRz2_from_bins(binmin_pops[pop],
                                                             binmax_pops[pop], z_data[pop], vz_data[pop], vR_data[pop])
 
             sigRz2_data.append(sigRz2_data_tmp)
             sigRz2_err_pois.append(sigRz2_data_err_tmp)
-
     ##Nu bias correction
     #dh_vec = (binmax-binmin)/0.9
     #correction_vec = 0.5 * dh_vec * (np.exp(dh_vec)+1)/(np.exp(dh_vec)-1)
@@ -185,7 +223,7 @@ def run(gp):
     ##nu_data[0] = nu_data[0] * correction_vec
 
 
-    print ('z vectors: ', bincentermed_pops)
+    #print ('z vectors: ', bincentermed_pops)
     print ('nu_data:',nu_data)
     print ('nu_err_pois:',nu_err_pois)
     print ('sigz2_data:',sigz2_data)
@@ -193,9 +231,25 @@ def run(gp):
     if gp.tilt:
         print('sigRz2_data = ', sigRz2_data)
         print('sigRz2_err_pois = ', sigRz2_err_pois)
+    
+    if gp.raw_data:
+        print ('min of Ntr:',np.amin(Ntr_per_bin[0]),':',np.amin(Ntr_per_bin[1]))
+        
+        b_d = np.zeros((len(nu_data[0]),5))
+        for pop in range(gp.ntracer_pops):
+            b_d[:,0] = bincentermed_pops[pop]
+            #b_d[:,1] = nu_data[pop]
+            #b_d[:,2] = nu_err_pois[pop]
+            b_d[:,1] = sigz2_data[pop]
+            b_d[:,2] = sigz2_err_pois[pop]
+            b_d[:,3] = sigRz2_data[pop]
+            b_d[:,4] = sigRz2_err_pois[pop]
+            print ('For pop:',pop,' b_d:')
+            print (b_d)
+            
+        pdb.set_trace()
 
-
-    Ntr_used = np.array([len(z_data_zcut[ii]) for ii in range(0, len(z_data_zcut))]) # Total number of tracers used (& binned)
+    #Ntr_used = np.array([len(z_data_zcut[ii]) for ii in range(0, len(z_data_zcut))]) # Total number of tracers used (& binned) # Seems not used
 
     ## Use MC to estimate errors on nu
     #if gp.investigate == 'simplenu':
@@ -219,6 +273,7 @@ def run(gp):
     #Output data to file
     #TO DO MULTIPOPS BODGE
 
+    # TAG !!!
     write_disc_output_files(bincentermed_pops, binmin_pops, binmax_pops, nu_data, nu_err_tot, sigz2_data, sigz2_err_tot, gp)
     if gp.tilt:
         #write_tilt_output_files(bincentermed_pops, binmin_pops, binmax_pops, tilt2_data, tilt2_data_err, gp)
@@ -226,28 +281,45 @@ def run(gp):
 
     #Set central nu and sigz prior range #TODO: look again at this prior
 
+    if gp.fit_to_sigz2: # Not used (not supported regarding change in C)
+        sigz_0_values = np.sqrt([sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)])
+        sigz_0_errs = np.sqrt([sigz2_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)])
+    else: # Used:
+        #sigz_0_values = [sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)]
+        #sigz_0_errs = [sigz2_err_tot[ii][0] for ii in range(0,gp.ntracer_pops)]
+        sigz_0_values = [sigz2_data[ii][-1] for ii in range(0, gp.ntracer_pops)]
+        sigz_0_errs = [sigz2_err_tot[ii][-1] for ii in range(0, gp.ntracer_pops)]
+    print ('sigz_0_values:',sigz_0_values)
+
+    # SS: gp.nu_C_max & min below are not used. (Below code block not used)
     nu_0_values = [nu_data[ii][0] for ii in range(0, gp.ntracer_pops)]
     nu_0_errs = [nu_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)]
-    sigz_0_values = np.sqrt([sigz2_data[ii][0] for ii in range(0, gp.ntracer_pops)])
-    sigz_0_errs = np.sqrt([sigz2_err_tot[ii][0] for ii in range(0, gp.ntracer_pops)])
-
-
-
-
     prior_sigma = 2.0
     gp.nu_C_max = 2*max(nu_0_values) + prior_sigma*max(nu_0_errs) # 5 sigma either way #10/3 bodge 2*
     gp.nu_C_min = min(nu_0_values) - prior_sigma*max(nu_0_errs)
-
-    gp.sigz_C_max = max(sigz_0_values) + prior_sigma*max(sigz_0_errs)
-    gp.sigz_C_min = max(min(sigz_0_values) - prior_sigma*max(sigz_0_errs), 0.)
-
-    #Set priors for the exponential disks #REDO THESE PRIORS
-    for jter in range(0, gp.N_nu_model_exps):
-        gp.nu_exp_sum_priors[jter][0] = max(nu_0_values)
-        gp.nu_exp_sum_priors[jter][1] = 0.1 * max(nu_0_values)
+    #gp.sigz_C_max = max(sigz_0_values) + prior_sigma*max(sigz_0_errs)
+    #gp.sigz_C_min = max(min(sigz_0_values) - prior_sigma*max(sigz_0_errs), 0.)
 
 
-    import gr_params #WHAT DOES THIS DO.
+    # One prior range per population, more generous prior +- 50 %
+    for pop in range(gp.ntracer_pops):  # More tight prior bewlow:
+        gp.sigz_C_max[pop] = sigz_0_values[pop]*1.1   # 1.5
+        gp.sigz_C_min[pop] = sigz_0_values[pop]*0.9   #0.5
+
+    print ('gp.sigz_C_max:',gp.sigz_C_max,' gp.sigz_C_min:',gp.sigz_C_min)
+
+
+    #Set nu[0] priors for the exponential disks #SS: now 1 prior array per pop
+    # SS: Setting nu_exp_sum_priors in gl_params instead, uncomment if want to set it here instead:
+    #for pop in range(gp.ntracer_pops):
+    #    for jter in range(0, gp.N_nu_model_exps):
+    #        gp.nu_exp_sum_priors[pop][jter][0] = nu_0_values[pop]
+    #        #gp.nu_exp_sum_priors[pop][jter][1] = 0.1 * max(nu_0_values)
+    #        gp.nu_exp_sum_priors[pop][jter][1] = 0.5 * nu_0_values[pop]
+    #        # Overly tight prior with 0.1 above, move that choice to gl_params!
+
+
+    import gr_params #WHAT DOES THIS DO?:
     gpr = gr_params.Params(gp)
     if gpr.showplots:
         nuscaleb = nu_zth[np.argmin(np.abs(zth-z0))]
