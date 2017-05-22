@@ -490,10 +490,10 @@ class Params():
             self.tilt_A_max = 0.0  # old simple2 mock has A = -181.77 for z[kpc]
             self.tilt_A_min = -200.00
 
-        #self.tilt_n_max = 3.0    # simple2 mock has n = 1.43829774
-        self.tilt_n_max = 1.5   
-        #self.tilt_n_min = 0.1
-        self.tilt_n_min = 0.5 
+        self.tilt_n_max = 3.0    # simple2 mock has n = 1.43829774
+        #self.tilt_n_max = 1.5   
+        self.tilt_n_min = 0.1
+        #self.tilt_n_min = 0.5 
 
         #self.prior_type_tilt_R = 'gaussian' # do 'linear' instead???
         self.prior_type_tilt_R = 'linear' # Was 'gaussian' above before !!!!
